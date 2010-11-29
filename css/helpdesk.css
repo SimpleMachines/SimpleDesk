@@ -1,0 +1,470 @@
+/**********************************
+* General stuff used all around the helpdesk 	*
+***********************************/
+
+/* Half rounded headers and footers */
+h3.grid_header
+{
+	height: 25px;
+}
+
+/* You no left float, Core! */
+h3.grid_header img
+{
+	float: none;
+}
+
+/* Smaller icons */
+.shd_smallicon
+{
+	width: 13px;
+	height: 13px;
+	margin-right: 4px;
+}
+.shd_icon_minihead
+{
+	position: relative;
+	top: 3px;
+}
+.shd_icon_fullhead
+{
+	position: relative;
+	top: 9px;
+}
+.shd_tinyicon
+{
+	width: 9px;
+	height: 9px;
+}
+
+.shd_main_hd
+{
+	margin-top: -3px;
+}
+
+.shd_nowrap
+{
+	white-space: nowrap;
+}
+
+/**********************************
+* The ticket listings 				*
+***********************************/
+.shd_ticketlist
+{
+	width: 100%;
+	border: solid #BBBBBB;
+	border-width: 1px 1px 0;
+}
+.shd_ticketlist td
+{
+	padding: 5px;
+	border-bottom: 1px solid #AFAFAF;
+}
+.shd_noticket
+{
+	text-align: center;
+}
+.shd_staffresources ul
+{
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+}
+.shd_staffresources li
+{
+	margin-bottom: 3px;
+}
+
+.shd_gototicket
+{
+	display: block;
+	float: right;
+	margin-left: 1em;
+	white-space: nowrap;
+}
+
+/**********************************
+* Stuff used within the actual tickets 	*
+***********************************/
+
+/* This is done to position icons perfectly in the ticket header (i.e the navigation)*/
+h3.ticketheader img
+{
+	top: 2px;
+	position: relative;
+	margin-right: 2px;
+}
+
+/* Ticket details (Left-floated box) */
+.shd_ticketdetails
+{
+	float: left;
+	width: 215px;
+	min-height: 280px;
+	overflow: auto;
+	margin-right: 20px;
+}
+.shd_ticketdetails ul
+{
+	list-style-type: none;
+	padding-left: 0;
+	margin: 0;
+}
+
+/* The ticket container */
+.shd_ticket
+{
+	min-height: 340px;
+}
+.shd_ticket_description
+{
+	padding-top: 9px;
+	padding-bottom: 45px;
+	margin-left: 260px;
+	min-height: 200px;
+}
+
+#shd_ticket_text
+{
+	min-height: 100px;
+}
+
+/* The left column in the ticket display */
+.shd_ticket_leftcolumn
+{
+	width: 25%;
+}
+/* The right column in the ticket display */
+.shd_ticket_rightcolumn
+{
+	width: 75%;
+}
+
+/* The Respond, Edit, Delete etc links */
+.shd_ticketlinks a
+{
+	margin-right: 10px;
+}
+.shd_ticketlinks a#last
+{
+	margin-right: 0px;
+}
+
+.shd_ticket_avatar
+{
+	margin: 1em auto;
+	text-align: center;
+}
+
+.shd_modified
+{
+	margin-top: 20px;
+}
+
+.postreply
+{
+	margin: 0;
+}
+
+.postmodify
+{
+	margin: 0;
+}
+
+/* The 'Go to the main log' link in ticket logs */
+.shd_main_log
+{
+	font-size: 80%;
+}
+.shd_main_log img
+{
+	position: relative;
+	top: 3px;
+	margin-right: 2px;
+}
+#shd_ticket_log_expand
+{
+	margin-top: 8px;
+}
+.shd_ticket_log_expand_container
+{
+	margin-right: 3px;
+}
+
+#quickReplyExpand
+{
+	margin-top: 8px;
+}
+
+/* Override editor margins */
+#quickReplyOptions form textarea
+{
+	margin-bottom: 0!important;
+}
+
+/**********************************
+ * Huge buttons :D			 	*
+***********************************/
+
+/* The big reply button */
+.shd_replybutton
+{
+	margin-top: 10px;
+	height: 15px;
+	background: url(../images/simpledesk/respond.png) no-repeat left;
+	background-position: 10px;
+	padding: 10px;
+	padding-left: 40px;
+	padding-top: 8px;
+	font-weight: bold;
+	font-size: 100%;
+	margin-bottom: 10px;
+}
+/* The big quote button */
+.shd_quotebutton
+{
+	margin-top: 10px;
+	height: 15px;
+	background: url(../images/simpledesk/quote.png) no-repeat left;
+	background-position: 10px;
+	padding: 10px;
+	padding-left: 40px;
+	padding-top: 8px;
+	font-weight: bold;
+	font-size: 100%;
+	margin-right: 10px;
+}
+/* Go advanced! */
+.shd_advancedbutton
+{
+	margin-top: 10px;
+	height: 15px;
+	background: url(../images/simpledesk/advanced.png) no-repeat left;
+	background-position: 10px;
+	padding: 10px;
+	padding-left: 40px;
+	padding-top: 8px;
+	font-weight: bold;
+	font-size: 100%;
+	margin-right: 10px;
+}
+
+/* Edit settings*/
+.shd_editpreferences
+{
+	height: 15px;
+	background: url(../images/simpledesk/edit.png) no-repeat left;
+	background-position: 10px;
+	padding: 10px;
+	padding-left: 40px;
+	padding-top: 8px;
+	font-weight: bold;
+	font-size: 100%;
+	margin-right: 10px;
+}
+
+/* Show tickets */
+.shd_showtickets
+{
+	height: 15px;
+	padding: 10px;
+	padding-left: 40px;
+	padding-top: 8px;
+	font-weight: bold;
+	font-size: 100%;
+	margin-right: 10px;
+}
+#shd_showtickets
+{
+	background: url(../images/simpledesk/details.png) no-repeat left;
+	background-position: 10px;
+}
+#shd_post_proxy
+{
+	background: url(../images/simpledesk/proxy.png) no-repeat left;
+	background-position: 10px;	
+}
+
+/**********************************
+* Ticket replies				 *
+***********************************/
+.shd_reply
+{
+	padding-bottom: 32px;
+	padding-top: 12px;
+}
+.shd_posterinfo
+{
+	width: 11em;
+	text-align: center;
+	margin-left: 3px;
+}
+.shd_postername
+{
+	font-size: 120%;
+}
+.shd_groupmargin
+{
+	margin-bottom: 10px;
+}
+.shd_posteravatar img
+{
+	padding: 0px;
+	max-width: 10.5em;
+}
+.shd_replyarea
+{
+	padding-left: 11em;
+	margin-left: 10px;
+}
+
+.shd_reply .avatar
+{
+	margin-bottom: 10px;
+}
+
+/**********************************
+* Attachment stuff				 *
+***********************************/
+.shd_reply_attachments
+{
+	width: 68%;
+	margin-bottom: 0;
+	float: left;
+	margin-top: 5px;
+}
+.shd_replyattachments ul, .shd_replyattachments li
+{
+	display: block;
+	list-style-type: none;
+}
+
+.shd_replyattachments li
+{
+	float: left;
+	width: 30%;
+}
+
+.shd_attachment
+{
+	padding-bottom: 5px;
+	font-size: 85%;
+}
+.shd_attachmentpreview
+{
+	text-align: center;
+}
+.shd_attachmentpreview img
+{
+	max-width: 75px;
+	margin: 3px;
+	margin-top: 6px;
+}
+.shd_attachmentpreview .description
+{
+	padding: 0;
+}
+.shd_removeattachment
+{
+	margin-left: -8px;
+	margin-right: 3px;
+}
+.shd_attachmentbox
+{
+	padding: 10px;
+}
+.shd_attachmentcolumn
+{
+	margin-right: 20px;
+}
+.shd_thumb
+{
+	border: 0;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+/**********************************
+* Posting and editing tickets/replies		 *
+***********************************/
+#shd_bbcbox
+{
+   margin: 0 0 0.5em 0;
+}
+#shd_bbcbox div
+{
+   margin: 0.2em 0;
+   vertical-align: top;
+}
+#shd_bbcbox div img
+{
+   margin: 0 1px 0 0;
+   vertical-align: top;
+}
+#shd_bbcbox select
+{
+   margin: 0 2px;
+}
+/* The smiley strip */
+#shd_smileybox
+{
+   margin: 0.75em 0 0.5em 0;
+}
+
+/**********************************
+* General actions				 *
+***********************************/
+.pm_message
+{
+	margin-top: 1ex;
+}
+
+/* The 'Empty log' link in the action log */
+.shd_empty_log
+{
+	font-size: 80%;
+}
+.shd_empty_log img
+{
+	position: relative;
+	top: 3px;
+	margin-right: 2px;
+}
+
+/**********************************
+* The profile				 	*
+***********************************/
+.shd_profile_navigation
+{
+	margin-right: 20px;
+}
+.shd_profile_nav_list, .shd_profile_nav_list ul, .shd_profile_nav_list li
+{
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+}
+.shd_profile_nav_inline, .shd_profile_nav_inline ul, .shd_profile_nav_inline li
+{
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+	float: left;
+}
+.shd_profile_nav_inline li
+{
+	margin-right: 10px;
+	border-right: 1px solid #cccccc;
+	padding-right: 10px;
+}
+.shd_profile_nav_inline img
+{
+	margin-left: 4px;
+}
+
+.shd_profile_nav_inline li.shd_inline_last
+{
+	border-right: none;
+}

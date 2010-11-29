@@ -1,0 +1,232 @@
+#sd_live_news
+{
+	width: 64%;
+	font-size: 0.85em;
+}
+#sd_live_news div.content
+{
+	padding: 0;
+}
+#sd_live_news div.content dl
+{
+	padding: 0.5em 0 0 0.5em;
+}
+
+#sd_supportVersionsTable
+{
+	width: 34%;
+}
+#sd_version_details
+{
+	overflow: auto;
+	height: 16.4em;
+}
+#sdAnnouncements
+{
+	height: 21.6em;
+	overflow: auto;
+}
+#sdAnnouncements dt
+{
+	border-bottom: 1px dashed #000;
+}
+#sdAnnouncements dd
+{
+	padding: 0;
+	margin: 0 0 1em 1.5em;
+}
+#sd_update_section
+{
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+#sd_credits
+{
+}
+.sd_group_name
+{
+}
+.sd_group_name hr
+{
+	margin-top: 2px;
+}
+.shd_help
+{
+	float: right;
+	margin-top: 8px;
+}
+.shd_actionloginfo
+{
+	margin-bottom: 0;
+	border-bottom: 0;
+}
+.shd_admin_leftcolumn
+{
+	width: 74%;
+	margin-right: 10px;
+}
+.shd_admin_rightcolumn
+{
+	width: 24%;
+}
+.shd_credits_break
+{
+	margin-bottom: 0;
+
+}
+.shd_bbc_list
+{
+	width: 33%;
+}
+.shd_info_box
+{
+	margin-bottom: 0;
+}
+h3.sd_no_margin
+{
+	margin-bottom: 0px;
+	padding-bottom: 3px;
+}
+
+.disabled
+{
+	color: #777777;
+}
+
+.shd_credits_names
+{
+	margin-left: 57px;
+}
+
+.shd_valign_top
+{
+	vertical-align: top;
+}
+
+.shd_yes, .shd_no, .shd_own, .shd_any
+{
+	padding-left:19px;
+	padding-bottom:3px;
+}
+
+.shd_yes
+{
+	background:url(../images/simpledesk/perm_yes.png) no-repeat;
+}
+
+.shd_no
+{
+	background:url(../images/simpledesk/perm_no.png) no-repeat;
+}
+
+.shd_own
+{
+	background:url(../images/simpledesk/perm_own.png) no-repeat;
+}
+
+.shd_any
+{
+	background:url(../images/simpledesk/perm_any.png) no-repeat;
+}
+
+dl.permsettings
+{
+	clear: right;
+	overflow: auto;
+	margin: 0 0 10px 0;
+	padding: 0;
+}
+
+dl.permsettings dt
+{
+	width: 58%;
+	float: left;
+	margin: 0 0 10px 0;
+	padding: 0;
+	clear: both;
+}
+
+dl.permsettings dt.settings_title
+{
+	width: 100%;
+	float: none;
+	margin: 0 0 10px 0;
+	padding: 5px 0 0 0;
+	font-weight: bold;
+	clear: both;
+}
+
+dl.permsettings dt.windowbg
+{
+	width: 98%;
+	float: left;
+	margin: 0 0 3px 0;
+	padding: 0 0 5px 0;
+	clear: both;
+}
+
+dl.permsettings dd
+{
+	width: 38%;
+	float: left;
+	margin: 0 0 3px 0;
+	padding: 0;
+}
+
+dl.permsettings img
+{
+	margin: 0 10px 0 0;
+}
+
+h3 a.permcollapse img
+{
+	margin-top:8px;
+}
+
+#cf_fieldicon_icon
+{
+	padding-left:19px;
+	padding-bottom:3px;
+}
+
+.cf_ui_text, .cf_ui_largetext, .cf_ui_int, .cf_ui_float, .cf_ui_select, .cf_ui_checkbox, .cf_ui_radio
+{
+	padding-left:19px;
+	padding-bottom:3px;
+}
+
+.cf_ui_text
+{
+	background:url(../images/simpledesk/cf_ui_text.png) no-repeat;
+}
+.cf_ui_largetext
+{
+	background:url(../images/simpledesk/cf_ui_largetext.png) no-repeat;
+}
+.cf_ui_int
+{
+	background:url(../images/simpledesk/cf_ui_int.png) no-repeat;
+}
+.cf_ui_float
+{
+	background:url(../images/simpledesk/cf_ui_float.png) no-repeat;
+}
+.cf_ui_select
+{
+	background:url(../images/simpledesk/cf_ui_select.png) no-repeat;
+}
+.cf_ui_checkbox
+{
+	background:url(../images/simpledesk/cf_ui_checkbox.png) no-repeat;
+}
+.cf_ui_radio
+{
+	background:url(../images/simpledesk/cf_ui_radio.png) no-repeat;
+}
+
+.langblock
+{
+	width:30%;
+	float:right;
+	display:block;
+}
