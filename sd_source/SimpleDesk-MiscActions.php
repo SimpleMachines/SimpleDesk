@@ -101,23 +101,26 @@ function shd_ticket_resolve()
 			fatal_lang_error('shd_cannot_resolve', false);
 
 		// OK, so what about any children related tickets that are still open? Eeek, could be awkward.
-		$query = shd_db_query('', '
-			SELECT COUNT(hdt.id_ticket)
-			FROM {db_prefix}helpdesk_relationships AS rel
-				INNER JOIN {db_prefix}helpdesk_tickets AS hdt ON (rel.secondary_ticket = hdt.id_ticket)
-			WHERE rel.primary_ticket = {int:ticket}
-				AND rel.rel_type = {int:parent}
-				AND hdt.status NOT IN ({array_int:closed_status})',
-			array(
-				'ticket' => $context['ticket_id'],
-				'parent' => RELATIONSHIP_ISPARENT,
-				'closed_status' => array(TICKET_STATUS_CLOSED, TICKET_STATUS_DELETED),
-			)
-		);
-		list($count_children) = $smcFunc['db_fetch_row']($query);
-		$smcFunc['db_free_result']($query);
-		if (!empty($count_children))
-			fatal_lang_error('error_shd_cannot_resolve_children', false);
+		if(empty($modSettings['shd_disable_relationships']))
+		{
+			$query = shd_db_query('', '
+				SELECT COUNT(hdt.id_ticket)
+				FROM {db_prefix}helpdesk_relationships AS rel
+					INNER JOIN {db_prefix}helpdesk_tickets AS hdt ON (rel.secondary_ticket = hdt.id_ticket)
+				WHERE rel.primary_ticket = {int:ticket}
+					AND rel.rel_type = {int:parent}
+					AND hdt.status NOT IN ({array_int:closed_status})',
+				array(
+					'ticket' => $context['ticket_id'],
+					'parent' => RELATIONSHIP_ISPARENT,
+					'closed_status' => array(TICKET_STATUS_CLOSED, TICKET_STATUS_DELETED),
+				)
+			);
+			list($count_children) = $smcFunc['db_fetch_row']($query);
+			$smcFunc['db_free_result']($query);
+			if (!empty($count_children))
+				fatal_lang_error('error_shd_cannot_resolve_children', false);
+		}
 
 		$action = ($row['status'] != TICKET_STATUS_CLOSED) ? 'resolve' : 'unresolve';
 		$new = shd_determine_status($action, $row['id_member_started'], $row['id_member_updated'], $row['num_replies']);
@@ -298,9 +301,12 @@ function shd_urgency_change_noajax()
 */
 function shd_ticket_relation()
 {
-	global $context, $smcFunc;
+	global $context, $smcFunc, $modSettings;
 
 	checkSession('request');
+	
+	if(!empty($modSettings['shd_disable_relationships']))
+		fatal_lang_error('shd_relationships_are_disabled', false);
 
 	$otherticket = isset($_REQUEST['otherticket']) ? (int) $_REQUEST['otherticket'] : 0;
 

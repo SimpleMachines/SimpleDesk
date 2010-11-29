@@ -432,6 +432,7 @@ function shd_modify_posting_options($return_config)
  *		</ul>
  *	</li>
  *	<li>'shd_disable_tickettotopic' (checkbox) - if checked, ticket to topic mode is entirely disabled.</li>
+ *	<li>'shd_disable_relationships' (checkbox) - if checked, relationships are entirely disabled.</li>
  *	</ul>
  *
  *	@param bool $return_config Whether to return configuration items or not; this is provided solely for SMF ACP compatibility (it expects to pass bool true in to get a list of options)
@@ -450,6 +451,7 @@ function shd_modify_admin_options($return_config)
 		array('check', 'shd_admins_not_assignable'),
 		array('select', 'shd_privacy_display', array('smart' => $txt['shd_privacy_display_smart'], 'always' => $txt['shd_privacy_display_always']), 'subtext' => $txt['shd_privacy_display_note']),
 		array('check' , 'shd_disable_tickettotopic', 'subtext' => $txt['shd_disable_tickettotopic_note'], 'disabled' => !empty($modSettings['shd_helpdesk_only'])),
+		array('check' , 'shd_disable_relationships', 'subtext' => $txt['shd_disable_relationships_note']),
 	);
 	$context['settings_title'] = $txt['shd_admin_options_admin'];
 	$context['settings_icon'] = 'admin.png';
@@ -542,7 +544,7 @@ function shd_modify_actionlog_options($return_config)
 		array('check', 'shd_logopt_delete', 'disabled' => !empty($modSettings['shd_disable_action_log'])),
 		array('check', 'shd_logopt_restore', 'disabled' => !empty($modSettings['shd_disable_action_log'])),
 		array('check', 'shd_logopt_permadelete', 'disabled' => !empty($modSettings['shd_disable_action_log'])),
-		array('check', 'shd_logopt_relationships', 'disabled' => !empty($modSettings['shd_disable_action_log'])),
+		array('check', 'shd_logopt_relationships', 'disabled' => (!empty($modSettings['shd_disable_action_log']) || !empty($modSettings['shd_disable_relationships']))),
 		array('check', 'shd_logopt_split', 'disabled' => !empty($modSettings['shd_disable_action_log'])),
 	);
 	$context['settings_title'] = $txt['shd_admin_options_actionlog'];

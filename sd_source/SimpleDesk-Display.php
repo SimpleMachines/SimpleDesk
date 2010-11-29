@@ -549,7 +549,7 @@ function shd_view_ticket()
 
 	// Lastly, what about related tickets?
 	$context['create_relationships'] = shd_allowed_to('shd_create_relationships');
-	$context['display_relationships'] = shd_allowed_to('shd_view_relationships') || $context['create_relationships'];
+	$context['display_relationships'] = ((shd_allowed_to('shd_view_relationships') || $context['create_relationships']) && empty($modSettings['shd_disable_relationships']));
 	$context['delete_relationships'] = shd_allowed_to('shd_delete_relationships');
 	if (!empty($context['display_relationships']))
 	{

@@ -1879,6 +1879,9 @@ function shd_posting_additional_options()
 function shd_check_dependencies()
 {
 	global $context, $smcFunc;
+	
+	if(!empty($modSettings['shd_disable_relationships']))
+		return '';
 
 	// OK, so what about any children related tickets that are still open? Eeek, could be awkward.
 	$query = shd_db_query('', '

@@ -146,6 +146,7 @@ $txt['shd_invalid_relation'] = 'You must provide a valid type of relationship fo
 $txt['shd_no_relation_delete'] = 'You cannot delete a relationship that does not exist.';
 $txt['shd_cannot_relate_self'] = 'You cannot make a ticket relate to itself.';
 $txt['shd_split_no_pm'] = 'You must enter a reason for splitting the ticket to send to the ticket owner, or uncheck the option to \'send a PM to the ticket owner\'.';
+$txt['shd_relationships_are_disabled'] = 'Ticket relationships are currently disabled.';
 
 // The main Helpdesk.
 $txt['shd_home'] = 'Helpdesk'; // separate string in case someone wants to change it independently of the main menu

@@ -161,6 +161,8 @@ $txt['shd_privacy_display_always'] = 'Always display the ticket\'s privacy setti
 $txt['shd_privacy_display_note'] = 'Normally tickets are limited to user seeing their own and staff seeing all users. There are times you might want staff to be able to create tickets only for senior staff to see - this is a "private" ticket. Since "non-private" might be confusing for regular users, this option allows you to hide the display of "non private" or "private" to only when it is appropriate on a ticket.';
 $txt['shd_disable_tickettotopic'] = 'Disable "ticket to topic" options';
 $txt['shd_disable_tickettotopic_note'] = 'Normally, it is possible to move tickets to topics and back again (except in Standalone mode), this option denies it for all users regardless of any permissions for it.';
+$txt['shd_disable_relationships'] = 'Disable relationships';
+$txt['shd_disable_relationships_note'] = 'Disable tickets from having "relationships" with each other, regardless of any permissions for it.';
 //@}
 
 //! @name Configuration items on the Standalone Options page
