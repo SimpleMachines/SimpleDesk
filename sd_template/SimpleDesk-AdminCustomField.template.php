@@ -90,7 +90,7 @@ function template_shd_custom_field_edit()
 				<script type="text/javascript"><!-- // --><![CDATA[
 				function set_fieldicon(filename)
 				{
-					document.getElementById("cf_fieldicon_icon").style.background = "url(" + ', JavaScriptEscape($settings['default_images_url'] . '/simpledesk/'), ' + filename + ") no-repeat left";
+					document.getElementById("cf_fieldicon_icon").style.background = "url(" + ', JavaScriptEscape($settings['default_images_url'] . '/simpledesk/cf/'), ' + filename + ") no-repeat left";
 				}
 				function set_fieldtype_icon(ftype)
 				{
@@ -106,6 +106,7 @@ function template_shd_custom_field_edit()
 					document.getElementById("cf_fieldtype_icon").setAttribute("class", icons[ftype]);
 				}
 				// ]', ']></script>
+				<form action="', $scripturl, '?action=admin;area=helpdesk_customfield;sa=save',!empty($context['new_field']) ? ';new' : '','" method="post">
 				<div class="tborder">
 					<div class="cat_bar">
 						<h3 class="catbg">
@@ -126,11 +127,13 @@ function template_shd_custom_field_edit()
 				<div class="roundframe">
 					<div class="content">
 						<dl class="settings">
-							<dt><strong>', $txt['shd_admin_custom_fields_fieldname'], ':</strong></dt>
-							<dd><input type="text" name="fieldname" id="cf_fieldname" value="" class="input_text" size="30" /></dd>
-							<dt><strong>', $txt['shd_admin_custom_fields_active'], ':</strong></dt>
-							<dd><input type="checkbox" name="active" id="cf_active" value="1" class="input_check" /></dd>
-							<dt><strong>', $txt['shd_admin_custom_fields_icon'], ':</strong></dt>
+							<dt><strong>', $txt['shd_admin_custom_fields_fieldname'], ':</strong><br /><span class="smalltext">', $txt['shd_admin_custom_fields_fieldname_desc'], '</span></dt>
+							<dd><input type="text" name="fieldname" id="cf_fieldname"',!empty($context['custom_field']['field_name']) ? ' value="' . $context['custom_field']['field_name'] . '"' : '',' class="input_text" size="30" /></dd>
+							<dt><strong>', $txt['shd_admin_custom_fields_description'], ':</strong><br /><span class="smalltext">', $txt['shd_admin_custom_fields_description_desc'], '</span></dt>
+							<dd><textarea name="description" id="cf_description" cols="40" rows="4">',!empty($context['custom_field']['field_desc']) ? $context['custom_field']['field_desc'] : '','</textarea></dd>							
+							<dt><strong>', $txt['shd_admin_custom_fields_active'], ':</strong><br /><span class="smalltext">', $txt['shd_admin_custom_fields_active_desc'], '</span></dt>
+							<dd><input type="checkbox" name="active" id="cf_active" value="',isset($context['custom_field']['active']) ? $context['custom_field']['active'] : 1,'" class="input_check" /></dd>
+							<dt><strong>', $txt['shd_admin_custom_fields_icon'], ':</strong><br /><span class="smalltext">', $txt['shd_admin_custom_fields_icon_desc'], '</span></dt>
 							<dd class="nowrap">
 								<span id="cf_fieldicon_icon"></span>
 								<select name="cf_fieldicon" id="cf_fieldicon" onchange="javascript:set_fieldicon(this.value);">';
@@ -146,13 +149,13 @@ function template_shd_custom_field_edit()
 	echo '
 								</select>
 							</dd>
-							<dt><strong>', $txt['shd_admin_custom_fields_visible'], ':</strong></dt>
+							<dt><strong>', $txt['shd_admin_custom_fields_visible'], ':</strong><br /><span class="smalltext">', $txt['shd_admin_custom_fields_visible_desc'], '</span></dt>
 							<dd>
 								<span id="cf_fieldvisible_icon"></span>
 								<select name="cf_fieldvisible" id="cf_fieldvisible">
-									<option value="', CFIELD_TICKET, '">', $txt['shd_admin_custom_fields_visible_ticket'], '</option>
-									<option value="', CFIELD_REPLY, '">', $txt['shd_admin_custom_fields_visible_field'], '</option>
-									<option value="', (CFIELD_TICKET | CFIELD_REPLY), '">', $txt['shd_admin_custom_fields_visible_both'], '</option>
+									<option value="', CFIELD_TICKET, '"',($context['custom_field']['field_loc'] == CFIELD_TICKET ? ' selected="selected"' : ''), '>', $txt['shd_admin_custom_fields_visible_ticket'], '</option>
+									<option value="', CFIELD_REPLY, '"',($context['custom_field']['field_loc'] == CFIELD_REPLY ? ' selected="selected"' : ''), '>', $txt['shd_admin_custom_fields_visible_field'], '</option>
+									<option value="', (CFIELD_TICKET | CFIELD_REPLY), '"',($context['custom_field']['field_loc'] == (CFIELD_TICKET | CFIELD_REPLY) ? ' selected="selected"' : ''), '>', $txt['shd_admin_custom_fields_visible_both'], '</option>
 								</select>
 							</dd>
 						</dl>
@@ -187,7 +190,13 @@ function template_shd_custom_field_edit()
 						</dl>
 					</div>
 				</div>
-				<span class="lowerframe"><span></span></span>';
+				<span class="lowerframe"><span></span></span>
+				<br />
+				<input type="submit" value="Save Field" accesskey="s" class="button_submit" /> 
+				', !empty($context['new_field']) ? '' : '<input type="submit" value="Delete Field" onclick="return confirm(\'Do you really want to delete this custom field?\');" name="delete" class="button_submit" />', '
+				<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
+				<input type="hidden" name="field" value="', $context['custom_field']['id_field'], '" />
+				</form>';			
 }
 
 ?>

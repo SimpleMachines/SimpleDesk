@@ -113,86 +113,9 @@ function shd_admin_custom_new()
 		'field_type_value' => CFIELD_TYPE_TEXT,
 		'field_icons' => shd_admin_cf_icons(),
 		'field_icon_value' => '',
+		'new_field' => true,
 	));
-/*
-	$context += array(
-		'sub_template' => 'shd_show_settings',
-		'settings_title' => $txt['shd_admin_new_custom_field'],
-		'settings_icon' => 'custom_fields.png',
-		'config_vars' => array(
-			array(
-				'type' => 'text',
-				'name' => 'field_name',
-				'label' => $txt['shd_admin_custom_fields_fieldname'],
-				'value' => '',
-				'help' => 'shd_admin_custom_fields_fieldname_desc',
-			),
-			array(
-				'type' => 'check',
-				'name' => 'active',
-				'label' => $txt['shd_admin_custom_fields_active'],
-				'value' => true,
-				'help' => 'shd_admin_custom_fields_active_desc',
-			),
-			array(
-				'type' => 'large_text',
-				'name' => 'field_desc',
-				'label' => $txt['shd_admin_custom_fields_fielddesc'],
-				'value' => '',
-				'help' => 'shd_admin_custom_fields_fielddesc_desc',
-				'size' => 4,
-			),
-			array(
-				'type' => 'select',
-				'name' => 'field_type',
-				'label' => $txt['shd_admin_custom_fields_icon'],
-				'value' => '',
-				'data' => shd_admin_cf_icons(),
-				'help' => 'shd_admin_custom_fields_icon_desc',
-			),
-			array(
-				'type' => 'select',
-				'name' => 'field_type',
-				'label' => $txt['shd_admin_custom_fields_fieldtype'],
-				'value' => 0,
-				'data' => array(
-					array(CFIELD_TYPE_TEXT, $txt['shd_admin_custom_fields_ui_text']),
-					array(CFIELD_TYPE_LARGETEXT, $txt['shd_admin_custom_fields_ui_largetext']),
-					array(CFIELD_TYPE_INT, $txt['shd_admin_custom_fields_ui_int']),
-					array(CFIELD_TYPE_FLOAT, $txt['shd_admin_custom_fields_ui_float']),
-					array(CFIELD_TYPE_SELECT, $txt['shd_admin_custom_fields_ui_select']),
-					array(CFIELD_TYPE_CHECKBOX, $txt['shd_admin_custom_fields_ui_checkbox']),
-					array(CFIELD_TYPE_RADIO, $txt['shd_admin_custom_fields_ui_radio']),
-				),
-				'help' => 'shd_admin_custom_fields_fieldtype_desc',
-			),
-			array(
-				'type' => 'select',
-				'name' => 'field_type',
-				'label' => $txt['shd_admin_custom_fields_visible'],
-				'value' => CFIELD_TICKET,
-				'data' => array(
-					array(CFIELD_TICKET, $txt['shd_admin_custom_fields_visible_ticket']),
-					array(CFIELD_REPLY, $txt['shd_admin_custom_fields_visible_field']),
-					array((CFIELD_TICKET | CFIELD_REPLY), $txt['shd_admin_custom_fields_visible_both']),
-				),
-				'help' => 'shd_admin_custom_fields_visible_desc',
-			),
-		),
-		'post_url' => $scripturl . '?action=admin;area=helpdesk_customfield;sa=save',
-	);
 
-	foreach ($context['config_vars'] as $key => $item)
-	{
-		if (!isset($item['javascript']))
-			$context['config_vars'][$key]['javascript'] = '';
-		if (!isset($item['preinput']))
-			$context['config_vars'][$key]['preinput'] = '';
-		if (!isset($item['disabled']))
-			$context['config_vars'][$key]['disabled'] = false;
-		if (!isset($item['invalid']))
-			$context['config_vars'][$key]['invalid'] = false;
-	}*/
 }
 
 /**
@@ -223,6 +146,12 @@ function shd_admin_custom_edit()
 		$context['section_desc'] = $txt['shd_admin_edit_custom_field_desc'];
 		$context['page_title'] = $txt['shd_admin_edit_custom_field'];
 		$context['sub_template'] = 'shd_custom_field_edit';
+		
+		$context = array_merge($context, array(
+			'field_type_value' => $context['custom_field']['field_type'],
+			'field_icons' => shd_admin_cf_icons(),
+			'field_icon_value' => $context['custom_field']['icon'],
+	));
 	}
 	else
 	{
@@ -241,6 +170,21 @@ function shd_admin_custom_save()
 	global $context, $smcFunc, $modSettings;
 
 	checkSession();
+	
+	// Deletifyingistuffithingi?
+	if (isset($_POST['delete']))
+	{
+		$smcFunc['db_query']('', '
+			DELETE FROM {db_prefix}helpdesk_custom_fields
+			WHERE id_field = {int:field}',
+			array(
+				'field' => $_REQUEST['field'],
+			)
+		);
+		
+		// End of the road
+		redirectexit('action=admin;area=helpdesk_customfield;' . $context['session_var'] . '=' . $context['session_id']);
+	}
 }
 
 /**
@@ -319,10 +263,36 @@ function shd_admin_custom_move()
 function shd_admin_cf_icons()
 {
 	global $context, $settings, $txt;
-
+	
 	$iconlist = array(
 		array('', $txt['shd_admin_custom_fields_none']),
 	);
+
+	// Open the directory..
+	$dir = dir($settings['default_theme_dir'] . '/images/simpledesk/cf/');
+	$files = array();
+
+	if (!$dir)
+		return $iconlist;
+
+	while ($line = $dir->read())
+		$files[] = $line;
+	$dir->close();
+
+	// Sort the results...
+	natcasesort($files);
+
+	foreach ($files as $line)
+	{
+		$filename = substr($line, 0, (strlen($line) - strlen(strrchr($line, '.'))));
+		$extension = substr(strrchr($line, '.'), 1);
+
+		// Make sure it is an image.
+		if (strcasecmp($extension, 'gif') != 0 && strcasecmp($extension, 'jpg') != 0 && strcasecmp($extension, 'jpeg') != 0 && strcasecmp($extension, 'png') != 0 && strcasecmp($extension, 'bmp') != 0)
+			continue;
+
+		$iconlist[] = array(htmlspecialchars($filename. '.' .$extension),htmlspecialchars(str_replace('_', ' ', $filename)));
+	}
 
 	return $iconlist;
 }

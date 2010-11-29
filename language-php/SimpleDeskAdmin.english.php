@@ -230,11 +230,13 @@ $txt['shd_admin_custom_fields_long'] = 'Custom Fields for Tickets and Replies';
 $txt['shd_admin_custom_fields_desc'] = 'This section allows you to create extra fields that can be added to tickets and/or their replies, to gather additional information about the ticket or to help you manage your helpdesk.';
 $txt['shd_admin_custom_fields_general'] = 'General Details';
 
-
+global $settings, $boardurl;
 $txt['shd_admin_custom_fields_fieldname'] = 'Field Name';
 $txt['shd_admin_custom_fields_fieldname_desc'] = 'The name displayed next to where the user will enter the information (required)';
+$txt['shd_admin_custom_fields_description'] = 'Field Description';
+$txt['shd_admin_custom_fields_description_desc'] = 'A description of the field, shown to the user when they enter the information.';
 $txt['shd_admin_custom_fields_icon'] = 'Field Icon';
-$txt['shd_admin_custom_fields_icon_desc'] = 'An optional icon displayed next to the field name.';
+$txt['shd_admin_custom_fields_icon_desc'] = 'An optional icon displayed next to the field name. To add your own icon(s), simply place an image file in the ./Themes/default/images/simpledesk/cf/ folder. For best results, this should be a 13x13px png image.';
 $txt['shd_admin_custom_fields_fieldtype'] = 'Field Type';
 $txt['shd_admin_custom_fields_fieldtype_desc'] = 'The type of field the user will complete with requested information.';
 $txt['shd_admin_custom_fields_active'] = 'Active';
