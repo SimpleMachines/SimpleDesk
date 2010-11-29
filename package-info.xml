@@ -1,0 +1,100 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>SimpleDeskTeam:SimpleDesk</id>
+	<name>SimpleDesk - Integrated Helpdesk for Simple Machines Forum</name>
+	<version>1.1 r753</version>
+	<type>modification</type>
+
+	<install for="2.0 RC4">
+		<!-- readme files -->
+		<readme lang="english" parsebbc="true" type="file">language-readme/readme.english.txt</readme>
+
+		<!-- general edits -->
+		<modification format="xml" type="file">install-xml/install.xml</modification>
+		<modification format="xml" type="file">install-xml/install-attachments.xml</modification>
+		<modification format="xml" type="file">install-xml/install-trackip.xml</modification>
+
+		<!-- language files -->
+		<require-file name="language-php/SimpleDesk.english.php" destination="$languagedir" />
+		<require-file name="language-php/SimpleDeskPermissions.english.php" destination="$languagedir" />
+		<require-file name="language-php/SimpleDeskLogAction.english.php" destination="$languagedir" />
+		<require-file name="language-php/SimpleDeskAdmin.english.php" destination="$languagedir" />
+		<require-file name="language-php/SimpleDeskWho.english.php" destination="$languagedir" />
+		<require-file name="language-php/SimpleDeskProfile.english.php" destination="$languagedir" />
+
+		<!-- sources -->
+		<require-dir name="sd_source" destination="$sourcedir" />
+
+		<!-- templates -->
+		<require-dir name="sd_template" destination="$themedir" />
+
+		<!-- images -->
+		<require-dir name="images/simpledesk" destination="$themes_dir/default/images" />
+		<require-dir name="images/sd_plugins" destination="$themes_dir/default/images" />
+		<require-dir name="images/shd" destination="$imagesdir/admin" />
+		<require-file name="images/feature_shd.png" destination="$themes_dir/default/images/admin" /><!-- explicitly called from default theme in ACP -->
+
+		<!-- css -->
+		<require-file name="css/helpdesk.css" destination="$themedir/css" />
+		<require-file name="css/helpdesk_admin.css" destination="$themedir/css" />
+		<require-file name="css/helpdesk_ie6.css" destination="$themedir/css" />
+
+		<!-- scripts -->
+		<require-file name="scripts/helpdesk_admin.js" destination="$themedir/scripts" />
+		<require-file name="scripts/helpdesk.js" destination="$themedir/scripts" />
+
+		<!-- bundled plugins -->
+		<require-dir name="sd_plugins_source" destination="$sourcedir" />
+		<require-dir name="sd_plugins_template" destination="$themes_dir/default" />
+		<require-file name="sd_plugins_lang/email_notifications/SDPluginEmailNotifications.english.php" destination="$languagedir" />
+
+		<!-- database changes -->
+		<database>install.php</database>
+
+		<redirect url="?action=admin;area=corefeatures#js_feature_shd" />
+	</install>
+
+	<uninstall for="2.0 RC4">
+		<!-- database changes, undone -->
+		<database>uninstall-optional.php</database>
+		<code type="file">uninstall-required.php</code>
+
+		<!-- general edits, undone -->
+		<modification format="xml" type="file" reverse="true">install-xml/install.xml</modification>
+		<modification format="xml" type="file" reverse="true">install-xml/install-attachments.xml</modification>
+		<modification format="xml" type="file" reverse="true">install-xml/install-trackip.xml</modification>
+
+		<!-- language files, removed -->
+		<remove-file name="$languagedir/SimpleDesk.english.php" />
+		<remove-file name="$languagedir/SimpleDeskPermissions.english.php" />
+		<remove-file name="$languagedir/SimpleDeskLogAction.english.php" />
+		<remove-file name="$languagedir/SimpleDeskAdmin.english.php" />
+		<remove-file name="$languagedir/SimpleDeskWho.english.php" />
+		<remove-file name="$languagedir/SimpleDeskProfile.english.php" />
+
+		<!-- source files, removed -->
+		<remove-dir name="$sourcedir/sd_source" />
+
+		<!-- template files, removed -->
+		<remove-dir name="$themedir/sd_template" />
+
+		<!-- images, removed -->
+		<remove-dir name="$themes_dir/default/images/simpledesk" />
+		<remove-dir name="$imagesdir/admin/shd" />
+		<remove-file name="$themes_dir/default/images/admin/feature_shd.png" />
+
+		<!-- css, removed -->
+		<remove-file name="$themedir/css/helpdesk.css" />
+		<remove-file name="$themedir/css/helpdesk-admin.css" />
+		<remove-file name="$themedir/css/helpdesk-ie6.css" />
+
+		<!-- bundled plugins removed (NOTE: done one by one to avoid eating existing plugins on upgrade) -->
+		<remove-dir name="$sourcedir/sd_plugins_source/email_notifications" />
+		<remove-file name="$languagedir/SDPluginEmailNotifications.english.php" />
+
+		<!-- scripts, removed -->
+		<remove-file name="$themedir/scripts/helpdesk-admin.js" />
+		<remove-file name="$themedir/scripts/helpdesk.js" />
+	</uninstall>
+</package-info>
