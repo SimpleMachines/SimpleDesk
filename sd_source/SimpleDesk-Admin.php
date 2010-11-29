@@ -545,7 +545,7 @@ function shd_modify_actionlog_options($return_config)
 		array('check', 'shd_logopt_restore', 'disabled' => !empty($modSettings['shd_disable_action_log'])),
 		array('check', 'shd_logopt_permadelete', 'disabled' => !empty($modSettings['shd_disable_action_log'])),
 		array('check', 'shd_logopt_relationships', 'disabled' => (!empty($modSettings['shd_disable_action_log']) || !empty($modSettings['shd_disable_relationships']))),
-		array('check', 'shd_logopt_split', 'disabled' => !empty($modSettings['shd_disable_action_log'])),
+		//array('check', 'shd_logopt_split', 'disabled' => !empty($modSettings['shd_disable_action_log'])),
 	);
 	$context['settings_title'] = $txt['shd_admin_options_actionlog'];
 	$context['settings_icon'] = 'log.png';
@@ -569,7 +569,7 @@ function shd_modify_actionlog_options($return_config)
 			shd_switchable_item("shd_logopt_restore", state);
 			shd_switchable_item("shd_logopt_permadelete", state);
 			shd_switchable_item("shd_logopt_relationships", state);
-			shd_switchable_item("shd_logopt_split", state);
+			/*shd_switchable_item("shd_logopt_split", state);*/
 		}';
 
 	return $config_vars;

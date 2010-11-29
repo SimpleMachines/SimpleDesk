@@ -87,10 +87,10 @@ function shd_main()
 		'deletereply' => array('SimpleDesk-Delete.php', 'shd_reply_delete'),
 		'restoreticket' => array('SimpleDesk-Delete.php', 'shd_ticket_restore'),
 		'restorereply' => array('SimpleDesk-Delete.php', 'shd_reply_restore'),
-		'mergeticket' => array('SimpleDesk-MergeSplit.php', 'shd_merge_ticket'),
-		'mergeticket2' => array('SimpleDesk-MergeSplit.php', 'shd_merge_ticket2'),
-		'splitticket' => array('SimpleDesk-MergeSplit.php', 'shd_split_ticket'),
-		'splitticket2' => array('SimpleDesk-MergeSplit.php', 'shd_split_ticket2'),
+		//'mergeticket' => array('SimpleDesk-MergeSplit.php', 'shd_merge_ticket'),
+		//'mergeticket2' => array('SimpleDesk-MergeSplit.php', 'shd_merge_ticket2'),
+		//'splitticket' => array('SimpleDesk-MergeSplit.php', 'shd_split_ticket'),
+		//'splitticket2' => array('SimpleDesk-MergeSplit.php', 'shd_split_ticket2'),
 	);
 
 	// Navigation menu

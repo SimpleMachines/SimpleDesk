@@ -649,7 +649,7 @@ function shd_prepare_ticket_context()
 		'can_delete' => $message['message_status'] != MSG_STATUS_DELETED && !$context['ticket']['closed'] && !$context['ticket']['deleted'] && (shd_allowed_to('shd_delete_reply_any') || ($message['id_member'] == $user_info['id'] && shd_allowed_to('shd_delete_reply_own'))),
 		'can_restore' => $message['message_status'] == MSG_STATUS_DELETED && !$context['ticket']['closed'] && !$context['ticket']['deleted'] && (shd_allowed_to('shd_restore_reply_any') || ($message['id_member'] == $user_info['id'] && shd_allowed_to('shd_restore_reply_own'))),
 		'can_permadelete' => $message['message_status'] == MSG_STATUS_DELETED && !$context['ticket']['closed'] && !$context['ticket']['deleted'] && shd_allowed_to('shd_delete_recycling'),
-		'can_split' => $message['message_status'] != MSG_STATUS_DELETED && !$context['ticket']['closed'] && !$context['ticket']['deleted'] && (shd_allowed_to('shd_split_ticket_any') || ($context['ticket']['ticket_opener'] && shd_allowed_to('shd_split_ticket_own'))),
+		//'can_split' => $message['message_status'] != MSG_STATUS_DELETED && !$context['ticket']['closed'] && !$context['ticket']['deleted'] && (shd_allowed_to('shd_split_ticket_any') || ($context['ticket']['ticket_opener'] && shd_allowed_to('shd_split_ticket_own'))),
 		'message_status' => $message['message_status'],
 		'link' => $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $context['ticket_id'] . '.msg' . $message['id_msg'] . '#msg' . $message['id_msg'],
 	);

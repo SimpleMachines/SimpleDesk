@@ -308,8 +308,8 @@ function shd_log_action($action, $params)
 		'rel_re_parent' => 'shd_logopt_relationships',
 		'rel_re_child' => 'shd_logopt_relationships',
 		'rel_delete' => 'shd_logopt_relationships',
-		'split_origin' => 'shd_logopt_split',
-		'split_new' => 'shd_logopt_split',
+		//'split_origin' => 'shd_logopt_split',
+		//'split_new' => 'shd_logopt_split',
 	);
 
 	if (empty($logopt[$action]) || empty($modSettings[$logopt[$action]]))

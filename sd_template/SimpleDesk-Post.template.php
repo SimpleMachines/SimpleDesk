@@ -180,7 +180,7 @@ function template_ticket_subjectbox()
 
 	template_ticket_posterrors();
 	echo '
-						<img src="', $settings['default_images_url'], '/simpledesk/description.png" alt="" class="shd_smallicon" /> <strong>', $txt['shd_ticket_subject'], ':</strong>
+						<img src="', $settings['default_images_url'], '/simpledesk/name.png" alt="" class="shd_smallicon" /> <strong>', $txt['shd_ticket_subject'], ':</strong>
 						<input type="text" name="subject" size="50" maxlength="100" class="input_text" value="', $context['ticket_form']['subject'], '" tabindex="', $context['tabindex']++, '" />';
 
 	// Are we dealing with proxy tickets?
@@ -230,7 +230,7 @@ function template_ticket_content()
 
 	template_ticket_posterrors();
 	echo '
-						<img src="', $settings['default_images_url'], '/simpledesk/description.png" alt="" class="shd_smallicon" /> <strong>', $context['ticket_form']['subject'], '</strong>
+						<img src="', $settings['default_images_url'], '/simpledesk/name.png" alt="" class="shd_smallicon" /> <strong>', $context['ticket_form']['subject'], '</strong>
 						<hr /><br />
 							', $context['ticket_form']['message'];
 
