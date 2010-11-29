@@ -220,7 +220,7 @@ function shd_view_ticket()
 
 	$context['ticket']['urgency'] += shd_can_alter_urgency($ticketinfo['urgency'], $ticketinfo['starter_id'], $ticketinfo['closed'], $ticketinfo['deleted']);
 
-	$context['page_index'] = shd_no_expand_pageindex($scripturl . '?action=helpdesk;sa=ticket;ticket=' . $context['ticket_id'] . '.%1$d#replies', $context['ticket_start'], (empty($context['display_recycle']) ? $context['ticket']['num_replies'] : (int) $context['ticket']['num_replies'] + (int) $context['ticket']['deleted_replies']), $context['messages_per_page'], true);
+	$context['page_index'] = shd_no_expand_pageindex($scripturl . '?action=helpdesk;sa=ticket;ticket=' . $context['ticket_id'] . '.%1$d' . (isset($_REQUEST['recycle']) ? ';recycle' : '') . '#replies', $context['ticket_start'], (empty($context['display_recycle']) ? $context['ticket']['num_replies'] : (int) $context['ticket']['num_replies'] + (int) $context['ticket']['deleted_replies']), $context['messages_per_page'], true);
 
 	$context['get_replies'] = 'shd_prepare_ticket_context';
 
