@@ -2,10 +2,11 @@
 * General stuff used all around the helpdesk 	*
 ***********************************/
 
-/* Half rounded headers and footers */
-h3.grid_header
+/* Half rounded headers */
+div.grid_header
 {
-	height: 25px;
+	height: 28px;
+	margin-bottom: -1px;
 }
 
 /* You no left float, Core! */

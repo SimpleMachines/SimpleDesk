@@ -89,8 +89,8 @@ function template_ticket_info()
 	echo '
 			<form action="', $context['ticket_form']['form_action'], '" method="post" accept-charset="', $context['character_set'], '" name="postmodify" id="postmodify" onsubmit="', 'submitonce(this);smc_saveEntities(\'postmodify\', [\'subject\', \'', $context['post_box_name'], '\'], \'options\');" enctype="multipart/form-data" style="margin: 0;">
 			<div class="tborder">
-			<div class="cat_bar">
-				<h3 class="catbg grid_header">
+			<div class="cat_bar grid_header">
+				<h3 class="catbg">
 					<img src="', $settings['default_images_url'], '/simpledesk/ticket.png" alt="x" /> ', $context['ticket_form']['form_title'], '
 				</h3>
 			</div>
@@ -341,8 +341,8 @@ function template_preview()
 	{
 		echo '
 			<div class="tborder">
-			<div class="title_bar">
-				<h3 class="titlebg grid_header">
+			<div class="title_bar grid_header">
+				<h3 class="titlebg">
 					<img src="', $settings['default_images_url'], '/simpledesk/preview.png" alt="x" />
 					', !empty($context['ticket_form']['preview']['title']) ? $context['ticket_form']['preview']['title'] : $txt['preview'], '
 				</h3>
@@ -476,8 +476,8 @@ function template_ticket_do_replies()
 
 	echo '
 		<div class="tborder">
-		<div class="title_bar">
-			<h3 class="titlebg grid_header">
+		<div class="title_bar grid_header">
+			<h3 class="titlebg">
 				<img src="', $settings['default_images_url'], '/simpledesk/replies.png" alt="x" /> ', $txt['shd_ticket_replies'], '
 			</h3>
 		</div>

@@ -19,8 +19,8 @@ function template_shd_profile_main()
 	
 	echo '
 	<div class="tborder shd_profile_navigation">
-		<div class="cat_bar">
-			<h3 class="catbg grid_header">
+		<div class="cat_bar grid_header">
+			<h3 class="catbg">
 				<img src="', $settings['default_images_url'], '/simpledesk/user.png" alt="" class="shd_icon_minihead" /> 
 				', sprintf($txt['shd_profile_heading'], $context['member']['name']), '
 			</h3>
@@ -88,8 +88,8 @@ function template_shd_profile_preferences()
 		echo '
 						<br />
 						<div class="tborder">
-							<div class="cat_bar">
-								<h3 class="catbg grid_header">
+							<div class="cat_bar grid_header">
+								<h3 class="catbg">
 									<img src="', shd_image_url($details['icon']), '" class="icon" alt="*" />
 									', $txt['shd_pref_group_' . $group], '
 								</h3>
@@ -137,8 +137,8 @@ function template_shd_profile_preferences()
 		echo '
 						<br />
 						<div class="tborder">
-							<div class="cat_bar">
-								<h3 class="catbg grid_header">
+							<div class="cat_bar grid_header">
+								<h3 class="catbg">
 									', $txt['shd_profile_preferences_none_header'], '
 								</h3>
 							</div>
@@ -256,8 +256,8 @@ function template_shd_profile_permissions()
 	// Now, display the roles that are attached to this user, and display the groups that make that link.
 	echo '
 				<div class="tborder">
-					<div class="cat_bar">
-						<h3 class="catbg sd_no_margin grid_header">
+					<div class="cat_bar grid_header">
+						<h3 class="catbg sd_no_margin">
 							<img src="', $settings['default_images_url'], '/simpledesk/roles.png" alt="*" />
 							', $txt['shd_roles'], '
 						</h3>
@@ -315,8 +315,8 @@ function template_shd_profile_permissions()
 		echo '
 				<br />
 				<div class="tborder">
-					<div class="cat_bar">
-						<h3 class="catbg sd_no_margin grid_header">
+					<div class="cat_bar grid_header">
+						<h3 class="catbg sd_no_margin">
 							<img src="', $settings['default_images_url'], '/simpledesk/perm_yes.png" alt="*" />
 							', $txt['shd_profile_granted'], '
 						</h3>
@@ -430,8 +430,8 @@ function template_shd_profile_actionlog()
 
 	echo '
 				<div class="tborder">
-					<div class="cat_bar">
-						<h3 class="catbg grid_header" id="ticket_log_header">
+					<div class="cat_bar grid_header">
+						<h3 class="catbg" id="ticket_log_header">
 							<img src="', $settings['default_images_url'], '/simpledesk/log.png" class="icon" alt="*" />
 							', sprintf($txt['shd_profile_log'], $context['member']['name']), '
 							<span class="smalltext">(', $context['action_log_count'] == 1 ? $txt['shd_profile_log_count_one'] : sprintf($txt['shd_profile_log_count_more'], $context['action_log_count']) , ')</span>

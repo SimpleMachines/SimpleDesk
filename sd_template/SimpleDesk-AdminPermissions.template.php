@@ -30,8 +30,8 @@ function template_shd_permissions_home()
 					</p>
 				</div>
 				<div class="tborder">
-					<div class="title_bar">
-						<h3 class="titlebg sd_no_margin grid_header">
+					<div class="title_bar grid_header">
+						<h3 class="titlebg sd_no_margin">
 							<img src="', $settings['default_images_url'], '/simpledesk/position.png" alt="*" />
 							', $txt['shd_role_templates'], '
 						</h3>
@@ -66,8 +66,8 @@ function template_shd_permissions_home()
 				</div>
 				<br /><br />
 				<div class="tborder">
-					<div class="title_bar">
-						<h3 class="titlebg sd_no_margin grid_header">
+					<div class="title_bar grid_header">
+						<h3 class="titlebg sd_no_margin">
 							<img src="', $settings['default_images_url'], '/simpledesk/roles.png" alt="*" />
 							', $txt['shd_roles'], '
 						</h3>
@@ -209,8 +209,8 @@ function template_shd_create_role()
 						', $txt['shd_admin_permissions_homedesc'], '
 					</p>
 				</div>
-				<div class="cat_bar">
-					<h3 class="catbg grid_header">
+				<div class="cat_bar grid_header">
+					<h3 class="catbg">
 						<img src="', $settings['default_images_url'], '/simpledesk/position.png" alt="*" />
 						', $txt['shd_create_role'], '
 					</h3>
@@ -285,17 +285,17 @@ function template_shd_edit_role()
 
 				function shd_toggleblock(block)
 				{
-					var collapsed = (document.getElementById("permheader_" + block).getAttribute("class") == "catbg");
+					var collapsed = (document.getElementById("permheader_" + block).getAttribute("class") == "cat_bar");
 					if (collapsed)
 					{
-						document.getElementById("permheader_" + block).setAttribute("class", "catbg grid_header");
+						document.getElementById("permheader_" + block).setAttribute("class", "cat_bar grid_header");
 						document.getElementById("permcontent_" + block).style.display = "";
 						document.getElementById("permfooter_" + block).style.display = "";
 						document.getElementById("permexpandicon_" + block).src = ', JavaScriptEscape($settings['images_url'] . '/collapse.gif'), ';
 					}
 					else
 					{
-						document.getElementById("permheader_" + block).setAttribute("class", "catbg");
+						document.getElementById("permheader_" + block).setAttribute("class", "cat_bar");
 						document.getElementById("permcontent_" + block).style.display = "none";
 						document.getElementById("permfooter_" + block).style.display = "none";
 						document.getElementById("permexpandicon_" + block).src = ', JavaScriptEscape($settings['images_url'] . '/expand.gif'), ';
@@ -304,8 +304,8 @@ function template_shd_edit_role()
 
 				// ]', ']></script>
 				<form action="', $scripturl, '?action=admin;area=helpdesk_permissions;sa=saverole" method="post">
-					<div class="cat_bar">
-						<h3 class="catbg grid_header">
+					<div class="cat_bar grid_header">
+						<h3 class="catbg">
 							<img src="', $settings['default_images_url'], '/simpledesk/position.png" alt="*" />
 							', $txt['shd_edit_role'], '
 						</h3>
@@ -345,8 +345,8 @@ function template_shd_edit_role()
 				continue;
 
 			echo '
-						<div class="cat_bar">
-							<h3 class="catbg" id="permheader_', $rowitem, '">
+						<div class="cat_bar" id="permheader_', $rowitem, '">
+							<h3 class="catbg">
 								<span class="floatright">
 									<a class="permcollapse" href="javascript:shd_toggleblock(\'', $rowitem, '\');">
 										<img src="', $settings['images_url'], '/expand.gif" id="permexpandicon_', $rowitem, '" />
@@ -420,8 +420,8 @@ function template_shd_edit_role()
 
 	echo '
 					<div class="tborder floatleft">
-						<div class="cat_bar">
-							<h3 class="catbg sd_no_margin grid_header">
+						<div class="cat_bar grid_header">
+							<h3 class="catbg sd_no_margin">
 								<img src="', $settings['default_images_url'], '/simpledesk/roles.png" alt="*" />
 								', $txt['shd_role_membergroups'], '
 							</h3>
@@ -493,8 +493,8 @@ function template_shd_copy_role()
 						', $txt['shd_admin_permissions_homedesc'], '
 					</p>
 				</div>
-				<div class="cat_bar">
-					<h3 class="catbg grid_header">
+				<div class="cat_bar grid_header">
+					<h3 class="catbg">
 						<img src="', $settings['default_images_url'], '/simpledesk/position.png" alt="*" />
 						', $txt['shd_copy_role'], '
 					</h3>

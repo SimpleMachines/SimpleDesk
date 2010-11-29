@@ -41,8 +41,8 @@ function template_shd_admin()
 	echo '
 			<div id="sd_live_news" class="align_left">
 				<div class="tborder">
-				<div class="cat_bar">
-					<h3 class="catbg grid_header">
+				<div class="cat_bar grid_header">
+					<h3 class="catbg">
 						<img src="', $settings['default_images_url'], '/simpledesk/live.png" alt="*" />
 						', $txt['shd_live_from'], '
 						<span class="righttext"><a href="', $scripturl, '?action=helpadmin;help=shd_admin_help_live" onclick="return reqWin(this.href);"><img src="', $settings['images_url'], '/helptopics.gif" alt="', $txt['help'], '" /></a></span>
@@ -61,8 +61,8 @@ function template_shd_admin()
 	echo '
 			<div id="sd_supportVersionsTable" class="align_right">
 				<div class="tborder">
-				<div class="cat_bar">
-					<h3 class="catbg grid_header">
+				<div class="cat_bar grid_header">
+					<h3 class="catbg">
 						<img src="', $settings['default_images_url'], '/simpledesk/modification.png" alt="*" />
 						', $txt['shd_mod_information'], '
 						<span class="righttext"><a href="', $scripturl, '?action=helpadmin;help=shd_admin_help_modification" onclick="return reqWin(this.href);"><img src="', $settings['images_url'], '/helptopics.gif" alt="', $txt['help'], '" /></a></span>
@@ -113,8 +113,8 @@ function template_shd_admin()
 	echo '
 		<div id="sd_credits">
 			<div class="tborder">
-			<div class="title_bar">
-				<h3 class="titlebg sd_no_margin grid_header">
+			<div class="title_bar grid_header">
+				<h3 class="titlebg sd_no_margin">
 					<img src="', $settings['default_images_url'], '/simpledesk/credits.png" alt="*" />
 					', $txt['shd_credits'], '
 					<span class="righttext"><a href="', $scripturl, '?action=helpadmin;help=shd_admin_help_credits" onclick="return reqWin(this.href);"><img src="', $settings['images_url'], '/helptopics.gif" alt="', $txt['help'], '" /></a></span>
@@ -214,8 +214,8 @@ function template_shd_admin()
 				sUpdateNotificationDefaultTitle: ', JavaScriptEscape($txt['shd_update_available']), ',
 				sUpdateNotificationDefaultMessage: ', JavaScriptEscape($txt['shd_update_message']), ',
 				sUpdateNotificationTemplate: ', JavaScriptEscape('
-					<div class="cat_bar">
-						<h3 id="update_title" class="catbg grid_header"><span class="right"></span>
+					<div class="cat_bar grid_header">
+						<h3 id="update_title" class="catbg"><span class="right"></span>
 							<img src="' . $settings['default_images_url'] . '/simpledesk/update.png" alt="" />
 							%title%
 							<span class="righttext"><a href="' . $scripturl . '?action=helpadmin;help=shd_admin_help_update" onclick="return reqWin(this.href);"><img src="'. $settings['images_url'] . '/helptopics.gif" alt="' . $txt['help'] . '" /></a></span>
@@ -292,8 +292,8 @@ function template_shd_show_settings()
 	if (isset($context['settings_title']))
 		echo '
 		<div class="tborder">
-			<div class="cat_bar">
-				<h3 class="catbg grid_header">
+			<div class="cat_bar grid_header">
+				<h3 class="catbg">
 					<img src="', shd_image_url($context['settings_icon']), '" class="icon" alt="*" /> ', $context['settings_title'], '
 				</h3>
 			</div>';
@@ -541,8 +541,8 @@ function template_shd_action_log()
 	// The sort stuff here is huge.
 	echo '
 				<div class="tborder">
-					<div class="cat_bar">
-						<h3 class="catbg grid_header">
+					<div class="cat_bar grid_header">
+						<h3 class="catbg">
 							<span class="floatright smalltext">', $txt['pages'], ': ', $context['page_index'], '</span>
 							<img src="', $settings['default_images_url'], '/simpledesk/log.png" class="icon" alt="*" />
 							', $txt['shd_admin_actionlog_title'], '
@@ -641,8 +641,8 @@ function template_shd_support()
 	echo '
 	<div class="shd_admin_leftcolumn floatleft">
 		<div class="tborder">
-			<div class="cat_bar">
-				<h3 class="catbg grid_header">
+			<div class="cat_bar grid_header">
+				<h3 class="catbg">
 					<img src="', $settings['default_images_url'], '/simpledesk/edit.png" alt="*" /> ', $txt['shd_admin_support_form_title'], '
 				</h3>
 			</div>
@@ -664,8 +664,8 @@ function template_shd_support()
 	</div>
 	<div class="shd_admin_rightcolumn floatleft">
 		<div class="tborder">
-			<div class="title_bar">
-				<h3 class="titlebg sd_no_margin grid_header">
+			<div class="title_bar grid_header">
+				<h3 class="titlebg sd_no_margin">
 					<img src="', $settings['images_url'], '/helptopics.gif" alt="?" /> ', $txt['shd_admin_support_what_is_this'], '
 				</h3>
 			</div>

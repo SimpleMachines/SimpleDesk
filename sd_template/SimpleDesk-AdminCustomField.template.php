@@ -14,8 +14,8 @@ function template_shd_custom_field_home()
 
 	echo '
 				<div class="tborder">
-					<div class="cat_bar">
-						<h3 class="catbg grid_header">
+					<div class="cat_bar grid_header">
+						<h3 class="catbg">
 							<img src="', $settings['default_images_url'], '/simpledesk/custom_fields.png" class="icon" alt="*" />
 							', $txt['shd_admin_custom_fields_long'], '
 						</h3>
@@ -117,8 +117,8 @@ function template_shd_custom_field_edit()
 						', $txt['shd_admin_custom_fields_desc'], '
 					</p>
 				</div>
-				<div class="cat_bar">
-					<h3 class="catbg grid_header">
+				<div class="cat_bar grid_header">
+					<h3 class="catbg">
 						<img src="', $settings['default_images_url'], '/simpledesk/description.png" alt="*" />
 						', $txt['shd_admin_custom_fields_general'], '
 					</h3>
@@ -160,8 +160,8 @@ function template_shd_custom_field_edit()
 				</div>
 				<span class="lowerframe"><span></span></span>
 				<br />
-				<div class="cat_bar">
-					<h3 class="catbg grid_header">
+				<div class="cat_bar grid_header">
+					<h3 class="catbg">
 						<img src="', $settings['default_images_url'], '/simpledesk/fieldtype.png" alt="*" />
 						', $txt['shd_admin_custom_fields_fieldtype'], '
 					</h3>

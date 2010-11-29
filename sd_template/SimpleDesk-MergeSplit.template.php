@@ -27,8 +27,8 @@ function template_shd_merge_ticket()
 		</div><br class="clear" />';
 
 	echo '
-		<div class="cat_bar">
-			<h3 class="catbg grid_header">
+		<div class="cat_bar grid_header">
+			<h3 class="catbg">
 				<img src="', $settings['default_images_url'] , '/simpledesk/merge.png" alt="*" />
 				', $txt['shd_ticket_merge_tickets'], '
 			</h3>
@@ -91,8 +91,8 @@ function template_shd_split_ticket()
 		</div><br class="clear" />';
 
 	echo '
-	<div class="cat_bar">
-		<h3 class="catbg grid_header">
+	<div class="cat_bar grid_header">
+		<h3 class="catbg">
 			<img src="', $settings['default_images_url'], '/simpledesk/split.png" alt="*" />
 			', $txt['shd_split_ticket'], '
 		</h3>
@@ -161,8 +161,8 @@ function template_shd_split_ticket2()
 		</div><br class="clear" />';
 
 	echo '
-	<div class="cat_bar">
-		<h3 class="catbg grid_header">
+	<div class="cat_bar grid_header">
+		<h3 class="catbg">
 			<img src="', $settings['default_images_url'], '/simpledesk/split.png" alt="*" />
 			', $txt['shd_split_ticket'], '
 		</h3>

@@ -33,8 +33,8 @@ function template_shd_tickettotopic()
 		</div><br class="clear" />';
 
 	echo '
-		<div class="cat_bar">
-			<h3 class="catbg grid_header">
+		<div class="cat_bar grid_header">
+			<h3 class="catbg">
 				<img src="', $settings['default_images_url'] , '/simpledesk/tickettotopic.png" alt="*" />
 				', $txt['shd_move_ticket_to_topic'], '
 			</h3>
@@ -144,8 +144,8 @@ function template_shd_topictoticket()
 {
 	global $txt, $settings, $context, $scripturl;
 	echo '
-		<div class="cat_bar">
-			<h3 class="catbg grid_header">
+		<div class="cat_bar grid_header">
+			<h3 class="catbg">
 				<img src="', $settings['default_images_url'] , '/simpledesk/topictoticket.png" alt="*" />
 				', $txt['shd_move_topic_to_ticket'], '
 			</h3>

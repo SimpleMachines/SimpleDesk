@@ -328,7 +328,7 @@ QuickReply.prototype.swap = function ()
 	document.getElementById(this.opt.sImageId).src = this.opt.sImagesUrl + "/" + (this.bCollapsed ? this.opt.sImageCollapsed : this.opt.sImageExpanded);
 	document.getElementById(this.opt.sContainerId).style.display = this.bCollapsed ? '' : 'none';
 	document.getElementById(this.opt.sFooterId).style.display = this.bCollapsed ? '' : 'none';
-	document.getElementById(this.opt.sHeaderId).setAttribute('class', (this.bCollapsed ? 'titlebg grid_header' : 'titlebg'));
+	document.getElementById(this.opt.sHeaderId).setAttribute('class', (this.bCollapsed ? 'title_bar grid_header' : 'title_bar'));
 
 	this.bCollapsed = !this.bCollapsed;
 }
@@ -353,7 +353,7 @@ ActionLog.prototype.swap = function ()
 {
 	document.getElementById(this.opt.sImageId).src = this.opt.sImagesUrl + "/" + (this.bCollapsed ? this.opt.sImageCollapsed : this.opt.sImageExpanded);
 	document.getElementById(this.opt.sContainerId).style.display = this.bCollapsed ? '' : 'none';
-	document.getElementById(this.opt.sHeaderId).setAttribute('class', (this.bCollapsed ? 'catbg grid_header' : 'catbg'));
+	document.getElementById(this.opt.sHeaderId).setAttribute('class', (this.bCollapsed ? 'title_bar grid_header' : 'title_bar'));
 
 	this.bCollapsed = !this.bCollapsed;
 }

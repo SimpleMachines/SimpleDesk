@@ -257,7 +257,7 @@ function template_ticket_block()
 
 	echo '
 					<div class="tborder">
-						<div class="cat_bar">
+						<div class="cat_bar grid_header">
 							<h3 id="shd_block_', $context['current_block'], '" class="catbg grid_header">
 								', !empty($context['ticket_blocks'][$context['current_block']]['page_index']) ? '<span class="floatright smalltext">'. $txt['pages'] . ': ' . $context['ticket_blocks'][$context['current_block']]['page_index'] . '</span>' : '', '
 								<img src="', $settings['default_images_url'], '/simpledesk/', $context['ticket_blocks'][$context['current_block']]['block_icon'], '" alt="*" />

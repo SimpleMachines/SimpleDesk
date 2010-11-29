@@ -37,8 +37,8 @@ function template_viewticket()
 
 	echo '
 			<div class="tborder">
-			<div class="cat_bar">
-				<h3 class="catbg grid_header ticketheader">
+			<div class="cat_bar grid_header">
+				<h3 class="catbg ticketheader">
 					<span class="floatright smalltext shd_ticketlinks" id="ticket">';
 
 	if ($modSettings['shd_ticketnav_style'] == 'sd')
@@ -229,8 +229,8 @@ function template_viewticketattach()
 	if (!empty($context['ticket_attach']['ticket']))
 	{
 		echo '
-					<div class="title_bar">
-						<h3 class="titlebg grid_header">
+					<div class="title_bar grid_header">
+						<h3 class="titlebg">
 							<img src="', $settings['default_images_url'], '/simpledesk/attachments.png" alt="x" />', $txt['shd_ticket_attachments'], ' (', count($context['ticket_attach']['ticket']), ')
 						</h3>
 					</div>
@@ -285,8 +285,8 @@ function template_quickreply()
 		echo '
 		<br />
 		<div class="tborder">
-			<div class="title_bar">
-				<h3 id="quickreplyheader" class="titlebg', $options['display_quick_reply'] == 2 ? ' grid_header' : '', '">
+			<div class="title_bar', $options['display_quick_reply'] == 2 ? ' grid_header' : '', '" id="quickreplyheader" >
+				<h3 class="titlebg">
 					<span class="floatright"><a href="javascript:oQuickReply.swap();"><img src="', $settings['images_url'], '/', $options['display_quick_reply'] == 2 ? 'collapse' : 'expand', '.gif" alt="+" id="quickReplyExpand" class="icon" /></a></span>
 					<img src="', $settings['default_images_url'], '/simpledesk/respond.png" alt="x" />
 					<a href="javascript:oQuickReply.swap();">', $txt['shd_reply_ticket'], '</a>
@@ -403,8 +403,8 @@ function template_viewreplies()
 	echo '
 		<div class="shd_ticket_rightcolumn floatleft"', empty($context['leftcolumndone']) ? ' style="width: 100%;"' : '', '>
 		<div class="tborder">
-		<div class="title_bar">
-			<h3 class="titlebg grid_header">
+		<div class="title_bar grid_header">
+			<h3 class="titlebg">
 				<span class="floatright smalltext">', $txt['pages'], ': ', $context['page_index'], '</span>
 				<img src="', $settings['default_images_url'], '/simpledesk/replies.png" alt="x" /> ', $txt['shd_ticket_replies'], '
 			</h3>
@@ -525,8 +525,8 @@ function template_viewrelationships()
 	if (!empty($context['display_relationships']))
 	{
 		echo '
-					<div class="title_bar">
-						<h3 class="titlebg grid_header">
+					<div class="title_bar grid_header">
+						<h3 class="titlebg">
 							<img src="', $settings['default_images_url'], '/simpledesk/relationships.png" alt="x" />', $txt['shd_ticket_relationships'], ' (', $context['relationships_count'], ')
 						</h3>
 					</div>
@@ -602,8 +602,8 @@ function template_ticketactionlog()
 		echo '
 				<br />
 				<div class="tborder">
-					<div class="cat_bar">
-						<h3 class="catbg" id="ticket_log_header">
+					<div class="title_bar" id="ticket_log_header">
+						<h3 class="titlebg">
 							<span class="floatright shd_ticket_log_expand_container"><a href="javascript:ActionLog.swap();"><img src="', $settings['images_url'], '/expand.gif" alt="+" id="shd_ticket_log_expand" class="icon" /></a></span>
 							<img src="', $settings['default_images_url'], '/simpledesk/log.png" class="icon" alt="*" />
 							<a href="javascript:ActionLog.swap();">', $txt['shd_ticket_log'], '</a>
