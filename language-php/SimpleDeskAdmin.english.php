@@ -116,6 +116,7 @@ $txt['shd_credits_alltherest'] = 'Anyone else we might\'ve missed...';
 $txt['shd_credits_icons'] = '<a href="%1$s">LED</a>, <a href="%2$s">Function</a> and <a href="%3$s">FamFamFam Flags</a> icon sets - the pretty icons used by SimpleDesk';
 $txt['shd_credits_user'] = '<strong>YOU</strong>, the proud users of SimpleDesk. Thank you for choosing our software!';
 $txt['shd_credits_translators'] = 'Our translators - Thanks to you, people all around the world can use SimpleDesk';
+$txt['shd_former_contributors'] = 'Former contributors are highlighted with a <span class="shd_former_contributor">brighter color</span>.';
 //@}
 
 //! @name Configuration items on the Display Options page
