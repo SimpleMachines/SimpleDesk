@@ -677,9 +677,9 @@ function shd_credits()
 					'desc' => $txt['shd_credits_devs_desc'],
 					'icon' => 'devs.png',
 					'members' => array(
-						'Peter &quot;Arantor&quot; Spicer',
-						'Jason &quot;JBlaze&quot; Clemons',
-						'Marcus &quot;Nas&quot; Forsberg',
+						array('Peter &quot;Arantor&quot; Spicer',true),
+						array('Jason &quot;JBlaze&quot; Clemons',false),
+						array('Marcus &quot;c&#963;&#963;&#1082;&#953;&#1108; &#1084;&#963;&#951;&#1109;&#1090;&#1108;&#1103;&quot; Forsberg',false),
 					),
 				),
 				array(
@@ -687,8 +687,8 @@ function shd_credits()
 					'desc' => $txt['shd_credits_projectsupport_desc'],
 					'icon' => 'managers.png',					
 					'members' => array(
-						'Graeme &quot;Trekkie101&quot; Spence',
-						'Jeremy &quot;SleePy&quot; Darwood',
+						array('Graeme &quot;Trekkie101&quot; Spence',false),
+						array('Jeremy &quot;SleePy&quot; Darwood',false),
 					),
 				),
 				array(
@@ -696,7 +696,7 @@ function shd_credits()
 					'desc' => $txt['shd_credits_marketing_desc'],
 					'icon' => 'marketers.png',					
 					'members' => array(
-						'Brannon &quot;B&ordf;&quot; Hall',
+						array('Brannon &quot;B&ordf;&quot; Hall',false),
 					),
 				),
 				array(
@@ -704,7 +704,7 @@ function shd_credits()
 					'desc' => $txt['shd_credits_globalizer_desc'],
 					'icon' => 'globalizers.png',
 					'members' => array(
-						'Jerry Osborne',
+						array('Jerry Osborne',true),
 					),
 				),
 				array(
@@ -712,9 +712,9 @@ function shd_credits()
 					'desc' => $txt['shd_credits_support_desc'],
 					'icon' => 'support.png',					
 					'members' => array(
-						'Tyrsson',
-						'Ha2',
-						'Aldo &quot;hadesflames&quot; Barreras',						
+						array('Tyrsson',true),
+						array('Ha2',true),
+						array('Aldo &quot;hadesflames&quot; Barreras',true),				
 					),
 				),
 				array(
@@ -722,9 +722,10 @@ function shd_credits()
 					'desc' => $txt['shd_credits_qualityassurance_desc'],
 					'icon' => 'qa.png',
 					'members' => array(
-						'Sinan &quot;[SiNaN]&quot; &Ccedil;evik',
-						'Alex &quot;Cleo&quot; Tokar',
-						'Paul &quot;tfs&quot; Laufer',
+						array('Sinan &quot;[SiNaN]&quot; &Ccedil;evik',false),
+						array('Alex &quot;Cleo&quot; Tokar',false),
+						array('Paul &quot;tfs&quot; Laufer',false),
+						array('spoogs',false),
 					),
 				),
 				array(
@@ -732,18 +733,20 @@ function shd_credits()
 					'desc' => $txt['shd_credits_beta_desc'],
 					'icon' => 'testers.png',
 					'members' => array(
-						'Chris &quot;ccbtimewiz&quot; Batista',
-						'Wade &quot;Acans&quot; Poulsen',
-						'Edwin &quot;Dismal Shadow&quot; Mendez',
-						'Treznax',
-						'Mark &quot;KiLLuMiNaTi&minus;7&minus;&quot; Longworth',
-						'NIBOGO',
-						'Robert &quot;Robbo&quot; Clancy',
-						'Ya&#x11F;izcan Arslan',
-						'MultiformeIngegno',
-						'flapjack',
-						'feline',	
-						'Sordell Media',				
+						array('Chris &quot;ccbtimewiz&quot; Batista',true),
+						array('Wade &quot;&#1109;&#951;&#963;&#969;&quot; Poulsen',false),
+						array('Edwin &quot;Dismal Shadow&quot; Mendez',true),
+						array('Treznax',false),
+						array('Mark &quot;KiLLuMiNaTi&minus;7&minus;&quot; Longworth',true),
+						array('NIBOGO',false),
+						array('Robert &quot;Robbo&quot; Clancy',false),
+						array('Ya&#x11F;izcan Arslan',false),
+						array('MultiformeIngegno',false),
+						array('flapjack',false),
+						array('feline',	false),
+						array('Sordell Media',false),
+						array('[FailSafe]',false),
+						array('chilly',false),
 					),
 				),
 				array(
@@ -751,10 +754,10 @@ function shd_credits()
 					'desc' => '', // This group has its description included in the title.
 					'icon' => 'others.png',
 					'members' => array(
-						'Fluffy - ' . sprintf($txt['shd_fluffy'],'onclick="window.location.href=\'' . $scripturl . '?action=admin;area=helpdesk_info;cookies\'"'),
-						'<br />' . $txt['shd_credits_translators'],
-						'<br />' . sprintf($txt['shd_credits_icons'], 'http://led24.de/iconset/', 'http://wefunction.com/2008/07/function-free-icon-set/', 'http://www.famfamfam.com/lab/icons/flags/'),
-						'<br />' . $txt['shd_credits_user'],
+						array('Fluffy - ' . sprintf($txt['shd_fluffy'],'onclick="window.location.href=\'' . $scripturl . '?action=admin;area=helpdesk_info;cookies\'"'),false),
+						array('<br />' . $txt['shd_credits_translators'],false),
+						array('<br />' . sprintf($txt['shd_credits_icons'], 'http://led24.de/iconset/', 'http://wefunction.com/2008/07/function-free-icon-set/', 'http://www.famfamfam.com/lab/icons/flags/'),false),
+						array('<br />' . $txt['shd_credits_user'],false),
 					),
 				),
 			),

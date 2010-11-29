@@ -145,13 +145,24 @@ function template_shd_admin()
 					echo '
 								<strong>', $group['title'], '</strong>', !empty($group['desc']) ? ' - <em class="smalltext">' . $group['desc'] . '</em>' : '', '<hr />';
 
-					// Try to make this read nicely.
+					/*// Try to make this read nicely.
 					if (count($group['members']) <= 2)
 						echo implode(' ' . $txt['shd_credits_and'] . ' ', $group['members']);
 					else
 					{
 						$last_peep = array_pop($group['members']);
 						echo implode(', ', $group['members']), ', ', $txt['shd_credits_and'], ' ', $last_peep;
+					}*/
+					
+					$cur_member = 1;
+					foreach($group['members'] AS $member)
+					{
+						echo $member[1] == true ? '<span class="shd_former_contributor">' : '', '', $member[0], '',$member[1] == true ? '</span>' : '';
+						
+						if($cur_member < count($group['members']))
+							echo', ';
+							
+						$cur_member++;
 					}
 					
 					if (isset($group['icon']))
@@ -163,6 +174,7 @@ function template_shd_admin()
 				}
 
 					echo '
+						<span class="smalltext">&nbsp;<img src="', $settings['default_images_url'], '/simpledesk/unresolved.png" alt="*" class="shd_tinyicon" /> Former contributors are highlighted with a <span class="shd_former_contributor">brighter color</span>.</span>
 					</div>
 				</div>
 				<span class="lowerframe"><span></span></span>
