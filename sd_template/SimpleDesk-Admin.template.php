@@ -39,7 +39,7 @@ function template_shd_admin()
 
 	// Display the "live news" from simpledesk.net
 	echo '
-			<div id="sd_live_news" class="align_left">
+			<div id="sd_live_news" class="floatleft">
 				<div class="tborder">
 				<div class="cat_bar grid_header">
 					<h3 class="catbg">
@@ -59,7 +59,7 @@ function template_shd_admin()
 
 	// Show the user version information from their server.
 	echo '
-			<div id="sd_supportVersionsTable" class="align_right">
+			<div id="sd_supportVersionsTable" class="floatright">
 				<div class="tborder">
 				<div class="cat_bar grid_header">
 					<h3 class="catbg">
