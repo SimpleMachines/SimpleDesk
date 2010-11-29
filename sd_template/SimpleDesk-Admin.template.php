@@ -174,7 +174,7 @@ function template_shd_admin()
 				}
 
 					echo '
-						<span class="smalltext">&nbsp;<img src="', $settings['default_images_url'], '/simpledesk/unresolved.png" alt="*" class="shd_tinyicon" /> ', $txt['shd_former_contributors'], '</span>
+						<span class="smalltext">&nbsp;<img src="', $settings['default_images_url'], '/simpledesk/update.png" alt="*" class="shd_tinyicon" /> ', $txt['shd_former_contributors'], '</span>
 					</div>
 				</div>
 				<span class="lowerframe"><span></span></span>

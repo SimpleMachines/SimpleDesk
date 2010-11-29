@@ -28,7 +28,7 @@
 				'helpdesk_options' => array(
 					'label' => $txt['shd_admin_options'],
 					'file' => 'sd_source/SimpleDesk-Admin.php',
-					'icon' => 'shd/status.png',
+					'icon' => 'shd/options.png',
 					'function' => 'shd_admin_main',
 					'subsections' => array(
 						'display' => array($txt['shd_admin_options_display']),

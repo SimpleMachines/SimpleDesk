@@ -26,7 +26,7 @@ function template_shd_custom_field_home()
 					<table class="shd_ticketlist" cellspacing="0" width="100%">
 						<tr class="titlebg">
 							<td width="30%" colspan="2">
-								<img src="', $settings['default_images_url'], '/simpledesk/custom_fields.png" class="icon" alt="*" />
+								<img src="', $settings['default_images_url'], '/simpledesk/name.png" class="icon" alt="*" />
 								', $txt['shd_admin_custom_fields_fieldname'], '
 							</td>
 							<td colspan="2">
@@ -119,7 +119,7 @@ function template_shd_custom_field_edit()
 				</div>
 				<div class="cat_bar grid_header">
 					<h3 class="catbg">
-						<img src="', $settings['default_images_url'], '/simpledesk/description.png" alt="*" />
+						<img src="', $settings['default_images_url'], '/simpledesk/name.png" alt="*" />
 						', $txt['shd_admin_custom_fields_general'], '
 					</h3>
 				</div>
