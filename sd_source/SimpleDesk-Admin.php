@@ -727,7 +727,7 @@ function shd_credits()
 						array('Sinan &quot;[SiNaN]&quot; &Ccedil;evik',false),
 						array('Alex &quot;Cleo&quot; Tokar',false),
 						array('Paul &quot;tfs&quot; Laufer',false),
-						array('spoogs',false),
+						array('Shomari &quot;spoogs&quot; Scott',false),
 					),
 				),
 				array(
