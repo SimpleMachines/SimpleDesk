@@ -24,7 +24,7 @@ function template_ticket_post()
 	echo '
 		<div class="floatleft">
 			', template_button_strip(array($context['navigation']['back']), 'bottom'), '
-		</div><br class="clear" />';
+		</div><br class="clear" /><br />';
 
 	template_preview();
 	template_ticket_info();

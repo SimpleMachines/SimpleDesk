@@ -27,7 +27,7 @@ function template_viewticket()
 	global $context, $txt, $scripturl, $settings, $modSettings, $options;
 
 	// Back to the helpdesk.
-	echo '<div class="floatleft">', template_button_strip(array($context['navigation']['back']), 'bottom'), '</div>', ($modSettings['shd_ticketnav_style'] != 'smf' ? '<br class="clear" />' : ''), '';
+	echo '<div class="floatleft">', template_button_strip(array($context['navigation']['back']), 'bottom'), '</div>', ($modSettings['shd_ticketnav_style'] != 'smf' ? '<br class="clear" /><br />' : ''), '';
 
 	if ($modSettings['shd_ticketnav_style'] == 'smf')
 	{

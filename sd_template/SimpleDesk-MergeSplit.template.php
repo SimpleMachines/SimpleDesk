@@ -24,7 +24,7 @@ function template_shd_merge_ticket()
 	echo '
 		<div class="floatleft">
 			', template_button_strip(array($context['navigation']['back']), 'bottom'), '
-		</div><br class="clear" />';
+		</div><br class="clear" /><br />';
 
 	echo '
 		<div class="cat_bar grid_header">
