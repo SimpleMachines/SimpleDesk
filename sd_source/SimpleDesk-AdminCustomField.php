@@ -124,6 +124,7 @@ function shd_admin_custom_new()
 	));
 	
 	$context['custom_field']['options'] = array('', '', '');
+	$context['custom_field']['default_value'] = false;	
 
 }
 
