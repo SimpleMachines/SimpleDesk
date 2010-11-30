@@ -118,7 +118,11 @@ function template_shd_custom_field_edit()
 					document.getElementById("cf_fieldtype_icon").setAttribute("class", icons[ftype]);	
 					
 					document.getElementById("max_length_dt").style.display = ftype == ',CFIELD_TYPE_TEXT,' || ftype == ',CFIELD_TYPE_LARGETEXT,' || ftype == ',CFIELD_TYPE_INT,' || ftype == ',CFIELD_TYPE_FLOAT,' ? "" : "none";
-					document.getElementById("max_length_dd").style.display = ftype == ',CFIELD_TYPE_TEXT,' || ftype == ',CFIELD_TYPE_LARGETEXT,' || ftype == ',CFIELD_TYPE_INT,' || ftype == ',CFIELD_TYPE_FLOAT,' ? "" : "none";					
+					document.getElementById("max_length_dd").style.display = ftype == ',CFIELD_TYPE_TEXT,' || ftype == ',CFIELD_TYPE_LARGETEXT,' || ftype == ',CFIELD_TYPE_INT,' || ftype == ',CFIELD_TYPE_FLOAT,' ? "" : "none";
+					document.getElementById("display_empty_dt").style.display = ftype == ',CFIELD_TYPE_TEXT,' || ftype == ',CFIELD_TYPE_LARGETEXT,' || ftype == ',CFIELD_TYPE_INT,' || ftype == ',CFIELD_TYPE_FLOAT,' ? "" : "none";
+					document.getElementById("display_empty_dd").style.display = ftype == ',CFIELD_TYPE_TEXT,' || ftype == ',CFIELD_TYPE_LARGETEXT,' || ftype == ',CFIELD_TYPE_INT,' || ftype == ',CFIELD_TYPE_FLOAT,' ? "" : "none";	
+					document.getElementById("required_dt").style.display = ftype == ',CFIELD_TYPE_TEXT,' || ftype == ',CFIELD_TYPE_LARGETEXT,' || ftype == ',CFIELD_TYPE_INT,' || ftype == ',CFIELD_TYPE_FLOAT,' ? "" : "none";
+					document.getElementById("required_dd").style.display = ftype == ',CFIELD_TYPE_TEXT,' || ftype == ',CFIELD_TYPE_LARGETEXT,' || ftype == ',CFIELD_TYPE_INT,' || ftype == ',CFIELD_TYPE_FLOAT,' ? "" : "none";					
 					document.getElementById("dimension_dt").style.display = ftype == ',CFIELD_TYPE_LARGETEXT,' ? "" : "none";
 					document.getElementById("dimension_dd").style.display = ftype == ',CFIELD_TYPE_LARGETEXT,' ? "" : "none";
 					document.getElementById("bbc_dt").style.display = ftype == ',CFIELD_TYPE_TEXT,' || ftype == ',CFIELD_TYPE_LARGETEXT,' ? "" : "none";
@@ -141,6 +145,20 @@ function template_shd_custom_field_edit()
 					else
 						document.getElementById("default_label").innerHTML = "',$txt['shd_admin_default_state_off'],'";
 				}
+				function update_required(state)
+				{
+					if(state == "on")
+					{
+						document.getElementById("cf_display_empty").disabled = "disabled";
+						document.getElementById("cf_display_empty").checked = "";
+						document.getElementById("display_empty_dt").className = "disabled";
+					}
+					else
+					{
+						document.getElementById("cf_display_empty").disabled = "";
+						document.getElementById("display_empty_dt").className = "";
+					}
+				}				
 				function update_permissions(state,role)
 				{
 					document.getElementById("edit_" + role).disabled = state == "on" ? "" : "disabled";
@@ -278,7 +296,15 @@ function template_shd_custom_field_edit()
 							<dd id="default_dd"',$context['field_type_value'] == 6 ? '' : ' style="display: none;"','> 
 								<input type="checkbox" name="default_check" class="input_check"',($context['custom_field']['default_value'] == 1 ? ' checked="checked"' : ''), 'onchange="javascript:update_default_label(this.value);" /> 
 								<span class="smalltext" id="default_label">',$txt['shd_admin_default_state_' . ($context['custom_field']['default_value'] == 1 ? 'on' : 'off')],'</span>
-							</dd> 							
+							</dd> 
+							<dt id="required_dt"',$context['field_type_value'] == 1 || $context['field_type_value'] == 2  || $context['field_type_value'] == 3 || $context['field_type_value'] == 4 ? '' : ' style="display: none;"','><strong>',$txt['shd_admin_custom_field_required'],':</strong><br /><span class="smalltext">',$txt['shd_admin_custom_field_required_desc'],'</span></dt>
+							<dd id="required_dd"',$context['field_type_value'] == 1 || $context['field_type_value'] == 2  || $context['field_type_value'] == 3 || $context['field_type_value'] == 4 ? '' : ' style="display: none;"','>
+								<input type="checkbox"',(!empty($context['custom_field']['required']) && $context['custom_field']['required'] == 1 ? ' checked="checked"' : ''), ' name="required" id="cf_required" onchange="javascript:update_required(this.value);"/>
+							</dd>							
+							<dt id="display_empty_dt"',(!empty($context['custom_field']['required']) && $context['custom_field']['required'] == 1 ? ' class="disabled"' : ''), '',$context['field_type_value'] == 1 || $context['field_type_value'] == 2  || $context['field_type_value'] == 3 || $context['field_type_value'] == 4 ? '' : ' style="display: none;"','><strong>',$txt['shd_admin_custom_field_display_empty'],':</strong><br /><span class="smalltext">',$txt['shd_admin_custom_field_display_empty_desc'],'</span></dt>
+							<dd id="display_empty_dd"',$context['field_type_value'] == 1 || $context['field_type_value'] == 2  || $context['field_type_value'] == 3 || $context['field_type_value'] == 4 ? '' : ' style="display: none;"','>
+								<input type="checkbox"',(!empty($context['custom_field']['display_empty']) && $context['custom_field']['display_empty'] == 1 ? ' checked="checked"' : ''), ' name="display_empty" id="cf_display_empty"',(!empty($context['custom_field']['required']) && $context['custom_field']['required'] == 1 ? ' disabled="disabled"' : ''), '/>
+							</dd>							
 						</dl>
 					</div>
 				</div>

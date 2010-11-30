@@ -90,7 +90,30 @@ function template_viewticket()
 			if (!empty($context['ticket']['ip_address']))
 				echo '
 							<li><img src="', $settings['default_images_url'], '/simpledesk/ip.png" alt="" class="shd_smallicon" /> ', $txt['shd_ticket_ip'], ': ', $context['ticket']['ip_address'], '</li>';
-
+			
+			// Custom fields :D
+			if(!empty($context['ticket']['custom_fields']['right']))
+			{
+				foreach($context['ticket']['custom_fields']['right'] AS $field)
+				{
+					if((empty($field['value']) && $field['display_empty']) || !empty($field['value']))
+					{
+						echo'<li>
+								<img src="', $settings['default_images_url'], '/simpledesk/cf/', $field['icon'], '" alt="" class="shd_smallicon" />
+									', $field['name'],': ';
+						
+						if(empty($field['value']) && $field['display_empty'])
+							echo'
+								Empty';
+						elseif(!empty($field['value']))
+							echo $field['type'] == CFIELD_TYPE_CHECKBOX ? ($field['value'] == 1 ? $txt['yes'] : $txt['no']) : $field['value'];
+							
+						echo'
+							</li>';
+					}				
+				}
+			}
+			
 			echo '
 						</ul>';
 
@@ -117,6 +140,26 @@ function template_viewticket()
 						<img src="', $settings['default_images_url'], '/simpledesk/name.png" alt="" class="shd_smallicon shd_icon_minihead" /> <strong>', $context['ticket']['subject'], '</strong><hr /><br />
 							<div id="shd_ticket_text">
 								', $context['ticket']['body'];
+								
+			// Again, custom fields...
+			if(!empty($context['ticket']['custom_fields']['center']))
+			{
+				foreach($context['ticket']['custom_fields']['center'] AS $field)
+				{
+					if((empty($field['value']) && $field['display_empty']) || !empty($field['value']))
+					{
+						echo'	<br /><br />
+								<img src="', $settings['default_images_url'], '/simpledesk/cf/', $field['icon'], '" alt="" class="shd_smallicon" /> 
+								<strong>', $field['name'],':</strong><hr />';
+						
+						if(empty($field['value']) && $field['display_empty'])
+							echo'
+								This field is empty.';
+						elseif(!empty($field['value']))
+							echo $field['value'];
+					}
+				}
+			}								
 
 			if ($settings['show_modify'] && !empty($context['ticket']['modified']))
 			{
@@ -141,24 +184,6 @@ function template_viewticket()
 						<div class="description shd_quotebutton floatright" id="shd_quotebutton">
 							<a onclick="return oQuickReply.quote(', $context['ticket']['first_msg'], ', \'', $context['session_id'], '\', \'', $context['session_var'], '\', true);" href="', $scripturl, '?action=helpdesk;sa=reply;ticket=', $context['ticket_id'], ';quote=', $context['ticket']['first_msg'], ';num_replies=', $context['ticket']['num_replies'], ';', $context['session_var'], '=', $context['session_id'], '">', $txt['shd_ticket_quote'], '</a><br />
 						</div>';
-
-			/*if (!empty($context['ticket_attach']['reply'][$context['ticket']['first_msg']]))
-			{
-				echo '
-						<div class="information shd_reply_attachments">
-							<dl id="postAttachment">
-								<dt>
-									', $txt['attached'], ':
-								</dt>';
-				foreach ($context['ticket_attach']['reply'][$context['ticket']['first_msg']] as $attachment)
-					echo '
-								<dd class="smalltext">
-									', $attachment['link'], '
-								</dd>';
-				echo '
-							</dl>
-						</div>';
-			}*/
 
 			template_inline_attachments($context['ticket']['first_msg']);
 

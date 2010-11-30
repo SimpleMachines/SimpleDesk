@@ -171,6 +171,50 @@ function shd_view_ticket()
 		'closed' => $ticketinfo['closed'],
 		'deleted' => $ticketinfo['deleted'],
 	);
+	
+	// Load all custom fields that are to be displayed in the ticket
+	$custom_fields = shd_db_query('', '
+		SELECT cf.id_field, cf.active, cf.field_order, cf.field_name, cf.field_loc, cf.icon,
+		cf.field_type, cf.default_value, cf.bbc, cf.can_see, cf.can_edit, cf.field_length,
+		cf.display_empty
+		FROM {db_prefix}helpdesk_custom_fields AS cf
+		WHERE cf.field_loc = {int:field_loc_ticket} OR {int:field_loc_ticket}
+			AND cf.active = 1
+		ORDER BY cf.field_order',
+		array(
+			'field_loc_ticket_reply' => (CFIELD_TICKET | CFIELD_REPLY),
+			'field_loc_ticket' => CFIELD_TICKET,
+		)
+	);
+	
+	$context['ticket']['custom_fields']['right'] = array();
+	$context['ticket']['custom_fields']['center'] = array();
+
+	while($row = $smcFunc['db_fetch_assoc']($custom_fields))
+	{
+
+		$row['can_see'] = explode(',',$row['can_see']);
+
+		if((shd_allowed_to('shd_staff') && $row['can_see'][1] == 1) || (!shd_allowed_to('shd_staff') && $row['can_see'][0] == 1))
+		{
+			if($row['field_type'] == CFIELD_TYPE_LARGETEXT || ($row['field_type'] == CFIELD_TYPE_TEXT && $row['field_length'] > 30))
+				$pos = 'center';
+			else
+				$pos = 'right';
+			
+			$context['ticket']['custom_fields'][$pos][$row['id_field']] = array(
+				'id' => $row['id_field'],
+				'name' => $row['field_name'],
+				'icon' => $row['icon'],
+				'type' => $row['field_type'],
+				'value' => !empty($row['value']) ? $row['value'] : ($row['field_type'] == CFIELD_TYPE_LARGETEXT ? '' : $row['default_value']),
+				'display_empty' => $row['display_empty'],
+			);
+			
+			if(($row['field_type'] == CFIELD_TYPE_TEXT || $row['field_type'] == CFIELD_TYPE_LARGETEXT) && $row['bbc'] == 1)
+				$context['ticket']['custom_fields'][$pos][$row['id_field']]['value'] = shd_parse_bbc($context['ticket']['custom_fields'][$pos][$row['id_field']]['value']);
+		}
+	}	
 
 	// IP address next
 	$context['link_ip_address'] = allowedTo('moderate_forum'); // for trackip access
