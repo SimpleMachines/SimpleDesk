@@ -74,7 +74,7 @@ function shd_admin_custom_main()
 	$context['custom_fields'] = array();
 
 	$query = shd_db_query('', '
-		SELECT id_field, active, field_order, field_name, field_desc, field_loc, icon, field_type
+		SELECT id_field, active, field_order, field_name, field_desc, field_loc, icon, field_type, can_see, can_edit
 		FROM {db_prefix}helpdesk_custom_fields',
 		array()
 	);
@@ -83,16 +83,19 @@ function shd_admin_custom_main()
 	{
 		$row['active_string'] = empty($row['active']) ? 'inactive' : 'active';
 		$row['field_type'] = $context['field_types'][$row['field_type']][1]; // convert the integer in the DB into the string for language + image uses
-		$context['custom_fields'][$row['field_order']] = $row;
+		$row['can_see'] = explode(',',$row['can_see']);
+		$row['can_edit'] = explode(',',$row['can_edit']);
+		$context['custom_fields'][] = $row;
 	}
 
 	ksort($context['custom_fields']);
 
-	if (!empty($context['custom_fields']) && count($context['custom_fields']) > 1)
+	if (!empty($context['custom_fields']))
 	{
 		$context['custom_fields'][0]['is_first'] = true;
 		$context['custom_fields'][count($context['custom_fields']) - 1]['is_last'] = true;
 	}
+
 	// Final stuff before we go.
 	$context['page_title'] = $txt['shd_admin_custom_fields'];
 	$context['sub_template'] = 'shd_custom_field_home';
@@ -117,7 +120,10 @@ function shd_admin_custom_new()
 		'field_icon_value' => '',
 		'new_field' => true,
 		'field_loc' => CFIELD_TICKET,
+		'field_active' => ' checked="checked"',
 	));
+	
+	$context['custom_field']['options'] = array('', '', '');
 
 }
 
@@ -133,7 +139,8 @@ function shd_admin_custom_edit()
 	$_REQUEST['field'] = isset($_REQUEST['field']) ? (int) $_REQUEST['field'] : 0;
 
 	$query = shd_db_query('', '
-		SELECT id_field, active, field_order, field_name, field_desc, field_loc, icon, field_type
+		SELECT id_field, active, field_order, field_name, field_desc, field_loc, icon, field_type,
+		field_length, field_options, bbc, default_value, can_see, can_edit
 		FROM {db_prefix}helpdesk_custom_fields
 		WHERE id_field = {int:field}',
 		array(
@@ -149,13 +156,24 @@ function shd_admin_custom_edit()
 		$context['section_desc'] = $txt['shd_admin_edit_custom_field_desc'];
 		$context['page_title'] = $txt['shd_admin_edit_custom_field'];
 		$context['sub_template'] = 'shd_custom_field_edit';
+		$context['custom_field']['options'] = strlen($row['field_options']) > 1 ? explode(',', $row['field_options']) : array('', '', '');
+		
+		// If this is a textarea, we need to get its dimensions too.
+		if($context['custom_field']['field_type'] == 2)
+			$context['custom_field']['dimensions'] = explode(',',$context['custom_field']['default_value']);
+			
+		$context['custom_field']['can_see'] = explode(',',$context['custom_field']['can_see']);
+		$context['custom_field']['can_edit'] = explode(',',$context['custom_field']['can_edit']);	
 		
 		$context = array_merge($context, array(
 			'field_type_value' => $context['custom_field']['field_type'],
 			'field_icons' => shd_admin_cf_icons(),
 			'field_icon_value' => $context['custom_field']['icon'],
 			'field_loc' => $context['custom_field']['field_loc'],
-	));
+			'field_active' => $context['custom_field']['active'] == 1 ? ' checked="checked"' : '',
+		));
+		
+		
 	}
 	else
 	{
@@ -173,10 +191,10 @@ function shd_admin_custom_save()
 {
 	global $context, $smcFunc, $modSettings;
 
-	checkSession();
+	checkSession('request');
 	
 	// Deletifyingistuffithingi?
-	if (isset($_POST['delete']))
+	if (isset($_REQUEST['delete']))
 	{
 		$smcFunc['db_query']('', '
 			DELETE FROM {db_prefix}helpdesk_custom_fields
@@ -196,36 +214,148 @@ function shd_admin_custom_save()
 		redirectexit('action=admin;area=helpdesk_customfield;' . $context['session_var'] . '=' . $context['session_id']);
 	}
 	
-	// Check all the input
-	if (!isset($_POST['fieldname']) || $smcFunc['htmltrim']($smcFunc['htmlspecialchars']($_POST['fieldname'])) === '')
+	// Fix all the input
+	if (trim($_POST['field_name']) == '')
 		fatal_lang_error('shd_admin_no_fieldname', false);
-	else
-		$_POST['fieldname'] = strtr($smcFunc['htmlspecialchars']($_POST['fieldname']), array("\r" => '', "\n" => '', "\t" => ''));
+	$_POST['field_name'] = $smcFunc['htmlspecialchars']($_POST['field_name']);
+	$_POST['description'] = $smcFunc['htmlspecialchars']($_POST['description']);
+	$_POST['bbc'] = isset($_POST['bbc']) ? 1 : 0;
+	$_POST['active'] = isset($_POST['active']) ? 1 : 0;
+	$_POST['field_length'] = isset($_POST['field_length']) ? (int) $_POST['field_length'] : 255;
+	$_POST['default_check'] = isset($_POST['default_check']) && $_POST['field_type'] == CFIELD_TYPE_CHECKBOX ? 1 : '';
+	if ($_POST['field_type'] == CFIELD_TYPE_LARGETEXT)
+		$_POST['default_check'] = (int) $_POST['rows'] . ',' . (int) $_POST['cols'];
+	$options = '';
+
+	if(!empty($_POST['see_users']))
+	{
+		$users_see = '1';
 		
-	// Ohohoh, we needz to fixz the activenezz
-	$_POST['active'] = ($_POST['active'] == 'on' ? '1' : '0');
+		if(!empty($_POST['edit_users']))
+			$users_edit = '1';
+		else
+			$users_edit = '0';
+	}
+	else
+	{
+		$users_see = '0';
+		$users_edit = '0';
+	}
+	
+	if(!empty($_POST['see_staff']))
+	{
+		$staff_see = '1';
+		
+		if(!empty($_POST['edit_staff']))
+			$staff_edit = '1';
+		else
+			$staff_edit = '0';
+	}
+	else
+	{
+		$staff_see = '0';
+		$staff_edit = '0';
+	}	
+	
+	$can_see = $users_see . ',' . $staff_see;
+	$can_edit = $users_edit . ',' . $staff_edit;	
+	
+	// Select options?
+	$field_options = '';
+	$newOptions = array();
+	if (!empty($_POST['select_option']) && ($_POST['field_type'] == CFIELD_TYPE_SELECT || $_POST['field_type'] == CFIELD_TYPE_RADIO))
+	{
+		foreach ($_POST['select_option'] as $k => $v)
+		{
+			// Clean, clean, clean...
+			$v = $smcFunc['htmlspecialchars']($v);
+			$v = strtr($v, array(',' => ''));
+
+			// Nada, zip, etc...
+			if (trim($v) == '')
+				continue;
+
+			// Otherwise, save it boy.
+			$field_options .= $v . ',';
+			// This is just for working out what happened with old options...
+			$newOptions[$k] = $v;
+
+			// Is it default?
+			if (isset($_POST['default_select']) && $_POST['default_select'] == $k)
+				$_POST['default_check'] = $v;
+		}
+		$options = substr($field_options, 0, -1);
+	}	
 
 	// Do I feel a new field being born?
-	$smcFunc['db_insert']('insert',
-		'{db_prefix}helpdesk_custom_fields',
-		array(
-			'active' => 'int', 'field_name' => 'string', 'field_desc' => 'string', 'field_loc' => 'int',
-			'icon' => 'string', 'field_type' => 'int',
-		),
-		array(
-			'1', $_POST['fieldname'], $_POST['description'], $_POST['cf_fieldvisible'], $_POST['cf_fieldvisible'], 
-			$_POST['cf_fieldicon_icon'], $_POST['cf_fieldtype'],
-		),
-		array(
-			'id_field',
-		)
-	);
-	
-	$new_field = $smcFunc['db_insert_id']('{db_prefix}helpdesk_custom_fields', 'id_field');
-	if (empty($new_field))
-		fatal_lang_error('shd_could_not_create_field', false);
+	if(isset($_REQUEST['new']))
+	{
+		// Order??
+		$count_query = shd_db_query('', '
+			SELECT COUNT(id_field) AS count
+			FROM {db_prefix}helpdesk_custom_fields',
+			array()
+		);
+		
+		$row = $smcFunc['db_fetch_assoc']($count_query);
+		
+		$smcFunc['db_insert']('insert',
+			'{db_prefix}helpdesk_custom_fields',
+			array(
+				'active' => 'int', 'field_name' => 'string', 'field_desc' => 'string',
+				'field_loc' => 'int', 'icon' => 'string', 'field_type' => 'int', 'field_length' => 'int',
+				'field_options' => 'string', 'bbc' => 'int', 'default_value' => 'string', 'can_see' => 'string',
+				'can_edit' => 'string', 
+			),
+			array(
+				$_POST['active'], $_POST['field_name'], $_POST['description'],
+				$_POST['field_visible'],$_POST['field_icon'], $_POST['field_type'], $_POST['field_length'],
+				$options, $_POST['bbc'], $_POST['default_check'], $can_see,
+				$can_edit,
+			),
+			array(
+				'id_field',
+			)
+		);
 
-	redirectexit('action=admin;area=helpdesk_customfield;' . $context['session_var'] . '=' . $context['session_id']);	
+		$new_field = $smcFunc['db_insert_id']('{db_prefix}helpdesk_custom_fields', 'id_field');
+		if (empty($new_field))
+			fatal_lang_error('shd_admin_could_not_create_field', false);
+
+		redirectexit('action=admin;area=helpdesk_customfield;' . $context['session_var'] . '=' . $context['session_id']);	
+	}
+	// No? Meh. Update it is then.
+	else
+	{
+		shd_db_query('', '
+			UPDATE {db_prefix}helpdesk_custom_fields
+			SET
+				active = {int:active}, field_name = {string:field_name},
+				field_desc = {string:field_desc}, field_loc = {int:field_visible},
+				icon = {string:field_icon}, field_type = {int:field_type},
+				field_length = {int:field_length}, field_options = {string:field_options},
+				bbc = {int:bbc}, default_value = {string:default_value}, can_see = {string:can_see},
+				can_edit = {string:can_edit}
+			WHERE id_field = {int:id_field}',
+			array(
+				'id_field' => $_REQUEST['field'],
+				'active' => $_POST['active'],
+				'field_name' => $_POST['field_name'],
+				'field_desc' => $_POST['description'],
+				'field_visible' => $_POST['field_visible'],
+				'field_icon' => $_POST['field_icon'],
+				'field_type' => $_POST['field_type'],
+				'field_length' => $_POST['field_length'],
+				'field_options' => $options,
+				'bbc' => $_POST['bbc'],
+				'default_value' => $_POST['default_check'],
+				'can_see' => $can_see,
+				'can_edit' => $can_edit,
+			)
+		);
+
+		redirectexit('action=admin;area=helpdesk_customfield;' . $context['session_var'] . '=' . $context['session_id']);	
+	}
 }
 
 /**

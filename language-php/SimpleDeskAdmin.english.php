@@ -271,7 +271,7 @@ $txt['shd_admin_new_custom_field_desc'] = 'From this panel you can add a new cus
 $txt['shd_admin_edit_custom_field'] = 'Edit Existing Field';
 $txt['shd_admin_edit_custom_field_desc'] = 'From this panel you can edit an existing custom field, as set out below.';
 $txt['shd_admin_no_fieldname'] = 'You did not specify any name for your custom field.';
-$txt['shd_could_not_create_field'] = 'Failed to create the custom field. Please try again.';
+$txt['shd_admin_could_not_create_field'] = 'Failed to create the custom field. Please try again.';
 $txt['shd_admin_default_state_on'] = 'Checked';
 $txt['shd_admin_default_state_off'] = 'Not checked';
 $txt['shd_admin_save_custom_field'] = 'Save field';
@@ -288,6 +288,13 @@ $txt['shd_admin_custom_field_dimensions_rows'] = 'Rows';
 $txt['shd_admin_custom_field_dimensions_columns'] = 'Columns';
 $txt['shd_admin_custom_field_maxlength'] = 'Maximum length';
 $txt['shd_admin_custom_field_maxlength_desc'] = '(0 for no limit)';
+$txt['shd_admin_custom_field_can_see'] = 'Who can see this field';
+$txt['shd_admin_custom_field_can_see_desc'] = 'Select who can see this field in tickets.';
+$txt['shd_admin_custom_field_can_edit'] = 'Who can edit this field';
+$txt['shd_admin_custom_field_can_edit_desc'] = 'Select who can edit/use this field when posting.';
+$txt['shd_admin_custom_field_users'] = 'Users';
+$txt['shd_admin_custom_field_staff'] = 'Staff';
+$txt['shd_admin_custom_field_admins'] = 'Admins';
 //@}
 
 //! Plugins
