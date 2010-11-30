@@ -178,7 +178,7 @@ function shd_view_ticket()
 		cf.field_type, cf.default_value, cf.bbc, cf.can_see, cf.can_edit, cf.field_length,
 		cf.display_empty
 		FROM {db_prefix}helpdesk_custom_fields AS cf
-		WHERE cf.field_loc = {int:field_loc_ticket} OR {int:field_loc_ticket}
+		WHERE (cf.field_loc = {int:field_loc_ticket} OR {int:field_loc_ticket})
 			AND cf.active = 1
 		ORDER BY cf.field_order',
 		array(
