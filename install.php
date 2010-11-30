@@ -242,6 +242,14 @@ $tables[] = array(
 		db_field('field_loc', 'tinyint'),
 		db_field('icon', 'varchar', 20),
 		db_field('field_type', 'tinyint'),
+		db_field('field_length', 'smallint', 5, 255),
+		db_field('field_options', 'text'),
+		db_field('bbc', 'tinyint'),
+		db_field('default_value', 'varchar', 255),
+		db_field('can_see', 'varchar', 3, '0,0'),
+		db_field('can_edit', 'varchar', 3, '0,0'),
+		db_field('display_empty', 'tinyint'),
+		db_field('required', 'tinyint'),		
 	),
 	'indexes' => array(
 		array(
@@ -323,49 +331,6 @@ $tables[] = array(
 
 // Oh joy, we've now made it to extra rows... (testing data)
 $rows = array();
-$rows[] = array(
-	'method' => 'replace',
-	'table_name' => '{db_prefix}helpdesk_custom_fields',
-	'columns' => array(
-		'active' => 'int',
-		'field_order' => 'int',
-		'field_name' => 'string',
-		'field_desc' => 'string',
-		'field_loc' => 'int',
-		'icon' => 'string',
-		'field_type' => 'int',
-	),
-	'data' => array(
-		array(
-			1,
-			0,
-			'Test field',
-			'This is my test field',
-			1,
-			'',
-			1,
-		),
-		array(
-			1,
-			1,
-			'Second test field',
-			'This is my second test field',
-			2,
-			'',
-			3,
-		),
-		array(
-			0,
-			2,
-			'Third test field',
-			'This is my third test field',
-			3,
-			'',
-			4,
-		),
-	),
-	'keys' => array('id_field'),
-);
 
 // Now we can add a new column to an existing table
 $columns = array();
