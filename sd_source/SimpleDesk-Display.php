@@ -212,7 +212,7 @@ function shd_view_ticket()
 			);
 			
 			if(($row['field_type'] == CFIELD_TYPE_TEXT || $row['field_type'] == CFIELD_TYPE_LARGETEXT) && $row['bbc'] == 1)
-				$context['ticket']['custom_fields'][$pos][$row['id_field']]['value'] = shd_parse_bbc($context['ticket']['custom_fields'][$pos][$row['id_field']]['value']);
+				$context['ticket']['custom_fields'][$pos][$row['id_field']]['value'] = shd_format_text($context['ticket']['custom_fields'][$pos][$row['id_field']]['value']);
 		}
 	}	
 
