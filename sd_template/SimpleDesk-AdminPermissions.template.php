@@ -419,7 +419,7 @@ function template_shd_edit_role()
 	}
 
 	echo '
-					<div class="tborder floatleft">
+					<div class="tborder floatleft" style="width: 100%;">
 						<div class="cat_bar grid_header">
 							<h3 class="catbg sd_no_margin">
 								<img src="', $settings['default_images_url'], '/simpledesk/roles.png" alt="*" />
@@ -462,6 +462,7 @@ function template_shd_edit_role()
 						</table>
 						<br />
 					</div>
+
 					<div class="floatleft">
 						<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 						<input type="hidden" name="role" value="', $_REQUEST['role'], '" />
