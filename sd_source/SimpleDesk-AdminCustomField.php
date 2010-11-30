@@ -88,7 +88,7 @@ function shd_admin_custom_main()
 
 	ksort($context['custom_fields']);
 
-	if (!empty($context['custom_fields']))
+	if (!empty($context['custom_fields']) && count($context['custom_fields']) > 1)
 	{
 		$context['custom_fields'][0]['is_first'] = true;
 		$context['custom_fields'][count($context['custom_fields']) - 1]['is_last'] = true;
@@ -110,10 +110,13 @@ function shd_admin_custom_new()
 	$context = array_merge($context, array(
 		'sub_template' => 'shd_custom_field_edit',
 		'page_title' => $txt['shd_admin_new_custom_field'],
+		'section_title' => $txt['shd_admin_new_custom_field'],
+		'section_desc' => $txt['shd_admin_new_custom_field_desc'],
 		'field_type_value' => CFIELD_TYPE_TEXT,
 		'field_icons' => shd_admin_cf_icons(),
 		'field_icon_value' => '',
 		'new_field' => true,
+		'field_loc' => CFIELD_TICKET,
 	));
 
 }
@@ -151,6 +154,7 @@ function shd_admin_custom_edit()
 			'field_type_value' => $context['custom_field']['field_type'],
 			'field_icons' => shd_admin_cf_icons(),
 			'field_icon_value' => $context['custom_field']['icon'],
+			'field_loc' => $context['custom_field']['field_loc'],
 	));
 	}
 	else
@@ -161,7 +165,7 @@ function shd_admin_custom_edit()
 }
 
 /**
- *	Handle saving a new field
+ *	Handle saving a field
  *
  *	@since 1.1
 */
@@ -185,6 +189,43 @@ function shd_admin_custom_save()
 		// End of the road
 		redirectexit('action=admin;area=helpdesk_customfield;' . $context['session_var'] . '=' . $context['session_id']);
 	}
+	
+	// Aborting mission!
+	if (isset($_POST['cancel']))
+	{
+		redirectexit('action=admin;area=helpdesk_customfield;' . $context['session_var'] . '=' . $context['session_id']);
+	}
+	
+	// Check all the input
+	if (!isset($_POST['fieldname']) || $smcFunc['htmltrim']($smcFunc['htmlspecialchars']($_POST['fieldname'])) === '')
+		fatal_lang_error('shd_admin_no_fieldname', false);
+	else
+		$_POST['fieldname'] = strtr($smcFunc['htmlspecialchars']($_POST['fieldname']), array("\r" => '', "\n" => '', "\t" => ''));
+		
+	// Ohohoh, we needz to fixz the activenezz
+	$_POST['active'] = ($_POST['active'] == 'on' ? '1' : '0');
+
+	// Do I feel a new field being born?
+	$smcFunc['db_insert']('insert',
+		'{db_prefix}helpdesk_custom_fields',
+		array(
+			'active' => 'int', 'field_name' => 'string', 'field_desc' => 'string', 'field_loc' => 'int',
+			'icon' => 'string', 'field_type' => 'int',
+		),
+		array(
+			'1', $_POST['fieldname'], $_POST['description'], $_POST['cf_fieldvisible'], $_POST['cf_fieldvisible'], 
+			$_POST['cf_fieldicon_icon'], $_POST['cf_fieldtype'],
+		),
+		array(
+			'id_field',
+		)
+	);
+	
+	$new_field = $smcFunc['db_insert_id']('{db_prefix}helpdesk_custom_fields', 'id_field');
+	if (empty($new_field))
+		fatal_lang_error('shd_could_not_create_field', false);
+
+	redirectexit('action=admin;area=helpdesk_customfield;' . $context['session_var'] . '=' . $context['session_id']);	
 }
 
 /**

@@ -230,7 +230,6 @@ $txt['shd_admin_custom_fields_long'] = 'Custom Fields for Tickets and Replies';
 $txt['shd_admin_custom_fields_desc'] = 'This section allows you to create extra fields that can be added to tickets and/or their replies, to gather additional information about the ticket or to help you manage your helpdesk.';
 $txt['shd_admin_custom_fields_general'] = 'General Details';
 
-global $settings, $boardurl;
 $txt['shd_admin_custom_fields_fieldname'] = 'Field Name';
 $txt['shd_admin_custom_fields_fieldname_desc'] = 'The name displayed next to where the user will enter the information (required)';
 $txt['shd_admin_custom_fields_description'] = 'Field Description';
@@ -271,6 +270,24 @@ $txt['shd_admin_new_custom_field'] = 'Add New Field';
 $txt['shd_admin_new_custom_field_desc'] = 'From this panel you can add a new custom field for your tickets and/or their replies, and specify how these should function for you.';
 $txt['shd_admin_edit_custom_field'] = 'Edit Existing Field';
 $txt['shd_admin_edit_custom_field_desc'] = 'From this panel you can edit an existing custom field, as set out below.';
+$txt['shd_admin_no_fieldname'] = 'You did not specify any name for your custom field.';
+$txt['shd_could_not_create_field'] = 'Failed to create the custom field. Please try again.';
+$txt['shd_admin_default_state_on'] = 'Checked';
+$txt['shd_admin_default_state_off'] = 'Not checked';
+$txt['shd_admin_save_custom_field'] = 'Save field';
+$txt['shd_admin_delete_custom_field'] = 'Delete field';
+$txt['shd_admin_cancel_custom_field'] = 'Cancel';
+$txt['shd_admin_delete_custom_field_confirm'] = 'Do you really want to delete this custom field?';
+$txt['shd_admin_custom_field_options'] = 'Options';
+$txt['shd_admin_custom_field_options_desc'] = 'Leave option box blank to remove. Radio button selects default option.';
+$txt['shd_admin_custom_field_bbc'] = 'Allow BBC';
+$txt['shd_admin_custom_field_bbc_off'] = 'BBC is currently <a href="%s">disabled</a> throughout the helpdesk.';
+$txt['shd_admin_custom_field_default_state'] = 'Default state';
+$txt['shd_admin_custom_field_dimensions'] = 'Dimensions';
+$txt['shd_admin_custom_field_dimensions_rows'] = 'Rows';
+$txt['shd_admin_custom_field_dimensions_columns'] = 'Columns';
+$txt['shd_admin_custom_field_maxlength'] = 'Maximum length';
+$txt['shd_admin_custom_field_maxlength_desc'] = '(0 for no limit)';
 //@}
 
 //! Plugins
