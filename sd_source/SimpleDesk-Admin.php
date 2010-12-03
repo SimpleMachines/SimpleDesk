@@ -737,7 +737,7 @@ function shd_credits()
 					'members' => array(
 						array('Chris &quot;ccbtimewiz&quot; Batista',true),
 						array('Wade &quot;&#1109;&#951;&#963;&#969;&quot; Poulsen',false),
-						array('Edwin &quot;Dismal Shadow&quot; Mendez',true),
+						array('Edwin &quot;Dismal Shadow&quot; Mendez',false),
 						array('Treznax',false),
 						array('Mark &quot;KiLLuMiNaTi&minus;7&minus;&quot; Longworth',true),
 						array('NIBOGO',false),
