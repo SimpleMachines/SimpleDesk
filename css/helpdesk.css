@@ -297,9 +297,10 @@ h3.ticketheader img
 }
 .shd_posterinfo
 {
-	width: 11em;
+	width: 14em;
 	text-align: center;
 	margin-left: 3px;
+	overflow: hidden;
 }
 .shd_postername
 {
@@ -316,7 +317,7 @@ h3.ticketheader img
 }
 .shd_replyarea
 {
-	padding-left: 11em;
+	padding-left: 14em;
 	margin-left: 10px;
 }
 
