@@ -758,7 +758,7 @@ function shd_credits()
 					'members' => array(
 						array('Fluffy - ' . sprintf($txt['shd_fluffy'],'onclick="window.location.href=\'' . $scripturl . '?action=admin;area=helpdesk_info;cookies\'"'),false),
 						array('<br />' . $txt['shd_credits_translators'],false),
-						array('<br />' . sprintf($txt['shd_credits_icons'], 'http://led24.de/iconset/', 'http://wefunction.com/2008/07/function-free-icon-set/', 'http://www.famfamfam.com/lab/icons/flags/'),false),
+						array('<br />' . sprintf($txt['shd_credits_icons'], 'http://p.yusukekamiyamane.com/', 'http://wefunction.com/2008/07/function-free-icon-set/', 'http://www.famfamfam.com/lab/icons/flags/'),false),
 						array('<br />' . $txt['shd_credits_user'],false),
 					),
 				),
