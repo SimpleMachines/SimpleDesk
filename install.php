@@ -250,10 +250,29 @@ $tables[] = array(
 		db_field('can_edit', 'varchar', 3, '0,0'),
 		db_field('display_empty', 'tinyint'),
 		db_field('required', 'tinyint'),		
+		db_field('placement', 'tinyint', 3, 1),			
 	),
 	'indexes' => array(
 		array(
 			'columns' => array('id_field', 'active'),
+			'type' => 'primary',
+		),
+	),
+	'if_exists' => 'update',
+	'error' => 'fatal',
+	'parameters' => array(),
+);
+$tables[] = array(
+	'table_name' => '{db_prefix}helpdesk_custom_fields_values',
+	'columns' => array(
+		db_field('id_post', 'int', 0, true, true),
+		db_field('id_field', 'int'),
+		db_field('value', 'text'),
+		db_field('post_type', 'int'),	
+	),
+	'indexes' => array(
+		array(
+			'columns' => array('id_post', 'active'),
 			'type' => 'primary',
 		),
 	),
