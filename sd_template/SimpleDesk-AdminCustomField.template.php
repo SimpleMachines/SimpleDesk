@@ -164,6 +164,11 @@ function template_shd_custom_field_edit()
 					document.getElementById("edit_" + role).disabled = state == "on" ? "" : "disabled";
 					document.getElementById("edit_" + role).checked = state == "on" ? "" : "";
 				}
+				function update_field_location(loc)
+				{
+					document.getElementById("placement_dt").style.display = loc == ',CFIELD_TICKET,' || loc == ',(CFIELD_TICKET | CFIELD_REPLY),' ? "" : "none";
+					document.getElementById("placement_dd").style.display = loc == ',CFIELD_TICKET,' || loc == ',(CFIELD_TICKET | CFIELD_REPLY),' ? "" : "none";					
+				}				
 				// ]', ']></script>
 				<form action="', $scripturl, '?action=admin;area=helpdesk_customfield;sa=save',!empty($context['new_field']) ? ';new' : '','" method="post">
 				<div class="tborder">
@@ -211,12 +216,19 @@ function template_shd_custom_field_edit()
 							<dt><strong>', $txt['shd_admin_custom_fields_visible'], ':</strong><br /><span class="smalltext">', $txt['shd_admin_custom_fields_visible_desc'], '</span></dt>
 							<dd>
 								<span id="cf_fieldvisible_icon"></span>
-								<select name="field_visible" id="cf_fieldvisible">
+								<select name="field_visible" id="cf_fieldvisible" onchange="javascript:update_field_location(this.value);">
 									<option value="', CFIELD_TICKET, '"',($context['field_loc'] == CFIELD_TICKET ? ' selected="selected"' : ''), '>', $txt['shd_admin_custom_fields_visible_ticket'], '</option>
 									<option value="', CFIELD_REPLY, '"',($context['field_loc'] == CFIELD_REPLY ? ' selected="selected"' : ''), '>', $txt['shd_admin_custom_fields_visible_field'], '</option>
 									<option value="', (CFIELD_TICKET | CFIELD_REPLY), '"',($context['field_loc'] == (CFIELD_TICKET | CFIELD_REPLY) ? ' selected="selected"' : ''), '>', $txt['shd_admin_custom_fields_visible_both'], '</option>
 								</select>
 							</dd>
+							<dt id="placement_dt"',(($context['field_loc'] == CFIELD_TICKET || $context['field_loc'] == (CFIELD_TICKET | CFIELD_REPLY)) ? '' : ' style="display: none;"'),'><strong>',$txt['shd_admin_custom_field_placement'],':</strong><br /><span class="smalltext">',$txt['shd_admin_custom_field_placement_desc'],'</span></dt>
+							<dd id="placement_dd"',(($context['field_loc'] == CFIELD_TICKET || $context['field_loc'] == (CFIELD_TICKET | CFIELD_REPLY)) ? '' : ' style="display: none;"'),'>
+								<select name="placement" id="cf_placement">
+									<option value="', CFIELD_PLACE_DETAILS, '"',($context['placement'] == CFIELD_PLACE_DETAILS ? ' selected="selected"' : ''), '>',$txt['shd_admin_custom_field_placement_details'],'</option>
+									<option value="', CFIELD_PLACE_INFO, '"',($context['placement'] == CFIELD_PLACE_INFO ? ' selected="selected"' : ''), '>',$txt['shd_admin_custom_field_placement_information'],'</option>
+								</select>
+							</dd>							
 							<dt><strong>',$txt['shd_admin_custom_field_can_see'],':</strong><br /><span class="smalltext">',$txt['shd_admin_custom_field_can_see_desc'],'</span></dt>
 							<dd>
 								<input type="checkbox" name="see_users" class="input_check" ',!empty($context['custom_field']['can_see'][0]) && $context['custom_field']['can_see'][0] == 1 ? 'checked="checked"' : '' ,' onchange="javascript:update_permissions(this.value,\'users\');"/> <img src="', $settings['default_images_url'], '/simpledesk/user.png" class="icon" alt="',$txt['shd_admin_custom_field_users'],'" title="',$txt['shd_admin_custom_field_users'],'"/>

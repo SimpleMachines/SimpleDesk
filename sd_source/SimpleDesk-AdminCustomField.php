@@ -121,6 +121,7 @@ function shd_admin_custom_new()
 		'new_field' => true,
 		'field_loc' => CFIELD_TICKET,
 		'field_active' => ' checked="checked"',
+		'placement' => CFIELD_PLACE_DETAILS,
 	));
 	
 	$context['custom_field']['options'] = array('', '', '');
@@ -141,7 +142,8 @@ function shd_admin_custom_edit()
 
 	$query = shd_db_query('', '
 		SELECT id_field, active, field_order, field_name, field_desc, field_loc, icon, field_type,
-		field_length, field_options, bbc, default_value, can_see, can_edit, display_empty, required
+		field_length, field_options, bbc, default_value, can_see, can_edit, display_empty, required,
+		placement
 		FROM {db_prefix}helpdesk_custom_fields
 		WHERE id_field = {int:field}',
 		array(
@@ -172,6 +174,7 @@ function shd_admin_custom_edit()
 			'field_icon_value' => $context['custom_field']['icon'],
 			'field_loc' => $context['custom_field']['field_loc'],
 			'field_active' => $context['custom_field']['active'] == 1 ? ' checked="checked"' : '',
+			'placement' => $context['custom_field']['placement'],
 		));
 		
 		
@@ -310,13 +313,13 @@ function shd_admin_custom_save()
 				'active' => 'int', 'field_name' => 'string', 'field_desc' => 'string',
 				'field_loc' => 'int', 'icon' => 'string', 'field_type' => 'int', 'field_length' => 'int',
 				'field_options' => 'string', 'bbc' => 'int', 'default_value' => 'string', 'can_see' => 'string',
-				'can_edit' => 'string', 'display_empty' => 'int', 'required' => 'int',
+				'can_edit' => 'string', 'display_empty' => 'int', 'required' => 'int', 'placement' => 'int',
 			),
 			array(
 				$_POST['active'], $_POST['field_name'], $_POST['description'],
 				$_POST['field_visible'],$_POST['field_icon'], $_POST['field_type'], $_POST['field_length'],
 				$options, $_POST['bbc'], $_POST['default_check'], $can_see,
-				$can_edit, $_POST['display_empty'], $_POST['required'],
+				$can_edit, $_POST['display_empty'], $_POST['required'], $_POST['placement'],
 			),
 			array(
 				'id_field',
@@ -340,7 +343,8 @@ function shd_admin_custom_save()
 				icon = {string:field_icon}, field_type = {int:field_type},
 				field_length = {int:field_length}, field_options = {string:field_options},
 				bbc = {int:bbc}, default_value = {string:default_value}, can_see = {string:can_see},
-				can_edit = {string:can_edit}, display_empty = {int:display_empty}, required = {int:required}
+				can_edit = {string:can_edit}, display_empty = {int:display_empty}, required = {int:required},
+				placement = {int:placement}
 			WHERE id_field = {int:id_field}',
 			array(
 				'id_field' => $_REQUEST['field'],
@@ -358,6 +362,7 @@ function shd_admin_custom_save()
 				'can_edit' => $can_edit,
 				'display_empty' => $_POST['display_empty'],
 				'required' => $_POST['required'],
+				'placement' => $_POST['placement'],
 			)
 		);
 

@@ -172,49 +172,80 @@ function shd_view_ticket()
 		'deleted' => $ticketinfo['deleted'],
 	);
 	
-	// Load all custom fields that are to be displayed in the ticket
+	// Load all of our custom fields
 	$custom_fields = shd_db_query('', '
 		SELECT cf.id_field, cf.active, cf.field_order, cf.field_name, cf.field_loc, cf.icon,
 		cf.field_type, cf.default_value, cf.bbc, cf.can_see, cf.can_edit, cf.field_length,
-		cf.display_empty
+		cf.display_empty, cf.required, cf.placement
 		FROM {db_prefix}helpdesk_custom_fields AS cf
-		WHERE (cf.field_loc = {int:field_loc_ticket} OR {int:field_loc_ticket})
-			AND cf.active = 1
+		WHERE cf.active = 1
 		ORDER BY cf.field_order',
+		array()
+	);
+	
+	// Now load the values of each field in the ticket
+	$custom_field_values = shd_db_query('', '
+		SELECT cfv.id_post, cfv.id_field, cfv.value
+		FROM {db_prefix}helpdesk_custom_fields_values AS cfv
+		WHERE cfv.id_post = {int:ticket}
+			AND cfv.post_type = 1',
 		array(
-			'field_loc_ticket_reply' => (CFIELD_TICKET | CFIELD_REPLY),
-			'field_loc_ticket' => CFIELD_TICKET,
+			'ticket' => $context['ticket_id'],
 		)
 	);
 	
-	$context['ticket']['custom_fields']['right'] = array();
-	$context['ticket']['custom_fields']['center'] = array();
+	$field_values = array();
 
+	while($row = $smcFunc['db_fetch_assoc']($custom_field_values))
+	{
+		$field_values[$row['id_field']] = $row['value'];
+	}
+	$smcFunc['db_free_result']($custom_field_values);
+	
+	$context['custom_fields_replies'] = array();
+	$context['ticket']['custom_fields'] = array(
+		'details' => array(),
+		'information' => array(),
+	);
+
+	// Loop through all fields and figure out where they should be.
 	while($row = $smcFunc['db_fetch_assoc']($custom_fields))
 	{
-
 		$row['can_see'] = explode(',',$row['can_see']);
 
-		if((shd_allowed_to('shd_staff') && $row['can_see'][1] == 1) || (!shd_allowed_to('shd_staff') && $row['can_see'][0] == 1))
+		if(((shd_allowed_to('shd_staff') && $row['can_see'][1] == 1) || (!shd_allowed_to('shd_staff') && $row['can_see'][0] == 1)) || shd_allowed_to('admin_forum'))
 		{
-			if($row['field_type'] == CFIELD_TYPE_LARGETEXT || ($row['field_type'] == CFIELD_TYPE_TEXT && $row['field_length'] > 30))
-				$pos = 'center';
-			else
-				$pos = 'right';
+			// If this is going to be displayed for the individual ticket, we need to figure out where it should go.
+			if($row['field_loc'] == 1 || $row['field_loc'] == 3)
+			{
+				if($row['placement'] == 1)
+					$pos = 'details';
+				else
+					$pos = 'information';
+			}
 			
-			$context['ticket']['custom_fields'][$pos][$row['id_field']] = array(
+			$field = array(
 				'id' => $row['id_field'],
 				'name' => $row['field_name'],
 				'icon' => $row['icon'],
 				'type' => $row['field_type'],
-				'value' => !empty($row['value']) ? $row['value'] : ($row['field_type'] == CFIELD_TYPE_LARGETEXT ? '' : $row['default_value']),
-				'display_empty' => $row['display_empty'],
+				'default_value' => $row['default_value'],
+				'value' => !empty($field_values[$row['id_field']]) ? $field_values[$row['id_field']] : ($row['field_type'] == CFIELD_TYPE_LARGETEXT ? '' : $row['default_value']), // This is only for fields that display in the ticket, replies are taken care of later on
+				'display_empty' => $row['required'] == 1 ? 1 : $row['display_empty'], // Required and "selection" fields will always be displayed.
+				'bbc' => $row['bbc'] == 1
 			);
 			
-			if(($row['field_type'] == CFIELD_TYPE_TEXT || $row['field_type'] == CFIELD_TYPE_LARGETEXT) && $row['bbc'] == 1)
-				$context['ticket']['custom_fields'][$pos][$row['id_field']]['value'] = shd_format_text($context['ticket']['custom_fields'][$pos][$row['id_field']]['value']);
+			if($field['bbc'] == 1)
+				$field['value'] = shd_format_text($context['ticket']['custom_fields'][$pos][$row['id_field']]['value']);
+				
+			// Add it to the array.
+			if($row['field_loc'] == 1 || $row['field_loc'] == 3)
+				$context['ticket']['custom_fields'][$pos][$row['id_field']]	= $field;
+			if($row['field_loc'] == 2 || $row['field_loc'] == 3)
+				$context['custom_fields_replies'][$row['id_field']]	= $field;
 		}
 	}	
+	$smcFunc['db_free_result']($custom_fields);
 
 	// IP address next
 	$context['link_ip_address'] = allowedTo('moderate_forum'); // for trackip access
@@ -265,7 +296,7 @@ function shd_view_ticket()
 	$context['ticket']['urgency'] += shd_can_alter_urgency($ticketinfo['urgency'], $ticketinfo['starter_id'], $ticketinfo['closed'], $ticketinfo['deleted']);
 
 	$context['page_index'] = shd_no_expand_pageindex($scripturl . '?action=helpdesk;sa=ticket;ticket=' . $context['ticket_id'] . '.%1$d' . (isset($_REQUEST['recycle']) ? ';recycle' : '') . '#replies', $context['ticket_start'], (empty($context['display_recycle']) ? $context['ticket']['num_replies'] : (int) $context['ticket']['num_replies'] + (int) $context['ticket']['deleted_replies']), $context['messages_per_page'], true);
-
+	
 	$context['get_replies'] = 'shd_prepare_ticket_context';
 
 	$query = shd_db_query('', '
@@ -556,7 +587,16 @@ function shd_view_ticket()
 		sImageCollapsed: "collapse.gif",
 		sImageExpanded: "expand.gif",
 		sHeaderId: "ticket_log_header",
-	});';
+	});
+	var oCustomFields = new CustomFields({
+		sImagesUrl: "' . $settings['images_url'] . '",
+		sContainerId: "additional_info",
+		sImageId: "shd_custom_fields_swap",
+		sImageCollapsed: "collapse.gif",
+		sImageExpanded: "expand.gif",
+		sHeaderId: "additionalinfoheader",
+		sFooterId: "additional_info_footer",
+	});	';
 
 	if (!empty($options['display_quick_reply']) && $context['can_go_advanced'])
 		$context['html_headers'] .= '
@@ -714,6 +754,35 @@ function shd_prepare_ticket_context()
 
 	if (!empty($context['ticket_start_newfrom']) && $context['ticket_start_newfrom'] == $message['id_msg'])
 		$output['is_new'] = true;
+	
+	// Load the values of any custom field.
+	$custom_field_values = shd_db_query('', '
+		SELECT cfv.id_post, cfv.id_field, cfv.value
+		FROM {db_prefix}helpdesk_custom_fields_values AS cfv
+		WHERE cfv.id_post = {int:reply}
+			AND cfv.post_type = 2',
+		array(
+			'reply' => $message['id_msg'],
+		)
+	);
+	
+	$field_values = array();
+
+	while($row = $smcFunc['db_fetch_assoc']($custom_field_values))
+	{
+		$field_values[$row['id_field']] = $row['value'];
+	}
+	$smcFunc['db_free_result']($custom_field_values);
+	
+	$output['custom_fields'] = array();
+
+	foreach($context['custom_fields_replies'] AS $field)
+	{
+		$output['custom_fields'][$field['id']]['value'] = !empty($field_values[$field['id']]) ? $field_values[$field['id']] : ($field['type'] == CFIELD_TYPE_LARGETEXT ? '' : $field['default_value']);
+			
+		if($field['bbc'] == 1)
+		$output['custom_fields'][$field['id']]['value'] = shd_format_text($output['custom_fields'][$field['id']]['value']);		
+	}	
 
 	return $output;
 }

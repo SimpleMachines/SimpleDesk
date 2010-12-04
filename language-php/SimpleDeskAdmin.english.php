@@ -299,6 +299,10 @@ $txt['shd_admin_custom_field_can_edit_desc'] = 'Select who can edit/use this fie
 $txt['shd_admin_custom_field_users'] = 'Users';
 $txt['shd_admin_custom_field_staff'] = 'Staff';
 $txt['shd_admin_custom_field_admins'] = 'Admins';
+$txt['shd_admin_custom_field_placement'] = 'Placement inside ticket';
+$txt['shd_admin_custom_field_placement_desc'] = 'Where in the ticket should this field be displayed? Please note that large fields may not fit very well in to the "additional details" box.';
+$txt['shd_admin_custom_field_placement_details'] = 'Additional details (Left side box)';
+$txt['shd_admin_custom_field_placement_information'] = 'Additional information (Below ticket body)';
 //@}
 
 //! Plugins

@@ -373,4 +373,10 @@ $txt['shd_ticket_reltype_linked'] = 'Linked to';
 $txt['shd_ticket_reltype_duplicated'] = 'Duplicate of';
 $txt['shd_ticket_reltype_parent'] = 'Parent of';
 $txt['shd_ticket_reltype_child'] = 'Child of';
+
+// Custom fields in ticket
+$txt['shd_ticket_additional_information'] = 'Additional information';
+$txt['shd_ticket_additional_details'] = 'Additional details';
+$txt['shd_ticket_empty_field'] = 'This field is empty.';
+$txt['shd_ticket_empty_field_short'] = '-';
 ?>

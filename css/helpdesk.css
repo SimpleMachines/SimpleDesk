@@ -10,7 +10,7 @@ div.grid_header
 }
 
 /* You no left float, Core! */
-h3.grid_header img
+div.grid_header img
 {
 	float: none;
 }
@@ -98,15 +98,24 @@ h3.ticketheader img
 }
 
 /* Ticket details (Left-floated box) */
-.shd_ticketdetails
+.shd_ticket_side_column
 {
 	float: left;
-	width: 215px;
+	width: 215px;	
+	margin-right: 20px;	
+}
+.shd_ticketdetails
+{
 	min-height: 280px;
 	overflow: auto;
-	margin-right: 20px;
+	width: 100%;
 }
-.shd_ticketdetails ul
+.shd_additional_details
+{
+	overflow: auto;
+	width: 100%;	
+}
+.shd_ticket_side_column ul
 {
 	list-style-type: none;
 	padding-left: 0;
@@ -189,6 +198,10 @@ h3.ticketheader img
 	margin-top: 8px;
 	position: relative;
 	left: 4px;
+}
+#shd_custom_fields_swap
+{
+	margin-top: 8px;
 }
 .shd_ticket_log_expand_container
 {
