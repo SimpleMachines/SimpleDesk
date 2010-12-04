@@ -679,7 +679,7 @@ function shd_credits()
 					'desc' => $txt['shd_credits_devs_desc'],
 					'icon' => 'devs.png',
 					'members' => array(
-						array('Peter &quot;Arantor&quot; Spicer',true),
+						array('Peter &quot;Arantor&quot; Spicer',false),
 						array('Jason &quot;JBlaze&quot; Clemons',false),
 						array('Marcus &quot;c&#963;&#963;&#1082;&#953;&#1108; &#1084;&#963;&#951;&#1109;&#1090;&#1108;&#1103;&quot; Forsberg',false),
 					),
@@ -715,8 +715,8 @@ function shd_credits()
 					'icon' => 'support.png',					
 					'members' => array(
 						array('Tyrsson',true),
-						array('Ha2',true),
-						array('Aldo &quot;hadesflames&quot; Barreras',true),				
+						array('Ha2',false),
+						array('Aldo &quot;hadesflames&quot; Barreras',false),				
 					),
 				),
 				array(
@@ -735,11 +735,11 @@ function shd_credits()
 					'desc' => $txt['shd_credits_beta_desc'],
 					'icon' => 'testers.png',
 					'members' => array(
-						array('Chris &quot;ccbtimewiz&quot; Batista',true),
+						array('Chris &quot;ccbtimewiz&quot; Batista',false),
 						array('Wade &quot;&#1109;&#951;&#963;&#969;&quot; Poulsen',false),
 						array('Edwin &quot;Dismal Shadow&quot; Mendez',false),
 						array('Treznax',false),
-						array('Mark &quot;KiLLuMiNaTi&minus;7&minus;&quot; Longworth',true),
+						array('Mark &quot;KiLLuMiNaTi&minus;7&minus;&quot; Longworth',false),
 						array('NIBOGO',false),
 						array('Robert &quot;Robbo&quot; Clancy',false),
 						array('Ya&#x11F;izcan Arslan',false),
