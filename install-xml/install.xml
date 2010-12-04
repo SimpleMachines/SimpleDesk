@@ -38,6 +38,7 @@
 				'file' => 'SimpleDesk-Admin.php',
 				'icon' => 'shd_log.png',
 				'function' => 'shd_admin_main',
+				'enabled' => empty($modSettings['shd_disable_action_log']),
 				'subsections' => array(
 				),
 			),
