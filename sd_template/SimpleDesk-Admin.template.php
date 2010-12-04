@@ -226,8 +226,8 @@ function template_shd_admin()
 				sUpdateNotificationDefaultTitle: ', JavaScriptEscape($txt['shd_update_available']), ',
 				sUpdateNotificationDefaultMessage: ', JavaScriptEscape($txt['shd_update_message']), ',
 				sUpdateNotificationTemplate: ', JavaScriptEscape('
-					<div class="cat_bar grid_header">
-						<h3 id="update_title" class="catbg"><span class="right"></span>
+					<div class="cat_bar grid_header" id="update_title">
+						<h3 class="catbg">
 							<img src="' . $settings['default_images_url'] . '/simpledesk/update.png" alt="" />
 							%title%
 							<span class="righttext"><a href="' . $scripturl . '?action=helpadmin;help=shd_admin_help_update" onclick="return reqWin(this.href);"><img src="'. $settings['images_url'] . '/helptopics.gif" alt="' . $txt['help'] . '" /></a></span>
