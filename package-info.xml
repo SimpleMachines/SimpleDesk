@@ -1,0 +1,126 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>SimpleDeskTeam:SimpleDesk</id>
+	<name>SimpleDesk - Integrated Helpdesk for Simple Machines Forum</name>
+	<version>1.0 Felidae</version>
+	<type>modification</type>
+
+	<install for="2.0 RC2, 2.0 RC3">
+		<!-- readme files -->
+		<readme lang="english" parsebbc="true" type="file">language-readme/readme.english.txt</readme>
+
+		<!-- general edits -->
+		<modification format="xml" type="file">install-xml/install.xml</modification>
+		<modification format="xml" type="file">install-xml/install-attachments.xml</modification>
+		<modification format="xml" type="file">install-xml/install-trackip.xml</modification>
+
+		<!-- language files -->
+		<require-file name="language-php/SimpleDesk.english.php" destination="$languagedir" />
+		<require-file name="language-php/SimpleDeskPermissions.english.php" destination="$languagedir" />
+		<require-file name="language-php/SimpleDeskLogAction.english.php" destination="$languagedir" />
+		<require-file name="language-php/SimpleDeskAdmin.english.php" destination="$languagedir" />
+		<require-file name="language-php/SimpleDeskWho.english.php" destination="$languagedir" />
+
+		<!-- sources -->
+		<require-file name="source/SimpleDesk.php" destination="$sourcedir" />
+		<require-file name="source/SimpleDesk-Display.php" destination="$sourcedir" />
+		<require-file name="source/SimpleDesk-MiscActions.php" destination="$sourcedir" />
+		<require-file name="source/SimpleDesk-Assign.php" destination="$sourcedir" />
+		<require-file name="source/SimpleDesk-Post.php" destination="$sourcedir" />
+		<require-file name="source/SimpleDesk-AjaxHandler.php" destination="$sourcedir" />
+		<require-file name="source/SimpleDesk-TicketTopicMove.php" destination="$sourcedir" />		
+		<require-file name="source/SimpleDesk-Delete.php" destination="$sourcedir" />				
+		<require-file name="source/SimpleDesk-Admin.php" destination="$sourcedir" />
+		<require-file name="source/Subs-SimpleDesk.php" destination="$sourcedir" />
+		<require-file name="source/Subs-SimpleDeskAdmin.php" destination="$sourcedir" />
+		<require-file name="source/Subs-SimpleDeskPost.php" destination="$sourcedir" />
+
+		<!-- templates -->
+		<require-file name="template/SimpleDesk.template.php" destination="$themedir" />
+		<require-file name="template/SimpleDesk-Display.template.php" destination="$themedir" />
+		<require-file name="template/SimpleDesk-Admin.template.php" destination="$themedir" />
+		<require-file name="template/SimpleDesk-Assign.template.php" destination="$themedir" />
+		<require-file name="template/SimpleDesk-Post.template.php" destination="$themedir" />
+		<require-file name="template/SimpleDesk-TicketTopicMove.template.php" destination="$themedir" />
+		
+		<!-- images -->
+		<require-dir name="images/simpledesk" destination="$imagesdir" />
+		<require-file name="images/feature_shd.png" destination="$imagesdir/admin" />
+		<require-file name="images/simpledesk.png" destination="$imagesdir/admin" />
+		<require-file name="images/shd_status.png" destination="$imagesdir/admin" />
+		<require-file name="images/shd_log.png" destination="$imagesdir/admin" />
+		<require-file name="images/shd_support.png" destination="$imagesdir/admin" />
+
+		<!-- css -->
+		<require-file name="css/helpdesk.css" destination="$themedir/css" />
+		<require-file name="css/helpdesk_admin.css" destination="$themedir/css" />
+		<require-file name="css/helpdesk_ie6.css" destination="$themedir/css" />		
+
+		<!-- scripts -->
+		<require-file name="scripts/helpdesk_admin.js" destination="$themedir/scripts" />
+		<require-file name="scripts/helpdesk.js" destination="$themedir/scripts" />
+
+		<!-- database changes -->
+		<database>install.php</database>
+
+		<redirect url="?action=admin;area=corefeatures#js_feature_shd" />
+	</install>
+	
+	<uninstall for="2.0 RC2, 2.0 RC3">
+		<!-- database changes, undone -->
+		<database>uninstall-optional.php</database>
+		<code type="file">uninstall-required.php</code>
+
+		<!-- general edits, undone -->
+		<modification format="xml" type="file" reverse="true">install-xml/install.xml</modification>
+		<modification format="xml" type="file" reverse="true">install-xml/install-attachments.xml</modification>
+		<modification format="xml" type="file" reverse="true">install-xml/install-trackip.xml</modification>
+
+		<!-- language files, removed -->
+		<remove-file name="$languagedir/SimpleDesk.english.php" />
+		<remove-file name="$languagedir/SimpleDeskPermissions.english.php" />
+		<remove-file name="$languagedir/SimpleDeskLogAction.english.php" />
+		<remove-file name="$languagedir/SimpleDeskAdmin.english.php" />
+		<remove-file name="$languagedir/SimpleDeskWho.english.php" />
+
+		<!-- source files, removed -->
+		<remove-file name="$sourcedir/SimpleDesk.php" />
+		<remove-file name="$sourcedir/SimpleDesk-Display.php" />
+		<remove-file name="$sourcedir/SimpleDesk-MiscActions.php" />
+		<remove-file name="$sourcedir/SimpleDesk-Assign.php" />
+		<remove-file name="$sourcedir/SimpleDesk-Post.php" />
+		<remove-file name="$sourcedir/SimpleDesk-AjaxHandler.php" />
+		<remove-file name="$sourcedir/SimpleDesk-TicketTopicMove.php" />		
+		<remove-file name="$sourcedir/SimpleDesk-Delete.php" />			
+		<remove-file name="$sourcedir/SimpleDesk-Admin.php" />
+		<remove-file name="$sourcedir/Subs-SimpleDesk.php" />
+		<remove-file name="$sourcedir/Subs-SimpleDeskAdmin.php" />
+		<remove-file name="$sourcedir/Subs-SimpleDeskPost.php" />
+
+		<!-- template files, removed -->
+		<remove-file name="$themedir/SimpleDesk.template.php" />
+		<remove-file name="$themedir/SimpleDesk-Display.template.php" />
+		<remove-file name="$themedir/SimpleDesk-Admin.template.php" />
+		<remove-file name="$themedir/SimpleDesk-Assign.template.php" />
+		<remove-file name="$themedir/SimpleDesk-Post.template.php" />
+		<remove-file name="$themedir/SimpleDesk-TicketTopicMove.template.php" />		
+		
+		<!-- images, removed -->
+		<remove-dir name="$imagesdir/simpledesk" />
+		<remove-file name="$imagesdir/admin/feature_shd.png" />
+		<remove-file name="$imagesdir/admin/simpledesk.png" />
+		<remove-file name="$imagesdir/admin/shd_status.png" />
+		<remove-file name="$imagesdir/admin/shd_log.png" />
+		<remove-file name="$imagesdir/admin/shd_support.png" />
+
+		<!-- css, removed -->
+		<remove-file name="$themedir/css/helpdesk.css" />
+		<remove-file name="$themedir/css/helpdesk-admin.css" />
+		<remove-file name="$themedir/css/helpdesk-ie6.css" />
+		
+		<!-- scripts, removed -->
+		<remove-file name="$themedir/scripts/helpdesk-admin.js" />
+		<remove-file name="$themedir/scripts/helpdesk.js" />
+	</uninstall>
+</package-info>

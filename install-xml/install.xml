@@ -1,0 +1,505 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>SimpleDeskTeam:SimpleDesk</id>
+	<version>1.0 Felidae</version>
+	
+	<file name="$sourcedir/Admin.php"><!-- adds the navbar links to the admin panel -->
+		<operation><!-- main SHD menu -->
+			<search position="after"><![CDATA[	// Make sure the administrator has a valid session...]]></search>
+			<add><![CDATA[	// Add the SHD item to the menu
+	$admin_areas['helpdesk_info'] = array(
+		'title' => $txt['shd_helpdesk'],
+		'permission' => array('admin_forum', 'admin_helpdesk'),
+		'enabled' => !empty($modSettings['helpdesk_active']),
+		'areas' => array(
+			'helpdesk_info' => array(
+				'label' => $txt['shd_admin_info'],
+				'file' => 'SimpleDesk-Admin.php',
+				'icon' => 'simpledesk.png',
+				'function' => 'shd_admin_main',
+				'subsections' => array(
+				),
+			),
+			'helpdesk_options' => array(
+				'label' => $txt['shd_admin_options'],
+				'file' => 'SimpleDesk-Admin.php',
+				'icon' => 'shd_status.png',
+				'function' => 'shd_admin_main',
+				'subsections' => array(
+					'display' => array($txt['shd_admin_options_display'], array('admin_forum', 'admin_helpdesk')),
+					'posting' => array($txt['shd_admin_options_posting'], array('admin_forum', 'admin_helpdesk')),
+					'admin' => array($txt['shd_admin_options_admin'], array('admin_forum', 'admin_helpdesk')),
+					'standalone' => array($txt['shd_admin_options_standalone'], array('admin_forum', 'admin_helpdesk')),
+				),
+			),
+			'helpdesk_actionlog' => array(
+				'label' => $txt['shd_admin_actionlog'],
+				'file' => 'SimpleDesk-Admin.php',
+				'icon' => 'shd_log.png',
+				'function' => 'shd_admin_main',
+				'subsections' => array(
+				),
+			),
+			'helpdesk_support' => array(
+				'label' => $txt['shd_admin_support'],
+				'file' => 'SimpleDesk-Admin.php',
+				'icon' => 'shd_support.png',
+				'function' => 'shd_admin_main',
+				'subsections' => array(
+				),
+			),
+		),
+	);
+
+]]></add>
+		</operation>
+		<operation><!-- add the item to the logs menu -->
+			<search position="before"><![CDATA['pruning' => array($txt['pruning_title'], 'admin_forum'),]]></search>
+			<add><![CDATA[
+						'helpdesklog' => array($txt['shd_admin_helpdesklog'], 'admin_forum', 'enabled' => $modSettings['helpdesk_active'], 'url' => $scripturl . '?action=admin;area=helpdesk_actionlog'),]]></add>
+		</operation>
+		<operation><!-- load the SD admin language file -->
+			<search position="before"><![CDATA[loadLanguage('Admin');]]></search>
+			<add><![CDATA[
+	shd_load_language('SimpleDeskAdmin');]]></add>
+		</operation>
+		<operation><!-- add SimpleDesk-Admin to the list of files to load when doing admin search -->
+			<search position="after"><![CDATA[	foreach ($include_files as $file)]]></search>
+			<add><![CDATA[	// Add SimpleDesk's file before we start anything
+	$include_files[] = 'SimpleDesk-Admin';
+
+]]></add>
+		</operation>
+		<operation><!-- prepend SimpleDesk's ACP helper functions to the list of places to search -->
+			<search position="replace"><![CDATA[// This is a special array of functions that contain setting data - we query all these to simply pull all setting bits!
+	$settings_search = array(]]></search>
+			<add><![CDATA[// Add SimpleDesk functions
+	$settings_search = array();
+	$settings_search[] = array('shd_modify_display_options', 'area=helpdesk_options;sa=display');
+	$settings_search[] = array('shd_modify_posting_options', 'area=helpdesk_options;sa=posting');
+	$settings_search[] = array('shd_modify_admin_options', 'area=helpdesk_options;sa=admin');
+	$settings_search[] = array('shd_modify_standalone_options', 'area=helpdesk_options;sa=standalone');
+
+	// This is a special array of functions that contain setting data - we query all these to simply pull all setting bits!
+	$settings_search += array(
+		4 =>]]></add>
+		</operation>
+	</file>
+	
+	<file name="$sourcedir/Load.php"><!-- load the main SimpleDesk language strings -->
+		<operation>
+			<search position="before"><![CDATA[loadSubTemplate('init', 'ignore');]]></search>
+			<add><![CDATA[
+	// Load the language strings
+	shd_load_language('SimpleDesk');]]></add>
+		</operation>
+		<operation><!-- globally figure out if Helpdesk is enabled; note this doesn't get pushed into settings table :) -->
+			<search position="after"><![CDATA[	// Is post moderation alive and well?]]></search>
+			<add><![CDATA[	// Are we helping people today?
+	$modSettings['helpdesk_active'] = isset($modSettings['admin_features']) ? in_array('shd', explode(',', $modSettings['admin_features'])) : false;
+
+]]></add>
+		</operation>
+	</file>
+	
+	<file name="$sourcedir/Subs.php"><!-- reconfigure the main menu somewhat -->
+		<operation><!-- add a generic menu item -->
+			<search position="replace"><![CDATA[			),
+			'profile' => array(]]></search>
+			<add><![CDATA[			),
+			'helpdesk' => array(
+				'title' => $modSettings['helpdesk_active'] && SMF != 'SSI' ? shd_get_active_tickets() : $txt['shd_helpdesk'],
+				'href' => $scripturl . '?action=helpdesk;sa=main',
+				'show' => $modSettings['helpdesk_active'] && (allowedTo('access_helpdesk') || allowedTo('admin_helpdesk')),
+				'sub_buttons' => array(
+					'newticket' => array(
+						'title' => $txt['shd_new_ticket'],
+						'href' => $scripturl . '?action=helpdesk;sa=newticket',
+						'show' => SMF == 'SSI' ? false : shd_allowed_to('shd_new_ticket'),
+					),
+					'closedtickets' => array(
+						'title' => $txt['shd_tickets_closed'],
+						'href' => $scripturl . '?action=helpdesk;sa=closedtickets',
+						'show' => SMF == 'SSI' ? false : (shd_allowed_to('shd_resolve_ticket_own') || shd_allowed_to('shd_resolve_ticket_any')),
+					),			
+					'recyclebin' => array(
+						'title' => $txt['shd_recycle_bin'],
+						'href' => $scripturl . '?action=helpdesk;sa=recyclebin',
+						'show' => SMF == 'SSI' ? false : shd_allowed_to('shd_access_recyclebin'),
+					),					
+				),
+			),
+			'profile' => array(]]></add>
+		</operation>
+		<operation><!-- turn off PMs if they're disabled -->
+			<search position="replace"><![CDATA[$context['allow_pm'] = allowedTo('pm_read');]]></search>
+			<add><![CDATA[$context['allow_pm'] = allowedTo('pm_read') && (empty($modSettings['helpdesk_active']) || empty($modSettings['shd_helpdesk_only']) || empty($modSettings['shd_disable_pm']));]]></add>
+		</operation>
+		<operation><!-- expand the quote link= parameter -->
+			<search position="before"><![CDATA[(?:topic|threadid)=[\dmsg#\./]{1,40}(?:;start=[\dmsg#\./]{1,40})?]]></search>
+			<add><![CDATA[|action=helpdesk;sa=ticket;ticket=[\dmsg#\./]{1,40}(?:;start=[\dmsg#\./]{1,40})?]]></add>
+		</operation>
+		<operation><!-- mess with the main menu -->
+			<search position="after"><![CDATA[	$context['menu_buttons'] = $menu_buttons;]]></search>
+			<add><![CDATA[	// SD specific options
+	if (!empty($modSettings['helpdesk_active']))
+	{
+		// Stuff we'll always do in SD if active
+		if (allowedTo(array('admin_forum', 'admin_helpdesk')))
+		{
+			$menu_buttons['admin']['sub_buttons']['helpdesk_admin'] = array(
+				'title' => $txt['shd_helpdesk'],
+				'href' => $scripturl . '?action=admin;area=helpdesk_info',
+				'show' => allowedTo(array('admin_forum', 'admin_helpdesk')),
+			);
+		}
+
+
+		// Stuff we'll only do if in standalone mode
+		if (!empty($modSettings['shd_helpdesk_only']))
+		{
+			$menu_buttons['home'] = array(
+				'title' => $modSettings['helpdesk_active'] && SMF != 'SSI' ? shd_get_active_tickets() : $txt['shd_helpdesk'],
+				'href' => $scripturl . '?action=helpdesk;sa=main',
+				'show' => $modSettings['helpdesk_active'] && (allowedTo('access_helpdesk') || allowedTo('admin_helpdesk')),
+				'sub_buttons' => array(
+				),
+				'active_button' => false,
+			);
+			unset($menu_buttons['helpdesk']);
+
+			// Disable help, search, calendar, moderation center
+			unset($menu_buttons['help']);
+
+			unset($menu_buttons['search']);
+			$context['allow_search'] = false;
+
+			unset($menu_buttons['calendar']);
+			$context['allow_calendar'] = false;
+
+			unset($menu_buttons['moderate']);
+			$context['allow_moderation_center'] = false;
+
+			// Disable PMs
+			if (!empty($modSettings['shd_disable_pm']))
+			{
+				$context['allow_pm'] = false;
+				unset($menu_buttons['pm']);
+				$context['user']['unread_messages'] = 0; // to disable it trying to add to the menu item
+			}
+
+			// Disable memberlist
+			if (!empty($modSettings['shd_disable_mlist']))
+			{
+				$context['allow_memberlist'] = false;
+				unset($menu_buttons['mlist']);
+			}
+		}
+	}
+
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/ManageSettings.php"><!-- add the helpdesk to Core Features in admin -->
+		<operation>
+			<search position="after"><![CDATA[		// k = karma.]]></search>
+			<add><![CDATA[		// shd = Helpdesk - Simple(Help)Desk
+		'shd' => array(
+			'url' => 'action=admin;area=helpdesk_info',
+		),
+]]></add>
+		</operation>
+	</file>
+	
+	<file name="$sourcedir/Display.php"><!-- add topic to ticket menu button -->
+		<operation>
+			<search position="after"><![CDATA[// We don't want to show the poll icon in the topic class here, so pretend it's not one.]]></search>
+			<add><![CDATA[// Simpledesk: Figure out if they can move this topic to the Helpdesk.
+	$context['can_move_to_helpdesk'] = allowedTo('shd_topic_to_ticket') && empty($modSettings['shd_helpdesk_only']);
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/ManagePermissions.php"><!-- add all the glorious permissions in an uber extensible way without screwing with Modifications.{language}.php (it's on EVERY page load, and every little helps) -->
+		<operation>
+			<search position="after"><![CDATA[	// We need to know what permissions we can't give to guests.]]></search>
+			<add><![CDATA[	// Load the helpdesk permissions; in a painless manner that doesn't interfere with anything else :)
+	if ($modSettings['helpdesk_active'])
+	{
+		shd_load_language('SimpleDeskPermissions');
+		$permissionList['membergroup'] += array(
+			'access_helpdesk' => array(false, 'helpdesk', 'use_helpdesk'),
+			'shd_view_ticket' => array(true, 'helpdesk', 'use_helpdesk'),
+			'shd_view_ticket_private' => array(true, 'helpdesk', 'use_helpdesk'),
+			'shd_alter_urgency' => array(true, 'helpdesk', 'use_helpdesk'),
+			'shd_alter_urgency_higher' => array(true, 'helpdesk', 'use_helpdesk'),
+			'shd_new_ticket' => array(false, 'helpdesk', 'use_helpdesk'),
+			'shd_edit_ticket' => array(true, 'helpdesk', 'use_helpdesk'),
+			'shd_reply_ticket' => array(true, 'helpdesk', 'use_helpdesk'),
+			'shd_edit_reply' => array(true, 'helpdesk', 'use_helpdesk'),
+			'shd_post_attachment' => array(false, 'helpdesk', 'use_helpdesk'),
+			'shd_resolve_ticket' => array(true, 'helpdesk', 'use_helpdesk'),
+
+			'shd_staff' => array(false, 'shd_staff', 'shd_staff'),
+			'shd_alter_privacy' => array(true, 'shd_staff', 'shd_staff'),
+			'shd_assign_ticket' => array(true, 'shd_staff', 'shd_staff'),
+			'shd_delete_ticket' => array(true, 'shd_staff', 'shd_staff'),
+			'shd_delete_reply' => array(true, 'shd_staff', 'shd_staff'),
+			'shd_restore_ticket' => array(true, 'shd_staff', 'shd_staff'),
+			'shd_restore_reply' => array(true, 'shd_staff', 'shd_staff'),
+			'shd_ticket_to_topic' => array(false, 'shd_staff', 'shd_staff'),	
+			'shd_topic_to_ticket' => array(false, 'shd_staff', 'shd_staff'),			
+
+			'admin_helpdesk' => array(false, 'shd_admin', 'shd_admin'),
+			'shd_delete_recycling' => array(false, 'shd_admin', 'shd_admin'),
+			'shd_access_recyclebin' => array(false, 'shd_admin', 'shd_admin'),
+		);
+
+		$leftPermissionGroups[] = 'helpdesk';
+
+		// Also, are we in SHD only mode? If so... hoo boy, we gots some purging to do.
+		if (!empty($modSettings['shd_helpdesk_only']))
+		{
+			$perms_disable = array(
+				'membergroup' => array(
+					'view_stats',
+					'who_view',
+					'search_posts',
+					'karma_edit',
+					'calendar_view',
+					'calendar_post',
+					'calendar_edit',
+					'manage_boards',
+					'manage_attachments',
+					'manage_smileys',
+					'edit_news',
+					'access_mod_center',
+					'moderate_forum',
+					'send_mail',
+					'issue_warning',
+					'shd_ticket_to_topic', // yes, even our own, makes sense to reuse what we have here
+					'shd_topic_to_ticket',
+				),
+				'board' => array(
+					'moderate_board',
+					'approve_posts',
+					'post_new',
+					'post_unapproved_topics',
+					'post_unapproved_replies',
+					'post_reply',
+					'merge_any',
+					'split_any',
+					'send_topic',
+					'make_sticky',
+					'move',
+					'lock',
+					'remove',
+					'modify_replies',
+					'delete_replies',
+					'announce_topic',
+					'delete',
+					'modify',
+					'report_any',
+					'poll_view',
+					'poll_vote',
+					'poll_post',
+					'poll_add',
+					'poll_edit',
+					'poll_lock',
+					'poll_remove',
+					'mark_any_notify',
+					'mark_notify',
+					'view_attachments',
+					'post_unapproved_attachments',
+					'post_attachment',
+				),
+			);
+			// that's the generic stuff, now for specific options
+			if (!empty($modSettings['shd_disable_pm']))
+			{
+				$perms_disable['membergroup'][] = 'pm_read';
+				$perms_disable['membergroup'][] = 'pm_send';
+			}
+
+			foreach ($perms_disable as $group => $perm_list)
+				foreach ($perm_list as $perm)
+					if (isset($permissionList[$group][$perm]))
+						unset($permissionList[$group][$perm]);
+		}
+	}
+
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/Help.php">
+		<operation><!-- load the permissions help strings -->
+			<search position="replace"><![CDATA[		loadLanguage('ManagePermissions');]]></search>
+			<add><![CDATA[	{
+		loadLanguage('ManagePermissions');
+		shd_load_language('SimpleDeskPermissions');
+	}]]></add>
+		</operation>
+		<operation><!-- load the admin help strings -->
+			<search position="replace"><![CDATA[	loadLanguage('Help');]]></search>
+			<add><![CDATA[	loadLanguage('Help');
+	shd_load_language('SimpleDeskAdmin');]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/ManageBoards.php"><!-- load the permissions language file if we're managing boards -->
+		<operation>
+			<search position="before"><![CDATA[loadLanguage('ManagePermissions');]]></search>
+			<add><![CDATA[
+	shd_load_language('SimpleDeskPermissions');]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/ManagePosts.php"><!-- at the same time we modify the post settings, make sure we check and update SD's if necessary -->
+		<operation>
+			<search position="before"><![CDATA[$smcFunc['db_change_column']('{db_prefix}messages', 'body', array('type' => 'mediumtext'));]]></search>
+			<add><![CDATA[
+					$smcFunc['db_change_column']('{db_prefix}helpdesk_ticket_replies', 'body', array('type' => 'mediumtext'));]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[$smcFunc['db_change_column']('{db_prefix}messages', 'body', array('type' => 'text'));]]></search>
+			<add><![CDATA[
+					$smcFunc['db_change_column']('{db_prefix}helpdesk_ticket_replies', 'body', array('type' => 'text'));]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/Profile-View.php"><!-- load the permissions language file if we're looking at profile/permissions -->
+		<operation>
+			<search position="after"><![CDATA[	loadLanguage('ManagePermissions');]]></search>
+			<add><![CDATA[	shd_load_language('SimpleDeskPermissions');
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/Reports.php"><!-- load the permissions language file if we're getting a report -->
+		<operation>
+			<search position="before"><![CDATA[loadLanguage('ManagePermissions');]]></search>
+			<add><![CDATA[
+	shd_load_language('SimpleDeskPermissions');]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/Who.php"><!-- load the who's online strings... we don't use it much now, but maybe later... -->
+		<operation>
+			<search position="before"><![CDATA[loadLanguage('Who');]]></search>
+			<add><![CDATA[
+	shd_load_language('SimpleDeskWho');]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/Errors.php"><!-- if an error occurs in an SD file, log it appropriately with the SD errortype -->
+		<operation>
+			<search position="after"><![CDATA[	// Make sure the category that was specified is a valid one]]></search>
+			<add><![CDATA[	// Is this a SimpleDesk error?
+	$known_error_types[] = 'simpledesk';
+	if (strpos($file, 'SimpleDesk') !== false || strpos($error_message, 'shd_') !== false)
+		$error_type = 'simpledesk';
+
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$boarddir/index.php"><!-- set up the relevant action stuff -->
+		<operation><!-- add/remove action without having to touch the master array - cleaner! -->
+			<search position="after"><![CDATA[	// Get the function and file to include - if it's not there, do the board index.]]></search>
+			<add><![CDATA[	// Deal with SimpleDesk. If we're enabling HD only mode, rebuild everything, otherwise just add it to the array.
+	$actionArray['helpdesk'] = array('SimpleDesk.php', 'shd_main');
+	if (!empty($modSettings['shd_helpdesk_only']) && $modSettings['helpdesk_active'])
+	{
+		// Firstly, remove all the standard actions we neither want nor need.
+		// Note we did this to prevent breakage of other mods that may be installed, e.g. gallery or portal or something.
+		$unwanted_actions = array('announce', 'attachapprove', 'buddy', 'calendar', 'clock', 'collapse', 'deletemsg', 'display', 'editpoll', 'editpoll2',
+			'emailuser', 'groups', 'lock', 'lockvoting', 'markasread', 'mergetopics', 'moderate', 'modifycat', 'modifykarma', 'movetopic', 'movetopic2',
+			'notify', 'notifyboard', 'post', 'post2', 'printpage', 'quotefast', 'quickmod', 'quickmod2', 'recent', 'reminder', 'removepoll', 'removetopic2',
+			'reporttm', 'restoretopic', 'search', 'search2', 'sendtopic', 'smstats', 'splittopics', 'stats', 'sticky', 'trackip', 'about:mozilla', 'about:unknown',
+			'unread', 'unreadreplies', 'vote', 'viewquery', 'who', '.xml', 'xmlhttp');
+
+		// that's the generic stuff, now for specific options
+		if (!empty($modSettings['shd_disable_pm']))
+			$unwanted_actions[] = 'pm';
+
+		if (!empty($modSettings['shd_disable_mlist']))
+			$unwanted_actions[] = 'mlist';
+
+		foreach ($unwanted_actions as $unwanted)
+			if (isset($actionArray[$unwanted]))
+				unset($actionArray[$unwanted]);
+
+		// Secondly, rewrite the defaults to point to helpdesk, for unknown actions. I'm doing this rather than munging the main code - easier to unbreak stuff
+		if (empty($actionArray[$_GET['action']]))
+			$_GET['action'] = 'helpdesk';
+	}
+]]></add>
+		</operation>
+		<operation><!-- add a master override if we haven't declared an action -->
+			<search position="after"><![CDATA[		// Action and board are both empty... BoardIndex!]]></search>
+			<add><![CDATA[		// If we're in HD-only mode, let's run with that!
+		if (!empty($modSettings['shd_helpdesk_only']) && $modSettings['helpdesk_active'])
+		{
+			require_once($sourcedir . '/SimpleDesk.php');
+			return 'shd_main';
+		}
+]]></add>
+		</operation>
+		<operation><!-- add a catcher in case it's a function we don't have -->
+			<search position="after"><![CDATA[		// Fall through to the board index then...
+		require_once($sourcedir . '/BoardIndex.php');
+		return 'BoardIndex';]]></search>
+			<add><![CDATA[		// If we're in HD-only mode, we can't let them go anywhere useless
+		if (!empty($modSettings['shd_helpdesk_only']) && $modSettings['helpdesk_active'])
+		{
+			require_once($sourcedir . '/SimpleDesk.php');
+			return 'shd_main';
+		}
+
+]]></add>
+		</operation>
+		<operation><!-- bootstrap the SimpleDesk functions a little -->
+			<search position="before"><![CDATA[require_once($sourcedir . '/Security.php');]]></search>
+			<add><![CDATA[
+require_once($sourcedir . '/Subs-SimpleDesk.php');]]></add>		
+		</operation>
+	</file>
+
+	<!-- theme edits boohoo -->
+	<file name="$themedir/Display.template.php"><!-- add topic to ticket menu button -->
+		<operation>
+			<search position="after"><![CDATA[// Show the page index... "Pages: [1]".]]></search>
+			<add><![CDATA[	// SimpleDesk: Add topic -> ticket button
+	$normal_buttons = array_merge($normal_buttons,array('topictoticket' => array('test' => 'can_move_to_helpdesk', 'text' => 'shd_move_topic_to_ticket', 'lang' => true, 'url' => $scripturl . '?action=helpdesk;sa=topictoticket;topic='.$context['current_topic'].';' . $context['session_var'] . '=' . $context['session_id'])));
+]]></add>
+		</operation>
+	</file>
+
+	<!-- remove the unread/unreadreplies links in SD only mode -->
+	<!-- unfortunately, these pretty much have to be atomic edits :( -->
+	<file name="$themedir/index.template.php">
+		<operation error="ignore">
+			<search position="replace"><![CDATA[
+					<li><a href="', $scripturl, '?action=unread">', $txt['unread_since_visit'], '</a></li>
+					<li><a href="', $scripturl, '?action=unreadreplies">', $txt['show_unread_replies'], '</a></li>';]]></search>
+			<add><![CDATA[
+					', (!empty($modSettings['helpdesk_active']) && !empty($modSettings['shd_helpdesk_only'])) ? '' : ('<li><a href="' . $scripturl . '?action=unread">' . $txt['unread_since_visit'] . '</a></li>
+					<li><a href="' . $scripturl . '?action=unreadreplies">' . $txt['show_unread_replies'] . '</a></li>');]]></add>
+		</operation>
+	</file>
+
+	<file name="$themes_dir/core/index.template.php" error="skip">
+		<operation error="ignore">
+			<search position="replace"><![CDATA[
+					<li><a href="', $scripturl, '?action=unread">', $txt['unread_since_visit'], '</a></li>
+					<li><a href="', $scripturl, '?action=unreadreplies">', $txt['show_unread_replies'], '</a></li>';]]></search>
+			<add><![CDATA[
+					', (!empty($modSettings['helpdesk_active']) && !empty($modSettings['shd_helpdesk_only'])) ? '' : ('<li><a href="' . $scripturl . '?action=unread">' . $txt['unread_since_visit'] . '</a></li>
+					<li><a href="' . $scripturl . '?action=unreadreplies">' . $txt['show_unread_replies'] . '</a></li>');]]></add>
+		</operation>
+	</file>
+
+</modification>

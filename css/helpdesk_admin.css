@@ -1,0 +1,89 @@
+#sd_live_news
+{
+	width: 64%;
+	font-size: 0.85em;
+}
+#sd_live_news div.content
+{
+	padding: 0;
+}
+#sd_live_news div.content dl
+{
+	padding: 0.5em 0 0 0.5em;
+}
+
+#sd_supportVersionsTable
+{
+	width: 34%;
+}
+#sd_version_details
+{
+	overflow: auto;
+	height: 16.4em;
+}
+#sdAnnouncements
+{
+	height: 21.6em;
+	overflow: auto;
+}
+#sdAnnouncements dt
+{
+	border-bottom: 1px dashed #000;
+}
+#sdAnnouncements dd
+{
+	padding: 0;
+	margin: 0 0 1em 1.5em;
+}
+#sd_update_section
+{
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+#sd_credits
+{
+}
+.sd_group_name
+{
+}
+.sd_group_name hr
+{
+	margin-top: 2px;
+}
+.shd_help
+{
+	float: right;
+	margin-top: 8px;
+}
+.shd_actionloginfo
+{
+	margin-bottom: 0;
+	border-bottom: 0;
+}
+.shd_admin_leftcolumn
+{
+	width: 74%;
+	margin-right: 10px;
+}
+.shd_admin_rightcolumn
+{
+	width: 24%;
+}
+.shd_credits_break
+{
+	margin-bottom: 0;
+
+}
+.shd_bbc_list
+{
+	width: 33%;
+}
+.shd_info_box
+{
+	margin-bottom: 0;
+}
+h3.sd_no_margin
+{
+	margin-bottom: 0px;
+	padding-bottom: 3px;
+}

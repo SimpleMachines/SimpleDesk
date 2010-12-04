@@ -1,0 +1,31 @@
+/* IE6, IE6, how do I hate thee, let me count the ways. */
+
+/* IE6 needs a height fix here */
+.shd_ticketdetails
+{
+	min-height: 280px;
+	height: auto !important;
+	height: 280px;
+}
+.shd_ticket
+{
+	min-height: 340px;
+	height: auto !important;
+	height: 340px;
+}
+
+/* For whatever odd reason this have to 0.8% or so smaller in IE6 to look good. */
+h3.grid_header
+{
+	width: 99.2%;
+}
+
+.shd_reply .shd_ticketlinks
+{
+	margin-top: -15px;
+}
+
+h3.ticketheader .shd_ticketlinks
+{
+	margin-top: 3px;
+}
