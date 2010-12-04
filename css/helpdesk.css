@@ -187,6 +187,8 @@ h3.ticketheader img
 #shd_ticket_log_expand
 {
 	margin-top: 8px;
+	position: relative;
+	left: 4px;
 }
 .shd_ticket_log_expand_container
 {
