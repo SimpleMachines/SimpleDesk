@@ -1076,7 +1076,7 @@ function shd_setup_replies($first_msg)
 
 	$posters = array_unique($posters);
 
-	$context['is_team'] = array();
+	$context['shd_is_staff'] = array();
 
 	if (!empty($messages))
 	{
@@ -1091,7 +1091,7 @@ function shd_setup_replies($first_msg)
 			$team = array_intersect($posters, shd_members_allowed_to('shd_staff'));
 
 			foreach ($team as $member)
-				$context['is_team'][$member] = true;
+				$context['shd_is_staff'][$member] = true;
 		}
 
 		$reply_request = shd_db_query('', '
@@ -1226,7 +1226,7 @@ function shd_prepare_reply_context()
 		'time' => timeformat($message['poster_time']),
 		'timestamp' => forum_time(true, $message['poster_time']),
 		'body' => $message['body'],
-		'is_team' => !empty($context['is_team'][$message['id_member']]),
+		'is_staff' => !empty($context['shd_is_staff'][$message['id_member']]),
 		'can_edit' => shd_allowed_to('shd_edit_reply_any') || ($message['id_member'] == $user_info['id'] && shd_allowed_to('shd_edit_reply_own')),
 	);
 

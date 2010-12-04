@@ -689,7 +689,7 @@ function shd_no_expand_pageindex($base_url, &$start, $max_value, $num_per_page, 
 */
 function shd_load_language($langfile)
 {
-	global $modSettings, $user_info;
+	global $modSettings, $user_info, $language;
 	if (empty($modSettings['disable_language_fallback']))
 	{
 		$cur_language = isset($user_info['language']) ? $user_info['language'] : $language;

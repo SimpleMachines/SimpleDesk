@@ -153,11 +153,10 @@ h3.ticketheader img
 {
 	margin-bottom: 10px;
 }
-.shd_posteravatar
+.shd_posteravatar img
 {
 	padding: 0px;
-	max-width: 50px;
-	max-height: 50px;
+	max-width: 10.5em;
 }
 .shd_replyarea
 {

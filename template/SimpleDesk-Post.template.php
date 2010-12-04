@@ -501,7 +501,7 @@ function template_ticket_do_replies()
 					echo '
 									<div>', $reply['member']['avatar']['image'], '</div>';
 
-			if (!empty($reply['is_team']))
+			if (!empty($reply['is_staff']))
 				if (empty($modSettings['shd_use_staff_badge']))
 					echo '<br />
 									<img src="', $settings['default_images_url'] . '/simpledesk/staff.png" class="shd_smallicon" title="', $txt['shd_ticket_staff'], '" alt="', $txt['shd_ticket_staff'], '" />';

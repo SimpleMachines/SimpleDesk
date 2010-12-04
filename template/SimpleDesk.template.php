@@ -475,4 +475,12 @@ function template_shd_menu_header($header, $string)
 
 	return $html;
 }
+
+// Provide a placeholder in the event template_button_strip isn't defined (like in the mobile templates)
+if (!function_exists('template_button_strip'))
+{
+	function template_button_strip($navigation, $direction)
+	{
+	}
+}
 ?>

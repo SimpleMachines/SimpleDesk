@@ -517,7 +517,7 @@ function shd_credits()
 					'members' => array(
 						'Peter &quot;Arantor&quot; Spicer',
 						'Jason &quot;JBlaze&quot; Clemons',
-						'Marcus &quot;Nas&quot; Forsberg',
+						'Marcus &quot;&#99;&#963;&#963;&#1082;&#953;&#1108;&#32;&#1084;&#963;&#951;&#1109;&#1090;&#1108;&#1103;&quot; Forsberg',
 					),
 				),
 				array(
@@ -548,6 +548,7 @@ function shd_credits()
 					'members' => array(
 						'Tyrsson',
 						'Ha2',
+						'Aldo &quot;hadesflames&quot; Barreras',
 					),
 				),
 				array(
@@ -556,6 +557,8 @@ function shd_credits()
 					'members' => array(
 						'Sinan &quot;[SiNaN]&quot; &Ccedil;evik',
 						'Alex &quot;Cleo&quot; Tokar',
+						'Paul &quot;tfs&quot; Laufer',
+						'Shomari "spoogs" Scott',
 					),
 				),
 				array(
@@ -563,15 +566,19 @@ function shd_credits()
 					'desc' => $txt['shd_credits_beta_desc'],
 					'members' => array(
 						'Chris &quot;ccbtimewiz&quot; Batista',
-						'Wade &quot;Acans&quot; Poulsen',
-						'Aldo &quot;hadesflames&quot; Barreras',
-						'tfs',
+						'Wade &quot;&#1109;&#951;&#963;&#969;&quot; Poulsen',
 						'Edwin &quot;Dismal Shadow&quot; Mendez',
 						'Treznax',
 						'Mark &quot;KiLLuMiNaTi&minus;7&minus;&quot; Longworth',
 						'NIBOGO',
 						'Robert &quot;Robbo&quot; Clancy',
 						'Ya&#x11F;izcan Arslan',
+						'MultiformeIngegno',
+						'flapjack',
+						'feline',
+						'Sordell Media',
+						'[FailSafe]',
+						'chilly',
 					),
 				),
 				array(

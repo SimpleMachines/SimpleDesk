@@ -256,7 +256,7 @@ function shd_view_ticket()
 
 	$posters = array_unique($posters);
 
-	$context['is_team'] = array();
+	$context['shd_is_staff'] = array();
 	// Get the poster data
 	if (!empty($posters))
 	{
@@ -266,7 +266,7 @@ function shd_view_ticket()
 		$team = array_intersect($posters, shd_members_allowed_to('shd_staff'));
 
 		foreach ($team as $member)
-			$context['is_team'][$member] = true;
+			$context['shd_is_staff'][$member] = true;
 	}
 
 	if (!empty($context['ticket_messages']))
@@ -557,7 +557,7 @@ function shd_view_ticket()
  *		<li>body: censored, parsed for smileys and bbcode (in {@link shd_format_text()})</li>
  *		<li>time: string of the time the reply was posted</li>
  *		<li>timestamp: internal stored timestamp attached to the reply</li>
- *		<li>is_team: boolean value of whether the posting member is currently helpdesk staff</li>
+ *		<li>is_staff: boolean value of whether the posting member is currently helpdesk staff</li>
  *		<li>can_edit: boolean value reflecting if this reply can be edited</li>
  *		<li>can_delete: boolean value reflecting if this reply can be deleted</li>
  *		<li>can_restore: boolean value reflecting if this reply can be restored</li>
@@ -614,7 +614,7 @@ function shd_prepare_ticket_context()
 		'time' => timeformat($message['poster_time']),
 		'timestamp' => forum_time(true, $message['poster_time']),
 		'body' => $message['body'],
-		'is_team' => !empty($context['is_team'][$message['id_member']]),
+		'is_staff' => !empty($context['shd_is_staff'][$message['id_member']]),
 		'can_edit' => $message['message_status'] != MSG_STATUS_DELETED && !$context['ticket']['closed'] && !$context['ticket']['deleted'] && (shd_allowed_to('shd_edit_reply_any') || ($message['id_member'] == $user_info['id'] && shd_allowed_to('shd_edit_reply_own'))),
 		'can_delete' => $message['message_status'] != MSG_STATUS_DELETED && !$context['ticket']['closed'] && !$context['ticket']['deleted'] && (shd_allowed_to('shd_delete_reply_any') || ($message['id_member'] == $user_info['id'] && shd_allowed_to('shd_delete_reply_own'))),
 		'can_restore' => $message['message_status'] == MSG_STATUS_DELETED && !$context['ticket']['closed'] && !$context['ticket']['deleted'] && (shd_allowed_to('shd_restore_reply_any') || ($message['id_member'] == $user_info['id'] && shd_allowed_to('shd_restore_reply_own'))),
