@@ -101,6 +101,9 @@ function shd_post_ticket()
 
 	shd_posting_additional_options();
 
+	if (!shd_load_custom_fields())
+		$context['ticket_form']['custom_fields'] == 0;
+
 	// A few basic checks
 	if ($context['ticket_form']['status'] == TICKET_STATUS_CLOSED)
 		fatal_lang_error('shd_cannot_edit_closed', false);

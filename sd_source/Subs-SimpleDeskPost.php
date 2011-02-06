@@ -556,4 +556,50 @@ function shd_get_urgency_options($self_ticket = false)
 		$context['ticket_form']['urgency']['can_change'] = false;
 }
 
+function shd_load_custom_fields($use_roles = false)
+{
+	global $context, $smcFunc;
+
+	// Load up our custom fields from the database
+	$custom_fields = shd_db_query('', '
+		SELECT cf.id_field, cf.active, cf.field_order, cf.field_name, cf.field_loc, cf.icon,
+			cf.field_type, cf.default_value, cf.bbc, cf.can_see, cf.can_edit, cf.field_length,
+			cf.display_empty, cf.required, cf.placement
+		FROM {db_prefix}helpdesk_custom_fields AS cf
+		WHERE cf.active = 1
+		ORDER BY cf.field_order',
+		array()
+	);
+
+	$context['ticket_form']['custom_fields'] = array();
+
+	// Loop through all fields and figure out where they should be.
+	while($row = $smcFunc['db_fetch_assoc']($custom_fields))
+	{
+		// No custom fields? Bah...
+		if (empty($row['id_field']))
+			return false;
+
+		$row['can_see'] = explode(',', $row['can_see']);
+		$row['can_edit'] = explode(',', $row['can_edit']);
+
+		$context['ticket_form']['custom_fields'][$row['id_field']] = array(
+			'id' => $row['id_field'],
+			'order' => $row['field_order'],
+			'location' => $row['field_loc'],
+			'name' => $row['field_name'],
+			'desc' => $row['field_desc'],
+			'icon' => $row['icon'],
+			'type' => $row['field_type'],
+			'options' => $row['field_options'],
+			'default_value' => $row['default_value'],
+			'display_empty' => $row['required'] == 1 ? 1 : $row['display_empty'], // Required and "selection" fields will always be displayed.
+			'bbc' => $row['bbc'] == 1,
+			'is_required' => $row['required'] == 1
+		);
+	}
+
+	return $context['ticket_form']['custom_fields'];
+}
+
 ?>

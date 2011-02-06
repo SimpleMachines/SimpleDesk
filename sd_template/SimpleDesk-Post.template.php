@@ -102,7 +102,7 @@ function template_ticket_info()
 					<div class="information shd_ticketdetails">
 						<strong><img src="', $settings['default_images_url'], '/simpledesk/details.png" alt="" class="shd_smallicon" /> ', $txt['shd_ticket_details'], '</strong>
 						<hr />
-						<ul>';
+						<ul class="reset">';
 
 	if (!empty($context['ticket_form']['display_id']))
 		echo '
@@ -301,7 +301,8 @@ function template_ticket_postbox()
 
 	echo template_control_richedit($context['post_box_name'], 'shd_smileybox', 'shd_bbcbox');
 
-	template_ticket_attachments();
+	// Additional ticket options (attachments, smileys, etc)
+	template_ticket_additional_options();
 
 	echo '
 						<br class="clear" />
@@ -309,7 +310,6 @@ function template_ticket_postbox()
 						<input type="submit" value="', isset($editor_context['labels']['post_button']) ? $editor_context['labels']['post_button'] : $txt['post'], '" tabindex="', $context['tabindex']++, '" accesskey="s" class="button_submit" />
 						<input class="button_submit" type="submit" name="preview" value="', $txt['preview'], '" accesskey="p" tabindex="', $context['tabindex']++, '" />';
 
-	template_ticket_additional_options();
 }
 
 function template_ticket_footer()
@@ -358,14 +358,27 @@ function template_preview()
 	}
 }
 
-function template_ticket_attachments()
+function template_ticket_additional_options()
 {
-	global $context, $modSettings, $txt;
-	if (empty($context['current_attachments']) && empty($context['ticket_form']['do_attach']))
-		return;
+	global $context, $options, $txt, $modSettings;
 
 	echo '
-					<div class="information shd_reply_attachments" id="shd_attach_container"', !empty($context['shd_display']) ? ' style="display:none;"' : '', '>';
+					<div class="information shd_reply_attachments" id="shd_attach_container"', !empty($context['shd_display']) ? ' style="display:none;"' : '', '>
+						<ul class="post_options">';
+
+	foreach ($context['ticket_form']['additional_opts'] as $key => $details)
+	{
+		if (!empty($details['show']))
+			echo '
+							<li><label for="', $key, '"><input type="checkbox" name="', $key, '" id="', $key, '"', (!empty($details['checked']) ? ' checked="checked"' : ''), ' value="1" class="input_check" /> ', $details['text'], '</label></li>';
+	}
+
+	echo '
+						</ul>
+						<hr />';
+
+	if (empty($context['current_attachments']) && empty($context['ticket_form']['do_attach']))
+		return;
 
 	if (!empty($context['current_attachments']))
 	{
@@ -401,7 +414,7 @@ function template_ticket_attachments()
 							</dd>';
 
 		echo '
-						<dd class="smalltext">';
+							<dd class="smalltext">';
 
 		// Show some useful information such as allowed extensions, maximum size and amount of attachments allowed.
 		if (!empty($modSettings['attachmentCheckExtensions']))
@@ -438,27 +451,77 @@ function template_ticket_attachments()
 						// ]]></script>';
 	}
 
-	echo '
-					</div>';
-}
-
-function template_ticket_additional_options()
-{
-	global $context, $options, $txt, $modSettings;
-	echo '
-					<div id="postMoreOptions" class="smalltext">
-						<ul class="post_options">';
-
-	foreach ($context['ticket_form']['additional_opts'] as $key => $details)
+	// Custom fields maybe?
+	if ($context['ticket_form']['custom_fields'] != 0)
 	{
-		if (!empty($details['show']))
-			echo '
-							<li><label for="', $key, '"><input type="checkbox" name="', $key, '" id="', $key, '"', (!empty($details['checked']) ? ' checked="checked"' : ''), ' value="1" class="input_check" /> ', $details['text'], '</label></li>';
-	}
+		echo '
+						<dl id="postAttachment">';
 
-	echo '
-						</ul>
-					</div>';
+			foreach ($context['ticket_form']['custom_fields'] as $field)
+			{
+				echo '
+							<dt id="field-' . $field['id'] . '">
+								' . $field['name'] . '<br />
+								<span class="smalltext">' . $field['desc'] . '</span>
+							</dt>
+							<dd>';
+
+				// Text
+				if ($field['type'] == 1)
+					echo '
+								<input type="text" name="field_' . $field['id'] . '" value="' . $field['default_value'] . '" size="50" />';
+				// Textarea
+				elseif ($field['type'] == 2)
+					echo '
+								<textarea name="field_' . $field['id'] . '" rows="4" cols="50">' . $field['default_value'] . '</textarea>';
+				// Integers only
+				elseif ($field['type'] == 3)
+					echo '
+								<input name="field_' . $field['id'] . '" value="' . $field['default_value'] . ' size="10 />';
+				// Floating numbers
+				elseif ($field['type'] == 4)
+					echo '
+								<input name="field_' . $field['id'] . '" value="' . $field['default_value'] . ' size="10 />';
+				// Select boxes
+				elseif ($field['id'] == 5)
+				{
+					echo '
+								<select name="field_' . $field['id'] . '">';
+
+					foreach ($field['options'] as $option)
+					{
+						echo '
+									<option value="' . $option . '">' . $option . '</option>';
+					}
+
+					echo '
+								</select>';
+				}
+				// Checkboxes!
+				elseif ($field['type'] == 6)
+					echo '<input name="field_' . $field['id'] . '" type="checkbox" ' . $field['default_value'] == 1 ? 'checked="checked"' : '' . '/>';
+				// Last one, radio buttons
+				elseif ($field['type'] == 7)
+				{
+					foreach ($field['options'] as $option)
+					{
+						echo '
+								<label for="field_' . $field['id'] . '">' . $option['name'] . '</label>
+								<input name="field_' . $field['id'] . '" type="radio" value="' . $option . '" />';
+					}
+				}
+				// Default to a text input field
+				else
+					echo '
+								<input type="text" name="field_' . $field['id'] . '" value="' . $field['default_value'] . '" size="50" />';
+
+				echo '
+							</dd>';
+			}
+
+		echo '
+						</dl>';
+	}
 }
 
 function template_ticket_begin_replies()

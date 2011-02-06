@@ -108,7 +108,8 @@ h3.ticketheader img
 {
 	min-height: 280px;
 	overflow: auto;
-	width: 100%;
+	width: 20%;
+	float: left;
 }
 .shd_additional_details
 {
@@ -342,7 +343,7 @@ h3.ticketheader img
 }
 
 /**********************************
-* Attachment stuff				 *
+* Attachment stuff				  *
 ***********************************/
 .shd_reply_attachments
 {
