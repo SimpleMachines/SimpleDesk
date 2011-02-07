@@ -562,8 +562,8 @@ function shd_load_custom_fields($use_roles = false)
 
 	// Load up our custom fields from the database
 	$custom_fields = shd_db_query('', '
-		SELECT cf.id_field, cf.active, cf.field_order, cf.field_name, cf.field_loc, cf.icon,
-			cf.field_type, cf.default_value, cf.bbc, cf.can_see, cf.can_edit, cf.field_length,
+		SELECT cf.id_field, cf.active, cf.field_order, cf.field_name, cf.field_desc, cf.field_loc, cf.icon,
+			cf.field_type, cf.field_options, cf.default_value, cf.bbc, cf.can_see, cf.can_edit, cf.field_length,
 			cf.display_empty, cf.required, cf.placement
 		FROM {db_prefix}helpdesk_custom_fields AS cf
 		WHERE cf.active = 1
@@ -580,22 +580,21 @@ function shd_load_custom_fields($use_roles = false)
 		if (empty($row['id_field']))
 			return false;
 
-		$row['can_see'] = explode(',', $row['can_see']);
-		$row['can_edit'] = explode(',', $row['can_edit']);
-
-		$context['ticket_form']['custom_fields'][$row['id_field']] = array(
+		$context['ticket_form']['custom_fields'][$row['placement']][$row['id_field']] = array(
 			'id' => $row['id_field'],
 			'order' => $row['field_order'],
 			'location' => $row['field_loc'],
 			'name' => $row['field_name'],
 			'desc' => $row['field_desc'],
 			'icon' => $row['icon'],
+			'options' => explode(',', $row['field_options']),
 			'type' => $row['field_type'],
-			'options' => $row['field_options'],
-			'default_value' => $row['default_value'],
+			'default_value' => explode(',', $row['default_value']),
 			'display_empty' => $row['required'] == 1 ? 1 : $row['display_empty'], // Required and "selection" fields will always be displayed.
 			'bbc' => $row['bbc'] == 1,
-			'is_required' => $row['required'] == 1
+			'is_required' => $row['required'] == 1,
+			'can_see' => explode(',', $row['can_see']),
+			'can_edit' => explode(',', $row['can_edit'])
 		);
 	}
 

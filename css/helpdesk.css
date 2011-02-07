@@ -111,6 +111,13 @@ h3.ticketheader img
 	width: 20%;
 	float: left;
 }
+.shd_customfields
+{
+	width: 66%;
+	margin-bottom: 0;
+	float: left;
+	margin-top: 5px;
+}
 .shd_additional_details
 {
 	overflow: auto;
@@ -126,7 +133,7 @@ h3.ticketheader img
 /* The ticket container */
 .shd_ticket
 {
-	min-height: 340px;
+	min-height: 640px;
 }
 .shd_ticket_description
 {
@@ -347,18 +354,18 @@ h3.ticketheader img
 ***********************************/
 .shd_reply_attachments
 {
-	width: 68%;
+	width: 66%;
 	margin-bottom: 0;
 	float: left;
 	margin-top: 5px;
 }
-.shd_replyattachments ul, .shd_replyattachments li
+.shd_reply_attachments ul, .shd_reply_attachments li
 {
 	display: block;
 	list-style-type: none;
 }
 
-.shd_replyattachments li
+.shd_reply_attachments li
 {
 	float: left;
 	width: 30%;
