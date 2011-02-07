@@ -140,92 +140,86 @@ function template_ticket_info()
 							', shd_profile_link($context['ticket_form']['member']['avatar']['image'], $context['ticket_form']['member']['id']), '
 						</div>';
 
-	// Custom fields
-	template_ticket_custom_fields(1);
-
 	echo '
 					</div>';
 }
 
-function template_ticket_custom_fields($placement = 2)
+function template_ticket_custom_fields()
 {
 	global $context, $settings;
 
-	// Custom fields maybe?
-	if ($context['ticket_form']['custom_fields'] != 0)
-	{
-		echo '
-					<div class="information shd_customfields">
-						<ul class="reset">';
+	echo '
+				<div class="information shd_customfields">';
 
-			foreach ($context['ticket_form']['custom_fields'][$placement] as $field)
+		// Loop through each custom field
+		foreach ($context['ticket_form']['custom_fields'] as $field)
+		{
+			echo '
+					<dl class="settings">
+						<dt id="field-' . $field['id'] . '">
+							', !empty($field['icon']) ? '<img src="' . $settings['default_images_url'] . '/simpledesk/cf/' . $field['icon'] . '" alt="" />' : '', '
+							<strong>' . $field['name'] . ': </strong><br />
+							<span class="smalltext">' . $field['desc'] . '</span>
+						</dt>';
+
+			// Text
+			if ($field['type'] == 1)
+				echo '
+						<dd><input type="text" name="field-' . $field['id'] . '" value="' . $field['default_value'] . '" size="50" /></dd>';
+			// Textarea
+			elseif ($field['type'] == 2)
+				echo '
+						<dd><textarea name="field-' . $field['id'] . '"', !empty($field['default_value']) ? ' rows="' . $field['default_value'][0] . '" cols="' . $field['default_value'][1] . '" ' : '', '> </textarea></dd>';
+			// Integers only
+			elseif ($field['type'] == 3)
+				echo '
+						<dd><input name="field-' . $field['id'] . '" value="' . $field['default_value'] . ' size="10 /></dd>';
+			// Floating numbers
+			elseif ($field['type'] == 4)
+				echo '
+						<dd><input name="field-' . $field['id'] . '" value="' . $field['default_value'] . ' size="10 /></dd>';
+			// Select boxes
+			elseif ($field['type'] == 5)
 			{
 				echo '
-							<li id="field-' . $field['id'] . '">
-								', !empty($field['icon']) ? '<img src="' . $settings['default_images_url'] . '/simpledesk/cf/' . $field['icon'] . '" alt="" />' : '', '
-								<strong>' . $field['name'] . '</strong><br />
-								<span class="smalltext">' . $field['desc'] . '</span>
-								<br />';
+						<dd>
+							<select name="field-' . $field['id'] . '">';
 
-				// Text
-				if ($field['type'] == 1)
-					echo '
-								<input type="text" name="field-' . $field['id'] . '" value="' . $field['default_value'] . '" size="50" />';
-				// Textarea
-				elseif ($field['type'] == 2)
-					echo '
-								<textarea name="field-' . $field['id'] . '"', !empty($field['default_value']) ? ' rows="' . $field['default_value'][0] . '" cols="' . $field['default_value'][1] . '" ' : '', '> </textarea>';
-				// Integers only
-				elseif ($field['type'] == 3)
-					echo '
-								<input name="field-' . $field['id'] . '" value="' . $field['default_value'] . ' size="10 />';
-				// Floating numbers
-				elseif ($field['type'] == 4)
-					echo '
-								<input name="field-' . $field['id'] . '" value="' . $field['default_value'] . ' size="10 />';
-				// Select boxes
-				elseif ($field['type'] == 5)
+				foreach ($field['options'] as $option)
 				{
 					echo '
-								<select name="field-' . $field['id'] . '">';
-
-					foreach ($field['options'] as $option)
-					{
-						echo '
-									<option value="' . $option . '">' . $option . '&nbsp;</option>';
-					}
-
-					echo '
-								</select>';
+								<option value="' . $option . '">' . $option . '&nbsp;</option>';
 				}
-				// Checkboxes!
-				elseif ($field['type'] == 6)
-					echo '
-								<input name="field-' . $field['id'] . '" type="checkbox" ' . $field['default_value'] == 1 ? 'checked="checked"' : '' . '/>';
-				// Last one, radio buttons
-				elseif ($field['type'] == 7)
-				{
-					foreach ($field['options'] as $option)
-					{
-						echo '
-								<label for="field-' . $field['id'] . '">' . $option . '</label>
-								<input name="field-' . $field['id'] . '" type="radio" value="' . $option . '" />';
-					}
-				}
-				// Default to a text input field
-				else
-					echo '
-								<input type="text" name="field-' . $field['id'] . '" value="' . $field['default_value'] . '" size="50" />';
 
 				echo '
-							</li>
-							', $placement == 1 ? '' : '<hr />', '<br />';
+							</select>
+						</dd>';
 			}
+			// Checkboxes!
+			elseif ($field['type'] == 6)
+				echo '
+						<dd><input name="field-' . $field['id'] . '" type="checkbox" ' . $field['default_value'] == 1 ? 'checked="checked"' : '' . '/></dd>';
+			// Last one, radio buttons
+			elseif ($field['type'] == 7)
+			{
+				foreach ($field['options'] as $option)
+				{
+					echo '
+						<dd><input name="field-' . $field['id'] . '" type="radio" value="' . $option . '" /> <span>' . $option . '</span></dd>';
+				}
+			}
+			// Default to a text input field
+			else
+				echo '
+						<dd><input type="text" name="field-' . $field['id'] . '" value="' . $field['default_value'] . '" size="50" /></dd>';
 
-		echo '
-						</ul>
-					</div>';
-	}
+			echo '
+					</dl>
+					<hr class="hrcolor" />';
+		}
+
+	echo '
+				</div>';
 }
 
 function template_ticket_posterrors()
@@ -385,7 +379,7 @@ function template_ticket_postbox()
 	echo template_control_richedit($context['post_box_name'], 'shd_smileybox', 'shd_bbcbox');
 
 	// Custom fields
-	template_ticket_custom_fields(2);
+	template_ticket_custom_fields();
 
 	// Additional ticket options (attachments, smileys, etc)
 	template_ticket_additional_options();

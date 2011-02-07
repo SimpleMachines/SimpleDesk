@@ -556,7 +556,15 @@ function shd_get_urgency_options($self_ticket = false)
 		$context['ticket_form']['urgency']['can_change'] = false;
 }
 
-function shd_load_custom_fields($use_roles = false)
+/**
+ *	Loads any custom fields that are active
+ *
+ *	@param bool $new_ticket (default true) If a new ticket is being created, this value will make sure that all default values
+ *	are loaded. It also uses role permissions for viewing and editing.
+ *
+ *	@since 1.1
+*/
+function shd_load_custom_fields($new_ticket = true)
 {
 	global $context, $smcFunc;
 
@@ -576,11 +584,8 @@ function shd_load_custom_fields($use_roles = false)
 	// Loop through all fields and figure out where they should be.
 	while($row = $smcFunc['db_fetch_assoc']($custom_fields))
 	{
-		// No custom fields? Bah...
-		if (empty($row['id_field']))
-			return false;
-
-		$context['ticket_form']['custom_fields'][$row['placement']][$row['id_field']] = array(
+		// Load up the fields and do some extra parsing
+		$context['ticket_form']['custom_fields'][$row['id_field']] = array(
 			'id' => $row['id_field'],
 			'order' => $row['field_order'],
 			'location' => $row['field_loc'],
@@ -598,6 +603,7 @@ function shd_load_custom_fields($use_roles = false)
 		);
 	}
 
+	// Send the data back to the template
 	return $context['ticket_form']['custom_fields'];
 }
 
