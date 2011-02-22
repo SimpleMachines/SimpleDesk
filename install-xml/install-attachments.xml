@@ -14,7 +14,7 @@
 	{
 		// Make sure the attachment is on this ticket, note right now we're forcing it to be "approved"
 		$request = shd_db_query('', '
-			SELECT a.id_folder, a.filename, a.file_hash, a.fileext, a.id_attach, a.attachment_type, a.mime_type, 1 AS approved
+			SELECT a.id_folder, a.filename, a.file_hash, a.fileext, a.id_attach, a.attachment_type, a.mime_type, 1 AS approved, hdtr.id_member
 			FROM {db_prefix}attachments AS a
 				INNER JOIN {db_prefix}helpdesk_attachments AS hda ON (a.id_attach = hda.id_attach)
 				INNER JOIN {db_prefix}helpdesk_ticket_replies AS hdtr ON (hda.id_msg = hdtr.id_msg)
