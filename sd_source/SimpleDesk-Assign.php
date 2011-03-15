@@ -289,15 +289,7 @@ function shd_commit_assignment($ticket, $assignment)
 	);
 
 	// Int hooks - after we've set everything up but before we actually press the button
-	if (!empty($modSettings['shd_hook_assign']))
-	{
-		$functions = explode(',', $modSettings['shd_hook_assign']);
-		foreach ($functions as $function)
-		{
-			if (is_callable($function))
-				$function($ticket, $assignment); // by reference
-		}
-	}
+	call_integration_hook('shd_hook_assign', array($ticket, $assignment));
 
 	shd_modify_ticket_post($msgOptions, $ticketOptions, $posterOptions);
 

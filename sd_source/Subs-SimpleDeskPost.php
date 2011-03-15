@@ -310,15 +310,7 @@ function shd_create_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 
 	// Int hooks
 	$hook = $new_ticket ? 'shd_hook_newticket' : 'shd_hook_newreply';
-	if (!empty($modSettings[$hook]))
-	{
-		$functions = explode(',', $modSettings[$hook]);
-		foreach ($functions as $function)
-		{
-			if (is_callable($function))
-				$function($msgOptions, $ticketOptions, $posterOptions); // this should be picked up by reference in the called function or it won't do anything!
-		}
-	}
+	call_integration_hook($hook, array($msgOptions, $ticketOptions, $posterOptions));
 
 	ignore_user_abort($previous_ignore_user_abort);
 
@@ -491,15 +483,7 @@ function shd_modify_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 	}
 
 	// Int hook
-	if (!empty($modSettings['shd_hook_modpost']))
-	{
-		$functions = explode(',', $modSettings['shd_hook_modpost']);
-		foreach ($functions as $function)
-		{
-			if (is_callable($function))
-				$function($msgOptions, $ticketOptions, $posterOptions); // this should be picked up by reference in the called function or it won't do anything!
-		}
-	}
+	call_integration_hook('shd_hook_modpost', array($msgOptions, $ticketOptions, $posterOptions));
 
 	ignore_user_abort($previous_ignore_user_abort);
 

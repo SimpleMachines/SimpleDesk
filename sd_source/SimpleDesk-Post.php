@@ -1862,15 +1862,7 @@ function shd_posting_additional_options()
 		),
 	);
 
-	if (!empty($modSettings['shd_hook_postingopts']))
-	{
-		$functions = explode(',', $modSettings['shd_hook_postingopts']);
-		foreach ($functions as $function)
-		{
-			if (is_callable($function))
-				$function(); // It's all in $context
-		}
-	}
+	call_integration_hook('shd_hook_postingopts');
 }
 
 /**

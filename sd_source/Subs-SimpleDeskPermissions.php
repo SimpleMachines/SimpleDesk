@@ -102,15 +102,7 @@ function shd_load_all_permission_sets()
 	shd_load_role_templates();
 
 	// Now engage any hooks.
-	if (!empty($modSettings['shd_hook_perms']))
-	{
-		$functions = explode(',', $modSettings['shd_hook_perms']);
-		foreach ($functions as $function)
-		{
-			if (is_callable($function))
-				$function(); // this one doesn't pass anything, everything's in $context
-		}
-	}
+	call_integration_hook('shd_hook_perms');
 }
 
 /**
@@ -225,15 +217,7 @@ function shd_load_role_templates()
 		),
 	);
 
-	if (!empty($modSettings['shd_hook_permstemplate']))
-	{
-		$functions = explode(',', $modSettings['shd_hook_permstemplate']);
-		foreach ($functions as $function)
-		{
-			if (is_callable($function))
-				$function(); // this one doesn't pass anything, everything's in $context
-		}
-	}
+	call_integration_hook('shd_hook_permstemplate');
 }
 
 /**

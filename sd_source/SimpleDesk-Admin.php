@@ -72,15 +72,7 @@ function shd_admin_main()
 	);
 
 	// Int hooks - after we basically set everything up (so it's manipulatable by the hook, but before we do the last bits of finalisation)
-	if (!empty($modSettings['shd_hook_hdadmin']))
-	{
-		$functions = explode(',', $modSettings['shd_hook_hdadmin']);
-		foreach ($functions as $function)
-		{
-			if (is_callable($function))
-				$function($subActions); // this should be picked up by reference in the called function or it won't do anything!
-		}
-	}
+	call_integration_hook('shd_hook_hdadmin', array($subActions));
 
 	// Make sure we can find a subaction. If not set, default to info
 	$_REQUEST['area'] = isset($_REQUEST['area']) && isset($subActions[$_REQUEST['area']]) ? $_REQUEST['area'] : 'helpdesk_info';
@@ -260,15 +252,7 @@ function shd_admin_options($return_config)
 	);
 
 	// Int hooks - after we basically set everything up (so it's manipulatable by the hook, but before we do the last bits of finalisation)
-	if (!empty($modSettings['shd_hook_hdadminopts']))
-	{
-		$functions = explode(',', $modSettings['shd_hook_hdadminopts']);
-		foreach ($functions as $function)
-		{
-			if (is_callable($function))
-				$function(); // everything should be in $context that we need to touch here
-		}
-	}
+	call_integration_hook('shd_hook_hdadminopts');
 
 	$_REQUEST['sa'] = isset($_REQUEST['sa']) && isset($context[$context['admin_menu_name']]['tab_data']['tabs'][$_REQUEST['sa']]) ? $_REQUEST['sa'] : 'display';
 
