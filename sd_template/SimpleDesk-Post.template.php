@@ -508,7 +508,8 @@ function template_ticket_additional_options()
 		echo '
 							</dd>
 						</dl>
-						<script type="text/javascript"><!-- // --><![CDATA[
+					</div>
+					<script type="text/javascript"><!-- // --><![CDATA[
 	var oAttach = new shd_attach_select({
 		file_item: "shd_attach",
 		file_container: "shd_attachlist_container",
@@ -528,7 +529,7 @@ function template_ticket_additional_options()
 
 		echo '
 	});
-						// ]]></script>';
+					// ]]></script>';
 	}
 }
 
