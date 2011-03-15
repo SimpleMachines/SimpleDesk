@@ -1300,6 +1300,31 @@ function shd_main_menu(&$menu_buttons)
 		// Add the helpdesk admin option to the admin menu
 		if (allowedTo('admin_forum') || shd_allowed_to('admin_helpdesk'))
 		{
+			// It's possible the admin button got eaten already, so we may have to recreate it.
+			if (empty($menu_buttons['admin']))
+			{
+				$admin_menu = array(
+					'title' => $txt['admin'],
+					'href' => $scripturl . '?action=admin',
+					'show' => true,
+					'active_button' => false,
+					'sub_buttons' => array(
+					),
+				);
+
+				// Trouble is, now we've done that, it's in the wrong damn place. So step through and insert our menu into just after the SD menu
+				$old_menu_buttons = $menu_buttons;
+				$menu_buttons = array();
+
+				foreach ($old_menu_buttons as $area => $detail)
+				{
+					$menu_buttons[$area] = $detail;
+					
+					if ($area == 'helpdesk')
+						$menu_buttons['admin'] = $admin_menu;
+				}
+			}
+
 			// Make sure the button is visible if you can admin forum
 			$menu_buttons['admin']['show'] = true;
 
@@ -1334,13 +1359,19 @@ function shd_main_menu(&$menu_buttons)
 				$old_menu_buttons = $menu_buttons;
 				$menu_buttons = array();
 
+				$added = false;
 				foreach ($old_menu_buttons as $area => $detail)
 				{
 					$menu_buttons[$area] = $detail;
 					
 					if ($area == 'helpdesk')
+					{
 						$menu_buttons['profile'] = $profile_menu;
+						$added = true;
+					}
 				}
+				if (!$added)
+					$menu_buttons['profile'] = $profile_menu;
 			}
 
 			// Remove the is_last item
