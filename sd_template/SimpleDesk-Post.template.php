@@ -148,6 +148,10 @@ function template_ticket_custom_fields()
 {
 	global $context, $settings;
 
+	// No point showing the box if there's nothing to show in it
+	if (empty($context['ticket_form']['custom_fields']))
+		return;
+
 	echo '
 				<div class="information shd_customfields">';
 
@@ -407,8 +411,8 @@ function template_ticket_footer()
 	echo '
 					</div>
 				</div>
+				<br class="clear" />
 				<span class="botslice"><span></span></span>
-			</div>
 			</div>
 			<br />';
 }
