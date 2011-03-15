@@ -81,6 +81,7 @@ $txt['shd_profile_preferences_none_desc'] = 'There are no available preferences 
 $txt['shd_profile_save_prefs'] = 'Save Preferences';
 $txt['shd_prefs_updated'] = 'Preferences have been updated.';
 
+// Preferences: block numbers
 $txt['shd_pref_group_blocks'] = 'Blocks display';
 $txt['shd_pref_blocks_assigned_count'] = 'Number of tickets per page in the "Assigned to Me" block';
 $txt['shd_pref_blocks_new_count'] = 'Number of tickets per page in the "New Tickets" block';
@@ -89,6 +90,16 @@ $txt['shd_pref_blocks_user_count'] = 'Number of tickets per page in the "Tickets
 $txt['shd_pref_blocks_closed_count'] = 'Number of tickets per page in the "Closed Tickets" block';
 $txt['shd_pref_blocks_recycle_count'] = 'Number of tickets per page in the "Recycled Tickets" block';
 $txt['shd_pref_blocks_withdeleted_count'] = 'Number of tickets per page in the "Recycled Tickets" block';
+
+// Preferences: email notifications
+$txt['shd_pref_group_notify'] = 'Notifications By Email';
+$txt['shd_pref_notify_new_ticket'] = 'Email me when a new ticket is posted';
+$txt['shd_pref_notify_new_reply_own'] = 'Email me when one of my tickets is replied to';
+$txt['shd_pref_notify_new_reply_assigned'] = 'Email me when a ticket assigned to me is replied to';
+$txt['shd_pref_notify_new_reply_previous'] = 'Email me when a ticket I\'ve replied to before is replied to again';
+$txt['shd_pref_notify_new_reply_any'] = 'Email me when any ticket is replied to';
+$txt['shd_pref_notify_assign_me'] = 'Email me when a ticket is assigned to me';
+$txt['shd_pref_notify_assign_own'] = 'Email me when one of my tickets is assigned to staff';
 
 // Show tickets
 $txt['shd_profile_show_tickets_header'] = 'Tickets and replies posted by %s';

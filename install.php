@@ -391,6 +391,27 @@ $tables[] = array(
 	'error' => 'fatal',
 	'parameters' => array(),
 );
+$tables[] = array(
+	'table_name' => '{db_prefix}helpdesk_log_email',
+	'columns' => array(
+		db_field('id_email', 'int', 0, true, true),
+		db_field('lang', 'varchar', 20),
+		db_field('timestamp', 'int'),
+		db_field('id_recipient', 'mediumint'),
+		db_field('email_address', 'varchar', 255),
+		db_field('subject', 'varchar', 255),
+		db_field('body', 'text'),
+	),
+	'indexes' => array(
+		array(
+			'columns' => array('id_email'),
+			'type' => 'primary',
+		),
+	),
+	'if_exists' => 'update',
+	'error' => 'fatal',
+	'parameters' => array(),
+);
 
 // Oh joy, we've now made it to extra rows... (testing data)
 $rows = array();

@@ -523,6 +523,10 @@ function shd_save_ticket()
 			// Update our nice ticket store with the ticket id
 			$context['ticket_id'] = $ticketOptions['id'];
 			$context['ticket_form']['ticket'] = $ticketOptions['id'];
+			
+			// Handle notifications
+			require_once($sourcedir . '/sd_source/SimpleDesk-Notifications.php');
+			shd_notifications_notify_newticket($msgOptions, $ticketOptions, $posterOptions);
 		}
 		else
 		{
@@ -1083,6 +1087,10 @@ function shd_save_reply()
 			}
 
 			shd_create_ticket_post($msgOptions, $ticketOptions, $posterOptions);
+			
+			// Handle notifications
+			require_once($sourcedir . '/sd_source/SimpleDesk-Notifications.php');
+			shd_notifications_notify_newreply($msgOptions, $ticketOptions, $posterOptions);
 		}
 		else
 		{

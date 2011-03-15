@@ -21,6 +21,7 @@
 		<require-file name="language-php/SimpleDeskLogAction.english.php" destination="$languagedir" />
 		<require-file name="language-php/SimpleDeskAdmin.english.php" destination="$languagedir" />
 		<require-file name="language-php/SimpleDeskWho.english.php" destination="$languagedir" />
+		<require-file name="language-php/SimpleDeskNotifications.english.php" destination="$languagedir" />
 		<require-file name="language-php/SimpleDeskProfile.english.php" destination="$languagedir" />
 
 		<!-- sources -->
@@ -47,7 +48,6 @@
 		<!-- bundled plugins -->
 		<require-dir name="sd_plugins_source" destination="$sourcedir" />
 		<require-dir name="sd_plugins_template" destination="$themes_dir/default" />
-		<require-file name="sd_plugins_lang/email_notifications/SDPluginEmailNotifications.english.php" destination="$languagedir" />
 		<require-file name="sd_plugins_lang/SDPluginFrontPage.english.php" destination="$languagedir" />
 
 		<!-- database changes -->
@@ -72,6 +72,7 @@
 		<remove-file name="$languagedir/SimpleDeskLogAction.english.php" />
 		<remove-file name="$languagedir/SimpleDeskAdmin.english.php" />
 		<remove-file name="$languagedir/SimpleDeskWho.english.php" />
+		<remove-file name="$languagedir/SimpleDeskNotifications.english.php" />
 		<remove-file name="$languagedir/SimpleDeskProfile.english.php" />
 
 		<!-- source files, removed -->
@@ -91,8 +92,6 @@
 		<remove-file name="$themedir/css/helpdesk-ie6.css" />
 
 		<!-- bundled plugins removed (NOTE: done one by one to avoid eating existing plugins on upgrade) -->
-		<remove-dir name="$sourcedir/sd_plugins_source/email_notifications" />
-		<remove-file name="$languagedir/SDPluginEmailNotifications.english.php" />
 		<remove-file name="$languagedir/SDPluginFrontPage.english.php" />
 
 		<!-- scripts, removed -->

@@ -254,6 +254,7 @@ function shd_admin_bootstrap(&$admin_areas)
 						'admin' => array($txt['shd_admin_options_admin']),
 						'standalone' => array($txt['shd_admin_options_standalone']),
 						'actionlog' => array($txt['shd_admin_options_actionlog']),
+						'notifications' => array($txt['shd_admin_options_notifications']),
 					),
 				),
 				'helpdesk_customfield' => array(

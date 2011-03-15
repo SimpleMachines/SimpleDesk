@@ -56,6 +56,7 @@ $txt['shd_admin_options_posting'] = 'Posting Options';
 $txt['shd_admin_options_admin'] = 'Administrative Options';
 $txt['shd_admin_options_standalone'] = 'Standalone Options';
 $txt['shd_admin_options_actionlog'] = 'Action Log Options';
+$txt['shd_admin_options_notifications'] = 'Notifications Options';
 //@}
 
 //! @name Descriptions for the page items.
@@ -67,6 +68,7 @@ $txt['shd_admin_options_posting_desc'] = 'Here you can edit posting settings, su
 $txt['shd_admin_options_admin_desc'] = 'Here you can set some general administrative options for the helpdesk.';
 $txt['shd_admin_options_standalone_desc'] = 'This area manages the standalone mode for the helpdesk, that effectively disables the forum part of an SMF installation.';
 $txt['shd_admin_options_actionlog_desc'] = 'This area allows you to configure what items can be logged within the helpdesk action log.';
+$txt['shd_admin_options_notifications_desc'] = 'This area allows you to configure email notifications being sent to users when their tickets change.';
 $txt['shd_admin_actionlog_desc'] = 'This is a list of all actions, such as resolved tickets, edited tickets and more, carried out in the helpdesk.';
 $txt['shd_admin_support_desc'] = 'This area will help you get through to SimpleDesk.net quickly and effectively - the post will include some information helpful for our Support team, about your installation (like SMF version and SimpleDesk version).';
 $txt['shd_admin_help'] = 'This is the administration panel for the helpdesk. Here you can manage settings, get news and updates on this modification, and view helpdesk logs.';
@@ -192,6 +194,22 @@ $txt['shd_logopt_restore'] = 'Log tickets and replies being restored';
 $txt['shd_logopt_permadelete'] = 'Log tickets and replies being permadeleted';
 $txt['shd_logopt_relationships'] = 'Log any changes in ticket relationships';
 $txt['shd_logopt_split'] = 'Log splitting of a ticket into two tickets';
+
+$txt['shd_notify_send_to'] = 'Will be sent to';
+$txt['shd_notify_ticket_starter'] = 'the user who started the ticket (if set in their preferences)';
+$txt['shd_notify_nobody'] = 'nobody';
+//@}
+
+//! @name Configuration items on the Notifications Options page
+//@{
+$txt['shd_notify_log'] = 'Log notifications being sent (what notification, when sent, user(s) involved)';
+$txt['shd_notify_new_ticket'] = 'Allow staff to receive notifications on new tickets';
+$txt['shd_notify_new_reply_own'] = 'Allow users to receive notifications when their tickets are replied to';
+$txt['shd_notify_new_reply_assigned'] = 'Allow staff to receive notifications when tickets assigned to them are replied to';
+$txt['shd_notify_new_reply_previous'] = 'Allow staff to receive notifications when tickets they have replied to, are replied to again';
+$txt['shd_notify_new_reply_any'] = 'Allow staff to receive notifications when any tickets are replied to';
+$txt['shd_notify_assign_me'] = 'Allow staff to receive notifications when a ticket is assigned to them';
+$txt['shd_notify_assign_own'] = 'Allow users to receive notifications when their tickets are assigned to staff';
 //@}
 
 //! @name General language strings for the action log (entries are contained in SimpleDesk-LogAction.english.php)

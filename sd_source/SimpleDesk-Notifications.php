@@ -15,11 +15,11 @@
 #                                                                 #
 ###################################################################
 # SimpleDesk Version: 1.0 Felidae                                 #
-# File Info: SDPluginEmailNotifications.php / 1.0 Felidae         #
+# File Info: SimpleDesk-Notifications.php / 1.0 Felidae           #
 ###################################################################
 
 /**
- *	@package plugin-emailnotifications
+ *	@package source
  *	@since 1.1
 */
 
@@ -31,7 +31,7 @@ function shd_notifications_notify_newticket(&$msgOptions, &$ticketOptions, &$pos
 	global $smcFunc, $context, $modSettings, $scripturl;
 
 	// Enabled?
-	if (empty($modSettings['shd_notify_new_ticket']) || !in_array('email_notifications', $context['shd_plugins']))
+	if (empty($modSettings['shd_notify_new_ticket']))
 		return;
 
 	// So, we're getting the list of people that are being affected by this ticket being posted. Basically, that's a list of staff on new ticket, less people who've set preferences otherwise.
@@ -41,10 +41,10 @@ function shd_notifications_notify_newticket(&$msgOptions, &$ticketOptions, &$pos
 
 	$members = array_diff($members, array($context['user']['id']));
 
-	// Get the default preference (since this is controlled by plugin, i.e. here, we could just hardcode it, but in case someone modifies the default, let's load it from here)
-	$pref_groups = array();
-	$base_prefs = array();
-	shd_notifications_prefs($pref_groups, $base_prefs);
+	// Get the default preferences
+	$prefs = shd_load_user_prefs(false);
+	$pref_groups = $prefs['groups'];
+	$base_prefs = $prefs['prefs'];
 
 	// Apply the default preference
 	$members = array_flip($members);
@@ -52,6 +52,9 @@ function shd_notifications_notify_newticket(&$msgOptions, &$ticketOptions, &$pos
 		$members[$member] = $base_prefs['notify_new_ticket']['default'];
 
 	// Grab from the database
+	if (empty($members))
+		return;
+
 	$query = $smcFunc['db_query']('', '
 		SELECT id_member, value
 		FROM {db_prefix}helpdesk_preferences
@@ -92,10 +95,6 @@ function shd_notifications_notify_newticket(&$msgOptions, &$ticketOptions, &$pos
 function shd_notifications_notify_newreply(&$msgOptions, &$ticketOptions, &$posterOptions)
 {
 	global $smcFunc, $context, $modSettings, $scripturl;
-
-	// Is this mic on?
-	if (!in_array('email_notifications', $context['shd_plugins']))
-		return;
 
 	// We did actually get a reply? Sometimes shd_modify_ticket_post() is called for other things, not just on reply.
 	if (empty($msgOptions['body']))
@@ -169,10 +168,10 @@ function shd_notifications_notify_newreply(&$msgOptions, &$ticketOptions, &$post
 	if (!empty($members[$context['user']['id']]))
 		unset($members[$context['user']['id']]);
 
-	// Get the default preference (since this is controlled by plugin, i.e. here, we could just hardcode it, but in case someone modifies the default, let's load it from here)
-	$pref_groups = array();
-	$base_prefs = array();
-	shd_notifications_prefs($pref_groups, $base_prefs);
+	// Get the default preferences
+	$prefs = shd_load_user_prefs(false);
+	$pref_groups = $prefs['groups'];
+	$base_prefs = $prefs['prefs'];
 
 	// Build a list of users -> default prefs
 	$member_prefs = array();
@@ -219,7 +218,7 @@ function shd_notifications_notify_assign(&$ticket, &$assignment)
 {
 	global $smcFunc, $context, $modSettings, $scripturl;
 
-	if (!in_array('email_notifications', $context['shd_plugins']) || (empty($modSettings['shd_notify_assign_me']) && empty($modSettings['shd_notify_assign_own'])))
+	if (empty($modSettings['shd_notify_assign_me']) && empty($modSettings['shd_notify_assign_own']))
 		return;
 
 	$ticketinfo = shd_load_ticket($ticket);
@@ -232,10 +231,10 @@ function shd_notifications_notify_assign(&$ticket, &$assignment)
 		'subject' => $ticketinfo['subject'],
 	);
 
-	// Get the default preference (since this is controlled by plugin, i.e. here, we could just hardcode it, but in case someone modifies the default, let's load it from here)
-	$pref_groups = array();
-	$base_prefs = array();
-	shd_notifications_prefs($pref_groups, $base_prefs);
+	// Get the default preferences
+	$prefs = shd_load_user_prefs(false);
+	$pref_groups = $prefs['groups'];
+	$base_prefs = $prefs['prefs'];
 
 	$members = array();
 	$member_prefs = array();
@@ -337,9 +336,10 @@ function shd_notify_users($notify_data)
 	if (!function_exists('sendmail'))
 		require($sourcedir . '/Subs-Post.php');
 
+	$log = array();
 	foreach ($notify_lang as $this_lang => $lang_members)
 	{
-		shd_load_language('SDPluginEmailNotifications', $this_lang);
+		shd_load_language('SimpleDeskNotifications', $this_lang);
 
 		foreach ($lang_members as $member)
 		{
@@ -350,181 +350,29 @@ function shd_notify_users($notify_data)
 			$body = $txt['template_body_notify_' . $email_type] . "\n\n" . $txt['regards_team'];			
 			$body = str_replace(array_keys($replacements), array_values($replacements), $body);
 
+			$log[] = array(
+				'lang' => $this_lang,
+				'timestamp' => time(), // in case the call takes more than a second total
+				'id_recipient' => $member,
+				'email_address' => $emails[$member],
+				'subject' => $subject,
+				'body' => $body,
+			);
+
 			//function sendmail($to, $subject, $message, $from = null, $message_id = null, $send_html = false, $priority = 3, $hotmail_fix = null, $is_private = false)
 			sendmail($emails[$member], $subject, $body, null, 'shd_notify_' . $email_type . '_' . $member);
 		}
 	}
-}
 
-/**
- *	Displays notifications options within SD ACP / Options / Notifications
- *
- *	<ul>
- *	<li>'shd_notify_new_ticket' (checkbox) - if checked, staff have the option of being notified when a new ticket is posted</li>
- *	<li>'shd_notify_new_reply_own' (checkbox) - if checked, users have the option to have notifications upon reply to any ticket they started</li>
- *	<li>'shd_notify_new_reply_assigned' (checkbox) - if checked, staff have the option to select notifications upon reply to any ticket assigned to them</li>
- *	<li>'shd_notify_new_reply_previous' (checkbox) - if checked, staff have the option to select notifications upon reply to any ticket they already replied to</li>
- *	<li>'shd_notify_new_reply_any' (checkbox) - if checked, staff have the option to select notifications upon any reply to any ticket they can see</li>
- *	<li>'shd_notify_assign_me' (checkbox) - if checked, staff have the option to have notifications sent to them when tickets are assigned to them</li>
- *	<li>'shd_notify_assign_own' (checkbox) - if checked, users have the option to be notified when one of their tickets is assigned to a staff member</li>
- *	</ul>
- *
- *	@param bool $return_config Whether to return configuration items or not; this is provided solely for SMF ACP compatibility (it expects to pass bool true in to get a list of options)
- *
- *	@return array An array of items that make up the search options on the given admin page, each item is itself an array of (type, option name/language string, [other related information])
-*/
-function shd_modify_notifications_options($return_config)
-{
-	global $context, $modSettings, $txt;
-
-	$config_vars = array(
-		array('check', 'shd_notify_new_ticket'),
-		array('check', 'shd_notify_new_reply_own'),
-		array('check', 'shd_notify_new_reply_assigned'),
-		array('check', 'shd_notify_new_reply_previous'),
-		array('check', 'shd_notify_new_reply_any'),
-		array('check', 'shd_notify_assign_me'),
-		array('check', 'shd_notify_assign_own'),
-	);
-	$context['settings_title'] = $txt['shd_admin_options_notifications'];
-	$context['settings_icon'] = 'email.png';
-
-	// If we're being called from admin search, just return stuff
-	if ($return_config)
-		return $config_vars;
-
-	// Otherwise... this is where things get... interesting.
-	$subtext = array(
-		'shd_notify_new_ticket' => '',
-		'shd_notify_new_reply_own' => $txt['shd_notify_send_to'] . ': ' . $txt['shd_notify_ticket_starter'],
-		'shd_notify_new_reply_assigned' => '',
-		'shd_notify_new_reply_previous' => '',
-		'shd_notify_new_reply_any' => '',
-		'shd_notify_assign_me' => '',
-		'shd_notify_assign_own' => $txt['shd_notify_send_to'] . ': ' . $txt['shd_notify_ticket_starter'],
-	);
-
-	$staff = shd_members_allowed_to('shd_staff');
-
-	foreach ($config_vars as $id => $item)
-	{
-		list(, $item_id) = $item;
-		if (!empty($subtext[$item_id]))
-			$config_vars[$id]['subtext'] = $subtext[$item_id];
-	}
-
-	return $config_vars;
-}
-
-function shd_notifications_adminmenu(&$admin_areas)
-{
-	global $context, $modSettings, $txt;
-
-	// Enabled?
-	if (!in_array('email_notifications', $context['shd_plugins']))
-		return;
-
-	$admin_areas['helpdesk_info']['areas']['helpdesk_options']['subsections']['notifications'] = array($txt['shd_admin_options_notifications']);
-}
-
-function shd_notifications_hdadminopts()
-{
-	global $context, $modSettings, $txt;
-
-	// Enabled?
-	if (!in_array('email_notifications', $context['shd_plugins']))
-		return;
-
-	$context[$context['admin_menu_name']]['tab_data']['tabs']['notifications'] = array(
-		'description' => $txt['shd_admin_options_notifications_desc'],
-		'function' => 'shd_modify_notifications_options',
-	);
-}
-
-function shd_notifications_hdadminoptssrch(&$settings_search)
-{
-	global $context, $modSettings;
-
-	// Enabled?
-	if (!in_array('email_notifications', $context['shd_plugins']))
-		return;
-
-	$settings_search[] = array('shd_modify_notifications_options', 'area=helpdesk_options;sa=notifications');
-}
-
-function shd_notifications_prefs(&$pref_groups, &$base_prefs)
-{
-	global $context, $modSettings;
-
-	// Enabled?
-	if (!in_array('email_notifications', $context['shd_plugins']))
-		return;
-
-	$pref_groups += array(
-		'notify' => array(
-			'icon' => 'email.png',
-			'enabled' => true,
-		),
-	);
-
-	$base_prefs += array(
-		'notify_new_ticket' => array(
-			'default' => 1,
-			'type' => 'check',
-			'icon' => 'log_newticket.png',
-			'group' => 'notify',
-			'permission' => 'shd_staff',
-			'show' => !empty($modSettings['shd_notify_new_ticket']),
-		),
-		'notify_new_reply_own' => array(
-			'default' => 1,
-			'type' => 'check',
-			'icon' => 'log_newreply.png',
-			'group' => 'notify',
-			'permission' => 'shd_new_ticket',
-			'show' => !empty($modSettings['shd_notify_new_reply_own']),
-		),
-		'notify_new_reply_assigned' => array(
-			'default' => 1,
-			'type' => 'check',
-			'icon' => 'log_assign.png',
-			'group' => 'notify',
-			'permission' => 'shd_staff',
-			'show' => !empty($modSettings['shd_notify_new_reply_assigned']),
-		),
-		'notify_new_reply_previous' => array(
-			'default' => 1,
-			'type' => 'check',
-			'icon' => 'log_newreply.png',
-			'group' => 'notify',
-			'permission' => 'shd_staff',
-			'show' => !empty($modSettings['shd_notify_new_reply_previous']),
-		),
-		'notify_new_reply_any' => array(
-			'default' => 1,
-			'type' => 'check',
-			'icon' => 'log_newreply.png',
-			'group' => 'notify',
-			'permission' => 'shd_staff',
-			'show' => !empty($modSettings['shd_notify_new_reply_any']),
-		),
-		'notify_assign_me' => array(
-			'default' => 1,
-			'type' => 'check',
-			'icon' => 'assign.png',
-			'group' => 'notify',
-			'permission' => 'shd_staff',
-			'show' => !empty($modSettings['shd_notify_assign_me']),
-		),
-		'notify_assign_own' => array(
-			'default' => 1,
-			'type' => 'check',
-			'icon' => 'assign.png',
-			'group' => 'notify',
-			'permission' => 'shd_new_ticket',
-			'show' => !empty($modSettings['shd_notify_assign_own']),
-		),
-	);
+	if (!empty($log) && !empty($modSettings['shd_notify_log']))
+		$smcFunc['db_insert']('insert',
+			'{db_prefix}helpdesk_log_email',
+			array(
+				'lang' => 'string', 'timestamp' => 'int', 'id_recipient' => 'int', 'email_address' => 'string', 'subject' => 'string', 'body' => 'string',
+			),
+			$log,
+			array('id_email')
+		);
 }
 
 ?>

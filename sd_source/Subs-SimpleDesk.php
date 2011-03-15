@@ -999,80 +999,144 @@ function shd_recalc_ids($ticket)
 function shd_load_user_prefs($user = 0)
 {
 	global $modSettings, $smcFunc, $user_info;
+	static $pref_groups = null, $base_prefs = null;
 
-	$pref_groups = array(
-		'blocks' => array(
-			'icon' => 'log.png',
-			'enabled' => true,
-		),
-	);
-
-	$base_prefs = array(
-		'blocks_assigned_count' => array(
-			'default' => 10,
-			'type' => 'int',
-			'icon' => 'assign.png',
-			'group' => 'blocks',
-			'permission' => 'shd_staff',
-			'show' => true,
-		),
-		'blocks_new_count' => array(
-			'default' => 10,
-			'type' => 'int',
-			'icon' => 'status.png',
-			'group' => 'blocks',
-			'permission' => 'access_helpdesk',
-			'show' => true,
-		),
-		'blocks_staff_count' => array(
-			'default' => 10,
-			'type' => 'int',
-			'icon' => 'staff.png',
-			'group' => 'blocks',
-			'permission' => 'access_helpdesk',
-			'show' => true,
-		),
-		'blocks_user_count' => array(
-			'default' => 10,
-			'type' => 'int',
-			'icon' => 'user.png',
-			'group' => 'blocks',
-			'permission' => 'access_helpdesk',
-			'show' => true,
-		),
-		'blocks_closed_count' => array(
-			'default' => 10,
-			'type' => 'int',
-			'icon' => 'resolved.png',
-			'group' => 'blocks',
-			'permission' => array('shd_resolve_ticket_own', 'shd_resolve_ticket_any'),
-			'show' => true,
-		),
-		'blocks_recycle_count' => array(
-			'default' => 10,
-			'type' => 'int',
-			'icon' => 'recycle.png',
-			'group' => 'blocks',
-			'permission' => 'shd_access_recyclebin',
-			'show' => true,
-		),
-		'blocks_withdeleted_count' => array(
-			'default' => 10,
-			'type' => 'int',
-			'icon' => 'recycle.png',
-			'group' => 'blocks',
-			'permission' => 'shd_access_recyclebin',
-			'show' => true,
-		),
-	);
-
-	// Now engage any hooks.
-	call_integration_hook('shd_hook_prefs', array($pref_groups, $base_prefs));
-
-	foreach ($base_prefs as $pref => $details)
+	if ($pref_groups === null)
 	{
-		if (empty($pref_groups[$details['group']]['enabled']) || empty($details['show']))
-			unset($base_prefs[$pref]);
+		$pref_groups = array(
+			'blocks' => array(
+				'icon' => 'log.png',
+				'enabled' => true,
+			),
+			'notify' => array(
+			'icon' => 'email.png',
+			'enabled' => true,
+			),
+		);
+
+		$base_prefs = array(
+			'blocks_assigned_count' => array(
+				'default' => 10,
+				'type' => 'int',
+				'icon' => 'assign.png',
+				'group' => 'blocks',
+				'permission' => 'shd_staff',
+				'show' => true,
+			),
+			'blocks_new_count' => array(
+				'default' => 10,
+				'type' => 'int',
+				'icon' => 'status.png',
+				'group' => 'blocks',
+				'permission' => 'access_helpdesk',
+				'show' => true,
+			),
+			'blocks_staff_count' => array(
+				'default' => 10,
+				'type' => 'int',
+				'icon' => 'staff.png',
+				'group' => 'blocks',
+				'permission' => 'access_helpdesk',
+				'show' => true,
+			),
+			'blocks_user_count' => array(
+				'default' => 10,
+				'type' => 'int',
+				'icon' => 'user.png',
+				'group' => 'blocks',
+				'permission' => 'access_helpdesk',
+				'show' => true,
+			),
+			'blocks_closed_count' => array(
+				'default' => 10,
+				'type' => 'int',
+				'icon' => 'resolved.png',
+				'group' => 'blocks',
+				'permission' => array('shd_resolve_ticket_own', 'shd_resolve_ticket_any'),
+				'show' => true,
+			),
+			'blocks_recycle_count' => array(
+				'default' => 10,
+				'type' => 'int',
+				'icon' => 'recycle.png',
+				'group' => 'blocks',
+				'permission' => 'shd_access_recyclebin',
+				'show' => true,
+			),
+			'blocks_withdeleted_count' => array(
+				'default' => 10,
+				'type' => 'int',
+				'icon' => 'recycle.png',
+				'group' => 'blocks',
+				'permission' => 'shd_access_recyclebin',
+				'show' => true,
+			),
+			'notify_new_ticket' => array(
+				'default' => 1,
+				'type' => 'check',
+				'icon' => 'log_newticket.png',
+				'group' => 'notify',
+				'permission' => 'shd_staff',
+				'show' => !empty($modSettings['shd_notify_new_ticket']),
+			),
+			'notify_new_reply_own' => array(
+				'default' => 1,
+				'type' => 'check',
+				'icon' => 'log_newreply.png',
+				'group' => 'notify',
+				'permission' => 'shd_new_ticket',
+				'show' => !empty($modSettings['shd_notify_new_reply_own']),
+			),
+			'notify_new_reply_assigned' => array(
+				'default' => 1,
+				'type' => 'check',
+				'icon' => 'log_assign.png',
+				'group' => 'notify',
+				'permission' => 'shd_staff',
+				'show' => !empty($modSettings['shd_notify_new_reply_assigned']),
+			),
+			'notify_new_reply_previous' => array(
+				'default' => 1,
+				'type' => 'check',
+				'icon' => 'log_newreply.png',
+				'group' => 'notify',
+				'permission' => 'shd_staff',
+				'show' => !empty($modSettings['shd_notify_new_reply_previous']),
+			),
+			'notify_new_reply_any' => array(
+				'default' => 1,
+				'type' => 'check',
+				'icon' => 'log_newreply.png',
+				'group' => 'notify',
+				'permission' => 'shd_staff',
+				'show' => !empty($modSettings['shd_notify_new_reply_any']),
+			),
+			'notify_assign_me' => array(
+				'default' => 1,
+				'type' => 'check',
+				'icon' => 'assign.png',
+				'group' => 'notify',
+				'permission' => 'shd_staff',
+				'show' => !empty($modSettings['shd_notify_assign_me']),
+			),
+			'notify_assign_own' => array(
+				'default' => 1,
+				'type' => 'check',
+				'icon' => 'assign.png',
+				'group' => 'notify',
+				'permission' => 'shd_new_ticket',
+				'show' => !empty($modSettings['shd_notify_assign_own']),
+			),
+		);
+
+		// Now engage any hooks.
+		call_integration_hook('shd_hook_prefs', array(&$pref_groups, &$base_prefs));
+
+		foreach ($base_prefs as $pref => $details)
+		{
+			if (empty($pref_groups[$details['group']]['enabled']) || empty($details['show']))
+				unset($base_prefs[$pref]);
+		}
 	}
 
 	// Do we just want the prefs list?

@@ -15,6 +15,7 @@
 	$settings_search[] = array('shd_modify_admin_options', 'area=helpdesk_options;sa=admin');
 	$settings_search[] = array('shd_modify_standalone_options', 'area=helpdesk_options;sa=standalone');
 	$settings_search[] = array('shd_modify_actionlog_options', 'area=helpdesk_options;sa=actionlog');
+	$settings_search[] = array('shd_modify_notifications_options', 'area=helpdesk_options;sa=notifications');
 
 	if (!empty($modSettings['shd_hook_hdadminoptssrch']))
 	{

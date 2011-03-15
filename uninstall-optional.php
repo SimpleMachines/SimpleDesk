@@ -63,6 +63,7 @@ $to_remove = array(
 	'shd_admins_not_assignable',
 	'shd_privacy_display',
 	'shd_disable_tickettotopic',
+	// Ticket logs
 	'shd_display_ticket_logs',
 	'shd_logopt_newposts',
 	'shd_logopt_editposts',
@@ -75,11 +76,21 @@ $to_remove = array(
 	'shd_logopt_restore',
 	'shd_logopt_permadelete',
 	'shd_logopt_relationships',
+	'shd_logopt_split',
+	// General options
 	'shd_maintenance_mode',
 	'shd_allow_wikilinks',
 	'shd_thank_you_post',
 	'shd_thank_you_nonstaff',
 	'shd_theme',
+	// Email notifications
+	'shd_notify_new_ticket',
+	'shd_notify_new_reply_own',
+	'shd_notify_new_reply_assigned',
+	'shd_notify_new_reply_previous',
+	'shd_notify_new_reply_any',
+	'shd_notify_assign_me',
+	'shd_notify_assign_own',
 	// Plugin related: general
 	'shd_enabled_plugins',
 	// Plugin: source load hooks
@@ -113,12 +124,6 @@ $to_remove = array(
 	'shd_hook_hdadminopts',
 	'shd_hook_hdadminoptssrch',
 	'shd_hook_hdprofile',
-	// Plugin: bundled email notifications plugins
-	'shd_notify_new_ticket',
-	'shd_notify_new_reply_own',
-	'shd_notify_new_reply_assigned',
-	'shd_notify_new_reply_previous',
-	'shd_notify_new_reply_any',
 );
 
 global $modSettings;

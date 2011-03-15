@@ -293,6 +293,10 @@ function shd_commit_assignment($ticket, $assignment)
 
 	shd_modify_ticket_post($msgOptions, $ticketOptions, $posterOptions);
 
+	// Handle notifications
+	require_once($sourcedir . '/sd_source/SimpleDesk-Notifications.php');
+	shd_notifications_notify_assign($ticket, $assignment);
+
 	if (!empty($context['shd_return_to']) && $context['shd_return_to'] == 'home')
 		redirectexit('action=helpdesk;sa=main');
 	else

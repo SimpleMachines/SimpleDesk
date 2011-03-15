@@ -248,6 +248,10 @@ function shd_admin_options($return_config)
 				'description' => $txt['shd_admin_options_actionlog_desc'],
 				'function' => 'shd_modify_actionlog_options',
 			),
+			'notifications' => array(
+				'description' => $txt['shd_admin_options_notifications_desc'],
+				'function' => 'shd_modify_notifications_options',
+			),
 		),
 	);
 
@@ -575,6 +579,66 @@ function shd_modify_actionlog_options($return_config)
 			shd_switchable_item("shd_logopt_relationships", state);
 			/*shd_switchable_item("shd_logopt_split", state);*/
 		}';
+
+	return $config_vars;
+}
+
+/**
+ *	Displays notifications options within SD ACP / Options / Notifications
+ *
+ *	<ul>
+ *	<li>'shd_notify_new_ticket' (checkbox) - if checked, staff have the option of being notified when a new ticket is posted</li>
+ *	<li>'shd_notify_new_reply_own' (checkbox) - if checked, users have the option to have notifications upon reply to any ticket they started</li>
+ *	<li>'shd_notify_new_reply_assigned' (checkbox) - if checked, staff have the option to select notifications upon reply to any ticket assigned to them</li>
+ *	<li>'shd_notify_new_reply_previous' (checkbox) - if checked, staff have the option to select notifications upon reply to any ticket they already replied to</li>
+ *	<li>'shd_notify_new_reply_any' (checkbox) - if checked, staff have the option to select notifications upon any reply to any ticket they can see</li>
+ *	<li>'shd_notify_assign_me' (checkbox) - if checked, staff have the option to have notifications sent to them when tickets are assigned to them</li>
+ *	<li>'shd_notify_assign_own' (checkbox) - if checked, users have the option to be notified when one of their tickets is assigned to a staff member</li>
+ *	</ul>
+ *
+ *	@param bool $return_config Whether to return configuration items or not; this is provided solely for SMF ACP compatibility (it expects to pass bool true in to get a list of options)
+ *
+ *	@return array An array of items that make up the search options on the given admin page, each item is itself an array of (type, option name/language string, [other related information])
+*/
+function shd_modify_notifications_options($return_config)
+{
+	global $context, $modSettings, $txt;
+
+	$config_vars = array(
+		array('check', 'shd_notify_new_ticket'),
+		array('check', 'shd_notify_new_reply_own'),
+		array('check', 'shd_notify_new_reply_assigned'),
+		array('check', 'shd_notify_new_reply_previous'),
+		array('check', 'shd_notify_new_reply_any'),
+		array('check', 'shd_notify_assign_me'),
+		array('check', 'shd_notify_assign_own'),
+	);
+	$context['settings_title'] = $txt['shd_admin_options_notifications'];
+	$context['settings_icon'] = 'email.png';
+
+	// If we're being called from admin search, just return stuff
+	if ($return_config)
+		return $config_vars;
+
+	// Otherwise... this is where things get... interesting.
+	$subtext = array(
+		'shd_notify_new_ticket' => '',
+		'shd_notify_new_reply_own' => $txt['shd_notify_send_to'] . ': ' . $txt['shd_notify_ticket_starter'],
+		'shd_notify_new_reply_assigned' => '',
+		'shd_notify_new_reply_previous' => '',
+		'shd_notify_new_reply_any' => '',
+		'shd_notify_assign_me' => '',
+		'shd_notify_assign_own' => $txt['shd_notify_send_to'] . ': ' . $txt['shd_notify_ticket_starter'],
+	);
+
+	$staff = shd_members_allowed_to('shd_staff');
+
+	foreach ($config_vars as $id => $item)
+	{
+		list(, $item_id) = $item;
+		if (!empty($subtext[$item_id]))
+			$config_vars[$id]['subtext'] = $subtext[$item_id];
+	}
 
 	return $config_vars;
 }
