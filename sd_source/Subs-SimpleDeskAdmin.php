@@ -204,4 +204,108 @@ function shd_count_action_log_entries($clause = '')
 	return $entry_count;
 }
 
+/**
+ *	Perform all the operations required for SimpleDesk to safely start operations inside the admin panel.
+ *
+ *	@param array &$admin_areas The full admin area array from SMF's Admin.php.
+ *	@since 1.1
+*/
+function shd_admin_bootstrap(&$admin_areas)
+{
+	global $sourcedir, $modSettings, $txt, $context, $scripturl;
+
+	// Load the main admin language files and any needed for SD plugins in the admin panel.
+	require_once($sourcedir . '/sd_source/SimpleDesk-Admin.php');
+	shd_load_language('SimpleDeskAdmin');
+	shd_load_plugin_files('hdadmin');
+	shd_load_plugin_langfiles('hdadmin');
+
+	// Now add the main SimpleDesk menu
+	if (!empty($modSettings['helpdesk_active']))
+	{
+		// The helpdesk action log
+		if (empty($modSettings['shd_disable_action_log']))
+			$admin_areas['maintenance']['areas']['logs']['subsections']['helpdesklog'] = array($txt['shd_admin_helpdesklog'], 'admin_forum', 'url' => $scripturl . '?action=admin;area=helpdesk_info;sa=actionlog');
+
+		// The main menu
+		$admin_areas['helpdesk_info'] = array(
+			'title' => $txt['shd_helpdesk'],
+			'enabled' => allowedTo('admin_forum') || shd_allowed_to('admin_helpdesk'),
+			'areas' => array(
+				'helpdesk_info' => array(
+					'label' => $txt['shd_admin_info'],
+					'file' => 'sd_source/SimpleDesk-Admin.php',
+					'icon' => 'shd/simpledesk.png',
+					'function' => 'shd_admin_main',
+					'subsections' => array(
+						'main' => array($txt['shd_admin_info']),
+						'actionlog' => array($txt['shd_admin_actionlog'], 'enabled' => empty($modSettings['shd_disable_action_log'])),
+						'support' => array($txt['shd_admin_support']),
+					),
+				),
+				'helpdesk_options' => array(
+					'label' => $txt['shd_admin_options'],
+					'file' => 'sd_source/SimpleDesk-Admin.php',
+					'icon' => 'shd/options.png',
+					'function' => 'shd_admin_main',
+					'subsections' => array(
+						'display' => array($txt['shd_admin_options_display']),
+						'posting' => array($txt['shd_admin_options_posting']),
+						'admin' => array($txt['shd_admin_options_admin']),
+						'standalone' => array($txt['shd_admin_options_standalone']),
+						'actionlog' => array($txt['shd_admin_options_actionlog']),
+					),
+				),
+				'helpdesk_customfield' => array(
+					'label' => $txt['shd_admin_custom_fields'],
+					'file' => 'sd_source/SimpleDesk-Admin.php',
+					'icon' => 'shd/custom_fields.png',
+					'function' => 'shd_admin_main',
+					'subsections' => array(
+					),
+				),
+				'helpdesk_permissions' => array(
+					'label' => $txt['shd_admin_permissions'],
+					'file' => 'sd_source/SimpleDesk-Admin.php',
+					'icon' => 'shd/permissions.png',
+					'function' => 'shd_admin_main',
+					'subsections' => array(
+					),
+				),
+				'helpdesk_plugins' => array(
+					'label' => $txt['shd_admin_plugins'],
+					'file' => 'sd_source/SimpleDesk-Admin.php',
+					'icon' => 'shd/plugins.png',
+					'function' => 'shd_admin_main',
+					'subsections' => array(
+					),
+				),
+			),
+		);
+
+		// Now engage any hooks.
+		call_integration_hook('shd_hook_menu', &$admin_areas);
+	}
+}
+
+/**
+ *	Add the SimpleDesk option into the Core Features page inside the admin panel.
+ *
+ *	@param array &$core_features The array of Core Features as provided by ManageSettings.php
+*/
+function shd_admin_core_features(&$core_features)
+{
+	$temp = $core_features;
+	$core_features = array();
+
+	foreach ($temp as $k => $v)
+	{
+		// Insert it before the moderation log
+		if ($k == 'ml')
+			$core_features['shd'] = array('url' => 'action=admin;area=helpdesk_info');
+
+		$core_features[$k] = $v;
+	}
+}
+
 ?>

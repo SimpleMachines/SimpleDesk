@@ -1108,6 +1108,21 @@ function shd_load_plugin_langfiles($hook = '')
 }
 
 /**
+ *	Adds the button to the thread view for moving topics into the helpdesk, if appropriate.
+ *
+ *	This explicitly relies on the display template hook for such things. If the theme does not provide it, the theme author needs to update their theme.
+ *
+ *	@since 1.1
+*/
+function shd_display_btn_mvtopic(&$normal_buttons)
+{
+	global $context, $txt, $scripturl, $modSettings;
+
+	$context['can_move_to_helpdesk'] = !empty($modSettings['helpdesk_active']) && empty($modSettings['shd_disable_tickettotopic']) && empty($modSettings['shd_helpdesk_only']) && shd_allowed_to('shd_topic_to_ticket');
+	$normal_buttons = array_merge($normal_buttons, array('topictoticket' => array('test' => 'can_move_to_helpdesk', 'text' => 'shd_move_topic_to_ticket', 'lang' => true, 'url' => $scripturl . '?action=helpdesk;sa=topictoticket;topic=' . $context['current_topic'] . ';' . $context['session_var'] . '=' . $context['session_id'])));
+}
+
+/**
  *	Placeholder for calling the scheduled maintenance functions.
  *
  *	All scheduled tasks have to have the name prefix scheduled_ and must be defined by the time we get to running AutoTask() in Scheduled.php. Short of modifying that file, we can define a placeholder here (which will exist for AutoTask) and have that be called.
@@ -1121,4 +1136,269 @@ function scheduled_simpledesk()
 	require($sourcedir . '/sd_source/SimpleDesk-Scheduled.php');
 	return shd_scheduled();
 }
+
+/**
+ *	Adds the SimpleDesk action to the action list, and also handles most of the shutting down of forum items in helpdesk-only mode.
+ *
+ *	@param string &$actionArray The master list of actions from index.php
+ *
+ *	@since 1.1
+*/
+function shd_init_actions(&$actionArray)
+{
+	global $modSettings;
+
+	// Deal with SimpleDesk. If we're enabling HD only mode, rebuild everything, otherwise just add it to the array.
+	$actionArray['helpdesk'] = array('sd_source/SimpleDesk.php', 'shd_main');
+
+	// Now engage any SD specific hooks.
+	call_integration_hook('shd_hook_actions', $actionArray);
+
+	if (!empty($modSettings['shd_helpdesk_only']) && $modSettings['helpdesk_active'])
+	{
+		// Firstly, remove all the standard actions we neither want nor need.
+		// Note we did this to prevent breakage of other mods that may be installed, e.g. gallery or portal or something.
+		$unwanted_actions = array('announce', 'attachapprove', 'buddy', 'calendar', 'clock', 'collapse', 'deletemsg', 'display', 'editpoll', 'editpoll2',
+			'emailuser', 'lock', 'lockvoting', 'markasread', 'mergetopics', 'moderate', 'modifycat', 'modifykarma', 'movetopic', 'movetopic2',
+			'notify', 'notifyboard', 'post', 'post2', 'printpage', 'quotefast', 'quickmod', 'quickmod2', 'recent', 'reminder', 'removepoll', 'removetopic2',
+			'reporttm', 'restoretopic', 'search', 'search2', 'sendtopic', 'smstats', 'splittopics', 'stats', 'sticky', 'trackip', 'about:mozilla', 'about:unknown',
+			'unread', 'unreadreplies', 'vote', 'viewquery', 'who', '.xml', 'xmlhttp');
+
+		// that's the generic stuff, now for specific options
+		if (!empty($modSettings['shd_disable_pm']))
+			$unwanted_actions[] = 'pm';
+
+		if (!empty($modSettings['shd_disable_mlist']))
+			$unwanted_actions[] = 'mlist';
+
+		foreach ($unwanted_actions as $unwanted)
+			if (isset($actionArray[$unwanted]))
+				unset($actionArray[$unwanted]);
+
+		// Secondly, rewrite the defaults to point to helpdesk, for unknown actions. I'm doing this rather than munging the main code - easier to unbreak stuff
+		if (empty($actionArray[$_GET['action']]))
+			$_GET['action'] = 'helpdesk';
+	}
+}
+
+/**
+ *	Last-minute buffer replacements to be made, e.g. removing unwanted content in helpdesk-only mode.
+ *
+ *	@since 1.1
+*/
+function shd_buffer_replace(&$buffer)
+{
+	global $modSettings;
+
+	if (!empty($modSettings['helpdesk_active']))
+	{
+		$shd_replacements = array();
+		$shd_preg_replacements = array();
+
+		// If we're in helpdesk standalone mode, purge unread type links
+		if (!empty($modSettings['shd_helpdesk_only']))
+		{
+			$shd_preg_replacements += array(
+				'~<a(.+)action=unread(.+)</a>~iuU' => '',
+				'~<form([^<]+)action=search2(.+)</form>~iuUs' => '',
+			);
+		}
+
+		if (!empty($shd_replacements)) // no sense doing preg when regular will do
+			$buffer = str_replace(array_keys($shd_replacements), array_values($shd_replacements), $buffer);
+		if (!empty($shd_preg_replacements))
+			$buffer = preg_replace(array_keys($shd_preg_replacements), array_values($shd_preg_replacements), $buffer);
+	}
+
+	// And any replacements a buffer might want to make...
+	call_integration_hook('shd_hook_buffer', $buffer);
+
+	return $buffer;
+}
+
+/**
+ *	Add the SimpleDesk options to the main site menu.
+ *
+ *	@param array &$menu_buttons The main menu buttons as provided by Subs.php.
+ *	@since 1.1
+*/
+function shd_main_menu(&$menu_buttons)
+{
+	global $context, $txt, $scripturl, $modSettings;
+
+	if (!empty($modSettings['helpdesk_active']))
+	{
+		// Stuff we'll always do in SD if active
+
+		// 1. Add the main menu if we can.
+		if (shd_allowed_to(array('access_helpdesk', 'admin_helpdesk')))
+		{
+			// Because some items may have been removed at this point, let's try a list of possible places after which we can add the button.
+			$order = array('search', 'profile', 'forum', 'pm', 'help', 'home');
+			$pos = null;
+			foreach ($order as $item)
+				if (isset($menu_buttons[$item]))
+				{
+					$pos = $item;
+					break;
+				}
+
+			if ($pos === null)
+				$menu_buttons['helpdesk'] = array();
+			else
+			{
+				// OK, we're adding it after something.
+				$temp = $menu_buttons;
+				$menu_buttons = array();
+				foreach ($temp as $k => $v)
+				{
+					$menu_buttons[$k] = $v;
+					if ($k == $pos)
+						$menu_buttons['helpdesk'] = array();
+				}
+			}
+
+			$menu_buttons['helpdesk'] += array(
+				'title' => $modSettings['helpdesk_active'] && SMF != 'SSI' ? shd_get_active_tickets() : $txt['shd_helpdesk'],
+				'href' => $scripturl . '?action=helpdesk;sa=main',
+				'show' => $modSettings['helpdesk_active'] && shd_allowed_to(array('access_helpdesk', 'admin_helpdesk')),
+				'active_button' => false,
+				'sub_buttons' => array(
+					'newticket' => array(
+						'title' => $txt['shd_new_ticket'],
+						'href' => $scripturl . '?action=helpdesk;sa=newticket',
+						'show' => SMF == 'SSI' ? false : shd_allowed_to('shd_new_ticket'),
+					),
+					'newproxyticket' => array(
+						'title' => $txt['shd_new_ticket_proxy'],
+						'href' => $scripturl . '?action=helpdesk;sa=newticket;proxy',
+						'show' => SMF == 'SSI' ? false : shd_allowed_to('shd_new_ticket') && shd_allowed_to('shd_post_proxy'),
+					),
+					'closedtickets' => array(
+						'title' => $txt['shd_tickets_closed'],
+						'href' => $scripturl . '?action=helpdesk;sa=closedtickets',
+						'show' => SMF == 'SSI' ? false : (shd_allowed_to('shd_resolve_ticket_own') || shd_allowed_to('shd_resolve_ticket_any')),
+					),
+					'recyclebin' => array(
+						'title' => $txt['shd_recycle_bin'],
+						'href' => $scripturl . '?action=helpdesk;sa=recyclebin',
+						'show' => SMF == 'SSI' ? false : shd_allowed_to('shd_access_recyclebin'),
+						'is_last' => true,
+					),
+				),
+			);
+
+			$item = false;
+			foreach ($menu_buttons['helpdesk']['sub_buttons'] as $key => $value)
+				if (!empty($value['show']))
+					$item = $key;
+
+			if (!empty($item))
+				$menu_buttons['helpdesk']['sub_buttons'][$key]['is_last'] = true;
+		}
+
+		// Add the helpdesk admin option to the admin menu
+		if (allowedTo('admin_forum') || shd_allowed_to('admin_helpdesk'))
+		{
+			// Make sure the button is visible if you can admin forum
+			$menu_buttons['admin']['show'] = true;
+
+			// Remove the is_last item
+			foreach ($menu_buttons['admin']['sub_buttons'] as $key => $value)
+				if (!empty($value['is_last']))
+					unset($menu_buttons['admin']['sub_buttons'][$key]['is_last']);
+
+			// Add the new button
+			$menu_buttons['admin']['sub_buttons']['helpdesk_admin'] = array(
+				'title' => $txt['shd_helpdesk'],
+				'href' => $scripturl . '?action=admin;area=helpdesk_info',
+				'show' => true,
+				'is_last' => true,
+			);
+		}
+
+		if (shd_allowed_to(array('shd_view_profile_own', 'shd_view_profile_any')))
+		{
+			// Hmm, this could be tricky. It's possible the main menu has been eaten by permissions at this point, so just in case, reconstruct what's missing.
+			if (empty($menu_buttons['profile']))
+			{
+				$profile_menu = array(
+					'title' => $txt['profile'],
+					'href' => $scripturl . '?action=profile',
+					'active_button' => false,
+					'sub_buttons' => array(
+					),
+				);
+
+				// Trouble is, now we've done that, it's in the wrong damn place. So step through and insert our menu into just after the SD menu
+				$old_menu_buttons = $menu_buttons;
+				$menu_buttons = array();
+
+				foreach ($old_menu_buttons as $area => $detail)
+				{
+					$menu_buttons[$area] = $detail;
+					
+					if ($area == 'helpdesk')
+						$menu_buttons['profile'] = $profile_menu;
+				}
+			}
+
+			// Remove the is_last item
+			foreach ($menu_buttons['profile']['sub_buttons'] as $key => $value)
+			{
+				if (!empty($value['is_last']))
+					unset($menu_buttons['profile']['sub_buttons'][$key]['is_last']);
+			}
+
+			// Add the helpdesk profile to the profile menu (either the original or our reconstituted one)
+			$menu_buttons['profile']['show'] = true;
+			$menu_buttons['profile']['sub_buttons']['hd_profile'] = array(
+				'title' => $txt['shd_helpdesk_profile'],
+				'href' => $scripturl . '?action=profile;area=helpdesk',
+				'show' => true,
+				'is_last' => true,
+			);
+		}
+
+		// Stuff we'll only do if in standalone mode
+		if (!empty($modSettings['shd_helpdesk_only']))
+		{
+			$menu_buttons['home'] = array(
+				'title' => $modSettings['helpdesk_active'] && SMF != 'SSI' ? shd_get_active_tickets() : $txt['shd_helpdesk'],
+				'href' => $scripturl . '?action=helpdesk;sa=main',
+				'show' => $modSettings['helpdesk_active'] && shd_allowed_to(array('access_helpdesk', 'admin_helpdesk')),
+				'sub_buttons' => array(
+				),
+				'active_button' => false,
+			);
+			unset($menu_buttons['helpdesk']);
+
+			// Disable help, search, calendar, moderation center
+			unset($menu_buttons['help'], $menu_buttons['search'], $menu_buttons['calendar'], $menu_buttons['moderate']);
+
+			$context['allow_search'] = false;
+			$context['allow_calendar'] = false;
+			$context['allow_moderation_center'] = false;
+
+			// Disable PMs
+			if (!empty($modSettings['shd_disable_pm']))
+			{
+				$context['allow_pm'] = false;
+				unset($menu_buttons['pm']);
+				$context['user']['unread_messages'] = 0; // to disable it trying to add to the menu item
+			}
+
+			// Disable memberlist
+			if (!empty($modSettings['shd_disable_mlist']))
+			{
+				$context['allow_memberlist'] = false;
+				unset($menu_buttons['mlist']);
+			}
+		}
+
+		// Now engage any hooks.
+		call_integration_hook('shd_hook_mainmenu', &$menu_buttons);
+	}
+}
+
 ?>

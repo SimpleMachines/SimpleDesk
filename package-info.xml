@@ -3,10 +3,10 @@
 <package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
 	<id>SimpleDeskTeam:SimpleDesk</id>
 	<name>SimpleDesk - Integrated Helpdesk for Simple Machines Forum</name>
-	<version>1.1 r753</version>
+	<version>1.1</version>
 	<type>modification</type>
 
-	<install for="2.0 RC4">
+	<install for="2.0 RC5">
 		<!-- readme files -->
 		<readme lang="english" parsebbc="true" type="file">language-readme/readme.english.txt</readme>
 
@@ -55,7 +55,7 @@
 		<redirect url="?action=admin;area=corefeatures#js_feature_shd" />
 	</install>
 
-	<uninstall for="2.0 RC4">
+	<uninstall for="2.0 RC5">
 		<!-- database changes, undone -->
 		<database>uninstall-optional.php</database>
 		<code type="file">uninstall-required.php</code>

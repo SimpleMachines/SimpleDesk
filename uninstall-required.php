@@ -46,7 +46,6 @@ elseif (!defined('SMF'))
 }
 
 // Unchecking the option in Core Features, and deactivating all the hooks
-
 global $modSettings;
 $modSettings['helpdesk_active'] = false;
 $features = implode(',', array_diff(explode(',', $modSettings['admin_features']), array('shd')));
@@ -57,5 +56,42 @@ updateSettings(
 	),
 	true
 );
+
+$hooks = array();
+$hooks[] = array(
+	'hook' => 'integrate_display_buttons',
+	'function' => 'shd_display_btn_mvtopic',
+);
+$hooks[] = array(
+	'hook' => 'integrate_pre_include',
+	'function' => '$sourcedir/sd_source/Subs-SimpleDesk.php',
+);
+$hooks[] = array(
+	'hook' => 'integrate_admin_include',
+	'function' => '$sourcedir/sd_source/Subs-SimpleDeskAdmin.php',
+);
+$hooks[] = array(
+	'hook' => 'integrate_admin_areas',
+	'function' => 'shd_admin_bootstrap',
+);
+$hooks[] = array(
+	'hook' => 'integrate_core_features',
+	'function' => 'shd_admin_core_features',
+);
+$hooks[] = array(
+	'hook' => 'integrate_actions',
+	'function' => 'shd_init_actions',
+);
+$hooks[] = array(
+	'hook' => 'integrate_buffer',
+	'function' => 'shd_buffer_replace',
+);
+$hooks[] = array(
+	'hook' => 'integrate_menu_buttons',
+	'function' => 'shd_main_menu',
+);
+
+foreach ($hooks as $hook)
+	remove_integration_function($hook['hook'], $hook['function']);
 
 ?>

@@ -80,6 +80,49 @@ if (empty($modSettings['shd_attachments_mode']))
 }
 // shd_disable_tickettotopic, shd_maintenance_mode should not be added because it's empty by default!
 
+// Hook references to be added.
+$hooks = array();
+$hooks[] = array(
+	'hook' => 'integrate_display_buttons',
+	'function' => 'shd_display_btn_mvtopic',
+	'perm' => true,
+);
+$hooks[] = array(
+	'hook' => 'integrate_pre_include',
+	'function' => '$sourcedir/sd_source/Subs-SimpleDesk.php',
+	'perm' => true,
+);
+$hooks[] = array(
+	'hook' => 'integrate_admin_include',
+	'function' => '$sourcedir/sd_source/Subs-SimpleDeskAdmin.php',
+	'perm' => true,
+);
+$hooks[] = array(
+	'hook' => 'integrate_admin_areas',
+	'function' => 'shd_admin_bootstrap',
+	'perm' => true,
+);
+$hooks[] = array(
+	'hook' => 'integrate_core_features',
+	'function' => 'shd_admin_core_features',
+	'perm' => true,
+);
+$hooks[] = array(
+	'hook' => 'integrate_actions',
+	'function' => 'shd_init_actions',
+	'perm' => true,
+);
+$hooks[] = array(
+	'hook' => 'integrate_buffer',
+	'function' => 'shd_buffer_replace',
+	'perm' => true,
+);
+$hooks[] = array(
+	'hook' => 'integrate_menu_buttons',
+	'function' => 'shd_main_menu',
+	'perm' => true,
+);
+
 // Now, we move on to adding new tables to the database.
 $tables = array();
 $tables[] = array(
@@ -372,6 +415,10 @@ foreach ($rows as $row)
 // Create new columns, if any
 foreach ($columns as $column)
 	$smcFunc['db_add_column']($column['table_name'], $column['column_info'], $column['parameters'], $column['if_exists'], $column['error']);
+
+// Add integration hooks, if any
+foreach ($hooks as $hook)
+	add_integration_function($hook['hook'], $hook['function'], $hook['perm']);
 
 // Are we done?
 if (SMF == 'SSI')
