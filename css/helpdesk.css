@@ -108,7 +108,7 @@ h3.ticketheader img
 {
 	min-height: 280px;
 	overflow: auto;
-	width: 20%;
+	/*width: 20%;*/
 	float: left;
 }
 .shd_customfields
@@ -134,7 +134,7 @@ h3.ticketheader img
 /* The ticket container */
 .shd_ticket
 {
-	min-height: 640px;
+	min-height: 250px;
 }
 .shd_ticket_description
 {
