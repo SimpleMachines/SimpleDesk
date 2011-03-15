@@ -114,6 +114,10 @@ function template_shd_profile_preferences()
 					echo '
 										<input type="checkbox" value="1" name="', $pref, '"', (empty($context['member']['shd_preferences'][$pref]) ? '' : ' checked="checked"'), ' />';
 					break;
+				case 'int':
+					echo '
+										<input type="input" value="', !isset($context['member']['shd_preferences'][$pref]) ? $thispref['default'] : $context['member']['shd_preferences'][$pref], '" name="', $pref, '" />';
+					break;
 			}
 
 			echo '

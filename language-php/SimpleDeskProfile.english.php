@@ -81,6 +81,15 @@ $txt['shd_profile_preferences_none_desc'] = 'There are no available preferences 
 $txt['shd_profile_save_prefs'] = 'Save Preferences';
 $txt['shd_prefs_updated'] = 'Preferences have been updated.';
 
+$txt['shd_pref_group_blocks'] = 'Blocks display';
+$txt['shd_pref_blocks_assigned_count'] = 'Number of tickets per page in the "Assigned to Me" block';
+$txt['shd_pref_blocks_new_count'] = 'Number of tickets per page in the "New Tickets" block';
+$txt['shd_pref_blocks_staff_count'] = 'Number of tickets per page in the "Tickets Awaiting Staff Response" block';
+$txt['shd_pref_blocks_user_count'] = 'Number of tickets per page in the "Tickets Awaiting User Response" block';
+$txt['shd_pref_blocks_closed_count'] = 'Number of tickets per page in the "Closed Tickets" block';
+$txt['shd_pref_blocks_recycle_count'] = 'Number of tickets per page in the "Recycled Tickets" block';
+$txt['shd_pref_blocks_withdeleted_count'] = 'Number of tickets per page in the "Recycled Tickets" block';
+
 // Show tickets
 $txt['shd_profile_show_tickets_header'] = 'Tickets and replies posted by %s';
 $txt['shd_profile_show_tickets_description'] = 'This page displays all the tickets started by this user as well as all replies the user has posted to tickets.';

@@ -595,13 +595,13 @@ function shd_helpdesk_listing()
 		}
 	}
 
-	$num_per_page = $context['items_per_page'];
 	$block_list = array_keys($context['ticket_blocks']);
 	$primary_url = '?action=helpdesk;sa=' . $_REQUEST['sa'];
 
 	// First figure out the start positions of each item and sanitise them
 	foreach ($context['ticket_blocks'] as $block_key => $block)
 	{
+		$num_per_page = !empty($context['shd_preferences']['blocks_' . $block_key . '_count']) ? $context['shd_preferences']['blocks_' . $block_key . '_count'] : $context['items_per_page'];
 		$start = empty($_REQUEST['st_' . $block_key]) ? 0 : (int) $_REQUEST['st_' . $block_key];
 		$max_value = $block['count']; // easier to read
 
@@ -719,6 +719,8 @@ function shd_helpdesk_listing()
 
 		$context['ticket_blocks'][$block_key]['tickets'] = array();
 
+		$num_per_page = !empty($context['shd_preferences']['blocks_' . $block_key . '_count']) ? $context['shd_preferences']['blocks_' . $block_key . '_count'] : $context['items_per_page'];
+
 		$query = shd_db_query('', '
 			SELECT hdt.id_ticket, hdt.id_last_msg, hdt.id_member_started, hdt.id_member_updated, hdt.id_member_assigned,
 				hdt.subject, hdt.status, hdt.num_replies, hdt.deleted_replies, hdt.private, hdt.urgency,
@@ -735,7 +737,7 @@ function shd_helpdesk_listing()
 			array(
 				'user' => $context['user']['id'],
 				'start' => $block['start'],
-				'items_per_page' => $context['items_per_page'],
+				'items_per_page' => $num_per_page,
 			)
 		);
 
@@ -882,6 +884,7 @@ function shd_helpdesk_listing()
 	{
 		foreach ($context['ticket_blocks'] as $block_id => $block)
 		{
+			$num_per_page = !empty($context['shd_preferences']['blocks_' . $block_key . '_count']) ? $context['shd_preferences']['blocks_' . $block_key . '_count'] : $context['items_per_page'];
 			$url_fragment = $base_url;
 
 			foreach ($block_list as $block_item)
@@ -893,7 +896,7 @@ function shd_helpdesk_listing()
 			}
 
 			$context['start'] = $context['ticket_blocks'][$block_id]['start'];
-			$context['ticket_blocks'][$block_id]['page_index'] = shd_no_expand_pageindex($scripturl . $primary_url . $url_fragment . '#shd_block_' . $block_id, $context['start'], $block['count'], $context['items_per_page'], true);
+			$context['ticket_blocks'][$block_id]['page_index'] = shd_no_expand_pageindex($scripturl . $primary_url . $url_fragment . '#shd_block_' . $block_id, $context['start'], $block['count'], $num_per_page, true);
 		}
 	}
 }

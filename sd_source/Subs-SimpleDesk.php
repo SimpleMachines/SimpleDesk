@@ -1000,20 +1000,74 @@ function shd_load_user_prefs($user = 0)
 {
 	global $modSettings, $smcFunc, $user_info;
 
-	$pref_groups = array();
+	$pref_groups = array(
+		'blocks' => array(
+			'icon' => 'log.png',
+			'enabled' => true,
+		),
+	);
 
-	$base_prefs = array();
+	$base_prefs = array(
+		'blocks_assigned_count' => array(
+			'default' => 10,
+			'type' => 'int',
+			'icon' => 'assign.png',
+			'group' => 'blocks',
+			'permission' => 'shd_staff',
+			'show' => true,
+		),
+		'blocks_new_count' => array(
+			'default' => 10,
+			'type' => 'int',
+			'icon' => 'status.png',
+			'group' => 'blocks',
+			'permission' => 'access_helpdesk',
+			'show' => true,
+		),
+		'blocks_staff_count' => array(
+			'default' => 10,
+			'type' => 'int',
+			'icon' => 'staff.png',
+			'group' => 'blocks',
+			'permission' => 'access_helpdesk',
+			'show' => true,
+		),
+		'blocks_user_count' => array(
+			'default' => 10,
+			'type' => 'int',
+			'icon' => 'user.png',
+			'group' => 'blocks',
+			'permission' => 'access_helpdesk',
+			'show' => true,
+		),
+		'blocks_closed_count' => array(
+			'default' => 10,
+			'type' => 'int',
+			'icon' => 'resolved.png',
+			'group' => 'blocks',
+			'permission' => array('shd_resolve_ticket_own', 'shd_resolve_ticket_any'),
+			'show' => true,
+		),
+		'blocks_recycle_count' => array(
+			'default' => 10,
+			'type' => 'int',
+			'icon' => 'recycle.png',
+			'group' => 'blocks',
+			'permission' => 'shd_access_recyclebin',
+			'show' => true,
+		),
+		'blocks_withdeleted_count' => array(
+			'default' => 10,
+			'type' => 'int',
+			'icon' => 'recycle.png',
+			'group' => 'blocks',
+			'permission' => 'shd_access_recyclebin',
+			'show' => true,
+		),
+	);
 
 	// Now engage any hooks.
-	if (!empty($modSettings['shd_hook_prefs']))
-	{
-		$functions = explode(',', $modSettings['shd_hook_prefs']);
-		foreach ($functions as $function)
-		{
-			if (is_callable($function))
-				$function($pref_groups, $base_prefs); // these should be picked up by reference in the called function or they won't do anything!
-		}
-	}
+	call_integration_hook('shd_hook_prefs', array($pref_groups, $base_prefs));
 
 	foreach ($base_prefs as $pref => $details)
 	{
