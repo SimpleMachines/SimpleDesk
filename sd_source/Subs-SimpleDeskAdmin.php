@@ -284,7 +284,7 @@ function shd_admin_bootstrap(&$admin_areas)
 		);
 
 		// Now engage any hooks.
-		call_integration_hook('shd_hook_menu', &$admin_areas);
+		call_integration_hook('shd_hook_adminmenu', array(&$admin_areas));
 	}
 }
 

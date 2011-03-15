@@ -1160,7 +1160,7 @@ function shd_init_actions(&$actionArray)
 	$actionArray['helpdesk'] = array('sd_source/SimpleDesk.php', 'shd_main');
 
 	// Now engage any SD specific hooks.
-	call_integration_hook('shd_hook_actions', $actionArray);
+	call_integration_hook('shd_hook_actions', array($actionArray));
 
 	if (!empty($modSettings['shd_helpdesk_only']) && $modSettings['helpdesk_active'])
 	{
@@ -1219,7 +1219,7 @@ function shd_buffer_replace(&$buffer)
 	}
 
 	// And any replacements a buffer might want to make...
-	call_integration_hook('shd_hook_buffer', $buffer);
+	call_integration_hook('shd_hook_buffer', array($buffer));
 
 	return $buffer;
 }
@@ -1436,7 +1436,7 @@ function shd_main_menu(&$menu_buttons)
 		}
 
 		// Now engage any hooks.
-		call_integration_hook('shd_hook_mainmenu', &$menu_buttons);
+		call_integration_hook('shd_hook_mainmenu', array(&$menu_buttons));
 	}
 }
 
