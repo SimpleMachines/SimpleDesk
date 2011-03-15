@@ -143,7 +143,7 @@ function shd_assign()
 			shd_log_action('assign', $log_params);
 			shd_commit_assignment($context['ticket_id'], $user_info['id']);
 		}
-		elseif ($ticket_starter == $user_info['id']) // assigned to self already, unassign it
+		elseif ($ticket_owner == $user_info['id']) // assigned to self already, unassign it
 		{
 			shd_log_action('unassign', $log_params);
 			shd_commit_assignment($context['ticket_id'], 0);
