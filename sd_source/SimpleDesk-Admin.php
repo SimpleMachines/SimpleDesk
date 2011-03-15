@@ -341,12 +341,32 @@ function shd_admin_options($return_config)
 */
 function shd_modify_display_options($return_config)
 {
-	global $context, $modSettings, $txt;
+	global $context, $modSettings, $txt, $smcFunc;
+
+	$theme_list = array(
+		0 => $txt['shd_theme_use_default'],
+	);
+	$request = $smcFunc['db_query']('', '
+		SELECT id_theme, value
+		FROM {db_prefix}themes
+		WHERE id_member = {int:member}
+			AND id_theme > {int:theme}
+			AND variable = {string:name}',
+		array(
+			'member' => 0,
+			'theme' => 0,
+			'name' => 'name',
+		)
+	);
+	while ($row = $smcFunc['db_fetch_assoc']($request))
+		$theme_list[$row['id_theme']] = $row['value'];
+	$smcFunc['db_free_result']($request);
 
 	$config_vars = array(
 		array('select', 'shd_staff_badge', array('nobadge' => $txt['shd_staff_badge_nobadge'], 'staffbadge' => $txt['shd_staff_badge_staffbadge'], 'userbadge' => $txt['shd_staff_badge_userbadge'], 'bothbadge' => $txt['shd_staff_badge_bothbadge']), 'subtext' => $txt['shd_staff_badge_note']),
 		array('check', 'shd_display_avatar'),
 		array('select', 'shd_ticketnav_style', array('sd' => $txt['shd_ticketnav_style_sd'], 'sdcompact' => $txt['shd_ticketnav_style_sdcompact'], 'smf' => $txt['shd_ticketnav_style_smf']), 'subtext' => $txt['shd_ticketnav_style_note']),
+		array('select', 'shd_theme', $theme_list, 'subtext' => $txt['shd_theme_note']),
 	);
 	$context['settings_title'] = $txt['shd_admin_options_display'];
 	$context['settings_icon'] = 'details.png';

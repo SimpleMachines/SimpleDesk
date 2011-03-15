@@ -133,6 +133,9 @@ $txt['shd_ticketnav_style_note'] = 'When looking at tickets, there may be a numb
 $txt['shd_ticketnav_style_sd'] = 'SimpleDesk style (icon with small text note)';
 $txt['shd_ticketnav_style_sdcompact'] = 'SimpleDesk style (icon only)';
 $txt['shd_ticketnav_style_smf'] = 'SMF style (text buttons, above the ticket)';
+$txt['shd_theme'] = 'Use a specific theme in the forum?';
+$txt['shd_theme_note'] = 'Normally the helpdesk will inherit the theme a user has picked, or failing that the forum default. This option allows you to pick a theme that will always be used in the helpdesk regardless of other settings.';
+$txt['shd_theme_use_default'] = 'Use the forum default theme';
 //@}
 
 //! @name Configuration items on the Posting Options page

@@ -125,11 +125,19 @@ function shd_init()
 	if (!empty($modSettings['shd_maintenance_mode']))
 		$modSettings['helpdesk_active'] &= ($user_info['is_admin'] || shd_allowed_to('admin_helpdesk'));
 
-	// Call for any init level hooks
+	// Call for any init level hooks and last minute stuff
 	if ($modSettings['helpdesk_active'])
 	{
 		shd_load_plugin_files('init');
 		shd_load_plugin_langfiles('init');
+
+		// Are they actually going into the helpdesk? If they are, do we need to deal with their theme?
+		if (!empty($modSettings['shd_theme']) && isset($_REQUEST['action']) && $_REQUEST['action'] == 'helpdesk')
+		{
+			// This is ever so slightly hacky. But as this function is called sufficiently early we can get away with it.
+			unset($_REQUEST['theme'], $modSettings['theme_allow']);
+			$modSettings['theme_guests'] = $modSettings['shd_theme'];
+		}
 	}
 
 	$context['shd_plugins'] = empty($modSettings['shd_enabled_plugins']) || empty($modSettings['helpdesk_active']) ? array() : explode(',', $modSettings['shd_enabled_plugins']);

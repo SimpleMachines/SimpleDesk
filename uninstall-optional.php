@@ -79,6 +79,7 @@ $to_remove = array(
 	'shd_allow_wikilinks',
 	'shd_thank_you_post',
 	'shd_thank_you_nonstaff',
+	'shd_theme',
 	// Plugin related: general
 	'shd_enabled_plugins',
 	// Plugin: source load hooks
