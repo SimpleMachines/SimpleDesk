@@ -242,7 +242,7 @@ function shd_main()
 		<link rel="stylesheet" type="text/css" href="' . $settings['default_theme_url'] . '/css/helpdesk_ie6.css" />';
 
 	// Int hooks - after we basically set everything up (so it's manipulatable by the hook, but before we do the last bits of finalisation)
-	call_integration_hook('shd_hook_helpdesk', array($subactions));
+	call_integration_hook('shd_hook_helpdesk', array(&$subactions));
 
 	// What are we doing?
 	$_REQUEST['sa'] = (!empty($_REQUEST['sa']) && isset($subactions[$_REQUEST['sa']])) ? $_REQUEST['sa'] : 'main';
