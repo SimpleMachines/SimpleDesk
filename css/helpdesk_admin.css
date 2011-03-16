@@ -234,3 +234,8 @@ h3 a.permcollapse img
 	float:right;
 	display:block;
 }
+
+#error_log td.half_width
+{
+	vertical-align: top;
+}

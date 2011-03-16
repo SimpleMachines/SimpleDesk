@@ -639,6 +639,62 @@ function template_shd_action_log()
 }
 
 /**
+ *	Displays the email log.
+ *
+ *	@see shd_admin_email_log()
+ *	@since 1.1
+*/
+function template_shd_email_log()
+{
+	global $settings, $txt, $context, $scripturl, $sort_types, $modSettings;
+
+	$use_bg2 = false;
+
+	echo '
+				<div class="tborder">
+					<div class="cat_bar grid_header">
+						<h3 class="catbg">
+							<span class="floatright smalltext">', $txt['pages'], ': ', $context['page_index'], '</span>
+							<img src="', $settings['default_images_url'], '/simpledesk/read.png" class="icon" alt="*" />
+							', $txt['shd_admin_emaillog_title'], '
+						</h3>
+					</div>
+					<table class="shd_ticketlist" id="error_log" cellspacing="0" width="100%">';
+
+	foreach ($context['emails'] as $email)
+	{
+		echo '
+						<tr class="windowbg', $use_bg2 ? '2' : '', '">
+							<td rowspan="2" class="checkbox_column">
+								<input type="checkbox" name="delete[]" value="', $email['id_email'], '" />
+							</td>
+							<td class="half_width">';
+
+		if (!empty($email['id_recipient']))
+			echo '
+								<img src="', $settings['default_images_url'], '/simpledesk/user.png" class="icon" alt="*" /> ', shd_profile_link($email['member_name'], $email['id_recipient']), '<br />';
+
+		echo '
+								<img src="', $settings['default_images_url'], '/simpledesk/unread.png" class="icon" alt="*" /> ', $email['email_address'], '
+							</td>
+							<td class="half_width">
+								', $email['time'], '<br />
+								', $txt['subject'], ': ', $email['subject'], ' <img src="', $settings['default_images_url'], '/simpledesk/flags/', $email['language'], '.png" class="icon" alt="*" />
+							</td>
+						</tr>
+						<tr class="windowbg', $use_bg2 ? '2' : '', '">
+							<td colspan="2">
+								', $email['body'], '
+							</td>
+						</tr>';
+		$use_bg2 = !$use_bg2;
+	}
+	echo '
+					</table>
+				</div>';
+}
+
+/**
  *	Displays the get-support form for posting directly to the SimpleDesk support board.
  *
  *	This is little more than a simple HTML form, most of the real work is hidden behind the scenes in SimpleDesk's own site.

@@ -240,6 +240,7 @@ function shd_admin_bootstrap(&$admin_areas)
 					'subsections' => array(
 						'main' => array($txt['shd_admin_info']),
 						'actionlog' => array($txt['shd_admin_actionlog'], 'enabled' => empty($modSettings['shd_disable_action_log'])),
+						'emaillog' => array($txt['shd_admin_emaillog'], 'enabled' => !empty($modSettings['shd_notify_log'])),
 						'support' => array($txt['shd_admin_support']),
 					),
 				),
