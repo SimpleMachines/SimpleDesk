@@ -661,20 +661,27 @@ function template_shd_email_log()
 					</div>
 					<table class="shd_ticketlist" id="error_log" cellspacing="0" width="100%">';
 
-	foreach ($context['emails'] as $email)
-	{
+	if (empty($context['emails']))
 		echo '
+						<tr class="windowbg2">
+							<td colspan="7" class="shd_noticket">', $txt['shd_admin_emaillog_none'], '</td>
+						</tr>';
+	else
+	{
+		foreach ($context['emails'] as $email)
+		{
+			echo '
 						<tr class="windowbg', $use_bg2 ? '2' : '', '">
 							<td rowspan="2" class="checkbox_column">
 								<input type="checkbox" name="delete[]" value="', $email['id_email'], '" />
 							</td>
 							<td class="half_width">';
 
-		if (!empty($email['id_recipient']))
-			echo '
+			if (!empty($email['id_recipient']))
+				echo '
 								<img src="', $settings['default_images_url'], '/simpledesk/user.png" class="icon" alt="*" /> ', shd_profile_link($email['member_name'], $email['id_recipient']), '<br />';
 
-		echo '
+			echo '
 								<img src="', $settings['default_images_url'], '/simpledesk/unread.png" class="icon" alt="*" /> ', $email['email_address'], '
 							</td>
 							<td class="half_width">
@@ -687,8 +694,10 @@ function template_shd_email_log()
 								', $email['body'], '
 							</td>
 						</tr>';
-		$use_bg2 = !$use_bg2;
+			$use_bg2 = !$use_bg2;
+		}
 	}
+
 	echo '
 					</table>
 				</div>';
