@@ -355,8 +355,8 @@ function shd_notify_users($notify_data)
 				'timestamp' => time(), // in case the call takes more than a second total
 				'id_recipient' => $member,
 				'email_address' => $emails[$member],
-				'subject' => $subject,
-				'body' => $body,
+				'subject' => $subject, // this is already safe
+				'body' => htmlspecialchars(un_htmlspecialchars($body)), // the body will have the subject already encoded, so we need to unencode it and reencode the whole thing
 			);
 
 			//function sendmail($to, $subject, $message, $from = null, $message_id = null, $send_html = false, $priority = 3, $hotmail_fix = null, $is_private = false)
