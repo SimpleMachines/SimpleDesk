@@ -89,7 +89,7 @@ $txt['shd_pref_blocks_staff_count'] = 'Number of tickets per page in the "Ticket
 $txt['shd_pref_blocks_user_count'] = 'Number of tickets per page in the "Tickets Awaiting User Response" block';
 $txt['shd_pref_blocks_closed_count'] = 'Number of tickets per page in the "Closed Tickets" block';
 $txt['shd_pref_blocks_recycle_count'] = 'Number of tickets per page in the "Recycled Tickets" block';
-$txt['shd_pref_blocks_withdeleted_count'] = 'Number of tickets per page in the "Recycled Tickets" block';
+$txt['shd_pref_blocks_withdeleted_count'] = 'Number of tickets per page in the "Tickets with Deleted Replies" block';
 
 // Preferences: email notifications
 $txt['shd_pref_group_notify'] = 'Notifications By Email';
