@@ -296,8 +296,7 @@ function template_ticket_proxy_js()
 				sSearchType: \'member\',
 				sPostName: \'proxy_author_form\',
 				sURLMask: \'action=profile;u=%item_id%\',
-				bItemList: false,
-				iMaxDisplayQuantity: 1
+				bItemList: false
 			});
 		// ]', ']></script>';
 }
