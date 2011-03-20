@@ -446,6 +446,7 @@ function shd_view_ticket()
 	// This is always going to be a pain. But it should be possible to contextualise it nicely.
 	// And while this isn't quite as nicely formatted as a single nice array definition,
 	// imagine trying to debug the display and text options later if it were done with nested ternaries... *shudder*
+	$context['ajax_assign'] = false;
 	$assign_nav = array(
 		'url' => $scripturl . '?action=helpdesk;sa=assign;ticket=' . $context['ticket']['id'] . ';' . $context['session_var'] . '=' . $context['session_id'],
 		'icon' => 'assign',
@@ -457,6 +458,7 @@ function shd_view_ticket()
 	{
 		$assign_nav['display'] = shd_allowed_to('shd_staff') && !$context['ticket']['closed'] && !$context['ticket']['deleted'];
 		$assign_nav['text'] = empty($context['ticket']['id_member_assigned']) ? 'shd_ticket_assign' : 'shd_ticket_reassign';
+		$context['ajax_assign'] = true;
 	}
 	elseif (shd_allowed_to('shd_assign_ticket_own'))
 	{
@@ -596,7 +598,7 @@ function shd_view_ticket()
 		sImageExpanded: "expand.gif",
 		sHeaderId: "additionalinfoheader",
 		sFooterId: "additional_info_footer",
-	});	';
+	});';
 
 	if (!empty($options['display_quick_reply']) && $context['can_go_advanced'])
 		$context['html_headers'] .= '

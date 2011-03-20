@@ -71,18 +71,22 @@ function template_viewticket()
 							<strong><img src="', $settings['default_images_url'], '/simpledesk/details.png" alt="" class="shd_smallicon shd_icon_minihead" /> ', $txt['shd_ticket_details'], '</strong>
 							<hr />
 							<ul>
-								<li><img src="', $settings['default_images_url'], '/simpledesk/id.png" alt="" class="shd_smallicon" /> ', $txt['shd_ticket_id'], ': ', $context['ticket']['display_id'], '</li>
-								<li><img src="', $settings['default_images_url'], '/simpledesk/user.png" alt="" class="shd_smallicon" /> ', $txt['shd_ticket_user'], ': ', $context['ticket']['member']['link'], '</li>
-								<li><img src="', $settings['default_images_url'], '/simpledesk/time.png" alt="" class="shd_smallicon" /> ', $txt['shd_ticket_date'], ': ', $context['ticket']['poster_time'], '</li>
-								<li>
+								<li id="item_id"><img src="', $settings['default_images_url'], '/simpledesk/id.png" alt="" class="shd_smallicon" /> ', $txt['shd_ticket_id'], ': ', $context['ticket']['display_id'], '</li>
+								<li id="item_userstarted"><img src="', $settings['default_images_url'], '/simpledesk/user.png" alt="" class="shd_smallicon" /> ', $txt['shd_ticket_user'], ': ', $context['ticket']['member']['link'], '</li>
+								<li id="item_whenstarted"><img src="', $settings['default_images_url'], '/simpledesk/time.png" alt="" class="shd_smallicon" /> ', $txt['shd_ticket_date'], ': ', $context['ticket']['poster_time'], '</li>
+								<li id="item_urgency">
 									<img src="', $settings['default_images_url'], '/simpledesk/urgency.png" alt="" class="shd_smallicon" />
 									', $txt['shd_ticket_urgency'], ': <span id="urgency">', $context['ticket']['urgency']['label'], '</span>
 										<span id="urgency_increase">', (!empty($context['ticket']['urgency']['increase']) ? '<a id="urglink_increase" href="' . $scripturl . '?action=helpdesk;sa=urgencychange;ticket=' . $context['ticket']['id'] . ';change=increase;' . $context['session_var'] . '=' . $context['session_id'] . '" title="' . $txt['shd_urgency_increase'] . '"><img src="' . $settings['images_url'] . '/sort_up.gif" width="9px" alt="' . $txt['shd_urgency_increase'] . '" /></a>' : ''), '</span>
 										<span id="urgency_decrease">', (!empty($context['ticket']['urgency']['decrease']) ? '<a id="urglink_decrease" href="' . $scripturl . '?action=helpdesk;sa=urgencychange;ticket=' . $context['ticket']['id'] . ';change=decrease;' . $context['session_var'] . '=' . $context['session_id'] . '" title="' . $txt['shd_urgency_decrease'] . '"><img src="' . $settings['images_url'] . '/sort_down.gif" width="9px" alt="' . $txt['shd_urgency_decrease'] . '" /></a>' : ''), '</span>
 								</li>
-								<li><img src="', $settings['default_images_url'], '/simpledesk/staff.png" alt="" class="shd_smallicon" /> ', $txt['shd_ticket_assignedto'], ': ', $context['ticket']['assigned']['link'], '</li>
-								<li><img src="', $settings['default_images_url'], '/simpledesk/status.png" alt="" class="shd_smallicon"/> ', $txt['shd_ticket_status'], ': ', $context['ticket']['status']['label'], '</li>
-								<li><img src="', $settings['default_images_url'], '/simpledesk/replies.png" alt="" class="shd_smallicon" /> ', $txt['shd_ticket_num_replies'], ': <a href="#replies">', (empty($context['ticket']['display_recycle']) ? $context['ticket']['num_replies'] : (int) $context['ticket']['num_replies'] + (int) $context['ticket']['deleted_replies']), '</a></li>';
+								<li id="item_assigned">
+									<img src="', $settings['default_images_url'], '/simpledesk/staff.png" alt="" class="shd_smallicon" /> ', $txt['shd_ticket_assignedto'], ': <span id="assigned_to">', $context['ticket']['assigned']['link'], '</span>
+									<ul id="assigned_list" style="display:none;">
+									</ul>
+								</li>
+								<li id="item_status"><img src="', $settings['default_images_url'], '/simpledesk/status.png" alt="" class="shd_smallicon"/> ', $txt['shd_ticket_status'], ': ', $context['ticket']['status']['label'], '</li>
+								<li id="item_replies"><img src="', $settings['default_images_url'], '/simpledesk/replies.png" alt="" class="shd_smallicon" /> ', $txt['shd_ticket_num_replies'], ': <a href="#replies">', (empty($context['ticket']['display_recycle']) ? $context['ticket']['num_replies'] : (int) $context['ticket']['num_replies'] + (int) $context['ticket']['deleted_replies']), '</a></li>';
 
 				if (!empty($context['display_private']))
 					echo '
@@ -203,8 +207,25 @@ function template_viewticket()
 	// The ticket action log, lastly.
 	template_ticketactionlog();	
 	
-	echo'
+	echo '
 		</div><br class="clear" />';
+
+	// And lastly, the Javascript for AJAX assignment. Since this is onload stuff, it needs to know the HTML already exists.
+	if (!empty($context['ajax_assign']))
+		echo '
+	<script type="text/javascript"><!-- // --><![CDATA[
+	var oAjaxAssign = new AjaxAssign({
+		sSelf: "oAjaxAssign",
+		sScriptUrl: smf_scripturl,
+		iTicketId: ' . $context['ticket_id'] . ',
+		sId: "item_assigned",
+		sListId: "assigned_list",
+		sAssignedSpan: "assigned_to",
+		sImagesUrl: "' . $settings['images_url'] . '",
+		sImageCollapsed: "expand.gif",
+		sImageExpanded: "collapse.gif"
+	});
+	// ]' . ']></script>';
 
 }
 

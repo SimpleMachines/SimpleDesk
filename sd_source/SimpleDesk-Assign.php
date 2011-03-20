@@ -275,7 +275,7 @@ function shd_assign2()
  *	@see shd_assign()
  *	@see shd_assign2()
 */
-function shd_commit_assignment($ticket, $assignment)
+function shd_commit_assignment($ticket, $assignment, $is_ajax = false)
 {
 	global $smcFunc, $sourcedir, $context, $modSettings;
 
@@ -296,6 +296,10 @@ function shd_commit_assignment($ticket, $assignment)
 	// Handle notifications
 	require_once($sourcedir . '/sd_source/SimpleDesk-Notifications.php');
 	shd_notifications_notify_assign($ticket, $assignment);
+
+	// If we're doing it AJAXively, we just want this to do the job and then go back to AJAX workflow.
+	if ($is_ajax)
+		return;
 
 	if (!empty($context['shd_return_to']) && $context['shd_return_to'] == 'home')
 		redirectexit('action=helpdesk;sa=main');

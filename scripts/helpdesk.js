@@ -374,3 +374,103 @@ CustomFields.prototype.infoswap = function ()
 
 	this.bCollapsed = !this.bCollapsed;
 }
+
+/* AJAX assignment */
+function AjaxAssign(oOptions)
+{
+	this.opt = oOptions;
+	this.bCollapsed = true;
+
+	// Insert the expand/collapse button
+	var maincontainer = document.getElementById(this.opt.sId);
+	var listcontainer = document.getElementById(this.opt.sListId);
+	var newhtml = document.createElement('img');
+	newhtml.setAttribute('id', 'assign_' + this.opt.sSelf);
+	newhtml.setAttribute('class', 'shd_assign_button');
+	newhtml.setAttribute('src', this.opt.sImagesUrl + "/" + this.opt.sImageCollapsed);
+	newhtml.setAttribute('onclick', this.opt.sSelf + '.click()');
+	maincontainer.insertBefore(newhtml, listcontainer);
+}
+
+AjaxAssign.prototype.click = function ()
+{
+	if (this.bCollapsed)
+		this.expand();
+	else
+		this.collapse();
+}
+
+AjaxAssign.prototype.expand = function ()
+{
+	this.bCollapsed = false;
+	var img = document.getElementById('assign_' + this.opt.sSelf);
+	img.setAttribute('src', this.opt.sImagesUrl + "/" + this.opt.sImageExpanded);
+
+	// Fetch the list of items
+	ajax_indicator(true);
+	getXMLDocument.call(this, smf_prepareScriptUrl(this.opt.sScriptUrl) + 'action=helpdesk;sa=ajax;op=assign;ticket=' + this.opt.iTicketId + ';' + sSessV + '=' + sSessI, this.expand_callback);
+}
+
+AjaxAssign.prototype.expand_callback = function (XMLDoc)
+{
+	// Receive the list of assignees
+	ajax_indicator(false);
+	var errors = XMLDoc.getElementsByTagName('error');
+	if (errors.length > 0)
+	{
+		alert(errors[0].childNodes[0].nodeValue);
+		this.collapse();
+	}
+	else
+	{
+		var assign_list = document.getElementById(this.opt.sListId);
+		assign_list.innerHTML = '';
+		assign_list.setAttribute('style', 'display:block');
+	
+		var elements = XMLDoc.getElementsByTagName('member');
+		// We could, in all honesty, sit and build the content normally with document.createElement.
+		// But really, this is quicker, not just for us but for the browser too.
+		var newhtml = '';
+		for (var i = 0, n = elements.length; i < n; i++)
+		{
+			newhtml += '<li class="shd_assignees" onclick="' + this.opt.sSelf + '.assign(' + elements[i].getAttribute('uid') + ');">';
+			newhtml += elements[i].childNodes[0].nodeValue + '</li>';
+		}
+
+		assign_list.innerHTML = newhtml;
+	}
+}
+
+AjaxAssign.prototype.assign = function (uid)
+{
+	// Click handler for the assignment list, to issue the assign
+	ajax_indicator(true);
+	getXMLDocument.call(this, smf_prepareScriptUrl(this.opt.sScriptUrl) + 'action=helpdesk;sa=ajax;op=assign2;ticket=' + this.opt.iTicketId + ';to_user=' + uid + ';' + sSessV + '=' + sSessI, this.assign_callback);
+}
+
+AjaxAssign.prototype.assign_callback = function(XMLDoc)
+{
+	// Click handler callback for assignment, to handle once the request has been made
+	ajax_indicator(false);
+	this.collapse();
+	var errors = XMLDoc.getElementsByTagName('error');
+	if (errors.length > 0)
+		alert(errors[0].childNodes[0].nodeValue);
+	else
+	{
+		var elements = XMLDoc.getElementsByTagName('assigned');
+		document.getElementById(this.opt.sAssignedSpan).innerHTML = elements[0].childNodes[0].nodeValue;
+	}
+	this.collapse();
+}
+
+AjaxAssign.prototype.collapse = function ()
+{
+	this.bCollapsed = true;
+	var assign_list = document.getElementById(this.opt.sListId);
+	assign_list.innerHTML = '';
+	assign_list.setAttribute('style', 'display:none');
+
+	var img = document.getElementById('assign_' + this.opt.sSelf);
+	img.setAttribute('src', this.opt.sImagesUrl + "/" + this.opt.sImageCollapsed);
+}

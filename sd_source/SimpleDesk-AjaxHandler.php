@@ -61,6 +61,8 @@ function shd_ajax()
 		'privacy' => 'shd_ajax_privacy',
 		'urgency' => 'shd_ajax_urgency',
 		'quote' => 'shd_ajax_quote',
+		'assign' => 'shd_ajax_assign',
+		'assign2' => 'shd_ajax_assign2',
 	);
 
 	$context['ajax_return'] = array();
@@ -88,7 +90,7 @@ function shd_ajax()
 					$value = (array) $value;
 					foreach ($value as $thisvalue)
 						echo '
-	<', $key, '><![CDATA[', $thisvalue, ']]></', $key, '>';
+	<', $key, '><![CD', 'ATA[', $thisvalue, ']', ']></', $key, '>';
 				}
 			}
 		}
@@ -358,4 +360,132 @@ function shd_ajax_quote()
 
 	$context['ajax_raw'] = '<quote>' . $message . '</quote>';
 }
+
+/**
+ *	Returns the list of possible assignees for a ticket for AJAX assignment purposes.
+ *
+ *	Operations:
+ *	- Session check
+ * 	- Permissions check (that you can assign a ticket to someone else); if you can't assign a ticket to someone else, bail.
+ *	- Get the list of information for a ticket (which implicitly checks ticket access); if you can't see the ticket, bail.
+ *	- Get the list of who can be assigned a ticket.
+ *	- Return that via AJAX.
+*/
+function shd_ajax_assign()
+{
+	global $context, $smcFunc, $txt, $sourcedir, $user_profile;
+
+	checkSession('get');
+
+	if (!shd_allowed_to('shd_assign_ticket_any'))
+		return $context['ajax_return'] = array('error' => $txt['shd_cannot_assign']);
+
+	if (!empty($context['ticket_id']))
+	{
+		$query = shd_db_query('', '
+			SELECT hdt.private, hdt.id_member_started, id_member_assigned, 1 AS valid
+			FROM {db_prefix}helpdesk_tickets AS hdt
+			WHERE {query_see_ticket}
+				AND hdt.id_ticket = {int:ticket}',
+			array(
+				'ticket' => $context['ticket_id'],
+			)
+		);
+		if ($smcFunc['db_num_rows']($query) != 0)
+			list($private, $ticket_starter, $ticket_assigned, $valid) = $smcFunc['db_fetch_row']($query);
+		$smcFunc['db_free_result']($query);
+	}
+	if (empty($valid))
+		return $context['ajax_return'] = array('error' => $txt['shd_no_ticket']);
+
+	require_once($sourcedir . '/sd_source/SimpleDesk-Assign.php');
+	$assignees = shd_get_possible_assignees($private, $ticket_starter);
+	array_unshift($assignees, 0); // add the unassigned option in at the start
+
+	if (empty($assignees))
+		return $context['ajax_return'] = array('error' => $txt['shd_no_staff_assign']);
+
+	// OK, so we have the general values we need. Let's get user names, and get ready to kick this back to the user. We'll build the XML here though.
+	loadMemberData($assignees);
+
+	$context['ajax_raw'] = '<response>';
+	foreach ($assignees as $assignee)
+		$context['ajax_raw'] .= '
+<member uid="' . $assignee . '"' . ($ticket_assigned == $assignee ? ' assigned="yes"' : '') . '><![CD' . 'ATA[' .(empty($assignee) ? '<span class="error">' . $txt['shd_unassigned'] . '</span>' : $user_profile[$assignee]['member_name']) . ']' . ']></member>';
+
+	$context['ajax_raw'] .= '
+</response>';
+}
+
+/**
+ *	Action a new assignment via AJAX.
+ *
+ *	Operations:
+ *	- Session check
+ * 	- Permissions check (that you can assign a ticket to someone else); if you can't assign a ticket to someone else, bail.
+ *	- Get the list of information for a ticket (which implicitly checks ticket access); if you can't see the ticket, bail.
+ *	- Get the list of who can be assigned a ticket; if requested user not on that list, bail.
+ *	- Update and build return status, and return via AJAX.
+ */
+
+function shd_ajax_assign2()
+{
+	global $context, $smcFunc, $txt, $sourcedir, $user_profile;
+
+	checkSession('get');
+
+	if (!shd_allowed_to('shd_assign_ticket_any'))
+		return $context['ajax_return'] = array('error' => $txt['shd_cannot_assign']);
+
+	if (!empty($context['ticket_id']))
+	{
+		$query = shd_db_query('', '
+			SELECT hdt.private, hdt.id_member_started, id_member_assigned, subject, 1 AS valid
+			FROM {db_prefix}helpdesk_tickets AS hdt
+			WHERE {query_see_ticket}
+				AND hdt.id_ticket = {int:ticket}',
+			array(
+				'ticket' => $context['ticket_id'],
+			)
+		);
+		if ($smcFunc['db_num_rows']($query) != 0)
+			list($private, $ticket_starter, $ticket_assigned, $subject, $valid) = $smcFunc['db_fetch_row']($query);
+		$smcFunc['db_free_result']($query);
+	}
+	if (empty($valid))
+		return $context['ajax_return'] = array('error' => $txt['shd_no_ticket']);
+
+	if (!isset($_GET['to_user']) || !is_numeric($_GET['to_user']))
+		return $context['ajax_return'] = array('error' => $txt['shd_assigned_not_permitted'] . 'line459');
+
+	$_GET['to_user'] = isset($_GET['to_user']) ? (int) $_GET['to_user'] : 0;
+
+	require_once($sourcedir . '/sd_source/SimpleDesk-Assign.php');
+	$assignees = shd_get_possible_assignees($private, $ticket_starter);
+	array_unshift($assignees, 0); // add the unassigned option in at the start
+
+	if (!in_array($_GET['to_user'], $assignees))
+		return $context['ajax_return'] = array('error' => $txt['shd_assigned_not_permitted']);
+
+	if (!empty($_GET['to_user']))
+		loadMemberData($_GET['to_user']);
+
+	$user_name = shd_profile_link(empty($_GET['to_user']) ? '<span class="error">' . $txt['shd_unassigned'] . '</span>' : $user_profile[$_GET['to_user']]['member_name'], $_GET['to_user']);
+
+	// If it's being assigned to the current assignee, don't bother actually requesting the change.
+	if ($_GET['to_user'] != $ticket_assigned)
+	{
+		$log_params = array(
+			'subject' => $subject,
+			'ticket' => $context['ticket_id'],
+			'user_id' => $_GET['to_user'],
+			'user_name' => $user_name,
+		);
+		shd_log_action('assign', $log_params);
+		shd_commit_assignment($context['ticket_id'], $_GET['to_user'], true);
+	}
+
+	return $context['ajax_return'] = array('assigned' => $user_name);
+}
+
 ?>

@@ -85,6 +85,22 @@ div.grid_header img
 	white-space: nowrap;
 }
 
+.shd_assignees
+{
+	background-color:inherit;
+	padding-left: 1em;
+}
+
+.shd_assignees:hover
+{
+	background-color: #bbbbbb;
+}
+
+.shd_assign_button, .shd_assignees
+{
+	cursor: pointer;
+}
+
 /**********************************
 * Stuff used within the actual tickets 	*
 ***********************************/
