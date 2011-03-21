@@ -221,9 +221,9 @@ function template_viewticket()
 		sId: "item_assigned",
 		sListId: "assigned_list",
 		sAssignedSpan: "assigned_to",
-		sImagesUrl: "' . $settings['images_url'] . '",
-		sImageCollapsed: "expand.gif",
-		sImageExpanded: "collapse.gif"
+		sImagesUrl: "' . $settings['default_images_url'] . '/simpledesk",
+		sImageCollapsed: "ajax_assign.png",
+		sImageExpanded: "ajax_assign_cancel.png"
 	});
 	// ]' . ']></script>';
 
