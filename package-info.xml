@@ -6,6 +6,10 @@
 	<version>1.1</version>
 	<type>modification</type>
 
+	<install for="1.1.*, 2.0 RC2, 2.0 RC3, 2.0 RC4">
+		<readme lang="english" parsebbc="true" type="inline">This mod is [b]not compatible[/b] with your version of SMF, it requires facilities only in 2.0 RC5 and above.</readme>
+	</install>
+
 	<install for="2.0 RC5">
 		<!-- readme files -->
 		<readme lang="english" parsebbc="true" type="file">language-readme/readme.english.txt</readme>
