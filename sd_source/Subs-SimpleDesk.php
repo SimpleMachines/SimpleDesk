@@ -1272,15 +1272,26 @@ function scheduled_simpledesk()
 */
 function shd_init_actions(&$actionArray)
 {
-	global $modSettings;
+	global $modSettings, $context;
+
+	if (empty($modSettings['helpdesk_active']))
+		return;
 
 	// Deal with SimpleDesk. If we're enabling HD only mode, rebuild everything, otherwise just add it to the array.
 	$actionArray['helpdesk'] = array('sd_source/SimpleDesk.php', 'shd_main');
 
+	// Rewrite the array for unread purposes.
+	$context['shd_unread_actions'] = array(
+		'unread' => $actionArray['unread'],
+		'unreadreplies' => $actionArray['unreadreplies'],
+	);
+	$actionArray['unread'] = array('sd_source/SimpleDesk-Unread.php', 'shd_unread_posts');
+	$actionArray['unreadreplies'] = array('sd_source/SimpleDesk-Unread.php', 'shd_unread_posts');
+
 	// Now engage any SD specific hooks.
 	call_integration_hook('shd_hook_actions', array($actionArray));
 
-	if (!empty($modSettings['shd_helpdesk_only']) && $modSettings['helpdesk_active'])
+	if (!empty($modSettings['shd_helpdesk_only']))
 	{
 		// Firstly, remove all the standard actions we neither want nor need.
 		// Note we did this to prevent breakage of other mods that may be installed, e.g. gallery or portal or something.
