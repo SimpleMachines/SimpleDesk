@@ -114,6 +114,7 @@ $to_remove = array(
 	'shd_hook_assign',
 	'shd_hook_buffer',
 	'shd_hook_postingopts',
+	'shd_hook_after_main',
 	// Plugin: menu hooks
 	'shd_hook_mainmenu',
 	'shd_hook_profilemenu',

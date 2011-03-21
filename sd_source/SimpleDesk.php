@@ -267,6 +267,8 @@ function shd_main()
 	// Maintenance mode? If it were, the helpdesk is considered inactive for the purposes of everything to all but those without admin-helpdesk rights - but we must have them if we're here!
 	if (!empty($modSettings['shd_maintenance_mode']) && $_REQUEST['sa'] != 'ajax')
 		$context['template_layers'][] = 'shd_maintenance';
+
+	call_integration_hook('shd_hook_after_main');
 }
 
 /**
@@ -538,6 +540,10 @@ function shd_recycle_bin()
 	);
 
 	// Build the link tree.
+	$context['linktree'][] = array(
+		'url' => $scripturl . '?action=helpdesk;sa=main',
+		'name' => $txt['shd_linktree_tickets'],
+	);
 	$context['linktree'][] = array(
 		'url' => $scripturl . '?action=helpdesk;sa=recyclebin',
 		'name' => $txt['shd_recycle_bin'],

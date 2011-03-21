@@ -324,6 +324,7 @@ function shd_list_hooks()
 		'shd_hook_assign', // functions to call when a ticket is assigned to someone
 		'shd_hook_buffer', // functions to call prior to the final page generation
 		'shd_hook_postingopts', // functions to call to augment the additional options on posting screen
+		'shd_hook_after_main', // functions to call after action=helpdesk has been evaluated but before template calls are made
 
 		// Menu hooks - called after the rest of menu configuration is done (meaning menu items may or may not exist depending on permissions)
 		'shd_hook_mainmenu', // functions to call when looking at the main menu

@@ -74,6 +74,7 @@ function shdplugin_front_page()
 			'hdadminoptssrch' => 'shd_frontpage_hdadminoptssrch',
 			'adminmenu' => 'shd_frontpage_adminmenu',
 			'helpdesk' => 'shd_frontpage_helpdesk',
+			'after_main' => 'shd_frontpage_aftermain',
 		),
 	);
 }

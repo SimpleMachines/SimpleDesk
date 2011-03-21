@@ -153,4 +153,20 @@ function shd_frontpage_source()
 	}
 }
 
+function shd_frontpage_aftermain()
+{
+	global $context, $scripturl, $txt;
+	$dest = $scripturl . '?action=helpdesk;sa=main';
+
+	// We have to fix linktrees.
+	foreach ($context['linktree'] as $key => $treeitem)
+	{
+		if (empty($treeitem['url']))
+			continue;
+
+		if ($treeitem['url'] == $dest && $treeitem['name'] == $txt['shdp_tickets'])
+			$context['linktree'][$key]['url'] = $scripturl . '?action=helpdesk;sa=tickets';
+	}
+}
+
 ?>
