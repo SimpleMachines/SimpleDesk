@@ -310,4 +310,80 @@ function shd_admin_core_features(&$core_features)
 	}
 }
 
+/**
+ *	Perform any processing on SMF permissions subject to SimpleDesk options (namely removing permissions that make no sense in helpdesk-only mode)
+ *
+ *	All of the parameters are the normal variables provided by ManagePermissions.php to its integration hook.
+ *	@since 1.1
+ *	@param array &$permissionGroups The array of groups of permissions
+ *	@param array &$permissionList The master list of permissions themselves
+ *	@param array &$leftPermissionGroups The list of permission groups that are displayed on the left hand side of the screen in Classic Mode
+ *	@param array &$hiddenPermissions A list of permissions to be hidden in the event of features being disabled
+ *	@param array &$relabelPermissions A list of permissions to be renamed depending on features being active
+*/
+function shd_admin_smf_perms(&$permissionGroups, &$permissionList, &$leftPermissionGroups, &$hiddenPermissions, &$relabelPermissions)
+{
+	global $modSettings;
+
+	if (!$modSettings['helpdesk_active'] || empty($modSettings['shd_helpdesk_only']))
+		return;
+
+	$perms_disable = array(
+		'view_stats',
+		'who_view',
+		'search_posts',
+		'karma_edit',
+		'calendar_view',
+		'calendar_post',
+		'calendar_edit',
+		'manage_boards',
+		'manage_attachments',
+		'manage_smileys',
+		'edit_news',
+		'access_mod_center',
+		'moderate_forum',
+		'send_mail',
+		'issue_warning',
+		'moderate_board',
+		'approve_posts',
+		'post_new',
+		'post_unapproved_topics',
+		'post_unapproved_replies',
+		'post_reply',
+		'merge_any',
+		'split_any',
+		'send_topic',
+		'make_sticky',
+		'move',
+		'lock',
+		'remove',
+		'modify_replies',
+		'delete_replies',
+		'announce_topic',
+		'delete',
+		'modify',
+		'report_any',
+		'poll_view',
+		'poll_vote',
+		'poll_post',
+		'poll_add',
+		'poll_edit',
+		'poll_lock',
+		'poll_remove',
+		'mark_any_notify',
+		'mark_notify',
+		'view_attachments',
+		'post_unapproved_attachments',
+		'post_attachment',
+	);
+
+	// that's the generic stuff, now for specific options
+	if (!empty($modSettings['shd_disable_pm']))
+	{
+		$perms_disable[] = 'pm_read';
+		$perms_disable[] = 'pm_send';
+	}
+
+	$hiddenPermissions = array_merge($hiddenPermissions, $perms_disable);
+}
 ?>

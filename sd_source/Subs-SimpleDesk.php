@@ -1288,6 +1288,10 @@ function shd_init_actions(&$actionArray)
 	$actionArray['unread'] = array('sd_source/SimpleDesk-Unread.php', 'shd_unread_posts');
 	$actionArray['unreadreplies'] = array('sd_source/SimpleDesk-Unread.php', 'shd_unread_posts');
 
+	// If we're going to a help page (for admin), make sure to load the relevant text.
+	if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'helpadmin')
+		shd_load_language('SimpleDeskAdmin');
+
 	// Now engage any SD specific hooks.
 	call_integration_hook('shd_hook_actions', array($actionArray));
 

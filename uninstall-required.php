@@ -90,6 +90,10 @@ $hooks[] = array(
 	'hook' => 'integrate_menu_buttons',
 	'function' => 'shd_main_menu',
 );
+$hooks[] = array(
+	'hook' => 'integrate_load_permissions',
+	'function' => 'shd_admin_smf_perms',
+);
 
 foreach ($hooks as $hook)
 	remove_integration_function($hook['hook'], $hook['function']);

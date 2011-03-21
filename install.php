@@ -123,6 +123,11 @@ $hooks[] = array(
 	'function' => 'shd_main_menu',
 	'perm' => true,
 );
+$hooks[] = array(
+	'hook' => 'integrate_load_permissions',
+	'function' => 'shd_admin_smf_perms',
+	'perm' => true,
+);
 
 // Now, we move on to adding new tables to the database.
 $tables = array();

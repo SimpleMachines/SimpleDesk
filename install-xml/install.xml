@@ -2,30 +2,23 @@
 <!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
 <modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
 	<id>SimpleDeskTeam:SimpleDesk</id>
-	<version>1.1 rev753</version>
+	<version>1.1</version>
 
 	<file name="$sourcedir/Admin.php"><!-- adds the navbar links to the admin panel -->
 		<operation><!-- prepend SimpleDesk's ACP helper functions to the list of places to search -->
 			<search position="replace"><![CDATA[// This is a special array of functions that contain setting data - we query all these to simply pull all setting bits!
 	$settings_search = array(]]></search>
 			<add><![CDATA[// Add SimpleDesk functions
-	$settings_search = array();
-	$settings_search[] = array('shd_modify_display_options', 'area=helpdesk_options;sa=display');
-	$settings_search[] = array('shd_modify_posting_options', 'area=helpdesk_options;sa=posting');
-	$settings_search[] = array('shd_modify_admin_options', 'area=helpdesk_options;sa=admin');
-	$settings_search[] = array('shd_modify_standalone_options', 'area=helpdesk_options;sa=standalone');
-	$settings_search[] = array('shd_modify_actionlog_options', 'area=helpdesk_options;sa=actionlog');
-	$settings_search[] = array('shd_modify_notifications_options', 'area=helpdesk_options;sa=notifications');
+	$settings_search = array(
+		array('shd_modify_display_options', 'area=helpdesk_options;sa=display'),
+		array('shd_modify_posting_options', 'area=helpdesk_options;sa=posting'),
+		array('shd_modify_admin_options', 'area=helpdesk_options;sa=admin'),
+		array('shd_modify_standalone_options', 'area=helpdesk_options;sa=standalone'),
+		array('shd_modify_actionlog_options', 'area=helpdesk_options;sa=actionlog'),
+		array('shd_modify_notifications_options', 'area=helpdesk_options;sa=notifications'),
+	);
 
-	if (!empty($modSettings['shd_hook_hdadminoptssrch']))
-	{
-		$functions = explode(',', $modSettings['shd_hook_hdadminoptssrch']);
-		foreach ($functions as $function)
-		{
-			if (is_callable($function))
-				$function($settings_search); // by reference!
-		}
-	}
+	call_integration_hook('shd_hook_hdadminoptssrch', array(&$settings_search));
 
 	$search_entries = count($settings_search);
 
@@ -143,96 +136,11 @@
 
 	<file name="$sourcedir/Profile-Modify.php"><!-- Ensure things get uncached if we change groups (which means permissions) -->
 		<operation>
-			<search position="after"><![CDATA[// The account page allows the change of your id_group - but not to a protected group!]]></search>
+			<search position="after"><![CDATA[	// The account page allows the change of your id_group - but not to a protected group!]]></search>
 			<add><![CDATA[	// Ensure we uncache stuff that might change in the helpdesk
 	shd_clear_active_tickets($context['id_member']);
 
 ]]></add>
-		</operation>
-	</file>
-
-	<file name="$sourcedir/ManagePermissions.php"><!-- disable permissions that don't apply in SA mode -->
-		<operation>
-			<search position="after"><![CDATA[	// We need to know what permissions we can't give to guests.]]></search>
-			<add><![CDATA[	// Are we in SD only mode? If so... hoo boy, we gots some purging to do.
-	if ($modSettings['helpdesk_active'] && !empty($modSettings['shd_helpdesk_only']))
-	{
-		$perms_disable = array(
-			'membergroup' => array(
-				'view_stats',
-				'who_view',
-				'search_posts',
-				'karma_edit',
-				'calendar_view',
-				'calendar_post',
-				'calendar_edit',
-				'manage_boards',
-				'manage_attachments',
-				'manage_smileys',
-				'edit_news',
-				'access_mod_center',
-				'moderate_forum',
-				'send_mail',
-				'issue_warning',
-				'shd_ticket_to_topic', // yes, even our own, makes sense to reuse what we have here
-				'shd_topic_to_ticket',
-			),
-			'board' => array(
-				'moderate_board',
-				'approve_posts',
-				'post_new',
-				'post_unapproved_topics',
-				'post_unapproved_replies',
-				'post_reply',
-				'merge_any',
-				'split_any',
-				'send_topic',
-				'make_sticky',
-				'move',
-				'lock',
-				'remove',
-				'modify_replies',
-				'delete_replies',
-				'announce_topic',
-				'delete',
-				'modify',
-				'report_any',
-				'poll_view',
-				'poll_vote',
-				'poll_post',
-				'poll_add',
-				'poll_edit',
-				'poll_lock',
-				'poll_remove',
-				'mark_any_notify',
-				'mark_notify',
-				'view_attachments',
-				'post_unapproved_attachments',
-				'post_attachment',
-			),
-		);
-		// that's the generic stuff, now for specific options
-		if (!empty($modSettings['shd_disable_pm']))
-		{
-			$perms_disable['membergroup'][] = 'pm_read';
-			$perms_disable['membergroup'][] = 'pm_send';
-		}
-
-		foreach ($perms_disable as $group => $perm_list)
-			foreach ($perm_list as $perm)
-				if (isset($permissionList[$group][$perm]))
-					unset($permissionList[$group][$perm]);
-	}
-
-]]></add>
-		</operation>
-	</file>
-
-	<file name="$sourcedir/Help.php"><!-- load the admin help strings -->
-		<operation>
-			<search position="replace"><![CDATA[	loadLanguage('Help');]]></search>
-			<add><![CDATA[	loadLanguage('Help');
-	shd_load_language('SimpleDeskAdmin');]]></add>
 		</operation>
 	</file>
 

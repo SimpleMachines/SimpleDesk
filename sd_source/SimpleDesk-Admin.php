@@ -60,7 +60,6 @@ function shd_admin_main()
 
 	// We need this for later
 	require_once($sourcedir . '/ManageServer.php');
-	require_once($sourcedir . '/sd_source/Subs-SimpleDeskAdmin.php');
 
 	// Create some subactions
 	$subActions = array(
@@ -79,7 +78,7 @@ function shd_admin_main()
 	$context['sub_action'] = $_REQUEST['area'];
 
 	if (!empty($subActions[$_REQUEST['area']][0]))
-		require ($sourcedir . '/sd_source/' . $subActions[$_REQUEST['area']][0]);
+		require_once ($sourcedir . '/sd_source/' . $subActions[$_REQUEST['area']][0]);
 
 	// Call our subaction
 	if ($_REQUEST['area'] == 'helpdesk_options')
