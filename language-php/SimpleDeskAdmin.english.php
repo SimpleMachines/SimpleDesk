@@ -389,6 +389,17 @@ $txt['shd_admin_plugins_lang_uzbek_latin'] = 'Uzbek (Latin)';
 $txt['shd_admin_plugins_lang_vietnamese'] = 'Vietnamese';
 //@}
 
+//! Maintenance
+//@{
+$txt['shd_admin_maint'] = 'Maintenance';
+$txt['shd_admin_maint_back'] = 'Back to Helpdesk Maintenance';
+$txt['shd_admin_maint_desc'] = 'This area allows you to perform some common maintenance tasks within SimpleDesk.';
+$txt['shd_admin_maint_findrepair'] = 'Find and Repair Errors';
+$txt['shd_admin_maint_findrepair_desc'] = 'Sometimes, however unlikely, things get a little out of step inside the database. This operation performs an integrity check on the database and attempts to repair any errors it encounters.';
+
+$txt['shd_maint_zero_tickets'] = '%1$d ticket(s) were found with invalid ids, they have all been given new ids, the next available id numbers.';
+//@}
+
 /**
  *	@ignore
  *	Warning: He may bite.

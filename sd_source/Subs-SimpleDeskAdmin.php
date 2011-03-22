@@ -282,6 +282,14 @@ function shd_admin_bootstrap(&$admin_areas)
 					'subsections' => array(
 					),
 				),
+				'helpdesk_maint' => array(
+					'label' => $txt['shd_admin_maint'],
+					'file' => 'sd_source/SimpleDesk-Admin.php',
+					'icon' => 'shd/maintenance.png',
+					'function' => 'shd_admin_main',
+					'subsections' => array(
+					),
+				),
 			),
 		);
 

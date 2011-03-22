@@ -68,6 +68,7 @@ function shd_admin_main()
 		'helpdesk_customfield' => array('SimpleDesk-AdminCustomField.php', 'shd_admin_custom'),
 		'helpdesk_permissions' => array('SimpleDesk-AdminPermissions.php', 'shd_admin_permissions'),
 		'helpdesk_plugins' => array('SimpleDesk-AdminPlugins.php', 'shd_admin_plugins'),
+		'helpdesk_maint' => array('SimpleDesk-AdminMaint.php', 'shd_admin_maint'),
 	);
 
 	// Int hooks - after we basically set everything up (so it's manipulatable by the hook, but before we do the last bits of finalisation)
@@ -126,9 +127,6 @@ function shd_admin_main()
 function shd_admin_info()
 {
 	global $context, $settings, $scripturl, $txt, $sourcedir, $smcFunc;
-
-	// No little pixies allowed!
-	shd_is_allowed_to(array('admin_forum', 'admin_helpdesk'));
 
 	$subactions = array(
 		'main' => array(
