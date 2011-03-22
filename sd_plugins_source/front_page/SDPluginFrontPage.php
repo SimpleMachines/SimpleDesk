@@ -156,17 +156,32 @@ function shd_frontpage_source()
 function shd_frontpage_aftermain()
 {
 	global $context, $scripturl, $txt;
+
+	// Enabled?
+	if (!in_array('front_page', $context['shd_plugins']))
+		return;
+
 	$dest = $scripturl . '?action=helpdesk;sa=main';
 
-	// We have to fix linktrees.
+	// We have to fix linktrees. Specifically, if the item says 'Tickets' it should really point there.
 	foreach ($context['linktree'] as $key => $treeitem)
 	{
 		if (empty($treeitem['url']))
 			continue;
 
 		if ($treeitem['url'] == $dest && $treeitem['name'] == $txt['shdp_tickets'])
+		{
 			$context['linktree'][$key]['url'] = $scripturl . '?action=helpdesk;sa=tickets';
+			break;
+		}
 	}
+
+	// If we're actually on the tickets page on its own, we won't have the link tree item. Time to fix that.
+	if (isset($_REQUEST['sa']) && $_REQUEST['sa'] == 'tickets')
+		$context['linktree'][] = array(
+			'url' => $scripturl . '?action=helpdesk;sa=tickets',
+			'name' => $txt['shdp_tickets'],
+		);
 }
 
 ?>
