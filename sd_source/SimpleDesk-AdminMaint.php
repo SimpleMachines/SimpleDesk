@@ -71,7 +71,7 @@ function shd_admin_maint_findrepair()
 	$context['maint_steps'] = array();
 	$context['maint_steps'] = array(
 		array(
-			'name' => 'zero_tickets',
+			'name' => 'zero_entries',
 			'pc' => 5,
 		),
 		array(
@@ -83,10 +83,7 @@ function shd_admin_maint_findrepair()
 	if (isset($_GET['done']))
 	{
 		$context['sub_template'] = 'shd_admin_maint_findrepairdone';
-		$context['maintenance_result'] = array();
-		foreach ($context['steps'] as $step)
-			if (!empty($_SESSION['shd_maint'][$step['name']]))
-				$context['maintenance_result'][$step['name']] = $_SESSION['shd_maint'][$step['name']];
+		$context['maintenance_result'] = !empty($_SESSION['shd_maint']) ? $_SESSION['shd_maint'] : array();
 		unset($_SESSION['shd_maint']);
 		return;
 	}
@@ -108,7 +105,7 @@ function shd_admin_maint_findrepair()
 	$function();
 }
 
-function shd_maint_zero_tickets()
+function shd_maint_zero_entries()
 {
 	global $context, $smcFunc;
 
@@ -125,6 +122,21 @@ function shd_maint_zero_tickets()
 			SET id_ticket = NULL
 			WHERE id_ticket = 0');
 		$_SESSION['shd_maint']['zero_tickets'] = $smcFunc['db_affected_rows']();
+	}
+
+	// And ticket replies with an id-msg 0
+	$query = $smcFunc['db_query']('', '
+		SELECT COUNT(*)
+		FROM {db_prefix}helpdesk_ticket_replies
+		WHERE id_msg = 0');
+	list($msgs) = $smcFunc['db_fetch_row']($query);
+	if (!empty($msgs))
+	{
+		$smcFunc['db_query']('', '
+			UPDATE {db_prefix}helpdesk_ticket_replies
+			SET id_msg = NULL
+			WHERE id_msg = 0');
+		$_SESSION['shd_maint']['zero_msgs'] = $smcFunc['db_affected_rows']();
 	}
 
 	// This is a short operation, no suboperation, so just tell it to go onto the next step.

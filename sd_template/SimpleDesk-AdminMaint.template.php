@@ -102,6 +102,9 @@ function template_shd_admin_maint_findrepairdone()
 		if (!empty($context['maintenance_result']['zero_tickets']))
 			echo '
 				<p class="padding">', sprintf($txt['shd_maint_zero_tickets'], $context['maintenance_result']['zero_tickets']), '</p>';
+		if (!empty($context['maintenance_result']['zero_msgs']))
+			echo '
+				<p class="padding">', sprintf($txt['shd_maint_zero_msgs'], $context['maintenance_result']['zero_tickets']), '</p>';
 
 		echo '
 			</div>
