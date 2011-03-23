@@ -148,6 +148,15 @@ $smcFunc['db_query']('', '
 	)
 );
 
+// Also remove the plugins package server.
+$query = $smcFunc['db_query']('', '
+	DELETE FROM {db_prefix}package_servers
+	WHERE url LIKE {string:plugins}',
+	array(
+		'plugins' => 'http://www.simpledesk.net/downloads/plugins/%',
+	)
+);
+
 // And tell SMF we've updated $modSettings
 updateSettings(array(
 	'settings_updated' => time(),

@@ -441,6 +441,27 @@ $rows[] = array(
 	),
 	'keys' => array('task'),
 );
+// Another row we might want to add is package server. Except we may have to remove a pre-existing plugins one, because the version may be wrong.
+$query = $smcFunc['db_query']('', '
+	DELETE FROM {db_prefix}package_servers
+	WHERE url LIKE {string:plugins}',
+	array(
+		'plugins' => 'http://www.simpledesk.net/downloads/plugins/%',
+	)
+);
+$rows[] = array(
+	'method' => 'insert',
+	'table_name' => '{db_prefix}package_servers',
+	'columns' => array(
+		'name' => 'string',
+		'url' => 'string',
+	),
+	'data' => array(
+		'SimpleDesk Plugins', // !!! Does this need to be multi-lingual?
+		'http://www.simpledesk.net/downloads/plugins/1.1/', // !!! This should be updated in later releases!
+	),
+	'keys' => array('id_server'),
+);
 
 // Now we can add a new column to an existing table
 $columns = array();
