@@ -72,7 +72,7 @@ function shd_admin_main()
 	);
 
 	// Int hooks - after we basically set everything up (so it's manipulatable by the hook, but before we do the last bits of finalisation)
-	call_integration_hook('shd_hook_hdadmin', array($subActions));
+	call_integration_hook('shd_hook_hdadmin', array(&$subActions));
 
 	// Make sure we can find a subaction. If not set, default to info
 	$_REQUEST['area'] = isset($_REQUEST['area']) && isset($subActions[$_REQUEST['area']]) ? $_REQUEST['area'] : 'helpdesk_info';
@@ -522,6 +522,7 @@ function shd_modify_standalone_options($return_config)
  *	<li>'shd_logopt_newposts' (checkbox) - if checked, a ticket's being creation and subsequent replies will be logged.</li>
  *	<li>'shd_logopt_editposts' (checkbox) - if checked, a ticket or its replies being edited will be logged.</li>
  *	<li>'shd_logopt_resolve' (checkbox) - if checked, a ticket's being closed and/or reopened will be logged.</li>
+ *	<li>'shd_logopt_autoclose' (checkbox) - if checked, tickets being closed by the helpdesk due to age will be logged.</li>
  *	<li>'shd_logopt_assign' (checkbox) - if checked, a ticket being assigned/reassigned/unassigned will be logged.</li>
  *	<li>'shd_logopt_privacy' (checkbox) - if checked, ticket privacy changes will be logged.</li>
  *	<li>'shd_logopt_urgency' (checkbox) - if checked, ticket urgency changes will be logged.</li>
@@ -550,10 +551,13 @@ function shd_modify_actionlog_options($return_config)
 		array('check', 'shd_logopt_newposts', 'disabled' => !empty($modSettings['shd_disable_action_log'])),
 		array('check', 'shd_logopt_editposts', 'disabled' => !empty($modSettings['shd_disable_action_log'])),
 		array('check', 'shd_logopt_resolve', 'disabled' => !empty($modSettings['shd_disable_action_log'])),
+		array('check', 'shd_logopt_autoclose', 'disabled' => !empty($modSettings['shd_disable_action_log']) || empty($modSettings['shd_autoclose_tickets']) || empty($modSettings['shd_autoclose_tickets_days'])),
+		'',
 		array('check', 'shd_logopt_assign', 'disabled' => !empty($modSettings['shd_disable_action_log'])),
 		array('check', 'shd_logopt_privacy', 'disabled' => !empty($modSettings['shd_disable_action_log'])),
 		array('check', 'shd_logopt_urgency', 'disabled' => !empty($modSettings['shd_disable_action_log'])),
 		array('check', 'shd_logopt_tickettopicmove', 'disabled' => !empty($modSettings['shd_disable_action_log'])),
+		'',
 		array('check', 'shd_logopt_delete', 'disabled' => !empty($modSettings['shd_disable_action_log'])),
 		array('check', 'shd_logopt_restore', 'disabled' => !empty($modSettings['shd_disable_action_log'])),
 		array('check', 'shd_logopt_permadelete', 'disabled' => !empty($modSettings['shd_disable_action_log'])),

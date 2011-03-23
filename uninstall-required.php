@@ -45,7 +45,7 @@ elseif (!defined('SMF'))
 	die('<b>Error:</b> Cannot uninstall - please verify you put this file in the same place as SMF\'s SSI.php.');
 }
 
-// Unchecking the option in Core Features, and deactivating all the hooks
+// Unchecking the option in Core Features.
 global $modSettings;
 $modSettings['helpdesk_active'] = false;
 $features = implode(',', array_diff(explode(',', $modSettings['admin_features']), array('shd')));
@@ -57,6 +57,7 @@ updateSettings(
 	true
 );
 
+// Removing all the hooks.
 $hooks = array();
 $hooks[] = array(
 	'hook' => 'integrate_display_buttons',
@@ -98,4 +99,12 @@ $hooks[] = array(
 foreach ($hooks as $hook)
 	remove_integration_function($hook['hook'], $hook['function']);
 
+// Removing the scheduled task.
+$smcFunc['db_query']('', '
+	DELETE FROM {db_prefix}scheduled_tasks
+	WHERE task = {string:simpledesk}',
+	array(
+		'simpledesk' => 'simpledesk',
+	)
+);
 ?>

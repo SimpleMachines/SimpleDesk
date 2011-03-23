@@ -420,6 +420,26 @@ $tables[] = array(
 
 // Oh joy, we've now made it to extra rows... (testing data)
 $rows = array();
+$rows[] = array(
+	'method' => 'replace',
+	'table_name' => '{db_prefix}scheduled_tasks',
+	'columns' => array(
+		'next_time' => 'int',
+		'time_offset' => 'int',
+		'time_regularity' => 'int',
+		'time_unit' => 'string',
+		'disabled' => 'int',
+		'task' => 'string',
+	),
+	'data' => array(
+		strtotime('tomorrow'),
+		0,
+		1,
+		'd',
+		0,
+		'simpledesk',
+	),
+);
 
 // Now we can add a new column to an existing table
 $columns = array();

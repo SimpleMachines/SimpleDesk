@@ -30,7 +30,8 @@ if (!defined('SMF'))
 /**
  *	Container task for all the scheduled maintenance that SD can be asked to do.
  *
- *	- purge deleted tickets
+ *	- close older open tickets (if not replied to within a given number of days)
+ *	- purge deleted tickets (delete their contents aftet a given number of days of being already deleted)
  *
  *	@since 1.1
 */
@@ -39,15 +40,109 @@ function shd_scheduled()
 {
 	global $smcFunc, $modSettings;
 
+	shd_scheduled_close_tickets();
 	shd_scheduled_purge_tickets();
 	return true;
+}
+
+function shd_scheduled_close_tickets()
+{
+	global $modSettings, $smcFunc, $txt;
+
+	if (empty($modSettings['shd_autoclose_tickets']) || empty($modSettings['shd_autoclose_tickets_days']))
+		return;
+
+	@set_time_limit(600); // Ten minutes. Is a big job, possibly.
+
+	// 1. Get the list of tickets.
+	$query = $smcFunc['db_query']('', '
+		SELECT hdt.id_ticket, hdt.subject, hdt.id_member_started, hdt.id_member_updated, hdtr_last.poster_time
+		FROM {db_prefix}helpdesk_tickets AS hdt
+			INNER JOIN {db_prefix}helpdesk_ticket_replies AS hdtr_last ON (hdt.id_last_msg = hdtr_last.id_msg)
+		WHERE hdt.status IN ({array_int:open})
+			AND poster_time <= {int:old_time}',
+		array(
+			'open' => array(TICKET_STATUS_NEW, TICKET_STATUS_PENDING_STAFF, TICKET_STATUS_PENDING_USER),
+			'old_time' => time() - 86400 * $modSettings['shd_autoclose_tickets_days'],
+		)
+	);
+	$tickets = array();
+	$subjects = array();
+	$members = array();
+	while ($row = $smcFunc['db_fetch_assoc']($query))
+	{
+		$tickets[$row['id_ticket']] = $row['id_ticket'];
+		$subjects[$row['id_ticket']] = $row['subject'];
+		$members[] = $row['id_member_started'];
+		$members[] = $row['id_member_updated'];
+	}
+	$smcFunc['db_free_result']($query);
+
+	// Any to do?
+	if (empty($tickets))
+		return;
+
+	// 2. Update the tickets.
+	$query = $smcFunc['db_query']('', '
+		UPDATE {db_prefix}helpdesk_tickets
+		SET status = {int:closed}
+		WHERE id_ticket IN ({array_int:tickets})',
+		array(
+			'closed' => TICKET_STATUS_CLOSED,
+			'tickets' => $tickets,
+		)
+	);
+
+	// 3. Update the log if appropriate. Normally we would call shd_log_action(), however here... we might be doing a lot, so instead, we do it manually ourselves.
+	if (empty($modSettings['shd_disable_action_log']) && !empty($modSettings['shd_logopt_autoclose']))
+	{
+		$rows = array();
+		$time = time();
+		foreach ($tickets as $ticket)
+		{
+			$rows[] = array(
+				$time, // log_time
+				0, // id_member
+				'', // ip
+				'autoclose', // action
+				$ticket, // id_ticket
+				0, // id_msg
+				serialize(array(
+					'subject' => $subjects[$ticket],
+					'auto' => true, // indicate to the action log that this is the case
+				)),
+			);
+		}
+
+		$smcFunc['db_insert']('',
+			'{db_prefix}helpdesk_log_action',
+			array(
+				'log_time' => 'int', 'id_member' => 'int', 'ip' => 'string-16', 'action' => 'string', 'id_ticket' => 'int', 'id_msg' => 'int', 'extra' => 'string-65534',
+			),
+			$rows,
+			array('id_action')
+		);
+	}
+
+	// 4. If caching is enabled, make sure to purge the cache for members so their number of tickets will be recalculated.
+	// No need to dump all SD cache items though, though we have to get all those whose tickets were affected, plus all staff.
+	if (!empty($modSettings['cache_enable']))
+	{
+		$members = array_merge($members, shd_members_allowed_to('shd_staff'));
+		$members = array_unique($members);
+		foreach ($members as $member)
+		{
+			cache_put_data('shd_active_tickets_' . $member, null, 0);
+			cache_put_data('shd_ticket_count_' . $member, null, 0);
+		}
+	}
 }
 
 function shd_scheduled_purge_tickets()
 {
 	global $smcFunc, $modSettings;
 
-	if (empty($modSettings['shd_purge_tickets']) || empty($modSettings['shd_purge_tickets_days']))
+	if (empty($modSettings['shd_autopurge_tickets']) || empty($modSettings['shd_autopurge_tickets_days']))
 		return;
 
 	@set_time_limit(600); // Ten minutes. Is a big job, possibly.
@@ -89,7 +184,7 @@ function shd_scheduled_purge_tickets()
 	$smcFunc['db_free_result']($query);
 
 	// 3. Purge that list of threads too new to be deleted
-	$del_time = time() - (86400 * $modSettings['shd_purge_tickets_days']);
+	$del_time = time() - (86400 * $modSettings['shd_autopurge_tickets_days']);
 	foreach ($tickets as $k => $v)
 	{
 		if ($v == 0 || $v > $del_time)

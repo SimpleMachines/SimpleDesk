@@ -38,6 +38,8 @@ $txt['core_settings_item_shd_desc'] = 'The helpdesk allows you to expand your fo
 //@{
 $txt['errortype_simpledesk'] = 'SimpleDesk';
 $txt['errortype_simpledesk_desc'] = 'Errors most likely related to SimpleDesk. Please report any such errors on www.simpledesk.net.';
+$txt['scheduled_task_simpledesk'] = 'SimpleDesk daily maintenance';
+$txt['scheduled_task_desc_simpledesk'] = 'Maintenance tasks and internal processing to be run daily for SimpleDesk. It is strongly not advised to disable this task.';
 //@}
 
 //! @name Items for the administration menu structure
@@ -199,6 +201,7 @@ $txt['shd_logopt_restore'] = 'Log tickets and replies being restored';
 $txt['shd_logopt_permadelete'] = 'Log tickets and replies being permadeleted';
 $txt['shd_logopt_relationships'] = 'Log any changes in ticket relationships';
 $txt['shd_logopt_split'] = 'Log splitting of a ticket into two tickets';
+$txt['shd_logopt_autoclose'] = 'Log tickets closed automatically by the helpdesk';
 
 $txt['shd_notify_send_to'] = 'Will be sent to';
 $txt['shd_notify_ticket_starter'] = 'the user who started the ticket (if set in their preferences)';

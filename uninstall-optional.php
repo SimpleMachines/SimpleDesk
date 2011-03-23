@@ -68,6 +68,7 @@ $to_remove = array(
 	'shd_logopt_newposts',
 	'shd_logopt_editposts',
 	'shd_logopt_resolve',
+	'shd_logopt_autoclose',
 	'shd_logopt_assign',
 	'shd_logopt_privacy',
 	'shd_logopt_urgency',
@@ -91,6 +92,11 @@ $to_remove = array(
 	'shd_notify_new_reply_any',
 	'shd_notify_assign_me',
 	'shd_notify_assign_own',
+	// Scheduled tasks
+	'shd_autoclose_tickets',
+	'shd_autoclose_tickets_days',
+	'shd_autopurge_tickets',
+	'shd_autopurge_tickets_days',
 	// Plugin related: general
 	'shd_enabled_plugins',
 	// Plugin: source load hooks
@@ -113,7 +119,6 @@ $to_remove = array(
 	'shd_hook_modpost',
 	'shd_hook_assign',
 	'shd_hook_buffer',
-	'shd_hook_postingopts',
 	'shd_hook_after_main',
 	// Plugin: menu hooks
 	'shd_hook_mainmenu',

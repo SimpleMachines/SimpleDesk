@@ -105,15 +105,7 @@
 		}
 
 		// Now engage any hooks.
-		if (!empty($modSettings['shd_hook_profilemenu']))
-		{
-			$functions = explode(',', $modSettings['shd_hook_profilemenu']);
-			foreach ($functions as $function)
-			{
-				if (is_callable($function))
-					$function($profile_areas); // this should be picked up by reference in the called function or it won't do anything!
-			}
-		}
+		call_integration_hook('shd_hook_profilemenu', array(&$profile_areas));
 	}
 
 ]]></add>

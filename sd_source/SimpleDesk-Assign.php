@@ -289,7 +289,7 @@ function shd_commit_assignment($ticket, $assignment, $is_ajax = false)
 	);
 
 	// Int hooks - after we've set everything up but before we actually press the button
-	call_integration_hook('shd_hook_assign', array($ticket, $assignment));
+	call_integration_hook('shd_hook_assign', array(&$ticket, &$assignment));
 
 	shd_modify_ticket_post($msgOptions, $ticketOptions, $posterOptions);
 

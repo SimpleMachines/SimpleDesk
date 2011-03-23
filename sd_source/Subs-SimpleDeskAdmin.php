@@ -74,8 +74,8 @@ function shd_load_action_log_entries($start = 0, $items_per_page = 10, $sort = '
 
 	// Without further screaming and waving, fetch the actions.
 	$request = shd_db_query('','
-		SELECT la.id_action, la.log_time, la.id_member, la.ip, la.action, la.id_ticket, la.id_msg, la.extra,
-		mem.real_name, mg.group_name
+		SELECT la.id_action, la.log_time, la.ip, la.action, la.id_ticket, la.id_msg, la.extra,
+		IFNULL(mem.id_member, 0) AS id_member, IFNULL(mem.real_name, {string:blank}) AS real_name, IFNULL(mg.group_name, {string:na}) AS group_name
 		FROM {db_prefix}helpdesk_log_action AS la
 			LEFT JOIN {db_prefix}members AS mem ON(mem.id_member = la.id_member)
 			LEFT JOIN {db_prefix}membergroups AS mg ON (mg.id_group = CASE WHEN mem.id_group = {int:reg_group_id} THEN mem.id_post_group ELSE mem.id_group END)
@@ -89,15 +89,25 @@ function shd_load_action_log_entries($start = 0, $items_per_page = 10, $sort = '
 			'items_per_page' => $items_per_page,
 			'order' => $order,
 			'clause' => empty($clause) ? '' : 'WHERE ' . $clause,
+			'na' => $txt['not_applicable'],
+			'blank' => '',
 		)
 	);
 
 	$actions = array();
-
 	while ($row = $smcFunc['db_fetch_assoc']($request))
 	{
 		$row['extra'] = @unserialize($row['extra']);
 		$row['extra'] = is_array($row['extra']) ? $row['extra'] : array();
+
+		// Uhoh, we don't know who this is! Check it's not automatically by the system. If it is... mark it so.
+		if (empty($row['id_member']))
+		{
+			if (isset($row['extra']) && $row['extra']['auto'] === true)
+				$row['real_name'] = $txt['shd_helpdesk'];
+			else
+				$row['real_name'] = $txt['shd_admin_actionlog_unknown'];
+		}
 
 		$actions[$row['id_action']] = array(
 			'id' => $row['id_action'],

@@ -1257,7 +1257,10 @@ function shd_display_btn_mvtopic(&$normal_buttons)
 */
 function scheduled_simpledesk()
 {
-	global $sourcedir;
+	global $sourcedir, $modSettings;
+
+	if (empty($modSettings['helpdesk_active']))
+		return;
 
 	require($sourcedir . '/sd_source/SimpleDesk-Scheduled.php');
 	return shd_scheduled();
@@ -1293,7 +1296,7 @@ function shd_init_actions(&$actionArray)
 		shd_load_language('SimpleDeskAdmin');
 
 	// Now engage any SD specific hooks.
-	call_integration_hook('shd_hook_actions', array($actionArray));
+	call_integration_hook('shd_hook_actions', array(&$actionArray));
 
 	if (!empty($modSettings['shd_helpdesk_only']))
 	{
@@ -1352,7 +1355,7 @@ function shd_buffer_replace(&$buffer)
 	}
 
 	// And any replacements a buffer might want to make...
-	call_integration_hook('shd_hook_buffer', array($buffer));
+	call_integration_hook('shd_hook_buffer', array(&$buffer));
 
 	return $buffer;
 }

@@ -90,7 +90,7 @@ function shd_profile_main($memID)
 	);
 
 	// Int hooks - after we basically set everything up (so it's manipulatable by the hook, but before we do the last bits of finalisation)
-	call_integration_hook('shd_hook_hdprofile', array($subActions, $memID));
+	call_integration_hook('shd_hook_hdprofile', array(&$subActions, &$memID));
 
 	// Make sure the menu is configured appropriately
 	$context['shd_profile_menu'][count($context['shd_profile_menu'])-1]['is_last'] = true;

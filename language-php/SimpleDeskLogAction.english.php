@@ -104,5 +104,7 @@ $txt['shd_log_newticketproxy'] = '&quot;<a href="{scripturl}?action=helpdesk;sa=
 
 $txt['shd_logpart_att_added'] = 'Files added';
 $txt['shd_logpart_att_removed'] = 'Files removed';
+
+$txt['shd_log_autoclose'] = '&quot;<a href="{scripturl}?action=helpdesk;sa=ticket;ticket={ticket}">{subject}</a>&quot; marked as <strong>resolved</strong> due to inactivity.';
 //@}
 ?>

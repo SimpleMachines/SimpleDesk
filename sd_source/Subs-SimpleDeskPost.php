@@ -310,7 +310,7 @@ function shd_create_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 
 	// Int hooks
 	$hook = $new_ticket ? 'shd_hook_newticket' : 'shd_hook_newreply';
-	call_integration_hook($hook, array($msgOptions, $ticketOptions, $posterOptions));
+	call_integration_hook($hook, array(&$msgOptions, &$ticketOptions, &$posterOptions));
 
 	ignore_user_abort($previous_ignore_user_abort);
 
@@ -483,7 +483,7 @@ function shd_modify_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 	}
 
 	// Int hook
-	call_integration_hook('shd_hook_modpost', array($msgOptions, $ticketOptions, $posterOptions));
+	call_integration_hook('shd_hook_modpost', array(&$msgOptions, &$ticketOptions, &$posterOptions));
 
 	ignore_user_abort($previous_ignore_user_abort);
 

@@ -1869,8 +1869,6 @@ function shd_posting_additional_options()
 			'show' => !empty($context['can_solve']),
 		),
 	);
-
-	call_integration_hook('shd_hook_postingopts');
 }
 
 /**
