@@ -79,6 +79,14 @@ function shd_admin_maint_findrepair()
 			'pc' => 10,
 		),
 		array(
+			'name' => 'first_last',
+			'pc' => 10,
+		),
+		array(
+			'name' => 'status',
+			'pc' => 10,
+		),
+		array(
 			'name' => 'clean_cache',
 			'pc' => 5,
 		),
@@ -109,6 +117,7 @@ function shd_admin_maint_findrepair()
 	$function();
 }
 
+// Validate that all tickets and messages have a valid id number
 function shd_maint_zero_entries()
 {
 	global $context, $smcFunc;
@@ -147,6 +156,7 @@ function shd_maint_zero_entries()
 	$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . ($context['step'] + 1) . '" />';
 }
 
+// Ensure that the count of number of replies/deleted replies/whether ticket contains deleted replies are all correct.
 function shd_maint_deleted()
 {
 	global $context, $smcFunc;
@@ -256,11 +266,188 @@ function shd_maint_deleted()
 	}
 }
 
+// Make sure the first and last posters on a ticket are correct.
+function shd_maint_first_last()
+{
+	global $context, $smcFunc;
+
+	// First we need the number of tickets
+	$query = $smcFunc['db_query']('', '
+		SELECT COUNT(*)
+		FROM {db_prefix}helpdesk_tickets');
+	list($ticket_count) = $smcFunc['db_fetch_row']($query);
+	$smcFunc['db_free_result']($query);
+
+	$_REQUEST['start'] = isset($_REQUEST['start']) ? (int) $_REQUEST['start'] : 0;
+
+	$step_size = 150;
+	$tickets = array();
+	$tickets_modify = array();
+	$query = $smcFunc['db_query']('', '
+		SELECT id_ticket, id_first_msg, id_last_msg
+		FROM {db_prefix}helpdesk_tickets
+		ORDER BY id_ticket ASC
+		LIMIT {int:start}, {int:limit}',
+		array(
+			'start' => $_REQUEST['start'],
+			'limit' => $step_size,
+		)
+	);
+	while ($row = $smcFunc['db_fetch_assoc']($query))
+		$tickets[$row['id_ticket']] = $row;
+	$smcFunc['db_free_result']($query);
+
+	if (!empty($tickets))
+	{
+		// Firstly, let's get the first/last messages from the messages table.
+		$query = $smcFunc['db_query']('', '
+			SELECT id_ticket, MIN(id_msg) AS id_first_msg, MAX(id_msg) AS id_last_msg
+			FROM {db_prefix}helpdesk_ticket_replies
+			WHERE id_ticket IN ({array_int:tickets})
+				AND message_status = ({int:normal})
+			GROUP BY id_ticket',
+			array(
+				'tickets' => array_keys($tickets),
+				'normal' => MSG_STATUS_NORMAL,
+			)
+		);
+		$ticket_cache = array();
+		while ($row = $smcFunc['db_fetch_assoc']($query))
+			$ticket_cache[$row['id_ticket']] = $row;
+		$smcFunc['db_free_result']($query);
+
+		// OK so we now have the message ids for first/last message. Are they right?
+		foreach ($ticket_cache as $id_ticket => $ticket_details)
+			if ($ticket_cache[$id_ticket]['id_first_msg'] != $tickets[$id_ticket]['id_first_msg'] || $ticket_cache[$id_ticket]['id_last_msg'] != $tickets[$id_ticket]['id_last_msg'])
+				$tickets_modify[$id_ticket] = $ticket_cache[$id_ticket];
+
+		// Any to update?
+		if (!empty($tickets_modify))
+		{
+			// Oh crap.
+			foreach ($tickets_modify as $id_ticket => $columns)
+			{
+				$smcFunc['db_query']('', '
+					UPDATE {db_prefix}helpdesk_tickets
+					SET id_first_msg = {int:id_first_msg},
+						id_last_msg = {int:id_last_msg}
+					WHERE id_ticket = {int:id_ticket}',
+					$columns
+				);
+			}
+			$_SESSION['shd_maint']['first_last'] = count($tickets_modify);
+		}
+	}
+
+	// Another round?
+	$_REQUEST['start'] += $step_size;
+	if ($_REQUEST['start'] > $ticket_count)
+	{
+		// All done
+		$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . ($context['step'] + 1) . '" />';
+	}
+	else
+	{
+		// More to do, call back - and provide the subtitle
+		$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . $context['step'] . '" />
+		<input type="hidden" name="start" value="' . $_REQUEST['start'] . '">';
+		$context['substep_enabled'] = true;
+		$context['substep_title'] = $txt['shd_admin_maint_findrepair_firstlast'];
+		$context['substep_continue_percent'] = round(100 * $_REQUEST['start'] / $ticket_count);
+	}
+}
+
+// Make sure all open tickets have the right statuses.
+function shd_maint_status()
+{
+	global $context, $smcFunc;
+
+	$open = array(TICKET_STATUS_NEW, TICKET_STATUS_PENDING_STAFF, TICKET_STATUS_PENDING_USER);
+
+	// First we need the number of tickets
+	$query = $smcFunc['db_query']('', '
+		SELECT COUNT(*)
+		FROM {db_prefix}helpdesk_tickets
+		WHERE status IN ({array_int:open})',
+		array(
+			'open' => $open,
+		)
+	);
+	list($ticket_count) = $smcFunc['db_fetch_row']($query);
+	$smcFunc['db_free_result']($query);
+
+	$_REQUEST['start'] = isset($_REQUEST['start']) ? (int) $_REQUEST['start'] : 0;
+
+	$step_size = 100;
+	$tickets = array();
+	$tickets_modify = array();
+	$query = $smcFunc['db_query']('', '
+		SELECT id_ticket, num_replies, id_member_started, id_member_updated, status
+		FROM {db_prefix}helpdesk_tickets
+		WHERE status IN ({array_int:open})
+		ORDER BY id_ticket ASC
+		LIMIT {int:start}, {int:limit}',
+		array(
+			'open' => $open,
+			'start' => $_REQUEST['start'],
+			'limit' => $step_size,
+		)
+	);
+	while ($row = $smcFunc['db_fetch_assoc']($query))
+		$tickets[$row['id_ticket']] = $row;
+	$smcFunc['db_free_result']($query);
+
+	if (!empty($tickets))
+	{
+		foreach ($tickets as $ticket)
+		{
+			$new_status = shd_determine_status('reply', $ticket['id_member_started'], $ticket['id_member_updated'], $ticket['num_replies']);
+			if ($ticket['status'] != $new_status)
+				$tickets_modify[$ticket['id_ticket']] = $new_status;
+		}
+
+		// Any to update?
+		if (!empty($tickets_modify))
+		{
+			// Oh crap.
+			foreach ($tickets_modify as $id_ticket => $status)
+			{
+				$smcFunc['db_query']('', '
+					UPDATE {db_prefix}helpdesk_tickets
+					SET status = {int:status}
+					WHERE id_ticket = {int:id_ticket}',
+					array(
+						'id_ticket' => $id_ticket,
+						'status' => $status,
+					)
+				);
+			}
+			$_SESSION['shd_maint']['status'] = count($tickets_modify);
+		}
+	}
+
+	// Another round?
+	$_REQUEST['start'] += $step_size;
+	if ($_REQUEST['start'] > $ticket_count)
+	{
+		// All done
+		$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . ($context['step'] + 1) . '" />';
+	}
+	else
+	{
+		// More to do, call back - and provide the subtitle
+		$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . $context['step'] . '" />
+		<input type="hidden" name="start" value="' . $_REQUEST['start'] . '">';
+		$context['substep_enabled'] = true;
+		$context['substep_title'] = $txt['shd_admin_maint_findrepair_firstlast'];
+		$context['substep_continue_percent'] = round(100 * $_REQUEST['start'] / $ticket_count);
+	}
+}
+
+// Make sure all SimpleDesk cache items are forcibly flushed.
 function shd_maint_clean_cache()
 {
 	global $context;
-
-	// Make sure all SimpleDesk cache items are forcibly flushed.
 	clean_cache('shd');
 
 	// Normally, we'd update $context['continue_post_data'] to indicate our next port of call. But here, we don't have to.

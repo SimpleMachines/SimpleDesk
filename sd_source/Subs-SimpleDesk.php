@@ -799,6 +799,11 @@ function shd_image_url($filename)
 */
 function shd_determine_status($action, $starter_id = 0, $replier_id = 0, $replies = -1)
 {
+	static $staff = null;
+
+	if ($staff === null)
+		$staff = shd_members_allowed_to('shd_staff');
+
 	$known_states = array(
 		'new',
 		'resolve',
@@ -834,7 +839,6 @@ function shd_determine_status($action, $starter_id = 0, $replier_id = 0, $replie
 				return TICKET_STATUS_NEW;
 			else
 			{
-				$staff = shd_members_allowed_to('shd_staff');
 				if (in_array($replier_id, $staff))
 					$new_status = $starter_id == $replier_id ? TICKET_STATUS_PENDING_STAFF : TICKET_STATUS_PENDING_USER; // i.e. if they're staff but it's their own ticket they're replying to, it's not with user.
 				else

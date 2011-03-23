@@ -401,10 +401,13 @@ $txt['shd_admin_maint_findrepair'] = 'Find and Repair Errors';
 $txt['shd_admin_maint_findrepair_desc'] = 'Sometimes, however unlikely, things get a little out of step inside the database. This operation performs an integrity check on the database and attempts to repair any errors it encounters.';
 
 $txt['shd_admin_maint_findrepair_status'] = 'Recalculating ticket counts...';
+$txt['shd_admin_maint_findrepair_firstlast'] = 'Recalculating ticket first/last associations...';
 
 $txt['shd_maint_zero_tickets'] = '%1$d ticket(s) were found with invalid ids, they have all been given new ids, the next available id numbers.';
 $txt['shd_maint_zero_msgs'] = '%1$d ticket posts(s) were found with invalid ids, they have all been given new ids, the next available id numbers.';
 $txt['shd_maint_deleted'] = '%1$d ticket(s) had incorrect counts of the number of posts and/or deleted posts. All have been recalculated.';
+$txt['shd_maint_first_last'] = '%1$d tickets had incorrect messages flagged for the ticket content, or its last reply. All have been rectified.';
+$txt['shd_maint_status'] = '%1$d tickets had the wrong status set for them. All have been rectified.';
 //@}
 
 /**

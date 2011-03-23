@@ -108,6 +108,12 @@ function template_shd_admin_maint_findrepairdone()
 		if (!empty($context['maintenance_result']['deleted']))
 			echo '
 				<p class="padding">', sprintf($txt['shd_maint_deleted'], $context['maintenance_result']['deleted']), '</p>';
+		if (!empty($context['maintenance_result']['first_last']))
+			echo '
+				<p class="padding">', sprintf($txt['shd_maint_first_last'], $context['maintenance_result']['first_last']), '</p>';
+		if (!empty($context['maintenance_result']['status']))
+			echo '
+				<p class="padding">', sprintf($txt['shd_maint_status'], $context['maintenance_result']['status']), '</p>';
 
 		echo '
 				<p class="padding">
