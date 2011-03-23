@@ -104,9 +104,15 @@ function template_shd_admin_maint_findrepairdone()
 				<p class="padding">', sprintf($txt['shd_maint_zero_tickets'], $context['maintenance_result']['zero_tickets']), '</p>';
 		if (!empty($context['maintenance_result']['zero_msgs']))
 			echo '
-				<p class="padding">', sprintf($txt['shd_maint_zero_msgs'], $context['maintenance_result']['zero_tickets']), '</p>';
+				<p class="padding">', sprintf($txt['shd_maint_zero_msgs'], $context['maintenance_result']['zero_msgs']), '</p>';
+		if (!empty($context['maintenance_result']['deleted']))
+			echo '
+				<p class="padding">', sprintf($txt['shd_maint_deleted'], $context['maintenance_result']['deleted']), '</p>';
 
 		echo '
+				<p class="padding">
+					<a href="', $scripturl, '?action=admin;area=helpdesk_maint;', $context['session_var'], '=', $context['session_id'], '">', $txt['shd_admin_maint_back'], '</a>
+				</p>
 			</div>
 			<span class="botslice"><span></span></span>
 		</div>';

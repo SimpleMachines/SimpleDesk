@@ -439,6 +439,7 @@ $rows[] = array(
 		0,
 		'simpledesk',
 	),
+	'keys' => array('task'),
 );
 
 // Now we can add a new column to an existing table

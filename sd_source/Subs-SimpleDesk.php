@@ -1009,8 +1009,8 @@ function shd_load_user_prefs($user = 0)
 				'enabled' => true,
 			),
 			'notify' => array(
-			'icon' => 'email.png',
-			'enabled' => true,
+				'icon' => 'email.png',
+				'enabled' => true,
 			),
 		);
 

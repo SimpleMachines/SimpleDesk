@@ -75,8 +75,12 @@ function shd_admin_maint_findrepair()
 			'pc' => 5,
 		),
 		array(
-			'name' => 'clean_cache',
+			'name' => 'deleted',
 			'pc' => 10,
+		),
+		array(
+			'name' => 'clean_cache',
+			'pc' => 5,
 		),
 	);
 
@@ -141,6 +145,115 @@ function shd_maint_zero_entries()
 
 	// This is a short operation, no suboperation, so just tell it to go onto the next step.
 	$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . ($context['step'] + 1) . '" />';
+}
+
+function shd_maint_deleted()
+{
+	global $context, $smcFunc;
+
+	// First we need the number of tickets
+	$query = $smcFunc['db_query']('', '
+		SELECT COUNT(*)
+		FROM {db_prefix}helpdesk_tickets');
+	list($ticket_count) = $smcFunc['db_fetch_row']($query);
+	$smcFunc['db_free_result']($query);
+
+	$_REQUEST['start'] = isset($_REQUEST['start']) ? (int) $_REQUEST['start'] : 0;
+
+	$step_size = 100;
+	$tickets = array();
+	$tickets_modify = array();
+	$query = $smcFunc['db_query']('', '
+		SELECT id_ticket, num_replies, deleted_replies, withdeleted
+		FROM {db_prefix}helpdesk_tickets
+		ORDER BY id_ticket ASC
+		LIMIT {int:start}, {int:limit}',
+		array(
+			'start' => $_REQUEST['start'],
+			'limit' => $step_size,
+		)
+	);
+	while ($row = $smcFunc['db_fetch_assoc']($query))
+		$tickets[$row['id_ticket']] = $row;
+	$smcFunc['db_free_result']($query);
+
+	if (!empty($tickets))
+	{
+		// Firstly, let's check the numbers of replies and deleted replies, see if they're right.
+		$query = $smcFunc['db_query']('', '
+			SELECT id_ticket, message_status, COUNT(*) AS count
+			FROM {db_prefix}helpdesk_ticket_replies
+			WHERE id_ticket IN ({array_int:tickets})
+			GROUP BY id_ticket, message_status',
+			array(
+				'tickets' => array_keys($tickets),
+			)
+		);
+		$ticket_cache = array();
+		while ($row = $smcFunc['db_fetch_assoc']($query))
+		{
+			if (!isset($ticket_cache[$row['id_ticket']]))
+				$ticket_cache[$row['id_ticket']] = array(
+					'num_replies' => 0,
+					'deleted_replies' => 0,
+					'withdeleted' => 0,
+				);
+
+			if ($row['message_status'] == MSG_STATUS_NORMAL)
+				$ticket_cache[$row['id_ticket']]['num_replies'] = $row['count'] - 1; // since we never want to count the first message (which can't ever be deleted on its own)
+			elseif ($row['message_status'] == MSG_STATUS_DELETED)
+			{
+				$ticket_cache[$row['id_ticket']]['deleted_replies'] = $row['count'];
+				$ticket_cache[$row['id_ticket']]['withdeleted'] = 1;
+			}
+		}
+		$smcFunc['db_free_result']($query);
+
+		// OK so we now have the ticket counts for normal/deleted posts. Are they right?
+		foreach ($ticket_cache as $id_ticket => $ticket_details)
+			if ($ticket_cache[$id_ticket]['num_replies'] != $tickets[$id_ticket]['num_replies'] || $ticket_cache[$id_ticket]['deleted_replies'] != $tickets[$id_ticket]['deleted_replies'] || $ticket_cache[$id_ticket]['withdeleted'] != $tickets[$id_ticket]['withdeleted'])
+				$tickets_modify[$id_ticket] = $ticket_cache[$id_ticket];
+
+		// Any to update?
+		if (!empty($tickets_modify))
+		{
+			// Oh crap.
+			foreach ($tickets_modify as $id_ticket => $columns)
+			{
+				$smcFunc['db_query']('', '
+					UPDATE {db_prefix}helpdesk_tickets
+					SET num_replies = {int:num_replies},
+						deleted_replies = {int:deleted_replies},
+						withdeleted = {int:withdeleted}
+					WHERE id_ticket = {int:id_ticket}',
+					array(
+						'id_ticket' => $id_ticket,
+						'num_replies' => $columns['num_replies'],
+						'deleted_replies' => $columns['deleted_replies'],
+						'withdeleted' => $columns['withdeleted'],
+					)
+				);
+			}
+			$_SESSION['shd_maint']['deleted'] = count($tickets_modify);
+		}
+	}
+
+	// Another round?
+	$_REQUEST['start'] += $step_size;
+	if ($_REQUEST['start'] > $ticket_count)
+	{
+		// All done
+		$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . ($context['step'] + 1) . '" />';
+	}
+	else
+	{
+		// More to do, call back - and provide the subtitle
+		$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . $context['step'] . '" />
+		<input type="hidden" name="start" value="' . $_REQUEST['start'] . '">';
+		$context['substep_enabled'] = true;
+		$context['substep_title'] = $txt['shd_admin_maint_findrepair_status'];
+		$context['substep_continue_percent'] = round(100 * $_REQUEST['start'] / $ticket_count);
+	}
 }
 
 function shd_maint_clean_cache()
