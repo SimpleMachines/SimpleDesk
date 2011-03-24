@@ -238,7 +238,7 @@ function shd_main()
 	// Darn IE6. Die, already :(
 	if ($context['browser']['is_ie6'])
 		$context['html_headers'] .= '
-		<!-- Fall back, dark force, for we shall thou evil powers not endorse -->
+		<!-- Fall back, dark force, for we shall thy evil powers not endorse -->
 		<link rel="stylesheet" type="text/css" href="' . $settings['default_theme_url'] . '/css/helpdesk_ie6.css" />';
 
 	// Int hooks - after we basically set everything up (so it's manipulatable by the hook, but before we do the last bits of finalisation)

@@ -1600,5 +1600,5 @@ function shd_main_menu(&$menu_buttons)
 		call_integration_hook('shd_hook_mainmenu', array(&$menu_buttons));
 	}
 }
-
+// Cause IE is being mean to meeee again...!
 ?>
