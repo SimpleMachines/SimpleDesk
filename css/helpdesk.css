@@ -15,7 +15,7 @@ div.grid_header img
 	float: none;
 }
 
-/* Smaller icons */
+/* SimpleDesk icons */
 .shd_smallicon
 {
 	width: 13px;
@@ -23,6 +23,11 @@ div.grid_header img
 	margin-right: 4px;
 }
 .shd_icon_minihead
+{
+	position: relative;
+	top: 3px;
+}
+.shd_icon
 {
 	position: relative;
 	top: 3px;
@@ -46,6 +51,16 @@ div.grid_header img
 .shd_nowrap
 {
 	white-space: nowrap;
+}
+
+.shd_no_margin
+{
+	margin: 0;
+}
+
+.shd_hide_bottom_border
+{
+	border-bottom: 0;
 }
 
 /**********************************
