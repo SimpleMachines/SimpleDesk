@@ -159,7 +159,7 @@ function shd_maint_zero_entries()
 // Ensure that the count of number of replies/deleted replies/whether ticket contains deleted replies are all correct.
 function shd_maint_deleted()
 {
-	global $context, $smcFunc;
+	global $context, $smcFunc, $txt;
 
 	// First we need the number of tickets
 	$query = $smcFunc['db_query']('', '
@@ -269,7 +269,7 @@ function shd_maint_deleted()
 // Make sure the first and last posters on a ticket are correct.
 function shd_maint_first_last()
 {
-	global $context, $smcFunc;
+	global $context, $smcFunc, $txt;
 
 	// First we need the number of tickets
 	$query = $smcFunc['db_query']('', '
@@ -360,7 +360,7 @@ function shd_maint_first_last()
 // Make sure all open tickets have the right statuses.
 function shd_maint_status()
 {
-	global $context, $smcFunc;
+	global $context, $smcFunc, $txt;
 
 	$open = array(TICKET_STATUS_NEW, TICKET_STATUS_PENDING_STAFF, TICKET_STATUS_PENDING_USER);
 
