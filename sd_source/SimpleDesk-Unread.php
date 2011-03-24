@@ -42,22 +42,48 @@ function shd_unread_posts()
 	if (shd_allowed_to('shd_staff'))
 	{
 		// Get the data
+		$context['shd_preferences'] = shd_load_user_prefs();
 		$context['shd_unread_info'] = array();
+		if (empty($context['shd_preferences']['display_unread_type']) || $context['shd_preferences']['display_unread_type'] == 'outstanding')
+		{
+			// Get all the outstanding tickets
+			$context['block_title'] = $txt['shd_tickets_open'];
+			$request = shd_db_query('', '
+				SELECT hdt.id_ticket, hdt.subject, hdt.id_ticket, hdt.num_replies, hdtr_last.poster_time AS last_updated,
+					hdtr_first.poster_name, hdt.urgency, hdt.status, hdt.id_member_started, hdt.id_member_assigned, hdt.id_last_msg AS log_read
+				FROM {db_prefix}helpdesk_tickets AS hdt
+					INNER JOIN {db_prefix}helpdesk_ticket_replies AS hdtr_first ON (hdt.id_first_msg = hdtr_first.id_msg)
+					INNER JOIN {db_prefix}helpdesk_ticket_replies AS hdtr_last ON (hdt.id_last_msg = hdtr_last.id_msg)
+				WHERE {query_see_ticket}
+					AND hdt.status IN ({array_int:status})
+				ORDER BY hdt.urgency, hdtr_last.poster_time',
+				array(
+					'status' => array(TICKET_STATUS_NEW, TICKET_STATUS_PENDING_STAFF),
+				)
+			);
+		}
+		else
+		{
+			// Only unread ones
+			$context['block_title'] = $txt['shd_unread_tickets'];
+			$request = shd_db_query('', '
+				SELECT hdt.id_ticket, hdt.subject, hdt.id_ticket, hdt.num_replies, hdtr_last.poster_time AS last_updated,
+					hdtr_first.poster_name, hdt.urgency, hdt.status, hdt.id_member_started, hdt.id_member_assigned, IFNULL(hdlr.id_msg, 0) AS log_read
+				FROM {db_prefix}helpdesk_tickets AS hdt
+					INNER JOIN {db_prefix}helpdesk_ticket_replies AS hdtr_first ON (hdt.id_first_msg = hdtr_first.id_msg)
+					INNER JOIN {db_prefix}helpdesk_ticket_replies AS hdtr_last ON (hdt.id_last_msg = hdtr_last.id_msg)
+					LEFT JOIN {db_prefix}helpdesk_log_read AS hdlr ON (hdt.id_ticket = hdlr.id_ticket AND hdlr.id_member = {int:user})
+				WHERE {query_see_ticket}
+					AND hdt.status IN ({array_int:status})
+					AND (hdlr.id_msg IS NULL OR hdlr.id_msg < hdt.id_last_msg)
+				ORDER BY hdt.urgency, hdtr_last.poster_time',
+				array(
+					'user' => $context['user']['id'],
+					'status' => array(TICKET_STATUS_NEW, TICKET_STATUS_PENDING_STAFF),
+				)
+			);
+		}
 
-		$request = shd_db_query('', '
-			SELECT hdt.id_ticket, hdt.subject, hdt.id_ticket, hdt.num_replies, hdtr_last.poster_time AS last_updated, hdtr_first.poster_name, hdt.urgency, hdt.status, hdt.id_member_started, hdt.id_member_assigned
-			FROM {db_prefix}helpdesk_tickets AS hdt
-				INNER JOIN {db_prefix}helpdesk_ticket_replies AS hdtr_first ON (hdt.id_first_msg = hdtr_first.id_msg)
-				INNER JOIN {db_prefix}helpdesk_ticket_replies AS hdtr_last ON (hdt.id_last_msg = hdtr_last.id_msg)
-			WHERE {query_see_ticket}
-				AND hdt.id_member_started != {int:starter}
-				AND hdt.status IN ({array_int:status})
-			ORDER BY hdt.urgency, hdtr_last.poster_time',
-			array(
-				'starter' => $context['user']['id'],
-				'status' => array(TICKET_STATUS_NEW, TICKET_STATUS_PENDING_STAFF),
-			)
-		);
 		$members = array();
 		while ($row = $smcFunc['db_fetch_assoc']($request))
 		{

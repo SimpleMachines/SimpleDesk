@@ -116,7 +116,16 @@ function template_shd_profile_preferences()
 					break;
 				case 'int':
 					echo '
-										<input type="input" value="', !isset($context['member']['shd_preferences'][$pref]) ? $thispref['default'] : $context['member']['shd_preferences'][$pref], '" name="', $pref, '" />';
+										<input type="input" size="', isset($thispref['size']) ? $thispref['size'] : '5', '" value="', !isset($context['member']['shd_preferences'][$pref]) ? $thispref['default'] : $context['member']['shd_preferences'][$pref], '" name="', $pref, '" />';
+					break;
+				case 'select':
+					echo '
+										<select name="', $pref, '">';
+					foreach ($thispref['options'] as $opt_value => $opt_desc)
+						echo '
+											<option value="', $opt_value, '"', isset($context['member']['shd_preferences'][$pref]) && $context['member']['shd_preferences'][$pref] == $opt_value ? ' selected="selected"' : '', '>', $txt[$opt_desc], '</option>';
+					echo '
+										</select>';
 					break;
 			}
 

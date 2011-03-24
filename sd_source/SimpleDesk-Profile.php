@@ -215,6 +215,10 @@ function shd_profile_preferences($memID)
 				case 'int':
 					$new_value = isset($_POST[$pref]) ? (int) $_POST[$pref] : 0;
 					break;
+				case 'select':
+					if (isset($_POST[$pref]) && isset($master_opt['options'][$_POST[$pref]]))
+						$new_value = $_POST[$pref];
+					break;
 			}
 
 			if ($master_opt['default'] == $new_value)

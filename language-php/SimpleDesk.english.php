@@ -87,6 +87,7 @@ $txt['shd_unassigned'] = 'Unassigned';
 
 $txt['shd_read_ticket'] = 'Read Ticket';
 $txt['shd_unread_ticket'] = 'Unread Ticket';
+$txt['shd_unread_tickets'] = 'Unread Tickets';
 
 $txt['shd_owned'] = 'Owned Ticket'; // aka Assigned to Me
 

@@ -81,6 +81,12 @@ $txt['shd_profile_preferences_none_desc'] = 'There are no available preferences 
 $txt['shd_profile_save_prefs'] = 'Save Preferences';
 $txt['shd_prefs_updated'] = 'Preferences have been updated.';
 
+// Preferences: display
+$txt['shd_pref_group_display'] = 'Look and Layout Preferences';
+$txt['shd_pref_display_unread_type'] = 'When looking at Unread Posts, display:';
+$txt['shd_pref_display_unread_unread'] = 'All tickets with new posts';
+$txt['shd_pref_display_unread_outstanding'] = 'All outstanding tickets in the helpdesk';
+
 // Preferences: block numbers
 $txt['shd_pref_group_blocks'] = 'Blocks display';
 $txt['shd_pref_blocks_assigned_count'] = 'Number of tickets per page in the "Assigned to Me" block';

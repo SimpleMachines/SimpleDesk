@@ -1002,12 +1002,16 @@ function shd_recalc_ids($ticket)
 */
 function shd_load_user_prefs($user = 0)
 {
-	global $modSettings, $smcFunc, $user_info;
+	global $modSettings, $smcFunc, $user_info, $txt;
 	static $pref_groups = null, $base_prefs = null;
 
 	if ($pref_groups === null)
 	{
 		$pref_groups = array(
+			'display' => array(
+				'icon' => 'preferences.png',
+				'enabled' => true,
+			),
 			'blocks' => array(
 				'icon' => 'log.png',
 				'enabled' => true,
@@ -1019,6 +1023,18 @@ function shd_load_user_prefs($user = 0)
 		);
 
 		$base_prefs = array(
+			'display_unread_type' => array(
+				'options' => array(
+					'unread' => 'shd_pref_display_unread_unread',
+					'outstanding' => 'shd_pref_display_unread_outstanding',
+				),
+				'default' => 'outstanding',
+				'type' => 'select',
+				'icon' => 'unread.png',
+				'group' => 'display',
+				'permission' => 'shd_staff',
+				'show' => empty($modSettings['shd_helpdesk_only']),
+			),
 			'blocks_assigned_count' => array(
 				'default' => 10,
 				'type' => 'int',
