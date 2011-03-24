@@ -204,4 +204,19 @@ require_once($sourcedir . '/sd_source/SimpleDesk-SSI.php');]]></add>
 		</operation>
 	</file>
 
+	<file name="$sourcedir/Subs-BoardIndex.php"><!-- Board integration -->
+		<operation>
+			<search position="before"><![CDATA[$smcFunc['db_free_result']($result_boards);]]></search>
+			<add><![CDATA[
+
+	// Are we adding any SimpleDesk boards in?
+	if (!empty($modSettings['shd_boardindex_cat']) && !empty($modSettings['helpdesk_active']))
+	{
+		global $sourcedir;
+		require_once($sourcedir . '/sd_source/Subs-SimpleDeskBoardIndex.php');
+		shd_add_to_boardindex(&$boardIndexOptions, &$categories);
+	}]]></add>
+		</operation>
+	</file>
+
 </modification>

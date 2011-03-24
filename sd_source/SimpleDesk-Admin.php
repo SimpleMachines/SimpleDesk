@@ -355,14 +355,40 @@ function shd_modify_display_options($return_config)
 		$theme_list[$row['id_theme']] = $row['value'];
 	$smcFunc['db_free_result']($request);
 
+	$cat_list = array(
+		0 => $txt['shd_boardindex_cat_none'],
+	);
+	$request = $smcFunc['db_query']('', '
+		SELECT id_cat, name
+		FROM {db_prefix}categories
+		ORDER BY cat_order');
+	while ($row = $smcFunc['db_fetch_assoc']($request))
+		$cat_list[$row['id_cat']] = $row['name'];
+	$smcFunc['db_free_result']($request);
+
 	$config_vars = array(
 		array('select', 'shd_staff_badge', array('nobadge' => $txt['shd_staff_badge_nobadge'], 'staffbadge' => $txt['shd_staff_badge_staffbadge'], 'userbadge' => $txt['shd_staff_badge_userbadge'], 'bothbadge' => $txt['shd_staff_badge_bothbadge']), 'subtext' => $txt['shd_staff_badge_note']),
 		array('check', 'shd_display_avatar'),
 		array('select', 'shd_ticketnav_style', array('sd' => $txt['shd_ticketnav_style_sd'], 'sdcompact' => $txt['shd_ticketnav_style_sdcompact'], 'smf' => $txt['shd_ticketnav_style_smf']), 'subtext' => $txt['shd_ticketnav_style_note']),
 		array('select', 'shd_theme', $theme_list, 'subtext' => $txt['shd_theme_note']),
+		'',
+		array('select', 'shd_boardindex_cat', $cat_list, 'javascript' => ' onchange="javascript:switchboarditems();"'),
+		array('select', 'shd_boardindex_cat_where', array('before' => $txt['shd_boardindex_cat_before'], 'after' => $txt['shd_boardindex_cat_after']), 'disabled' => empty($modSettings['shd_boardindex_cat'])),
+		array('check', 'shd_hidemenuitem', 'disabled' => empty($modSettings['shd_boardindex_cat'])),
 	);
 	$context['settings_title'] = $txt['shd_admin_options_display'];
 	$context['settings_icon'] = 'details.png';
+
+	if (empty($context['settings_pre_javascript']))
+		$context['settings_pre_javascript'] = '';
+
+	$context['settings_pre_javascript'] .= '
+		function switchboarditems()
+		{
+			var state = (document.getElementById("shd_boardindex_cat").value) == 0;
+			shd_switchable_item("shd_boardindex_cat_where", state);
+			shd_switchable_item("shd_hidemenuitem", state);
+		};';
 
 	return $config_vars;
 }

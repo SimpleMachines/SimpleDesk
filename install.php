@@ -77,6 +77,9 @@ if (empty($modSettings['shd_attachments_mode']))
 		'shd_logopt_split' => 1,
 		'shd_thank_you_post' => 1,
 		'shd_theme' => 0,
+		'shd_boardindex_cat' => 0,
+		'shd_boardindex_cat_where' => 'before',
+		'shd_hidemenuitem' => 0,
 	);
 }
 // shd_disable_tickettotopic, shd_maintenance_mode should not be added because it's empty by default!

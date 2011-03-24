@@ -145,6 +145,12 @@ $txt['shd_ticketnav_style_smf'] = 'SMF style (text buttons, above the ticket)';
 $txt['shd_theme'] = 'Use a specific theme in the forum?';
 $txt['shd_theme_note'] = 'Normally the helpdesk will inherit the theme a user has picked, or failing that the forum default. This option allows you to pick a theme that will always be used in the helpdesk regardless of other settings.';
 $txt['shd_theme_use_default'] = 'Use the forum default theme';
+$txt['shd_boardindex_cat'] = 'Display SimpleDesk in the board index in this category:';
+$txt['shd_boardindex_cat_none'] = 'No category (do not show)';
+$txt['shd_boardindex_cat_where'] = 'Where in the category should it show?';
+$txt['shd_boardindex_cat_before'] = 'Before any boards';
+$txt['shd_boardindex_cat_after'] = 'After any boards';
+$txt['shd_hidemenuitem'] = 'Hide the Helpdesk menu item?';
 //@}
 
 //! @name Configuration items on the Posting Options page

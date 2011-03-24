@@ -1336,7 +1336,7 @@ function shd_init_actions(&$actionArray)
 */
 function shd_buffer_replace(&$buffer)
 {
-	global $modSettings;
+	global $modSettings, $context;
 
 	if (!empty($modSettings['helpdesk_active']))
 	{
@@ -1351,6 +1351,11 @@ function shd_buffer_replace(&$buffer)
 				'~<form([^<]+)action=search2(.+)</form>~iuUs' => '',
 			);
 		}
+
+		if (!empty($context['shd_buffer_replacements']))
+			$shd_replacements += $context['shd_buffer_replacements'];
+		if (!empty($context['shd_buffer_preg_replacements']))
+			$shd_preg_replacements += $context['shd_buffer_preg_replacements'];
 
 		if (!empty($shd_replacements)) // no sense doing preg when regular will do
 			$buffer = str_replace(array_keys($shd_replacements), array_values($shd_replacements), $buffer);
@@ -1379,7 +1384,7 @@ function shd_main_menu(&$menu_buttons)
 		// Stuff we'll always do in SD if active
 
 		// 1. Add the main menu if we can.
-		if (shd_allowed_to(array('access_helpdesk', 'admin_helpdesk')))
+		if (shd_allowed_to(array('access_helpdesk', 'admin_helpdesk')) && (empty($modSettings['shd_boardindex_cat']) || empty($modSettings['shd_hidemenuitem'])))
 		{
 			// Because some items may have been removed at this point, let's try a list of possible places after which we can add the button.
 			$order = array('search', 'profile', 'forum', 'pm', 'help', 'home');

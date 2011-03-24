@@ -30,6 +30,8 @@
 
 $txt['shd_helpdesk'] = 'Helpdesk';
 $txt['shd_helpdesk_maintenance'] = 'The helpdesk is currently in <strong>maintenance mode</strong>. Only forum and helpdesk administrators can see this.';
+$txt['shd_open_ticket'] = 'open ticket';
+$txt['shd_open_tickets'] = 'open tickets';
 
 //! @name Admininstration panel strings
 //@{
