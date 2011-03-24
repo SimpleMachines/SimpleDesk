@@ -1035,6 +1035,18 @@ function shd_load_user_prefs($user = 0)
 				'permission' => 'shd_staff',
 				'show' => empty($modSettings['shd_helpdesk_only']),
 			),
+			'display_order' => array(
+				'options' => array(
+					'asc' => 'shd_pref_display_order_asc',
+					'desc' => 'shd_pref_display_order_desc',
+				),
+				'default' => 'asc',
+				'type' => 'select',
+				'icon' => 'move_down.png',
+				'group' => 'display',
+				'permission' => 'access_helpdesk',
+				'show' => true,
+			),
 			'blocks_assigned_count' => array(
 				'default' => 10,
 				'type' => 'int',

@@ -294,8 +294,25 @@ function shd_view_ticket()
 	}
 
 	$context['ticket']['urgency'] += shd_can_alter_urgency($ticketinfo['urgency'], $ticketinfo['starter_id'], $ticketinfo['closed'], $ticketinfo['deleted']);
+	$context['total_visible_posts'] = empty($context['display_recycle']) ? $context['ticket']['num_replies'] : (int) $context['ticket']['num_replies'] + (int) $context['ticket']['deleted_replies'];
 
-	$context['page_index'] = shd_no_expand_pageindex($scripturl . '?action=helpdesk;sa=ticket;ticket=' . $context['ticket_id'] . '.%1$d' . (isset($_REQUEST['recycle']) ? ';recycle' : '') . '#replies', $context['ticket_start'], (empty($context['display_recycle']) ? $context['ticket']['num_replies'] : (int) $context['ticket']['num_replies'] + (int) $context['ticket']['deleted_replies']), $context['messages_per_page'], true);
+	// OK, before we go crazy, we might need to alter the ticket start. If we're in descending order (non default), we need to reverse it.
+
+	if (!empty($context['shd_preferences']['display_order']) && $context['shd_preferences']['display_order'] == 'desc')
+	{
+		if (empty($context['ticket_start_natural']))
+			$context['ticket_start_from'] = $context['total_visible_posts'] - (empty($context['ticket_start']) ? $context['total_visible_posts'] : $context['ticket_start']);
+		else
+			$context['ticket_start_from'] = $context['ticket_start'];
+		$context['ticket_sort'] = 'DESC';
+	}
+	else
+	{
+		$context['ticket_start_from'] = $context['ticket_start'];
+		$context['ticket_sort'] = 'ASC';
+	}
+
+	$context['page_index'] = shd_no_expand_pageindex($scripturl . '?action=helpdesk;sa=ticket;ticket=' . $context['ticket_id'] . '.%1$d' . (isset($_REQUEST['recycle']) ? ';recycle' : '') . '#replies', $context['ticket_start_from'], $context['total_visible_posts'], $context['messages_per_page'], true);
 	
 	$context['get_replies'] = 'shd_prepare_ticket_context';
 
@@ -305,12 +322,13 @@ function shd_view_ticket()
 		WHERE id_ticket = {int:ticket}
 			AND id_msg > {int:first_msg}' . (!empty($context['ticket']['display_recycle_replies']) ? '' : '
 			AND message_status = {int:msg_status}') . '
-		ORDER BY id_msg ' . ($context['messages_per_page'] == -1 ? '' : '
-		LIMIT ' . $context['ticket_start'] . ', ' . $context['messages_per_page']),
+		ORDER BY id_msg {raw:sort}' . ($context['messages_per_page'] == -1 ? '' : '
+		LIMIT ' . $context['ticket_start_from'] . ', ' . $context['messages_per_page']),
 		array(
 			'ticket' => $context['ticket_id'],
 			'first_msg' => $ticketinfo['id_first_msg'],
 			'msg_status' => MSG_STATUS_NORMAL,
+			'sort' => $context['ticket_sort'],
 		)
 	);
 
@@ -355,10 +373,11 @@ function shd_view_ticket()
 			FROM {db_prefix}helpdesk_ticket_replies
 			WHERE id_msg IN ({array_int:message_list})' . (!empty($context['ticket']['display_recycle']) ? '' : '
 				AND message_status IN ({array_int:msg_normal})') . '
-			ORDER BY id_msg',
+			ORDER BY id_msg {raw:sort}',
 			array(
 				'message_list' => $context['ticket_messages'],
 				'msg_normal' => array(MSG_STATUS_NORMAL),
+				'sort' => $context['ticket_sort'],
 			)
 		);
 	}

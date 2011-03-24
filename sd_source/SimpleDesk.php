@@ -197,7 +197,10 @@ function shd_main()
 				}
 			}
 			else
+			{
 				$context['ticket_start'] = (int) $context['ticket_start']; // it IS numeric but let's make sure it's the right kind of number
+				$context['ticket_start_natural'] = true;
+			}
 		}
 	}
 	if (empty($context['ticket_start_newfrom']))

@@ -86,6 +86,9 @@ $txt['shd_pref_group_display'] = 'Look and Layout Preferences';
 $txt['shd_pref_display_unread_type'] = 'When looking at Unread Posts, display:';
 $txt['shd_pref_display_unread_unread'] = 'All tickets with new posts';
 $txt['shd_pref_display_unread_outstanding'] = 'All outstanding tickets in the helpdesk';
+$txt['shd_pref_display_order'] = 'Show ticket replies in what order?';
+$txt['shd_pref_display_order_asc'] = 'Oldest reply first';
+$txt['shd_pref_display_order_desc'] = 'Newest reply first';
 
 // Preferences: block numbers
 $txt['shd_pref_group_blocks'] = 'Blocks display';
