@@ -69,7 +69,7 @@ function shd_add_to_boardindex(&$boardIndexOptions, &$categories)
 			'collapse_image' => isset($this_cat['can_collapse']) ? '<img src="' . $settings['images_url'] . '/' . ($this_cat['is_collapsed'] > 0 ? 'expand.gif" alt="+"' : 'collapse.gif" alt="-"') . ' />' : '',
 			'href' => $scripturl . '#c' . $this_cat['id_cat'],
 			'boards' => array(),
-			'new' => false
+			'new' => false,
 		);
 		$old_categories[$this_cat['id_cat']]['link'] = '<a id="c' . $this_cat['id_cat'] . '" href="' . (isset($this_cat['can_collapse']) ? $old_categories[$this_cat['id_cat']]['collapse_href'] : $old_categories[$this_cat['id_cat']]['href']) . '">' . $this_cat['name'] . '</a>';
 		$categories = array();
@@ -104,6 +104,23 @@ function shd_add_to_boardindex(&$boardIndexOptions, &$categories)
 		'can_approve_posts' => false,
 		'href' => $scripturl . '?action=helpdesk;sa=main',
 		'link' => '<a href="' . $scripturl . '?action=helpdesk;sa=main">' . $txt['shd_helpdesk'] . '</a>',
+		'last_post' => array(
+			'id' => 0,
+			'time' => $txt['not_applicable'],
+			'timestamp' => forum_time(true, 0),
+			'subject' => '',
+			'member' => array(
+				'id' => 0,
+				'username' => $txt['not_applicable'],
+				'name' => '',
+				'href' => '',
+				'link' => $txt['not_applicable'],
+			),
+			'start' => 'msg0',
+			'topic' => 0,
+			'href' => '',
+			'link' => $txt['not_applicable'],
+		),
 	);
 
 	if (empty($modSettings['shd_boardindex_cat_where']) || $modSettings['shd_boardindex_cat_where'] == 'before')
