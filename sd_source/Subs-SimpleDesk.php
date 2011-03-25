@@ -526,7 +526,8 @@ function shd_count_helpdesk_tickets($status = '', $is_staff = false)
 				$context['ticket_count'][TICKET_STATUS_PENDING_STAFF] +
 				$context['ticket_count'][TICKET_STATUS_PENDING_USER] +
 				$context['ticket_count'][TICKET_STATUS_WITH_SUPERVISOR] +
-				$context['ticket_count'][TICKET_STATUS_ESCALATED]   // _ESCALATED
+				$context['ticket_count'][TICKET_STATUS_ESCALATED] +
+				$context['ticket_count']['assigned']
 			);
 		case 'assigned':
 			return $context['ticket_count']['assigned'];
@@ -543,7 +544,7 @@ function shd_count_helpdesk_tickets($status = '', $is_staff = false)
 		case 'withdeleted':
 			return $context['ticket_count']['withdeleted'];
 		default:
-			return array_sum($context['ticket_count']) - $context['ticket_count']['assigned'];
+			return array_sum($context['ticket_count']) - $context['ticket_count']['withdeleted']; // since withdeleted is the only duplicate information, all the rest is naturally self-exclusive
 	}
 }
 
