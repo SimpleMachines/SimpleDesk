@@ -214,7 +214,7 @@ require_once($sourcedir . '/sd_source/SimpleDesk-SSI.php');]]></add>
 	{
 		global $sourcedir;
 		require_once($sourcedir . '/sd_source/Subs-SimpleDeskBoardIndex.php');
-		shd_add_to_boardindex(&$boardIndexOptions, &$categories);
+		shd_add_to_boardindex($boardIndexOptions, $categories);
 	}]]></add>
 		</operation>
 	</file>
