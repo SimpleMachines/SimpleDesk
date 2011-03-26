@@ -134,7 +134,18 @@ function template_shd_profile_preferences()
 		}
 
 		echo '
-									</dl>
+									</dl>';
+
+		if (!empty($details['check_all']))
+		{
+			echo '
+									<div class="padding">
+										<input type="checkbox" name="all" id="check_all" value="" checked="checked" onclick="invertAll(this, this.form, \'', $group, '\');" class="input_check floatleft">
+										<label for="check_all" class="floatleft">', $txt['check_all'], '</label>
+									</div>';
+		}
+
+		echo '
 								</div>
 							</div>
 							<span class="lowerframe"><span></span></span>

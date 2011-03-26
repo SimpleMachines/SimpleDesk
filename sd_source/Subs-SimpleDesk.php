@@ -1020,6 +1020,7 @@ function shd_load_user_prefs($user = 0)
 			'notify' => array(
 				'icon' => 'email.png',
 				'enabled' => true,
+				'check_all' => true,
 			),
 		);
 
