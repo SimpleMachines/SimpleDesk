@@ -103,7 +103,7 @@ function shd_load_action_log_entries($start = 0, $items_per_page = 10, $sort = '
 		// Uhoh, we don't know who this is! Check it's not automatically by the system. If it is... mark it so.
 		if (empty($row['id_member']))
 		{
-			if (isset($row['extra']) && $row['extra']['auto'] === true)
+			if (isset($row['extra']['auto']) && $row['extra']['auto'] === true)
 				$row['real_name'] = $txt['shd_helpdesk'];
 			else
 				$row['real_name'] = $txt['shd_admin_actionlog_unknown'];
