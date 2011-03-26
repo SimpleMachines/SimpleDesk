@@ -46,6 +46,7 @@ function shd_admin_maint()
 
 	$subactions = array(
 		'main' => 'shd_admin_maint_home',
+		'reattribute' => 'shd_admin_maint_reattribute',
 		'findrepair' => 'shd_admin_maint_findrepair',
 	);
 
@@ -59,6 +60,81 @@ function shd_admin_maint_home()
 
 	$context['sub_template'] = 'shd_admin_maint_home';
 	$context['page_title'] = $txt['shd_admin_maint'];
+}
+
+function shd_admin_maint_reattribute()
+{
+	global $context, $txt, $smcFunc, $sourcedir;
+	checkSession('request');
+
+	$context['page_title'] = $txt['shd_admin_maint_reattribute'];
+	$context['sub_template'] = 'shd_admin_maint_reattributedone';
+
+	// Find the member.
+	require_once($sourcedir . '/Subs-Auth.php');
+	$members = findMembers($_POST['to']);
+
+	if (empty($members))
+		fatal_lang_error('shd_reattribute_cannot_find_member');
+
+	$memID = array_shift($members);
+	$memID = $memID['id'];
+
+	if ($_POST['type'] == 'email')
+	{
+		if (empty($_POST['from_email']))
+			fatal_lang_error('shd_reattribute_no_email');
+		$clause = 'poster_email = {string:attribute}';
+		$attribute = $_POST['from_email'];
+	}
+	elseif ($_POST['type'] == 'name')
+	{
+		if (empty($_POST['from_name']))
+			fatal_lang_error('shd_reattribute_no_user');
+		$clause = 'poster_name = {string:attribute}';
+		$attribute = $_POST['from_name'];
+	}
+	else
+		fatal_lang_error('shd_reattribute_no_user');
+
+	// Now, we don't delete the user id from posts on account deletion, never have.
+	// So, get all the user ids attached to this user/email, make sure they're not in use, and then reattribute them.
+	$members = array();
+	$request = $smcFunc['db_query']('', '
+		SELECT id_member
+		FROM {db_prefix}helpdesk_ticket_replies
+		WHERE ' . $clause,
+		array(
+			'attribute' => $attribute,
+		)
+	);
+	while ($row = $smcFunc['db_fetch_row']($request))
+		$members[] = $row[0];
+	$smcFunc['db_free_result']($request);
+
+	// Did we find any members? If not, bail.
+	if (empty($members))
+		fatal_lang_error('shd_reattribute_no_messages', false);
+
+	// So we found some old member ids. Are any of them still in use?
+	$temp_members = loadMemberData($members, false, 'minimal');
+	if (empty($temp_members))
+		$temp_members = array();
+	$members = array_diff($members, $temp_members);
+
+	if (empty($members))
+		fatal_lang_error('shd_reattribute_in_use', false);
+
+	// OK, let's go!
+	$smcFunc['db_query']('', '
+		UPDATE {db_prefix}helpdesk_ticket_replies
+		SET id_member = {int:new_id}
+		WHERE id_member IN ({array_int:old_ids})',
+		array(
+			'new_id' => $memID,
+			'old_ids' => $members,
+		)
+	);
 }
 
 function shd_admin_maint_findrepair()
@@ -84,6 +160,10 @@ function shd_admin_maint_findrepair()
 		),
 		array(
 			'name' => 'status',
+			'pc' => 10,
+		),
+		array(
+			'name' => 'starter_updater',
 			'pc' => 10,
 		),
 		array(
@@ -266,7 +346,7 @@ function shd_maint_deleted()
 	}
 }
 
-// Make sure the first and last posters on a ticket are correct.
+// Make sure the first and last messages on a ticket are correct.
 function shd_maint_first_last()
 {
 	global $context, $smcFunc, $txt;
@@ -353,6 +433,97 @@ function shd_maint_first_last()
 		<input type="hidden" name="start" value="' . $_REQUEST['start'] . '">';
 		$context['substep_enabled'] = true;
 		$context['substep_title'] = $txt['shd_admin_maint_findrepair_firstlast'];
+		$context['substep_continue_percent'] = round(100 * $_REQUEST['start'] / $ticket_count);
+	}
+}
+
+// Make sure the first and last posters on a ticket are correct.
+function shd_maint_starter_updater()
+{
+	global $context, $smcFunc, $txt;
+
+	// First we need the number of tickets
+	$query = $smcFunc['db_query']('', '
+		SELECT COUNT(*)
+		FROM {db_prefix}helpdesk_tickets');
+	list($ticket_count) = $smcFunc['db_fetch_row']($query);
+	$smcFunc['db_free_result']($query);
+
+	$_REQUEST['start'] = isset($_REQUEST['start']) ? (int) $_REQUEST['start'] : 0;
+
+	$step_size = 150;
+	$tickets = array();
+	$tickets_modify = array();
+	$query = $smcFunc['db_query']('', '
+		SELECT id_ticket, id_member_started, id_member_updated
+		FROM {db_prefix}helpdesk_tickets
+		ORDER BY id_ticket ASC
+		LIMIT {int:start}, {int:limit}',
+		array(
+			'start' => $_REQUEST['start'],
+			'limit' => $step_size,
+		)
+	);
+	while ($row = $smcFunc['db_fetch_assoc']($query))
+		$tickets[$row['id_ticket']] = $row;
+	$smcFunc['db_free_result']($query);
+
+	if (!empty($tickets))
+	{
+		// Firstly, let's get the first/last messages from the messages table.
+		$query = $smcFunc['db_query']('', '
+			SELECT hdt.id_ticket, hdtr_first.id_member AS id_member_started, hdtr_last.id_member AS id_member_updated
+			FROM {db_prefix}helpdesk_tickets AS hdt
+				LEFT JOIN {db_prefix}helpdesk_ticket_replies AS hdtr_first ON (hdt.id_first_msg = hdtr_first.id_msg)
+				LEFT JOIN {db_prefix}helpdesk_ticket_replies AS hdtr_last ON (hdt.id_last_msg = hdtr_last.id_msg)
+			WHERE hdt.id_ticket IN ({array_int:tickets})
+			GROUP BY hdt.id_ticket',
+			array(
+				'tickets' => array_keys($tickets),
+			)
+		);
+		$ticket_cache = array();
+		while ($row = $smcFunc['db_fetch_assoc']($query))
+			$ticket_cache[$row['id_ticket']] = $row;
+		$smcFunc['db_free_result']($query);
+
+		// OK so we now have the message ids for first/last message. Are they right?
+		foreach ($ticket_cache as $id_ticket => $ticket_details)
+			if ($ticket_cache[$id_ticket]['id_member_started'] != $tickets[$id_ticket]['id_member_started'] || $ticket_cache[$id_ticket]['id_member_updated'] != $tickets[$id_ticket]['id_member_updated'])
+				$tickets_modify[$id_ticket] = $ticket_cache[$id_ticket];
+
+		// Any to update?
+		if (!empty($tickets_modify))
+		{
+			// Oh crap.
+			foreach ($tickets_modify as $id_ticket => $columns)
+			{
+				$smcFunc['db_query']('', '
+					UPDATE {db_prefix}helpdesk_tickets
+					SET id_member_started = {int:id_member_started},
+						id_member_updated = {int:id_member_updated}
+					WHERE id_ticket = {int:id_ticket}',
+					$columns
+				);
+			}
+			$_SESSION['shd_maint']['starter_updater'] = count($tickets_modify);
+		}
+	}
+
+	// Another round?
+	$_REQUEST['start'] += $step_size;
+	if ($_REQUEST['start'] > $ticket_count)
+	{
+		// All done
+		$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . ($context['step'] + 1) . '" />';
+	}
+	else
+	{
+		// More to do, call back - and provide the subtitle
+		$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . $context['step'] . '" />
+		<input type="hidden" name="start" value="' . $_REQUEST['start'] . '">';
+		$context['substep_enabled'] = true;
+		$context['substep_title'] = $txt['shd_admin_maint_findrepair_starterupdater'];
 		$context['substep_continue_percent'] = round(100 * $_REQUEST['start'] / $ticket_count);
 	}
 }

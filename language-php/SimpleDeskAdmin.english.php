@@ -403,17 +403,37 @@ $txt['shd_admin_plugins_lang_vietnamese'] = 'Vietnamese';
 $txt['shd_admin_maint'] = 'Maintenance';
 $txt['shd_admin_maint_back'] = 'Back to Helpdesk Maintenance';
 $txt['shd_admin_maint_desc'] = 'This area allows you to perform some common maintenance tasks within SimpleDesk.';
+
+$txt['shd_admin_maint_reattribute'] = 'Reattribute User Posts';
+$txt['shd_admin_maint_reattribute_desc'] = 'If a user\'s account has been removed, this allows for rejoining tickets from their old account with their new one.';
+$txt['shd_admin_maint_reattribute_posts_made'] = 'Reattribute tickets and replies made by:';
+$txt['shd_admin_maint_reattribute_posts_user'] = 'This user name';
+$txt['shd_admin_maint_reattribute_posts_email'] = 'This email address';
+$txt['shd_admin_maint_reattribute_posts_to'] = 'And attach them to this user account:';
+$txt['shd_admin_maint_reattribute_btn'] = 'Reattribute now';
+$txt['shd_admin_maint_reattribute_success'] = 'All tickets and posts that could be found were reattributed. You should probably run the "Find and Repair Errors" maintenance option from within Helpdesk Maintenance now. (Otherwise, some tickets may not show up correctly.)';
+$txt['shd_reattribute_confirm'] = 'Are you sure you want to attribute all tickets and replies (that currently have no user) with %type% of "%find%" to member "%member_to%"?';
+$txt['shd_reattribute_confirm_username'] = 'a username';
+$txt['shd_reattribute_confirm_email'] = 'an email address';
+$txt['shd_reattribute_cannot_find_member'] = 'The helpdesk could not find the user to reattribute tickets and replies to.';
+$txt['shd_reattribute_no_email'] = 'No email address was supplied.';
+$txt['shd_reattribute_no_user'] = 'No username was supplied.';
+$txt['shd_reattribute_no_messages'] = 'No messages were found to be re-attributed.';
+$txt['shd_reattribute_in_use'] = 'The only messages found to be re-attributed are all listed against a current user, and so no further re-attribution can be done on those messages.';
+
 $txt['shd_admin_maint_findrepair'] = 'Find and Repair Errors';
 $txt['shd_admin_maint_findrepair_desc'] = 'Sometimes, however unlikely, things get a little out of step inside the database. This operation performs an integrity check on the database and attempts to repair any errors it encounters.';
 
 $txt['shd_admin_maint_findrepair_status'] = 'Recalculating ticket counts...';
 $txt['shd_admin_maint_findrepair_firstlast'] = 'Recalculating ticket first/last associations...';
+$txt['shd_admin_maint_findrepair_starterupdater'] = 'Recalculating the ticket starter and last updated by associations...';
 
 $txt['shd_maint_zero_tickets'] = '%1$d ticket(s) were found with invalid ids, they have all been given new ids, the next available id numbers.';
 $txt['shd_maint_zero_msgs'] = '%1$d ticket posts(s) were found with invalid ids, they have all been given new ids, the next available id numbers.';
 $txt['shd_maint_deleted'] = '%1$d ticket(s) had incorrect counts of the number of posts and/or deleted posts. All have been recalculated.';
 $txt['shd_maint_first_last'] = '%1$d tickets had incorrect messages flagged for the ticket content, or its last reply. All have been rectified.';
 $txt['shd_maint_status'] = '%1$d tickets had the wrong status set for them. All have been rectified.';
+$txt['shd_maint_starter_updater'] = '%1$d tickets had the wrong user listed as the person who opened the ticket or the last person to update the ticket. All have been rectified.';
 //@}
 
 /**

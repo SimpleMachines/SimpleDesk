@@ -43,13 +43,102 @@ function template_shd_admin_maint_home()
 			<div class="content">
 				<p>', $txt['shd_admin_maint_findrepair_desc'], '</p>
 				<form action="', $scripturl, '?action=admin;area=helpdesk_maint;sa=findrepair" method="post">
-					<input type="submit" value="', $txt['maintain_run_now'], '" onclick="return submitThisOnce(this);" accesskey="s" class="button_submit">
-					<input type="hidden" name="template" value="1">
+					<input type="submit" value="', $txt['maintain_run_now'], '" onclick="return submitThisOnce(this);" class="button_submit">
 					<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">
 				</form>
 			</div>
 		</div>
 		<span class="lowerframe"><span></span></span>';
+
+	// Reattribute guest posts
+	echo '
+		<script type="text/javascript"><!-- // --><![CDATA[
+		var warningMessage = \'\';
+
+		function checkAttributeValidity()
+		{
+			origText = \'', $txt['shd_reattribute_confirm'], '\';
+			valid = true;
+
+			// Do all the fields!
+			if (!document.getElementById(\'to\').value)
+				valid = false;
+			warningMessage = origText.replace(/%member_to%/, document.getElementById(\'to\').value);
+
+			if (document.getElementById(\'type_email\').checked)
+			{
+				if (!document.getElementById(\'from_email\').value)
+					valid = false;
+				warningMessage = warningMessage.replace(/%type%/, \'', addcslashes($txt['shd_reattribute_confirm_email'], "'"), '\').replace(/%find%/, document.getElementById(\'from_email\').value);
+			}
+			else
+			{
+				if (!document.getElementById(\'from_name\').value)
+					valid = false;
+				warningMessage = warningMessage.replace(/%type%/, \'', addcslashes($txt['shd_reattribute_confirm_username'], "'"), '\').replace(/%find%/, document.getElementById(\'from_name\').value);
+			}
+
+			document.getElementById(\'do_attribute\').disabled = valid ? \'\' : \'disabled\';
+
+			setTimeout("checkAttributeValidity();", 500);
+			return valid;
+		}
+		setTimeout("checkAttributeValidity();", 500);
+		// ]]></script>
+		<div class="cat_bar grid_header">
+			<h3 class="catbg">
+				<img src="', $settings['default_images_url'], '/simpledesk/user.png" alt="*">
+				', $txt['shd_admin_maint_reattribute'], '
+			</h3>
+		</div>
+		<div class="roundframe">
+			<div class="content">
+				<p>', $txt['shd_admin_maint_reattribute_desc'], '</p>
+				<form action="', $scripturl, '?action=admin;area=helpdesk_maint;sa=reattribute" method="post">
+					<dl class="settings">
+						<dt>
+							<strong>', $txt['shd_admin_maint_reattribute_posts_made'], '</strong>
+						</dt>
+						<dt>
+							<label for="type_email"><input type="radio" name="type" id="type_email" value="email" checked="checked" class="input_radio">', $txt['shd_admin_maint_reattribute_posts_email'], '</label>
+						</dt>
+						<dd>
+							<input type="text" name="from_email" id="from_email" value="" onclick="document.getElementById(\'type_email\').checked = \'checked\'; document.getElementById(\'from_name\').value = \'\';">
+						</dd>
+						<dt>
+							<label for="type_name"><input type="radio" name="type" id="type_name" value="name" class="input_radio">', $txt['shd_admin_maint_reattribute_posts_user'], '</label>
+						</dt>
+						<dd>
+							<input type="text" name="from_name" id="from_name" value="" onclick="document.getElementById(\'type_name\').checked = \'checked\'; document.getElementById(\'from_email\').value = \'\';" class="input_text">
+						</dd>
+					</dl>
+					<dl class="settings">
+						<dt>
+							<label for="to"><strong>', $txt['shd_admin_maint_reattribute_posts_to'], '</strong></label>
+						</dt>
+						<dd>
+							<input type="text" name="to" id="to" value="" class="input_text">
+						</dd>
+					</dl>
+					<span><input type="submit" id="do_attribute" value="', $txt['shd_admin_maint_reattribute_btn'], '" onclick="if (!checkAttributeValidity()) return false; return confirm(warningMessage);" class="button_submit" /></span>
+					<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">
+				</form>
+			</div>
+		</div>
+		<span class="lowerframe"><span></span></span>
+		<script type="text/javascript" src="', $settings['default_theme_url'], '/scripts/suggest.js?rc5"></script>
+		<script type="text/javascript"><!-- // --><![CDATA[
+			var oAttributeMemberSuggest = new smc_AutoSuggest({
+				sSelf: \'oAttributeMemberSuggest\',
+				sSessionId: \'', $context['session_id'], '\',
+				sSessionVar: \'', $context['session_var'], '\',
+				sSuggestId: \'attributeMember\',
+				sControlId: \'to\',
+				sSearchType: \'member\',
+				sTextDeleteItem: \'', $txt['autosuggest_delete_item'], '\',
+				bItemList: false
+			});
+		// ]]></script>';
 
 	// And we're done.
 	echo '
@@ -114,6 +203,9 @@ function template_shd_admin_maint_findrepairdone()
 		if (!empty($context['maintenance_result']['status']))
 			echo '
 				<p class="padding">', sprintf($txt['shd_maint_status'], $context['maintenance_result']['status']), '</p>';
+		if (!empty($context['maintenance_result']['starter_updater']))
+			echo '
+				<p class="padding">', sprintf($txt['shd_maint_starter_updater'], $context['maintenance_result']['starter_updater']), '</p>';
 
 		echo '
 				<p class="padding">
@@ -126,6 +218,36 @@ function template_shd_admin_maint_findrepairdone()
 
 	// And we're done.
 	echo '
+	</div>';
+}
+
+function template_shd_admin_maint_reattributedone()
+{
+	global $context, $settings, $txt, $scripturl;
+
+	echo '
+	<div id="admincenter">
+		<div class="tborder">
+			<div class="cat_bar">
+				<h3 class="catbg">
+					<img src="', $settings['default_images_url'], '/simpledesk/user.png" class="icon" alt="*" />
+					', $txt['shd_admin_maint_reattribute'], '
+				</h3>
+			</div>
+			<p class="description">
+				', $txt['shd_admin_maint_reattribute_desc'], '
+			</p>
+		</div>
+		<div class="windowbg">
+			<span class="topslice"><span></span></span>
+			<div class="content">
+				<p>', $txt['shd_admin_maint_reattribute_success'], '</p>
+				<p class="padding">
+					<a href="', $scripturl, '?action=admin;area=helpdesk_maint;', $context['session_var'], '=', $context['session_id'], '">', $txt['shd_admin_maint_back'], '</a>
+				</p>
+			</div>
+			<span class="botslice"><span></span></span>
+		</div>
 	</div>';
 }
 
