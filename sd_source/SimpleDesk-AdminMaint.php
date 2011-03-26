@@ -148,23 +148,23 @@ function shd_admin_maint_findrepair()
 	$context['maint_steps'] = array(
 		array(
 			'name' => 'zero_entries',
-			'pc' => 5,
+			'pc' => 15,
 		),
 		array(
 			'name' => 'deleted',
-			'pc' => 10,
+			'pc' => 20,
 		),
 		array(
 			'name' => 'first_last',
-			'pc' => 10,
+			'pc' => 20,
 		),
 		array(
 			'name' => 'status',
-			'pc' => 10,
+			'pc' => 20,
 		),
 		array(
 			'name' => 'starter_updater',
-			'pc' => 10,
+			'pc' => 20,
 		),
 		array(
 			'name' => 'clean_cache',
