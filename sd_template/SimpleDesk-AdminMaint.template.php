@@ -48,7 +48,7 @@ function template_shd_admin_maint_home()
 				</form>
 			</div>
 		</div>
-		<span class="lowerframe"><span></span></span>';
+		<span class="lowerframe"><span></span></span><br />';
 
 	// Reattribute guest posts
 	echo '
@@ -125,7 +125,7 @@ function template_shd_admin_maint_home()
 				</form>
 			</div>
 		</div>
-		<span class="lowerframe"><span></span></span>
+		<span class="lowerframe"><span></span></span><br />
 		<script type="text/javascript" src="', $settings['default_theme_url'], '/scripts/suggest.js?rc5"></script>
 		<script type="text/javascript"><!-- // --><![CDATA[
 			var oAttributeMemberSuggest = new smc_AutoSuggest({
