@@ -578,16 +578,19 @@ function shd_modify_actionlog_options($return_config)
 		array('check', 'shd_logopt_editposts', 'disabled' => !empty($modSettings['shd_disable_action_log'])),
 		array('check', 'shd_logopt_resolve', 'disabled' => !empty($modSettings['shd_disable_action_log'])),
 		array('check', 'shd_logopt_autoclose', 'disabled' => !empty($modSettings['shd_disable_action_log']) || empty($modSettings['shd_autoclose_tickets']) || empty($modSettings['shd_autoclose_tickets_days'])),
+		array('checkall', 'shd_logopt_1', array('shd_logopt_newposts', 'shd_logopt_editposts', 'shd_logopt_resolve', 'shd_logopt_autoclose')),
 		'',
 		array('check', 'shd_logopt_assign', 'disabled' => !empty($modSettings['shd_disable_action_log'])),
 		array('check', 'shd_logopt_privacy', 'disabled' => !empty($modSettings['shd_disable_action_log'])),
 		array('check', 'shd_logopt_urgency', 'disabled' => !empty($modSettings['shd_disable_action_log'])),
 		array('check', 'shd_logopt_tickettopicmove', 'disabled' => !empty($modSettings['shd_disable_action_log'])),
+		array('checkall', 'shd_logopt_2', array('shd_logopt_assign', 'shd_logopt_privacy', 'shd_logopt_urgency', 'shd_logopt_tickettopicmove')),
 		'',
 		array('check', 'shd_logopt_delete', 'disabled' => !empty($modSettings['shd_disable_action_log'])),
 		array('check', 'shd_logopt_restore', 'disabled' => !empty($modSettings['shd_disable_action_log'])),
 		array('check', 'shd_logopt_permadelete', 'disabled' => !empty($modSettings['shd_disable_action_log'])),
 		array('check', 'shd_logopt_relationships', 'disabled' => (!empty($modSettings['shd_disable_action_log']) || !empty($modSettings['shd_disable_relationships']))),
+		array('checkall', 'shd_logopt_3', array('shd_logopt_delete', 'shd_logopt_restore', 'shd_logopt_permadelete', 'shd_logopt_relationships')),
 		//array('check', 'shd_logopt_split', 'disabled' => !empty($modSettings['shd_disable_action_log'])),
 	);
 	$context['settings_title'] = $txt['shd_admin_options_actionlog'];
@@ -649,6 +652,15 @@ function shd_modify_notifications_options($return_config)
 		array('check', 'shd_notify_assign_me'),
 		array('check', 'shd_notify_assign_own'),
 	);
+	// Lazy way to build the master on/off switch
+	$array = array();
+	foreach ($config_vars as $var)
+	{
+		if ($var[0] == 'check')
+			$array[] = $var[1];
+	}
+	$config_vars[] = array('checkall', 'shd_notify_checkall', $array);
+
 	$context['settings_title'] = $txt['shd_admin_options_notifications'];
 	$context['settings_icon'] = 'email.png';
 

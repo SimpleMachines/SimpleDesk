@@ -269,7 +269,17 @@ function template_shd_show_settings()
 	global $context, $txt, $settings, $scripturl;
 
 	echo '
-	<script type="text/javascript"><!-- // --><![CDATA[';
+	<script type="text/javascript"><!-- // --><![CDATA[
+		function invertList(state, id_list)
+		{
+			for (i in id_list)
+			{
+				var chk = document.getElementById(id_list[i]);
+				if (chk && chk.disabled == false)
+					chk.checked = state;
+			}
+		}
+';
 
 	if (!empty($context['settings_pre_javascript']))
 		echo $context['settings_pre_javascript'];
@@ -334,6 +344,7 @@ function template_shd_show_settings()
 			</div>';
 			}
 
+
 			// A title?
 			if ($config_var['type'] == 'title')
 			{
@@ -387,6 +398,27 @@ function template_shd_show_settings()
 			{
 				echo '
 						<input type="hidden" name="', $config_var['name'], '" value="', $config_var['value'], '" />';
+			}
+			// A check-all option?
+			elseif ($config_var['type'] == 'checkall')
+			{
+				$array = array();
+				foreach ($config_var['data'] as $k => $v)
+					$array[] = JavaScriptEscape($v[1]);
+
+				echo '
+					<dt></dt>
+					<dd>
+						<input type="checkbox" name="all" id="', $config_var['name'], '" value="" checked="checked" onclick="invert_', $config_var['name'], '(this);" class="input_check floatleft">
+						<label for="check_all" class="floatleft">', $txt['check_all'], '</label>
+					</dd>
+					<script type="text/javascript"><!-- // --><![CDATA[
+					function invert_', $config_var['name'], '(obj)
+					{
+						var checks = [' . implode(',', $array), '];
+						invertList(obj.checked, checks);
+					}
+					// ]]></script>';
 			}
 			// Is this a span like a message?
 			elseif (in_array($config_var['type'], array('message', 'warning')))
