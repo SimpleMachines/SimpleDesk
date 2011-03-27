@@ -1013,14 +1013,14 @@ function shd_load_user_prefs($user = 0)
 				'icon' => 'preferences.png',
 				'enabled' => true,
 			),
-			'blocks' => array(
-				'icon' => 'log.png',
-				'enabled' => true,
-			),
 			'notify' => array(
 				'icon' => 'email.png',
 				'enabled' => true,
 				'check_all' => true,
+			),
+			'blocks' => array(
+				'icon' => 'log.png',
+				'enabled' => true,
 			),
 		);
 
@@ -1106,7 +1106,7 @@ function shd_load_user_prefs($user = 0)
 				'show' => true,
 			),
 			'notify_new_ticket' => array(
-				'default' => 1,
+				'default' => 0,
 				'type' => 'check',
 				'icon' => 'log_newticket.png',
 				'group' => 'notify',
@@ -1122,7 +1122,7 @@ function shd_load_user_prefs($user = 0)
 				'show' => !empty($modSettings['shd_notify_new_reply_own']),
 			),
 			'notify_new_reply_assigned' => array(
-				'default' => 1,
+				'default' => 0,
 				'type' => 'check',
 				'icon' => 'log_assign.png',
 				'group' => 'notify',
@@ -1130,7 +1130,7 @@ function shd_load_user_prefs($user = 0)
 				'show' => !empty($modSettings['shd_notify_new_reply_assigned']),
 			),
 			'notify_new_reply_previous' => array(
-				'default' => 1,
+				'default' => 0,
 				'type' => 'check',
 				'icon' => 'log_newreply.png',
 				'group' => 'notify',
@@ -1138,7 +1138,7 @@ function shd_load_user_prefs($user = 0)
 				'show' => !empty($modSettings['shd_notify_new_reply_previous']),
 			),
 			'notify_new_reply_any' => array(
-				'default' => 1,
+				'default' => 0,
 				'type' => 'check',
 				'icon' => 'log_newreply.png',
 				'group' => 'notify',
@@ -1146,7 +1146,7 @@ function shd_load_user_prefs($user = 0)
 				'show' => !empty($modSettings['shd_notify_new_reply_any']),
 			),
 			'notify_assign_me' => array(
-				'default' => 1,
+				'default' => 0,
 				'type' => 'check',
 				'icon' => 'assign.png',
 				'group' => 'notify',
@@ -1154,7 +1154,7 @@ function shd_load_user_prefs($user = 0)
 				'show' => !empty($modSettings['shd_notify_assign_me']),
 			),
 			'notify_assign_own' => array(
-				'default' => 1,
+				'default' => 0,
 				'type' => 'check',
 				'icon' => 'assign.png',
 				'group' => 'notify',
