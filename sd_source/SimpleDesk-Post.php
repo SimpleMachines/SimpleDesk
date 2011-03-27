@@ -1175,7 +1175,11 @@ function shd_done_posting()
 			$context['page_icon'] = 'log_newticket.png';
 			$context['page_title'] = $txt['shd_ticket_posted_header'];
 
-			// Now customise it
+			// Now customise it, including adding the preferences link if appropriate. Note that we don't have to verify they can create new tickets, they wouldn't be here if they couldn't.
+			$body = $txt['shd_ticket_posted_body'];
+			if (shd_allowed_to('shd_view_preferences_own', 'shd_view_preferences_any'))
+				$body .= $txt['shd_ticket_posted_prefs'];
+			$body .= $txt['shd_ticket_posted_footer'];
 			$replacements = array(
 				'{membername}' => $context['user']['name'],
 				'{subject}' => $context['ticket_form']['subject'],
@@ -1184,8 +1188,9 @@ function shd_done_posting()
 				'{newticketlink}' => $scripturl . '?action=helpdesk;sa=newticket',
 				'{helpdesklink}' => $scripturl . '?action=helpdesk;sa=main',
 				'{forumlink}' => $scripturl,
+				'{prefslink}' => $scripturl . '?action=profile;area=hd_prefs',
 			);
-			$context['page_body'] = parse_bbc(str_replace(array_keys($replacements), array_values($replacements), $txt['shd_ticket_posted_body']), true);
+			$context['page_body'] = parse_bbc(str_replace(array_keys($replacements), array_values($replacements), $body), true);
 		}
 	}
 
