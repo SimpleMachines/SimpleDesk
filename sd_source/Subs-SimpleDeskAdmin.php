@@ -139,7 +139,7 @@ function shd_load_action_log_entries($start = 0, $items_per_page = 10, $sort = '
 		if (empty($actions[$k]['action_text']))
 			$actions[$k]['action_text'] = isset($txt['shd_log_' . $action['action']]) ? $txt['shd_log_' . $action['action']] : $action['action'];
 
-			$actions[$k]['action_text'] = str_replace('{scripturl}', $scripturl, $actions[$k]['action_text']);
+		$actions[$k]['action_text'] = str_replace('{scripturl}', $scripturl, $actions[$k]['action_text']);
 
 		if (isset($action['extra']['subject']))
 		{
@@ -152,6 +152,15 @@ function shd_load_action_log_entries($start = 0, $items_per_page = 10, $sort = '
 			if (isset($actions[$k]['extra']['urgency']))
 				$actions[$k]['action_text'] = str_replace('{urgency}', $txt['shd_urgency_' . $actions[$k]['extra']['urgency']], $actions[$k]['action_text']);
 		}
+
+		// Notifications are pretty tricky. So let's take care of all of it at once, and skip the rest if we're doing that.
+		if ($action['action'] == 'notify')
+		{
+			// Because this could be a lot of things, we compact its storage compared to a conventional serialize().
+			// See shd_notify_users in SimpleDesk-Notifications.php for what this is.
+			continue;
+		}
+
 		if (isset($action['extra']['user_name']))
 		{
 			$actions[$k]['action_text'] = str_replace('{profile_link}', shd_profile_link($actions[$k]['extra']['user_name'], (isset($actions[$k]['extra']['user_id']) ? $actions[$k]['extra']['user_id'] : 0)), $actions[$k]['action_text']);

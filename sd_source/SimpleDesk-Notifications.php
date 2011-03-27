@@ -333,7 +333,7 @@ function shd_notify_users($notify_data)
 	if (!function_exists('sendmail'))
 		require($sourcedir . '/Subs-Post.php');
 
-	$log = array();
+	$log = array('emails' => array());
 	foreach ($notify_lang as $this_lang => $lang_members)
 	{
 		shd_load_language('SimpleDeskNotifications', $this_lang);
@@ -347,18 +347,28 @@ function shd_notify_users($notify_data)
 			$body = $txt['template_body_notify_' . $email_type] . "\n\n" . $txt['regards_team'];			
 			$body = str_replace(array_keys($replacements), array_values($replacements), $body);
 
-			$log[] = array(
-				'lang' => $this_lang,
-				'timestamp' => time(), // in case the call takes more than a second total
-				'id_recipient' => $member,
-				'email_address' => $emails[$member],
-				'subject' => $subject, // this is already safe
-				'body' => htmlspecialchars(un_htmlspecialchars($body)), // the body will have the subject already encoded, so we need to unencode it and reencode the whole thing
-			);
+			if (!isset($log['emails'][$type]))
+				$log['emails'][$type] = array(
+					'u' => array(),
+					'e' => array(),
+				);
+
+			// Now then, do we have a member?
+			if (!empty($member))
+				$log['emails'][$type]['u'][] = $member;
+			else
+				$log['emails'][$type]['e'][] = $emails[$member];
 
 			//function sendmail($to, $subject, $message, $from = null, $message_id = null, $send_html = false, $priority = 3, $hotmail_fix = null, $is_private = false)
 			sendmail($emails[$member], $subject, $body, null, 'shd_notify_' . $email_type . '_' . $member);
 		}
+	}
+
+	// Now, let's fix up the log items.
+	foreach ($log['emails'] as $type => $data)
+	{
+		$data['u'] = !empty($data['u']) ? implode(',', $data['u']) : '';
+		$data['e'] = !empty($data['e']) ? implode(',', $data['u']) : '';
 	}
 
 	if (!empty($log) && !empty($modSettings['shd_notify_log']))

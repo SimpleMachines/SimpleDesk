@@ -1194,18 +1194,23 @@ function shd_load_user_prefs($user = 0)
 	}
 	else
 	{
-		$pref_list = array();
 		foreach ($base_prefs as $pref => $details)
 		{
-			if (empty($pref_groups[$details['group']]['enabled']))
+			if (empty($details['permission']))
 				continue;
 
-			if (!empty($details['permission']))
+			if (is_array($details['permission']))
 			{
-				if (!isset($pref_list[$details['permission']]))
-					$pref_list[$details['permission']] = in_array($user, shd_members_allowed_to($details['permission']));
-
-				if ($pref_list[$details['permission']])
+				foreach ($details['permission'] as $perm)
+					if (in_array($user, shd_members_allowed_to($perm)))
+					{
+						$prefs[$pref] = $details['default'];
+						break;
+					}
+			}
+			else
+			{
+				if (in_array($user, shd_members_allowed_to($details['permission'])))
 					$prefs[$pref] = $details['default'];
 			}
 		}
