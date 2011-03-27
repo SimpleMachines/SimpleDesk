@@ -51,10 +51,7 @@ function shd_notifications_notify_newticket(&$msgOptions, &$ticketOptions, &$pos
 	foreach ($members as $member => $value)
 		$members[$member] = $base_prefs['notify_new_ticket']['default'];
 
-	// Grab from the database
-	if (empty($members))
-		return;
-
+	// Query the database for the rest.
 	$query = $smcFunc['db_query']('', '
 		SELECT id_member, value
 		FROM {db_prefix}helpdesk_preferences
@@ -67,10 +64,7 @@ function shd_notifications_notify_newticket(&$msgOptions, &$ticketOptions, &$pos
 	);
 
 	while ($row = $smcFunc['db_fetch_assoc']($query))
-	{
-		$row['id_member'] = (int) $row['id_member'];
-		$members[$row['id_member']] = $row['value'];
-	}
+		$members[(int) $row['id_member']] = $row['value'];
 	$smcFunc['db_free_result']($query);
 
 	// OK, now figure out who we're sending to, and discard any member id's we're not sending to
@@ -113,7 +107,7 @@ function shd_notifications_notify_newreply(&$msgOptions, &$ticketOptions, &$post
 
 	$members = array(); // who should get what type of notification, preferences depending
 
-	// Someone replied to MY ticket? And it isn't me? Tell me about it!
+	// Someone replied to MY ticket? And it isn't me? I might want you to tell me about it!
 	if (!empty($modSettings['shd_notify_new_reply_own']))
 	{
 		if ($posterOptions['id'] != $ticketinfo['starter_id'])
@@ -175,11 +169,14 @@ function shd_notifications_notify_newreply(&$msgOptions, &$ticketOptions, &$post
 
 	// Build a list of users -> default prefs
 	$member_prefs = array();
+	$pref_list = array();
 	foreach ($members as $id => $type)
+	{
 		$member_prefs[$id] = $base_prefs['notify_' . $type]['default'];
+		$pref_list[$type] = true;
+	}
 	
 	// Grab pref list from DB for these users and update
-	$pref_list = array_unique(array_keys($members));
 	$query = $smcFunc['db_query']('', '
 		SELECT id_member, variable, value
 		FROM {db_prefix}helpdesk_preferences
@@ -187,7 +184,7 @@ function shd_notifications_notify_newreply(&$msgOptions, &$ticketOptions, &$post
 			AND variable IN ({array_string:variables})',
 		array(
 			'members' => array_keys($members),
-			'variables' => $pref_list,
+			'variables' => array_keys($pref_list),
 		)
 	);
 
@@ -195,7 +192,7 @@ function shd_notifications_notify_newreply(&$msgOptions, &$ticketOptions, &$post
 	{
 		$row['id_member'] = (int) $row['id_member'];
 		if ($row['variable'] == 'notify_' . $members[$row['id_member']])
-			$member_prefs[$id] = $row['value'];
+			$member_prefs[$row['id_member']] = $row['value'];
 	}
 	$smcFunc['db_free_result']($query);
 
@@ -263,7 +260,7 @@ function shd_notifications_notify_assign(&$ticket, &$assignment)
 			AND variable IN ({array_string:variables})',
 		array(
 			'members' => array_keys($members),
-			'variables' => array('assign_me', 'assign_own'),
+			'variables' => array('notify_assign_me', 'notify_assign_own'),
 		)
 	);
 
@@ -271,7 +268,7 @@ function shd_notifications_notify_assign(&$ticket, &$assignment)
 	{
 		$row['id_member'] = (int) $row['id_member'];
 		if ($row['variable'] == 'notify_' . $members[$row['id_member']])
-			$member_prefs[$id] = $row['value'];
+			$member_prefs[$row['id_member']] = $row['value'];
 	}
 	$smcFunc['db_free_result']($query);
 
