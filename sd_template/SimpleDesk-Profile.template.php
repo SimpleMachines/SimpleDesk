@@ -537,7 +537,7 @@ function template_shd_profile_navigation_above()
 			</div>
 		</div>
 		', !empty($options['use_sidebar_menu']) ? '<br />' : '', '
-		<div class="', empty($options['use_sidebar_menu']) ? 'shd_ticket_rightcolumn floatleft' : '', '">';
+		<div class="', empty($options['use_sidebar_menu']) ? 'shd_ticket_rightcolumn floatright' : '', '">';
 }
 
 function template_shd_profile_navigation_below()

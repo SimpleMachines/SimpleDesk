@@ -525,3 +525,10 @@ h3.ticketheader img
 {
 	border-right: none;
 }
+
+ul.shd_profile_nav_list, ul.shd_profile_nav_inline
+{
+	/* Webkit's default stylesheet also, just for giggles, adds margin-before and margin-after to lists. */
+	-webkit-margin-before: 0;
+	-webkit-margin-after: 0;
+}
