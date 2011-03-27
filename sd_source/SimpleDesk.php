@@ -131,6 +131,12 @@ function shd_main()
 			'lang' => true,
 			'url' => $scripturl . '?action=helpdesk;sa=main',
 		),
+		'options' => array(
+			'text'=> 'shd_options',
+			'test' => 'can_view_options',
+			'lang' => true,
+			'url' => $scripturl . '?action=profile;area=hd_prefs',
+		),
 	);
 
 	// Build the link tree.
@@ -253,9 +259,10 @@ function shd_main()
 
 	$context['can_new_ticket'] = shd_allowed_to('shd_new_ticket');
 	$context['can_proxy_ticket'] = $context['can_new_ticket'] && shd_allowed_to('shd_post_proxy');
-	$context['can_view_closed'] = shd_allowed_to('shd_resolve_ticket_own') || shd_allowed_to('shd_resolve_ticket_any');
+	$context['can_view_closed'] = shd_allowed_to('shd_resolve_ticket_own', 'shd_resolve_ticket_any');
 	$context['can_view_recycle'] = shd_allowed_to('shd_access_recyclebin');
 	$context['display_back_to_hd'] = !in_array($_REQUEST['sa'], array('main', 'viewblock', 'recyclebin', 'closedtickets'));
+	$context['can_view_options'] = shd_allowed_to('shd_view_preferences_own', 'shd_view_preferences_any');
 
 	// Highlight the correct button.
 	if (isset($context['navigation'][$_REQUEST['sa']]))
