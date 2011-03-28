@@ -123,7 +123,7 @@ function shd_notifications_notify_newreply(&$msgOptions, &$ticketOptions, &$post
 	// So this is a ticket I'm supposed to deal with... has someone said something I missed? (And just in case it's our ticket, don't send another)
 	if (!empty($modSettings['shd_notify_new_reply_assigned']))
 	{
-		if ($posterOptions['id'] != $ticketinfo['assigned_id'] && empty($members[$ticketinfo['assigned_id']]))
+		if (!empty($ticketinfo['assigned_id']) && $posterOptions['id'] != $ticketinfo['assigned_id'] && empty($members[$ticketinfo['assigned_id']]))
 			$members[$ticketinfo['assigned_id']] = 'new_reply_assigned';
 	}
 
@@ -162,11 +162,11 @@ function shd_notifications_notify_newreply(&$msgOptions, &$ticketOptions, &$post
 		}
 	}
 
-	if (empty($members))
-		return;
-
 	if (!empty($members[$context['user']['id']]))
 		unset($members[$context['user']['id']]);
+
+	if (empty($members))
+		return;
 
 	// Get the default preferences
 	$prefs = shd_load_user_prefs(false);
@@ -179,7 +179,7 @@ function shd_notifications_notify_newreply(&$msgOptions, &$ticketOptions, &$post
 	foreach ($members as $id => $type)
 	{
 		$member_prefs[$id] = $base_prefs['notify_' . $type]['default'];
-		$pref_list[$type] = true;
+		$pref_list['notify_' . $type] = true;
 	}
 	
 	// Grab pref list from DB for these users and update
@@ -209,10 +209,8 @@ function shd_notifications_notify_newreply(&$msgOptions, &$ticketOptions, &$post
 			unset($members[$id]);
 	}
 
-	// move $members to $notify_data['members']
-	$notify_data['members'] = $members;
-
 	// AAAAAAAAAAAAND WE'RE OFF!
+	$notify_data['members'] = $members;
 	if (!empty($notify_data['members']))
 		shd_notify_users($notify_data);
 }
