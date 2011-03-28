@@ -260,10 +260,10 @@ function shd_main()
 
 	$context['can_new_ticket'] = shd_allowed_to('shd_new_ticket');
 	$context['can_proxy_ticket'] = $context['can_new_ticket'] && shd_allowed_to('shd_post_proxy');
-	$context['can_view_closed'] = shd_allowed_to('shd_resolve_ticket_own', 'shd_resolve_ticket_any');
+	$context['can_view_closed'] = shd_allowed_to(array('shd_resolve_ticket_own', 'shd_resolve_ticket_any'));
 	$context['can_view_recycle'] = shd_allowed_to('shd_access_recyclebin');
 	$context['display_back_to_hd'] = !in_array($_REQUEST['sa'], array('main', 'viewblock', 'recyclebin', 'closedtickets'));
-	$context['can_view_options'] = shd_allowed_to('shd_view_preferences_own', 'shd_view_preferences_any');
+	$context['can_view_options'] = shd_allowed_to(array('shd_view_preferences_own', 'shd_view_preferences_any'));
 
 	// Highlight the correct button.
 	if (isset($context['navigation'][$_REQUEST['sa']]))
