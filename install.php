@@ -457,6 +457,20 @@ foreach ($mod_settings as $new_setting => $new_value)
 
 // Create new tables, if any
 foreach ($tables as $table)
+{
+	$smcFunc['db_create_table']($table['table_name'], $table['columns'], $table['indexes'], $table['parameters'], $table['if_exists'], $table['error']);
+
+	// Because of issues with SMF at least in 2.0 RC5, users coming from older installs may not have all the columns as if_exists => update doesn't appear to work.
+	// So, for every column, add it to the columns addition - and let SMF deal with it that way.
+	foreach ($table['columns'] as $table_info)
+		$columns[] = array(
+			'table_name' => $table['table_name'],
+			'column_info' => $table_info,
+			'parameters' => array(),
+			'if_exists' => 'ignore'
+		);
+}
+foreach ($tables as $table)
 	$smcFunc['db_create_table']($table['table_name'], $table['columns'], $table['indexes'], $table['parameters'], $table['if_exists'], $table['error']);
 
 // Create new rows, if any
