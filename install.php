@@ -470,8 +470,6 @@ foreach ($tables as $table)
 			'if_exists' => 'ignore'
 		);
 }
-foreach ($tables as $table)
-	$smcFunc['db_create_table']($table['table_name'], $table['columns'], $table['indexes'], $table['parameters'], $table['if_exists'], $table['error']);
 
 // Create new rows, if any
 foreach ($rows as $row)
