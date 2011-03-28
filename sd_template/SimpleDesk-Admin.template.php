@@ -409,7 +409,7 @@ function template_shd_show_settings()
 				echo '
 					<dt></dt>
 					<dd>
-						<input type="checkbox" name="all" id="', $config_var['name'], '" value="" checked="checked" onclick="invert_', $config_var['name'], '(this);" class="input_check floatleft">
+						<input type="checkbox" name="all" id="', $config_var['name'], '" value="" onclick="invert_', $config_var['name'], '(this);" class="input_check floatleft">
 						<label for="check_all" class="floatleft">', $txt['check_all'], '</label>
 					</dd>
 					<script type="text/javascript"><!-- // --><![CDATA[

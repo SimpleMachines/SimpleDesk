@@ -140,7 +140,7 @@ function template_shd_profile_preferences()
 		{
 			echo '
 									<div class="padding">
-										<input type="checkbox" name="all" id="check_all" value="" checked="checked" onclick="invertAll(this, this.form, \'', $group, '\');" class="input_check floatleft">
+										<input type="checkbox" name="all" id="check_all" value="" onclick="invertAll(this, this.form, \'', $group, '\');" class="input_check floatleft">
 										<label for="check_all" class="floatleft">', $txt['check_all'], '</label>
 									</div>';
 		}
