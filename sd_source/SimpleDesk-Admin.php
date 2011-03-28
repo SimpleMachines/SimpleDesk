@@ -36,7 +36,7 @@ if (!defined('SMF'))
 */
 function shd_admin_main()
 {
-	global $context, $scripturl, $sourcedir, $settings, $txt, $modSettings;	
+	global $context, $scripturl, $sourcedir, $settings, $txt, $modSettings, $scripturl;	
 
 	shd_init();
 	shd_load_language('SimpleDeskAdmin');
@@ -102,6 +102,21 @@ function shd_admin_main()
 			$context['template_layers'][] = $layer;
 			if ($layer == 'body')
 				$context['template_layers'][] = 'shd_maintenance';
+		}
+	}
+
+	// Also, fix up the link tree while we're here.
+	$linktree = $context['linktree'];
+	$context['linktree'] = array();
+	foreach ($linktree as $linktreeitem)
+	{
+		$context['linktree'][] = $linktreeitem;
+		if ($linktreeitem['url'] == $scripturl . '?action=admin')
+		{
+			$context['linktree'][] = array(
+				'url' => $scripturl . '?action=admin;area=helpdesk_info',
+				'name' => $txt['shd_helpdesk'],
+			);
 		}
 	}
 }
