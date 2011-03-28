@@ -84,7 +84,7 @@ function shd_load_action_log_entries($start = 0, $items_per_page = 10, $sort = '
 			LEFT JOIN {db_prefix}membergroups AS mg ON (mg.id_group = CASE WHEN mem.id_group = {int:reg_group_id} THEN mem.id_post_group ELSE mem.id_group END)
 		{raw:clause}
 		ORDER BY ' . ($sort != '' ? '{raw:sort} {raw:order}' : 'la.log_time DESC') . '
-		' . ($start != 0 ? 'LIMIT {int:start}, {int:items_per_page})' : ''),
+		' . ($start != 0 ? 'LIMIT {int:start}, {int:items_per_page}' : ''),
 		array(
 			'reg_group_id' => 0,
 			'sort' => $sort,
