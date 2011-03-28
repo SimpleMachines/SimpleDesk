@@ -594,7 +594,7 @@ function template_shd_action_log()
 					</div>
 					<table class="shd_ticketlist" cellspacing="0" width="100%">
 						<tr class="titlebg">
-							<td width="24%" colspan="2">
+							<td width="38%" colspan="2">
 								<img src="', $settings['default_images_url'], '/simpledesk/action.png" class="shd_smallicon" alt="" />
 								<a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=actionlog', $context['sort'] == $sort_types['action'] && !isset($_REQUEST['asc']) ? ';sort=action;asc' : ';sort=action', '">
 									', $txt['shd_admin_actionlog_action'], '
@@ -608,7 +608,7 @@ function template_shd_action_log()
 								</a>
 								', ($context['sort'] == $sort_types['time'] ? '<img src="' . $settings['default_images_url'] . '/' . (isset($_REQUEST['asc']) ? 'sort_up.gif' : 'sort_down.gif' ). '" alt="" />' : ''), '
 							</td>
-							<td width="20%">
+							<td width="16%">
 								<img src="', $settings['default_images_url'], '/simpledesk/user.png" class="shd_smallicon" alt="" />
 								<a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=actionlog', $context['sort'] == $sort_types['member'] && !isset($_REQUEST['asc']) ? ';sort=member;asc' : ';sort=member', '">
 									', $txt['shd_admin_actionlog_member'], '
@@ -622,7 +622,7 @@ function template_shd_action_log()
 								</a>
 								', ($context['sort'] == $sort_types['position'] ? '<img src="' . $settings['default_images_url'] . '/' . (isset($_REQUEST['asc']) ? 'sort_up.gif' : 'sort_down.gif' ). '" alt="" />' : ''), '
 							</td>
-							<td width="20%">
+							<td width="10%">
 								<img src="', $settings['default_images_url'], '/simpledesk/ip.png" class="shd_smallicon" alt="" />
 								<a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=actionlog', $context['sort'] == $sort_types['ip'] && !isset($_REQUEST['asc']) ? ';sort=ip;asc' : ';sort=ip', '">
 									', $txt['shd_admin_actionlog_ip'], '
@@ -666,71 +666,6 @@ function template_shd_action_log()
 							<span class="smalltext shd_empty_log"><img src="', $settings['default_images_url'], '/simpledesk/delete.png" alt="X" /> <a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=actionlog', $context['url_sort'], $context['url_order'], ';removeall" onclick="return confirm(', JavaScriptEscape(sprintf($txt['shd_admin_actionlog_removeall_confirm'],$context['hoursdisable'])), ');">', $txt['shd_admin_actionlog_removeall'], '</a></span>
 						</td>
 					</tr>
-					</table>
-				</div>';
-}
-
-/**
- *	Displays the email log.
- *
- *	@see shd_admin_email_log()
- *	@since 1.1
-*/
-function template_shd_email_log()
-{
-	global $settings, $txt, $context, $scripturl, $sort_types, $modSettings;
-
-	$use_bg2 = false;
-
-	echo '
-				<div class="tborder">
-					<div class="cat_bar grid_header">
-						<h3 class="catbg">
-							<span class="floatright smalltext">', $txt['pages'], ': ', $context['page_index'], '</span>
-							<img src="', $settings['default_images_url'], '/simpledesk/read.png" class="icon" alt="*" />
-							', $txt['shd_admin_emaillog_title'], '
-						</h3>
-					</div>
-					<table class="shd_ticketlist" id="error_log" cellspacing="0" width="100%">';
-
-	if (empty($context['emails']))
-		echo '
-						<tr class="windowbg2">
-							<td colspan="7" class="shd_noticket">', $txt['shd_admin_emaillog_none'], '</td>
-						</tr>';
-	else
-	{
-		foreach ($context['emails'] as $email)
-		{
-			echo '
-						<tr class="windowbg', $use_bg2 ? '2' : '', '">
-							<td rowspan="2" class="checkbox_column">
-								<input type="checkbox" name="delete[]" value="', $email['id_email'], '" />
-							</td>
-							<td class="half_width">';
-
-			if (!empty($email['id_recipient']))
-				echo '
-								<img src="', $settings['default_images_url'], '/simpledesk/user.png" class="icon" alt="*" /> ', shd_profile_link($email['member_name'], $email['id_recipient']), '<br />';
-
-			echo '
-								<img src="', $settings['default_images_url'], '/simpledesk/unread.png" class="icon" alt="*" /> ', $email['email_address'], '
-							</td>
-							<td class="half_width">
-								', $email['time'], '<br />
-								', $txt['subject'], ': ', $email['subject'], ' <img src="', $settings['default_images_url'], '/simpledesk/flags/', $email['language'], '.png" class="icon" alt="*" />
-							</td>
-						</tr>
-						<tr class="windowbg', $use_bg2 ? '2' : '', '">
-							<td colspan="2">
-								', $email['body'], '
-							</td>
-						</tr>';
-			$use_bg2 = !$use_bg2;
-		}
-	}
-
-	echo '
 					</table>
 				</div>';
 }

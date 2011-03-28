@@ -106,5 +106,13 @@ $txt['shd_logpart_att_added'] = 'Files added';
 $txt['shd_logpart_att_removed'] = 'Files removed';
 
 $txt['shd_log_autoclose'] = '&quot;<a href="{scripturl}?action=helpdesk;sa=ticket;ticket={ticket}">{subject}</a>&quot; marked as <strong>resolved</strong> due to inactivity.';
+
+$txt['shd_log_notify'] = 'Sent email notification regarding &quot;<a href="{scripturl}?action=helpdesk;sa=ticket;ticket={ticket}">{subject}</a>&quot;. ';
+$txt['shd_log_notify_to'] = 'Message sent to: ';
+$txt['shd_log_notify_hiddenemail'] = '%1$d other email addresses';
+$txt['shd_log_notify_hiddenemail_1'] = '1 other email address';
+$txt['shd_log_notify_users'] = 'users';
+$txt['shd_log_notify_email'] = 'email';
+$txt['shd_log_notifications'] = 'Notifications';
 //@}
 ?>

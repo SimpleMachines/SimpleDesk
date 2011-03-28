@@ -139,11 +139,6 @@ function shd_admin_info()
 			'icon' => 'log.png',
 			'title' => $txt['shd_admin_actionlog_title'],
 		),
-		'emaillog' => array(
-			'function' => 'shd_admin_email_log',
-			'icon' => 'mail.png',
-			'title' => $txt['shd_admin_emaillog'],
-		),
 		'support' => array(
 			'function' => 'shd_admin_support',
 			'icon' => 'support.png',
@@ -161,9 +156,6 @@ function shd_admin_info()
 			),
 			'actionlog' => array(
 				'description' => $txt['shd_admin_actionlog_desc'] . '<br />' . (!empty($modSettings['shd_disable_action_log']) ? '<span class="smalltext">' . $txt['shd_action_log_disabled'] . '</span>' : ''),
-			),
-			'emaillog' => array(
-				'description' => $txt['shd_admin_emaillog_desc'] . '<br />' . (empty($modSettings['shd_notify_log']) ? '<span class="smalltext">' . $txt['shd_notify_log_disabled'] . '</span>' : ''),
 			),
 			'support' => array(
 				'description' => $txt['shd_admin_support_desc'],
@@ -756,55 +748,6 @@ function shd_admin_action_log()
 	$context['page_index'] = shd_no_expand_pageindex($scripturl . '?action=admin;area=helpdesk_info;sa=actionlog' . $context['url_sort'] . $context['url_order'], $context['start'], shd_count_action_log_entries(), $context['displaypage']);
 
 	$context['sub_template'] = 'shd_action_log';
-}
-
-/**
- *	Initialises the email log.
- *
- *	@since 1.1
-*/
-function shd_admin_email_log()
-{
-	global $context, $settings, $scripturl, $txt, $sourcedir, $smcFunc;
-
-	$context['displaypage'] = 15;
-	$context['start'] = isset($_REQUEST['start']) ? $_REQUEST['start'] : 0;
-	$context['sub_template'] = 'shd_email_log';
-
-	// First, how many items, total?
-	$request = $smcFunc['db_query']('', '
-		SELECT COUNT(id_email)
-		FROM {db_prefix}helpdesk_log_email',
-		array()
-	);
-	list($total_rows) = $smcFunc['db_fetch_row']($request);
-	$smcFunc['db_free_result']($request);
-
-	// Do the page index thang, which will also clean up pagination splendidly.
-	$context['page_index'] = shd_no_expand_pageindex($scripturl . '?action=admin;area=helpdesk_info;sa=emaillog', $context['start'], $total_rows, $context['displaypage']);
-
-	// Get the results
-	$context['emails'] = array();
-	$request = $smcFunc['db_query']('', '
-		SELECT id_email, lang, timestamp, id_recipient, IFNULL(mem.real_name, {string:empty}) AS member_name, hle.email_address, subject, body
-		FROM {db_prefix}helpdesk_log_email AS hle
-			LEFT JOIN {db_prefix}members AS mem ON (hle.id_recipient = mem.id_member)
-		ORDER BY id_email DESC
-		LIMIT {int:start}, {int:limit}',
-		array(
-			'empty' => '',
-			'limit' => $context['displaypage'],
-			'start' => $context['start'],
-		)
-	);
-	while ($row = $smcFunc['db_fetch_assoc']($request))
-	{
-		$row['time'] = timeformat($row['timestamp']);
-		$row['language'] = str_replace('-utf8', '', $row['lang']);
-		$row['body'] = str_replace("\n", '<br />', $row['body']);
-		$context['emails'][$row['id_email']] = $row;
-	}
-	$smcFunc['db_free_result']($request);
 }
 
 /**

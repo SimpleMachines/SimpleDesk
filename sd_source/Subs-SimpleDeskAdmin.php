@@ -66,11 +66,14 @@ if (!defined('SMF'))
 */
 function shd_load_action_log_entries($start = 0, $items_per_page = 10, $sort = 'la.log_time', $order = 'DESC', $clause = '')
 {
-	global $smcFunc, $txt, $scripturl, $context, $user_info;
+	global $smcFunc, $txt, $scripturl, $context, $user_info, $user_profile;
 
 	// Load languages incase they aren't there (Read: ticket-specific logs)
-	shd_load_language('SimpleDeskLogAction');
 	shd_load_language('SimpleDeskAdmin');
+	shd_load_language('SimpleDeskLogAction');
+	shd_load_language('SimpleDeskNotifications');
+
+	$loaded_users = array();
 
 	// Without further screaming and waving, fetch the actions.
 	$request = shd_db_query('','
@@ -154,10 +157,66 @@ function shd_load_action_log_entries($start = 0, $items_per_page = 10, $sort = '
 		}
 
 		// Notifications are pretty tricky. So let's take care of all of it at once, and skip the rest if we're doing that.
-		if ($action['action'] == 'notify')
+		if ($action['action'] == 'notify' && isset($action['extra']['emails']))
 		{
-			// Because this could be a lot of things, we compact its storage compared to a conventional serialize().
+			// Because this could be a lot of people etc., we compact its storage heavily compared to a conventional serialize().
 			// See shd_notify_users in SimpleDesk-Notifications.php for what this is.
+			$users = array();
+			// First, get the list of users, and load their username etc if we haven't already attempted it before.
+			foreach ($action['extra']['emails'] as $email_type => $recipients)
+			{
+				if (isset($recipients['u']))
+					$users = array_merge($users, explode(',', $recipients['u']));
+			}
+			if (!empty($users))
+			{
+				$users = array_unique($users);
+				$unloaded = array_diff($loaded_users, $users);
+				if (!empty($unloaded))
+					$unloaded = loadMemberData($unloaded, false, 'minimal');
+				if (!empty($unloaded))
+					$loaded_users = array_merge($loaded_users, $unloaded);
+			}
+
+			// Now we have all the usernames for this instance, let's go and build this entry.
+			$content = '';
+			foreach ($action['extra']['emails'] as $email_type => $recipients)
+			{
+				$this_content = '<br /><a href="' . $scripturl . '?action=helpdesk;sa=emaillog;log=' . $action['id'] . ';template=' . $email_type . '" onclick="return reqWin(this.href);">' . $txt['template_log_notify_' . $email_type] . '</a> - ';
+				
+				$new_content = '';
+				if (!empty($users))
+				{
+					$first = true;
+					foreach ($users as $user)
+					{
+						if (empty($user_profile[$user]))
+							continue;
+
+						$new_content .= ($first ? $txt['shd_log_notify_users'] . ': ' : ', ') . shd_profile_link($user_profile[$user]['real_name'], $user);
+						$first = false;
+					}
+				}
+
+				if (!empty($recipients['e']))
+				{
+					$emails = explode(',', $recipients['e']);
+					// Admins can see the actual emails.
+					if (shd_allowed_to('admin_helpdesk') || $user_info['is_admin'])
+					{
+						foreach ($emails as $key => $value)
+							$emails[$key] = '<a href="mailto:' . $value . '">' . $value . '</a>';
+						$new_content .= $txt['shd_log_notify_email'] . ': ' . implode(', ', $emails);
+					}
+					// No-one else can at the moment.
+					else
+						$new_content .= $txt['shd_log_notify_email'] . ': ' . (count($emails) == 1 ? $txt['shd_log_notify_hiddenemail_1'] : sprintf($txt['shd_log_notify_hiddenemail'], count($emails)));
+				}
+				if (!empty($new_content))
+					$content .= $this_content . $new_content;
+			}
+			if (!empty($content))
+				$actions[$k]['action_text'] .= $txt['shd_log_notify_to'] . $content;
 			continue;
 		}
 
@@ -259,7 +318,6 @@ function shd_admin_bootstrap(&$admin_areas)
 					'subsections' => array(
 						'main' => array($txt['shd_admin_info']),
 						'actionlog' => array($txt['shd_admin_actionlog'], 'enabled' => empty($modSettings['shd_disable_action_log'])),
-						'emaillog' => array($txt['shd_admin_emaillog'], 'enabled' => !empty($modSettings['shd_notify_log'])),
 						'support' => array($txt['shd_admin_support']),
 					),
 				),

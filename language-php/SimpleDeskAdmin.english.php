@@ -51,7 +51,6 @@ $txt['shd_admin_standalone_options'] = 'Standalone Mode';
 $txt['shd_admin_actionlog'] = 'Action Log';
 $txt['shd_admin_support'] = 'Support';
 $txt['shd_admin_helpdesklog'] = 'Helpdesk Log';
-$txt['shd_admin_emaillog'] = 'Email Log';
 $txt['shd_admin_permissions'] = 'Permissions';
 
 $txt['shd_admin_options_display'] = 'Display Options';
@@ -73,10 +72,6 @@ $txt['shd_admin_options_standalone_desc'] = 'This area manages the standalone mo
 $txt['shd_admin_options_actionlog_desc'] = 'This area allows you to configure what items can be logged within the helpdesk action log.';
 $txt['shd_admin_options_notifications_desc'] = 'This area allows you to configure email notifications being sent to users when their tickets change.';
 $txt['shd_admin_actionlog_desc'] = 'This is a list of all actions, such as resolved tickets, edited tickets and more, carried out in the helpdesk.';
-$txt['shd_admin_emaillog_desc'] = 'This is a record of the emails sent from the helpdesk, such as notifications.';
-$txt['shd_admin_emaillog_title'] = 'Helpdesk Emails Log';
-$txt['shd_admin_emaillog_none'] = 'No emails were found.';
-$txt['shd_notify_log_disabled'] = '<strong>Note:</strong> Logging of helpdesk emails is currently <strong>disabled</strong>, so no new log entries will be added.';
 $txt['shd_admin_support_desc'] = 'This area will help you get through to SimpleDesk.net quickly and effectively - the post will include some information helpful for our Support team, about your installation (like SMF version and SimpleDesk version).';
 $txt['shd_admin_help'] = 'This is the administration panel for the helpdesk. Here you can manage settings, get news and updates on this modification, and view helpdesk logs.';
 //@}

@@ -41,6 +41,9 @@ function shd_notifications_notify_newticket(&$msgOptions, &$ticketOptions, &$pos
 
 	$members = array_diff($members, array($context['user']['id']));
 
+	if (empty($members))
+		return;
+
 	// Get the default preferences
 	$prefs = shd_load_user_prefs(false);
 	$pref_groups = $prefs['groups'];
@@ -81,6 +84,7 @@ function shd_notifications_notify_newticket(&$msgOptions, &$ticketOptions, &$pos
 		'members' => $members,
 		'ticketlink' => $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $ticketOptions['id'],
 		'subject' => $ticketOptions['subject'],
+		'ticket' => $ticketOptions['id'],
 	);
 
 	shd_notify_users($notify_data);
@@ -103,6 +107,8 @@ function shd_notifications_notify_newreply(&$msgOptions, &$ticketOptions, &$post
 		'members' => array(),
 		'ticketlink' => $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $ticketOptions['id'] . '.msg' . $msgOptions['id'] . '#msg' . $msgOptions['id'],
 		'subject' => $ticketinfo['subject'],
+		'ticket' => $ticketOptions['id'],
+		'msg' => $msgOptions['id'],
 	);
 
 	$members = array(); // who should get what type of notification, preferences depending
@@ -226,6 +232,7 @@ function shd_notifications_notify_assign(&$ticket, &$assignment)
 		'members' => array(),
 		'ticketlink' => $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $ticket . '.0',
 		'subject' => $ticketinfo['subject'],
+		'ticket' => $ticket,
 	);
 
 	// Get the default preferences
@@ -302,7 +309,6 @@ function shd_notify_users($notify_data)
 
 	// So, for the folks we're sending a message to, figure out what languages etc we're loading
 	$notify_lang = array();
-	$emails = array();
 	$query = $smcFunc['db_query']('', '
 		SELECT id_member, lngfile, email_address
 		FROM {db_prefix}members
@@ -333,7 +339,11 @@ function shd_notify_users($notify_data)
 	if (!function_exists('sendmail'))
 		require($sourcedir . '/Subs-Post.php');
 
-	$log = array('emails' => array());
+	$log = array(
+		'emails' => array(),
+		'auto' => true,
+		'subject' => $notify_data['subject'],
+	);
 	foreach ($notify_lang as $this_lang => $lang_members)
 	{
 		shd_load_language('SimpleDeskNotifications', $this_lang);
@@ -347,39 +357,177 @@ function shd_notify_users($notify_data)
 			$body = $txt['template_body_notify_' . $email_type] . "\n\n" . $txt['regards_team'];			
 			$body = str_replace(array_keys($replacements), array_values($replacements), $body);
 
-			if (!isset($log['emails'][$type]))
-				$log['emails'][$type] = array(
+			if (!isset($log['emails'][$email_type]))
+				$log['emails'][$email_type] = array(
 					'u' => array(),
 					'e' => array(),
 				);
 
 			// Now then, do we have a member?
 			if (!empty($member))
-				$log['emails'][$type]['u'][] = $member;
+				$log['emails'][$email_type]['u'][] = $member;
 			else
-				$log['emails'][$type]['e'][] = $emails[$member];
+				$log['emails'][$email_type]['e'][] = $emails[$member];
 
 			//function sendmail($to, $subject, $message, $from = null, $message_id = null, $send_html = false, $priority = 3, $hotmail_fix = null, $is_private = false)
 			sendmail($emails[$member], $subject, $body, null, 'shd_notify_' . $email_type . '_' . $member);
 		}
 	}
 
-	// Now, let's fix up the log items.
+	// Now, let's fix up the log items. In the action log, emails is an array of notify subtypes, that relate to template_subject_notify_* in the notifications language file.
+	// Within the type subarray, there's u and e, u is a comma separated list of user ids, e is a comma separated list of non user id emails.
 	foreach ($log['emails'] as $type => $data)
 	{
-		$data['u'] = !empty($data['u']) ? implode(',', $data['u']) : '';
-		$data['e'] = !empty($data['e']) ? implode(',', $data['u']) : '';
+		if (!empty($data['u']))
+			$log['emails'][$type]['u'] = implode(',', $data['u']);
+		else
+			unset($log['emails'][$type]['u']);
+
+		if (!empty($data['e']))
+			$log['emails'][$type]['e'] = implode(',', $data['e']);
+		else
+			unset($log['emails'][$type]['e']);
+
+		$log['emails'][$type]['u'] = !empty($data['u']) ? implode(',', $data['u']) : '';
+		$log['emails'][$type]['e'] = !empty($data['e']) ? implode(',', $data['u']) : '';
+
+		if (empty($log['emails'][$type]))
+			unset($log['emails'][$type]);
 	}
 
-	if (!empty($log) && !empty($modSettings['shd_notify_log']))
-		$smcFunc['db_insert']('insert',
-			'{db_prefix}helpdesk_log_email',
+	// We're doing it manually because we're bending some of the rules. It bypasses the usual shd_logopt_* check for one.
+	if (empty($modSettings['shd_disable_action_log']) && !empty($log['emails']) && !empty($modSettings['shd_notify_log']))
+		$smcFunc['db_insert']('',
+			'{db_prefix}helpdesk_log_action',
 			array(
-				'lang' => 'string', 'timestamp' => 'int', 'id_recipient' => 'int', 'email_address' => 'string', 'subject' => 'string', 'body' => 'string',
+				'log_time' => 'int', 'id_member' => 'int', 'ip' => 'string-16', 'action' => 'string', 'id_ticket' => 'int', 'id_msg' => 'int', 'extra' => 'string-65534',
 			),
-			$log,
-			array('id_email')
+			array(
+				time(), 0, '', 'notify', $notify_data['ticket'], !empty($notify_data['msg']) ? $notify_data['msg'] : 0, serialize($log),
+			),
+			array('id_action')
 		);
+}
+
+/**
+ *	Display the notice of email.
+ *
+ *	@todo Finish documenting
+ *	@since 1.1
+*/
+function shd_notify_popup()
+{
+	global $txt, $context, $settings, $modSettings, $smcFunc, $user_profile, $user_info, $scripturl;
+
+	// First, verify we got a log entry, that the log entry is right, and it points to a ticket we can actually see.
+	$_GET['log'] = isset($_GET['log']) ? (int) $_GET['log'] : 0;
+
+	$email_type = isset($_GET['template']) ? preg_replace('~[^a-z_]~', '', $_GET['template']) : '';
+
+	if (empty($modSettings['shd_display_ticket_logs']) || empty($_GET['log']) || empty($email_type))
+		fatal_lang_error('no_access', false);
+
+	$query = $smcFunc['db_query']('', '
+		SELECT id_member, id_ticket, id_msg, extra
+		FROM {db_prefix}helpdesk_log_action
+		WHERE id_action = {int:log}
+			AND action = {string:notify}',
+		array(
+			'log' => $_GET['log'],
+			'notify' => 'notify',
+		)
+	);
+	if ($smcFunc['db_num_rows']($query) == 0)
+	{
+		$smcFunc['db_free_result']($query);
+		fatal_lang_error('no_access');
+	}
+	$row = $smcFunc['db_fetch_assoc']($query);
+	$smcFunc['db_free_result']($query);
+
+	$row['extra'] = unserialize($row['extra']);
+
+	// Just check we did actually log an email of that type.
+	if (empty($row['extra']['emails'][$_GET['template']]))
+		fatal_lang_error('no_access', false);
+
+	$ticketinfo = shd_load_ticket($row['id_ticket']);
+
+	// OK, if we're here, we can see the ticket. Can we actually see the email log at this point?
+	if (!shd_allowed_to('shd_view_ticket_logs_any') && (!shd_allowed_to('shd_view_ticket_logs_own') || !$ticketinfo['is_own']))
+		fatal_lang_error('no_access', false);
+
+	// We're reusing the Help template, need its language file.
+	loadLanguage('Help');
+	shd_load_language('SimpleDeskAdmin');
+	shd_load_language('SimpleDeskLogAction');
+	shd_load_language('SimpleDeskNotifications');
+
+	// Set the page up
+	loadTemplate('Help');
+	$context['page_title'] = $context['forum_name'] . ' - ' . $txt['shd_log_notifications'];
+	$context['template_layers'] = array();
+	$context['sub_template'] = 'popup';
+
+	$users = array();
+	// First, get the list of users, and load their username etc if we haven't already attempted it before.
+	if (isset($row['extra']['emails'][$email_type]['u']))
+		$users = array_merge($users, explode(',', $row['extra']['emails'][$email_type]['u']));
+	if (!empty($users))
+	{
+		$users = array_unique($users);
+		if (!empty($users))
+			loadMemberData($users, false, 'minimal');
+	}
+
+	// Now we have all the usernames for this instance, let's go and build this entry.
+
+	$context['help_text'] = $txt['shd_log_notify_to'] . '<br />';
+
+	$new_content = '';
+	if (!empty($users))
+	{
+		$first = true;
+		foreach ($users as $user)
+		{
+			if (empty($user_profile[$user]))
+				continue;
+
+			$new_content .= ($first ? '<img src="' . shd_image_url('user.png') . '" alt="" /> ' : ', ') . shd_profile_link($user_profile[$user]['real_name'], $user);
+			$first = false;
+		}
+	}
+
+	if (!empty($row['extra']['emails'][$email_type]['e']))
+	{
+		$emails = explode(',', $row['extra']['emails'][$email_type]['e']);
+		// Admins can see the actual emails.
+		if (shd_allowed_to('admin_helpdesk') || $user_info['is_admin'])
+		{
+			foreach ($emails as $key => $value)
+				$emails[$key] = '<a href="mailto:' . $value . '">' . $value . '</a>';
+			$new_content .= '<img src="' . shd_image_url('log_notify.png') . '" alt="" /> ' . implode(', ', $emails);
+		}
+		// No-one else can at the moment.
+		else
+			$new_content .= '<img src="' . shd_image_url('log_notify.png') . '" alt="" /> ' . (count($emails) == 1 ? $txt['shd_log_notify_hiddenemail_1'] : sprintf($txt['shd_log_notify_hiddenemail'], count($emails)));
+	}
+	if (!empty($new_content))
+		$context['help_text'] .= $new_content;
+
+	$context['help_text'] .= '<hr />';
+
+	// So the general prep is done. Now let's rebuild the email contents.
+
+	$replacements = array(
+		'{subject}' => empty($row['extra']['subject']) ? $txt['no_subject'] : $row['extra']['subject'],
+		'{ticketlink}' => $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $row['id_ticket'] . (empty($row['id_msg']) ? '.0' : '.msg' . $row['id_msg'] . '#msg' . $row['id_msg']),
+	);
+
+	$email_subject = str_replace(array_keys($replacements), array_values($replacements), $txt['template_subject_notify_' . $email_type]);
+	$email_body = str_replace(array_keys($replacements), array_values($replacements), $txt['template_body_notify_' . $email_type]);
+
+	$context['help_text'] .= '<strong>' . $txt['subject'] . ':</strong> ' . $email_subject . '<br /><br />' . $email_body;
 }
 
 ?>
