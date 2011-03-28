@@ -1677,7 +1677,7 @@ function shd_handle_attachments()
 			$filenames = array();
 			// Before deleting, get the names for the log
 			$query = $smcFunc['db_query']('', '
-				SELECT filename
+				SELECT filename, attachment_type
 				FROM {db_prefix}attachments
 				WHERE id_attach IN ({array_int:attach})
 				ORDER BY id_attach',
@@ -1685,11 +1685,17 @@ function shd_handle_attachments()
 					'attach' => $del_temp,
 				)
 			);
-			while ($row = $smcFunc['db_fetch_row']($query))
-				$filenames[] = htmlspecialchars($row[0]);
+			$removed = array();
+			while ($row = $smcFunc['db_fetch_assoc']($query))
+			{
+				$row['filename'] = htmlspecialchars($row['filename']);
+				$filenames[] = $row['filename'];
+				if ($row['attachment_type'] == 0)
+					$removed[] = $row['filename'];
+			}
 
-			if (!empty($filenames))
-				$context['log_params']['att_removed'] = $filenames;
+			if (!empty($removed))
+				$context['log_params']['att_removed'] = $removed;
 
 			// Now you can delete
 			require_once($sourcedir . '/ManageAttachments.php');
