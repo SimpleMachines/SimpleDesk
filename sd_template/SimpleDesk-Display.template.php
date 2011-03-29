@@ -324,9 +324,10 @@ function template_additional_fields()
 {
 	global $context, $scripturl, $options, $txt, $settings;
 	
-	if(!empty($context['ticket']['custom_fields']['information']))
+	if (!empty($context['ticket']['custom_fields']['information']))
 	{	
-		echo'	<div class="tborder">
+		echo '
+				<div class="tborder">
 					<div class="title_bar grid_header" id="additionalinfoheader">
 						<h3 class="titlebg">
 							<span class="floatright"><a href="javascript:oCustomFields.infoswap();"><img src="', $settings['images_url'], '/collapse.gif" alt="+" id="shd_custom_fields_swap" class="icon" /></a></span>
@@ -337,25 +338,31 @@ function template_additional_fields()
 					<div class="roundframe" id="additional_info">
 						<div class="content">';	
 
-			foreach($context['ticket']['custom_fields']['information'] AS $field)
+			foreach ($context['ticket']['custom_fields']['information'] AS $field)
 			{
-				if($field['display_empty'] || !empty($field['value']))
+				if ($field['display_empty'] || !empty($field['value']))
 				{
-					echo'
+					echo '
 							<div class="description">
 							', !empty($field['icon']) ? '<img src="' . $settings['default_images_url'] . '/simpledesk/cf/' . $field['icon'] . '" alt="" class="shd_smallicon" />' : '','
 							<strong>', $field['name'],':</strong><hr />';
 
-					if(empty($field['value']) && $field['display_empty'])
+					if (empty($field['value']) && $field['display_empty'])
 						echo $txt['shd_ticket_empty_field'];
-					elseif(!empty($field['value']))
-						echo $field['value'];
-						
-						echo'</div>';
+					elseif (!empty($field['value']))
+					{
+						if ($field['type'] == CFIELD_TYPE_CHECKBOX)
+							echo !empty($field['value']) ? $txt['yes'] : $txt['no'];
+						else
+							echo $field['value'];
+					}
+
+					echo '
+				</div>';
 				}
 			}
 		
-		echo'
+		echo '
 			</div>
 		</div>
 		<span class="lowerframe" id="additional_info_footer"><span></span></span>
