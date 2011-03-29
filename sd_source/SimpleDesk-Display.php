@@ -172,80 +172,6 @@ function shd_view_ticket()
 		'deleted' => $ticketinfo['deleted'],
 	);
 	
-	// Load all of our custom fields
-	$custom_fields = shd_db_query('', '
-		SELECT cf.id_field, cf.active, cf.field_order, cf.field_name, cf.field_loc, cf.icon,
-		cf.field_type, cf.default_value, cf.bbc, cf.can_see, cf.can_edit, cf.field_length,
-		cf.display_empty, cf.required, cf.placement
-		FROM {db_prefix}helpdesk_custom_fields AS cf
-		WHERE cf.active = 1
-		ORDER BY cf.field_order',
-		array()
-	);
-	
-	// Now load the values of each field in the ticket
-	$custom_field_values = shd_db_query('', '
-		SELECT cfv.id_post, cfv.id_field, cfv.value
-		FROM {db_prefix}helpdesk_custom_fields_values AS cfv
-		WHERE cfv.id_post = {int:ticket}
-			AND cfv.post_type = 1',
-		array(
-			'ticket' => $context['ticket_id'],
-		)
-	);
-	
-	$field_values = array();
-
-	while($row = $smcFunc['db_fetch_assoc']($custom_field_values))
-	{
-		$field_values[$row['id_field']] = $row['value'];
-	}
-	$smcFunc['db_free_result']($custom_field_values);
-	
-	$context['custom_fields_replies'] = array();
-	$context['ticket']['custom_fields'] = array(
-		'details' => array(),
-		'information' => array(),
-	);
-
-	// Loop through all fields and figure out where they should be.
-	while($row = $smcFunc['db_fetch_assoc']($custom_fields))
-	{
-		$row['can_see'] = explode(',',$row['can_see']);
-
-		if(((shd_allowed_to('shd_staff') && $row['can_see'][1] == 1) || (!shd_allowed_to('shd_staff') && $row['can_see'][0] == 1)) || shd_allowed_to('admin_forum'))
-		{
-			// If this is going to be displayed for the individual ticket, we need to figure out where it should go.
-			if($row['field_loc'] == 1 || $row['field_loc'] == 3)
-			{
-				if($row['placement'] == 1)
-					$pos = 'details';
-				else
-					$pos = 'information';
-			}
-			
-			$field = array(
-				'id' => $row['id_field'],
-				'name' => $row['field_name'],
-				'icon' => $row['icon'],
-				'type' => $row['field_type'],
-				'default_value' => $row['default_value'],
-				'value' => !empty($field_values[$row['id_field']]) ? $field_values[$row['id_field']] : ($row['field_type'] == CFIELD_TYPE_LARGETEXT ? '' : $row['default_value']), // This is only for fields that display in the ticket, replies are taken care of later on
-				'display_empty' => $row['required'] == 1 ? 1 : $row['display_empty'], // Required and "selection" fields will always be displayed.
-				'bbc' => $row['bbc'] == 1
-			);
-			
-			if($field['bbc'] == 1)
-				$field['value'] = shd_format_text($context['ticket']['custom_fields'][$pos][$row['id_field']]['value']);
-				
-			// Add it to the array.
-			if($row['field_loc'] == 1 || $row['field_loc'] == 3)
-				$context['ticket']['custom_fields'][$pos][$row['id_field']]	= $field;
-			if($row['field_loc'] == 2 || $row['field_loc'] == 3)
-				$context['custom_fields_replies'][$row['id_field']]	= $field;
-		}
-	}	
-	$smcFunc['db_free_result']($custom_fields);
 
 	// IP address next
 	$context['link_ip_address'] = allowedTo('moderate_forum'); // for trackip access
@@ -387,6 +313,82 @@ function shd_view_ticket()
 		$context['first_message'] = 0;
 		$context['first_new_message'] = false;
 	}
+
+	// Load all the custom fields
+	// First, get all the values that could apply to the current context. We'll deal with what's active/inactive and where it all goes shortly.
+	$query = shd_db_query('', '
+		SELECT cfv.id_post, cfv.id_field, cfv.value, cfv.post_type
+		FROM {db_prefix}helpdesk_custom_fields_values AS cfv
+		WHERE (cfv.id_post = {int:ticket} AND cfv.post_type = 1)' . (!empty($context['ticket_messages']) ? '
+			OR (cfv.id_post IN ({array_int:msgs}) AND cfv.post_type = 2)' : ''),
+		array(
+			'ticket' => $context['ticket_id'],
+			'msgs' => $context['ticket_messages'],
+		)
+	);
+	$field_values = array();
+	while($row = $smcFunc['db_fetch_assoc']($query))
+		$field_values[$row['id_field']] = $row;
+	$smcFunc['db_free_result']($query);
+
+	// Set up the storage.
+	$context['custom_fields_replies'] = array();
+	$context['ticket']['custom_fields'] = array(
+		'details' => array(),
+		'information' => array(),
+	);
+	
+	$query = shd_db_query('', '
+		SELECT cf.id_field, cf.active, cf.field_order, cf.field_name, cf.field_loc, cf.icon,
+			cf.field_type, cf.default_value, cf.bbc, cf.can_see, cf.can_edit, cf.field_length,
+			cf.display_empty, cf.required, cf.placement
+		FROM {db_prefix}helpdesk_custom_fields AS cf
+		WHERE cf.active = 1
+		ORDER BY cf.field_order',
+		array()
+	);
+	
+	// Loop through all fields and figure out where they should be.
+	$is_staff = shd_allowed_to('shd_staff');
+	while ($row = $smcFunc['db_fetch_assoc']($query))
+	{
+		$row['can_see'] = explode(',', $row['can_see']);
+
+		if (($is_staff && $row['can_see'][1] == 1) || (!$is_staff && $row['can_see'][0] == 1) || shd_allowed_to('admin_forum'))
+		{
+			// If this is going to be displayed for the individual ticket, we need to figure out where it should go.
+			if($row['field_loc'] & CFIELD_TICKET)
+				$pos = $row['placement'] == CFIELD_PLACE_DETAILS ? 'details' : 'information';
+			
+			$field = array(
+				'id' => $row['id_field'],
+				'name' => $row['field_name'],
+				'icon' => $row['icon'],
+				'type' => $row['field_type'],
+				'default_value' => $row['default_value'],
+				'display_empty' => !empty($row['required']) ? 1 : $row['display_empty'], // Required and "selection" fields will always be displayed.
+				'bbc' => !empty($row['bbc']),
+			);
+
+			// Now get its value.
+			if (isset($field_values[$row['id_field']]))
+				$field['value'] = $field['bbc'] ? shd_format_text($field_values[$row['id_field']]['value']) : $field_values[$row['id_field']]['value'];
+			else
+				$field['value'] = $field['default_value'];
+
+			// Add it to the array.
+			if ($row['field_loc'] & CFIELD_TICKET && !empty($field_values[$row['id_field']]['post_type']) && $field_values[$row['id_field']]['post_type'] == CFIELD_TICKET)
+			{
+				$context['ticket']['custom_fields'][$pos][$row['id_field']]	= $field;
+				// Don't handle the default text if the content is a large textbox and we're displaying it in the ticket information, gets big and ugly.
+				if ($row['field_type'] == CFIELD_TYPE_LARGETEXT && !isset($field_values['id_field']))
+					$context['ticket']['custom_fields'][$pos][$row['id_field']]['value'] = '';
+			}
+			if ($row['field_loc'] & CFIELD_REPLY && !empty($field_values[$row['id_field']]['post_type']) && $field_values[$row['id_field']]['post_type'] == CFIELD_REPLY)
+				$context['custom_fields_replies'][$field_values['id_post']][$row['id_field']] = $field;
+		}
+	}	
+	$smcFunc['db_free_result']($query);	
 
 	// Grab the avatar for the poster
 	$context['ticket']['poster_avatar'] = empty($context['ticket']['member']['id']) ? array() : (loadMemberContext($context['ticket']['id_member']) ? $memberContext[$context['ticket']['id_member']]['avatar'] : array());
@@ -757,6 +759,7 @@ function shd_prepare_ticket_context()
 		//'can_split' => $message['message_status'] != MSG_STATUS_DELETED && !$context['ticket']['closed'] && !$context['ticket']['deleted'] && (shd_allowed_to('shd_split_ticket_any') || ($context['ticket']['ticket_opener'] && shd_allowed_to('shd_split_ticket_own'))),
 		'message_status' => $message['message_status'],
 		'link' => $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $context['ticket_id'] . '.msg' . $message['id_msg'] . '#msg' . $message['id_msg'],
+		'custom_fields' => !empty($context['custom_fields_replies'][$message['id_msg']]) ? $context['custom_fields_replies'][$message['id_msg']] : array(),
 	);
 
 	if (shd_allowed_to('shd_view_ip_any') || ($message['id_member'] == $user_info['id'] && shd_allowed_to('shd_view_ip_own')))
@@ -775,35 +778,6 @@ function shd_prepare_ticket_context()
 
 	if (!empty($context['ticket_start_newfrom']) && $context['ticket_start_newfrom'] == $message['id_msg'])
 		$output['is_new'] = true;
-	
-	// Load the values of any custom field.
-	$custom_field_values = shd_db_query('', '
-		SELECT cfv.id_post, cfv.id_field, cfv.value
-		FROM {db_prefix}helpdesk_custom_fields_values AS cfv
-		WHERE cfv.id_post = {int:reply}
-			AND cfv.post_type = 2',
-		array(
-			'reply' => $message['id_msg'],
-		)
-	);
-	
-	$field_values = array();
-
-	while($row = $smcFunc['db_fetch_assoc']($custom_field_values))
-	{
-		$field_values[$row['id_field']] = $row['value'];
-	}
-	$smcFunc['db_free_result']($custom_field_values);
-	
-	$output['custom_fields'] = array();
-
-	foreach($context['custom_fields_replies'] AS $field)
-	{
-		$output['custom_fields'][$field['id']]['value'] = !empty($field_values[$field['id']]) ? $field_values[$field['id']] : ($field['type'] == CFIELD_TYPE_LARGETEXT ? '' : $field['default_value']);
-			
-		if($field['bbc'] == 1)
-		$output['custom_fields'][$field['id']]['value'] = shd_format_text($output['custom_fields'][$field['id']]['value']);		
-	}	
 
 	return $output;
 }
