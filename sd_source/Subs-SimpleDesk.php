@@ -82,7 +82,6 @@ function shd_init()
 	define('CFIELD_PLACE_DETAILS', 1);
 	define('CFIELD_PLACE_INFO', 2);
 	
-
 	define('CFIELD_TYPE_TEXT', 1);
 	define('CFIELD_TYPE_LARGETEXT', 2);
 	define('CFIELD_TYPE_INT', 3);

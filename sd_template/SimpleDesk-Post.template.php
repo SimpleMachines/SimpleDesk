@@ -156,8 +156,11 @@ function template_ticket_custom_fields()
 				<div class="information shd_customfields">';
 
 		// Loop through each custom field
-		foreach ($context['ticket_form']['custom_fields'] as $field)
+		foreach ($context['ticket_form']['custom_fields'][$context['ticket_form']['custom_fields_context']] as $field)
 		{
+			if (!isset($field['value']))
+				$field['value'] = $field['default_value'];
+
 			echo '
 					<dl class="settings">
 						<dt id="field-' . $field['id'] . '">
@@ -167,55 +170,66 @@ function template_ticket_custom_fields()
 						</dt>';
 
 			// Text
-			if ($field['type'] == 1)
+			if ($field['type'] == CFIELD_TYPE_TEXT)
+			{
 				echo '
-						<dd><input type="text" name="field-' . $field['id'] . '" value="' . $field['default_value'] . '" size="50" /></dd>';
+						<dd><input type="text" name="field-', $field['id'], '" value="', $field['value'], '" size="50" /></dd>';
+			}
 			// Textarea
-			elseif ($field['type'] == 2)
+			elseif ($field['type'] == CFIELD_TYPE_LARGETEXT)
+			{
+				if ($field['value'] == $field['default_value'])
+					$field['value'] = '';
+
 				echo '
-						<dd><textarea name="field-' . $field['id'] . '"', !empty($field['default_value']) ? ' rows="' . $field['default_value'][0] . '" cols="' . $field['default_value'][1] . '" ' : '', '> </textarea></dd>';
+						<dd><textarea name="field-', $field['id'], '"', !empty($field['default_value']) ? ' rows="' . $field['default_value'][0] . '" cols="' . $field['default_value'][1] . '" ' : '', '>', $field['value'], '</textarea></dd>';
+			}
 			// Integers only
-			elseif ($field['type'] == 3)
+			elseif ($field['type'] == CFIELD_TYPE_INT)
+			{
 				echo '
-						<dd><input name="field-' . $field['id'] . '" value="' . $field['default_value'] . ' size="10 /></dd>';
+						<dd><input name="field-', $field['id'], '" value="', $field['value'], '" size="10" /></dd>';
+			}
 			// Floating numbers
-			elseif ($field['type'] == 4)
+			elseif ($field['type'] == CFIELD_TYPE_FLOAT)
+			{
 				echo '
-						<dd><input name="field-' . $field['id'] . '" value="' . $field['default_value'] . ' size="10 /></dd>';
+						<dd><input name="field-', $field['id'], '" value="', $field['value'], '" size="10" /></dd>';
+			}
 			// Select boxes
-			elseif ($field['type'] == 5)
+			elseif ($field['type'] == CFIELD_TYPE_SELECT)
 			{
 				echo '
 						<dd>
-							<select name="field-' . $field['id'] . '">';
+							<select name="field-', $field['id'], '">';
 
-				foreach ($field['options'] as $option)
-				{
+				foreach ($field['options'] as $key => $option)
 					echo '
-								<option value="' . $option . '">' . $option . '&nbsp;</option>';
-				}
+								<option value="', $key, '"', $field['value'] == $key ? ' selected="selected"' : '', '>', $option, '&nbsp;</option>';
 
 				echo '
 							</select>
 						</dd>';
 			}
 			// Checkboxes!
-			elseif ($field['type'] == 6)
-				echo '
-						<dd><input name="field-' . $field['id'] . '" type="checkbox" ' . $field['default_value'] == 1 ? 'checked="checked"' : '' . '/></dd>';
-			// Last one, radio buttons
-			elseif ($field['type'] == 7)
+			elseif ($field['type'] == CFIELD_TYPE_CHECKBOX)
 			{
-				foreach ($field['options'] as $option)
+				echo '
+						<dd><input name="field-', $field['id'], '" type="checkbox"', !empty($field['value']) ? ' checked="checked"' : '', ' /></dd>';
+			}
+			// Last one, radio buttons
+			elseif ($field['type'] == CFIELD_TYPE_RADIO)
+			{
+				foreach ($field['options'] as $key => $option)
 				{
 					echo '
-						<dd><input name="field-' . $field['id'] . '" type="radio" value="' . $option . '" /> <span>' . $option . '</span></dd>';
+						<dd><input name="field-', $field['id'], '" type="radio" value="', $key, '"', $field['value'] == $key ? ' selected="selected"' : '', ' /> <span>', $option, '</span></dd>';
 				}
 			}
 			// Default to a text input field
 			else
 				echo '
-						<dd><input type="text" name="field-' . $field['id'] . '" value="' . $field['default_value'] . '" size="50" /></dd>';
+						<dd><input type="text" name="field-' . $field['id'] . '" value="' . $field['value'] . '" size="50" /></dd>';
 
 			echo '
 					</dl>

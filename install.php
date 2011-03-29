@@ -324,7 +324,7 @@ $tables[] = array(
 	),
 	'indexes' => array(
 		array(
-			'columns' => array('id_post'),
+			'columns' => array('id_post', 'id_field'),
 			'type' => 'primary',
 		),
 	),

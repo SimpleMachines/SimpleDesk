@@ -235,41 +235,16 @@ function shd_admin_custom_save()
 		$_POST['default_check'] = (int) $_POST['rows'] . ',' . (int) $_POST['cols'];
 	$options = '';
 
-	if(!empty($_POST['see_users']))
-	{
-		$users_see = '1';
-		
-		if(!empty($_POST['edit_users']))
-			$users_edit = '1';
-		else
-			$users_edit = '0';
-	}
-	else
-	{
-		$users_see = '0';
-		$users_edit = '0';
-	}
-	
-	if(!empty($_POST['see_staff']))
-	{
-		$staff_see = '1';
-		
-		if(!empty($_POST['edit_staff']))
-			$staff_edit = '1';
-		else
-			$staff_edit = '0';
-	}
-	else
-	{
-		$staff_see = '0';
-		$staff_edit = '0';
-	}	
+	$users_see = !empty($_POST['see_users']) ? '1' : '0';
+	$users_edit = $users_see == '1' && !empty($_POST['edit_users']) ? '1' : '0';
+
+	$staff_see = !empty($_POST['see_staff']) ? '1' : '0';
+	$staff_edit = $staff_see == '1' && !empty($_POST['edit_staff']) ? '1' : '0';
 	
 	$can_see = $users_see . ',' . $staff_see;
 	$can_edit = $users_edit . ',' . $staff_edit;	
 	
 	// Select options?
-	$field_options = '';
 	$newOptions = array();
 	if (!empty($_POST['select_option']) && ($_POST['field_type'] == CFIELD_TYPE_SELECT || $_POST['field_type'] == CFIELD_TYPE_RADIO))
 	{
@@ -283,8 +258,6 @@ function shd_admin_custom_save()
 			if (trim($v) == '')
 				continue;
 
-			// Otherwise, save it boy.
-			$field_options .= $v . ',';
 			// This is just for working out what happened with old options...
 			$newOptions[$k] = $v;
 
@@ -292,11 +265,11 @@ function shd_admin_custom_save()
 			if (isset($_POST['default_select']) && $_POST['default_select'] == $k)
 				$_POST['default_check'] = $v;
 		}
-		$options = substr($field_options, 0, -1);
+		$options = implode(',', $newOptions);
 	}	
 
 	// Do I feel a new field being born?
-	if(isset($_REQUEST['new']))
+	if (isset($_REQUEST['new']))
 	{
 		// Order??
 		$count_query = shd_db_query('', '
@@ -310,13 +283,13 @@ function shd_admin_custom_save()
 		$smcFunc['db_insert']('insert',
 			'{db_prefix}helpdesk_custom_fields',
 			array(
-				'active' => 'int', 'field_name' => 'string', 'field_desc' => 'string',
+				'active' => 'int', 'field_order' => 'int', 'field_name' => 'string', 'field_desc' => 'string',
 				'field_loc' => 'int', 'icon' => 'string', 'field_type' => 'int', 'field_length' => 'int',
 				'field_options' => 'string', 'bbc' => 'int', 'default_value' => 'string', 'can_see' => 'string',
 				'can_edit' => 'string', 'display_empty' => 'int', 'required' => 'int', 'placement' => 'int',
 			),
 			array(
-				$_POST['active'], $_POST['field_name'], $_POST['description'],
+				$_POST['active'], $row['count'], $_POST['field_name'], $_POST['description'],
 				$_POST['field_visible'],$_POST['field_icon'], $_POST['field_type'], $_POST['field_length'],
 				$options, $_POST['bbc'], $_POST['default_check'], $can_see,
 				$can_edit, $_POST['display_empty'], $_POST['required'], $_POST['placement'],

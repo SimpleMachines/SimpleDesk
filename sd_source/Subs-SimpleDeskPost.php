@@ -308,6 +308,38 @@ function shd_create_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 		}
 	}
 
+	// Are we saving custom fields for the ticket as a whole?
+	if (!empty($ticketOptions['custom_fields']))
+	{
+		// We shouldn't need to be bothering with pre-existing ones. This is a new message in whatever form, after all.
+		$rows = array();
+		foreach ($ticketOptions['custom_fields'] as $field_id => $field)
+		{
+			if (isset($field['new_value']))
+				$rows[] = array(
+					'id_post' => $ticketOptions['id'], // since custom fields for tickets are attached to the ticket id, with post_type as CFIELD_TICKET
+					'id_field' => $field_id,
+					'value' => $field['new_value'],
+					'post_type' => CFIELD_TICKET, // See, I said so!
+				);
+		}
+		if (!empty($rows))
+		{
+			$smcFunc['db_insert']('replace',
+				'{db_prefix}helpdesk_custom_fields_values',
+				array('id_post' => 'int', 'id_field' => 'int', 'value' => 'string-65534', 'post_type' => 'int'),
+				$rows,
+				array('id_post', 'id_field')
+			);
+		}
+	}
+
+	// What about custom fields for this post?
+	if (!empty($msgOptions['custom_fields']))
+	{
+	
+	}
+
 	// Int hooks
 	$hook = $new_ticket ? 'shd_hook_newticket' : 'shd_hook_newreply';
 	call_integration_hook($hook, array(&$msgOptions, &$ticketOptions, &$posterOptions));
@@ -413,7 +445,7 @@ function shd_modify_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 		);
 	}
 
-	if (empty($messages_columns) && empty($ticket_columns))
+	if (empty($messages_columns) && empty($ticket_columns) && empty($ticketOptions['custom_fields']))
 		return true;
 
 	// It's do or die time: forget any user aborts!
@@ -482,6 +514,62 @@ function shd_modify_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 		);
 	}
 
+	// Are we updating custom fields for the ticket as a whole?
+	if (!empty($ticketOptions['custom_fields']))
+	{
+		// Some may be pre-existing, some may need purging.
+		$rows = array();
+		$rows_remove = array();
+		foreach ($ticketOptions['custom_fields'] as $field_id => $field)
+		{
+			if (!isset($field['new_value']))
+				continue;
+
+			if (isset($field['value']) && $field['value'] == $field['new_value'])
+				continue; // New value is the same as the old one.
+
+			// So we have a new value, or a changed value. If it's changed, but changed to default, get rid of it unless it's listed as required (default should pick up the slack)
+			if (($field['new_value'] == $field['default_value'] && $field['is_required']) || ($field['new_value'] != $field['default_value']))
+			{
+				$rows[] = array(
+					'id_post' => $ticketOptions['id'], // since custom fields for tickets are attached to the ticket id, with post_type as CFIELD_TICKET
+					'id_field' => $field_id,
+					'value' => $field['new_value'],
+					'post_type' => CFIELD_TICKET, // See, I said so!
+				);
+			}
+			elseif ($field['new_value'] == $field['default_value'] && !$field['is_required'])
+			{
+				$rows_remove[] = array(
+					'id_post' => $ticketOptions['id'],
+					'id_field' => $field_id,
+					'post_type' => CFIELD_TICKET,
+				);
+			}
+		}
+		// Purge any rows that need to disappear; note that if there aren't any, we skip this.
+		foreach ($rows_remove as $row)
+		{
+			$smcFunc['db_query']('', '
+				DELETE FROM {db_prefix}helpdesk_custom_fields_values
+				WHERE id_post = {int:id_post}
+					AND id_field = {int:field_id}
+					AND post_type = {int:post_type}',
+				$row
+			);
+		}
+		// If there are rows to add or update, commence.
+		if (!empty($rows))
+		{
+			$smcFunc['db_insert']('replace',
+				'{db_prefix}helpdesk_custom_fields_values',
+				array('id_post' => 'int', 'id_field' => 'int', 'value' => 'string-65534', 'post_type' => 'int'),
+				$rows,
+				array('id_post', 'id_field')
+			);
+		}
+	}
+
 	// Int hook
 	call_integration_hook('shd_hook_modpost', array(&$msgOptions, &$ticketOptions, &$posterOptions));
 
@@ -543,16 +631,34 @@ function shd_get_urgency_options($self_ticket = false)
 /**
  *	Loads any custom fields that are active
  *
- *	@param bool $new_ticket (default true) If a new ticket is being created, this value will make sure that all default values
- *	are loaded. It also uses role permissions for viewing and editing.
+ *	@param bool $is_ticket (default true) Whether to load custom fields based on editing a ticket or a message.
+ *	@param int $ticketContext The appropriate value to load for; if editing a ticket this represents the ticket id, if editing a reply this represents the message id, if empty this is a new instance of either so no need to attempt loading data.
  *
  *	@since 1.1
 */
-function shd_load_custom_fields($new_ticket = true)
+function shd_load_custom_fields($is_ticket = true, $ticketContext = 0)
 {
 	global $context, $smcFunc;
 
-	// Load up our custom fields from the database
+	$field_values = array();
+	if (!empty($ticketContext))
+	{
+		$query = shd_db_query('', '
+			SELECT cfv.id_field, cfv.value
+			FROM {db_prefix}helpdesk_custom_fields_values AS cfv
+			WHERE cfv.id_post = {int:ticketContext}
+				AND cfv.post_type = {int:field_type}',
+			array(
+				'ticketContext' => $ticketContext,
+				'field_type' => $is_ticket ? CFIELD_TICKET : CFIELD_REPLY,
+			)
+		);
+		while($row = $smcFunc['db_fetch_assoc']($query))
+			$field_values[$row['id_field']] = $row['value'];
+		$smcFunc['db_free_result']($query);
+	}
+
+	// Load up our custom field defintions from the database
 	$custom_fields = shd_db_query('', '
 		SELECT cf.id_field, cf.active, cf.field_order, cf.field_name, cf.field_desc, cf.field_loc, cf.icon,
 			cf.field_type, cf.field_options, cf.default_value, cf.bbc, cf.can_see, cf.can_edit, cf.field_length,
@@ -565,30 +671,35 @@ function shd_load_custom_fields($new_ticket = true)
 
 	$context['ticket_form']['custom_fields'] = array();
 
+	$loc = $is_ticket ? 'ticket' : $ticketContext;
+
 	// Loop through all fields and figure out where they should be.
 	while($row = $smcFunc['db_fetch_assoc']($custom_fields))
 	{
 		// Load up the fields and do some extra parsing
-		$context['ticket_form']['custom_fields'][$row['id_field']] = array(
+		$context['ticket_form']['custom_fields'][$loc][$row['id_field']] = array(
 			'id' => $row['id_field'],
 			'order' => $row['field_order'],
 			'location' => $row['field_loc'],
+			'length' => $row['field_length'],
 			'name' => $row['field_name'],
 			'desc' => $row['field_desc'],
 			'icon' => $row['icon'],
 			'options' => explode(',', $row['field_options']),
 			'type' => $row['field_type'],
-			'default_value' => explode(',', $row['default_value']),
-			'display_empty' => $row['required'] == 1 ? 1 : $row['display_empty'], // Required and "selection" fields will always be displayed.
-			'bbc' => $row['bbc'] == 1,
-			'is_required' => $row['required'] == 1,
+			'default_value' => $row['default_value'],
+			'display_empty' => !empty($row['required']) ? 1 : $row['display_empty'], // Required and "selection" fields will always be displayed.
+			'bbc' => !empty($row['bbc']),
+			'is_required' => !empty($row['required']),
 			'can_see' => explode(',', $row['can_see']),
 			'can_edit' => explode(',', $row['can_edit'])
 		);
+
+		if (isset($field_values[$row['id_field']]))
+			$context['ticket_form']['custom_fields'][$loc][$row['id_field']]['value'] = $field_values[$row['id_field']];
 	}
 
-	// Send the data back to the template
-	return $context['ticket_form']['custom_fields'];
+	$context['ticket_form']['custom_fields_context'] = $loc;
 }
 
 ?>
