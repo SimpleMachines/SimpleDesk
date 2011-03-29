@@ -101,39 +101,6 @@ $to_remove = array(
 	'shd_autoclose_tickets_days',
 	'shd_autopurge_tickets',
 	'shd_autopurge_tickets_days',
-	// Plugin related: general
-	'shd_enabled_plugins',
-	// Plugin: source load hooks
-	'shd_include_init',
-	'shd_include_helpdesk',
-	'shd_include_hdadmin',
-	'shd_include_hdprofile',
-	// Plugin: lang load hooks
-	'shd_includelang_init',
-	'shd_includelang_helpdesk',
-	'shd_includelang_hdadmin',
-	'shd_includelang_hdprofile',
-	// Plugin: general hooks
-	'shd_hook_actions',
-	'shd_hook_perms',
-	'shd_hook_permstemplate',
-	'shd_hook_prefs',
-	'shd_hook_newticket',
-	'shd_hook_newreply',
-	'shd_hook_modpost',
-	'shd_hook_assign',
-	'shd_hook_buffer',
-	'shd_hook_after_main',
-	// Plugin: menu hooks
-	'shd_hook_mainmenu',
-	'shd_hook_profilemenu',
-	'shd_hook_adminmenu',
-	// Plugin: area hooks
-	'shd_hook_helpdesk',
-	'shd_hook_hdadmin',
-	'shd_hook_hdadminopts',
-	'shd_hook_hdadminoptssrch',
-	'shd_hook_hdprofile',
 );
 
 global $modSettings;

@@ -57,7 +57,7 @@ updateSettings(
 	true
 );
 
-// Removing all the hooks.
+// 2. Removing all the SMF hooks.
 $hooks = array();
 $hooks[] = array(
 	'hook' => 'integrate_display_buttons',
@@ -99,12 +99,66 @@ $hooks[] = array(
 foreach ($hooks as $hook)
 	remove_integration_function($hook['hook'], $hook['function']);
 
-// Removing the scheduled task.
+// 3. Removing the scheduled task.
 $smcFunc['db_query']('', '
 	DELETE FROM {db_prefix}scheduled_tasks
 	WHERE task = {string:simpledesk}',
 	array(
 		'simpledesk' => 'simpledesk',
+	)
+);
+
+// 4. Forcing all SD plugin hooks to be disabled.
+$shd_hooks = array(
+	// Plugin related: general
+	'shd_enabled_plugins',
+	// Plugin: source load hooks
+	'shd_include_init',
+	'shd_include_helpdesk',
+	'shd_include_hdadmin',
+	'shd_include_hdprofile',
+	// Plugin: lang load hooks
+	'shd_includelang_init',
+	'shd_includelang_helpdesk',
+	'shd_includelang_hdadmin',
+	'shd_includelang_hdprofile',
+	// Plugin: general hooks
+	'shd_hook_actions',
+	'shd_hook_perms',
+	'shd_hook_permstemplate',
+	'shd_hook_prefs',
+	'shd_hook_newticket',
+	'shd_hook_newreply',
+	'shd_hook_modpost',
+	'shd_hook_assign',
+	'shd_hook_buffer',
+	'shd_hook_after_main',
+	// Plugin: menu hooks
+	'shd_hook_mainmenu',
+	'shd_hook_profilemenu',
+	'shd_hook_adminmenu',
+	// Plugin: area hooks
+	'shd_hook_helpdesk',
+	'shd_hook_hdadmin',
+	'shd_hook_hdadminopts',
+	'shd_hook_hdadminoptssrch',
+	'shd_hook_hdprofile',
+);
+
+$new_hooks = array();
+foreach ($shd_hooks as $hook)
+{
+	$new_hooks[$hook] = '';
+}
+updateSettings(
+	$new_hooks,
+	true
+);
+$smcFunc['db_query']('', '
+	DELETE FROM {db_prefix}settings
+	WHERE variable IN ({array_string:hooks})',
+	array(
+		'hooks' => $shd_hooks,
 	)
 );
 ?>
