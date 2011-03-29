@@ -467,7 +467,8 @@ foreach ($tables as $table)
 			'table_name' => $table['table_name'],
 			'column_info' => $table_info,
 			'parameters' => array(),
-			'if_exists' => 'ignore'
+			'if_exists' => 'ignore',
+			'error' => 'fatal',
 		);
 }
 
