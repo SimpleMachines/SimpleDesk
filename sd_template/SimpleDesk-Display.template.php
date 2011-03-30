@@ -353,6 +353,8 @@ function template_additional_fields()
 					{
 						if ($field['type'] == CFIELD_TYPE_CHECKBOX)
 							echo !empty($field['value']) ? $txt['yes'] : $txt['no'];
+						elseif ($field['type'] == CFIELD_TYPE_SELECT || $field['type'] == CFIELD_TYPE_RADIO)
+							echo $field['options'][$field['value'];
 						else
 							echo $field['value'];
 					}
