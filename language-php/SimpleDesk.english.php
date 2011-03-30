@@ -162,6 +162,13 @@ $txt['shd_welcome'] = 'Welcome, %s!';
 $txt['shd_go'] = 'Go!';
 $txt['shd_go_to_ticket'] = 'Go to ticket';
 $txt['shd_options'] = 'Options';
+// The strings that go into the menu...
+$txt['shd_admin_info'] = 'Information';
+$txt['shd_admin_options'] = 'Options';
+$txt['shd_admin_custom_fields'] = 'Custom Fields';
+$txt['shd_admin_permissions'] = 'Permissions';
+$txt['shd_admin_plugins'] = 'Plugins';
+$txt['shd_admin_maint'] = 'Maintenance';
 
 $txt['shd_user_greeting'] = 'Here you can file new tickets for the site staff to action, and check on current tickets already underway.';
 $txt['shd_staff_greeting'] = 'Here are all the tickets that require attention.';

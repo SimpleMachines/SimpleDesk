@@ -1416,6 +1416,7 @@ function shd_main_menu(&$menu_buttons)
 	if (!empty($modSettings['helpdesk_active']))
 	{
 		// Stuff we'll always do in SD if active
+		$helpdesk_admin = shd_allowed_to('admin_helpdesk') || $context['user']['is_admin'];
 
 		// 1. Add the main menu if we can.
 		if (shd_allowed_to(array('access_helpdesk', 'admin_helpdesk')) && (empty($modSettings['shd_boardindex_cat']) || empty($modSettings['shd_hidemenuitem'])))
@@ -1470,7 +1471,44 @@ function shd_main_menu(&$menu_buttons)
 						'title' => $txt['shd_recycle_bin'],
 						'href' => $scripturl . '?action=helpdesk;sa=recyclebin',
 						'show' => SMF == 'SSI' ? false : shd_allowed_to('shd_access_recyclebin'),
+					),
+					'admin' => array(
+						'title' => $txt['admin'],
+						'href' => $scripturl . '?action=admin;area=helpdesk_info',
+						'show' => SMF == 'SSI' ? false : empty($modSettings['shd_hidemenuitem']) && $helpdesk_admin,
 						'is_last' => true,
+						'sub_buttons' => array(
+							'information' => array(
+								'title' => $txt['shd_admin_info'],
+								'href' => $scripturl . '?action=admin;area=helpdesk_info',
+								'show' => SMF != 'SSI' && $helpdesk_admin,
+							),
+							'options' => array(
+								'title' => $txt['shd_admin_options'],
+								'href' => $scripturl . '?action=admin;area=helpdesk_options',
+								'show' => SMF != 'SSI' && $helpdesk_admin,
+							),
+							'custom_fields' => array(
+								'title' => $txt['shd_admin_custom_fields'],
+								'href' => $scripturl . '?action=admin;area=helpdesk_customfield',
+								'show' => SMF != 'SSI' && $helpdesk_admin,
+							),
+							'permissions' => array(
+								'title' => $txt['shd_admin_permissions'],
+								'href' => $scripturl . '?action=admin;area=helpdesk_permissions',
+								'show' => SMF != 'SSI' && $helpdesk_admin,
+							),
+							'plugins' => array(
+								'title' => $txt['shd_admin_plugins'],
+								'href' => $scripturl . '?action=admin;area=helpdesk_plugins',
+								'show' => SMF != 'SSI' && $helpdesk_admin,
+							),
+							'maintenance' => array(
+								'title' => $txt['shd_admin_maint'],
+								'href' => $scripturl . '?action=admin;area=helpdesk_maint',
+								'show' => SMF != 'SSI' && $helpdesk_admin,
+							),
+						),
 					),
 				),
 			);
@@ -1484,8 +1522,8 @@ function shd_main_menu(&$menu_buttons)
 				$menu_buttons['helpdesk']['sub_buttons'][$key]['is_last'] = true;
 		}
 
-		// Add the helpdesk admin option to the admin menu
-		if (allowedTo('admin_forum') || shd_allowed_to('admin_helpdesk'))
+		// Add the helpdesk admin option to the admin menu, if board integration is disabled.
+		if (!empty($modSettings['shd_hidemenuitem']) && (allowedTo('admin_forum') || shd_allowed_to('admin_helpdesk')))
 		{
 			// It's possible the admin button got eaten already, so we may have to recreate it.
 			if (empty($menu_buttons['admin']))
@@ -1526,6 +1564,39 @@ function shd_main_menu(&$menu_buttons)
 				'href' => $scripturl . '?action=admin;area=helpdesk_info',
 				'show' => true,
 				'is_last' => true,
+				'sub_buttons' => array(
+					'information' => array(
+						'title' => $txt['shd_admin_info'],
+						'href' => $scripturl . '?action=admin;area=helpdesk_info',
+						'show' => SMF != 'SSI' && $helpdesk_admin,
+					),
+					'options' => array(
+						'title' => $txt['shd_admin_options'],
+						'href' => $scripturl . '?action=admin;area=helpdesk_options',
+						'show' => SMF != 'SSI' && $helpdesk_admin,
+					),
+					'custom_fields' => array(
+						'title' => $txt['shd_admin_custom_fields'],
+						'href' => $scripturl . '?action=admin;area=helpdesk_customfield',
+						'show' => SMF != 'SSI' && $helpdesk_admin,
+					),
+					'permissions' => array(
+						'title' => $txt['shd_admin_permissions'],
+						'href' => $scripturl . '?action=admin;area=helpdesk_permissions',
+						'show' => SMF != 'SSI' && $helpdesk_admin,
+					),
+					'plugins' => array(
+						'title' => $txt['shd_admin_plugins'],
+						'href' => $scripturl . '?action=admin;area=helpdesk_plugins',
+						'show' => SMF != 'SSI' && $helpdesk_admin,
+					),
+					'maintenance' => array(
+						'title' => $txt['shd_admin_maint'],
+						'href' => $scripturl . '?action=admin;area=helpdesk_maint',
+						'show' => SMF != 'SSI' && $helpdesk_admin,
+						'is_last' => true,
+					),
+				),
 			);
 		}
 

@@ -44,14 +44,11 @@ $txt['scheduled_task_desc_simpledesk'] = 'Maintenance tasks and internal process
 
 //! @name Items for the administration menu structure
 //@{
-// Admin menu items
-$txt['shd_admin_info'] = 'Information';
-$txt['shd_admin_options'] = 'Options';
+// Admin menu items, the ones that aren't in SimpleDesk.english.php anyway...
 $txt['shd_admin_standalone_options'] = 'Standalone Mode';
 $txt['shd_admin_actionlog'] = 'Action Log';
 $txt['shd_admin_support'] = 'Support';
 $txt['shd_admin_helpdesklog'] = 'Helpdesk Log';
-$txt['shd_admin_permissions'] = 'Permissions';
 
 $txt['shd_admin_options_display'] = 'Display Options';
 $txt['shd_admin_options_posting'] = 'Posting Options';
@@ -255,7 +252,6 @@ $txt['attachment_manager_shd_thumb_no_entries'] = 'There are currently no helpde
 
 //! @name Custom fields stuff
 //@{
-$txt['shd_admin_custom_fields'] = 'Custom Fields';
 $txt['shd_admin_custom_fields_long'] = 'Custom Fields for Tickets and Replies';
 $txt['shd_admin_custom_fields_desc'] = 'This section allows you to create extra fields that can be added to tickets and/or their replies, to gather additional information about the ticket or to help you manage your helpdesk.';
 $txt['shd_admin_custom_fields_general'] = 'General Details';
@@ -337,7 +333,6 @@ $txt['shd_admin_custom_field_placement_information'] = 'Additional information (
 
 //! Plugins
 //@{
-$txt['shd_admin_plugins'] = 'Plugins';
 $txt['shd_admin_plugins_homedesc'] = 'This area allows you to manage any additional components for SimpleDesk. They are installed through the Package Manager as regular mods, and configured from here.';
 $txt['shd_admin_plugins_none'] = 'No plugins are currently installed.';
 $txt['shd_admin_plugins_writtenby'] = 'Written by';
@@ -395,7 +390,6 @@ $txt['shd_admin_plugins_lang_vietnamese'] = 'Vietnamese';
 
 //! Maintenance
 //@{
-$txt['shd_admin_maint'] = 'Maintenance';
 $txt['shd_admin_maint_back'] = 'Back to Helpdesk Maintenance';
 $txt['shd_admin_maint_desc'] = 'This area allows you to perform some common maintenance tasks within SimpleDesk.';
 
