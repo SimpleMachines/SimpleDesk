@@ -393,6 +393,9 @@ function shd_save_ticket()
 		// So we have some fields to save.
 		foreach ($context['ticket_form']['custom_fields']['ticket'] as $field_id => $field)
 		{
+			if (!$field['editable'])
+				continue;
+
 			// For each field, check it was sent in the form.
 			if (isset($_POST['field-' . $field_id]))
 			{

@@ -350,47 +350,59 @@ function shd_view_ticket()
 	
 	// Loop through all fields and figure out where they should be.
 	$is_staff = shd_allowed_to('shd_staff');
+	$is_admin = shd_allowed_to('admin_helpdesk'); // this includes forum admins
 	while ($row = $smcFunc['db_fetch_assoc']($query))
 	{
-		$row['can_see'] = explode(',', $row['can_see']);
-
-		if (($is_staff && $row['can_see'][1] == 1) || (!$is_staff && $row['can_see'][0] == 1) || shd_allowed_to('admin_forum'))
+		list($user_see, $staff_see) = explode(',', $row['can_see']);
+		list($user_edit, $staff_edit) = explode(',', $row['can_edit']);
+		if ($is_admin)
+			$editable = true;
+		elseif ($is_staff)
 		{
-			// If this is going to be displayed for the individual ticket, we need to figure out where it should go.
-			if($row['field_loc'] & CFIELD_TICKET)
-				$pos = $row['placement'] == CFIELD_PLACE_DETAILS ? 'details' : 'information';
-			
-			$field = array(
-				'id' => $row['id_field'],
-				'name' => $row['field_name'],
-				'icon' => $row['icon'],
-				'type' => $row['field_type'],
-				'default_value' => $row['default_value'],
-				'options' => !empty($row['field_options']) ? unserialize($row['field_options']) : array(),
-				'display_empty' => !empty($row['required']) ? 1 : $row['display_empty'], // Required and "selection" fields will always be displayed.
-				'bbc' => !empty($row['bbc']),
-				'value' => $row['default_value'],
-			);
+			if ($staff_see == 0)
+				continue;
+			$editable = $staff_edit == 1;
+		}
+		elseif ($user_see == 1)
+			$editable = $user_edit == 1;
+		else
+			continue;
 
-			// Add it to the array.
-			if ($row['field_loc'] & CFIELD_TICKET && !empty($field_values['ticket'][$row['id_field']]['post_type']) && $field_values['ticket'][$row['id_field']]['post_type'] == CFIELD_TICKET)
-			{
-				if (isset($field_values['ticket'][$row['id_field']]))
-					$field['value'] = $field['bbc'] ? shd_format_text($field_values['ticket'][$row['id_field']]['value']) : $field_values['ticket'][$row['id_field']]['value'];
+		// If this is going to be displayed for the individual ticket, we need to figure out where it should go.
+		if($row['field_loc'] & CFIELD_TICKET)
+			$pos = $row['placement'] == CFIELD_PLACE_DETAILS ? 'details' : 'information';
+		
+		$field = array(
+			'id' => $row['id_field'],
+			'name' => $row['field_name'],
+			'icon' => $row['icon'],
+			'type' => $row['field_type'],
+			'default_value' => $row['default_value'],
+			'options' => !empty($row['field_options']) ? unserialize($row['field_options']) : array(),
+			'display_empty' => !empty($row['required']) ? 1 : $row['display_empty'], // Required and "selection" fields will always be displayed.
+			'bbc' => !empty($row['bbc']),
+			'value' => $row['default_value'],
+			'editable' => !empty($editable),
+		);
 
-				$context['ticket']['custom_fields'][$pos][$row['id_field']]	= $field;
-			}
-			if ($row['field_loc'] & CFIELD_REPLY)
+		// Add it to the array.
+		if ($row['field_loc'] & CFIELD_TICKET && !empty($field_values['ticket'][$row['id_field']]['post_type']) && $field_values['ticket'][$row['id_field']]['post_type'] == CFIELD_TICKET)
+		{
+			if (isset($field_values['ticket'][$row['id_field']]))
+				$field['value'] = $field['bbc'] ? shd_format_text($field_values['ticket'][$row['id_field']]['value']) : $field_values['ticket'][$row['id_field']]['value'];
+
+			$context['ticket']['custom_fields'][$pos][$row['id_field']]	= $field;
+		}
+		if ($row['field_loc'] & CFIELD_REPLY)
+		{
+			foreach ($field_values as $dest => $field_details)
 			{
-				foreach ($field_values as $dest => $field_details)
-				{
-					if ($dest == 'ticket' || !isset($field_details[$row['id_field']]) || $field_details[$row['id_field']]['post_type'] & CFIELD_REPLY == 0)
-						continue;
+				if ($dest == 'ticket' || !isset($field_details[$row['id_field']]) || $field_details[$row['id_field']]['post_type'] & CFIELD_REPLY == 0)
+					continue;
+				
+				$field['value'] = $field['bbc'] ? shd_format_text($field_details[$row['id_field']]['value']) : $field_details[$row['id_field']]['value'];
 					
-					$field['value'] = $field['bbc'] ? shd_format_text($field_details[$row['id_field']]['value']) : $field_details[$row['id_field']]['value'];
-						
-					$context['custom_fields_replies'][$field_details['id_post']][$row['id_field']] = $field;
-				}
+				$context['custom_fields_replies'][$field_details['id_post']][$row['id_field']] = $field;
 			}
 		}
 	}

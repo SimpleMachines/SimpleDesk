@@ -112,7 +112,7 @@ function template_viewticket()
 			// Custom fields :D
 			if (!empty($context['ticket']['custom_fields']['details']))
 			{
-				echo'
+				echo '
 						<div class="information shd_additional_details">
 							<ul>
 							<strong><img src="', $settings['default_images_url'], '/simpledesk/additional_details.png" alt="" class="shd_smallicon shd_icon_minihead" /> ',$txt['shd_ticket_additional_details'],'</strong>

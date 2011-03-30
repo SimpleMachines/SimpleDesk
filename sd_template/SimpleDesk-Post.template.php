@@ -158,7 +158,12 @@ function template_ticket_custom_fields()
 		// Loop through each custom field
 		foreach ($context['ticket_form']['custom_fields'][$context['ticket_form']['custom_fields_context']] as $field)
 		{
-			if (!isset($field['value']))
+			if (!$field['editable'])
+				continue;
+
+			if (isset($field['new_value']))
+				$field['value'] = $field['new_value'];
+			elseif (!isset($field['value']))
 				$field['value'] = $field['default_value'];
 
 			echo '

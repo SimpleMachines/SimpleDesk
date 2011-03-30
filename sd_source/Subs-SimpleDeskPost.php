@@ -673,9 +673,28 @@ function shd_load_custom_fields($is_ticket = true, $ticketContext = 0)
 
 	$loc = $is_ticket ? 'ticket' : $ticketContext;
 
+	$is_staff = shd_allowed_to('shd_staff');
+	$is_admin = shd_allowed_to('admin_helpdesk'); // this includes forum admins
+
 	// Loop through all fields and figure out where they should be.
 	while($row = $smcFunc['db_fetch_assoc']($custom_fields))
 	{
+		// Can the user even see this field? If we can't see the field, it doesn't exist to us for posting purposes.
+		list($user_see, $staff_see) = explode(',', $row['can_see']);
+		list($user_edit, $staff_edit) = explode(',', $row['can_edit']);
+		if ($is_admin)
+			$editable = true;
+		elseif ($is_staff)
+		{
+			if ($staff_see == 0)
+				continue;
+			$editable = $staff_edit == 1;
+		}
+		elseif ($user_see == 1)
+			$editable = $user_edit == 1;
+		else
+			continue;
+
 		// Load up the fields and do some extra parsing
 		$context['ticket_form']['custom_fields'][$loc][$row['id_field']] = array(
 			'id' => $row['id_field'],
@@ -691,8 +710,7 @@ function shd_load_custom_fields($is_ticket = true, $ticketContext = 0)
 			'display_empty' => !empty($row['required']) ? 1 : $row['display_empty'], // Required and "selection" fields will always be displayed.
 			'bbc' => !empty($row['bbc']),
 			'is_required' => !empty($row['required']),
-			'can_see' => explode(',', $row['can_see']),
-			'can_edit' => explode(',', $row['can_edit'])
+			'editable' => !empty($editable),
 		);
 
 		if (isset($field_values[$row['id_field']]))
