@@ -337,9 +337,11 @@ function shd_view_ticket()
 		'details' => array(),
 		'information' => array(),
 	);
-	
+	$context['ticket_form']['custom_fields_context'] = 'reply';
+	$context['ticket_form']['custom_fields'] = array();
+
 	$query = shd_db_query('', '
-		SELECT cf.id_field, cf.active, cf.field_order, cf.field_name, cf.field_loc, cf.icon,
+		SELECT cf.id_field, cf.active, cf.field_order, cf.field_name, cf.field_desc, cf.field_loc, cf.icon,
 			cf.field_type, cf.default_value, cf.bbc, cf.can_see, cf.can_edit, cf.field_length,
 			cf.field_options, cf.display_empty, cf.required, cf.placement
 		FROM {db_prefix}helpdesk_custom_fields AS cf
@@ -349,6 +351,7 @@ function shd_view_ticket()
 	);
 	
 	// Loop through all fields and figure out where they should be.
+
 	$is_staff = shd_allowed_to('shd_staff');
 	$is_admin = shd_allowed_to('admin_helpdesk'); // this includes forum admins
 	while ($row = $smcFunc['db_fetch_assoc']($query))
@@ -375,38 +378,52 @@ function shd_view_ticket()
 		$field = array(
 			'id' => $row['id_field'],
 			'name' => $row['field_name'],
+			'desc' => $row['field_desc'],
 			'icon' => $row['icon'],
 			'type' => $row['field_type'],
 			'default_value' => $row['default_value'],
 			'options' => !empty($row['field_options']) ? unserialize($row['field_options']) : array(),
-			'display_empty' => !empty($row['required']) ? 1 : $row['display_empty'], // Required and "selection" fields will always be displayed.
+			'display_empty' => !empty($row['required']) ? true : !empty($row['display_empty']), // Required and "selection" fields will always be displayed.
 			'bbc' => !empty($row['bbc']),
-			'value' => $row['default_value'],
 			'editable' => !empty($editable),
 		);
 
-		// Add it to the array.
-		if ($row['field_loc'] & CFIELD_TICKET && !empty($field_values['ticket'][$row['id_field']]['post_type']) && $field_values['ticket'][$row['id_field']]['post_type'] == CFIELD_TICKET)
+		if (($row['field_loc'] & CFIELD_REPLY) && $field['editable'])
+			$context['ticket_form']['custom_fields']['reply'][$field['id']] = $field;
+
+		// Add fields to the master list, getting any values as we go.
+		if (($row['field_loc'] & CFIELD_TICKET) && ((!empty($field_values['ticket'][$row['id_field']]['post_type']) && ($field_values['ticket'][$row['id_field']]['post_type'] == CFIELD_TICKET)) || $field['display_empty']))
 		{
 			if (isset($field_values['ticket'][$row['id_field']]))
 				$field['value'] = $field['bbc'] ? shd_format_text($field_values['ticket'][$row['id_field']]['value']) : $field_values['ticket'][$row['id_field']]['value'];
 
 			$context['ticket']['custom_fields'][$pos][$row['id_field']]	= $field;
 		}
+
 		if ($row['field_loc'] & CFIELD_REPLY)
 		{
 			foreach ($field_values as $dest => $field_details)
 			{
-				if ($dest == 'ticket' || !isset($field_details[$row['id_field']]) || $field_details[$row['id_field']]['post_type'] & CFIELD_REPLY == 0)
+				unset($field['value']);
+				if ($dest == 'ticket' || !isset($field_details[$row['id_field']]) || $field_details[$row['id_field']]['post_type'] != CFIELD_REPLY)
 					continue;
-				
 				$field['value'] = $field['bbc'] ? shd_format_text($field_details[$row['id_field']]['value']) : $field_details[$row['id_field']]['value'];
-					
-				$context['custom_fields_replies'][$field_details['id_post']][$row['id_field']] = $field;
+
+				$context['custom_fields_replies'][$dest][$row['id_field']] = $field;
+			}
+
+			// We also need to attach the field to replies didn't get the field added, in the event that the field should be displayed by default.
+			if ($field['display_empty'])
+			{
+				foreach ($context['ticket_messages'] as $msg)
+				{
+					if (!isset($context['custom_fields_replies'][$msg][$row['id_field']]))
+						$context['custom_fields_replies'][$msg][$row['id_field']] = $field;
+				}
 			}
 		}
 	}
-	$smcFunc['db_free_result']($query);	
+	$smcFunc['db_free_result']($query);
 
 	// Grab the avatar for the poster
 	$context['ticket']['poster_avatar'] = empty($context['ticket']['member']['id']) ? array() : (loadMemberContext($context['ticket']['id_member']) ? $memberContext[$context['ticket']['id_member']]['avatar'] : array());
@@ -777,7 +794,6 @@ function shd_prepare_ticket_context()
 		//'can_split' => $message['message_status'] != MSG_STATUS_DELETED && !$context['ticket']['closed'] && !$context['ticket']['deleted'] && (shd_allowed_to('shd_split_ticket_any') || ($context['ticket']['ticket_opener'] && shd_allowed_to('shd_split_ticket_own'))),
 		'message_status' => $message['message_status'],
 		'link' => $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $context['ticket_id'] . '.msg' . $message['id_msg'] . '#msg' . $message['id_msg'],
-		'custom_fields' => !empty($context['custom_fields_replies'][$message['id_msg']]) ? $context['custom_fields_replies'][$message['id_msg']] : array(),
 	);
 
 	if (shd_allowed_to('shd_view_ip_any') || ($message['id_member'] == $user_info['id'] && shd_allowed_to('shd_view_ip_own')))

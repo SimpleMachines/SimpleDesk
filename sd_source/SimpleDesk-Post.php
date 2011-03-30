@@ -101,13 +101,13 @@ function shd_post_ticket()
 
 	shd_posting_additional_options();
 
-	shd_load_custom_fields(true, $context['ticket_form']['ticket']);
-
 	// A few basic checks
 	if ($context['ticket_form']['status'] == TICKET_STATUS_CLOSED)
 		fatal_lang_error('shd_cannot_edit_closed', false);
 	elseif ($context['ticket_form']['status'] == TICKET_STATUS_DELETED)
 		fatal_lang_error('shd_cannon_edit_deleted', false);
+
+	shd_load_custom_fields(true, $context['ticket_form']['ticket']);
 
 	// Ticket privacy
 	if (empty($modSettings['shd_privacy_display']) || $modSettings['shd_privacy_display'] == 'smart')
@@ -385,85 +385,19 @@ function shd_save_ticket()
 
 	// Custom fields?
 	shd_load_custom_fields(true, $context['ticket_form']['ticket']);
-	if (!empty($context['ticket_form']['custom_fields']['ticket']))
+	list($missing_fields, $invalid_fields) = shd_validate_custom_fields('ticket');
+
+	// Did any custom fields fail validation?
+	if (!empty($invalid_fields))
 	{
-		$missing_fields = array();
-		$invalid_fields = array();
-		$fields_to_save = array();
-		// So we have some fields to save.
-		foreach ($context['ticket_form']['custom_fields']['ticket'] as $field_id => $field)
-		{
-			if (!$field['editable'])
-				continue;
-
-			// For each field, check it was sent in the form.
-			if (isset($_POST['field-' . $field_id]))
-			{
-				$value = trim($_POST['field-' . $field_id]);
-				// Now to sanitise the individual value.
-				switch ($field['type'])
-				{
-					case CFIELD_TYPE_TEXT:
-						if (!empty($field['length']))
-							$value = $smcFunc['substr']($value, 0, $field['length']);
-						$value = $smcFunc['htmlspecialchars']($value, ENT_QUOTES);
-						break;
-					case CFIELD_TYPE_LARGETEXT:
-						if (!empty($field['length']))
-							$value = $smcFunc['substr']($value, 0, $field['length']);
-						$value = $smcFunc['htmlspecialchars']($value, ENT_QUOTES);
-						break;
-					case CFIELD_TYPE_INT:
-						// Well, check it was provided with a non empty value and check that that was a number and a whole one at that...
-						if (!empty($value) && (!is_numeric($value) || $value != (string) (int) $value))
-							$invalid_fields[$field_id] = $field['name'];
-						break;
-					case CFIELD_TYPE_FLOAT:
-						// Ordinarily we'd use PHP internally to do this and just cast it. But prior to 5.2.17 / 5.3.5 on x86 builds... it can hang PHP.
-						if (!empty($value) && !preg_match('~^[-+]?\d+\.?\d{,10}([eE][-+]?\d{,2})?$~', $value))
-							$invalid_fields[$field_id] = $field['name'];
-						break;
-					case CFIELD_TYPE_SELECT:
-					case CFIELD_TYPE_RADIO:
-						// It's set but is it a number and a number that represents a key in the array? Same principle for select and radio.
-						if (!empty($value) && (!is_numeric($value) || !isset($field['options'][(int) $value])))
-							$invalid_fields[$field_id] = $field['name'];
-						break;
-					case CFIELD_TYPE_CHECKBOX:
-						// If there's something in it, it's on, simple as that.
-						$value = 1;
-						break;
-				}
-			}
-			// Oops, wasn't sent in the form. Was it required? If it was, add it to the error list.
-			elseif ($field['is_required'])
-				$missing_fields[$field_id] = $field['name'];
-			// Well, it wasn't set, wasn't required, but it might be a checkbox that needs to go off now...?
-			elseif ($field['type'] == CFIELD_TYPE_CHECKBOX)
-				$value = 0;
-
-			// Did we actually come up with a value in the end?
-			if (isset($value))
-			{
-				// OK... well, if it's a new ticket, we're saving the value. Even if it's default, so that we're clear that there is a value for it.
-				$context['ticket_form']['custom_fields']['ticket'][$field_id]['new_value'] = $value;
-				unset($value); // for next time
-			}
-		}
-
-		// Did some fail validation?
-		if (!empty($invalid_fields))
-		{
-			$context['shd_errors'][] = 'invalid_fields';
-			$txt['error_invalid_fields'] = sprintf($txt['error_invalid_fields'], implode(', ', $invalid_fields));
-		}
-
-		// Some flat-out missing?
-		if (!empty($missing_fields))
-		{
-			$context['shd_errors'][] = 'missing_fields';
-			$txt['error_missing_fields'] = sprintf($txt['error_missing_fields'], implode(', ', $missing_fields));
-		}
+		$context['shd_errors'][] = 'invalid_fields';
+		$txt['error_invalid_fields'] = sprintf($txt['error_invalid_fields'], implode(', ', $invalid_fields));
+	}
+	// Any flat-out missing?
+	if (!empty($missing_fields))
+	{
+		$context['shd_errors'][] = 'missing_fields';
+		$txt['error_missing_fields'] = sprintf($txt['error_missing_fields'], implode(', ', $missing_fields));
 	}
 
 	// Preview?
@@ -838,6 +772,8 @@ function shd_post_reply()
 	elseif ($context['ticket_form']['status'] == TICKET_STATUS_DELETED)
 		fatal_lang_error('shd_cannon_reply_deleted', false);
 
+	shd_load_custom_fields(false, $context['ticket_form']['msg']);
+
 	shd_load_attachments();
 	shd_check_attachments();
 
@@ -1100,6 +1036,23 @@ function shd_save_reply()
 			$context['shd_errors'][] = $string;
 	}
 
+	// Custom fields?
+	shd_load_custom_fields(false, $context['ticket_form']['msg']);
+	list($missing_fields, $invalid_fields) = shd_validate_custom_fields($context['ticket_form']['msg']);
+
+	// Did any custom fields fail validation?
+	if (!empty($invalid_fields))
+	{
+		$context['shd_errors'][] = 'invalid_fields';
+		$txt['error_invalid_fields'] = sprintf($txt['error_invalid_fields'], implode(', ', $invalid_fields));
+	}
+	// Any flat-out missing?
+	if (!empty($missing_fields))
+	{
+		$context['shd_errors'][] = 'missing_fields';
+		$txt['error_missing_fields'] = sprintf($txt['error_missing_fields'], implode(', ', $missing_fields));
+	}
+
 	if (!empty($context['shd_errors']) || !empty($context['ticket_form']['preview'])) // Uh oh, something went wrong, or we're previewing
 	{
 		checkSubmitOnce('free');
@@ -1151,6 +1104,7 @@ function shd_save_reply()
 				'id' => $context['ticket_form']['msg'],
 				'smileys_enabled' => empty($context['ticket_form']['disable_smileys']),
 				'attachments' => $attachIDs,
+				'custom_fields' => !empty($context['ticket_form']['custom_fields'][$context['ticket_form']['msg']]) ? $context['ticket_form']['custom_fields'][$context['ticket_form']['msg']] : array(),
 			);
 
 			$ticketOptions = array(
@@ -1185,6 +1139,7 @@ function shd_save_reply()
 			$msgOptions = array(
 				'id' => $context['ticket_form']['msg'],
 				'attachments' => $attachIDs,
+				'custom_fields' => !empty($context['ticket_form']['custom_fields'][$context['ticket_form']['msg']]) ? $context['ticket_form']['custom_fields'][$context['ticket_form']['msg']] : array(),
 			);
 
 			$ticketOptions = array(

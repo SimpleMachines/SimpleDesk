@@ -112,40 +112,55 @@ function template_viewticket()
 			// Custom fields :D
 			if (!empty($context['ticket']['custom_fields']['details']))
 			{
-				echo '
+				// No need to display anything if there isn't any content to display.
+				$content = false;
+				foreach ($context['ticket']['custom_fields']['details'] AS $field)
+				{
+					if (!empty($field['value']) || $field['display_empty'])
+					{
+						$content = true;
+						break;
+					}
+				}
+
+				if ($content)
+				{
+					echo '
 						<div class="information shd_additional_details">
 							<ul>
 							<strong><img src="', $settings['default_images_url'], '/simpledesk/additional_details.png" alt="" class="shd_smallicon shd_icon_minihead" /> ',$txt['shd_ticket_additional_details'],'</strong>
 							<hr />';
 
-				foreach($context['ticket']['custom_fields']['details'] AS $field)
-				{
-					if($field['display_empty'] || !empty($field['value']))
+					foreach($context['ticket']['custom_fields']['details'] AS $field)
 					{
-						echo '
+						if ($field['display_empty'] || !empty($field['value']))
+						{
+							echo '
 							<li>
 									', !empty($field['icon']) ? '<img src="' . $settings['default_images_url'] . '/simpledesk/cf/' . $field['icon'] . '" alt="" class="shd_smallicon" />' : '','
 										', $field['name'],': ';
 						
-						if (empty($field['value']) && $field['display_empty'])
-							echo $txt['shd_ticket_empty_field'];
-						elseif (!empty($field['value']))
-						{
-							if ($field['type'] == CFIELD_TYPE_CHECKBOX)
-								echo !empty($field['value']) ? $txt['yes'] : $txt['no'];
-							elseif ($field['type'] == CFIELD_TYPE_SELECT || $field['type'] == CFIELD_TYPE_RADIO)
-								echo $field['options'][$field['value']];
-							else
-								echo $field['value'];
-						}
-							
-						echo'
+							if (empty($field['value']) && $field['display_empty'])
+								echo $txt['shd_ticket_empty_field'];
+							elseif (!empty($field['value']))
+							{
+								if ($field['type'] == CFIELD_TYPE_CHECKBOX)
+									echo !empty($field['value']) ? $txt['yes'] : $txt['no'];
+								elseif ($field['type'] == CFIELD_TYPE_SELECT || $field['type'] == CFIELD_TYPE_RADIO)
+									echo $field['options'][$field['value']];
+								else
+									echo $field['value'];
+							}
+								
+							echo'
 								</li>';
-					}				
-				}
+						}				
+					}
+				
 
-			echo '		</ul>
-					</div>';				
+					echo '		</ul>
+					</div>';
+				}
 			}
 
 			echo '
@@ -334,7 +349,21 @@ function template_additional_fields()
 	global $context, $scripturl, $options, $txt, $settings;
 	
 	if (!empty($context['ticket']['custom_fields']['information']))
-	{	
+	{
+		// No need to display anything if there isn't any content to display.
+		$content = false;
+		foreach ($context['ticket']['custom_fields']['information'] AS $field)
+		{
+			if (!empty($field['value']) || $field['display_empty'])
+			{
+				$content = true;
+				break;
+			}
+		}
+
+		if (!$content)
+			return;
+
 		echo '
 				<div class="tborder">
 					<div class="title_bar grid_header" id="additionalinfoheader">
@@ -598,18 +627,18 @@ function template_viewreplies()
 			echo'
 				<hr/>';
 
-			foreach($context['custom_fields_replies'] AS $field)
+			foreach ($context['custom_fields_replies'][$reply['id']] AS $field)
 			{
-				if($field['display_empty'] || !empty($message['custom_field'][$field['id']]['value']))
+				if ($field['display_empty'] || !empty($field['value']))
 				{
 					echo'	
 							', !empty($field['icon']) ? '<img src="' . $settings['default_images_url'] . '/simpledesk/cf/' . $field['icon'] . '" alt="" class="shd_smallicon" />' : '','
 							<strong>', $field['name'],':</strong>';
 
-					if(empty($message['custom_field'][$field['id']]['value']) && $field['display_empty'])
+					if (empty($field['value']) && $field['display_empty'])
 						echo $txt['shd_ticket_empty_field'], '<br /><br />';
-					elseif(!empty($message['custom_field'][$field['id']]['value']))
-						echo $message['custom_field'][$field['id']]['value'], '<br /><br />';
+					elseif (!empty($field['value']))
+						echo $field['value'], '<br /><br />';
 				}
 			}
 		}							

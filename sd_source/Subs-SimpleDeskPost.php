@@ -308,11 +308,11 @@ function shd_create_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 		}
 	}
 
-	// Are we saving custom fields for the ticket as a whole?
+	// Are we saving custom fields?
+	$rows = array();
 	if (!empty($ticketOptions['custom_fields']))
 	{
 		// We shouldn't need to be bothering with pre-existing ones. This is a new message in whatever form, after all.
-		$rows = array();
 		foreach ($ticketOptions['custom_fields'] as $field_id => $field)
 		{
 			if (isset($field['new_value']))
@@ -323,21 +323,29 @@ function shd_create_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 					'post_type' => CFIELD_TICKET, // See, I said so!
 				);
 		}
-		if (!empty($rows))
-		{
-			$smcFunc['db_insert']('replace',
-				'{db_prefix}helpdesk_custom_fields_values',
-				array('id_post' => 'int', 'id_field' => 'int', 'value' => 'string-65534', 'post_type' => 'int'),
-				$rows,
-				array('id_post', 'id_field')
-			);
-		}
 	}
-
-	// What about custom fields for this post?
+	// Same deal, just this time for message fields.
 	if (!empty($msgOptions['custom_fields']))
 	{
-	
+		foreach ($msgOptions['custom_fields'] as $field_id => $field)
+		{
+			if (isset($field['new_value']))
+				$rows[] = array(
+					'id_post' => $msgOptions['id'], // since custom fields for tickets are attached to the ticket id, with post_type as CFIELD_TICKET
+					'id_field' => $field_id,
+					'value' => $field['new_value'],
+					'post_type' => CFIELD_REPLY, // See, I said so!
+				);
+		}
+	}
+	if (!empty($rows))
+	{
+		$smcFunc['db_insert']('replace',
+			'{db_prefix}helpdesk_custom_fields_values',
+			array('id_post' => 'int', 'id_field' => 'int', 'value' => 'string-65534', 'post_type' => 'int'),
+			$rows,
+			array('id_post', 'id_field')
+		);
 	}
 
 	// Int hooks
@@ -445,7 +453,7 @@ function shd_modify_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 		);
 	}
 
-	if (empty($messages_columns) && empty($ticket_columns) && empty($ticketOptions['custom_fields']))
+	if (empty($messages_columns) && empty($ticket_columns) && empty($ticketOptions['custom_fields']) && empty($msgOptions['custom_fields']))
 		return true;
 
 	// It's do or die time: forget any user aborts!
@@ -514,19 +522,17 @@ function shd_modify_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 		);
 	}
 
-	// Are we updating custom fields for the ticket as a whole?
+	// Are we updating custom fields?
+	$rows = array();
+	$rows_remove = array();
 	if (!empty($ticketOptions['custom_fields']))
 	{
 		// Some may be pre-existing, some may need purging.
-		$rows = array();
-		$rows_remove = array();
 		foreach ($ticketOptions['custom_fields'] as $field_id => $field)
 		{
-			if (!isset($field['new_value']))
+			// No new value, or new value is the same as the old one.
+			if (!isset($field['new_value']) || (isset($field['value']) && $field['value'] == $field['new_value']))
 				continue;
-
-			if (isset($field['value']) && $field['value'] == $field['new_value'])
-				continue; // New value is the same as the old one.
 
 			// So we have a new value, or a changed value. If it's changed, but changed to default, get rid of it unless it's listed as required (default should pick up the slack)
 			if (($field['new_value'] == $field['default_value'] && $field['is_required']) || ($field['new_value'] != $field['default_value']))
@@ -547,27 +553,54 @@ function shd_modify_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 				);
 			}
 		}
-		// Purge any rows that need to disappear; note that if there aren't any, we skip this.
-		foreach ($rows_remove as $row)
+	}
+	// Same deal, this time for message options. See above for comments.
+	if (!empty($msgOptions['custom_fields']))
+	{
+		foreach ($msgOptions['custom_fields'] as $field_id => $field)
 		{
-			$smcFunc['db_query']('', '
-				DELETE FROM {db_prefix}helpdesk_custom_fields_values
-				WHERE id_post = {int:id_post}
-					AND id_field = {int:field_id}
-					AND post_type = {int:post_type}',
-				$row
-			);
+			if (!isset($field['new_value']) || (isset($field['value']) && $field['value'] == $field['new_value']))
+				continue;
+
+			if (($field['new_value'] == $field['default_value'] && $field['is_required']) || ($field['new_value'] != $field['default_value']))
+			{
+				$rows[] = array(
+					'id_post' => $msgOptions['id'],
+					'id_field' => $field_id,
+					'value' => $field['new_value'],
+					'post_type' => CFIELD_REPLY,
+				);
+			}
+			elseif ($field['new_value'] == $field['default_value'] && !$field['is_required'])
+			{
+				$rows_remove[] = array(
+					'id_post' => $msgOptions['id'],
+					'id_field' => $field_id,
+					'post_type' => CFIELD_REPLY,
+				);
+			}
 		}
-		// If there are rows to add or update, commence.
-		if (!empty($rows))
-		{
-			$smcFunc['db_insert']('replace',
-				'{db_prefix}helpdesk_custom_fields_values',
-				array('id_post' => 'int', 'id_field' => 'int', 'value' => 'string-65534', 'post_type' => 'int'),
-				$rows,
-				array('id_post', 'id_field')
-			);
-		}
+	}
+	// Purge any rows that need to disappear; note that if there aren't any, we skip this.
+	foreach ($rows_remove as $row)
+	{
+		$smcFunc['db_query']('', '
+			DELETE FROM {db_prefix}helpdesk_custom_fields_values
+			WHERE id_post = {int:id_post}
+				AND id_field = {int:id_field}
+				AND post_type = {int:post_type}',
+			$row
+		);
+	}
+	// If there are rows to add or update, commence.
+	if (!empty($rows))
+	{
+		$smcFunc['db_insert']('replace',
+			'{db_prefix}helpdesk_custom_fields_values',
+			array('id_post' => 'int', 'id_field' => 'int', 'value' => 'string-65534', 'post_type' => 'int'),
+			$rows,
+			array('id_post', 'id_field')
+		);
 	}
 
 	// Int hook
@@ -720,4 +753,76 @@ function shd_load_custom_fields($is_ticket = true, $ticketContext = 0)
 	$context['ticket_form']['custom_fields_context'] = $loc;
 }
 
+function shd_validate_custom_fields($scope)
+{
+	global $context, $smcFunc;
+
+	if (empty($context['ticket_form']['custom_fields'][$scope]))
+		return array(array(), array());
+
+	$missing_fields = array();
+	$invalid_fields = array();
+
+	foreach ($context['ticket_form']['custom_fields'][$scope] as $field_id => $field)
+	{
+		if (!$field['editable'])
+			continue;
+
+		// For each field, check it was sent in the form.
+		if (isset($_POST['field-' . $field_id]))
+		{
+			$value = trim($_POST['field-' . $field_id]);
+			// Now to sanitise the individual value.
+			switch ($field['type'])
+			{
+				case CFIELD_TYPE_TEXT:
+					if (!empty($field['length']))
+						$value = $smcFunc['substr']($value, 0, $field['length']);
+					$value = $smcFunc['htmlspecialchars']($value, ENT_QUOTES);
+					break;
+				case CFIELD_TYPE_LARGETEXT:
+					if (!empty($field['length']))
+						$value = $smcFunc['substr']($value, 0, $field['length']);
+					$value = $smcFunc['htmlspecialchars']($value, ENT_QUOTES);
+					break;
+				case CFIELD_TYPE_INT:
+					// Well, check it was provided with a non empty value and check that that was a number and a whole one at that...
+					if (!empty($value) && (!is_numeric($value) || $value != (string) (int) $value))
+						$invalid_fields[$field_id] = $field['name'];
+					break;
+				case CFIELD_TYPE_FLOAT:
+					// Ordinarily we'd use PHP internally to do this and just cast it. But prior to 5.2.17 / 5.3.5 on x86 builds... it can hang PHP.
+					if (!empty($value) && !preg_match('~^[-+]?\d+\.?\d{,10}([eE][-+]?\d{,2})?$~', $value))
+						$invalid_fields[$field_id] = $field['name'];
+					break;
+				case CFIELD_TYPE_SELECT:
+				case CFIELD_TYPE_RADIO:
+					// It's set but is it a number and a number that represents a key in the array? Same principle for select and radio.
+					if (!empty($value) && (!is_numeric($value) || !isset($field['options'][(int) $value])))
+						$invalid_fields[$field_id] = $field['name'];
+					break;
+				case CFIELD_TYPE_CHECKBOX:
+					// If there's something in it, it's on, simple as that.
+					$value = 1;
+					break;
+			}
+		}
+		// Oops, wasn't sent in the form. Was it required? If it was, add it to the error list.
+		elseif ($field['is_required'])
+			$missing_fields[$field_id] = $field['name'];
+		// Well, it wasn't set, wasn't required, but it might be a checkbox that needs to go off now...?
+		elseif ($field['type'] == CFIELD_TYPE_CHECKBOX)
+			$value = 0;
+
+		// Did we actually come up with a value in the end?
+		if (isset($value))
+		{
+			// OK... well, if it's a new ticket, we're saving the value. Even if it's default, so that we're clear that there is a value for it.
+			$context['ticket_form']['custom_fields'][$scope][$field_id]['new_value'] = $value;
+			unset($value); // for next time
+		}
+	}
+
+	return array($missing_fields, $invalid_fields);
+}
 ?>
