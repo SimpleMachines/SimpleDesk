@@ -110,7 +110,7 @@ function template_viewticket()
 						</div>';
 				
 			// Custom fields :D
-			if(!empty($context['ticket']['custom_fields']['details']))
+			if (!empty($context['ticket']['custom_fields']['details']))
 			{
 				echo'
 						<div class="information shd_additional_details">
@@ -122,19 +122,28 @@ function template_viewticket()
 				{
 					if($field['display_empty'] || !empty($field['value']))
 					{
-						echo'	<li>
+						echo '
+							<li>
 									', !empty($field['icon']) ? '<img src="' . $settings['default_images_url'] . '/simpledesk/cf/' . $field['icon'] . '" alt="" class="shd_smallicon" />' : '','
 										', $field['name'],': ';
 						
-						if(empty($field['value']) && $field['display_empty'])
-							echo $txt['shd_ticket_empty_field_short'];
-						elseif(!empty($field['value']))
-							echo $field['type'] == CFIELD_TYPE_CHECKBOX ? ($field['value'] == 1 ? $txt['yes'] : $txt['no']) : $field['value'];
+						if (empty($field['value']) && $field['display_empty'])
+							echo $txt['shd_ticket_empty_field'];
+						elseif (!empty($field['value']))
+						{
+							if ($field['type'] == CFIELD_TYPE_CHECKBOX)
+								echo !empty($field['value']) ? $txt['yes'] : $txt['no'];
+							elseif ($field['type'] == CFIELD_TYPE_SELECT || $field['type'] == CFIELD_TYPE_RADIO)
+								echo $field['options'][$field['value']];
+							else
+								echo $field['value'];
+						}
 							
 						echo'
 								</li>';
 					}				
 				}
+
 			echo '		</ul>
 					</div>';				
 			}
@@ -354,7 +363,7 @@ function template_additional_fields()
 						if ($field['type'] == CFIELD_TYPE_CHECKBOX)
 							echo !empty($field['value']) ? $txt['yes'] : $txt['no'];
 						elseif ($field['type'] == CFIELD_TYPE_SELECT || $field['type'] == CFIELD_TYPE_RADIO)
-							echo $field['options'][$field['value'];
+							echo $field['options'][$field['value']];
 						else
 							echo $field['value'];
 					}

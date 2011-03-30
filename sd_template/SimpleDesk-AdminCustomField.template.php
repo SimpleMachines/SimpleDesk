@@ -132,7 +132,7 @@ function template_shd_custom_field_edit()
 					document.getElementById("default_dt").style.display = ftype == ',CFIELD_TYPE_CHECKBOX,' ? "" : "none";
 					document.getElementById("default_dd").style.display = ftype == ',CFIELD_TYPE_CHECKBOX,' ? "" : "none";
 				}	
-				var startOptID = ', count($context['custom_field']['options']), ';
+				var startOptID = ', count($context['custom_field']['options']) + 1, ';
 				function add_option()
 				{
 					setOuterHTML(document.getElementById("addopt"), \'<br /><input type="radio" name="default_select" value="\' + startOptID + \'" id="\' + startOptID + \'" class="input_radio" /><input type="text" name="select_option[\' + startOptID + \']" value="" class="input_text" /><span id="addopt"></span>\');
@@ -295,7 +295,7 @@ function template_shd_custom_field_edit()
 	foreach ($context['custom_field']['options'] as $k => $option)
 	{
 		echo '
-								', $k == 0 ? '' : '<br />', '<input type="radio" name="default_select" value="', $k, '"', $context['custom_field']['default_value'] == $option ? ' checked="checked"' : '', ' class="input_radio" /><input type="text" name="select_option[', $k, ']" value="', $option, '" class="input_text" />';
+								', $k == 1 ? '' : '<br />', '<input type="radio" name="default_select" value="', $k, '"', $context['custom_field']['default_value'] == $k ? ' checked="checked"' : '', ' class="input_radio" /><input type="text" name="select_option[', $k, ']" value="', $option, '" class="input_text" />';
 	}
 	echo '
 								<span id="addopt"></span> 

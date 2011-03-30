@@ -328,7 +328,7 @@ function shd_view_ticket()
 	);
 	$field_values = array();
 	while($row = $smcFunc['db_fetch_assoc']($query))
-		$field_values[$row['id_field']] = $row;
+		$field_values[$row['post_type'] == CFIELD_TICKET ? 'ticket' : $row['id_post']][$row['id_field']] = $row;
 	$smcFunc['db_free_result']($query);
 
 	// Set up the storage.
@@ -341,7 +341,7 @@ function shd_view_ticket()
 	$query = shd_db_query('', '
 		SELECT cf.id_field, cf.active, cf.field_order, cf.field_name, cf.field_loc, cf.icon,
 			cf.field_type, cf.default_value, cf.bbc, cf.can_see, cf.can_edit, cf.field_length,
-			cf.display_empty, cf.required, cf.placement
+			cf.field_options, cf.display_empty, cf.required, cf.placement
 		FROM {db_prefix}helpdesk_custom_fields AS cf
 		WHERE cf.active = 1
 		ORDER BY cf.field_order',
@@ -366,28 +366,34 @@ function shd_view_ticket()
 				'icon' => $row['icon'],
 				'type' => $row['field_type'],
 				'default_value' => $row['default_value'],
+				'options' => !empty($row['field_options']) ? unserialize($row['field_options']) : array(),
 				'display_empty' => !empty($row['required']) ? 1 : $row['display_empty'], // Required and "selection" fields will always be displayed.
 				'bbc' => !empty($row['bbc']),
+				'value' => $row['default_value'],
 			);
 
-			// Now get its value.
-			if (isset($field_values[$row['id_field']]))
-				$field['value'] = $field['bbc'] ? shd_format_text($field_values[$row['id_field']]['value']) : $field_values[$row['id_field']]['value'];
-			else
-				$field['value'] = $field['default_value'];
-
 			// Add it to the array.
-			if ($row['field_loc'] & CFIELD_TICKET && !empty($field_values[$row['id_field']]['post_type']) && $field_values[$row['id_field']]['post_type'] == CFIELD_TICKET)
+			if ($row['field_loc'] & CFIELD_TICKET && !empty($field_values['ticket'][$row['id_field']]['post_type']) && $field_values['ticket'][$row['id_field']]['post_type'] == CFIELD_TICKET)
 			{
+				if (isset($field_values['ticket'][$row['id_field']]))
+					$field['value'] = $field['bbc'] ? shd_format_text($field_values['ticket'][$row['id_field']]['value']) : $field_values['ticket'][$row['id_field']]['value'];
+
 				$context['ticket']['custom_fields'][$pos][$row['id_field']]	= $field;
-				// Don't handle the default text if the content is a large textbox and we're displaying it in the ticket information, gets big and ugly.
-				if ($row['field_type'] == CFIELD_TYPE_LARGETEXT && !isset($field_values['id_field']))
-					$context['ticket']['custom_fields'][$pos][$row['id_field']]['value'] = '';
 			}
-			if ($row['field_loc'] & CFIELD_REPLY && !empty($field_values[$row['id_field']]['post_type']) && $field_values[$row['id_field']]['post_type'] == CFIELD_REPLY)
-				$context['custom_fields_replies'][$field_values['id_post']][$row['id_field']] = $field;
+			if ($row['field_loc'] & CFIELD_REPLY)
+			{
+				foreach ($field_values as $dest => $field_details)
+				{
+					if ($dest == 'ticket' || !isset($field_details[$row['id_field']]) || $field_details[$row['id_field']]['post_type'] & CFIELD_REPLY == 0)
+						continue;
+					
+					$field['value'] = $field['bbc'] ? shd_format_text($field_details[$row['id_field']]['value']) : $field_details[$row['id_field']]['value'];
+						
+					$context['custom_fields_replies'][$field_details['id_post']][$row['id_field']] = $field;
+				}
+			}
 		}
-	}	
+	}
 	$smcFunc['db_free_result']($query);	
 
 	// Grab the avatar for the poster

@@ -124,7 +124,7 @@ function shd_admin_custom_new()
 		'placement' => CFIELD_PLACE_DETAILS,
 	));
 	
-	$context['custom_field']['options'] = array('', '', '');
+	$context['custom_field']['options'] = array(1 => '', '', '');
 	$context['custom_field']['default_value'] = false;	
 
 }
@@ -159,7 +159,7 @@ function shd_admin_custom_edit()
 		$context['section_desc'] = $txt['shd_admin_edit_custom_field_desc'];
 		$context['page_title'] = $txt['shd_admin_edit_custom_field'];
 		$context['sub_template'] = 'shd_custom_field_edit';
-		$context['custom_field']['options'] = strlen($row['field_options']) > 1 ? explode(',', $row['field_options']) : array('', '', '');
+		$context['custom_field']['options'] = !empty($row['field_options']) ? unserialize($row['field_options']) : array(1 => '', '', '');
 		
 		// If this is a textarea, we need to get its dimensions too.
 		if($context['custom_field']['field_type'] == 2)
@@ -263,9 +263,9 @@ function shd_admin_custom_save()
 
 			// Is it default?
 			if (isset($_POST['default_select']) && $_POST['default_select'] == $k)
-				$_POST['default_check'] = $v;
+				$_POST['default_check'] = $k;
 		}
-		$options = implode(',', $newOptions);
+		$options = serialize($newOptions);
 	}	
 
 	// Do I feel a new field being born?

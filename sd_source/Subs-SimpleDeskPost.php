@@ -685,7 +685,7 @@ function shd_load_custom_fields($is_ticket = true, $ticketContext = 0)
 			'name' => $row['field_name'],
 			'desc' => $row['field_desc'],
 			'icon' => $row['icon'],
-			'options' => explode(',', $row['field_options']),
+			'options' => !empty($row['field_options']) ? unserialize($row['field_options']) : array(),
 			'type' => $row['field_type'],
 			'default_value' => $row['default_value'],
 			'display_empty' => !empty($row['required']) ? 1 : $row['display_empty'], // Required and "selection" fields will always be displayed.
