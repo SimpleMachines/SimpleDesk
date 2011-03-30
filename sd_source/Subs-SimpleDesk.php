@@ -1541,12 +1541,16 @@ function shd_main_menu(&$menu_buttons)
 				$old_menu_buttons = $menu_buttons;
 				$menu_buttons = array();
 
+				$added = false;
 				foreach ($old_menu_buttons as $area => $detail)
 				{
-					$menu_buttons[$area] = $detail;
-					
-					if ($area == 'helpdesk')
+					if (!$added && ($area == 'moderate' || $area == 'profile'))
+					{
 						$menu_buttons['admin'] = $admin_menu;
+						$added = true;
+					}
+
+					$menu_buttons[$area] = $detail;
 				}
 			}
 
