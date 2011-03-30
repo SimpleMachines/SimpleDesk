@@ -147,7 +147,7 @@ function template_shd_custom_field_edit()
 				}
 				function update_required(state)
 				{
-					if(state == "on")
+					if (state)
 					{
 						document.getElementById("cf_display_empty").disabled = "disabled";
 						document.getElementById("cf_display_empty").checked = "";
@@ -311,7 +311,7 @@ function template_shd_custom_field_edit()
 							</dd> 
 							<dt id="required_dt"',$context['field_type_value'] == 1 || $context['field_type_value'] == 2  || $context['field_type_value'] == 3 || $context['field_type_value'] == 4 ? '' : ' style="display: none;"','><strong>',$txt['shd_admin_custom_field_required'],':</strong><br /><span class="smalltext">',$txt['shd_admin_custom_field_required_desc'],'</span></dt>
 							<dd id="required_dd"',$context['field_type_value'] == 1 || $context['field_type_value'] == 2  || $context['field_type_value'] == 3 || $context['field_type_value'] == 4 ? '' : ' style="display: none;"','>
-								<input type="checkbox"',(!empty($context['custom_field']['required']) && $context['custom_field']['required'] == 1 ? ' checked="checked"' : ''), ' name="required" id="cf_required" onchange="javascript:update_required(this.value);"/>
+								<input type="checkbox"',(!empty($context['custom_field']['required']) && $context['custom_field']['required'] == 1 ? ' checked="checked"' : ''), ' name="required" id="cf_required" onchange="javascript:update_required(this.checked);"/>
 							</dd>							
 							<dt id="display_empty_dt"',(!empty($context['custom_field']['required']) && $context['custom_field']['required'] == 1 ? ' class="disabled"' : ''), '',$context['field_type_value'] == 1 || $context['field_type_value'] == 2  || $context['field_type_value'] == 3 || $context['field_type_value'] == 4 ? '' : ' style="display: none;"','><strong>',$txt['shd_admin_custom_field_display_empty'],':</strong><br /><span class="smalltext">',$txt['shd_admin_custom_field_display_empty_desc'],'</span></dt>
 							<dd id="display_empty_dd"',$context['field_type_value'] == 1 || $context['field_type_value'] == 2  || $context['field_type_value'] == 3 || $context['field_type_value'] == 4 ? '' : ' style="display: none;"','>
