@@ -223,7 +223,7 @@ function template_ticket_custom_fields()
 				foreach ($field['options'] as $key => $option)
 				{
 					echo '
-						<dd><input name="field-', $field['id'], '" type="radio" value="', $key, '"', $field['value'] == $key ? ' selected="selected"' : '', ' /> <span>', $option, '</span></dd>';
+						<dd><input name="field-', $field['id'], '" type="radio" value="', $key, '"', $field['value'] == $key ? ' checked="checked"' : '', ' /> <span>', $option, '</span></dd>';
 				}
 			}
 			// Default to a text input field
