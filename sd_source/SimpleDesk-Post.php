@@ -433,7 +433,7 @@ function shd_save_ticket()
 				}
 			}
 			// Oops, wasn't sent in the form. Was it required? If it was, add it to the error list.
-			elseif ($field['required'])
+			elseif ($field['is_required'])
 				$missing_fields[$field_id] = $field['name'];
 			// Well, it wasn't set, wasn't required, but it might be a checkbox that needs to go off now...?
 			elseif ($field['type'] == CFIELD_TYPE_CHECKBOX)
@@ -581,7 +581,7 @@ function shd_save_ticket()
 				'status' => $context['ticket_form']['status'],
 				'urgency' => $context['ticket_form']['urgency']['setting'],
 				'assigned' => $context['ticket_form']['assigned']['id'],
-				'custom_fields' => $context['ticket_form']['custom_fields']['ticket'],
+				'custom_fields' => !empty($context['ticket_form']['custom_fields']['ticket']) ? $context['ticket_form']['custom_fields']['ticket'] : array(),
 			);
 
 			// Just before we do... proxy ticket?
@@ -621,7 +621,7 @@ function shd_save_ticket()
 
 			$ticketOptions = array(
 				'id' => $context['ticket_form']['ticket'],
-				'custom_fields' => $context['ticket_form']['custom_fields']['ticket'],
+				'custom_fields' => !empty($context['ticket_form']['custom_fields']['ticket']) ? $context['ticket_form']['custom_fields']['ticket'] : array(),
 			);
 
 			if ((bool) $ticketinfo['smileys_enabled'] == $context['ticket_form']['disable_smileys']) // since one is enabled, one is 'now disable'...
