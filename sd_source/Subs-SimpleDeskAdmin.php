@@ -188,7 +188,7 @@ function shd_load_action_log_entries($start = 0, $items_per_page = 10, $sort = '
 				if (!empty($recipients['u']))
 				{
 					$first = true;
-					$users = explode($recipients['u']);
+					$users = explode(',', $recipients['u']);
 					foreach ($users as $user)
 					{
 						if (empty($user_profile[$user]))
