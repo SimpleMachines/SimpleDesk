@@ -142,7 +142,7 @@ function template_viewticket()
 
 							if (empty($field['value']) && $field['display_empty'])
 								echo $txt['shd_ticket_empty_field'];
-							elseif (!empty($field['value']))
+							elseif (isset($field['value']))
 							{
 								if ($field['type'] == CFIELD_TYPE_CHECKBOX)
 									echo !empty($field['value']) ? $txt['yes'] : $txt['no'];
@@ -177,7 +177,7 @@ function template_viewticket()
 
 			foreach ($context['ticket']['custom_fields']['prefix'] AS $field)
 			{
-				if (empty($field['value']))
+				if (!isset($field['value']))
 					continue;
 
 				if ($field['type'] == CFIELD_TYPE_CHECKBOX)
@@ -401,7 +401,7 @@ function template_additional_fields()
 
 					if (empty($field['value']) && $field['display_empty'])
 						echo $txt['shd_ticket_empty_field'];
-					elseif (!empty($field['value']))
+					elseif (isset($field['value']))
 					{
 						if ($field['type'] == CFIELD_TYPE_CHECKBOX)
 							echo !empty($field['value']) ? $txt['yes'] : $txt['no'];
@@ -643,7 +643,7 @@ function template_viewreplies()
 
 			foreach ($context['custom_fields_replies'][$reply['id']] AS $field)
 			{
-				if ($field['display_empty'] || !empty($field['value']))
+				if ($field['display_empty'] || isset($field['value']))
 				{
 					echo '
 							', !empty($field['icon']) ? '<img src="' . $settings['default_images_url'] . '/simpledesk/cf/' . $field['icon'] . '" alt="" class="shd_smallicon" />' : '','
@@ -651,6 +651,10 @@ function template_viewreplies()
 
 					if (empty($field['value']) && $field['display_empty'])
 						echo $txt['shd_ticket_empty_field'], '<br /><br />';
+					elseif ($field['type'] == CFIELD_TYPE_CHECKBOX)
+						echo !empty($field['value']) ? $txt['yes'] : $txt['no'], '<br /><br />';
+					elseif ($field['type'] == CFIELD_TYPE_RADIO || $field['type'] == CFIELD_TYPE_SELECT)
+						echo $field['options'][$field['value']], '<br /><br />';
 					elseif (!empty($field['value']))
 						echo $field['value'], '<br /><br />';
 				}

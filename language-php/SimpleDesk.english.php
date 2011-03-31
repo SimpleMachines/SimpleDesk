@@ -319,6 +319,8 @@ $txt['shd_reply_ticket_linktree'] = 'Reply to ticket (%s)';
 $txt['shd_edit_reply_linktree'] = 'Edit reply (%s)';
 $txt['shd_previewing_ticket'] = 'Previewing ticket';
 $txt['shd_previewing_reply'] = 'Previewing reply to';
+$txt['shd_choose_one'] = '[Choose one]';
+$txt['shd_no_value'] = '[no value]';
 
 // Profile / trackip
 $txt['shd_replies_from_ip'] = 'Helpdesk replies posted from IP (range)';

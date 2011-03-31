@@ -146,7 +146,7 @@ function template_ticket_info()
 
 function template_ticket_custom_fields()
 {
-	global $context, $settings;
+	global $context, $settings, $txt;
 
 	// No point showing the box if there's nothing to show in it
 	if (empty($context['ticket_form']['custom_fields']))
@@ -206,7 +206,8 @@ function template_ticket_custom_fields()
 			{
 				echo '
 						<dd>
-							<select name="field-', $field['id'], '">';
+							<select name="field-', $field['id'], '">
+								<option value="0"', $field['value'] == 0 ? ' selected="selected"' : '', !empty($field['is_required']) ? ' disabled="disabled"' : '', '>', $txt['shd_choose_one'], '&nbsp;</option>';
 
 				foreach ($field['options'] as $key => $option)
 					echo '
@@ -225,11 +226,13 @@ function template_ticket_custom_fields()
 			// Last one, radio buttons
 			elseif ($field['type'] == CFIELD_TYPE_RADIO)
 			{
+				if (empty($field['is_required']))
+					echo '
+						<dd><input name="field-', $field['id'], '" type="radio" value="0"', $field['value'] == 0 ? ' checked="checked"' : '', ' /> <span>', $txt['shd_no_value'], '</span></dd>';
+
 				foreach ($field['options'] as $key => $option)
-				{
 					echo '
 						<dd><input name="field-', $field['id'], '" type="radio" value="', $key, '"', $field['value'] == $key ? ' checked="checked"' : '', ' /> <span>', $option, '</span></dd>';
-				}
 			}
 			// Default to a text input field
 			else

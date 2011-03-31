@@ -223,7 +223,7 @@ function shd_admin_custom_save()
 	$_POST['field_name'] = $smcFunc['htmlspecialchars']($_POST['field_name']);
 	$_POST['description'] = $smcFunc['htmlspecialchars'](isset($_POST['description']) ? $_POST['description'] : '');
 	$_POST['bbc'] = isset($_POST['bbc']) ? 1 : 0;
-	$_POST['display_empty'] = isset($_POST['display_empty']) ? 1 : 0;
+	$_POST['display_empty'] = isset($_POST['display_empty']) && $_POST['field_type'] != CFIELD_TYPE_CHECKBOX ? 1 : 0;
 	$_POST['required'] = isset($_POST['required']) ? 1 : 0;
 	if ($_POST['required'] == 1)
 		$_POST['display_empty'] = 0;

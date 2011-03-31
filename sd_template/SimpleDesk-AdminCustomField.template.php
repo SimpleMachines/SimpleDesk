@@ -119,10 +119,10 @@ function template_shd_custom_field_edit()
 
 					document.getElementById("max_length_dt").style.display = ftype == ',CFIELD_TYPE_TEXT,' || ftype == ',CFIELD_TYPE_LARGETEXT,' || ftype == ',CFIELD_TYPE_INT,' || ftype == ',CFIELD_TYPE_FLOAT,' ? "" : "none";
 					document.getElementById("max_length_dd").style.display = ftype == ',CFIELD_TYPE_TEXT,' || ftype == ',CFIELD_TYPE_LARGETEXT,' || ftype == ',CFIELD_TYPE_INT,' || ftype == ',CFIELD_TYPE_FLOAT,' ? "" : "none";
-					document.getElementById("display_empty_dt").style.display = ftype == ',CFIELD_TYPE_TEXT,' || ftype == ',CFIELD_TYPE_LARGETEXT,' || ftype == ',CFIELD_TYPE_INT,' || ftype == ',CFIELD_TYPE_FLOAT,' ? "" : "none";
-					document.getElementById("display_empty_dd").style.display = ftype == ',CFIELD_TYPE_TEXT,' || ftype == ',CFIELD_TYPE_LARGETEXT,' || ftype == ',CFIELD_TYPE_INT,' || ftype == ',CFIELD_TYPE_FLOAT,' ? "" : "none";
-					document.getElementById("required_dt").style.display = ftype == ',CFIELD_TYPE_TEXT,' || ftype == ',CFIELD_TYPE_LARGETEXT,' || ftype == ',CFIELD_TYPE_INT,' || ftype == ',CFIELD_TYPE_FLOAT,' ? "" : "none";
-					document.getElementById("required_dd").style.display = ftype == ',CFIELD_TYPE_TEXT,' || ftype == ',CFIELD_TYPE_LARGETEXT,' || ftype == ',CFIELD_TYPE_INT,' || ftype == ',CFIELD_TYPE_FLOAT,' ? "" : "none";
+					document.getElementById("display_empty_dt").style.display = ftype != ',CFIELD_TYPE_CHECKBOX,' ? "" : "none";
+					document.getElementById("display_empty_dd").style.display = ftype != ',CFIELD_TYPE_CHECKBOX,' ? "" : "none";
+					document.getElementById("required_dt").style.display = ftype != ',CFIELD_TYPE_CHECKBOX,' ? "" : "none";
+					document.getElementById("required_dd").style.display = ftype != ',CFIELD_TYPE_CHECKBOX,' ? "" : "none";
 					document.getElementById("dimension_dt").style.display = ftype == ',CFIELD_TYPE_LARGETEXT,' ? "" : "none";
 					document.getElementById("dimension_dd").style.display = ftype == ',CFIELD_TYPE_LARGETEXT,' ? "" : "none";
 					document.getElementById("bbc_dt").style.display = ftype == ',CFIELD_TYPE_TEXT,' || ftype == ',CFIELD_TYPE_LARGETEXT,' ? "" : "none";
@@ -284,20 +284,20 @@ function template_shd_custom_field_edit()
 							</dd>
 							<dt id="bbc_dt"',$context['field_type_value'] == 1 || $context['field_type_value'] == 2 ? '' : ' style="display: none;"','><strong',empty($modSettings['shd_allow_ticket_bbc']) ? ' class="disabled"' : '', '>',$txt['shd_admin_custom_field_bbc'],':</strong><br />',empty($modSettings['shd_allow_ticket_bbc']) ? '<span class="smalltext error">' . sprintf($txt['shd_admin_custom_field_bbc_off'],$scripturl . '?action=admin;area=helpdesk_options;sa=posting'). '</span>' : '', '</dt>
 							<dd id="bbc_dd"',$context['field_type_value'] == 1 || $context['field_type_value'] == 2 ? '' : ' style="display: none;"','>
-								<input type="checkbox" name="bbc" id="cf_bbc"',empty($modSettings['shd_allow_ticket_bbc']) ? ' disabled="disabled"' : '', ' />
+								<input type="checkbox" name="bbc" id="cf_bbc"',empty($modSettings['shd_allow_ticket_bbc']) ? ' disabled="disabled"' : (!empty($context['custom_field']['bbc']) ? ' checked="checked"' : ''), ' />
 							</dd>
 							<dt id="options_dt"',$context['field_type_value'] == 5 || $context['field_type_value'] == 7 ? '' : ' style="display: none;"','>
 								<strong>',$txt['shd_admin_custom_field_options'],':</strong><br />
 								<span class="smalltext">',$txt['shd_admin_custom_field_options_desc'],'</span>
 							</dt>
 							<dd id="options_dd"',$context['field_type_value'] == 5 || $context['field_type_value'] == 7 ? '' : ' style="display: none;"','>
-									<div>';
+									<div>
+										<input type="radio" name="default_select" value="0"', $context['custom_field']['default_value'] == 0 ? ' checked="checked"' : '', ' class="input_radio" /> ', $txt['shd_admin_custom_field_no_selected_default'];
 
 	foreach ($context['custom_field']['options'] as $k => $option)
-	{
 		echo '
-								', $k == 1 ? '' : '<br />', '<input type="radio" name="default_select" value="', $k, '"', $context['custom_field']['default_value'] == $k ? ' checked="checked"' : '', ' class="input_radio" /><input type="text" name="select_option[', $k, ']" value="', $option, '" class="input_text" />';
-	}
+								<br /><input type="radio" name="default_select" value="', $k, '"', $context['custom_field']['default_value'] == $k ? ' checked="checked"' : '', ' class="input_radio" /><input type="text" name="select_option[', $k, ']" value="', $option, '" class="input_text" />';
+
 	echo '
 								<span id="addopt"></span>
 								[<a href="" onclick="add_option(); return false;">',$txt['more'],'</a>]
@@ -310,12 +310,12 @@ function template_shd_custom_field_edit()
 								<input type="checkbox" name="default_check" class="input_check"',($context['custom_field']['default_value'] == 1 ? ' checked="checked"' : ''), 'onchange="javascript:update_default_label(this.value);" />
 								<span class="smalltext" id="default_label">',$txt['shd_admin_default_state_' . ($context['custom_field']['default_value'] == 1 ? 'on' : 'off')],'</span>
 							</dd>
-							<dt id="required_dt"',$context['field_type_value'] == 1 || $context['field_type_value'] == 2  || $context['field_type_value'] == 3 || $context['field_type_value'] == 4 ? '' : ' style="display: none;"','><strong>',$txt['shd_admin_custom_field_required'],':</strong><br /><span class="smalltext">',$txt['shd_admin_custom_field_required_desc'],'</span></dt>
-							<dd id="required_dd"',$context['field_type_value'] == 1 || $context['field_type_value'] == 2  || $context['field_type_value'] == 3 || $context['field_type_value'] == 4 ? '' : ' style="display: none;"','>
-								<input type="checkbox"',(!empty($context['custom_field']['required']) && $context['custom_field']['required'] == 1 ? ' checked="checked"' : ''), ' name="required" id="cf_required" onchange="javascript:update_required(this.checked);"/>
+							<dt id="required_dt"',$context['field_type_value'] != CFIELD_TYPE_CHECKBOX ? '' : ' style="display: none;"','><strong>',$txt['shd_admin_custom_field_required'],':</strong><br /><span class="smalltext">',$txt['shd_admin_custom_field_required_desc'],'</span></dt>
+							<dd id="required_dd"',$context['field_type_value'] != CFIELD_TYPE_CHECKBOX ? '' : ' style="display: none;"','>
+								<input type="checkbox"',!empty($context['custom_field']['required']) ? ' checked="checked"' : '', ' name="required" id="cf_required" onchange="javascript:update_required(this.checked);"/>
 							</dd>
-							<dt id="display_empty_dt"',(!empty($context['custom_field']['required']) && $context['custom_field']['required'] == 1 ? ' class="disabled"' : ''), '',$context['field_type_value'] == 1 || $context['field_type_value'] == 2  || $context['field_type_value'] == 3 || $context['field_type_value'] == 4 ? '' : ' style="display: none;"','><strong>',$txt['shd_admin_custom_field_display_empty'],':</strong><br /><span class="smalltext">',$txt['shd_admin_custom_field_display_empty_desc'],'</span></dt>
-							<dd id="display_empty_dd"',$context['field_type_value'] == 1 || $context['field_type_value'] == 2  || $context['field_type_value'] == 3 || $context['field_type_value'] == 4 ? '' : ' style="display: none;"','>
+							<dt id="display_empty_dt"',!empty($context['custom_field']['required']) ? ' class="disabled"' : '', $context['field_type_value'] != CFIELD_TYPE_CHECKBOX ? '' : ' style="display: none;"','><strong>',$txt['shd_admin_custom_field_display_empty'],':</strong><br /><span class="smalltext">',$txt['shd_admin_custom_field_display_empty_desc'],'</span></dt>
+							<dd id="display_empty_dd"',$context['field_type_value'] != CFIELD_TYPE_CHECKBOX ? '' : ' style="display: none;"','>
 								<input type="checkbox"',(!empty($context['custom_field']['display_empty']) && $context['custom_field']['display_empty'] == 1 ? ' checked="checked"' : ''), ' name="display_empty" id="cf_display_empty"',(!empty($context['custom_field']['required']) && $context['custom_field']['required'] == 1 ? ' disabled="disabled"' : ''), '/>
 							</dd>
 						</dl>

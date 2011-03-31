@@ -773,29 +773,45 @@ function shd_validate_custom_fields($scope)
 			switch ($field['type'])
 			{
 				case CFIELD_TYPE_TEXT:
-					if (!empty($field['length']))
-						$value = $smcFunc['substr']($value, 0, $field['length']);
-					$value = $smcFunc['htmlspecialchars']($value, ENT_QUOTES);
+					if ($field['is_required'] && empty($value))
+						$missing_fields[$field_id] = $field['name'];
+					else
+					{
+						if (!empty($field['length']))
+							$value = $smcFunc['substr']($value, 0, $field['length']);
+						$value = $smcFunc['htmlspecialchars']($value, ENT_QUOTES);
+					}
 					break;
 				case CFIELD_TYPE_LARGETEXT:
-					if (!empty($field['length']))
-						$value = $smcFunc['substr']($value, 0, $field['length']);
-					$value = $smcFunc['htmlspecialchars']($value, ENT_QUOTES);
+					if ($field['is_required'] && empty($value))
+						$missing_fields[$field_id] = $field['name'];
+					else
+					{
+						if (!empty($field['length']))
+							$value = $smcFunc['substr']($value, 0, $field['length']);
+						$value = $smcFunc['htmlspecialchars']($value, ENT_QUOTES);
+					}
 					break;
 				case CFIELD_TYPE_INT:
 					// Well, check it was provided with a non empty value and check that that was a number and a whole one at that...
-					if (!empty($value) && (!is_numeric($value) || $value != (string) (int) $value))
+					if (empty($value) && $field['is_required'])
+						$missing_fields[$field_id] = $field['name'];
+					elseif (!empty($value) && (!is_numeric($value) || $value != (string) (int) $value))
 						$invalid_fields[$field_id] = $field['name'];
 					break;
 				case CFIELD_TYPE_FLOAT:
 					// Ordinarily we'd use PHP internally to do this and just cast it. But prior to 5.2.17 / 5.3.5 on x86 builds... it can hang PHP.
-					if (!empty($value) && !preg_match('~^[-+]?\d+\.?\d{,10}([eE][-+]?\d{,2})?$~', $value))
+					if (empty($value) && $field['is_required'])
+						$missing_fields[$field_id] = $field['name'];
+					elseif (!empty($value) && !preg_match('~^[-+]?\d+\.?\d{,10}([eE][-+]?\d{,2})?$~', $value))
 						$invalid_fields[$field_id] = $field['name'];
 					break;
 				case CFIELD_TYPE_SELECT:
 				case CFIELD_TYPE_RADIO:
 					// It's set but is it a number and a number that represents a key in the array? Same principle for select and radio.
-					if (!empty($value) && (!is_numeric($value) || !isset($field['options'][(int) $value])))
+					if (empty($value) && $field['is_required'])
+						$missing_fields[$field_id] = $field['name'];
+					elseif (!empty($value) && (!is_numeric($value) || !isset($field['options'][(int) $value])))
 						$invalid_fields[$field_id] = $field['name'];
 					break;
 				case CFIELD_TYPE_CHECKBOX:
