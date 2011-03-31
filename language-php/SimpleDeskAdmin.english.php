@@ -329,6 +329,7 @@ $txt['shd_admin_custom_field_placement'] = 'Placement inside ticket';
 $txt['shd_admin_custom_field_placement_desc'] = 'Where in the ticket should this field be displayed? Please note that large fields may not fit very well in to the "additional details" box.';
 $txt['shd_admin_custom_field_placement_details'] = 'Additional details (Left side box)';
 $txt['shd_admin_custom_field_placement_information'] = 'Additional information (Below ticket body)';
+$txt['shd_admin_custom_field_placement_prefix'] = 'As a prefix to the ticket\'s title';
 //@}
 
 //! Plugins

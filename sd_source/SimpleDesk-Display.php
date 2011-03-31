@@ -336,6 +336,7 @@ function shd_view_ticket()
 	$context['ticket']['custom_fields'] = array(
 		'details' => array(),
 		'information' => array(),
+		'prefix' => array(),
 	);
 	$context['ticket_form']['custom_fields_context'] = 'reply';
 	$context['ticket_form']['custom_fields'] = array();
@@ -354,6 +355,11 @@ function shd_view_ticket()
 
 	$is_staff = shd_allowed_to('shd_staff');
 	$is_admin = shd_allowed_to('admin_helpdesk'); // this includes forum admins
+	$placements = array(
+		CFIELD_PLACE_DETAILS => 'details',
+		CFIELD_PLACE_INFO => 'information',
+		CFIELD_PLACE_PREFIX => 'prefix',
+	);
 	while ($row = $smcFunc['db_fetch_assoc']($query))
 	{
 		list($user_see, $staff_see) = explode(',', $row['can_see']);
@@ -372,8 +378,8 @@ function shd_view_ticket()
 			continue;
 
 		// If this is going to be displayed for the individual ticket, we need to figure out where it should go.
-		if($row['field_loc'] & CFIELD_TICKET)
-			$pos = $row['placement'] == CFIELD_PLACE_DETAILS ? 'details' : 'information';
+		if ($row['field_loc'] & CFIELD_TICKET)
+			$pos = $placements[$row['placement']];
 		
 		$field = array(
 			'id' => $row['id_field'],
@@ -466,7 +472,25 @@ function shd_view_ticket()
 
 	// Template stuff
 	$context['sub_template'] = 'viewticket';
-	$context['page_title'] = $txt['shd_helpdesk'] . ' [' . $context['ticket']['display_id'] . '] ' . $context['ticket']['subject'];
+	if (!empty($context['ticket']['custom_fields']['prefix']))
+	{
+		$context['page_title'] = $txt['shd_helpdesk'] . ' [' . $context['ticket']['display_id'] . '] ';
+		foreach ($context['ticket']['custom_fields']['prefix'] AS $field)
+		{
+			if (empty($field['value']))
+				continue;
+
+			if ($field['type'] == CFIELD_TYPE_CHECKBOX)
+				$context['page_title'] .= !empty($field['value']) ? $txt['yes'] . ' ' : $txt['no'] . ' ';
+			elseif ($field['type'] == CFIELD_TYPE_SELECT || $field['type'] == CFIELD_TYPE_RADIO)
+				$context['page_title'] .= $field['options'][$field['value']] . ' ';
+			else
+				$context['page_title'] .= $field['value'] . ' ';
+		}
+		$context['page_title'] .= $context['ticket']['subject'];
+	}
+	else
+		$context['page_title'] = $txt['shd_helpdesk'] . ' [' . $context['ticket']['display_id'] . '] ' . $context['ticket']['subject'];
 
 	// Ticket navigation / permission
 	$context['can_reply'] = !$context['ticket']['closed'] && !$context['ticket']['deleted'] && (shd_allowed_to('shd_reply_ticket_any') || ($context['ticket']['ticket_opener'] && shd_allowed_to('shd_reply_ticket_own'))); // needs perms - calc'd here because we use it in display template too

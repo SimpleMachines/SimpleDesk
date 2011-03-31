@@ -222,17 +222,20 @@ function shd_admin_custom_save()
 	if (trim($_POST['field_name']) == '')
 		fatal_lang_error('shd_admin_no_fieldname', false);
 	$_POST['field_name'] = $smcFunc['htmlspecialchars']($_POST['field_name']);
-	$_POST['description'] = $smcFunc['htmlspecialchars']($_POST['description']);
+	$_POST['description'] = $smcFunc['htmlspecialchars'](isset($_POST['description']) ? $_POST['description'] : '');
 	$_POST['bbc'] = isset($_POST['bbc']) ? 1 : 0;
 	$_POST['display_empty'] = isset($_POST['display_empty']) ? 1 : 0;
 	$_POST['required'] = isset($_POST['required']) ? 1 : 0;	
 	if($_POST['required'] == 1)
 		$_POST['display_empty'] = 0;
+
 	$_POST['active'] = isset($_POST['active']) ? 1 : 0;
 	$_POST['field_length'] = isset($_POST['field_length']) ? (int) $_POST['field_length'] : 255;
 	$_POST['default_check'] = isset($_POST['default_check']) && $_POST['field_type'] == CFIELD_TYPE_CHECKBOX ? 1 : '';
 	if ($_POST['field_type'] == CFIELD_TYPE_LARGETEXT)
 		$_POST['default_check'] = (int) $_POST['rows'] . ',' . (int) $_POST['cols'];
+	if (!isset($_POST['placement']) || !in_array($_POST['placement'], array(CFIELD_PLACE_DETAILS, CFIELD_PLACE_INFO, CFIELD_PLACE_PREFIX)))
+		$_POST['placement'] = CFIELD_PLACE_DETAILS;
 	$options = '';
 
 	$users_see = !empty($_POST['see_users']) ? '1' : '0';
@@ -252,7 +255,6 @@ function shd_admin_custom_save()
 		{
 			// Clean, clean, clean...
 			$v = $smcFunc['htmlspecialchars']($v);
-			$v = strtr($v, array(',' => ''));
 
 			// Nada, zip, etc...
 			if (trim($v) == '')

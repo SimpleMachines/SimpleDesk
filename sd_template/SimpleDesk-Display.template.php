@@ -131,7 +131,7 @@ function template_viewticket()
 							<strong><img src="', $settings['default_images_url'], '/simpledesk/additional_details.png" alt="" class="shd_smallicon shd_icon_minihead" /> ',$txt['shd_ticket_additional_details'],'</strong>
 							<hr />';
 
-					foreach($context['ticket']['custom_fields']['details'] AS $field)
+					foreach ($context['ticket']['custom_fields']['details'] AS $field)
 					{
 						if ($field['display_empty'] || !empty($field['value']))
 						{
@@ -156,7 +156,6 @@ function template_viewticket()
 								</li>';
 						}				
 					}
-				
 
 					echo '		</ul>
 					</div>';
@@ -174,7 +173,22 @@ function template_viewticket()
 						</div>';
 
 			echo '
-						<img src="', $settings['default_images_url'], '/simpledesk/name.png" alt="" class="shd_smallicon shd_icon_minihead" /> <strong>', $context['ticket']['subject'], '</strong><hr /><br />
+						<img src="', $settings['default_images_url'], '/simpledesk/name.png" alt="" class="shd_smallicon shd_icon_minihead" /> <strong>';
+
+			foreach ($context['ticket']['custom_fields']['prefix'] AS $field)
+			{
+				if (empty($field['value']))
+					continue;
+
+				if ($field['type'] == CFIELD_TYPE_CHECKBOX)
+					echo !empty($field['value']) ? $txt['yes'] . ' ' : $txt['no'] . ' ';
+				elseif ($field['type'] == CFIELD_TYPE_SELECT || $field['type'] == CFIELD_TYPE_RADIO)
+					echo $field['options'][$field['value']], ' ';
+				else
+					echo $field['value'], ' ';
+			}
+
+			echo $context['ticket']['subject'], '</strong><hr /><br />
 							<div id="shd_ticket_text">
 								', $context['ticket']['body'];								
 
@@ -633,7 +647,7 @@ function template_viewreplies()
 				{
 					echo'	
 							', !empty($field['icon']) ? '<img src="' . $settings['default_images_url'] . '/simpledesk/cf/' . $field['icon'] . '" alt="" class="shd_smallicon" />' : '','
-							<strong>', $field['name'],':</strong>';
+							<strong>', $field['name'],': </strong>';
 
 					if (empty($field['value']) && $field['display_empty'])
 						echo $txt['shd_ticket_empty_field'], '<br /><br />';

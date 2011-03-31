@@ -718,8 +718,9 @@ function shd_helpdesk_listing()
 		foreach ($sort_methods as $method => $sort_details)
 			$context['ticket_blocks'][$block_key]['sort']['link_bits'][$method] = ';so_' . $block_key . '=' . $method . '_' . $block['sort']['direction'];
 
-	// Now go actually do the whole block thang, setting up space for a list of users as we go along
+	// Now go actually do the whole block thang, setting up space for a list of users and tickets as we go along
 	$users = array();
+	$tickets = array();
 
 	foreach ($context['ticket_blocks'] as $block_key => $block)
 	{
@@ -819,11 +820,12 @@ function shd_helpdesk_listing()
 				);
 			}
 
-			$context['ticket_blocks'][$block_key]['tickets'][] = $new_block;
+			$context['ticket_blocks'][$block_key]['tickets'][$row['id_ticket']] = $new_block;
 
 			$users[] = $row['id_member_started'];
 			$users[] = $row['id_member_updated'];
 			$users[] = $row['id_member_assigned'];
+			$tickets[$row['id_ticket']] = array();
 		}
 		$smcFunc['db_free_result']($query);
 	}
@@ -906,6 +908,87 @@ function shd_helpdesk_listing()
 
 			$context['start'] = $context['ticket_blocks'][$block_id]['start'];
 			$context['ticket_blocks'][$block_id]['page_index'] = shd_no_expand_pageindex($scripturl . $primary_url . $url_fragment . '#shd_block_' . $block_id, $context['start'], $block['count'], $num_per_page, true);
+		}
+	}
+
+	// Just need to deal with those pesky prefix fields, if there are any.
+	if (empty($tickets))
+		return; // We're all done here.
+
+	// 1. Figure out if there are any custom fields that apply to us or not.
+	$fields = array();
+	$query = $smcFunc['db_query']('', '
+		SELECT id_field, can_see, field_type, field_options
+		FROM {db_prefix}helpdesk_custom_fields
+		WHERE field_loc = {int:placement_prefix}
+			AND active = {int:active}
+		ORDER BY field_order',
+		array(
+			'placement_prefix' => CFIELD_PLACE_PREFIX,
+			'active' => 1,
+		)
+	);
+	$is_staff = shd_allowed_to('shd_staff');
+	$is_admin = $context['user']['is_admin'] || shd_allowed_to('admin_helpdesk');
+	while ($row = $smcFunc['db_fetch_assoc']($query))
+	{
+		list($user_see, $staff_see) = explode(',', $row['can_see']);
+		if ($is_admin || ($is_staff && $staff_see == '1') || (!$is_staff && $user_see == '1'))
+		{
+			if (!empty($row['field_options']))
+				$row['field_options'] = unserialize($row['field_options']);
+			$fields[$row['id_field']] = $row;
+		}
+	}
+	$smcFunc['db_free_result']($query);
+
+	if (empty($fields))
+		return; // No fields to process, time to go.
+
+	// 2. Get the relevant values.
+	$query = $smcFunc['db_query']('', '
+		SELECT id_post, id_field, value
+		FROM {db_prefix}helpdesk_custom_fields_values
+		WHERE id_post IN ({array_int:tickets})
+			AND id_field IN ({array_int:fields})
+			AND post_type = {int:ticket}',
+		array(
+			'tickets' => array_keys($tickets),
+			'fields' => array_keys($fields),
+			'ticket' => CFIELD_TICKET,
+		)
+	);
+	while ($row = $smcFunc['db_fetch_assoc']($query))
+		$tickets[$row['id_post']][$row['id_field']] = $row['value'];
+
+	// 3. Apply the values into the tickets.
+	foreach ($context['ticket_blocks'] as $block_id => $block)
+	{
+		foreach ($block['tickets'] as $ticket_id => $ticket)
+		{
+			if (isset($tickets[$ticket_id]))
+			{
+				$prefix = '';
+				foreach ($fields as $field_id => $field)
+				{
+					if (empty($tickets[$ticket_id][$field_id]))
+						continue;
+
+					if ($field['field_type'] == CFIELD_TYPE_CHECKBOX)
+						$prefix .= !empty($tickets[$ticket_id][$field_id]) ? $txt['yes'] . ' ' : $txt['no'] . ' ';
+					elseif ($field['field_type'] == CFIELD_TYPE_SELECT || $field['field_type'] == CFIELD_TYPE_RADIO)
+						$prefix .= $field['field_options'][$tickets[$ticket_id][$field_id]] . ' ';
+					else
+						$prefix .= $tickets[$ticket_id][$field_id] . ' ';
+				}
+
+				if ($prefix !== '')
+				{
+					$subject = $ticket['subject'];
+					$context['ticket_blocks'][$block_id]['tickets'][$ticket_id]['subject'] = $prefix . $subject;
+					$context['ticket_blocks'][$block_id]['tickets'][$ticket_id]['link'] = '<a href="' . $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $ticket_id . ($_REQUEST['sa'] == 'recyclebin' ? ';recycle' : '') . '">' . $prefix . $subject . '</a>';
+				}
+			}
 		}
 	}
 }

@@ -227,6 +227,7 @@ function template_shd_custom_field_edit()
 								<select name="placement" id="cf_placement">
 									<option value="', CFIELD_PLACE_DETAILS, '"',($context['placement'] == CFIELD_PLACE_DETAILS ? ' selected="selected"' : ''), '>',$txt['shd_admin_custom_field_placement_details'],'</option>
 									<option value="', CFIELD_PLACE_INFO, '"',($context['placement'] == CFIELD_PLACE_INFO ? ' selected="selected"' : ''), '>',$txt['shd_admin_custom_field_placement_information'],'</option>
+									<option value="', CFIELD_PLACE_PREFIX, '"',($context['placement'] == CFIELD_PLACE_PREFIX ? ' selected="selected"' : ''), '>',$txt['shd_admin_custom_field_placement_prefix'],'</option>
 								</select>
 							</dd>							
 							<dt><strong>',$txt['shd_admin_custom_field_can_see'],':</strong><br /><span class="smalltext">',$txt['shd_admin_custom_field_can_see_desc'],'</span></dt>
