@@ -920,10 +920,12 @@ function shd_helpdesk_listing()
 	$query = $smcFunc['db_query']('', '
 		SELECT id_field, can_see, field_type, field_options
 		FROM {db_prefix}helpdesk_custom_fields
-		WHERE field_loc = {int:placement_prefix}
+		WHERE placement = {int:placement_prefix}
+			AND field_loc IN ({array_int:locations})
 			AND active = {int:active}
 		ORDER BY field_order',
 		array(
+			'locations' => array(CFIELD_TICKET, CFIELD_TICKET | CFIELD_REPLY),
 			'placement_prefix' => CFIELD_PLACE_PREFIX,
 			'active' => 1,
 		)

@@ -183,8 +183,11 @@ function template_viewticket()
 				if ($field['type'] == CFIELD_TYPE_CHECKBOX)
 					echo !empty($field['value']) ? $txt['yes'] . ' ' : $txt['no'] . ' ';
 				elseif ($field['type'] == CFIELD_TYPE_SELECT || $field['type'] == CFIELD_TYPE_RADIO)
-					echo $field['options'][$field['value']], ' ';
-				else
+				{
+					if (!empty($field['value']))
+						echo $field['options'][$field['value']], ' ';
+				}
+				elseif (!empty($field['value']))
 					echo $field['value'], ' ';
 			}
 
