@@ -213,7 +213,7 @@ function shd_scheduled_purge_tickets()
 		)
 	);
 	// 4.3. Attachments.
-	
+
 	// 4.4. Relationships.
 	$smcFunc['db_query']('', '
 		DELETE FROM {db_prefix}helpdesk_relationships

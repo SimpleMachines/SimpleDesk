@@ -78,11 +78,11 @@ function shd_init()
 
 	define('CFIELD_TICKET', 1);
 	define('CFIELD_REPLY', 2);
-	
+
 	define('CFIELD_PLACE_DETAILS', 1);
 	define('CFIELD_PLACE_INFO', 2);
 	define('CFIELD_PLACE_PREFIX', 3);
-	
+
 	define('CFIELD_TYPE_TEXT', 1);
 	define('CFIELD_TYPE_LARGETEXT', 2);
 	define('CFIELD_TYPE_INT', 3);
@@ -1626,7 +1626,7 @@ function shd_main_menu(&$menu_buttons)
 				foreach ($old_menu_buttons as $area => $detail)
 				{
 					$menu_buttons[$area] = $detail;
-					
+
 					if ($area == 'helpdesk')
 					{
 						$menu_buttons['profile'] = $profile_menu;

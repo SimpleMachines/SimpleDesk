@@ -181,7 +181,7 @@ function shd_notifications_notify_newreply(&$msgOptions, &$ticketOptions, &$post
 		$member_prefs[$id] = $base_prefs['notify_' . $type]['default'];
 		$pref_list['notify_' . $type] = true;
 	}
-	
+
 	// Grab pref list from DB for these users and update
 	$query = $smcFunc['db_query']('', '
 		SELECT id_member, variable, value
@@ -352,7 +352,7 @@ function shd_notify_users($notify_data)
 
 			$subject = str_replace(array_keys($replacements), array_values($replacements), $txt['template_subject_notify_' . $email_type]);
 
-			$body = $txt['template_body_notify_' . $email_type] . "\n\n" . $txt['regards_team'];			
+			$body = $txt['template_body_notify_' . $email_type] . "\n\n" . $txt['regards_team'];
 			$body = str_replace(array_keys($replacements), array_values($replacements), $body);
 
 			if (!isset($log['emails'][$email_type]))

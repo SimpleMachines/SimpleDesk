@@ -4,9 +4,9 @@
 function shd_privacyControl(oOpts)
 {
 	shd_privacyControl.prototype.opts = oOpts; // attaches to the link, but it doesn't exist until after DOM is loaded!
-	if(window.addEventListener)
+	if (window.addEventListener)
 		window.addEventListener('load', shd_privacyControl.prototype.init, false);
-	else if(window.attachEvent)
+	else if (window.attachEvent)
 		window.attachEvent('onload', shd_privacyControl.prototype.init);
 }
 
@@ -58,9 +58,9 @@ shd_privacyControl.prototype.callback = function (oRecvd)
 function shd_urgencyControl(oOpts)
 {
 	shd_urgencyControl.prototype.opts = oOpts; // attaches to the link, but it doesn't exist until after DOM is loaded!
-	if(window.addEventListener)
+	if (window.addEventListener)
 		window.addEventListener('load', shd_urgencyControl.prototype.init, false);
-	else if(window.attachEvent)
+	else if (window.attachEvent)
 		window.attachEvent('onload', shd_urgencyControl.prototype.init);
 }
 
@@ -71,7 +71,7 @@ shd_urgencyControl.prototype.init = function ()
 		var oDiv = document.getElementById('urglink_' + shd_urgencyControl.prototype.opts.aButtonOps[i]);
 		if (oDiv != null && i == 'up')
 			oDiv.onclick = shd_urgencyControl.prototype.actionUp;
-		else if(oDiv != null && i == 'down')
+		else if (oDiv != null && i == 'down')
 			oDiv.onclick = shd_urgencyControl.prototype.actionDown; // I *did* try to make this a single parameterised function but it always fired when it wasn't supposed to
 	}
 }
@@ -211,8 +211,8 @@ shd_attach_select.prototype.checkExtension = function (filename)
 	var func = Array.prototype.indexOf ?
 		function(arr, obj) { return arr.indexOf(obj) !== -1; } :
 		function(arr, obj) {
-			for(var i = -1, j = arr.length; ++i < j;)
-				if(arr[i] === obj) return true;
+			for (var i = -1, j = arr.length; ++i < j;)
+				if (arr[i] === obj) return true;
 			return false;
     };
 	var value = func(arr, ext);
@@ -426,7 +426,7 @@ AjaxAssign.prototype.expand_callback = function (XMLDoc)
 		var assign_list = document.getElementById(this.opt.sListId);
 		assign_list.innerHTML = '';
 		assign_list.setAttribute('style', 'display:block');
-	
+
 		var elements = XMLDoc.getElementsByTagName('member');
 		// We could, in all honesty, sit and build the content normally with document.createElement.
 		// But really, this is quicker, not just for us but for the browser too.

@@ -132,8 +132,8 @@ h3.ticketheader img
 .shd_ticket_side_column
 {
 	float: left;
-	width: 215px;	
-	margin-right: 20px;	
+	width: 215px;
+	margin-right: 20px;
 }
 .shd_ticketdetails
 {
@@ -338,7 +338,7 @@ h3.ticketheader img
 #shd_post_proxy
 {
 	background: url(../images/simpledesk/proxy.png) no-repeat left;
-	background-position: 10px;	
+	background-position: 10px;
 }
 
 /**********************************

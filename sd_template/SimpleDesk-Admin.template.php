@@ -133,13 +133,12 @@ function template_shd_admin()
 				{
 					echo '
 						<div class="description">';
-					
+
 					// Pretty icons! :D
 					if (isset($group['icon']))
-					echo'
+					echo '
 						<img src="', $settings['default_images_url'], '/simpledesk/credits/', $group['icon'], '" alt="" class="floatleft" />
 						<div class="shd_credits_names">';
-					
 
 					if (isset($group['title']))
 					echo '
@@ -153,20 +152,20 @@ function template_shd_admin()
 						$last_peep = array_pop($group['members']);
 						echo implode(', ', $group['members']), ', ', $txt['shd_credits_and'], ' ', $last_peep;
 					}*/
-					
+
 					$cur_member = 1;
-					foreach($group['members'] AS $member)
+					foreach ($group['members'] AS $member)
 					{
 						echo $member[1] == true ? '<span class="shd_former_contributor">' : '', '', $member[0], '',$member[1] == true ? '</span>' : '';
-						
-						if($cur_member < count($group['members']))
-							echo', ';
-							
+
+						if ($cur_member < count($group['members']))
+							echo ', ';
+
 						$cur_member++;
 					}
-					
+
 					if (isset($group['icon']))
-					echo'
+					echo '
 						</div>';
 
 					echo '

@@ -59,7 +59,7 @@ if (!defined('SMF'))
  *	<ul>
  *	<li>id: Required if replying to a ticket, 0 if a new ticket (will default to 0 if not specified)</li>
  *	<li>mark_as_read: Optional boolean, whether to mark the ticket as read by the person posting it ($posterOptions['id'] is required to use this)</li>
- *	<li>mark_as_read_proxy: Optional integer for proxy tickets, if $ticketOptions['mark_as_read'] is true. Mark the ticket as read for the user with this id.</li> 
+ *	<li>mark_as_read_proxy: Optional integer for proxy tickets, if $ticketOptions['mark_as_read'] is true. Mark the ticket as read for the user with this id.</li>
  *	<li>subject: Semi-optional string with the new subject in; required for a new ticket, ignored if adding a reply. If set, assumed to have been cleaned already (with $smcFunc['htmlspecialchars'] and strtr)</li>
  *	<li>private: Semi-optional boolean with ticket privacy (true = private); required for a new ticket, ignored if adding a reply.</li>
  *	<li>status: Integer to denote new status of the ticket, defaults to TICKET_STATUS_NEW. Calling function to determine new status.</li>
@@ -294,11 +294,8 @@ function shd_create_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 		if (empty($flag)) // such as, say, a new ticket?
 		{
 			// Hold on a second... If this is a proxy ticket... We'll want to mark it read for the staff member, not the member for whom it was posted.
-			if(!empty($ticketOptions['mark_as_read_proxy']))
-				$mark_read_user = $ticketOptions['mark_as_read_proxy'];
-			else
-				$mark_read_user = $posterOptions['id'];
-				
+			$mark_read_user = !empty($ticketOptions['mark_as_read_proxy']) ? $ticketOptions['mark_as_read_proxy'] : $posterOptions['id'];
+
 			$smcFunc['db_insert']('replace',
 				'{db_prefix}helpdesk_log_read',
 				array('id_ticket' => 'int', 'id_member' => 'int', 'id_msg' => 'int'),

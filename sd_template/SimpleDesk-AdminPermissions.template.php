@@ -150,7 +150,7 @@ function template_shd_display_permission_list($permissions)
 
 		$permtitle = '';
 
-		if($ownany)
+		if ($ownany)
 		{
 			if ((!empty($permissions[$permission . '_any']) && ($permissions[$permission . '_any'] == ROLEPERM_ALLOW)) || (!empty($permissions[$permission . '_own']) && ($permissions[$permission . '_own'] == ROLEPERM_ALLOW)))
 			{

@@ -303,7 +303,7 @@ function shd_load_user_perms()
 				}
 				$smcFunc['db_free_result']($query);
 			}
-			
+
 			// 2.2 Having loaded all the roles, and applied role specific changes, fuse them all together
 			$user_info['shd_permissions'] = array();
 			foreach ($role_permissions as $role => $perm_list)

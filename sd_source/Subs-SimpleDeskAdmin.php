@@ -183,7 +183,7 @@ function shd_load_action_log_entries($start = 0, $items_per_page = 10, $sort = '
 			foreach ($action['extra']['emails'] as $email_type => $recipients)
 			{
 				$this_content = '<br /><a href="' . $scripturl . '?action=helpdesk;sa=emaillog;log=' . $action['id'] . ';template=' . $email_type . '" onclick="return reqWin(this.href);">' . $txt['template_log_notify_' . $email_type] . '</a> - ';
-				
+
 				$new_content = '';
 				if (!empty($recipients['u']))
 				{

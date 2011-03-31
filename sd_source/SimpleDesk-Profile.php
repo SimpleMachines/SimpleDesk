@@ -41,7 +41,7 @@ function shd_profile_main($memID)
 
 	$context['page_title'] = $txt['shd_profile_area'] . ' - ' . $txt['shd_profile_main'];
 	$context['sub_template'] = 'shd_profile_main';
-	
+
 	$subActions = array(
 		'helpdesk' => 'shd_profile_frontpage',
 		'hd_prefs' => 'shd_profile_preferences',
@@ -148,7 +148,6 @@ function shd_profile_frontpage($memID)
 
 	$smcFunc['db_free_result']($query);
 
-	
 	$query = shd_db_query('', '
 		SELECT COUNT(id_ticket)
 		FROM {db_prefix}helpdesk_tickets
@@ -277,19 +276,16 @@ function shd_profile_show_tickets($memID)
 
 	// The time has come to choose: Tickets, or just replies?
 	$context['can_haz_replies'] = isset($_GET['sa']) && $_GET['sa'] == 'replies' ? true : false;
-	
+
 	// Navigation
 	$context['show_tickets_navigation'] = array(
 		'tickets' => array('text' => 'shd_profile_show_tickets', 'lang' => true, 'url' => $scripturl . '?action=profile;u=' . $memID . ';area=hd_showtickets;sa=tickets'),
 		'replies' => array('text' => 'shd_profile_show_replies', 'lang' => true, 'url' => $scripturl . '?action=profile;u=' . $memID . ';area=hd_showtickets;sa=replies'),
 	);
-	
+
 	// The active button.
-	if($context['can_haz_replies'])
-		$context['show_tickets_navigation']['replies']['active'] = true; 
-	else
-		$context['show_tickets_navigation']['tickets']['active'] = true;		
-		
+	$context['show_tickets_navigation'][$context['can_haz_replies'] ? 'replies' : 'tickets']['active'] = true;
+
 	// "That still only counts as one!"
 	if ($context['can_haz_replies'])
 		$request = shd_db_query('', '
@@ -301,7 +297,7 @@ function shd_profile_show_tickets($memID)
 			array(
 				'user' => $memID,
 			)
-		);	
+		);
 	else
 		$request = shd_db_query('', '
 			SELECT COUNT(hdt.id_ticket)
@@ -313,7 +309,7 @@ function shd_profile_show_tickets($memID)
 			)
 		);
 	list ($item_count) = $smcFunc['db_fetch_row']($request);
-	$smcFunc['db_free_result']($request);	
+	$smcFunc['db_free_result']($request);
 
 	// Max? Max? Where are you?
 	$request = shd_db_query('', '
@@ -344,7 +340,7 @@ function shd_profile_show_tickets($memID)
 		$max_index = $item_count < $context['start'] + $modSettings['defaultMaxMessages'] + 1 && $item_count > $context['start'] ? $item_count - $context['start'] : (int) $modSettings['defaultMaxMessages'];
 		$start = $item_count < $context['start'] + $modSettings['defaultMaxMessages'] + 1 || $item_count < $context['start'] + $modSettings['defaultMaxMessages'] ? 0 : $item_count - $context['start'] - $modSettings['defaultMaxMessages'];
 	}
-	
+
 	// Bring 'em to me!
 	$looped = false;
 	while (true)
@@ -364,7 +360,7 @@ function shd_profile_show_tickets($memID)
 				array(
 					'user' => $memID,
 				)
-			);		
+			);
 		}
 		else
 		{
@@ -381,7 +377,7 @@ function shd_profile_show_tickets($memID)
 				array(
 					'user' => $memID,
 				)
-			);		
+			);
 		}
 
 		// Hold it!
@@ -399,7 +395,7 @@ function shd_profile_show_tickets($memID)
 		censorText($row['body']);
 		censorText($row['subject']);
 
-		// Do the parsing dance! Eh... 
+		// Do the parsing dance! Eh...
 		$row['body'] = shd_format_text($row['body'], $row['smileys_enabled'], 'shd_reply_' . $row['id_msg']);
 
 		// And finally,  store the load of cr--... the results!
@@ -421,7 +417,7 @@ function shd_profile_show_tickets($memID)
 
 	// Head's up, feet's down.
 	if ($reverse)
-		$context['items'] = array_reverse($context['items'], true);	
+		$context['items'] = array_reverse($context['items'], true);
 }
 
 function shd_profile_permissions($memID)
@@ -471,7 +467,7 @@ function shd_profile_permissions($memID)
 		$context['membergroups'][$row['id_group']] = array(
 			'name' => $row['group_name'],
 			'color' => $row['online_color'],
-			'link' => '<a href="' . $scripturl . '?action=groups;sa=members;group=' . $row['id_group'] . '"' . (empty($row['online_color']) ? '' : ' style="color: ' . $row['online_color'] . ';"') . '>' . $row['group_name'] . '</a>',		
+			'link' => '<a href="' . $scripturl . '?action=groups;sa=members;group=' . $row['id_group'] . '"' . (empty($row['online_color']) ? '' : ' style="color: ' . $row['online_color'] . ';"') . '>' . $row['group_name'] . '</a>',
 		);
 	}
 

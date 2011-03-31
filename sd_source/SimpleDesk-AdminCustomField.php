@@ -123,9 +123,9 @@ function shd_admin_custom_new()
 		'field_active' => ' checked="checked"',
 		'placement' => CFIELD_PLACE_DETAILS,
 	));
-	
+
 	$context['custom_field']['options'] = array(1 => '', '', '');
-	$context['custom_field']['default_value'] = false;	
+	$context['custom_field']['default_value'] = false;
 
 }
 
@@ -160,14 +160,14 @@ function shd_admin_custom_edit()
 		$context['page_title'] = $txt['shd_admin_edit_custom_field'];
 		$context['sub_template'] = 'shd_custom_field_edit';
 		$context['custom_field']['options'] = !empty($row['field_options']) ? unserialize($row['field_options']) : array(1 => '', '', '');
-		
+
 		// If this is a textarea, we need to get its dimensions too.
-		if($context['custom_field']['field_type'] == 2)
+		if ($context['custom_field']['field_type'] == CFIELD_TYPE_LARGETEXT)
 			$context['custom_field']['dimensions'] = explode(',',$context['custom_field']['default_value']);
-			
+
 		$context['custom_field']['can_see'] = explode(',',$context['custom_field']['can_see']);
-		$context['custom_field']['can_edit'] = explode(',',$context['custom_field']['can_edit']);	
-		
+		$context['custom_field']['can_edit'] = explode(',',$context['custom_field']['can_edit']);
+
 		$context = array_merge($context, array(
 			'field_type_value' => $context['custom_field']['field_type'],
 			'field_icons' => shd_admin_cf_icons(),
@@ -176,8 +176,7 @@ function shd_admin_custom_edit()
 			'field_active' => $context['custom_field']['active'] == 1 ? ' checked="checked"' : '',
 			'placement' => $context['custom_field']['placement'],
 		));
-		
-		
+
 	}
 	else
 	{
@@ -196,7 +195,7 @@ function shd_admin_custom_save()
 	global $context, $smcFunc, $modSettings;
 
 	checkSession('request');
-	
+
 	// Deletifyingistuffithingi?
 	if (isset($_REQUEST['delete']))
 	{
@@ -207,17 +206,17 @@ function shd_admin_custom_save()
 				'field' => $_REQUEST['field'],
 			)
 		);
-		
+
 		// End of the road
 		redirectexit('action=admin;area=helpdesk_customfield;' . $context['session_var'] . '=' . $context['session_id']);
 	}
-	
+
 	// Aborting mission!
 	if (isset($_POST['cancel']))
 	{
 		redirectexit('action=admin;area=helpdesk_customfield;' . $context['session_var'] . '=' . $context['session_id']);
 	}
-	
+
 	// Fix all the input
 	if (trim($_POST['field_name']) == '')
 		fatal_lang_error('shd_admin_no_fieldname', false);
@@ -225,8 +224,8 @@ function shd_admin_custom_save()
 	$_POST['description'] = $smcFunc['htmlspecialchars'](isset($_POST['description']) ? $_POST['description'] : '');
 	$_POST['bbc'] = isset($_POST['bbc']) ? 1 : 0;
 	$_POST['display_empty'] = isset($_POST['display_empty']) ? 1 : 0;
-	$_POST['required'] = isset($_POST['required']) ? 1 : 0;	
-	if($_POST['required'] == 1)
+	$_POST['required'] = isset($_POST['required']) ? 1 : 0;
+	if ($_POST['required'] == 1)
 		$_POST['display_empty'] = 0;
 
 	$_POST['active'] = isset($_POST['active']) ? 1 : 0;
@@ -244,10 +243,10 @@ function shd_admin_custom_save()
 
 	$staff_see = !empty($_POST['see_staff']) ? '1' : '0';
 	$staff_edit = $staff_see == '1' && !empty($_POST['edit_staff']) ? '1' : '0';
-	
+
 	$can_see = $users_see . ',' . $staff_see;
-	$can_edit = $users_edit . ',' . $staff_edit;	
-	
+	$can_edit = $users_edit . ',' . $staff_edit;
+
 	// Select options?
 	$newOptions = array();
 	if (!empty($_POST['select_option']) && ($_POST['field_type'] == CFIELD_TYPE_SELECT || $_POST['field_type'] == CFIELD_TYPE_RADIO))
@@ -269,7 +268,7 @@ function shd_admin_custom_save()
 				$_POST['default_check'] = $k;
 		}
 		$options = serialize($newOptions);
-	}	
+	}
 
 	// Do I feel a new field being born?
 	if (isset($_REQUEST['new']))
@@ -280,9 +279,9 @@ function shd_admin_custom_save()
 			FROM {db_prefix}helpdesk_custom_fields',
 			array()
 		);
-		
+
 		$row = $smcFunc['db_fetch_assoc']($count_query);
-		
+
 		$smcFunc['db_insert']('insert',
 			'{db_prefix}helpdesk_custom_fields',
 			array(
@@ -306,7 +305,7 @@ function shd_admin_custom_save()
 		if (empty($new_field))
 			fatal_lang_error('shd_admin_could_not_create_field', false);
 
-		redirectexit('action=admin;area=helpdesk_customfield;' . $context['session_var'] . '=' . $context['session_id']);	
+		redirectexit('action=admin;area=helpdesk_customfield;' . $context['session_var'] . '=' . $context['session_id']);
 	}
 	// No? Meh. Update it is then.
 	else
@@ -342,7 +341,7 @@ function shd_admin_custom_save()
 			)
 		);
 
-		redirectexit('action=admin;area=helpdesk_customfield;' . $context['session_var'] . '=' . $context['session_id']);	
+		redirectexit('action=admin;area=helpdesk_customfield;' . $context['session_var'] . '=' . $context['session_id']);
 	}
 }
 
@@ -422,7 +421,7 @@ function shd_admin_custom_move()
 function shd_admin_cf_icons()
 {
 	global $context, $settings, $txt;
-	
+
 	$iconlist = array(
 		array('', $txt['shd_admin_custom_fields_none']),
 	);

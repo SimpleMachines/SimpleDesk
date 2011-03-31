@@ -36,7 +36,7 @@ if (!defined('SMF'))
 */
 function shd_admin_main()
 {
-	global $context, $scripturl, $sourcedir, $settings, $txt, $modSettings, $scripturl;	
+	global $context, $scripturl, $sourcedir, $settings, $txt, $modSettings, $scripturl;
 
 	shd_init();
 	shd_load_language('SimpleDeskAdmin');
@@ -810,7 +810,7 @@ function shd_credits()
 				array(
 					'title' => $txt['shd_credits_projectsupport'],
 					'desc' => $txt['shd_credits_projectsupport_desc'],
-					'icon' => 'managers.png',					
+					'icon' => 'managers.png',
 					'members' => array(
 						array('Graeme &quot;Trekkie101&quot; Spence',false),
 						array('Jeremy &quot;SleePy&quot; Darwood',false),
@@ -819,7 +819,7 @@ function shd_credits()
 				array(
 					'title' => $txt['shd_credits_marketing'],
 					'desc' => $txt['shd_credits_marketing_desc'],
-					'icon' => 'marketers.png',					
+					'icon' => 'marketers.png',
 					'members' => array(
 						array('Brannon &quot;B&ordf;&quot; Hall',false),
 					),
@@ -835,11 +835,11 @@ function shd_credits()
 				array(
 					'title' => $txt['shd_credits_support'],
 					'desc' => $txt['shd_credits_support_desc'],
-					'icon' => 'support.png',					
+					'icon' => 'support.png',
 					'members' => array(
 						array('Tyrsson',true),
 						array('Ha2',false),
-						array('Aldo &quot;hadesflames&quot; Barreras',false),				
+						array('Aldo &quot;hadesflames&quot; Barreras',false),
 					),
 				),
 				array(

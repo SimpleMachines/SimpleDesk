@@ -16,12 +16,12 @@
 function template_shd_profile_main()
 {
 	global $context, $txt, $settings, $scripturl;
-	
+
 	echo '
 	<div class="tborder shd_profile_navigation">
 		<div class="cat_bar grid_header">
 			<h3 class="catbg">
-				<img src="', $settings['default_images_url'], '/simpledesk/user.png" alt="" class="shd_icon_minihead" /> 
+				<img src="', $settings['default_images_url'], '/simpledesk/user.png" alt="" class="shd_icon_minihead" />
 				', sprintf($txt['shd_profile_heading'], $context['member']['name']), '
 			</h3>
 		</div>
@@ -34,7 +34,7 @@ function template_shd_profile_main()
 
 	echo '<br />
 				', $txt['shd_profile_tickets_assigned'], ': <a href="', $scripturl, '?action=profile;u=', $context['member']['id'], ';area=hd_showtickets">', $context['shd_numassigned'], '</a>
-					
+
 				<div class="description shd_showtickets floatright" id="shd_showtickets">
 					<a href="', $scripturl, '?action=profile;u=', $context['member']['id'], ';area=hd_showtickets">', $txt['shd_profile_view_tickets'], '</a><br />
 				</div>';
@@ -181,7 +181,7 @@ function template_shd_profile_preferences()
 function template_shd_profile_show_tickets()
 {
 	global $context, $txt, $settings, $scripturl, $options, $modSettings;
-	
+
 	echo '
 				<div class="tborder">
 					<div class="cat_bar">
@@ -191,10 +191,10 @@ function template_shd_profile_show_tickets()
 						</h3>
 					</div>
 					<p class="description">', $txt['shd_profile_show_tickets_description'], '</p>
-				</div>';		
-				
+				</div>';
+
 	// The navigation.
-	echo '<div class="shd_profile_show_tickets_nav">', template_button_strip($context['show_tickets_navigation']), '<br class="clear" /></div>';		
+	echo '<div class="shd_profile_show_tickets_nav">', template_button_strip($context['show_tickets_navigation']), '<br class="clear" /></div>';
 
 	// Pagination
 	echo '
@@ -211,7 +211,7 @@ function template_shd_profile_show_tickets()
 	{
 		// Just so we won't have to write the same thing twice. We're lazy here, y'know?
 		$item_link = '"<a href="' . $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $item['ticket'] . '.' . ($item['is_ticket'] ? '0' : ($item['start'] . '#msg' . $item['msg'])) . '">' . $item['subject'] . '</a>"';
-		
+
 		echo '
 		<div class="topic">
 			<div class="', $item['alternate'] == 0 ? 'windowbg2' : 'windowbg', ' core_posts">
@@ -271,7 +271,7 @@ function template_shd_profile_permissions()
 	}
 
 	// Regular user: carry on, sergeant.
-	echo '	
+	echo '
 					<p class="description">
 						', $txt['shd_profile_permissions_description'], '
 					</p>
@@ -375,7 +375,7 @@ function template_shd_profile_permissions()
 				if (!empty($context['member_permissions']['denied'][$permission]) || empty($context['member_permissions']['allowed'][$permission]))
 					continue;
 			}
-			
+
 			if ($category != $last_permission_cat)
 			{
 				$thisicon = '';
@@ -522,7 +522,7 @@ function template_shd_profile_navigation_above()
 		{
 			echo '
 						<li', (!empty($menuitem['is_last']) ? ' class="shd_inline_last"' : ''), '>
-							<img src="', $settings['default_images_url'], '/simpledesk/', $menuitem['image'], '" alt="x" class="floatright" /> 
+							<img src="', $settings['default_images_url'], '/simpledesk/', $menuitem['image'], '" alt="x" class="floatright" />
 							<a href="', $menuitem['link'], '"><strong>', $menuitem['text'], '</strong></a>
 							', (empty($options['use_sidebar_menu']) && empty($menuitem['is_last'])) ? '<hr />' : '', '
 						</li>';
@@ -542,7 +542,7 @@ function template_shd_profile_navigation_above()
 
 function template_shd_profile_navigation_below()
 {
-	echo'
+	echo '
 		</div>
 		<br class="clear" />';
 }

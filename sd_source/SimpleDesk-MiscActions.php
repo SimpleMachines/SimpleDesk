@@ -101,7 +101,7 @@ function shd_ticket_resolve()
 			fatal_lang_error('shd_cannot_resolve', false);
 
 		// OK, so what about any children related tickets that are still open? Eeek, could be awkward.
-		if(empty($modSettings['shd_disable_relationships']))
+		if (empty($modSettings['shd_disable_relationships']))
 		{
 			$query = shd_db_query('', '
 				SELECT COUNT(hdt.id_ticket)
@@ -304,8 +304,8 @@ function shd_ticket_relation()
 	global $context, $smcFunc, $modSettings;
 
 	checkSession('request');
-	
-	if(!empty($modSettings['shd_disable_relationships']))
+
+	if (!empty($modSettings['shd_disable_relationships']))
 		fatal_lang_error('shd_relationships_are_disabled', false);
 
 	$otherticket = isset($_REQUEST['otherticket']) ? (int) $_REQUEST['otherticket'] : 0;

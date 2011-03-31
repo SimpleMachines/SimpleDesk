@@ -35,7 +35,7 @@ if (!defined('SHD_VERSION'))
  *	- website: Website to link back to the author
  *	- version: Plugin version
  *	- compatibility: Array of supported SD version-strings
- *	
+ *
  *	includes
  *	- source: a key-value pair array of file names to include at strategic points, key name is the point to include it on, value is a filename or array of filenames to include within the plugin's dir
  *	- language: a key-value pair of array of language files to include, much like source.

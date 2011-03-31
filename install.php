@@ -301,8 +301,8 @@ $tables[] = array(
 		db_field('can_see', 'varchar', 3, '0,0'),
 		db_field('can_edit', 'varchar', 3, '0,0'),
 		db_field('display_empty', 'tinyint'),
-		db_field('required', 'tinyint'),		
-		db_field('placement', 'tinyint', 0, 1),			
+		db_field('required', 'tinyint'),
+		db_field('placement', 'tinyint', 0, 1),
 	),
 	'indexes' => array(
 		array(
@@ -320,7 +320,7 @@ $tables[] = array(
 		db_field('id_post', 'int', 0, true, true),
 		db_field('id_field', 'int'),
 		db_field('value', 'text'),
-		db_field('post_type', 'int'),	
+		db_field('post_type', 'int'),
 	),
 	'indexes' => array(
 		array(

@@ -153,7 +153,7 @@ function shd_admin_edit_role()
 		$context['membergroups'][$row['id_group']] = array(
 			'name' => $row['group_name'],
 			'color' => $row['online_color'],
-			'link' => '<a href="' . $scripturl . '?action=groups;sa=members;group=' . $row['id_group'] . '"' . (empty($row['online_color']) ? '' : ' style="color: ' . $row['online_color'] . ';"') . '>' . $row['group_name'] . '</a>',		
+			'link' => '<a href="' . $scripturl . '?action=groups;sa=members;group=' . $row['id_group'] . '"' . (empty($row['online_color']) ? '' : ' style="color: ' . $row['online_color'] . ';"') . '>' . $row['group_name'] . '</a>',
 			'stars' => $row['stars'],
 		);
 	}
@@ -193,7 +193,7 @@ function shd_admin_save_role()
 	// 1. Time for one of our sessions, mistress?
 	checkSession();
 
-	// 2. Acting in a role, are we? Is it one we have the script for?	
+	// 2. Acting in a role, are we? Is it one we have the script for?
 	$_REQUEST['role'] = isset($_REQUEST['role']) ? (int) $_REQUEST['role'] : 0;
 	shd_load_role($_REQUEST['role']);
 

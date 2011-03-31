@@ -61,11 +61,11 @@ function shd_frontpage_helpdesk(&$subactions)
 			);
 		}
 	}
-	
+
 	// Now, fix the actions
 	$subactions['main'] = array(null, 'shd_frontpage_source');
 	$subactions['tickets'] = array(null, 'shd_main_helpdesk');
-	
+
 	// Hide the 'back to helpdesk' button.
 	if (isset($_REQUEST['sa']) && in_array($_REQUEST['sa'], array('main', 'tickets', 'viewblock', 'recyclebin', 'closedtickets')))
 		unset($context['navigation']['back']);

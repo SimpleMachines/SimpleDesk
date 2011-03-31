@@ -540,7 +540,7 @@ function shd_save_ticket()
 			// Update our nice ticket store with the ticket id
 			$context['ticket_id'] = $ticketOptions['id'];
 			$context['ticket_form']['ticket'] = $ticketOptions['id'];
-			
+
 			// Handle notifications
 			require_once($sourcedir . '/sd_source/SimpleDesk-Notifications.php');
 			shd_notifications_notify_newticket($msgOptions, $ticketOptions, $posterOptions);
@@ -1125,7 +1125,7 @@ function shd_save_reply()
 			}
 
 			shd_create_ticket_post($msgOptions, $ticketOptions, $posterOptions);
-			
+
 			// Handle notifications
 			require_once($sourcedir . '/sd_source/SimpleDesk-Notifications.php');
 			shd_notifications_notify_newreply($msgOptions, $ticketOptions, $posterOptions);
@@ -1930,8 +1930,8 @@ function shd_posting_additional_options()
 function shd_check_dependencies()
 {
 	global $context, $smcFunc;
-	
-	if(!empty($modSettings['shd_disable_relationships']))
+
+	if (!empty($modSettings['shd_disable_relationships']))
 		return '';
 
 	// OK, so what about any children related tickets that are still open? Eeek, could be awkward.

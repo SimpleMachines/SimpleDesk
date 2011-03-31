@@ -95,20 +95,20 @@ function template_viewticket()
 				if (!empty($context['ticket']['ip_address']))
 					echo '
 								<li><img src="', $settings['default_images_url'], '/simpledesk/ip.png" alt="" class="shd_smallicon" /> ', $txt['shd_ticket_ip'], ': ', $context['ticket']['ip_address'], '</li>';
-			
-				echo'
+
+				echo '
 							</ul>';
-							
+
 			// Display ticket poster avatar?
 			if (!empty($modSettings['shd_display_avatar']) && empty($options['show_no_avatars']) && !empty($context['ticket']['poster_avatar']['image']))
 				echo '
 						<div class="shd_ticket_avatar">
 							', shd_profile_link($context['ticket']['poster_avatar']['image'], $context['ticket']['member']['id']), '
 						</div>';
-						
-				echo'
+
+				echo '
 						</div>';
-				
+
 			// Custom fields :D
 			if (!empty($context['ticket']['custom_fields']['details']))
 			{
@@ -139,7 +139,7 @@ function template_viewticket()
 							<li>
 									', !empty($field['icon']) ? '<img src="' . $settings['default_images_url'] . '/simpledesk/cf/' . $field['icon'] . '" alt="" class="shd_smallicon" />' : '','
 										', $field['name'],': ';
-						
+
 							if (empty($field['value']) && $field['display_empty'])
 								echo $txt['shd_ticket_empty_field'];
 							elseif (!empty($field['value']))
@@ -151,10 +151,10 @@ function template_viewticket()
 								else
 									echo $field['value'];
 							}
-								
-							echo'
+
+							echo '
 								</li>';
-						}				
+						}
 					}
 
 					echo '		</ul>
@@ -190,7 +190,7 @@ function template_viewticket()
 
 			echo $context['ticket']['subject'], '</strong><hr /><br />
 							<div id="shd_ticket_text">
-								', $context['ticket']['body'];								
+								', $context['ticket']['body'];
 
 			if ($settings['show_modify'] && !empty($context['ticket']['modified']))
 			{
@@ -200,7 +200,7 @@ function template_viewticket()
 							</div>';
 			}
 
-			echo'
+			echo '
 						</div>';
 
 			if ($context['can_reply'])
@@ -229,22 +229,22 @@ function template_viewticket()
 
 	// Left column (ticket relationships, attachments)
 	template_ticket_leftcolumn();
-	
-	echo'
+
+	echo '
 		<div class="shd_ticket_rightcolumn floatleft"', empty($context['leftcolumndone']) ? ' style="width: 100%;"' : '', '>';
-	
+
 	// Additional information (custom fields)
 	template_additional_fields();
 
 	// The replies column
 	template_viewreplies();
-	
+
 	// Our mighty quick reply box :D
 	template_quickreply();
 
 	// The ticket action log, lastly.
-	template_ticketactionlog();	
-	
+	template_ticketactionlog();
+
 	echo '
 		</div><br class="clear" />';
 
@@ -361,7 +361,7 @@ function template_viewticketattach()
 function template_additional_fields()
 {
 	global $context, $scripturl, $options, $txt, $settings;
-	
+
 	if (!empty($context['ticket']['custom_fields']['information']))
 	{
 		// No need to display anything if there isn't any content to display.
@@ -388,7 +388,7 @@ function template_additional_fields()
 						</h3>
 					</div>
 					<div class="roundframe" id="additional_info">
-						<div class="content">';	
+						<div class="content">';
 
 			foreach ($context['ticket']['custom_fields']['information'] AS $field)
 			{
@@ -415,7 +415,7 @@ function template_additional_fields()
 				</div>';
 				}
 			}
-		
+
 		echo '
 			</div>
 		</div>
@@ -634,18 +634,18 @@ function template_viewreplies()
 							<hr class="clearfix" />
 							', $reply['body'], '
 							<br /><br />';
-							
+
 		// Custom fields for replies!
-		if(!empty($context['custom_fields_replies']))
+		if (!empty($context['custom_fields_replies']))
 		{
-			echo'
-				<hr/>';
+			echo '
+							<hr />';
 
 			foreach ($context['custom_fields_replies'][$reply['id']] AS $field)
 			{
 				if ($field['display_empty'] || !empty($field['value']))
 				{
-					echo'	
+					echo '
 							', !empty($field['icon']) ? '<img src="' . $settings['default_images_url'] . '/simpledesk/cf/' . $field['icon'] . '" alt="" class="shd_smallicon" />' : '','
 							<strong>', $field['name'],': </strong>';
 
@@ -655,7 +655,7 @@ function template_viewreplies()
 						echo $field['value'], '<br /><br />';
 				}
 			}
-		}							
+		}
 
 			if ($settings['show_modify'] && !empty($reply['modified']))
 			{

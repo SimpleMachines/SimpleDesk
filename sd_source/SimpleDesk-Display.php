@@ -171,7 +171,6 @@ function shd_view_ticket()
 		'closed' => $ticketinfo['closed'],
 		'deleted' => $ticketinfo['deleted'],
 	);
-	
 
 	// IP address next
 	$context['link_ip_address'] = allowedTo('moderate_forum'); // for trackip access
@@ -239,7 +238,7 @@ function shd_view_ticket()
 	}
 
 	$context['page_index'] = shd_no_expand_pageindex($scripturl . '?action=helpdesk;sa=ticket;ticket=' . $context['ticket_id'] . '.%1$d' . (isset($_REQUEST['recycle']) ? ';recycle' : '') . '#replies', $context['ticket_start_from'], $context['total_visible_posts'], $context['messages_per_page'], true);
-	
+
 	$context['get_replies'] = 'shd_prepare_ticket_context';
 
 	$query = shd_db_query('', '
@@ -350,7 +349,7 @@ function shd_view_ticket()
 		ORDER BY cf.field_order',
 		array()
 	);
-	
+
 	// Loop through all fields and figure out where they should be.
 
 	$is_staff = shd_allowed_to('shd_staff');
@@ -380,7 +379,7 @@ function shd_view_ticket()
 		// If this is going to be displayed for the individual ticket, we need to figure out where it should go.
 		if ($row['field_loc'] & CFIELD_TICKET)
 			$pos = $placements[$row['placement']];
-		
+
 		$field = array(
 			'id' => $row['id_field'],
 			'name' => $row['field_name'],
@@ -1019,7 +1018,7 @@ function shd_attachment_info($attach_info)
 								'id_attach' => $attach_info['id_attach'],
 							)
 						);
-						
+
 						$smcFunc['db_insert']('replace',
 							'{db_prefix}helpdesk_attachments',
 							array('id_attach' => 'int', 'id_ticket' => 'int', 'id_msg' => 'int'),
