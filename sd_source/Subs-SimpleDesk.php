@@ -1478,38 +1478,7 @@ function shd_main_menu(&$menu_buttons)
 						'href' => $scripturl . '?action=admin;area=helpdesk_info',
 						'show' => SMF == 'SSI' ? false : empty($modSettings['shd_hidemenuitem']) && $helpdesk_admin,
 						'is_last' => true,
-						'sub_buttons' => array(
-							'information' => array(
-								'title' => $txt['shd_admin_info'],
-								'href' => $scripturl . '?action=admin;area=helpdesk_info',
-								'show' => SMF != 'SSI' && $helpdesk_admin,
-							),
-							'options' => array(
-								'title' => $txt['shd_admin_options'],
-								'href' => $scripturl . '?action=admin;area=helpdesk_options',
-								'show' => SMF != 'SSI' && $helpdesk_admin,
-							),
-							'custom_fields' => array(
-								'title' => $txt['shd_admin_custom_fields'],
-								'href' => $scripturl . '?action=admin;area=helpdesk_customfield',
-								'show' => SMF != 'SSI' && $helpdesk_admin,
-							),
-							'permissions' => array(
-								'title' => $txt['shd_admin_permissions'],
-								'href' => $scripturl . '?action=admin;area=helpdesk_permissions',
-								'show' => SMF != 'SSI' && $helpdesk_admin,
-							),
-							'plugins' => array(
-								'title' => $txt['shd_admin_plugins'],
-								'href' => $scripturl . '?action=admin;area=helpdesk_plugins',
-								'show' => SMF != 'SSI' && $helpdesk_admin,
-							),
-							'maintenance' => array(
-								'title' => $txt['shd_admin_maint'],
-								'href' => $scripturl . '?action=admin;area=helpdesk_maint',
-								'show' => SMF != 'SSI' && $helpdesk_admin,
-							),
-						),
+						'sub_buttons' => shd_main_menu_admin($helpdesk_admin),
 					),
 				),
 			);
@@ -1569,39 +1538,7 @@ function shd_main_menu(&$menu_buttons)
 				'href' => $scripturl . '?action=admin;area=helpdesk_info',
 				'show' => true,
 				'is_last' => true,
-				'sub_buttons' => array(
-					'information' => array(
-						'title' => $txt['shd_admin_info'],
-						'href' => $scripturl . '?action=admin;area=helpdesk_info',
-						'show' => SMF != 'SSI' && $helpdesk_admin,
-					),
-					'options' => array(
-						'title' => $txt['shd_admin_options'],
-						'href' => $scripturl . '?action=admin;area=helpdesk_options',
-						'show' => SMF != 'SSI' && $helpdesk_admin,
-					),
-					'custom_fields' => array(
-						'title' => $txt['shd_admin_custom_fields'],
-						'href' => $scripturl . '?action=admin;area=helpdesk_customfield',
-						'show' => SMF != 'SSI' && $helpdesk_admin,
-					),
-					'permissions' => array(
-						'title' => $txt['shd_admin_permissions'],
-						'href' => $scripturl . '?action=admin;area=helpdesk_permissions',
-						'show' => SMF != 'SSI' && $helpdesk_admin,
-					),
-					'plugins' => array(
-						'title' => $txt['shd_admin_plugins'],
-						'href' => $scripturl . '?action=admin;area=helpdesk_plugins',
-						'show' => SMF != 'SSI' && $helpdesk_admin,
-					),
-					'maintenance' => array(
-						'title' => $txt['shd_admin_maint'],
-						'href' => $scripturl . '?action=admin;area=helpdesk_maint',
-						'show' => SMF != 'SSI' && $helpdesk_admin,
-						'is_last' => true,
-					),
-				),
+				'sub_buttons' => shd_main_menu_admin($helpdesk_admin),
 			);
 		}
 
@@ -1662,6 +1599,33 @@ function shd_main_menu(&$menu_buttons)
 				'href' => $scripturl . '?action=helpdesk;sa=main',
 				'show' => $modSettings['helpdesk_active'] && shd_allowed_to(array('access_helpdesk', 'admin_helpdesk')),
 				'sub_buttons' => array(
+					'newticket' => array(
+						'title' => $txt['shd_new_ticket'],
+						'href' => $scripturl . '?action=helpdesk;sa=newticket',
+						'show' => SMF == 'SSI' ? false : shd_allowed_to('shd_new_ticket'),
+					),
+					'newproxyticket' => array(
+						'title' => $txt['shd_new_ticket_proxy'],
+						'href' => $scripturl . '?action=helpdesk;sa=newticket;proxy',
+						'show' => SMF == 'SSI' ? false : shd_allowed_to('shd_new_ticket') && shd_allowed_to('shd_post_proxy'),
+					),
+					'closedtickets' => array(
+						'title' => $txt['shd_tickets_closed'],
+						'href' => $scripturl . '?action=helpdesk;sa=closedtickets',
+						'show' => SMF == 'SSI' ? false : (shd_allowed_to('shd_resolve_ticket_own') || shd_allowed_to('shd_resolve_ticket_any')),
+					),
+					'recyclebin' => array(
+						'title' => $txt['shd_recycle_bin'],
+						'href' => $scripturl . '?action=helpdesk;sa=recyclebin',
+						'show' => SMF == 'SSI' ? false : shd_allowed_to('shd_access_recyclebin'),
+					),
+					'admin' => array(
+						'title' => $txt['admin'],
+						'href' => $scripturl . '?action=admin;area=helpdesk_info',
+						'show' => SMF == 'SSI' ? false : empty($modSettings['shd_hidemenuitem']) && $helpdesk_admin,
+						'is_last' => true,
+						'sub_buttons' => shd_main_menu_admin($helpdesk_admin),
+					),
 				),
 				'active_button' => false,
 			);
@@ -1693,6 +1657,44 @@ function shd_main_menu(&$menu_buttons)
 		// Now engage any hooks.
 		call_integration_hook('shd_hook_mainmenu', array(&$menu_buttons));
 	}
+}
+
+function shd_main_menu_admin($helpdesk_admin)
+{
+	global $txt, $scripturl;
+	return array(
+		'information' => array(
+			'title' => $txt['shd_admin_info'],
+			'href' => $scripturl . '?action=admin;area=helpdesk_info',
+			'show' => SMF != 'SSI' && $helpdesk_admin,
+		),
+		'options' => array(
+			'title' => $txt['shd_admin_options'],
+			'href' => $scripturl . '?action=admin;area=helpdesk_options',
+			'show' => SMF != 'SSI' && $helpdesk_admin,
+		),
+		'custom_fields' => array(
+			'title' => $txt['shd_admin_custom_fields'],
+			'href' => $scripturl . '?action=admin;area=helpdesk_customfield',
+			'show' => SMF != 'SSI' && $helpdesk_admin,
+		),
+		'permissions' => array(
+			'title' => $txt['shd_admin_permissions'],
+			'href' => $scripturl . '?action=admin;area=helpdesk_permissions',
+			'show' => SMF != 'SSI' && $helpdesk_admin,
+		),
+		'plugins' => array(
+			'title' => $txt['shd_admin_plugins'],
+			'href' => $scripturl . '?action=admin;area=helpdesk_plugins',
+			'show' => SMF != 'SSI' && $helpdesk_admin,
+		),
+		'maintenance' => array(
+			'title' => $txt['shd_admin_maint'],
+			'href' => $scripturl . '?action=admin;area=helpdesk_maint',
+			'show' => SMF != 'SSI' && $helpdesk_admin,
+			'is_last' => true,
+		),
+	);
 }
 // Cause IE is being mean to meeee again...!
 ?>
