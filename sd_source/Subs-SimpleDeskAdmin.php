@@ -75,6 +75,39 @@ function shd_load_action_log_entries($start = 0, $items_per_page = 10, $sort = '
 
 	$loaded_users = array();
 
+	// We may have to exclude some items from this depending on who the user is or is not. Forum/HD admins can always see everything.
+	$exclude = array();
+	if (!$user_info['is_admin'] && !shd_allowed_to('admin_helpdesk'))
+	{
+		// First, custom field changes only available to admins.
+		$exclude = array('cf_tktchange_admin', 'cf_rplchange_admin', 'cf_tktchgdef_admin', 'cf_rplchgdef_admin');
+		// Next, staff only things
+		if (!shd_allowed_to('shd_staff'))
+		{
+			$exclude[] = 'cf_tktchange_staffadmin';
+			$exclude[] = 'cf_rplchange_staffadmin';
+			$exclude[] = 'cf_tktchgdef_staffadmin';
+			$exclude[] = 'cf_rplchgdef_staffadmin';
+		}
+		else
+		// Next, user only things (that staff can't see)
+		{
+			$exclude[] = 'cf_tktchange_useradmin';
+			$exclude[] = 'cf_rplchange_useradmin';
+			$exclude[] = 'cf_tktchgdef_useradmin';
+			$exclude[] = 'cf_rplchgdef_useradmin';
+		}
+	}
+
+	if (!empty($exclude))
+	{
+		if (empty($clause))
+			$clause = 'la.action NOT IN ({array_string:exclude})';
+		else
+			$clause .= ' AND la.action NOT IN ({array_string:exclude})';
+	}
+	
+
 	// Without further screaming and waving, fetch the actions.
 	$request = shd_db_query('','
 		SELECT la.id_action, la.log_time, la.ip, la.action, la.id_ticket, la.id_msg, la.extra,
@@ -91,9 +124,10 @@ function shd_load_action_log_entries($start = 0, $items_per_page = 10, $sort = '
 			'start' => $start,
 			'items_per_page' => $items_per_page,
 			'order' => $order,
-			'clause' => empty($clause) ? '' : 'WHERE ' . $clause,
+			'clause' => 'WHERE ' . $clause,
 			'na' => $txt['not_applicable'],
 			'blank' => '',
+			'exclude' => $exclude,
 		)
 	);
 
@@ -236,6 +270,26 @@ function shd_load_action_log_entries($start = 0, $items_per_page = 10, $sort = '
 		{
 			$actions[$k]['action_text'] = str_replace('{othersubject}', $actions[$k]['extra']['othersubject'], $actions[$k]['action_text']);
 			$actions[$k]['action_text'] = str_replace('{otherticket}', $actions[$k]['extra']['otherticket'], $actions[$k]['action_text']);
+		}
+
+		// Custom fields?
+		if (isset($action['extra']['fieldname']))
+		{
+			if ($action['extra']['fieldtype'] == CFIELD_TYPE_CHECKBOX)
+			{
+				$action['extra']['oldvalue'] = !empty($action['extra']['oldvalue']) ? $txt['yes'] : $txt['no'];
+				$action['extra']['newvalue'] = !empty($action['extra']['newvalue']) ? $txt['yes'] : $txt['no'];
+			}
+			if ($action['extra']['fieldtype'] == CFIELD_TYPE_RADIO || $action['extra']['fieldtype'] == CFIELD_TYPE_SELECT)
+			{
+				if (empty($action['extra']['oldvalue']))
+					$action['extra']['oldvalue'] = $txt['shd_none_selected'];
+				if (empty($action['extra']['newvalue']))
+					$action['extra']['newvalue'] = $txt['shd_none_selected'];
+			}
+			$actions[$k]['action_text'] = str_replace('{fieldname}', $action['extra']['fieldname'], $actions[$k]['action_text']);
+			$actions[$k]['action_text'] = str_replace('{oldvalue}', $action['extra']['oldvalue'], $actions[$k]['action_text']);
+			$actions[$k]['action_text'] = str_replace('{newvalue}', $action['extra']['newvalue'], $actions[$k]['action_text']);
 		}
 
 		// This should be the last pair of ops - always.

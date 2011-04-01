@@ -591,7 +591,8 @@ function shd_modify_actionlog_options($return_config)
 		array('check', 'shd_logopt_privacy', 'disabled' => !empty($modSettings['shd_disable_action_log'])),
 		array('check', 'shd_logopt_urgency', 'disabled' => !empty($modSettings['shd_disable_action_log'])),
 		array('check', 'shd_logopt_tickettopicmove', 'disabled' => !empty($modSettings['shd_disable_action_log'])),
-		array('checkall', 'shd_logopt_2', array('shd_logopt_assign', 'shd_logopt_privacy', 'shd_logopt_urgency', 'shd_logopt_tickettopicmove')),
+		array('check', 'shd_logopt_cfchanges', 'disabled' => !empty($modSettings['shd_disable_action_log'])),
+		array('checkall', 'shd_logopt_2', array('shd_logopt_assign', 'shd_logopt_privacy', 'shd_logopt_urgency', 'shd_logopt_tickettopicmove', 'shd_logopt_cfchanges')),
 		'',
 		array('check', 'shd_logopt_delete', 'disabled' => !empty($modSettings['shd_disable_action_log'])),
 		array('check', 'shd_logopt_restore', 'disabled' => !empty($modSettings['shd_disable_action_log'])),
@@ -618,6 +619,7 @@ function shd_modify_actionlog_options($return_config)
 			shd_switchable_item("shd_logopt_privacy", state);
 			shd_switchable_item("shd_logopt_urgency", state);
 			shd_switchable_item("shd_logopt_tickettopicmove", state);
+			shd_switchable_item("shd_logopt_cfchanges", state);
 			shd_switchable_item("shd_logopt_delete", state);
 			shd_switchable_item("shd_logopt_restore", state);
 			shd_switchable_item("shd_logopt_permadelete", state);

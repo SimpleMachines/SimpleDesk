@@ -194,6 +194,7 @@ $txt['shd_logopt_assign'] = 'Log tickets being assigned/reassigned/unassigned';
 $txt['shd_logopt_privacy'] = 'Log ticket privacy being changed';
 $txt['shd_logopt_urgency'] = 'Log ticket urgency being changed';
 $txt['shd_logopt_tickettopicmove'] = 'Log tickets being moved to topics and back';
+$txt['shd_logopt_cfchanges'] = 'Log changes to custom fields on tickets and replies';
 $txt['shd_logopt_delete'] = 'Log tickets and replies being deleted';
 $txt['shd_logopt_restore'] = 'Log tickets and replies being restored';
 $txt['shd_logopt_permadelete'] = 'Log tickets and replies being permadeleted';

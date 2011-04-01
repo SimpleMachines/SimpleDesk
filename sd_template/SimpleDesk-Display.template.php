@@ -395,20 +395,20 @@ function template_additional_fields()
 
 			foreach ($context['ticket']['custom_fields']['information'] AS $field)
 			{
-				if ($field['display_empty'] || !empty($field['value']))
+				if ($field['display_empty'] || !empty($field['value']) || $field['type'] == CFIELD_TYPE_CHECKBOX)
 				{
 					echo '
 							<div class="description">
 							', !empty($field['icon']) ? '<img src="' . $settings['default_images_url'] . '/simpledesk/cf/' . $field['icon'] . '" alt="" class="shd_smallicon" />' : '','
 							<strong>', $field['name'],':</strong><hr />';
 
-					if (empty($field['value']) && $field['display_empty'])
+					if ($field['type'] == CFIELD_TYPE_CHECKBOX)
+						echo !empty($field['value']) ? $txt['yes'] : $txt['no'];
+					elseif (empty($field['value']) && $field['display_empty'])
 						echo $txt['shd_ticket_empty_field'];
-					elseif (isset($field['value']))
+					else
 					{
-						if ($field['type'] == CFIELD_TYPE_CHECKBOX)
-							echo !empty($field['value']) ? $txt['yes'] : $txt['no'];
-						elseif ($field['type'] == CFIELD_TYPE_SELECT || $field['type'] == CFIELD_TYPE_RADIO)
+						if ($field['type'] == CFIELD_TYPE_SELECT || $field['type'] == CFIELD_TYPE_RADIO)
 							echo $field['options'][$field['value']];
 						else
 							echo $field['value'];
@@ -646,20 +646,23 @@ function template_viewreplies()
 
 			foreach ($context['custom_fields_replies'][$reply['id']] AS $field)
 			{
-				if ($field['display_empty'] || isset($field['value']))
+				if ($field['display_empty'] || !empty($field['value']) || $field['type'] == CFIELD_TYPE_CHECKBOX)
 				{
 					echo '
 							', !empty($field['icon']) ? '<img src="' . $settings['default_images_url'] . '/simpledesk/cf/' . $field['icon'] . '" alt="" class="shd_smallicon" />' : '','
 							<strong>', $field['name'],': </strong>';
 
-					if (empty($field['value']) && $field['display_empty'])
-						echo $txt['shd_ticket_empty_field'], '<br /><br />';
-					elseif ($field['type'] == CFIELD_TYPE_CHECKBOX)
+					if ($field['type'] == CFIELD_TYPE_CHECKBOX)
 						echo !empty($field['value']) ? $txt['yes'] : $txt['no'], '<br /><br />';
-					elseif ($field['type'] == CFIELD_TYPE_RADIO || $field['type'] == CFIELD_TYPE_SELECT)
-						echo $field['options'][$field['value']], '<br /><br />';
-					elseif (!empty($field['value']))
-						echo $field['value'], '<br /><br />';
+					elseif (empty($field['value']) && $field['display_empty'])
+						echo $txt['shd_ticket_empty_field'], '<br /><br />';
+					else
+					{
+						if ($field['type'] == CFIELD_TYPE_SELECT || $field['type'] == CFIELD_TYPE_RADIO)
+							echo $field['options'][$field['value']], '<br /><br />';
+						else
+							echo $field['value'], '<br /><br />';
+					}
 				}
 			}
 		}

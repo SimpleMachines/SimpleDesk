@@ -522,6 +522,7 @@ function shd_modify_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 	// Are we updating custom fields?
 	$rows = array();
 	$rows_remove = array();
+	$context['custom_fields_updated'] = array(); // for logging later if we decide
 	if (!empty($ticketOptions['custom_fields']))
 	{
 		// Some may be pre-existing, some may need purging.
@@ -540,6 +541,15 @@ function shd_modify_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 					'value' => $field['new_value'],
 					'post_type' => CFIELD_TICKET, // See, I said so!
 				);
+				$context['custom_fields_updated'][] = array(
+					'ticket' => $ticketOptions['id'],
+					'fieldname' => $field['name'],
+					'oldvalue' => !empty($field['value']) && ($field['type'] == CFIELD_TYPE_RADIO || $field['type'] == CFIELD_TYPE_SELECT) ? $field['options'][$field['value']] : $field['value'],
+					'newvalue' => !empty($field['new_value']) && ($field['type'] == CFIELD_TYPE_RADIO || $field['type'] == CFIELD_TYPE_SELECT) ? $field['options'][$field['new_value']] : $field['new_value'],
+					'scope' => CFIELD_TICKET,
+					'visible' => $field['visible'],
+					'fieldtype' => $field['type'],
+				);
 			}
 			elseif ($field['new_value'] == $field['default_value'] && !$field['is_required'])
 			{
@@ -547,6 +557,16 @@ function shd_modify_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 					'id_post' => $ticketOptions['id'],
 					'id_field' => $field_id,
 					'post_type' => CFIELD_TICKET,
+				);
+				$context['custom_fields_updated'][] = array(
+					'ticket' => $ticketOptions['id'],
+					'fieldname' => $field['name'],
+					'oldvalue' => !empty($field['value']) && ($field['type'] == CFIELD_TYPE_RADIO || $field['type'] == CFIELD_TYPE_SELECT) ? $field['options'][$field['value']] : $field['value'],
+					'default' => true,
+					'newvalue' => $field['default_value'],
+					'scope' => CFIELD_TICKET,
+					'visible' => $field['visible'],
+					'fieldtype' => $field['type'],
 				);
 			}
 		}
@@ -567,6 +587,16 @@ function shd_modify_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 					'value' => $field['new_value'],
 					'post_type' => CFIELD_REPLY,
 				);
+				$context['custom_fields_updated'][] = array(
+					'ticket' => $ticketOptions['id'],
+					'msg' => $msgOptions['id'],
+					'fieldname' => $field['name'],
+					'oldvalue' => !empty($field['value']) && ($field['type'] == CFIELD_TYPE_RADIO || $field['type'] == CFIELD_TYPE_SELECT) ? $field['options'][$field['value']] : $field['value'],
+					'newvalue' => !empty($field['new_value']) && ($field['type'] == CFIELD_TYPE_RADIO || $field['type'] == CFIELD_TYPE_SELECT) ? $field['options'][$field['new_value']] : $field['new_value'],
+					'scope' => CFIELD_REPLY,
+					'visible' => $field['visible'],
+					'fieldtype' => $field['type'],
+				);
 			}
 			elseif ($field['new_value'] == $field['default_value'] && !$field['is_required'])
 			{
@@ -574,6 +604,17 @@ function shd_modify_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 					'id_post' => $msgOptions['id'],
 					'id_field' => $field_id,
 					'post_type' => CFIELD_REPLY,
+				);
+				$context['custom_fields_updated'][] = array(
+					'ticket' => $ticketOptions['id'],
+					'msg' => $msgOptions['id'],
+					'fieldname' => $field['name'],
+					'oldvalue' => !empty($field['value']) && ($field['type'] == CFIELD_TYPE_RADIO || $field['type'] == CFIELD_TYPE_SELECT) ? $field['options'][$field['value']] : $field['value'],
+					'default' => true,
+					'newvalue' => $field['default_value'],
+					'scope' => CFIELD_REPLY,
+					'visible' => $field['visible'],
+					'fieldtype' => $field['type'],
 				);
 			}
 		}
@@ -740,6 +781,7 @@ function shd_load_custom_fields($is_ticket = true, $ticketContext = 0)
 			'display_empty' => !empty($row['required']) ? 1 : $row['display_empty'], // Required and "selection" fields will always be displayed.
 			'bbc' => !empty($row['bbc']),
 			'is_required' => !empty($row['required']),
+			'visible' => array($user_see, $staff_see),
 			'editable' => !empty($editable),
 		);
 

@@ -617,6 +617,15 @@ function shd_save_ticket()
 
 			// DOOOOOOOO EEEEEEEEEEET NAO!
 			shd_modify_ticket_post($msgOptions, $ticketOptions, $posterOptions);
+
+			// OK, did we get any custom fields back?
+			foreach ($context['custom_fields_updated'] as $field)
+			{
+				$action = 'cf_' . ($field['scope'] == CFIELD_TICKET ? 'tkt' : 'rpl') . (empty($field['default']) ? 'change_' : 'chgdef_') . ($field['visible'][0] ? 'user' : '') . ($field['visible'][1] ? 'staff' : '') . 'admin';
+				unset($field['default'], $field['scope'], $field['visible']);
+				$field['subject'] = $ticketinfo['subject'];
+				shd_log_action($action, $field);
+			}
 			shd_clear_active_tickets($ticketinfo['id_member_started']);
 		}
 		shd_done_posting();
@@ -1172,6 +1181,15 @@ function shd_save_reply()
 
 			// DOOOOOOOO EEEEEEEEEEET NAO!
 			shd_modify_ticket_post($msgOptions, $ticketOptions, $posterOptions);
+
+			// OK, did we get any custom fields back?
+			foreach ($context['custom_fields_updated'] as $field)
+			{
+				$action = 'cf_' . ($field['scope'] == CFIELD_TICKET ? 'tkt' : 'rpl') . (empty($field['default']) ? 'change_' : 'chgdef_') . ($field['visible'][0] ? 'user' : '') . ($field['visible'][1] ? 'staff' : '') . 'admin';
+				unset($field['default'], $field['scope'], $field['visible']);
+				$field['subject'] = $ticketinfo['subject'];
+				shd_log_action($action, $field);
+			}
 			shd_clear_active_tickets($ticketinfo['id_member_started']);
 		}
 

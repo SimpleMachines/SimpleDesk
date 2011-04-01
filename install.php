@@ -68,6 +68,7 @@ if (empty($modSettings['shd_attachments_mode']))
 		'shd_logopt_privacy' => 1,
 		'shd_logopt_urgency' => 1,
 		'shd_logopt_tickettopicmove' => 1,
+		'shd_logopt_cfchange' => 1,
 		'shd_logopt_delete' => 1,
 		'shd_logopt_restore' => 1,
 		'shd_logopt_permadelete' => 1,

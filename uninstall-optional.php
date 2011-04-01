@@ -73,6 +73,7 @@ $to_remove = array(
 	'shd_logopt_privacy',
 	'shd_logopt_urgency',
 	'shd_logopt_tickettopicmove',
+	'shd_logopt_cfchanges',
 	'shd_logopt_delete',
 	'shd_logopt_restore',
 	'shd_logopt_permadelete',
