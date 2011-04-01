@@ -114,8 +114,8 @@ function shd_load_action_log_entries($start = 0, $items_per_page = 10, $sort = '
 		IFNULL(mem.id_member, 0) AS id_member, IFNULL(mem.real_name, {string:blank}) AS real_name, IFNULL(mg.group_name, {string:na}) AS group_name
 		FROM {db_prefix}helpdesk_log_action AS la
 			LEFT JOIN {db_prefix}members AS mem ON(mem.id_member = la.id_member)
-			LEFT JOIN {db_prefix}membergroups AS mg ON (mg.id_group = CASE WHEN mem.id_group = {int:reg_group_id} THEN mem.id_post_group ELSE mem.id_group END)
-		{raw:clause}
+			LEFT JOIN {db_prefix}membergroups AS mg ON (mg.id_group = CASE WHEN mem.id_group = {int:reg_group_id} THEN mem.id_post_group ELSE mem.id_group END)' . (empty($clause) ? '' : '
+		WHERE ' . $clause) . '
 		ORDER BY ' . ($sort != '' ? '{raw:sort} {raw:order}' : 'la.log_time DESC') . '
 		' . ($start != 0 ? 'LIMIT {int:start}, {int:items_per_page}' : ''),
 		array(
@@ -124,7 +124,6 @@ function shd_load_action_log_entries($start = 0, $items_per_page = 10, $sort = '
 			'start' => $start,
 			'items_per_page' => $items_per_page,
 			'order' => $order,
-			'clause' => 'WHERE ' . $clause,
 			'na' => $txt['not_applicable'],
 			'blank' => '',
 			'exclude' => $exclude,
