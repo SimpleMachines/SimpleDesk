@@ -222,7 +222,7 @@ function shd_admin_custom_save()
 		fatal_lang_error('shd_admin_no_fieldname', false);
 	$_POST['field_name'] = $smcFunc['htmlspecialchars']($_POST['field_name']);
 	$_POST['description'] = $smcFunc['htmlspecialchars'](isset($_POST['description']) ? $_POST['description'] : '');
-	$_POST['bbc'] = isset($_POST['bbc']) ? 1 : 0;
+	$_POST['bbc'] = isset($_POST['bbc']) && in_array($_POST['field_type'], array(CFIELD_TYPE_TEXT, CFIELD_TYPE_LARGETEXT)) ? 1 : 0;
 	$_POST['display_empty'] = isset($_POST['display_empty']) && $_POST['field_type'] != CFIELD_TYPE_CHECKBOX ? 1 : 0;
 	$_POST['required'] = isset($_POST['required']) ? 1 : 0;
 	if ($_POST['required'] == 1)

@@ -309,6 +309,7 @@ $txt['shd_admin_custom_field_options'] = 'Options';
 $txt['shd_admin_custom_field_options_desc'] = 'Leave option box blank to remove. Radio button selects default option.';
 $txt['shd_admin_custom_field_no_selected_default'] = 'No selected default';
 $txt['shd_admin_custom_field_bbc'] = 'Allow BBC';
+$txt['shd_admin_custom_field_bbc_note'] = 'BBC is not processed for fields used as ticket prefixes.';
 $txt['shd_admin_custom_field_bbc_off'] = 'BBC is currently <a href="%s">disabled</a> throughout the helpdesk.';
 $txt['shd_admin_custom_field_default_state'] = 'Default state';
 $txt['shd_admin_custom_field_dimensions'] = 'Dimensions';
