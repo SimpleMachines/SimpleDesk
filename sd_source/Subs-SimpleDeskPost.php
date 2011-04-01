@@ -802,6 +802,11 @@ function shd_validate_custom_fields($scope)
 	$missing_fields = array();
 	$invalid_fields = array();
 
+	// Check that while it is required, it's required where the field is appropriate, so if we're looking at a ticket field
+	// make sure that it's not marked required when we're looking at replies, and vice versa.
+	if ($field['is_required'])
+		$field['is_required'] &= ($field['field_loc'] & ($scope == 'ticket' ? CFIELD_TICKET : CFIELD_REPLY) != 0); // if in a ticket, the field must be visible in tickets
+
 	foreach ($context['ticket_form']['custom_fields'][$scope] as $field_id => $field)
 	{
 		if (!$field['editable'])
