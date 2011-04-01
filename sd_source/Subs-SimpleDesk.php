@@ -1489,15 +1489,16 @@ function shd_main_menu(&$menu_buttons)
 						'href' => $scripturl . '?action=helpdesk;sa=recyclebin',
 						'show' => SMF == 'SSI' ? false : shd_allowed_to('shd_access_recyclebin'),
 					),
-					'admin' => array(
-						'title' => $txt['admin'],
-						'href' => $scripturl . '?action=admin;area=helpdesk_info',
-						'show' => SMF == 'SSI' ? false : empty($modSettings['shd_hidemenuitem']) && $helpdesk_admin,
-						'is_last' => true,
-						'sub_buttons' => shd_main_menu_admin($helpdesk_admin),
-					),
 				),
 			);
+
+			if ($helpdesk_admin)
+				$menu_buttons['helpdesk']['sub_buttons']['admin'] = array(
+					'title' => $txt['admin'],
+					'href' => $scripturl . '?action=admin;area=helpdesk_info',
+					'show' => SMF == 'SSI' ? false : empty($modSettings['shd_hidemenuitem']) && $helpdesk_admin,
+					'sub_buttons' => shd_main_menu_admin($helpdesk_admin),
+				);
 
 			$item = false;
 			foreach ($menu_buttons['helpdesk']['sub_buttons'] as $key => $value)
@@ -1509,7 +1510,7 @@ function shd_main_menu(&$menu_buttons)
 		}
 
 		// Add the helpdesk admin option to the admin menu, if board integration is disabled.
-		if (!empty($modSettings['shd_hidemenuitem']) && (allowedTo('admin_forum') || shd_allowed_to('admin_helpdesk')))
+		if (!empty($modSettings['shd_hidemenuitem']) && $helpdesk_admin)
 		{
 			// It's possible the admin button got eaten already, so we may have to recreate it.
 			if (empty($menu_buttons['admin']))
@@ -1635,16 +1636,17 @@ function shd_main_menu(&$menu_buttons)
 						'href' => $scripturl . '?action=helpdesk;sa=recyclebin',
 						'show' => SMF == 'SSI' ? false : shd_allowed_to('shd_access_recyclebin'),
 					),
-					'admin' => array(
-						'title' => $txt['admin'],
-						'href' => $scripturl . '?action=admin;area=helpdesk_info',
-						'show' => SMF == 'SSI' ? false : empty($modSettings['shd_hidemenuitem']) && $helpdesk_admin,
-						'is_last' => true,
-						'sub_buttons' => shd_main_menu_admin($helpdesk_admin),
-					),
 				),
 				'active_button' => false,
 			);
+			if ($helpdesk_admin)
+				$menu_buttons['home']['sub_buttons']['admin'] = array(
+					'title' => $txt['admin'],
+					'href' => $scripturl . '?action=admin;area=helpdesk_info',
+					'show' => SMF == 'SSI' ? false : empty($modSettings['shd_hidemenuitem']) && $helpdesk_admin,
+					'is_last' => true,
+					'sub_buttons' => shd_main_menu_admin($helpdesk_admin),
+				);
 			unset($menu_buttons['helpdesk']);
 
 			// Disable help, search, calendar, moderation center
