@@ -163,6 +163,10 @@ function shd_load_action_log_entries($start = 0, $items_per_page = 10, $sort = '
 			'can_remove' => empty($context['waittime']) ? false : ($row['log_time'] < $context['waittime']),
 		);
 
+		// We want to use a generic icon for custom fields changes.
+		if (strpos($row['action'], 'cf_') === 0)
+			$actions[$row['id_action']]['action_icon'] = 'log_cfchange.png';
+
 		if (shd_allowed_to('shd_view_ip_any') || ($row['id_member'] == $user_info['id'] && shd_allowed_to('shd_view_ip_own')))
 			$actions[$row['id_action']]['member']['ip'] = !empty($row['ip']) ? $row['ip'] : $txt['shd_admin_actionlog_unknown'];
 	}
