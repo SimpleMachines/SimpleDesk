@@ -422,6 +422,11 @@ function shd_admin_cf_icons()
 {
 	global $context, $settings, $txt;
 
+	static $iconlist = null;
+
+	if ($iconlist !== null)
+		return $iconlist;
+
 	$iconlist = array(
 		array('', $txt['shd_admin_custom_fields_none']),
 	);

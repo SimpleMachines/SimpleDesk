@@ -175,21 +175,24 @@ function template_viewticket()
 			echo '
 						<img src="', $settings['default_images_url'], '/simpledesk/name.png" alt="" class="shd_smallicon shd_icon_minihead" /> <strong>';
 
+			$output = '';
 			foreach ($context['ticket']['custom_fields']['prefix'] AS $field)
 			{
 				if (!isset($field['value']))
 					continue;
 
 				if ($field['type'] == CFIELD_TYPE_CHECKBOX)
-					echo !empty($field['value']) ? $txt['yes'] . ' ' : $txt['no'] . ' ';
+					$output .= !empty($field['value']) ? ($txt['yes'] . ' ') : ($txt['no'] . ' ');
 				elseif ($field['type'] == CFIELD_TYPE_SELECT || $field['type'] == CFIELD_TYPE_RADIO)
 				{
 					if (!empty($field['value']))
-						echo $field['options'][$field['value']], ' ';
+						$output .= $field['options'][$field['value']] . ' ';
 				}
 				elseif (!empty($field['value']))
-					echo $field['value'], ' ';
+					$output .= $field['value'] . ' ';
 			}
+			if (!empty($output))
+				echo '[', trim($output), ']';
 
 			echo $context['ticket']['subject'], '</strong><hr /><br />
 							<div id="shd_ticket_text">
