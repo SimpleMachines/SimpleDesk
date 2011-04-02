@@ -736,8 +736,11 @@ function shd_load_custom_fields($is_ticket = true, $ticketContext = 0)
 			cf.display_empty, cf.required, cf.placement
 		FROM {db_prefix}helpdesk_custom_fields AS cf
 		WHERE cf.active = 1
+			AND cf.field_loc IN ({array_int:visibility})
 		ORDER BY cf.field_order',
-		array()
+		array(
+			'visibility' => $is_ticket ? array(CFIELD_TICKET, CFIELD_REPLY | CFIELD_TICKET) : array(CFIELD_REPLY, CFIELD_REPLY | CFIELD_TICKET),
+		)
 	);
 
 	$context['ticket_form']['custom_fields'] = array();
@@ -804,9 +807,6 @@ function shd_validate_custom_fields($scope)
 
 	foreach ($context['ticket_form']['custom_fields'][$scope] as $field_id => $field)
 	{
-		if ($field['is_required'])
-			$field['is_required'] &= ($field['field_loc'] & ($scope == 'ticket' ? CFIELD_TICKET : CFIELD_REPLY) != 0); // if in a ticket, the field must be visible in tickets
-
 		if (!$field['editable'])
 			continue;
 
