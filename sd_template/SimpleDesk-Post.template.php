@@ -178,7 +178,7 @@ function template_ticket_custom_fields()
 			if ($field['type'] == CFIELD_TYPE_TEXT)
 			{
 				echo '
-						<dd><input type="text" name="field-', $field['id'], '" value="', $field['value'], '" size="50" /></dd>';
+						<dd><input type="text" name="field-', $field['id'], '" value="', $field['value'], '" class="input_text" /></dd>';
 			}
 			// Textarea
 			elseif ($field['type'] == CFIELD_TYPE_LARGETEXT)
@@ -226,13 +226,18 @@ function template_ticket_custom_fields()
 			// Last one, radio buttons
 			elseif ($field['type'] == CFIELD_TYPE_RADIO)
 			{
+				echo '
+						<dd>';
 				if (empty($field['is_required']))
 					echo '
-						<dd><input name="field-', $field['id'], '" type="radio" value="0"', $field['value'] == 0 ? ' checked="checked"' : '', ' /> <span>', $txt['shd_no_value'], '</span></dd>';
+							<input name="field-', $field['id'], '" type="radio" value="0"', $field['value'] == 0 ? ' checked="checked"' : '', ' /> <span>', $txt['shd_no_value'], '</span><br />';
 
 				foreach ($field['options'] as $key => $option)
 					echo '
-						<dd><input name="field-', $field['id'], '" type="radio" value="', $key, '"', $field['value'] == $key ? ' checked="checked"' : '', ' /> <span>', $option, '</span></dd>';
+							<input name="field-', $field['id'], '" type="radio" value="', $key, '"', $field['value'] == $key ? ' checked="checked"' : '', ' /> <span>', $option, '</span><br />';
+
+				echo '
+						</dd>';
 			}
 			// Default to a text input field
 			else

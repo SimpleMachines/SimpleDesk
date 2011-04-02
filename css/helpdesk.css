@@ -242,6 +242,10 @@ h3.ticketheader img
 {
 	margin-top: 8px;
 }
+.shd_customfields .input_text
+{
+	width: 85%;
+}
 .shd_ticket_log_expand_container
 {
 	margin-right: 3px;

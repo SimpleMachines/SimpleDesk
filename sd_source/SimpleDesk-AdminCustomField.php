@@ -197,10 +197,19 @@ function shd_admin_custom_save()
 	checkSession('request');
 
 	// Deletifyingistuffithingi?
-	if (isset($_REQUEST['delete']))
+	if (isset($_REQUEST['delete']) && !empty($_REQUEST['field']))
 	{
+		$_REQUEST['field'] = (int) $_REQUEST['field'];
 		$smcFunc['db_query']('', '
 			DELETE FROM {db_prefix}helpdesk_custom_fields
+			WHERE id_field = {int:field}',
+			array(
+				'field' => $_REQUEST['field'],
+			)
+		);
+
+		$smcFunc['db_query']('', '
+			DELETE FROM {db_prefix}helpdesk_custom_fields_values
 			WHERE id_field = {int:field}',
 			array(
 				'field' => $_REQUEST['field'],
