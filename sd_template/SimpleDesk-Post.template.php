@@ -258,25 +258,25 @@ function template_ticket_posterrors()
 	global $context, $txt;
 
 	// Did anything go wrong?
-	if (!empty($context['shd_errors']))
-	{
-		echo '
-						<div class="errorbox" id="errors">
+	if (!isset($context['shd_errors']))
+		$context['shd_errors'] = array();
+
+	echo '
+						<div class="errorbox" id="errors"', empty($context['shd_errors']) ? ' style="display:none;"' : '', '>
 							<dl>
 								<dt>
 									<strong style="" id="error_serious">', $txt['shd_ticket_post_error'], ':</strong>
 								</dt>
 								<dt class="error" id="error_list">';
 
-		foreach ($context['shd_errors'] as $error)
-			echo '
+	foreach ($context['shd_errors'] as $error)
+		echo '
 									', $txt['error_' . $error], '<br />';
 
-		echo '
+	echo '
 								</dt>
 							</dl>
 						</div>';
-	}
 }
 
 function template_ticket_subjectbox()

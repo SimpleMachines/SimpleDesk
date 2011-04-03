@@ -260,7 +260,7 @@ function shd_main()
 
 	$context['can_new_ticket'] = shd_allowed_to('shd_new_ticket');
 	$context['can_proxy_ticket'] = $context['can_new_ticket'] && shd_allowed_to('shd_post_proxy');
-	$context['can_view_closed'] = shd_allowed_to(array('shd_resolve_ticket_own', 'shd_resolve_ticket_any'));
+	$context['can_view_closed'] = shd_allowed_to(array('shd_view_closed_own', 'shd_view_closed_any'));
 	$context['can_view_recycle'] = shd_allowed_to('shd_access_recyclebin');
 	$context['display_back_to_hd'] = !in_array($_REQUEST['sa'], array('main', 'viewblock', 'recyclebin', 'closedtickets'));
 	$context['can_view_options'] = shd_allowed_to(array('shd_view_preferences_own', 'shd_view_preferences_any'));
@@ -471,7 +471,7 @@ function shd_closed_tickets()
 {
 	global $context, $txt, $smcFunc, $user_profile, $scripturl, $settings, $user_info;
 
-	if (!shd_allowed_to('shd_resolve_ticket_own') && !shd_allowed_to('shd_resolve_ticket_any'))
+	if (!shd_allowed_to('shd_view_closed_own') && !shd_allowed_to('shd_view_closed_any'))
 		fatal_lang_error('shd_cannot_view_resolved', false);
 
 	// Stuff we need to add to $context, the permission we want to use, page title etc etc

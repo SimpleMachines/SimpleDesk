@@ -59,6 +59,15 @@ $txt['permissionname_shd_view_ticket_private_own'] = 'Own private tickets';
 $txt['permissionname_shd_view_ticket_private_any'] = 'Any private tickets';
 //@}
 
+//! @name Ticket visibility: closed
+//@{
+$txt['permissionname_shd_view_closed'] = 'Can users see closed tickets?';
+$txt['permissionhelp_shd_view_closed'] = 'This permission controls whether users can see tickets previously marked closed; might be useful for staff to be able to see closed tickets. (Note that private tickets are still honoured as such.)';
+$txt['permissionname_shd_view_closed_no'] = 'No';
+$txt['permissionname_shd_view_closed_own'] = 'Own closed tickets';
+$txt['permissionname_shd_view_closed_any'] = 'Any closed tickets';
+//@}
+
 //! @name Ticket modifications: privacy
 //@{
 $txt['permissionname_shd_alter_privacy'] = 'Change ticket privacy';

@@ -59,6 +59,7 @@ function shd_load_all_permission_sets()
 		'shd_view_ticket' => array(true, 'general', 'ticket.png'),
 		'shd_view_ticket_private' => array(true, 'general', 'ticket_private.png'),
 		'shd_view_ip' => array(true, 'general', 'ip.png'),
+		'shd_view_closed' => array(true, 'general', 'log_resolve.png'),
 
 		'shd_new_ticket' => array(false, 'posting', 'log_newticket.png'),
 		'shd_edit_ticket' => array(true, 'posting', 'log_editticket.png'),
@@ -124,6 +125,7 @@ function shd_load_role_templates()
 				'access_helpdesk' => ROLEPERM_ALLOW,
 				'shd_view_ticket_own' => ROLEPERM_ALLOW,
 				'shd_view_ticket_private_own' => ROLEPERM_ALLOW,
+				'shd_view_closed_own' => ROLEPERM_ALLOW,
 				'shd_new_ticket' => ROLEPERM_ALLOW,
 				'shd_edit_ticket_own' => ROLEPERM_ALLOW,
 				'shd_reply_ticket_own' => ROLEPERM_ALLOW,
@@ -147,6 +149,7 @@ function shd_load_role_templates()
 				'shd_staff' => ROLEPERM_ALLOW,
 				'shd_view_ticket_any' => ROLEPERM_ALLOW,
 				'shd_view_ticket_private_any' => ROLEPERM_ALLOW,
+				'shd_view_closed_any' => ROLEPERM_ALLOW,
 				'shd_view_ip_own' => ROLEPERM_ALLOW,
 				'shd_new_ticket' => ROLEPERM_ALLOW,
 				'shd_edit_ticket_any' => ROLEPERM_ALLOW,
@@ -185,6 +188,7 @@ function shd_load_role_templates()
 				'admin_helpdesk' => ROLEPERM_ALLOW,
 				'shd_view_ticket_any' => ROLEPERM_ALLOW,
 				'shd_view_ticket_private_any' => ROLEPERM_ALLOW,
+				'shd_view_closed_any' => ROLEPERM_ALLOW,
 				'shd_view_ip_any' => ROLEPERM_ALLOW,
 				'shd_new_ticket' => ROLEPERM_ALLOW,
 				'shd_edit_ticket_any' => ROLEPERM_ALLOW,
@@ -331,14 +335,26 @@ function shd_load_user_perms()
 		cache_get_data($permissions_cache, $user_info['shd_permissions'], $perm_cache_time);
 	}
 
-	if ($user_info['is_admin'])
+	if ($user_info['is_admin'] || shd_allowed_to('admin_helpdesk'))
 		$user_info['query_see_ticket'] = '1=1';
 	elseif (!shd_allowed_to('access_helpdesk'))
 		$user_info['query_see_ticket'] = '1=0'; // no point going any further if they can't access the helpdesk
 	elseif (shd_allowed_to('shd_view_ticket_any'))
-		$user_info['query_see_ticket'] = shd_allowed_to('shd_view_ticket_private_any') ? '1=1' : ('(hdt.private = 0' . (shd_allowed_to('shd_view_ticket_private_own') ? ' OR (hdt.private = 1 AND hdt.id_member_started = {int:user_info_id}))' : ')'));
+	{
+		if (shd_allowed_to('shd_view_closed_any'))
+			$user_info['query_see_ticket'] = shd_allowed_to('shd_view_ticket_private_any') ? '1=1' : ('(hdt.private = 0' . (shd_allowed_to('shd_view_ticket_private_own') ? ' OR (hdt.private = 1 AND hdt.id_member_started = {int:user_info_id}))' : ')'));
+		elseif (shd_allowed_to('shd_view_closed_own'))
+			$user_info['query_see_ticket'] = shd_allowed_to('shd_view_ticket_private_any') ? '(hdt.status != 3 OR (hdt.status = 3 AND hdt.id_member_started = {int:user_info_id}))' : ('(hdt.status != 3 OR (hdt.status = 3 AND hdt.id_member_started = {int:user_info_id})) AND (hdt.private = 0' . (shd_allowed_to('shd_view_ticket_private_own') ? ' OR (hdt.private = 1 AND hdt.id_member_started = {int:user_info_id}))' : ')'));
+		else
+			$user_info['query_see_ticket'] = shd_allowed_to('shd_view_ticket_private_any') ? 'hdt.status != 3' : ('((hdt.status != 3 AND hdt.private = 0)' . (shd_allowed_to('shd_view_ticket_private_own') ? ' OR (hdt.status != 3 AND hdt.private = 1 AND hdt.id_member_started = {int:user_info_id}))' : ')'));
+	}
 	elseif (shd_allowed_to('shd_view_ticket_own'))
-		$user_info['query_see_ticket'] = 'hdt.id_member_started = {int:user_info_id}' . (shd_allowed_to('shd_view_ticket_private_own') ? '' : ' AND hdt.private = 0');
+	{
+		if (shd_allowed_to(array('shd_view_closed_own', 'shd_view_closed_any')))
+			$user_info['query_see_ticket'] = 'hdt.id_member_started = {int:user_info_id}' . (shd_allowed_to('shd_view_ticket_private_own') ? '' : ' AND hdt.private = 0');
+		else
+			$user_info['query_see_ticket'] = 'hdt.id_member_started = {int:user_info_id} AND hdt.status != 3' . (shd_allowed_to('shd_view_ticket_private_own') ? '' : ' AND hdt.private = 0');
+	}
 	else
 		$user_info['query_see_ticket'] = '1=0';
 

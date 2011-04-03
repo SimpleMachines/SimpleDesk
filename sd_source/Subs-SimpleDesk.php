@@ -1102,7 +1102,7 @@ function shd_load_user_prefs($user = 0)
 				'type' => 'int',
 				'icon' => 'resolved.png',
 				'group' => 'blocks',
-				'permission' => array('shd_resolve_ticket_own', 'shd_resolve_ticket_any'),
+				'permission' => array('shd_view_closed_own', 'shd_view_closed_any'),
 				'show' => true,
 			),
 			'blocks_recycle_count' => array(
@@ -1482,7 +1482,7 @@ function shd_main_menu(&$menu_buttons)
 					'closedtickets' => array(
 						'title' => $txt['shd_tickets_closed'],
 						'href' => $scripturl . '?action=helpdesk;sa=closedtickets',
-						'show' => SMF == 'SSI' ? false : (shd_allowed_to('shd_resolve_ticket_own') || shd_allowed_to('shd_resolve_ticket_any')),
+						'show' => SMF == 'SSI' ? false : shd_allowed_to(array('shd_view_closed_own', 'shd_view_closed_any')),
 					),
 					'recyclebin' => array(
 						'title' => $txt['shd_recycle_bin'],
@@ -1504,9 +1504,11 @@ function shd_main_menu(&$menu_buttons)
 			foreach ($menu_buttons['helpdesk']['sub_buttons'] as $key => $value)
 				if (!empty($value['show']))
 					$item = $key;
+				else
+					unset($menu_buttons['helpdesk']['sub_buttons'][$key]);
 
 			if (!empty($item))
-				$menu_buttons['helpdesk']['sub_buttons'][$key]['is_last'] = true;
+				$menu_buttons['helpdesk']['sub_buttons'][$item]['is_last'] = true;
 		}
 
 		// Add the helpdesk admin option to the admin menu, if board integration is disabled.
@@ -1614,7 +1616,7 @@ function shd_main_menu(&$menu_buttons)
 			$menu_buttons['home'] = array(
 				'title' => $modSettings['helpdesk_active'] && SMF != 'SSI' ? shd_get_active_tickets() : $txt['shd_helpdesk'],
 				'href' => $scripturl . '?action=helpdesk;sa=main',
-				'show' => $modSettings['helpdesk_active'] && shd_allowed_to(array('access_helpdesk', 'admin_helpdesk')),
+				'show' => $modSettings['helpdesk_active'],
 				'sub_buttons' => array(
 					'newticket' => array(
 						'title' => $txt['shd_new_ticket'],
@@ -1629,7 +1631,7 @@ function shd_main_menu(&$menu_buttons)
 					'closedtickets' => array(
 						'title' => $txt['shd_tickets_closed'],
 						'href' => $scripturl . '?action=helpdesk;sa=closedtickets',
-						'show' => SMF == 'SSI' ? false : (shd_allowed_to('shd_resolve_ticket_own') || shd_allowed_to('shd_resolve_ticket_any')),
+						'show' => SMF == 'SSI' ? false : shd_allowed_to(array('shd_view_closed_own', 'shd_view_closed_any')),
 					),
 					'recyclebin' => array(
 						'title' => $txt['shd_recycle_bin'],
@@ -1647,6 +1649,17 @@ function shd_main_menu(&$menu_buttons)
 					'is_last' => true,
 					'sub_buttons' => shd_main_menu_admin($helpdesk_admin),
 				);
+
+			$item = false;
+			foreach ($menu_buttons['home']['sub_buttons'] as $key => $value)
+				if (!empty($value['show']))
+					$item = $key;
+				else
+					unset($menu_buttons['home']['sub_buttons'][$key]);
+
+			if (!empty($item))
+				$menu_buttons['home']['sub_buttons'][$item]['is_last'] = true;
+
 			unset($menu_buttons['helpdesk']);
 
 			// Disable help, search, calendar, moderation center
