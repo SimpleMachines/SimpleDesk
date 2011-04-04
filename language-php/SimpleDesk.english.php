@@ -107,6 +107,7 @@ $txt['shd_cannot_assign_other'] = 'This ticket is already assigned to another us
 $txt['shd_no_staff_assign'] = 'There are no staff configured; it is not possible to assign a ticket. Please contact your administrator.';
 $txt['shd_assigned_not_permitted'] = 'The user you have requested to assign this ticket to does not have sufficient permissions to see it.';
 $txt['shd_cannot_resolve'] = 'You do not have permission to mark this ticket as resolved.';
+$txt['shd_cannot_unresolve'] = 'You do not have permission to reopen a resolved ticket.';
 $txt['error_shd_cannot_resolve_children'] = 'This ticket cannot currently be closed; this ticket is the parent of one or more tickets that are currently open.';
 $txt['error_shd_proxy_unknown'] = 'The user this ticket is posted on behalf of does not exist.';
 $txt['shd_cannot_change_privacy'] = 'You do not have permission to alter the privacy on this ticket.';

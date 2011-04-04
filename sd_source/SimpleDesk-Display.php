@@ -496,7 +496,8 @@ function shd_view_ticket()
 	$context['can_quote'] = $context['can_reply'] && !empty($modSettings['shd_allow_ticket_bbc']);
 	$context['can_go_advanced'] = !empty($modSettings['shd_allow_ticket_bbc']) || !empty($modSettings['allow_ticket_smileys']) || shd_allowed_to('shd_post_attachment');
 	$context['shd_can_move_to_topic'] = empty($modSettings['shd_disable_tickettotopic']) && shd_allowed_to('shd_ticket_to_topic') && empty($modSettings['shd_helpdesk_only']);
-	$context['can_solve'] = !$context['ticket']['deleted'] && (shd_allowed_to('shd_resolve_ticket_any') || (shd_allowed_to('shd_resolve_ticket_own') && $context['ticket']['ticket_opener']));
+	$context['can_solve'] = !$context['ticket']['closed'] && !$context['ticket']['deleted'] && (shd_allowed_to('shd_resolve_ticket_any') || (shd_allowed_to('shd_resolve_ticket_own') && $context['ticket']['ticket_opener']));
+	$context['can_unsolve'] = $context['ticket']['closed'] && (shd_allowed_to('shd_unresolve_ticket_any') || (shd_allowed_to('shd_unresolve_ticket_own') && $context['ticket']['ticket_opener']));
 
 	// And off we go
 	$context['ticket_navigation'] = array();
@@ -516,10 +517,17 @@ function shd_view_ticket()
 	);
 	$context['ticket_navigation'][] = array(
 		'url' => $scripturl . '?action=helpdesk;sa=resolveticket;ticket=' . $context['ticket']['id'] . ';' . $context['session_var'] . '=' . $context['session_id'],
-		'icon' => !$context['ticket']['closed'] ? 'resolved' : 'unresolved',
+		'icon' => 'resolved',
 		'alt' => '*',
 		'display' => $context['can_solve'],
-		'text' => !$context['ticket']['closed'] ? 'shd_ticket_resolved' : 'shd_ticket_unresolved',
+		'text' => 'shd_ticket_resolved',
+	);
+	$context['ticket_navigation'][] = array(
+		'url' => $scripturl . '?action=helpdesk;sa=resolveticket;ticket=' . $context['ticket']['id'] . ';' . $context['session_var'] . '=' . $context['session_id'],
+		'icon' => 'unresolved',
+		'alt' => '*',
+		'display' => $context['can_unsolve'],
+		'text' => 'shd_ticket_unresolved',
 	);
 
 	// This is always going to be a pain. But it should be possible to contextualise it nicely.

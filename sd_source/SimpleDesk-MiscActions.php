@@ -97,8 +97,10 @@ function shd_ticket_resolve()
 	{
 		$smcFunc['db_free_result']($query);
 
-		if (!shd_allowed_to('shd_resolve_ticket_any') && (!shd_allowed_to('shd_resolve_ticket_own') || $row['id_member_started'] != $user_info['id']))
-			fatal_lang_error('shd_cannot_resolve', false);
+		$action = ($row['status'] != TICKET_STATUS_CLOSED) ? 'resolve' : 'unresolve';
+
+		if (!shd_allowed_to('shd_' . $action . '_ticket_any') && (!shd_allowed_to('shd_' . $action . '_ticket_own') || $row['id_member_started'] != $user_info['id']))
+			fatal_lang_error('shd_cannot_' . $action, false);
 
 		// OK, so what about any children related tickets that are still open? Eeek, could be awkward.
 		if (empty($modSettings['shd_disable_relationships']))
@@ -122,7 +124,6 @@ function shd_ticket_resolve()
 				fatal_lang_error('error_shd_cannot_resolve_children', false);
 		}
 
-		$action = ($row['status'] != TICKET_STATUS_CLOSED) ? 'resolve' : 'unresolve';
 		$new = shd_determine_status($action, $row['id_member_started'], $row['id_member_updated'], $row['num_replies']);
 
 		shd_db_query('', '

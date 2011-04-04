@@ -99,10 +99,19 @@ $txt['permissionname_shd_assign_ticket_any'] = 'Any staff member';
 //! @name Ticket modification: resolution
 //@{
 $txt['permissionname_shd_resolve_ticket'] = 'Mark a ticket resolved';
-$txt['permissionhelp_shd_resolve_ticket'] = 'This permission allows users to mark tickets resolved, and mark completed tickets as unresolved if there is further business to attend to.';
+$txt['permissionhelp_shd_resolve_ticket'] = 'This permission allows users to mark tickets resolved.';
 $txt['permissionname_shd_resolve_ticket_no'] = 'No tickets';
 $txt['permissionname_shd_resolve_ticket_own'] = 'Their own tickets';
 $txt['permissionname_shd_resolve_ticket_any'] = 'Any tickets';
+//@}
+
+//! @name Ticket modification: resolution
+//@{
+$txt['permissionname_shd_unresolve_ticket'] = 'Mark a ticket unresolved';
+$txt['permissionhelp_shd_unresolve_ticket'] = 'This permission allows users to mark tickets unresolved, if there is further business to attend to. Note that this permission requires the ability to view closed tickets in order to work.';
+$txt['permissionname_shd_unresolve_ticket_no'] = 'No tickets';
+$txt['permissionname_shd_unresolve_ticket_own'] = 'Their own tickets';
+$txt['permissionname_shd_unresolve_ticket_any'] = 'Any tickets';
 //@}
 
 //! @name Ticket posting: new ticket

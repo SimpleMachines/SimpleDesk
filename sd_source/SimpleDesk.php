@@ -792,7 +792,7 @@ function shd_helpdesk_listing()
 			if ($row['status'] == TICKET_STATUS_CLOSED)
 			{
 				$new_block['actions'] += array(
-					'resolve' => shd_allowed_to('shd_resolve_ticket_any') || ($is_own && shd_allowed_to('shd_resolve_ticket_own')) ? '<a href="' . $scripturl . '?action=helpdesk;sa=resolveticket;ticket=' . $row['id_ticket'] . ';home;' . $context['session_var'] . '=' . $context['session_id'] . '" title="' . $txt['shd_ticket_unresolved'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/unresolved.png" alt="' . $txt['shd_ticket_unresolved'] . '" /></a>' : '',
+					'resolve' => shd_allowed_to('shd_unresolve_ticket_any') || ($is_own && shd_allowed_to('shd_unresolve_ticket_own')) ? '<a href="' . $scripturl . '?action=helpdesk;sa=resolveticket;ticket=' . $row['id_ticket'] . ';home;' . $context['session_var'] . '=' . $context['session_id'] . '" title="' . $txt['shd_ticket_unresolved'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/unresolved.png" alt="' . $txt['shd_ticket_unresolved'] . '" /></a>' : '',
 				);
 			}
 			elseif ($row['status'] == TICKET_STATUS_DELETED) // and thus, we're in the recycle bin
