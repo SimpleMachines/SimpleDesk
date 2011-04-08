@@ -158,25 +158,26 @@ function template_shd_edit_dept()
 	global $context, $settings, $txt, $modSettings, $scripturl;
 
 	echo '
-				<div class="tborder">
-					<div class="cat_bar">
+				<form action="', $scripturl, '?action=admin;area=helpdesk_depts;sa=savedept" method="post">
+					<div class="tborder">
+						<div class="cat_bar">
+							<h3 class="catbg">
+								<img src="', $settings['default_images_url'], '/simpledesk/departments.png" class="icon" alt="*" />
+								', $txt['shd_admin_departments_home'], '
+							</h3>
+						</div>
+						<p class="description">
+							', $txt['shd_admin_departments_homedesc'], '
+						</p>
+					</div>
+					<div class="cat_bar grid_header">
 						<h3 class="catbg">
-							<img src="', $settings['default_images_url'], '/simpledesk/departments.png" class="icon" alt="*" />
-							', $txt['shd_admin_departments_home'], '
+							<img src="', $settings['default_images_url'], '/simpledesk/position.png" alt="*" />
+							', $txt['shd_edit_dept'], '
 						</h3>
 					</div>
-					<p class="description">
-						', $txt['shd_admin_departments_homedesc'], '
-					</p>
-				</div>
-				<div class="cat_bar grid_header">
-					<h3 class="catbg">
-						<img src="', $settings['default_images_url'], '/simpledesk/position.png" alt="*" />
-						', $txt['shd_edit_dept'], '
-					</h3>
-				</div>
-				<div class="roundframe">
-					<form action="', $scripturl, '?action=admin;area=helpdesk_depts;sa=savedept" method="post">
+
+					<div class="roundframe">
 						<div class="content">
 							<dl class="settings">
 								<dt><strong>', $txt['shd_department_name'], '</strong></dt>
@@ -200,13 +201,58 @@ function template_shd_edit_dept()
 								</dd>
 							</dl>
 						</div>
+					</div>
+					<span class="lowerframe"><span></span></span>
+					<br />
+					<div class="tborder floatleft" style="width: 100%;">
+						<div class="cat_bar grid_header">
+							<h3 class="catbg sd_no_margin">
+								<img src="', $settings['default_images_url'], '/simpledesk/roles.png" alt="*" />
+								', $txt['shd_roles_in_dept'], '
+							</h3>
+						</div>
+						<p class="description shd_actionloginfo">
+							', $txt['shd_roles_in_dept_desc'], '
+						</p>
+						<table class="shd_ticketlist" cellspacing="0" width="100%">
+							<tr class="titlebg">
+								<td width="50%">', $txt['shd_role'], '</td>
+								<td>', $txt['shd_assign_dept'], '</td>
+							</tr>';
+
+	$use_bg2 = true;
+	if (!empty($context['shd_roles']))
+	{
+		foreach ($context['shd_roles'] as $id_role => $role)
+		{
+			echo '
+							<tr class="', ($use_bg2 ? 'windowbg2' : 'windowbg'), '">
+								<td><img src="', $settings['default_images_url'], '/simpledesk/', $context['shd_permissions']['roles'][$role['template']]['icon'], '"> <a href="', $scripturl, '?action=admin;area=helpdesk_permissions;sa=editrole;role=', $role['id_role'], '">', $role['role_name'], '</a></td>
+								<td><input type="checkbox" class="input_check" name="role', $id_role, '"', !empty($role['in_dept']) ? ' checked="checked"' : '', ' /></td>
+							</tr>';
+
+			$use_bg2 = !$use_bg2;
+		}
+	}
+	else
+		echo '
+							<tr class="windowbg2">
+								<td colspan="2">', $txt['shd_no_defined_roles'], '</td>
+							</tr>';
+
+	echo '
+						</table>
+						<br />
+					</div>
+
+					<div class="floatleft">
 						<input type="submit" value="', $txt['shd_edit_dept'], '" onclick="return submitThisOnce(this);" accesskey="s" class="button_submit" />
 						<input type="submit" value="', $txt['shd_delete_dept'], '" onclick="return confirm(' . JavaScriptEscape($txt['shd_delete_dept_confirm']) . ');" name="delete" class="button_submit" />
 						<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 						<input type="hidden" name="dept" value="', $context['shd_dept']['id_dept'], '" />
-					</form>
-				</div>
-				<span class="lowerframe"><span></span></span>';
+					</div>
+				</form>
+				<br class="clear" />';
 }
 
 ?>

@@ -151,6 +151,8 @@ function shd_admin_edit_dept()
 {
 	global $context, $txt, $smcFunc, $scripturl;
 
+	shd_load_language('SimpleDeskPermissions');
+
 	$_REQUEST['dept'] = isset($_REQUEST['dept']) ? (int) $_REQUEST['dept'] : 0;
 
 	// Get the current department
@@ -181,6 +183,27 @@ function shd_admin_edit_dept()
 	while ($row = $smcFunc['db_fetch_assoc']($request))
 		$context['shd_cat_list'][$row['id_cat']] = $row['name'];
 	$smcFunc['db_free_result']($request);
+
+	// Now the role list
+	$query = $smcFunc['db_query']('', '
+		SELECT id_role, template, role_name
+		FROM {db_prefix}helpdesk_roles
+		ORDER BY id_role');
+	while ($row = $smcFunc['db_fetch_assoc']($query))
+		$context['shd_roles'][$row['id_role']] = $row;
+	$smcFunc['db_free_result']($query);
+
+	$query = $smcFunc['db_query']('', '
+		SELECT id_role
+		FROM {db_prefix}helpdesk_dept_roles
+		WHERE id_dept = {int:dept}',
+		array(
+			'dept' => $_REQUEST['dept'],
+		)
+	);
+	while ($row = $smcFunc['db_fetch_assoc']($query))
+		$context['shd_roles'][$row['id_role']]['in_dept'] = true;
+	$smcFunc['db_free_result']($query);
 
 	$context['page_title'] = $txt['shd_edit_dept'];
 	$context['sub_template'] = 'shd_edit_dept';
@@ -298,7 +321,58 @@ function shd_admin_save_dept()
 		)
 	);
 
-	// 7. Thank you and good night.
+	// 7. Now update the list of roles attached to this department.
+	$add = array();
+	$remove = array();
+
+	// 7a. Get the list of roles and start from there.
+	$query = $smcFunc['db_query']('', '
+		SELECT id_role
+		FROM {db_prefix}helpdesk_roles');
+	while ($row = $smcFunc['db_fetch_assoc']($query))
+	{
+		if (!empty($_POST['role' . $row['id_role']]))
+			$add[] = $row['id_role'];
+		else
+			$remove[] = $row['id_role'];
+	}
+	$smcFunc['db_free_result']($query);
+
+	// 7b. Any to remove?
+	if (!empty($remove))
+	{
+		$smcFunc['db_query']('', '
+			DELETE FROM {db_prefix}helpdesk_dept_roles
+			WHERE id_role IN ({array_int:role})
+				AND id_dept = {int:dept}',
+			array(
+				'dept' => $_REQUEST['dept'],
+				'role' => $remove,
+			)
+		);
+	}
+
+	// 7c. Any to add?
+	if (!empty($add))
+	{
+		$insert = array();
+		foreach ($add as $add_role)
+			$insert[] = array($add_role, $_REQUEST['dept']);
+
+		$smcFunc['db_insert']('replace',
+			'{db_prefix}helpdesk_dept_roles',
+			array(
+				'id_role' => 'int', 'id_dept' => 'int',
+			),
+			$insert,
+			array(
+				'id_role', 'id_dept',
+			)
+		);
+	
+	}
+
+	// 8. Thank you and good night.
 	redirectexit('action=admin;area=helpdesk_depts');
 }
 ?>

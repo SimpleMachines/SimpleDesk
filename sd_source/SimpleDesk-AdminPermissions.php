@@ -232,6 +232,14 @@ function shd_admin_save_role()
 			)
 		);
 
+		$smcFunc['db_query']('', '
+			DELETE FROM {db_prefix}helpdesk_dept_roles
+			WHERE id_role = {int:role}',
+			array(
+				'role' => $_REQUEST['role'],
+			)
+		);
+
 		// Bat out of hell
 		redirectexit('action=admin;area=helpdesk_permissions');
 	}

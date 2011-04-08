@@ -359,6 +359,10 @@ $txt['shd_could_not_create_dept'] = 'The department could not be created.';
 $txt['shd_unknown_dept'] = 'The specified department does not exist.';
 $txt['shd_must_have_dept'] = 'You cannot delete the only department; one must always exist.';
 $txt['shd_dept_not_empty'] = 'You cannot delete this category, it contains at least one ticket.';
+$txt['shd_roles_in_dept'] = 'Roles Within This Department';
+$txt['shd_roles_in_dept_desc'] = 'Elsewhere in the admin panel, roles are created and given abilities. This panel controls which roles are applicable to this department, for example you may wish to create multiple departments with a single shared staff role.';
+$txt['shd_no_defined_roles'] = 'There are no roles defined, please configure them from the Permissions area.';
+$txt['shd_assign_dept'] = 'Assign Role/Department';
 //@}
 
 //! Plugins
