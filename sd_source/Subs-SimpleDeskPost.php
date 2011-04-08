@@ -544,7 +544,7 @@ function shd_modify_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 				$context['custom_fields_updated'][] = array(
 					'ticket' => $ticketOptions['id'],
 					'fieldname' => $field['name'],
-					'oldvalue' => !empty($field['value']) && ($field['type'] == CFIELD_TYPE_RADIO || $field['type'] == CFIELD_TYPE_SELECT) ? $field['options'][$field['value']] : $field['value'],
+					'oldvalue' => !empty($field['value']) && ($field['type'] == CFIELD_TYPE_RADIO || $field['type'] == CFIELD_TYPE_SELECT) ? $field['options'][$field['value']] : (empty($field['value']) ? ($field['type'] != CFIELD_TYPE_LARGETEXT ? $field['default_value'] : '') : $field['value']),
 					'newvalue' => !empty($field['new_value']) && ($field['type'] == CFIELD_TYPE_RADIO || $field['type'] == CFIELD_TYPE_SELECT) ? $field['options'][$field['new_value']] : $field['new_value'],
 					'scope' => CFIELD_TICKET,
 					'visible' => $field['visible'],
