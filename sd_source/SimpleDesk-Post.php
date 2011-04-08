@@ -425,7 +425,14 @@ function shd_save_ticket()
 	{
 		loadMemberData($ticketinfo['starter_id']);
 		if (loadMemberContext($ticketinfo['starter_id']))
-			$context['ticket_form']['member']['avatar'] = $memberContext[$ticketinfo['starter_id']]['avatar'];
+		{
+			$context['ticket_form']['member'] = array(
+				'name' => $ticketinfo['starter_name'],
+				'id' => $ticketinfo['starter_id'],
+				'link' => shd_profile_link($ticketinfo['starter_name'], $ticketinfo['starter_id']),
+				'avatar' => $memberContext[$ticketinfo['starter_id']]['avatar'],
+			);
+		}
 	}
 
 	shd_load_attachments();

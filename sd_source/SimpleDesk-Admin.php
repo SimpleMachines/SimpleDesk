@@ -66,6 +66,7 @@ function shd_admin_main()
 		'helpdesk_info' => array(null, 'shd_admin_info'),
 		'helpdesk_options' => array(null, 'shd_admin_options'),
 		'helpdesk_customfield' => array('SimpleDesk-AdminCustomField.php', 'shd_admin_custom'),
+		'helpdesk_depts' => array('SimpleDesk-AdminDepartments.php', 'shd_admin_departments'),
 		'helpdesk_permissions' => array('SimpleDesk-AdminPermissions.php', 'shd_admin_permissions'),
 		'helpdesk_plugins' => array('SimpleDesk-AdminPlugins.php', 'shd_admin_plugins'),
 		'helpdesk_maint' => array('SimpleDesk-AdminMaint.php', 'shd_admin_maint'),

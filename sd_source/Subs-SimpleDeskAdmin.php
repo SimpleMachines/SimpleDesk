@@ -401,6 +401,14 @@ function shd_admin_bootstrap(&$admin_areas)
 					'subsections' => array(
 					),
 				),
+				'helpdesk_depts' => array(
+					'label' => $txt['shd_admin_departments'],
+					'file' => 'sd_source/SimpleDesk-Admin.php',
+					'icon' => 'shd/departments.png',
+					'function' => 'shd_admin_main',
+					'subsections' => array(
+					),
+				),
 				'helpdesk_permissions' => array(
 					'label' => $txt['shd_admin_permissions'],
 					'file' => 'sd_source/SimpleDesk-Admin.php',

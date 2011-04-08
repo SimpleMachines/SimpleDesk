@@ -1693,36 +1693,45 @@ function shd_main_menu(&$menu_buttons)
 function shd_main_menu_admin($helpdesk_admin)
 {
 	global $txt, $scripturl;
+
+	if (SMF == 'SSI' || !$helpdesk_admin)
+		return array();
+
 	return array(
 		'information' => array(
 			'title' => $txt['shd_admin_info'],
 			'href' => $scripturl . '?action=admin;area=helpdesk_info',
-			'show' => SMF != 'SSI' && $helpdesk_admin,
+			'show' => true,
 		),
 		'options' => array(
 			'title' => $txt['shd_admin_options'],
 			'href' => $scripturl . '?action=admin;area=helpdesk_options',
-			'show' => SMF != 'SSI' && $helpdesk_admin,
+			'show' => true,
 		),
 		'custom_fields' => array(
 			'title' => $txt['shd_admin_custom_fields'],
 			'href' => $scripturl . '?action=admin;area=helpdesk_customfield',
-			'show' => SMF != 'SSI' && $helpdesk_admin,
+			'show' => true,
+		),
+		'departments' => array(
+			'title' => $txt['shd_admin_departments'],
+			'href' => $scripturl . '?action=admin;area=helpdesk_depts',
+			'show' => true,
 		),
 		'permissions' => array(
 			'title' => $txt['shd_admin_permissions'],
 			'href' => $scripturl . '?action=admin;area=helpdesk_permissions',
-			'show' => SMF != 'SSI' && $helpdesk_admin,
+			'show' => true,
 		),
 		'plugins' => array(
 			'title' => $txt['shd_admin_plugins'],
 			'href' => $scripturl . '?action=admin;area=helpdesk_plugins',
-			'show' => SMF != 'SSI' && $helpdesk_admin,
+			'show' => true,
 		),
 		'maintenance' => array(
 			'title' => $txt['shd_admin_maint'],
 			'href' => $scripturl . '?action=admin;area=helpdesk_maint',
-			'show' => SMF != 'SSI' && $helpdesk_admin,
+			'show' => true,
 			'is_last' => true,
 		),
 	);

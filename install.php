@@ -41,7 +41,7 @@ elseif (!defined('SMF')) // If we are outside SMF and can't find SSI.php, then t
 if (SMF == 'SSI')
 	db_extend('packages');
 
-global $modSettings, $smcFunc;
+global $modSettings, $smcFunc, $txt;
 
 // For our BBC settings, we first fetch a list off all BBC tags there are.
 $bbc_tags = array();
@@ -139,6 +139,7 @@ $tables[] = array(
 	'table_name' => '{db_prefix}helpdesk_tickets',
 	'columns' => array(
 		db_field('id_ticket', 'mediumint', 0, true, true),
+		db_field('id_dept', 'smallint'),
 		db_field('id_first_msg', 'int'),
 		db_field('id_member_started', 'mediumint'),
 		db_field('id_last_msg', 'int'),
@@ -400,8 +401,42 @@ $tables[] = array(
 	'error' => 'fatal',
 	'parameters' => array(),
 );
+$tables[] = array(
+	'table_name' => '{db_prefix}helpdesk_depts',
+	'columns' => array(
+		db_field('id_dept', 'smallint', 0, true, true),
+		db_field('dept_name', 'varchar', 50),
+		db_field('board_cat', 'smallint'),
+		db_field('before_after', 'tinyint'),
+	),
+	'indexes' => array(
+		array(
+			'columns' => array('id_dept'),
+			'type' => 'primary',
+		),
+	),
+	'if_exists' => 'update',
+	'error' => 'fatal',
+	'parameters' => array(),
+);
+$tables[] = array(
+	'table_name' => '{db_prefix}helpdesk_dept_roles',
+	'columns' => array(
+		db_field('id_role', 'smallint'),
+		db_field('id_dept', 'smallint'),
+	),
+	'indexes' => array(
+		array(
+			'columns' => array('id_role', 'id_dept'),
+			'type' => 'primary',
+		),
+	),
+	'if_exists' => 'update',
+	'error' => 'fatal',
+	'parameters' => array(),
+);
 
-// Oh joy, we've now made it to extra rows... (testing data)
+// Oh joy, we've now made it to extra rows...
 $rows = array();
 $rows[] = array(
 	'method' => 'replace',
@@ -484,6 +519,42 @@ foreach ($columns as $column)
 // Add integration hooks, if any
 foreach ($hooks as $hook)
 	add_integration_function($hook['hook'], $hook['function'], $hook['perm']);
+
+// SimpleDesk specific, after schema changes
+// If this is an upgraded 1.0 installation, we won't have any departments. Make sure we create one, if possible using the right language strings.
+loadLanguage('SimpleDesk', 'english', false);
+loadLanguage('SimpleDesk', '', false);
+$query = $smcFunc['db_query']('', 'SELECT COUNT(*) FROM {db_prefix}helpdesk_depts');
+list($count) = $smcFunc['db_fetch_row']($query);
+$smcFunc['db_free_result']($query);
+if (empty($count))
+{
+	$smcFunc['db_insert']('replace',
+		'{db_prefix}helpdesk_depts',
+		array(
+			'dept_name' => 'string', 'board_cat' => 'int', 'before_after' => 'int',
+		),
+		array(
+			!empty($txt['shd_helpdesk']) ? $txt['shd_helpdesk'] : 'Helpdesk', 0, 0,
+		),
+		array('id_dept')
+	);
+
+	// Having made a new department, we need to move any outstanding tickets into it, if they didn't have a department already.
+	$new_dept = $smcFunc['db_insert_id']('{db_prefix}helpdesk_depts', 'id_dept');
+	if (!empty($new_dept))
+	{
+		$smcFunc['db_query']('', '
+			UPDATE {db_prefix}helpdesk_tickets
+			SET id_dept = {int:new_dept}
+			WHERE id_dept = {int:old_dept}',
+			array(
+				'new_dept' => $new_dept,
+				'old_dept' => 0,
+			)
+		);
+	}
+}
 
 // Are we done?
 if (SMF == 'SSI')

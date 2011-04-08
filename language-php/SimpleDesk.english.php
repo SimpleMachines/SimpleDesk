@@ -167,6 +167,7 @@ $txt['shd_options'] = 'Options';
 $txt['shd_admin_info'] = 'Information';
 $txt['shd_admin_options'] = 'Options';
 $txt['shd_admin_custom_fields'] = 'Custom Fields';
+$txt['shd_admin_departments'] = 'Departments';
 $txt['shd_admin_permissions'] = 'Permissions';
 $txt['shd_admin_plugins'] = 'Plugins';
 $txt['shd_admin_maint'] = 'Maintenance';

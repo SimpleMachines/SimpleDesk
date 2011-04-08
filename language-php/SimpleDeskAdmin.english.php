@@ -335,6 +335,23 @@ $txt['shd_admin_custom_field_placement_information'] = 'Additional information (
 $txt['shd_admin_custom_field_placement_prefix'] = 'As a prefix to the ticket\'s title';
 //@}
 
+//! Departments
+//@{
+$txt['shd_admin_departments_home'] = 'Helpdesk Departments';
+$txt['shd_admin_departments_homedesc'] = 'Within the helpdesk environment, one or more different areas - "departments" - are created for organizing tickets and access.';
+$txt['shd_department'] = 'Department';
+$txt['shd_dept_boardindex'] = 'Display on Board Index?';
+$txt['shd_dept_no_boardindex'] = 'Do not display on board index';
+$txt['shd_dept_inside_category'] = 'On board index, inside category';
+$txt['shd_dept_cat_before_boards'] = 'Before all the boards in this category';
+$txt['shd_dept_cat_after_boards'] = 'After all the boards in this category';
+$txt['shd_roles_in_dept'] = 'Roles in this Dept.';
+$txt['shd_create_dept'] = 'Create New Department';
+$txt['shd_edit_dept'] = 'Edit Department';
+$txt['shd_no_roles_in_dept'] = 'There are no roles in this department.';
+$txt['shd_new_dept_name'] = 'New Department Name';
+//@}
+
 //! Plugins
 //@{
 $txt['shd_admin_plugins_homedesc'] = 'This area allows you to manage any additional components for SimpleDesk. They are installed through the Package Manager as regular mods, and configured from here.';
