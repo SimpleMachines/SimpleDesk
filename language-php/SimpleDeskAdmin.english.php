@@ -350,6 +350,10 @@ $txt['shd_create_dept'] = 'Create New Department';
 $txt['shd_edit_dept'] = 'Edit Department';
 $txt['shd_no_roles_in_dept'] = 'There are no roles in this department.';
 $txt['shd_new_dept_name'] = 'New Department Name';
+$txt['shd_dept_boardindex_cat'] = 'Display this department in the board index in category';
+$txt['shd_no_dept_name'] = 'No department name was specified.';
+$txt['shd_no_category'] = 'The specified category does not exist. Please go back and reload the page.';
+$txt['shd_could_not_create_dept'] = 'The department could not be created.';
 //@}
 
 //! Plugins
