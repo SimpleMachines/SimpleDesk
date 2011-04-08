@@ -122,7 +122,7 @@ function shd_admin_create_dept()
 		else
 			$_POST['dept_cat'] = (int) $_POST['dept_cat'];
 
-		$_POST['dept_beforeafter'] = empty($_POST['dept_beforeafter']) ? 0 : 1;
+		$_POST['dept_beforeafter'] = empty($_POST['dept_beforeafter']) || empty($_POST['dept_cat']) ? 0 : 1;
 
 		// Create the department
 		$smcFunc['db_insert']('insert',
@@ -142,9 +142,163 @@ function shd_admin_create_dept()
 		if (empty($newdept))
 			fatal_lang_error('shd_could_not_create_dept', false);
 
-		// Take them to the main screen!
-		redirectexit('action=admin;area=helpdesk_depts');
+		// Take them to the edit screen!
+		redirectexit('action=admin;area=helpdesk_depts;sa=editdept;dept=' . $newdept);
 	}
 }
 
+function shd_admin_edit_dept()
+{
+	global $context, $txt, $smcFunc, $scripturl;
+
+	$_REQUEST['dept'] = isset($_REQUEST['dept']) ? (int) $_REQUEST['dept'] : 0;
+
+	// Get the current department
+	$query = $smcFunc['db_query']('', '
+		SELECT id_dept, dept_name, board_cat, before_after
+		FROM {db_prefix}helpdesk_depts
+		WHERE id_dept = {int:dept}',
+		array(
+			'dept' => $_REQUEST['dept'],
+		)
+	);
+	if ($smcFunc['db_num_rows']($query) == 0)
+	{
+		$smcFunc['db_free_result']($query);
+		fatal_lang_error('shd_unknown_dept', false);
+	}
+	$context['shd_dept'] = $smcFunc['db_fetch_assoc']($query);
+	$smcFunc['db_free_result']($query);
+
+	// Get the category list
+	$context['shd_cat_list'] = array(
+		0 => $txt['shd_boardindex_cat_none'],
+	);
+	$request = $smcFunc['db_query']('', '
+		SELECT id_cat, name
+		FROM {db_prefix}categories
+		ORDER BY cat_order');
+	while ($row = $smcFunc['db_fetch_assoc']($request))
+		$context['shd_cat_list'][$row['id_cat']] = $row['name'];
+	$smcFunc['db_free_result']($request);
+
+	$context['page_title'] = $txt['shd_edit_dept'];
+	$context['sub_template'] = 'shd_edit_dept';
+}
+
+function shd_admin_save_dept()
+{
+	global $context, $txt, $smcFunc, $scripturl;
+
+	// 1. Check they've come from this session
+	checkSession();
+
+	// 2. Check it's a valid department.
+	$_REQUEST['dept'] = isset($_REQUEST['dept']) ? (int) $_REQUEST['dept'] : 0;
+	$query = $smcFunc['db_query']('', '
+		SELECT id_dept, dept_name, board_cat, before_after
+		FROM {db_prefix}helpdesk_depts
+		WHERE id_dept = {int:dept}',
+		array(
+			'dept' => $_REQUEST['dept'],
+		)
+	);
+	if ($smcFunc['db_num_rows']($query) == 0)
+	{
+		$smcFunc['db_free_result']($query);
+		fatal_lang_error('shd_unknown_dept', false);
+	}
+	$context['shd_dept'] = $smcFunc['db_fetch_assoc']($query);
+	$smcFunc['db_free_result']($query);
+
+	// 3. We might be deleting. If so, do our business and exit stage left.
+	if (isset($_POST['delete']))
+	{
+		// OK, so how many categories are there? If there's only one, we can't delete it.
+		$query = $smcFunc['db_query']('', '
+			SELECT COUNT(*)
+			FROM {db_prefix}helpdesk_depts');
+		list($count) = $smcFunc['db_fetch_row']($query);
+		if ($count == 1)
+			fatal_lang_error('shd_must_have_dept', false);
+
+		// What about it having tickets in it?
+		$query = $smcFunc['db_query']('', '
+			SELECT COUNT(id_ticket)
+			FROM {db_prefix}helpdesk_tickets
+			WHERE id_dept = {int:dept}',
+			array(
+				'dept' => $_REQUEST['dept'],
+			)
+		);
+		list($count) = $smcFunc['db_fetch_row']($query);
+		if (!empty($count))
+			fatal_lang_error('shd_dept_not_empty', false);
+
+		// Oops, bang you're dead.
+		$smcFunc['db_query']('', '
+			DELETE FROM {db_prefix}helpdesk_depts
+			WHERE id_dept = {int:dept}',
+			array(
+				'dept' => $_REQUEST['dept'],
+			)
+		);
+
+		$smcFunc['db_query']('', '
+			DELETE FROM {db_prefix}helpdesk_dept_roles
+			WHERE id_dept = {int:dept}',
+			array(
+				'dept' => $_REQUEST['dept'],
+			)
+		);
+
+		// Bat out of hell
+		redirectexit('action=admin;area=helpdesk_depts');
+	}
+
+	// 4. Get the list of categories, so we can validate that in a moment.
+	$context['shd_cat_list'] = array(
+		0 => $txt['shd_boardindex_cat_none'],
+	);
+	$request = $smcFunc['db_query']('', '
+		SELECT id_cat, name
+		FROM {db_prefix}categories
+		ORDER BY cat_order');
+	while ($row = $smcFunc['db_fetch_assoc']($request))
+		$context['shd_cat_list'][$row['id_cat']] = $row['name'];
+	$smcFunc['db_free_result']($request);
+
+	// 5. Get the stuff in the form.
+	// 5a. That there's something in the dept. name
+	if (!isset($_POST['dept_name']) || $smcFunc['htmltrim']($smcFunc['htmlspecialchars']($_POST['dept_name'])) === '')
+		fatal_lang_error('shd_no_dept_name', false);
+	else
+		$_POST['dept_name'] = strtr($smcFunc['htmlspecialchars']($_POST['dept_name']), array("\r" => '', "\n" => '', "\t" => ''));
+
+	// 5b. Now to check the category exists and where we're putting it in the category.
+	if (!isset($_POST['dept_cat']) || !isset($context['shd_cat_list'][$_POST['dept_cat']]))
+		fatal_lang_error('shd_invalid_category', false);
+	else
+		$_POST['dept_cat'] = (int) $_POST['dept_cat'];
+
+	$_POST['dept_beforeafter'] = empty($_POST['dept_beforeafter']) || empty($_POST['dept_cat']) ? 0 : 1;
+
+	// 6. Commit that to DB.
+	$smcFunc['db_query']('', '
+		UPDATE {db_prefix}helpdesk_depts
+		SET dept_name = {string:dept_name},
+			board_cat = {int:board_cat},
+			before_after = {int:before_after}
+		WHERE id_dept = {int:id_dept}',
+		array(
+			'id_dept' => $_REQUEST['dept'],
+			'dept_name' => $_POST['dept_name'],
+			'board_cat' => $_POST['dept_cat'],
+			'before_after' => $_POST['dept_beforeafter'],
+		)
+	);
+
+	// 7. Thank you and good night.
+	redirectexit('action=admin;area=helpdesk_depts');
+}
 ?>

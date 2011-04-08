@@ -339,7 +339,7 @@ $txt['shd_admin_custom_field_placement_prefix'] = 'As a prefix to the ticket\'s 
 //@{
 $txt['shd_admin_departments_home'] = 'Helpdesk Departments';
 $txt['shd_admin_departments_homedesc'] = 'Within the helpdesk environment, one or more different areas - "departments" - are created for organizing tickets and access.';
-$txt['shd_department'] = 'Department';
+$txt['shd_department_name'] = 'Department Name';
 $txt['shd_dept_boardindex'] = 'Display on Board Index?';
 $txt['shd_dept_no_boardindex'] = 'Do not display on board index';
 $txt['shd_dept_inside_category'] = 'On board index, inside category';
@@ -348,12 +348,17 @@ $txt['shd_dept_cat_after_boards'] = 'After all the boards in this category';
 $txt['shd_roles_in_dept'] = 'Roles in this Dept.';
 $txt['shd_create_dept'] = 'Create New Department';
 $txt['shd_edit_dept'] = 'Edit Department';
+$txt['shd_delete_dept'] = 'Delete Department';
+$txt['shd_delete_dept_confirm'] = 'Do you really want to delete this department?';
 $txt['shd_no_roles_in_dept'] = 'There are no roles in this department.';
 $txt['shd_new_dept_name'] = 'New Department Name';
 $txt['shd_dept_boardindex_cat'] = 'Display this department in the board index in category';
 $txt['shd_no_dept_name'] = 'No department name was specified.';
 $txt['shd_no_category'] = 'The specified category does not exist. Please go back and reload the page.';
 $txt['shd_could_not_create_dept'] = 'The department could not be created.';
+$txt['shd_unknown_dept'] = 'The specified department does not exist.';
+$txt['shd_must_have_dept'] = 'You cannot delete the only department; one must always exist.';
+$txt['shd_dept_not_empty'] = 'You cannot delete this category, it contains at least one ticket.';
 //@}
 
 //! Plugins

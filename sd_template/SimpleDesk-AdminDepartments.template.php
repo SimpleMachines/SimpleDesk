@@ -32,7 +32,7 @@ function template_shd_departments_home()
 						<tbody><tr class="titlebg">
 							<td width="2%"></td>
 							<td width="25%" class="shd_nowrap">
-								', $txt['shd_department'], '
+								', $txt['shd_department_name'], '
 							</td>
 							<td>', $txt['shd_dept_boardindex'], '</td>
 							<td width="40%" class="shd_nowrap">
@@ -48,7 +48,7 @@ function template_shd_departments_home()
 							<td></td>
 							<td>
 								', $department['dept_name'], '
-								<div class="smalltext">[<a href="', $scripturl, '?action=admin;area=helpdesk_depts;sa=editdept;dept=', $role['id_dept'], '">', $txt['shd_edit_dept'], '</a>]</div></td>
+								<div class="smalltext">[<a href="', $scripturl, '?action=admin;area=helpdesk_depts;sa=editdept;dept=', $department['id_dept'], '">', $txt['shd_edit_dept'], '</a>]</div></td>
 							<td>';
 
 		if (!empty($department['cat_name']))
@@ -148,6 +148,62 @@ function template_shd_create_dept()
 						<input type="submit" value="', $txt['shd_create_dept'], '" onclick="return submitThisOnce(this);" accesskey="s" class="button_submit" />
 						<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 						<input type="hidden" name="seqnum" value="', $context['form_sequence_number'], '" />
+					</form>
+				</div>
+				<span class="lowerframe"><span></span></span>';
+}
+
+function template_shd_edit_dept()
+{
+	global $context, $settings, $txt, $modSettings, $scripturl;
+
+	echo '
+				<div class="tborder">
+					<div class="cat_bar">
+						<h3 class="catbg">
+							<img src="', $settings['default_images_url'], '/simpledesk/departments.png" class="icon" alt="*" />
+							', $txt['shd_admin_departments_home'], '
+						</h3>
+					</div>
+					<p class="description">
+						', $txt['shd_admin_departments_homedesc'], '
+					</p>
+				</div>
+				<div class="cat_bar grid_header">
+					<h3 class="catbg">
+						<img src="', $settings['default_images_url'], '/simpledesk/position.png" alt="*" />
+						', $txt['shd_edit_dept'], '
+					</h3>
+				</div>
+				<div class="roundframe">
+					<form action="', $scripturl, '?action=admin;area=helpdesk_depts;sa=savedept" method="post">
+						<div class="content">
+							<dl class="settings">
+								<dt><strong>', $txt['shd_department_name'], '</strong></dt>
+								<dd><input type="text" name="dept_name" id="dept_name" value="', $context['shd_dept']['dept_name'], '" class="input_text" size="30" /></dd>
+								<dt><strong>', $txt['shd_dept_boardindex_cat'], '</strong></dt>
+								<dd>
+									<select name="dept_cat" id="dept_cat" onchange="document.getElementById(\'dept_beforeafter\').disabled = (this.value == 0);">';
+	foreach ($context['shd_cat_list'] as $id_cat => $cat_name)
+		echo '
+										<option value="', $id_cat, '"', $context['shd_dept']['board_cat'] == $id_cat ? ' selected="selected"' : '', '>', $cat_name, '</option>';
+
+	echo '
+									</select>
+								</dd>
+								<dt><strong>', $txt['shd_boardindex_cat_where'], '</strong></dt>
+								<dd>
+									<select name="dept_beforeafter" id="dept_beforeafter"', $context['shd_dept']['board_cat'] == 0 ? ' disabled="disabled"' : '', '>
+										<option value="0"', $context['shd_dept']['before_after'] == 0 ? ' selected="selected"' : '', '>', $txt['shd_boardindex_cat_before'], '</option>
+										<option value="1"', $context['shd_dept']['before_after'] == 1 ? ' selected="selected"' : '', '>', $txt['shd_boardindex_cat_after'], '</option>
+									</select>
+								</dd>
+							</dl>
+						</div>
+						<input type="submit" value="', $txt['shd_edit_dept'], '" onclick="return submitThisOnce(this);" accesskey="s" class="button_submit" />
+						<input type="submit" value="', $txt['shd_delete_dept'], '" onclick="return confirm(' . JavaScriptEscape($txt['shd_delete_dept_confirm']) . ');" name="delete" class="button_submit" />
+						<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
+						<input type="hidden" name="dept" value="', $context['shd_dept']['id_dept'], '" />
 					</form>
 				</div>
 				<span class="lowerframe"><span></span></span>';
