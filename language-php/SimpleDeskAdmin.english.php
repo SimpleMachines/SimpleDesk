@@ -137,12 +137,8 @@ $txt['shd_ticketnav_style_smf'] = 'SMF style (text buttons, above the ticket)';
 $txt['shd_theme'] = 'Use a specific theme in the forum?';
 $txt['shd_theme_note'] = 'Normally the helpdesk will inherit the theme a user has picked, or failing that the forum default. This option allows you to pick a theme that will always be used in the helpdesk regardless of other settings.';
 $txt['shd_theme_use_default'] = 'Use the forum default theme';
-$txt['shd_boardindex_cat'] = 'Display SimpleDesk in the board index in this category:';
-$txt['shd_boardindex_cat_none'] = 'No category (do not show)';
-$txt['shd_boardindex_cat_where'] = 'Where in the category should it show?';
-$txt['shd_boardindex_cat_before'] = 'Before any boards';
-$txt['shd_boardindex_cat_after'] = 'After any boards';
 $txt['shd_hidemenuitem'] = 'Hide the Helpdesk menu item?';
+$txt['shd_hidemenuitem_note'] = 'This is most useful if helpdesk departments are presented on the board index.';
 //@}
 
 //! @name Configuration items on the Posting Options page
@@ -363,6 +359,10 @@ $txt['shd_roles_in_dept'] = 'Roles Within This Department';
 $txt['shd_roles_in_dept_desc'] = 'Elsewhere in the admin panel, roles are created and given abilities. This panel controls which roles are applicable to this department, for example you may wish to create multiple departments with a single shared staff role.';
 $txt['shd_no_defined_roles'] = 'There are no roles defined, please configure them from the Permissions area.';
 $txt['shd_assign_dept'] = 'Assign Role/Department';
+$txt['shd_boardindex_cat_none'] = 'No category (do not show)';
+$txt['shd_boardindex_cat_where'] = 'Where in the category should it show?';
+$txt['shd_boardindex_cat_before'] = 'Before any boards';
+$txt['shd_boardindex_cat_after'] = 'After any boards';
 //@}
 
 //! Plugins

@@ -36,74 +36,156 @@ function shd_add_to_boardindex(&$boardIndexOptions, &$categories)
 	if (!empty($board))
 		return;
 
-	if (empty($categories[$modSettings['shd_boardindex_cat']]))
+	// OK, so what helpdesks are we displaying?
+	$depts = shd_allowed_to('access_helpdesk', false);
+	if (empty($depts))
+		return;
+
+	$cat_list = array();
+	$query = $smcFunc['db_query']('', '
+		SELECT id_dept, dept_name, board_cat, before_after
+		FROM {db_prefix}helpdesk_depts
+		WHERE id_dept IN ({array_int:depts})
+		ORDER BY before_after DESC, id_dept',
+		array(
+			'depts' => $depts,
+		)
+	);
+	$depts = array_flip($depts);
+	while ($row = $smcFunc['db_fetch_assoc']($query))
 	{
-		// OK, so the category is otherwise empty and devoid of boards (since the lookup gets boards first) - go get it.
+		$depts[$row['id_dept']] = $row;
+		$cat_list[] = $row['board_cat'];
+		$context['dept_list'][$row['id_dept']] = array(
+			'id_dept' => $row['id_dept'],
+			'dept_name' => $row['dept_name'],
+			'tickets' => array(
+				'open' => 0,
+				'closed' => 0,
+				'assigned' => 0,
+			),
+		);
+	}
+	$cat_list = array_unique($cat_list);
+
+	// Do we have all these categories?
+	foreach ($cat_list as $k => $v)
+		if (!empty($categories[$v]))
+			unset($cat_list[$k]);
+
+	if (!empty($cat_list))
+	{
+		// Uh oh, we have to load a category or two.
+		$new_cats = array();
 		$request = $smcFunc['db_query']('', '
 			SELECT c.id_cat, c.name, c.can_collapse, IFNULL(cc.id_member, 0) AS is_collapsed
 			FROM {db_prefix}categories AS c
 				LEFT JOIN {db_prefix}collapsed_categories AS cc ON (cc.id_cat = c.id_cat AND cc.id_member = {int:current_member})
-			WHERE c.id_cat = {int:cat}',
+			WHERE c.id_cat IN ({array_int:cat})',
 			array(
-				'cat' => $modSettings['shd_boardindex_cat'],
+				'cat' => $cat_list,
 				'current_member' => $context['user']['id'],
 			)
 		);
-		if ($smcFunc['db_num_rows']($request) == 0)
+		while ($this_cat = $smcFunc['db_fetch_assoc']($request))
 		{
-			// Uh oh. We didn't find the category, bye then.
-			$smcFunc['db_free_result']($request);
-			return;
+			$new_cats[$this_cat['id_cat']] = array(
+				'id' => $this_cat['id_cat'],
+				'name' => $this_cat['name'],
+				'is_collapsed' => isset($this_cat['can_collapse']) && $this_cat['can_collapse'] == 1 && $this_cat['is_collapsed'] > 0,
+				'can_collapse' => isset($this_cat['can_collapse']) && $this_cat['can_collapse'] == 1,
+				'collapse_href' => isset($this_cat['can_collapse']) ? $scripturl . '?action=collapse;c=' . $this_cat['id_cat'] . ';sa=' . ($this_cat['is_collapsed'] > 0 ? 'expand;' : 'collapse;') . $context['session_var'] . '=' . $context['session_id'] . '#c' . $this_cat['id_cat'] : '',
+				'collapse_image' => isset($this_cat['can_collapse']) ? '<img src="' . $settings['images_url'] . '/' . ($this_cat['is_collapsed'] > 0 ? 'expand.gif" alt="+"' : 'collapse.gif" alt="-"') . ' />' : '',
+				'href' => $scripturl . '#c' . $this_cat['id_cat'],
+				'boards' => array(),
+				'new' => false,
+			);
+			$new_cats[$this_cat['id_cat']]['link'] = '<a id="c' . $this_cat['id_cat'] . '" href="' . (isset($this_cat['can_collapse']) ? $new_cats[$this_cat['id_cat']]['collapse_href'] : $new_cats[$this_cat['id_cat']]['href']) . '">' . $this_cat['name'] . '</a>';
 		}
-		$this_cat = $smcFunc['db_fetch_assoc']($request);
 		$smcFunc['db_free_result']($request);
 
-		// OK, so let's create the category.
-		$old_categories = $categories;
-		$old_categories[$this_cat['id_cat']] = array(
-			'id' => $this_cat['id_cat'],
-			'name' => $this_cat['name'],
-			'is_collapsed' => isset($this_cat['can_collapse']) && $this_cat['can_collapse'] == 1 && $this_cat['is_collapsed'] > 0,
-			'can_collapse' => isset($this_cat['can_collapse']) && $this_cat['can_collapse'] == 1,
-			'collapse_href' => isset($this_cat['can_collapse']) ? $scripturl . '?action=collapse;c=' . $this_cat['id_cat'] . ';sa=' . ($this_cat['is_collapsed'] > 0 ? 'expand;' : 'collapse;') . $context['session_var'] . '=' . $context['session_id'] . '#c' . $this_cat['id_cat'] : '',
-			'collapse_image' => isset($this_cat['can_collapse']) ? '<img src="' . $settings['images_url'] . '/' . ($this_cat['is_collapsed'] > 0 ? 'expand.gif" alt="+"' : 'collapse.gif" alt="-"') . ' />' : '',
-			'href' => $scripturl . '#c' . $this_cat['id_cat'],
-			'boards' => array(),
-			'new' => false,
-		);
-		$old_categories[$this_cat['id_cat']]['link'] = '<a id="c' . $this_cat['id_cat'] . '" href="' . (isset($this_cat['can_collapse']) ? $old_categories[$this_cat['id_cat']]['collapse_href'] : $old_categories[$this_cat['id_cat']]['href']) . '">' . $this_cat['name'] . '</a>';
+		// So, did we add any new categories? If we didn't, something's wrong - abort safely NOW.
+		if (empty($new_cats))
+			return;
+
+		// OK, so we have some categories to integrate.
+		$old_cats = $categories;
 		$categories = array();
 
-		// Now get the order of categories.
-		$cat_order = array();
 		$request = $smcFunc['db_query']('', '
 			SELECT id_cat
 			FROM {db_prefix}categories
 			ORDER BY cat_order');
 		while ($row = $smcFunc['db_fetch_assoc']($request))
-			$cat_order[] = $row['id_cat'];
+		{
+			if (isset($old_cats[$row['id_cat']]))
+				$categories[$row['id_cat']] = $old_cats[$row['id_cat']];
+			elseif (isset($new_cats[$row['id_cat']]))
+				$categories[$row['id_cat']] = $new_cats[$row['id_cat']];
+		}
 		$smcFunc['db_free_result']($request);
-
-		foreach ($cat_order as $cat)
-			if (isset($old_categories[$cat]))
-				$categories[$cat] = $old_categories[$cat];
 	}
 
-	// So, OK, the category exists. Now we need to create our magic board, and implant it.
-	$new_board = array(
-		'id' => 'shd',
-		'name' => $txt['shd_helpdesk'],
+	// So, OK, the categories exist. Now we need to create our magic boards, and integrate them.
+	// First we do the after's, in order.
+	foreach ($depts as $dept)
+	{
+		if (empty($dept['before_after']))
+			continue;
+		$dept['link'] = count($depts) != 0 ? ';dept=' . $dept['id_dept'] : '';
+		$new_board = shd_dept_board($dept);
+
+		$categories[$dept['board_cat']]['boards'][$new_board['id']] = $new_board;
+	}
+
+	// OK, now for the before's. Because we're merging, that means we're doing them last-first.
+	$depts = array_reverse($depts);
+	foreach ($depts as $dept)
+	{
+		if (!empty($dept['before_after']))
+			continue;
+		$dept['link'] = count($depts) != 0 ? ';dept=' . $dept['id_dept'] : '';
+		$new_board = shd_dept_board($dept);
+
+		$categories[$dept['board_cat']]['boards'] = array_merge(
+			array($new_board['id'] => $new_board),
+			$categories[$dept['board_cat']]['boards']
+		);
+	}
+
+	// Last but not least, fix up the replacements.
+	shd_get_ticket_counts();
+	
+	//$open_tickets = shd_count_helpdesk_tickets('open');
+	if (empty($context['shd_buffer_preg_replacements']))
+		$context['shd_buffer_preg_replacements'] = array();
+
+	foreach ($context['dept_list'] as $dept => $dept_details)
+	{
+		$dept_id = '~' . preg_quote(comma_format(-$dept), '~') . '\s+' . preg_quote($txt['redirects'], '~') . '~';
+		$context['shd_buffer_preg_replacements'][$dept_id] = $dept_details['tickets']['open'] . ' ' . ($dept_details['tickets']['open'] == 1 ? $txt['shd_open_ticket'] : $txt['shd_open_tickets']);
+	}
+}
+
+function shd_dept_board($dept)
+{
+	global $txt, $scripturl;
+
+	return array(
+		'id' => 'shd' . $dept['id_dept'],
+		'shd' => true,
+		'name' => $dept['dept_name'],
 		'description' => '',
 		'new' => false,
 		'children_new' => false,
 		'topics' => 0,
-		'posts' => -1, // !!! This will later be the number of department
+		'posts' => -$dept['id_dept'], // !!! This will later be the number of department
 		'is_redirect' => true,
 		'unapproved_topics' => 0,
 		'unapproved_posts' => 0,
 		'can_approve_posts' => false,
-		'href' => $scripturl . '?action=helpdesk;sa=main',
-		'link' => '<a href="' . $scripturl . '?action=helpdesk;sa=main">' . $txt['shd_helpdesk'] . '</a>',
+		'href' => $scripturl . '?action=helpdesk;sa=main' . $dept['link'],
+		'link' => '<a href="' . $scripturl . '?action=helpdesk;sa=main' . $dept['link'] . '">' . $dept['dept_name'] . '</a>',
 		'last_post' => array(
 			'id' => 0,
 			'time' => $txt['not_applicable'],
@@ -121,27 +203,6 @@ function shd_add_to_boardindex(&$boardIndexOptions, &$categories)
 			'href' => '',
 			'link' => $txt['not_applicable'],
 		),
-	);
-
-	if (empty($modSettings['shd_boardindex_cat_where']) || $modSettings['shd_boardindex_cat_where'] == 'before')
-	{
-		// Positioning it in the category before all the boards
-		$categories[$modSettings['shd_boardindex_cat']]['boards'] = array_merge(
-			array($new_board['id'] => $new_board),
-			$categories[$modSettings['shd_boardindex_cat']]['boards']
-		);
-	}
-	else
-	{
-		// Positioning it in the category after all the boards
-		$categories[$modSettings['shd_boardindex_cat']]['boards'][$new_board['id']] = $new_board;
-	}
-
-	$open_tickets = shd_count_helpdesk_tickets('open');
-	if (empty($context['shd_buffer_preg_replacements']))
-		$context['shd_buffer_preg_replacements'] = array();
-	$context['shd_buffer_preg_replacements'] += array(
-		'~\-1\s+' . preg_quote($txt['redirects'], '~') . '~i' => $open_tickets . ' ' . ($open_tickets == 1 ? $txt['shd_open_ticket'] : $txt['shd_open_tickets']),
 	);
 }
 

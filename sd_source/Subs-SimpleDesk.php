@@ -1437,7 +1437,7 @@ function shd_main_menu(&$menu_buttons)
 		$helpdesk_admin = $context['user']['is_admin'] || shd_allowed_to('admin_helpdesk', 0);
 
 		// 1. Add the main menu if we can.
-		if (shd_allowed_to(array('access_helpdesk', 'admin_helpdesk'), 0) && (empty($modSettings['shd_boardindex_cat']) || empty($modSettings['shd_hidemenuitem'])))
+		if (shd_allowed_to(array('access_helpdesk', 'admin_helpdesk'), 0) && empty($modSettings['shd_hidemenuitem']))
 		{
 			// Because some items may have been removed at this point, let's try a list of possible places after which we can add the button.
 			$order = array('search', 'profile', 'forum', 'pm', 'help', 'home');

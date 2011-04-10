@@ -362,7 +362,7 @@ function shd_load_user_perms()
 		$context['shd_depts_list'] = array();
 		$query = $smcFunc['db_query']('', '
 			SELECT id_dept
-			FROM {db_prefix}helpdesk_dept_roles'
+			FROM {db_prefix}helpdesk_depts'
 		);
 		while ($row = $smcFunc['db_fetch_assoc']($query))
 			$context['shd_depts_list'][] = $row['id_dept'];

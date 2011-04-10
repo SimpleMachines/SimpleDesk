@@ -86,8 +86,6 @@ $to_remove = array(
 	'shd_thank_you_nonstaff',
 	'shd_theme',
 	// Board integration
-	'shd_boardindex_cat',
-	'shd_boardindex_cat_where',
 	'shd_hidemenuitem',
 	// Email notifications
 	'shd_notify_new_ticket',
