@@ -49,8 +49,17 @@ function shd_main()
 	if (!$modSettings['helpdesk_active'])
 		fatal_lang_error('shd_inactive', false);
 
+	// Let's be sneaky. Can they only access one department? If they can only access one department, put them there and make a note of it for later.
+	$depts = shd_allowed_to('access_helpdesk', false);
+	$context['shd_multi_dept'] = true;
+	if (count($depts) == 1)
+	{
+		$_REQUEST['dept'] = $depts[0];
+		$context['shd_multi_dept'] = false;
+	}
+
 	$context['shd_department'] = isset($_REQUEST['dept']) ? (int) $_REQUEST['dept'] : 0;
-	$context['shd_dept_link'] = !empty($context['shd_department']) ? ';dept=' . $context['shd_department'] : '';
+	$context['shd_dept_link'] = !empty($context['shd_department']) && $context['shd_multi_dept'] ? ';dept=' . $context['shd_department'] : '';
 	shd_is_allowed_to('access_helpdesk', $context['shd_department']);
 
 	// Load stuff: preferences the core template - and any hook-required files
@@ -107,6 +116,7 @@ function shd_main()
 		),
 		'departments' => array(
 			'text' => 'shd_departments',
+			'test' => 'shd_multi_dept',
 			'lang' => true,
 			'url' => $scripturl . '?action=helpdesk;sa=dept',
 		),

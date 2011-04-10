@@ -456,13 +456,13 @@ function shd_view_ticket()
 
 	// Build the link tree. If the ticket is recycled, display 'Recycle bin', else 'Tickets'.
 	$context['linktree'][] = array(
-		'url' => $context['ticket']['status']['level'] == TICKET_STATUS_DELETED ? $scripturl . '?action=helpdesk;sa=recyclebin;dept=' . $context['ticket']['dept'] : $scripturl . '?' . $context['shd_home'] . ';dept=' . $context['ticket']['dept'],
+		'url' => $context['ticket']['status']['level'] == TICKET_STATUS_DELETED ? $scripturl . '?action=helpdesk;sa=recyclebin' . $context['shd_dept_link'] : $scripturl . '?' . $context['shd_home'] . $context['shd_dept_link'],
 		'name' => $context['ticket']['status']['level'] == TICKET_STATUS_DELETED ? $txt['shd_recycle_bin'] : $txt['shd_linktree_tickets'],
 	);
 	// If it's closed, add that to the linktree.
 	if ($context['ticket']['status']['level'] == TICKET_STATUS_CLOSED)
 		$context['linktree'][] = array(
-			'url' => $scripturl . '?action=helpdesk;sa=closedtickets;dept=' . $context['ticket']['dept'],
+			'url' => $scripturl . '?action=helpdesk;sa=closedtickets' . $context['shd_dept_link'],
 			'name' => $txt['shd_tickets_closed'],
 		);
 	// Lastly add the ticket name and link.
