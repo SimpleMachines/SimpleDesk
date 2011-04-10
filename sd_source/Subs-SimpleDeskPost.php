@@ -65,6 +65,7 @@ if (!defined('SMF'))
  *	<li>status: Integer to denote new status of the ticket, defaults to TICKET_STATUS_NEW. Calling function to determine new status.</li>
  *	<li>urgency: Semi-optional integer with the ticket urgency; required for a new ticket, ignored if adding a reply. If not stated on a new ticket, TICKET_URGENCY_LOW will be used.</li>
  *	<li>assigned: Optional integer of user id, used to create a ticket with assignment, ignored if not a new ticket.</li>
+ *	<li>dept: Required if creating a new ticket, to indicate which department the ticket should belong to.</li>
  *	</ul>
  *
  *	@param array &$posterOptions A hash array by reference, containing details of the person the reply is written by.
@@ -194,12 +195,12 @@ function shd_create_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 		$smcFunc['db_insert']('',
 			'{db_prefix}helpdesk_tickets',
 			array(
-				'id_first_msg' => 'int', 'id_member_started' => 'int', 'id_last_msg' => 'int',  'id_member_updated' => 'int',
-				'id_member_assigned' => 'int', 'subject' => 'string-100', 'urgency' => 'int', 'status' => 'int',
-				'private' => 'int',
+				'id_dept' => 'int', 'id_first_msg' => 'int', 'id_member_started' => 'int', 'id_last_msg' => 'int',
+				'id_member_updated' => 'int', 'id_member_assigned' => 'int', 'subject' => 'string-100', 'urgency' => 'int',
+				'status' => 'int', 'private' => 'int',
 			),
 			array(
-				$msgOptions['id'], $posterOptions['id'], $msgOptions['id'], $posterOptions['id'],
+				$ticketOptions['dept'], $msgOptions['id'], $posterOptions['id'], $msgOptions['id'], $posterOptions['id'],
 				$ticketOptions['assigned'], $ticketOptions['subject'], $ticketOptions['urgency'], $ticketOptions['status'],
 				$ticketOptions['private'] ? 1 : 0,
 			),

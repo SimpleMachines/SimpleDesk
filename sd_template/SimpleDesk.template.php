@@ -135,7 +135,7 @@ function template_shd_depts()
 	{
 		echo '
 							<tr class="windowbg2">
-								<td>', $dept['dept_name'], '</td>
+								<td><a href="', $scripturl, '?action=helpdesk;sa=main;dept=', $dept['id_dept'], '">', $dept['dept_name'], '</a></td>
 								<td class="stats windowbg">', $dept['tickets']['open'], ' open<br />', $dept['tickets']['closed'], ' closed</td>
 							</tr>';
 	}

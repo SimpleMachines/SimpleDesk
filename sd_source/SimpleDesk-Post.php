@@ -529,6 +529,7 @@ function shd_save_ticket()
 
 			$ticketOptions = array(
 				'id' => $context['ticket_form']['ticket'],
+				'dept' => $context['ticket_form']['dept'],
 				'mark_as_read' => true,
 				'subject' => $context['ticket_form']['subject'],
 				'private' => $context['ticket_form']['private']['setting'],
