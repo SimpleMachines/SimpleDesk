@@ -44,15 +44,12 @@ function shd_tickettotopic()
 
 	checkSession('get');
 
-	if (!shd_allowed_to('shd_ticket_to_topic') || !empty($modSettings['shd_helpdesk_only']) || !empty($modSettings['shd_disable_tickettotopic']))
-		fatal_lang_error('shd_cannot_move_ticket', false);
-
 	if (empty($context['ticket_id']))
 		fatal_lang_error('shd_no_ticket');
 
 	// Get ticket details - and kick it out if they shouldn't be able to see it.
 	$query = shd_db_query('', '
-		SELECT id_member_started, id_member_assigned, private, subject, deleted_replies
+		SELECT id_member_started, id_member_assigned, private, subject, deleted_replies, id_dept
 		FROM {db_prefix}helpdesk_tickets AS hdt
 		WHERE {query_see_ticket} AND id_ticket = {int:ticket}',
 		array(
@@ -62,7 +59,7 @@ function shd_tickettotopic()
 
 	if ($row = $smcFunc['db_fetch_row']($query))
 	{
-		list($ticket_starter, $ticket_owner, $private, $subject, $deleted_replies) = $row;
+		list($ticket_starter, $ticket_owner, $private, $subject, $deleted_replies, $dept) = $row;
 		$smcFunc['db_free_result']($query);
 	}
 	else
@@ -71,10 +68,13 @@ function shd_tickettotopic()
 		fatal_lang_error('shd_no_ticket');
 	}
 
+	if (!shd_allowed_to('shd_ticket_to_topic', $dept) || !empty($modSettings['shd_helpdesk_only'], $dept) || !empty($modSettings['shd_disable_tickettotopic']))
+		fatal_lang_error('shd_cannot_move_ticket', false);
+
 	// Hang on... are there any deleted replies?
 	if ($deleted_replies > 0)
 	{
-		if (shd_allowed_to('shd_access_recyclebin'))
+		if (shd_allowed_to('shd_access_recyclebin', $dept))
 			$context['deleted_prompt'] = true;
 		else
 			fatal_lang_error('shd_cannot_move_ticket_with_deleted');
@@ -170,9 +170,6 @@ function shd_tickettotopic2()
 	checkSession();
 	checkSubmitOnce('check');
 
-	if (!shd_allowed_to('shd_ticket_to_topic') || !empty($modSettings['shd_helpdesk_only']) || !empty($modSettings['shd_disable_tickettotopic']))
-		fatal_lang_error('shd_cannot_move_ticket', false);
-
 	if (empty($context['ticket_id']))
 		fatal_lang_error('shd_no_ticket');
 
@@ -196,7 +193,7 @@ function shd_tickettotopic2()
 	// Make sure they can see the board they are trying to move to (and get whether posts count in the target board).
 	$request = shd_db_query('', '
 		SELECT b.count_posts, b.name, hdt.subject, hdt.id_member_started, hdtr.body, hdt.id_first_msg, hdtr.smileys_enabled,
-		hdtr.modified_time, hdtr.modified_name, hdtr.poster_time, hdtr.id_msg, hdt.deleted_replies
+		hdtr.modified_time, hdtr.modified_name, hdtr.poster_time, hdtr.id_msg, hdt.deleted_replies, hdt.id_dept
 		FROM {db_prefix}boards AS b
 			INNER JOIN {db_prefix}helpdesk_tickets AS hdt ON (hdt.id_ticket = {int:ticket})
 			INNER JOIN {db_prefix}helpdesk_ticket_replies AS hdtr ON (hdtr.id_msg = hdt.id_first_msg)
@@ -214,9 +211,12 @@ function shd_tickettotopic2()
 	if ($smcFunc['db_num_rows']($request) == 0)
 		fatal_lang_error('no_board');
 	else
-		list ($pcounter, $board_name, $subject, $owner, $body, $firstmsg, $smileys_enabled, $modified_time, $modified_name, $time, $shd_id_msg, $deleted_replies) = $smcFunc['db_fetch_row']($request);
+		list ($pcounter, $board_name, $subject, $owner, $body, $firstmsg, $smileys_enabled, $modified_time, $modified_name, $time, $shd_id_msg, $deleted_replies, $dept) = $smcFunc['db_fetch_row']($request);
 
 	$smcFunc['db_free_result']($request);
+
+	if (!shd_allowed_to('shd_ticket_to_topic', $dept) || !empty($modSettings['shd_helpdesk_only']) || !empty($modSettings['shd_disable_tickettotopic']))
+		fatal_lang_error('shd_cannot_move_ticket', false);
 
 	// Are we changing the subject?
 	$old_subject = $subject;
@@ -529,7 +529,7 @@ function shd_topictoticket()
 
 	checkSession('get');
 
-	if (!shd_allowed_to('shd_topic_to_ticket') || !empty($modSettings['shd_helpdesk_only']) || !empty($modSettings['shd_disable_tickettotopic']))
+	if (!shd_allowed_to('shd_topic_to_ticket', 0) || !empty($modSettings['shd_helpdesk_only']) || !empty($modSettings['shd_disable_tickettotopic']))
 		fatal_lang_error('shd_cannot_move_topic', false);
 
 	if (empty($_REQUEST['topic']))
@@ -570,6 +570,8 @@ function shd_topictoticket()
 		'name' => $subject,
 	);
 
+	// !!! Need to get the list of HD categories we can move it to.
+
 	// Store the subject for the template
 	$context['topic_subject'] = $subject;
 
@@ -607,7 +609,10 @@ function shd_topictoticket2()
 	checkSession();
 	checkSubmitOnce('check');
 
-	if (!shd_allowed_to('shd_topic_to_ticket') || !empty($modSettings['shd_helpdesk_only']) || !empty($modSettings['shd_disable_tickettotopic']))
+	$_REQUEST['dept'] = isset($_REQUEST['dept']) ? (int) $_REQUEST['dept'] : 0;
+	if (empty($_REQUEST['dept']))
+		$_REQUEST['dept'] = -1; // which is never a valid department!
+	if (!shd_allowed_to('shd_topic_to_ticket', $_REQUEST['dept']) || !empty($modSettings['shd_helpdesk_only']) || !empty($modSettings['shd_disable_tickettotopic']))
 		fatal_lang_error('shd_cannot_move_topic', false);
 
 	if (empty($_REQUEST['topic']))

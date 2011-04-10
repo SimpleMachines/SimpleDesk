@@ -42,7 +42,7 @@ function shd_admin_main()
 	shd_load_language('SimpleDeskAdmin');
 
 	// Kick them in the kneecaps!
-	if (!shd_allowed_to('admin_helpdesk'))
+	if (!shd_allowed_to('admin_helpdesk', 0))
 		isAllowedTo('admin_forum');
 
 	// Templates and stuff (like hook files)
@@ -718,7 +718,7 @@ function shd_admin_action_log()
 
 	shd_load_language('SimpleDeskLogAction');
 
-	$context['can_delete'] = shd_allowed_to('admin_forum');
+	$context['can_delete'] = allowedTo('admin_forum');
 
 	$context['displaypage'] = 30;
 	$context['hoursdisable'] = 24;

@@ -123,7 +123,7 @@ function shd_init()
 	shd_load_user_perms();
 
 	if (!empty($modSettings['shd_maintenance_mode']))
-		$modSettings['helpdesk_active'] &= ($user_info['is_admin'] || shd_allowed_to('admin_helpdesk'));
+		$modSettings['helpdesk_active'] &= ($user_info['is_admin'] || shd_allowed_to('admin_helpdesk', 0));
 
 	// Call for any init level hooks and last minute stuff
 	if ($modSettings['helpdesk_active'])
@@ -210,7 +210,7 @@ function shd_get_active_tickets()
 
 	shd_init();
 	// Figure out the status(es) that the ticket could be.
-	if (shd_allowed_to('shd_staff'))
+	if (shd_allowed_to('shd_staff', 0))
 		$status = array(TICKET_STATUS_NEW, TICKET_STATUS_PENDING_STAFF); // staff actually need to deal with these
 	else
 		$status = array(TICKET_STATUS_PENDING_USER); // user actually needs to deal with this
@@ -394,7 +394,7 @@ function shd_log_action($action, $params)
  *	@see shd_urgency_change_noajax()
  *	@since 1.0
 */
-function shd_can_alter_urgency($urgency, $ticket_starter, $closed, $deleted)
+function shd_can_alter_urgency($urgency, $ticket_starter, $closed, $deleted, $dept)
 {
 	global $user_info;
 
@@ -406,9 +406,9 @@ function shd_can_alter_urgency($urgency, $ticket_starter, $closed, $deleted)
 	if ($closed || $deleted)
 		return $can_urgency;
 
-	if (shd_allowed_to('shd_alter_urgency_any'))
+	if (shd_allowed_to('shd_alter_urgency_any', $dept))
 	{
-		if (shd_allowed_to('shd_alter_urgency_higher_any') || (shd_allowed_to('shd_alter_urgency_higher_own') && $ticket_starter == $user_info['id']))
+		if (shd_allowed_to('shd_alter_urgency_higher_any', $dept) || (shd_allowed_to('shd_alter_urgency_higher_own', $dept) && $ticket_starter == $user_info['id']))
 			$can_urgency = array( // can alter any urgency and can alter this one's higher urgency too
 				'increase' => ($urgency < TICKET_URGENCY_CRITICAL),
 				'decrease' => ($urgency > TICKET_URGENCY_LOW),
@@ -419,10 +419,10 @@ function shd_can_alter_urgency($urgency, $ticket_starter, $closed, $deleted)
 				'decrease' => ($urgency > TICKET_URGENCY_LOW && $urgency < TICKET_URGENCY_VHIGH),
 			);
 	}
-	elseif (shd_allowed_to('shd_alter_urgency_own') && $ticket_starter == $user_info['id'])
+	elseif (shd_allowed_to('shd_alter_urgency_own', $dept) && $ticket_starter == $user_info['id'])
 		$can_urgency = array( // ok, so this is our ticket and we can change it
-			'increase' => ($urgency < (shd_allowed_to('shd_alter_urgency_higher_own') ? TICKET_URGENCY_CRITICAL : TICKET_URGENCY_HIGH)),
-			'decrease' => ($urgency > TICKET_URGENCY_LOW && $urgency <= (shd_allowed_to('shd_alter_urgency_higher_own') ? TICKET_URGENCY_CRITICAL : TICKET_URGENCY_VHIGH)),
+			'increase' => ($urgency < (shd_allowed_to('shd_alter_urgency_higher_own', $dept) ? TICKET_URGENCY_CRITICAL : TICKET_URGENCY_HIGH)),
+			'decrease' => ($urgency > TICKET_URGENCY_LOW && $urgency <= (shd_allowed_to('shd_alter_urgency_higher_own', $dept) ? TICKET_URGENCY_CRITICAL : TICKET_URGENCY_VHIGH)),
 		);
 
 	return $can_urgency;
@@ -483,7 +483,7 @@ function shd_count_helpdesk_tickets($status = '', $is_staff = false)
 			$smcFunc['db_free_result']($query);
 
 			$context['ticket_count']['assigned'] = 0;
-			if (shd_allowed_to('shd_staff'))
+			if (shd_allowed_to('shd_staff', 0))
 			{
 				$query = shd_db_query('', '
 					SELECT status, COUNT(status) AS tickets
@@ -588,7 +588,7 @@ function shd_load_ticket($ticket = 0)
 	$query = shd_db_query('', '
 		SELECT hdt.id_first_msg, hdt.id_last_msg, hdt.id_member_started, hdt.subject, hdt.urgency, hdt.status,
 			hdt.num_replies, hdt.deleted_replies, hdt.private, hdtr.body, hdtr.id_member, hdtr.poster_time,
-			hdtr.modified_time, hdtr.smileys_enabled,
+			hdtr.modified_time, hdtr.smileys_enabled, hdt.id_dept,
 			IFNULL(mem.real_name, hdtr.poster_name) AS starter_name, IFNULL(mem.id_member, 0) AS starter_id, hdtr.poster_ip AS starter_ip,
 			IFNULL(ma.real_name, 0) AS assigned_name, IFNULL(ma.id_member, 0) AS assigned_id,
 			IFNULL(mm.real_name, hdtr.modified_name) AS modified_name, IFNULL(mm.id_member, 0) AS modified_id
@@ -764,8 +764,8 @@ function shd_profile_link($name, $id = 0)
 
 	if ($any === null)
 	{
-		$any = allowedTo('profile_view_any') || shd_allowed_to('shd_view_profile_any'); // profile is visible either on SMF or SD permission.
-		$own = allowedTo('profile_view_own') || shd_allowed_to('shd_view_profile_own');
+		$any = allowedTo('profile_view_any') || shd_allowed_to('shd_view_profile_any', 0); // profile is visible either on SMF or SD permission.
+		$own = allowedTo('profile_view_own') || shd_allowed_to('shd_view_profile_own', 0);
 	}
 
 	if (empty($id))
@@ -1204,7 +1204,7 @@ function shd_load_user_prefs($user = 0)
 		// Start with the defaults, but dealing with permissions as we go
 		foreach ($base_prefs as $pref => $details)
 		{
-			if (empty($details['permission']) || shd_allowed_to($details['permission']))
+			if (empty($details['permission']) || shd_allowed_to($details['permission'], 0))
 				$prefs[$pref] = $details['default'];
 		}
 	}
@@ -1299,7 +1299,7 @@ function shd_display_btn_mvtopic(&$normal_buttons)
 {
 	global $context, $txt, $scripturl, $modSettings;
 
-	$context['can_move_to_helpdesk'] = !empty($modSettings['helpdesk_active']) && empty($modSettings['shd_disable_tickettotopic']) && empty($modSettings['shd_helpdesk_only']) && shd_allowed_to('shd_topic_to_ticket');
+	$context['can_move_to_helpdesk'] = !empty($modSettings['helpdesk_active']) && empty($modSettings['shd_disable_tickettotopic']) && empty($modSettings['shd_helpdesk_only']) && shd_allowed_to('shd_topic_to_ticket', 0);
 	$normal_buttons = array_merge($normal_buttons, array('topictoticket' => array('test' => 'can_move_to_helpdesk', 'text' => 'shd_move_topic_to_ticket', 'lang' => true, 'url' => $scripturl . '?action=helpdesk;sa=topictoticket;topic=' . $context['current_topic'] . ';' . $context['session_var'] . '=' . $context['session_id'])));
 }
 
@@ -1433,10 +1433,10 @@ function shd_main_menu(&$menu_buttons)
 	if (!empty($modSettings['helpdesk_active']))
 	{
 		// Stuff we'll always do in SD if active
-		$helpdesk_admin = shd_allowed_to('admin_helpdesk') || $context['user']['is_admin'];
+		$helpdesk_admin = $context['user']['is_admin'] || shd_allowed_to('admin_helpdesk', 0);
 
 		// 1. Add the main menu if we can.
-		if (shd_allowed_to(array('access_helpdesk', 'admin_helpdesk')) && (empty($modSettings['shd_boardindex_cat']) || empty($modSettings['shd_hidemenuitem'])))
+		if (shd_allowed_to(array('access_helpdesk', 'admin_helpdesk'), 0) && (empty($modSettings['shd_boardindex_cat']) || empty($modSettings['shd_hidemenuitem'])))
 		{
 			// Because some items may have been removed at this point, let's try a list of possible places after which we can add the button.
 			$order = array('search', 'profile', 'forum', 'pm', 'help', 'home');
@@ -1466,28 +1466,28 @@ function shd_main_menu(&$menu_buttons)
 			$menu_buttons['helpdesk'] += array(
 				'title' => $modSettings['helpdesk_active'] && SMF != 'SSI' ? shd_get_active_tickets() : $txt['shd_helpdesk'],
 				'href' => $scripturl . '?action=helpdesk;sa=main',
-				'show' => $modSettings['helpdesk_active'] && shd_allowed_to(array('access_helpdesk', 'admin_helpdesk')),
+				'show' => true,
 				'active_button' => false,
 				'sub_buttons' => array(
 					'newticket' => array(
 						'title' => $txt['shd_new_ticket'],
 						'href' => $scripturl . '?action=helpdesk;sa=newticket',
-						'show' => SMF == 'SSI' ? false : shd_allowed_to('shd_new_ticket'),
+						'show' => SMF == 'SSI' ? false : shd_allowed_to('shd_new_ticket', 0),
 					),
 					'newproxyticket' => array(
 						'title' => $txt['shd_new_ticket_proxy'],
 						'href' => $scripturl . '?action=helpdesk;sa=newticket;proxy',
-						'show' => SMF == 'SSI' ? false : shd_allowed_to('shd_new_ticket') && shd_allowed_to('shd_post_proxy'),
+						'show' => SMF == 'SSI' ? false : shd_allowed_to('shd_new_ticket', 0) && shd_allowed_to('shd_post_proxy', 0),
 					),
 					'closedtickets' => array(
 						'title' => $txt['shd_tickets_closed'],
 						'href' => $scripturl . '?action=helpdesk;sa=closedtickets',
-						'show' => SMF == 'SSI' ? false : shd_allowed_to(array('shd_view_closed_own', 'shd_view_closed_any')),
+						'show' => SMF == 'SSI' ? false : shd_allowed_to(array('shd_view_closed_own', 'shd_view_closed_any'), 0),
 					),
 					'recyclebin' => array(
 						'title' => $txt['shd_recycle_bin'],
 						'href' => $scripturl . '?action=helpdesk;sa=recyclebin',
-						'show' => SMF == 'SSI' ? false : shd_allowed_to('shd_access_recyclebin'),
+						'show' => SMF == 'SSI' ? false : shd_allowed_to('shd_access_recyclebin', 0),
 					),
 				),
 			);
@@ -1561,7 +1561,7 @@ function shd_main_menu(&$menu_buttons)
 			);
 		}
 
-		if (shd_allowed_to(array('shd_view_profile_own', 'shd_view_profile_any')))
+		if (shd_allowed_to(array('shd_view_profile_own', 'shd_view_profile_any'), 0))
 		{
 			// Hmm, this could be tricky. It's possible the main menu has been eaten by permissions at this point, so just in case, reconstruct what's missing.
 			if (empty($menu_buttons['profile']))
@@ -1621,22 +1621,22 @@ function shd_main_menu(&$menu_buttons)
 					'newticket' => array(
 						'title' => $txt['shd_new_ticket'],
 						'href' => $scripturl . '?action=helpdesk;sa=newticket',
-						'show' => SMF == 'SSI' ? false : shd_allowed_to('shd_new_ticket'),
+						'show' => SMF == 'SSI' ? false : shd_allowed_to('shd_new_ticket', 0),
 					),
 					'newproxyticket' => array(
 						'title' => $txt['shd_new_ticket_proxy'],
 						'href' => $scripturl . '?action=helpdesk;sa=newticket;proxy',
-						'show' => SMF == 'SSI' ? false : shd_allowed_to('shd_new_ticket') && shd_allowed_to('shd_post_proxy'),
+						'show' => SMF == 'SSI' ? false : shd_allowed_to('shd_new_ticket', 0) && shd_allowed_to('shd_post_proxy', 0),
 					),
 					'closedtickets' => array(
 						'title' => $txt['shd_tickets_closed'],
 						'href' => $scripturl . '?action=helpdesk;sa=closedtickets',
-						'show' => SMF == 'SSI' ? false : shd_allowed_to(array('shd_view_closed_own', 'shd_view_closed_any')),
+						'show' => SMF == 'SSI' ? false : shd_allowed_to(array('shd_view_closed_own', 'shd_view_closed_any'), 0),
 					),
 					'recyclebin' => array(
 						'title' => $txt['shd_recycle_bin'],
 						'href' => $scripturl . '?action=helpdesk;sa=recyclebin',
-						'show' => SMF == 'SSI' ? false : shd_allowed_to('shd_access_recyclebin'),
+						'show' => SMF == 'SSI' ? false : shd_allowed_to('shd_access_recyclebin', 0),
 					),
 				),
 				'active_button' => false,

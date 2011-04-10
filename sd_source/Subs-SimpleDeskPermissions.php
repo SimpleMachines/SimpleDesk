@@ -369,31 +369,63 @@ function shd_load_user_perms()
 		$smcFunc['db_free_result']($query);
 	}
 
-	if ($user_info['is_admin'] || shd_allowed_to('admin_helpdesk'))
-		$user_info['query_see_ticket'] = '1=1';
-	elseif (!shd_allowed_to('access_helpdesk'))
-		$user_info['query_see_ticket'] = '1=0'; // no point going any further if they can't access the helpdesk
-	elseif (shd_allowed_to('shd_view_ticket_any'))
-	{
-		if (shd_allowed_to('shd_view_closed_any'))
-			$user_info['query_see_ticket'] = shd_allowed_to('shd_view_ticket_private_any') ? '1=1' : ('(hdt.private = 0' . (shd_allowed_to('shd_view_ticket_private_own') ? ' OR (hdt.private = 1 AND hdt.id_member_started = {int:user_info_id}))' : ')'));
-		elseif (shd_allowed_to('shd_view_closed_own'))
-			$user_info['query_see_ticket'] = shd_allowed_to('shd_view_ticket_private_any') ? '(hdt.status != 3 OR (hdt.status = 3 AND hdt.id_member_started = {int:user_info_id}))' : ('(hdt.status != 3 OR (hdt.status = 3 AND hdt.id_member_started = {int:user_info_id})) AND (hdt.private = 0' . (shd_allowed_to('shd_view_ticket_private_own') ? ' OR (hdt.private = 1 AND hdt.id_member_started = {int:user_info_id}))' : ')'));
-		else
-			$user_info['query_see_ticket'] = shd_allowed_to('shd_view_ticket_private_any') ? 'hdt.status != 3' : ('((hdt.status != 3 AND hdt.private = 0)' . (shd_allowed_to('shd_view_ticket_private_own') ? ' OR (hdt.status != 3 AND hdt.private = 1 AND hdt.id_member_started = {int:user_info_id}))' : ')'));
-	}
-	elseif (shd_allowed_to('shd_view_ticket_own'))
-	{
-		if (shd_allowed_to(array('shd_view_closed_own', 'shd_view_closed_any')))
-			$user_info['query_see_ticket'] = 'hdt.id_member_started = {int:user_info_id}' . (shd_allowed_to('shd_view_ticket_private_own') ? '' : ' AND hdt.private = 0');
-		else
-			$user_info['query_see_ticket'] = 'hdt.id_member_started = {int:user_info_id} AND hdt.status != 3' . (shd_allowed_to('shd_view_ticket_private_own') ? '' : ' AND hdt.private = 0');
-	}
-	else
-		$user_info['query_see_ticket'] = '1=0';
+	$tickets_any_dept = shd_allowed_to('shd_view_ticket_any', false);
+	$tickets_own_dept = shd_allowed_to('shd_view_ticket_own', false);
+	if (!empty($tickets_any_dept) && !empty($tickets_own_dept))
+		$tickets_own_dept = array_diff($tickets_any_dept, $tickets_own_dept);
 
-	if (!shd_allowed_to('shd_access_recyclebin'))
-		$user_info['query_see_ticket'] .= ' AND hdt.status != 6';
+	if ($user_info['is_admin'] || shd_allowed_to('admin_helpdesk', 0))
+		$user_info['query_see_ticket'] = '1=1';
+	elseif (!shd_allowed_to('access_helpdesk', 0))
+		$user_info['query_see_ticket'] = '1=0'; // no point going any further if they can't access the helpdesk
+	else
+	{
+		// What departments can we see only our own in?
+		$tickets_any_private = shd_allowed_to('shd_view_ticket_private_any', false);
+		$tickets_any_private = array_intersect($tickets_any_private, $tickets_any_dept);
+		$tickets_own_private = shd_allowed_to('shd_view_ticket_private_own', false);
+		$tickets_own_private = array_intersect($tickets_own_private, $tickets_own_dept);
+
+		$tickets_any_nonprivate = array_diff($tickets_any_dept, $tickets_any_private);
+		$tickets_own_nonprivate = array_diff($tickets_own_dept, $tickets_own_private);
+
+		$clauses = array();
+		if (!empty($tickets_any_private)) // Depts where we can see private tickets, thus we don't need to check anything else for this part.
+			$clauses[] = 'hdt.id_dept IN (' . implode(',', $tickets_any_private) . ')';
+		if (!empty($tickets_any_nonprivate)) // Depts where we can see nonprivate tickets. We need to validate privacy on these but that's it.
+			$clauses[] = 'hdt.id_dept IN (' . implode(',', $tickets_any_nonprivate) . ') AND hdt.status = 0';
+		if (!empty($tickets_own_private)) // Depts where we can see our own private tickets, so need to validate id_dept and id_member_started, but we can discount checking private here.
+			$clauses[] = 'hdt.id_dept IN (' . implode(',', $tickets_own_private) . ') AND hdt.id_member_started = {int:user_info_id}';
+		if (!empty($tickets_own_nonprivate)) // Depts where we can see our own nonprivate tickets. Validate id_dept, id_member_started and private.
+			$clauses[] = 'hdt.id_dept IN (' . implode(',', $tickets_own_nonprivate) . ') AND hdt.private = 0 AND hdt.id_member_started = {int:user_info_id}';
+
+		// That's the core stuff done. We also need to ensure that closed tickets aren't visible either.
+		$depts_closed_any = shd_allowed_to('shd_view_closed_any', false);
+		$depts_closed_own = shd_allowed_to('shd_view_closed_own', false);
+		$depts_closed_own = array_diff($depts_closed_any, $depts_closed_own);
+
+		if (empty($depts_closed_any) && empty($depts_closed_own)) // No access at all. Disable all access to closed tickets.
+			$clauses[] = 'hdt.status != 3';
+		if (!empty($depts_closed_any) && empty($depts_closed_own)) // Only where we can access 'all closed' but not 'any of our own closed', e.g. admins
+			$clauses[] = 'hdt.status != 3 OR (hdt.status = 3 AND hdt.id_dept IN (' . implode(',', $depts_closed_any) . '))';
+		elseif (!empty($depts_closed_any) && !empty($depts_closed_own)) // So we have a mixture
+			$clauses[] = 'hdt.status != 3 OR (hdt.status = 3 AND (hdt.id_dept IN (' . implode(',', $depts_closed_any) . ') OR (hdt.id_member_started = {int:user_info_id} AND hdt.id_dept IN (' . implode(',', $depts_closed_own) . '))))';
+		elseif (empty($depts_closed_any) && !empty($depts_closed_own)) // We can't ever see 'any', but we can see our own
+			$clauses[] = 'hdt.status != 3 OR (hdt.status = 3 AND hdt.id_dept IN (' . implode(',', $depts_closed_own) . ') AND hdt.id_member_started = {int:user_info_id})';
+
+		// And finally, deleted tickets.
+		$depts_deleted = shd_allowed_to('shd_access_recyclebin', 0);
+		if (empty($depts_deleted))
+			$clauses[] = 'hdt.status != 6';
+		else
+			$clauses[] = 'hdt.status != 6 OR (hdt.status = 6 AND hdt.id_dept IN (' . implode(',', $depts_deleted) . '))';
+
+		// Finally, assemble into $user_info.
+		if (empty($clauses))
+			$user_info['query_see_ticket'] = '1=0';
+		else
+			$user_info['query_see_ticket'] = '((' . implode(') AND (', $clauses) . '))';
+	}
 }
 
 /**
@@ -434,6 +466,9 @@ function shd_allowed_to($permission, $dept = 0)
 	}
 	else
 	{
+		if (!empty($user_info['is_admin']))
+			return in_array($dept, $context['shd_depts_list']);
+
 		$permission = is_array($permission) ? $permission : (array) $permission;
 		foreach ($permission as $perm)
 			if (!empty($user_info['shd_permissions'][$perm]) && in_array($dept, $user_info['shd_permissions'][$perm]))

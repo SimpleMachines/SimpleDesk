@@ -161,7 +161,7 @@ function shd_profile_frontpage($memID)
 	$smcFunc['db_free_result']($query);
 	$context['shd_numassigned'] = comma_format($context['shd_numassigned']);
 
-	$context['can_post_proxy'] = shd_allowed_to('shd_new_ticket') && shd_allowed_to('shd_post_proxy'); // since it's YOUR permissions, whether you can post on behalf of this user!
+	$context['can_post_proxy'] = shd_allowed_to('shd_new_ticket', 0) && shd_allowed_to('shd_post_proxy', 0); // since it's YOUR permissions, whether you can post on behalf of this user!
 }
 
 function shd_profile_preferences($memID)
@@ -549,7 +549,7 @@ function shd_profile_actionlog($memID)
 	require_once($sourcedir . '/sd_source/Subs-SimpleDeskAdmin.php');
 	$context['action_log'] = shd_load_action_log_entries(0, 10, '', '', 'la.id_member = ' . $memID);
 	$context['action_log_count'] = shd_count_action_log_entries('la.id_member = ' . $memID);
-	$context['action_full_log'] = allowedTo('admin_forum') || shd_allowed_to('admin_helpdesk');
+	$context['action_full_log'] = allowedTo('admin_forum') || shd_allowed_to('admin_helpdesk', 0);
 
 	$context['page_title'] = $txt['shd_profile_area'] . ' - ' . $txt['shd_profile_actionlog'];
 	$context['sub_template'] = 'shd_profile_actionlog';

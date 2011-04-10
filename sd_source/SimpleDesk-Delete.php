@@ -57,7 +57,7 @@ function shd_ticket_delete()
 
 	// Check we can actually see the ticket we're deleting, and if we can only delete our own, we are the owner
 	$query_ticket = shd_db_query('', '
-		SELECT id_ticket, id_member_started, subject
+		SELECT id_ticket, id_dept, id_member_started, subject
 		FROM {db_prefix}helpdesk_tickets AS hdt
 		WHERE {query_see_ticket}
 			AND id_ticket = {int:ticket}',
@@ -69,7 +69,7 @@ function shd_ticket_delete()
 	if ($row = $smcFunc['db_fetch_assoc']($query_ticket))
 	{
 		$smcFunc['db_free_result']($query_ticket);
-		if (!shd_allowed_to('shd_delete_ticket_any') && (!shd_allowed_to('shd_delete_ticket_own') || $user_info['id'] != $row['id_member_started']))
+		if (!shd_allowed_to('shd_delete_ticket_any', $row['id_dept']) && (!shd_allowed_to('shd_delete_ticket_own', $row['id_dept']) || $user_info['id'] != $row['id_member_started']))
 			fatal_lang_error('shd_cannot_delete_ticket', false);
 	}
 	else
@@ -120,7 +120,7 @@ function shd_reply_delete()
 
 	// Check we can actually see the ticket we're deleting, that this reply is in this ticket and that we can delete this reply
 	$query_ticket = shd_db_query('', '
-		SELECT hdt.id_ticket, hdtr.id_member, hdt.id_member_started, subject, status
+		SELECT hdt.id_ticket, hdt.id_dept, hdtr.id_member, hdt.id_member_started, subject, status
 		FROM {db_prefix}helpdesk_tickets AS hdt
 			INNER JOIN {db_prefix}helpdesk_ticket_replies AS hdtr ON (hdt.id_ticket = hdtr.id_ticket)
 		WHERE {query_see_ticket}
@@ -137,7 +137,7 @@ function shd_reply_delete()
 	if ($row = $smcFunc['db_fetch_assoc']($query_ticket))
 	{
 		$smcFunc['db_free_result']($query_ticket);
-		if (($row['status'] == TICKET_STATUS_CLOSED || $row['status'] == TICKET_STATUS_DELETED) || (!shd_allowed_to('shd_delete_ticket_any') && (!shd_allowed_to('shd_delete_ticket_own') || $user_info['id'] != $row['id_member'])))
+		if (($row['status'] == TICKET_STATUS_CLOSED || $row['status'] == TICKET_STATUS_DELETED) || (!shd_allowed_to('shd_delete_ticket_any', $row['id_dept']) && (!shd_allowed_to('shd_delete_ticket_own', $row['id_dept']) || $user_info['id'] != $row['id_member'])))
 			fatal_lang_error('shd_cannot_delete_reply', false);
 	}
 	else
@@ -193,7 +193,6 @@ function shd_perma_delete()
 	global $smcFunc, $user_info, $context, $sourcedir;
 
 	checkSession('get');
-	shd_is_allowed_to('shd_delete_recycling');
 
 	// We have to have either a ticket or a reply to know what to delete (Or do you want me to drop your whole database? >:D)
 	if (empty($context['ticket_id']) && empty($_REQUEST['reply']))
@@ -204,7 +203,7 @@ function shd_perma_delete()
 	{
 		// Can we even see this ticket?
 		$query_ticket = shd_db_query('', '
-			SELECT id_ticket, subject, id_member_started, status
+			SELECT id_ticket, id_dept, subject, id_member_started, status
 			FROM {db_prefix}helpdesk_tickets AS hdt
 			WHERE {query_see_ticket}
 				AND id_ticket = {int:ticket}',
@@ -221,6 +220,7 @@ function shd_perma_delete()
 		else
 		{
 			$row = $smcFunc['db_fetch_assoc']($query_ticket);
+			shd_is_allowed_to('shd_delete_recycling', $row['id_dept']);
 			$smcFunc['db_free_result']($query_ticket);
 		}
 
@@ -248,6 +248,8 @@ function shd_perma_delete()
 				'current_ticket' => $context['ticket_id'],
 			)
 		);
+
+		// !!! Custom fields
 
 		// And attachments... work out which attachments that is
 		$query = shd_db_query('', '
@@ -332,6 +334,8 @@ function shd_perma_delete()
 			)
 		);
 
+		// !!! Custom fields
+
 		// Now to handle attachments
 		$query = shd_db_query('', '
 			SELECT id_attach
@@ -396,7 +400,7 @@ function shd_ticket_restore()
 
 	// Does the ticket we're trying to restore exist and can we see it?
 	$query_ticket = shd_db_query('', '
-		SELECT id_ticket, id_member_started, id_member_updated, subject, num_replies, status
+		SELECT id_ticket, id_dept, id_member_started, id_member_updated, subject, num_replies, status
 		FROM {db_prefix}helpdesk_tickets AS hdt
 		WHERE {query_see_ticket}
 			AND id_ticket = {int:ticket}',
@@ -408,7 +412,7 @@ function shd_ticket_restore()
 	if ($row = $smcFunc['db_fetch_assoc']($query_ticket))
 	{
 		$smcFunc['db_free_result']($query_ticket);
-		if ($row['status'] != TICKET_STATUS_DELETED || (!shd_allowed_to('shd_restore_ticket_any') && (!shd_allowed_to('shd_restore_ticket_own') || $user_info['id'] != $row['id_member_started'])))
+		if ($row['status'] != TICKET_STATUS_DELETED || (!shd_allowed_to('shd_restore_ticket_any', $row['id_dept']) && (!shd_allowed_to('shd_restore_ticket_own', $row['id_dept']) || $user_info['id'] != $row['id_member_started'])))
 			fatal_lang_error('shd_cannot_restore_ticket', false);
 
 		$subject = $row['subject'];
@@ -460,7 +464,7 @@ function shd_reply_restore()
 
 	// Check we can actually see the ticket we're restoring from, and that we can restore this reply
 	$query_ticket = shd_db_query('', '
-		SELECT hdt.id_ticket, hdtr.id_member, hdt.id_member_started, hdt.id_member_updated, hdt.num_replies, hdt.subject, hdt.status, hdtr.message_status
+		SELECT hdt.id_ticket, hdt.id_dept, hdtr.id_member, hdt.id_member_started, hdt.id_member_updated, hdt.num_replies, hdt.subject, hdt.status, hdtr.message_status
 		FROM {db_prefix}helpdesk_tickets AS hdt
 			INNER JOIN {db_prefix}helpdesk_ticket_replies AS hdtr ON (hdt.id_ticket = hdtr.id_ticket)
 		WHERE {query_see_ticket}
@@ -475,7 +479,7 @@ function shd_reply_restore()
 	if ($row = $smcFunc['db_fetch_assoc']($query_ticket))
 	{
 		$smcFunc['db_free_result']($query_ticket);
-		if (($row['status'] == TICKET_STATUS_DELETED || $row['status'] == TICKET_STATUS_CLOSED || $row['message_status'] != MSG_STATUS_DELETED) || (!shd_allowed_to('shd_restore_reply_any') && (!shd_allowed_to('shd_restore_reply_own') || $user_info['id'] != $row['id_member'])))
+		if (($row['status'] == TICKET_STATUS_DELETED || $row['status'] == TICKET_STATUS_CLOSED || $row['message_status'] != MSG_STATUS_DELETED) || (!shd_allowed_to('shd_restore_reply_any', $row['id_dept']) && (!shd_allowed_to('shd_restore_reply_own', $row['id_dept']) || $user_info['id'] != $row['id_member'])))
 			fatal_lang_error('shd_cannot_restore_reply', false);
 
 		$context['ticket_id'] = (int) $row['id_ticket'];

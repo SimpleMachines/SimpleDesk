@@ -94,7 +94,8 @@ function template_ticket_info()
 				</h3>
 			</div>
 			<div class="windowbg">
-				<div class="content shd_ticket">';
+				<div class="content shd_ticket">
+					<div class="shd_ticket_side_column">';
 
 	// General ticket details
 	echo '
@@ -141,7 +142,8 @@ function template_ticket_info()
 						</div>';
 
 	echo '
-					</div>';
+					</div>
+				</div>';
 }
 
 function template_ticket_custom_fields()
@@ -380,6 +382,10 @@ function template_ticket_meta()
 	if (!empty($context['ticket_form']['num_replies']))
 		echo '
 						<input type="hidden" name="num_replies" value="', $context['ticket_form']['num_replies'], '" />';
+
+	if (!empty($context['ticket_form']['dept']))
+		echo '
+						<input type="hidden" name="dept" value="', $context['ticket_form']['dept'], '" />';
 }
 
 function template_ticket_shd_replyarea()

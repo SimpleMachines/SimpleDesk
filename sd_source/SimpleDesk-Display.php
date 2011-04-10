@@ -135,6 +135,7 @@ function shd_view_ticket()
 
 	$context['ticket'] = array(
 		'id' => $context['ticket_id'],
+		'dept' => $ticketinfo['id_dept'],
 		'display_id' => str_pad($context['ticket_id'], 5, '0', STR_PAD_LEFT),
 		'subject' => $ticketinfo['subject'],
 		'first_msg' => $ticketinfo['id_first_msg'],
@@ -174,7 +175,7 @@ function shd_view_ticket()
 
 	// IP address next
 	$context['link_ip_address'] = allowedTo('moderate_forum'); // for trackip access
-	if (shd_allowed_to('shd_view_ip_any') || ($context['ticket']['ticket_opener'] && shd_allowed_to('shd_view_ip_own')))
+	if (shd_allowed_to('shd_view_ip_any', $context['ticket']['dept']) || ($context['ticket']['ticket_opener'] && shd_allowed_to('shd_view_ip_own', $context['ticket']['dept'])))
 		$context['ticket']['ip_address'] = $context['link_ip_address'] ? ('<a href="' . $scripturl . '?action=trackip;searchip=' . $ticketinfo['starter_ip'] . '">' . $ticketinfo['starter_ip'] . '</a>') : $ticketinfo['starter_ip'];
 
 	// Stuff concerning whether the ticket is deleted or not
@@ -184,7 +185,7 @@ function shd_view_ticket()
 		$context['ticket']['display_recycle'] = $txt['shd_ticket_has_been_deleted'];
 	elseif ($context['ticket']['deleted_replies'] > 0)
 	{
-		if (shd_allowed_to('shd_access_recyclebin'))
+		if (shd_allowed_to('shd_access_recyclebin', $context['ticket']['dept']))
 		{
 			$context['ticket']['display_recycle'] = $txt['shd_ticket_replies_deleted'];
 			$ticketlink = $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $context['ticket_id'] . (isset($_REQUEST['recycle']) ? '' : ';recycle');
@@ -203,7 +204,7 @@ function shd_view_ticket()
 	// Ticket privacy
 	$context['ticket']['privacy']['can_change'] = $context['ticket']['privacy']['can_change'] && (!$context['ticket']['closed'] && !$context['ticket']['deleted']);
 	if (empty($modSettings['shd_privacy_display']) || $modSettings['shd_privacy_display'] == 'smart')
-		$context['display_private'] = shd_allowed_to('shd_view_ticket_private_any') || shd_allowed_to('shd_alter_privacy_own') || shd_allowed_to('shd_alter_privacy_any') || $ticketinfo['private'];
+		$context['display_private'] = shd_allowed_to('shd_view_ticket_private_any', $context['ticket']['dept']) || shd_allowed_to(array('shd_alter_privacy_own', 'shd_alter_privacy_any'), $context['ticket']['dept']) || $ticketinfo['private'];
 	else
 		$context['display_private'] = true;
 
@@ -218,7 +219,7 @@ function shd_view_ticket()
 		);
 	}
 
-	$context['ticket']['urgency'] += shd_can_alter_urgency($ticketinfo['urgency'], $ticketinfo['starter_id'], $ticketinfo['closed'], $ticketinfo['deleted']);
+	$context['ticket']['urgency'] += shd_can_alter_urgency($ticketinfo['urgency'], $ticketinfo['starter_id'], $ticketinfo['closed'], $ticketinfo['deleted'], $context['ticket']['dept']);
 	$context['total_visible_posts'] = empty($context['display_recycle']) ? $context['ticket']['num_replies'] : (int) $context['ticket']['num_replies'] + (int) $context['ticket']['deleted_replies'];
 
 	// OK, before we go crazy, we might need to alter the ticket start. If we're in descending order (non default), we need to reverse it.
@@ -352,8 +353,8 @@ function shd_view_ticket()
 
 	// Loop through all fields and figure out where they should be.
 
-	$is_staff = shd_allowed_to('shd_staff');
-	$is_admin = shd_allowed_to('admin_helpdesk'); // this includes forum admins
+	$is_staff = shd_allowed_to('shd_staff', $context['ticket']['dept']);
+	$is_admin = shd_allowed_to('admin_helpdesk', $context['ticket']['dept']); // this includes forum admins
 	$placements = array(
 		CFIELD_PLACE_DETAILS => 'details',
 		CFIELD_PLACE_INFO => 'information',
@@ -492,12 +493,12 @@ function shd_view_ticket()
 		$context['page_title'] = $txt['shd_helpdesk'] . ' [' . $context['ticket']['display_id'] . '] ' . $context['ticket']['subject'];
 
 	// Ticket navigation / permission
-	$context['can_reply'] = !$context['ticket']['closed'] && !$context['ticket']['deleted'] && (shd_allowed_to('shd_reply_ticket_any') || ($context['ticket']['ticket_opener'] && shd_allowed_to('shd_reply_ticket_own'))); // needs perms - calc'd here because we use it in display template too
+	$context['can_reply'] = !$context['ticket']['closed'] && !$context['ticket']['deleted'] && (shd_allowed_to('shd_reply_ticket_any', $context['ticket']['dept']) || ($context['ticket']['ticket_opener'] && shd_allowed_to('shd_reply_ticket_own', $context['ticket']['dept']))); // needs perms - calc'd here because we use it in display template too
 	$context['can_quote'] = $context['can_reply'] && !empty($modSettings['shd_allow_ticket_bbc']);
-	$context['can_go_advanced'] = !empty($modSettings['shd_allow_ticket_bbc']) || !empty($modSettings['allow_ticket_smileys']) || shd_allowed_to('shd_post_attachment');
-	$context['shd_can_move_to_topic'] = empty($modSettings['shd_disable_tickettotopic']) && shd_allowed_to('shd_ticket_to_topic') && empty($modSettings['shd_helpdesk_only']);
-	$context['can_solve'] = !$context['ticket']['closed'] && !$context['ticket']['deleted'] && (shd_allowed_to('shd_resolve_ticket_any') || (shd_allowed_to('shd_resolve_ticket_own') && $context['ticket']['ticket_opener']));
-	$context['can_unsolve'] = $context['ticket']['closed'] && (shd_allowed_to('shd_unresolve_ticket_any') || (shd_allowed_to('shd_unresolve_ticket_own') && $context['ticket']['ticket_opener']));
+	$context['can_go_advanced'] = !empty($modSettings['shd_allow_ticket_bbc']) || !empty($modSettings['allow_ticket_smileys']) || shd_allowed_to('shd_post_attachment', $context['ticket']['dept']);
+	$context['shd_can_move_to_topic'] = empty($modSettings['shd_disable_tickettotopic']) && shd_allowed_to('shd_ticket_to_topic', $context['ticket']['dept']) && empty($modSettings['shd_helpdesk_only']);
+	$context['can_solve'] = !$context['ticket']['closed'] && !$context['ticket']['deleted'] && (shd_allowed_to('shd_resolve_ticket_any', $context['ticket']['dept']) || (shd_allowed_to('shd_resolve_ticket_own', $context['ticket']['dept']) && $context['ticket']['ticket_opener']));
+	$context['can_unsolve'] = $context['ticket']['closed'] && (shd_allowed_to('shd_unresolve_ticket_any', $context['ticket']['dept']) || (shd_allowed_to('shd_unresolve_ticket_own', $context['ticket']['dept']) && $context['ticket']['ticket_opener']));
 
 	// And off we go
 	$context['ticket_navigation'] = array();
@@ -505,7 +506,7 @@ function shd_view_ticket()
 		'url' => $scripturl . '?action=helpdesk;sa=editticket;ticket=' . $context['ticket']['id'] . ';' . $context['session_var'] . '=' . $context['session_id'],
 		'icon' => 'edit',
 		'alt' => '*',
-		'display' => !$context['ticket']['closed'] && !$context['ticket']['deleted'] && (shd_allowed_to('shd_edit_reply_any') || ($context['ticket']['ticket_opener'] && shd_allowed_to('shd_edit_reply_own'))),
+		'display' => !$context['ticket']['closed'] && !$context['ticket']['deleted'] && (shd_allowed_to('shd_edit_reply_any', $context['ticket']['dept']) || ($context['ticket']['ticket_opener'] && shd_allowed_to('shd_edit_reply_own', $context['ticket']['dept']))),
 		'text' => 'shd_ticket_edit',
 	);
 	$context['ticket_navigation'][] = array(
@@ -541,15 +542,15 @@ function shd_view_ticket()
 		'text' => '',
 		'display' => false,
 	);
-	if (shd_allowed_to('shd_assign_ticket_any'))
+	if (shd_allowed_to('shd_assign_ticket_any', $context['ticket']['dept']))
 	{
-		$assign_nav['display'] = shd_allowed_to('shd_staff') && !$context['ticket']['closed'] && !$context['ticket']['deleted'];
+		$assign_nav['display'] = shd_allowed_to('shd_staff', $context['ticket']['dept']) && !$context['ticket']['closed'] && !$context['ticket']['deleted'];
 		$assign_nav['text'] = empty($context['ticket']['id_member_assigned']) ? 'shd_ticket_assign' : 'shd_ticket_reassign';
 		$context['ajax_assign'] = true;
 	}
-	elseif (shd_allowed_to('shd_assign_ticket_own'))
+	elseif (shd_allowed_to('shd_assign_ticket_own', $context['ticket']['dept']))
 	{
-		$assign_nav['display'] = !$context['ticket']['closed'] && !$context['ticket']['deleted'] && shd_allowed_to('shd_staff') && (empty($context['ticket']['id_member_assigned']) || $context['ticket']['assigned_self']); // either not assigned or assigned to self
+		$assign_nav['display'] = !$context['ticket']['closed'] && !$context['ticket']['deleted'] && shd_allowed_to('shd_staff', $context['ticket']['dept']) && (empty($context['ticket']['id_member_assigned']) || $context['ticket']['assigned_self']); // either not assigned or assigned to self
 		$assign_nav['text'] = $context['ticket']['assigned_self'] ? 'shd_ticket_unassign' : 'shd_ticket_assign_self';
 	}
 
@@ -559,7 +560,7 @@ function shd_view_ticket()
 		'url' => $scripturl . '?action=helpdesk;sa=deleteticket;ticket=' . $context['ticket']['id'] . ';' . $context['session_var'] . '=' . $context['session_id'],
 		'icon' => 'delete',
 		'alt' => '*',
-		'display' => !$context['ticket']['closed'] && !$context['ticket']['deleted'] && (shd_allowed_to('shd_delete_ticket_any') || (shd_allowed_to('shd_delete_ticket_own') && $context['ticket']['ticket_opener'])),
+		'display' => !$context['ticket']['closed'] && !$context['ticket']['deleted'] && (shd_allowed_to('shd_delete_ticket_any', $context['ticket']['dept']) || (shd_allowed_to('shd_delete_ticket_own', $context['ticket']['dept']) && $context['ticket']['ticket_opener'])),
 		'text' => 'shd_ticket_delete',
 		'onclick' => 'return confirm(' . JavaScriptEscape($txt['shd_delete_confirm']) . ');',
 	);
@@ -567,14 +568,14 @@ function shd_view_ticket()
 		'url' => $scripturl . '?action=helpdesk;sa=restoreticket;ticket=' . $context['ticket']['id'] . ';' . $context['session_var'] . '=' . $context['session_id'],
 		'icon' => 'restore',
 		'alt' => '*',
-		'display' => $context['ticket']['deleted'] && (shd_allowed_to('shd_restore_ticket_any') || (shd_allowed_to('shd_restore_ticket_own') && $context['ticket']['ticket_opener'])),
+		'display' => $context['ticket']['deleted'] && (shd_allowed_to('shd_restore_ticket_any', $context['ticket']['dept']) || (shd_allowed_to('shd_restore_ticket_own', $context['ticket']['dept']) && $context['ticket']['ticket_opener'])),
 		'text' => 'shd_ticket_restore',
 	);
 	$context['ticket_navigation'][] = array(
 		'url' => $scripturl . '?action=helpdesk;sa=permadelete;ticket=' . $context['ticket']['id'] . ';' . $context['session_var'] . '=' . $context['session_id'],
 		'icon' => 'delete',
 		'alt' => '*',
-		'display' => $context['ticket']['deleted'] && shd_allowed_to('shd_delete_recycling'),
+		'display' => $context['ticket']['deleted'] && shd_allowed_to('shd_delete_recycling', $context['ticket']['dept']),
 		'text' => 'shd_delete_permanently',
 		'onclick' => 'return confirm(' . JavaScriptEscape($txt['shd_delete_permanently_confirm']) . ');',
 	);
@@ -582,7 +583,7 @@ function shd_view_ticket()
 		'url' => $scripturl . '?action=helpdesk;sa=tickettotopic;ticket=' . $context['ticket']['id'] . ';' . $context['session_var'] . '=' . $context['session_id'],
 		'icon' => 'tickettotopic',
 		'alt' => '*',
-		'display' => $context['shd_can_move_to_topic'] && !$context['ticket']['closed'] && !$context['ticket']['deleted'] && ($context['ticket']['deleted_replies'] == 0 || shd_allowed_to('shd_access_recyclebin')),
+		'display' => $context['shd_can_move_to_topic'] && !$context['ticket']['closed'] && !$context['ticket']['deleted'] && ($context['ticket']['deleted_replies'] == 0 || shd_allowed_to('shd_access_recyclebin', $context['ticket']['dept'])),
 		'text' => 'shd_ticket_move_to_topic',
 	);
 
@@ -609,7 +610,7 @@ function shd_view_ticket()
 
 	$context['ticket_form']['ticket'] = $context['ticket_id'];
 	$context['ticket_form']['num_allowed_attachments'] = empty($modSettings['attachmentNumPerPostLimit']) || $modSettings['shd_attachments_mode'] == 'ticket' ? -1 : $modSettings['attachmentNumPerPostLimit'];
-	$context['ticket_form']['do_attach'] = shd_allowed_to('shd_post_attachment');
+	$context['ticket_form']['do_attach'] = shd_allowed_to('shd_post_attachment', $context['ticket']['dept']);
 	$context['ticket_form']['num_replies'] = $context['ticket']['num_replies'];
 	$context['ticket_form']['disable_smileys'] = empty($modSettings['shd_allow_ticket_smileys']);
 	shd_posting_additional_options();
@@ -709,7 +710,7 @@ function shd_view_ticket()
 	checkSubmitOnce('register');
 
 	// Should we load and display this ticket's action log?
-	$context['display_ticket_log'] = !empty($modSettings['shd_display_ticket_logs']) && (shd_allowed_to('shd_view_ticket_logs_any') || (shd_allowed_to('shd_view_ticket_logs_own') && $context['ticket']['ticket_opener']));
+	$context['display_ticket_log'] = !empty($modSettings['shd_display_ticket_logs']) && (shd_allowed_to('shd_view_ticket_logs_any', $context['ticket']['dept']) || (shd_allowed_to('shd_view_ticket_logs_own', $context['ticket']['dept']) && $context['ticket']['ticket_opener']));
 
 	// If yes, go ahead and load the log entries (Re-using a couple of functions from the ACP)
 	if (!empty($context['display_ticket_log']))
@@ -717,13 +718,13 @@ function shd_view_ticket()
 		require_once($sourcedir . '/sd_source/Subs-SimpleDeskAdmin.php');
 		$context['ticket_log'] = shd_load_action_log_entries(0, 10, '', '', 'la.id_ticket = ' . $context['ticket_id']);
 		$context['ticket_log_count'] = shd_count_action_log_entries('la.id_ticket = ' . $context['ticket_id']);
-		$context['ticket_full_log'] = allowedTo('admin_forum') || shd_allowed_to('admin_helpdesk');
+		$context['ticket_full_log'] = allowedTo('admin_forum') || shd_allowed_to('admin_helpdesk', 0);
 	}
 
 	// Lastly, what about related tickets?
-	$context['create_relationships'] = shd_allowed_to('shd_create_relationships');
-	$context['display_relationships'] = ((shd_allowed_to('shd_view_relationships') || $context['create_relationships']) && empty($modSettings['shd_disable_relationships']));
-	$context['delete_relationships'] = shd_allowed_to('shd_delete_relationships');
+	$context['create_relationships'] = shd_allowed_to('shd_create_relationships', $context['ticket']['dept']);
+	$context['display_relationships'] = ((shd_allowed_to('shd_view_relationships', $context['ticket']['dept']) || $context['create_relationships']) && empty($modSettings['shd_disable_relationships']));
+	$context['delete_relationships'] = shd_allowed_to('shd_delete_relationships', $context['ticket']['dept']);
 	if (!empty($context['display_relationships']))
 	{
 		shd_load_relationships($context['ticket_id']);
@@ -818,16 +819,16 @@ function shd_prepare_ticket_context()
 		'timestamp' => forum_time(true, $message['poster_time']),
 		'body' => $message['body'],
 		'is_staff' => !empty($context['shd_is_staff'][$message['id_member']]),
-		'can_edit' => $message['message_status'] != MSG_STATUS_DELETED && !$context['ticket']['closed'] && !$context['ticket']['deleted'] && (shd_allowed_to('shd_edit_reply_any') || ($message['id_member'] == $user_info['id'] && shd_allowed_to('shd_edit_reply_own'))),
-		'can_delete' => $message['message_status'] != MSG_STATUS_DELETED && !$context['ticket']['closed'] && !$context['ticket']['deleted'] && (shd_allowed_to('shd_delete_reply_any') || ($message['id_member'] == $user_info['id'] && shd_allowed_to('shd_delete_reply_own'))),
-		'can_restore' => $message['message_status'] == MSG_STATUS_DELETED && !$context['ticket']['closed'] && !$context['ticket']['deleted'] && (shd_allowed_to('shd_restore_reply_any') || ($message['id_member'] == $user_info['id'] && shd_allowed_to('shd_restore_reply_own'))),
-		'can_permadelete' => $message['message_status'] == MSG_STATUS_DELETED && !$context['ticket']['closed'] && !$context['ticket']['deleted'] && shd_allowed_to('shd_delete_recycling'),
+		'can_edit' => $message['message_status'] != MSG_STATUS_DELETED && !$context['ticket']['closed'] && !$context['ticket']['deleted'] && (shd_allowed_to('shd_edit_reply_any', $context['ticket']['dept']) || ($message['id_member'] == $user_info['id'] && shd_allowed_to('shd_edit_reply_own', $context['ticket']['dept']))),
+		'can_delete' => $message['message_status'] != MSG_STATUS_DELETED && !$context['ticket']['closed'] && !$context['ticket']['deleted'] && (shd_allowed_to('shd_delete_reply_any', $context['ticket']['dept']) || ($message['id_member'] == $user_info['id'] && shd_allowed_to('shd_delete_reply_own', $context['ticket']['dept']))),
+		'can_restore' => $message['message_status'] == MSG_STATUS_DELETED && !$context['ticket']['closed'] && !$context['ticket']['deleted'] && (shd_allowed_to('shd_restore_reply_any', $context['ticket']['dept']) || ($message['id_member'] == $user_info['id'] && shd_allowed_to('shd_restore_reply_own', $context['ticket']['dept']))),
+		'can_permadelete' => $message['message_status'] == MSG_STATUS_DELETED && !$context['ticket']['closed'] && !$context['ticket']['deleted'] && shd_allowed_to('shd_delete_recycling', $context['ticket']['dept']),
 		//'can_split' => $message['message_status'] != MSG_STATUS_DELETED && !$context['ticket']['closed'] && !$context['ticket']['deleted'] && (shd_allowed_to('shd_split_ticket_any') || ($context['ticket']['ticket_opener'] && shd_allowed_to('shd_split_ticket_own'))),
 		'message_status' => $message['message_status'],
 		'link' => $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $context['ticket_id'] . '.msg' . $message['id_msg'] . '#msg' . $message['id_msg'],
 	);
 
-	if (shd_allowed_to('shd_view_ip_any') || ($message['id_member'] == $user_info['id'] && shd_allowed_to('shd_view_ip_own')))
+	if (shd_allowed_to('shd_view_ip_any', $context['ticket']['dept']) || ($message['id_member'] == $user_info['id'] && shd_allowed_to('shd_view_ip_own', $context['ticket']['dept'])))
 		$output['ip_address'] = $context['link_ip_address'] ? ('<a href="' . $scripturl . '?action=trackip;searchip=' . $message['poster_ip'] . '">' . $message['poster_ip'] . '</a>') : $message['poster_ip'];
 
 	if (!empty($message['modified_time']))

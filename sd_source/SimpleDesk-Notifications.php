@@ -452,7 +452,7 @@ function shd_notify_popup()
 	$ticketinfo = shd_load_ticket($row['id_ticket']);
 
 	// OK, if we're here, we can see the ticket. Can we actually see the email log at this point?
-	if (!shd_allowed_to('shd_view_ticket_logs_any') && (!shd_allowed_to('shd_view_ticket_logs_own') || !$ticketinfo['is_own']))
+	if (!shd_allowed_to('shd_view_ticket_logs_any', $ticketinfo['dept']) && (!shd_allowed_to('shd_view_ticket_logs_own', $ticketinfo['dept']) || !$ticketinfo['is_own']))
 		fatal_lang_error('no_access', false);
 
 	// We're reusing the Help template, need its language file.
@@ -500,7 +500,7 @@ function shd_notify_popup()
 	{
 		$emails = explode(',', $row['extra']['emails'][$email_type]['e']);
 		// Admins can see the actual emails.
-		if (shd_allowed_to('admin_helpdesk') || $user_info['is_admin'])
+		if (shd_allowed_to('admin_helpdesk', 0) || $user_info['is_admin'])
 		{
 			foreach ($emails as $key => $value)
 				$emails[$key] = '<a href="mailto:' . $value . '">' . $value . '</a>';

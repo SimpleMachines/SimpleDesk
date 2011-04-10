@@ -35,7 +35,7 @@ function shd_merge_ticket()
 		fatal_lang_error('shd_no_ticket');
 
 	$query = shd_db_query('', '
-		SELECT subject, id_member_started
+		SELECT subject, id_member_started, id_dept
 		FROM {db_prefix}helpdesk_tickets
 		WHERE {query_see_ticket}
 			AND id_ticket = {int:ticket}',
@@ -50,7 +50,7 @@ function shd_merge_ticket()
 		$context['current_ticket'] = $row;
 
 		// Now we have something to play with, let's see if we have the permissions to do it.
-		if (!shd_allowed_to('shd_merge_ticket_any') && (!shd_allowed_to('shd_merge_ticket_own') || ($row['id_member_started'] != $context['user']['id'])))
+		if (!shd_allowed_to('shd_merge_ticket_any', $row['id_dept']) && (!shd_allowed_to('shd_merge_ticket_own', $row['id_dept']) || ($row['id_member_started'] != $context['user']['id'])))
 			fatal_lang_error('shd_cannot_merge', false);
 	}
 	else
@@ -142,9 +142,9 @@ function shd_split_ticket()
 
 	// Permission checking time
 	if ($ticketinfo['id_member_started'] == $user_info['id'])
-		shd_is_allowed_to('shd_split_ticket_own');
+		shd_is_allowed_to('shd_split_ticket_own', $ticketinfo['id_dept']);
 	else
-		shd_is_allowed_to('shd_split_ticket_any');
+		shd_is_allowed_to('shd_split_ticket_any', $ticketinfo['id_dept']);
 
 	if (in_array($ticketinfo['status'], array(TICKET_STATUS_CLOSED, TICKET_STATUS_DELETED)))
 		fatal_lang_error('shd_ticket_unavailable', false);
@@ -212,9 +212,9 @@ function shd_split_ticket2()
 
 	// Permission checking time
 	if ($ticketinfo['id_member_started'] == $user_info['id'])
-		shd_is_allowed_to('shd_split_ticket_own');
+		shd_is_allowed_to('shd_split_ticket_own', $ticketinfo['id_dept']);
 	else
-		shd_is_allowed_to('shd_split_ticket_any');
+		shd_is_allowed_to('shd_split_ticket_any', $ticketinfo['id_dept']);
 
 	if (in_array($ticketinfo['status'], array(TICKET_STATUS_CLOSED, TICKET_STATUS_DELETED)))
 		fatal_lang_error('shd_ticket_unavailable', false);
@@ -319,6 +319,8 @@ function shd_split_ticket2()
 			'status' => shd_determine_status('mergesplit', $starter, $replier, $num_replies),
 		)
 	);
+
+	// !!! 4.3 Custom fields!
 
 	// 5. Log the action
 	shd_log_action('split_origin',

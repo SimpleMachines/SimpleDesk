@@ -40,12 +40,18 @@ function shd_post_ticket()
 	$new_ticket = $_REQUEST['sa'] == 'newticket';
 
 	if ($new_ticket)
-		shd_is_allowed_to('shd_new_ticket');
+	{
+		// Need to have a department to post in. If not, goodbye.
+		$_REQUEST['dept'] = isset($_REQUEST['dept']) ? (int) $_REQUEST['dept'] : 0;
+		if (empty($_REQUEST['dept']))
+			redirectexit($context['shd_home']);
+		shd_is_allowed_to('shd_new_ticket', $_REQUEST['dept']);
+	}
 	else
 	{
 		checkSession('get');
 		$ticketinfo = shd_load_ticket();
-		if (!shd_allowed_to('shd_edit_ticket_any') && (!shd_allowed_to('shd_edit_ticket_own') || !$ticketinfo['is_own']))
+		if (!shd_allowed_to('shd_edit_ticket_any', $ticketinfo['dept']) && (!shd_allowed_to('shd_edit_ticket_own', $ticketinfo['dept']) || !$ticketinfo['is_own']))
 			fatal_lang_error('cannot_shd_edit_ticket');
 	}
 
@@ -56,6 +62,7 @@ function shd_post_ticket()
 	require_once($sourcedir . '/Subs-Editor.php');
 
 	$context['ticket_form'] = array( // yes, everything goes in here.
+		'dept' => $new_ticket ? $_REQUEST['dept'] : $ticketinfo['dept'],
 		'form_title' => $new_ticket ? $txt['shd_create_ticket'] : $txt['shd_edit_ticket'],
 		'form_action' => $scripturl . '?action=helpdesk;sa=saveticket',
 		'first_msg' => $new_ticket ? 0 : $ticketinfo['id_first_msg'],
@@ -283,7 +290,8 @@ function shd_save_ticket()
 
 	if (empty($context['ticket_id']))
 	{
-		shd_is_allowed_to('shd_new_ticket');
+		$dept = isset($_REQUEST['dept']) ? (int) $_REQUEST['dept'] : 0;
+		shd_is_allowed_to('shd_new_ticket', $dept);
 
 		// some healthy defaults
 		$context['ticket_id'] = 0;
@@ -306,9 +314,10 @@ function shd_save_ticket()
 		$new_ticket = false;
 
 		$ticketinfo = shd_load_ticket();
+		$dept = $ticketinfo['dept'];
 
 		// S'pose we'd better check the permissions here
-		if (!shd_allowed_to('shd_edit_ticket_any') && (!shd_allowed_to('shd_edit_ticket_own') || !$ticketinfo['is_own']))
+		if (!shd_allowed_to('shd_edit_ticket_any', $dept) && (!shd_allowed_to('shd_edit_ticket_own', $dept) || !$ticketinfo['is_own']))
 			fatal_lang_error('cannot_shd_edit_ticket', false);
 
 		$msg = $ticketinfo['id_first_msg'];
@@ -325,6 +334,7 @@ function shd_save_ticket()
 	}
 
 	$context['ticket_form'] = array(
+		'dept' => $dept,
 		'form_title' => $new_ticket ? $txt['shd_create_ticket'] : $txt['shd_edit_ticket'],
 		'form_action' => $scripturl . '?action=helpdesk;sa=saveticket',
 		'first_msg' => $new_ticket ? 0 : $ticketinfo['id_first_msg'],
@@ -660,9 +670,9 @@ function shd_post_reply()
 	// Can we reply to any? If so, just go right along. If not, we need to do more work.
 	if ($new_reply)
 	{
-		if (!shd_allowed_to('shd_reply_ticket_any'))
+		if (!shd_allowed_to('shd_reply_ticket_any', $ticketinfo['dept']))
 		{
-			if (shd_allowed_to('shd_reply_ticket_own'))
+			if (shd_allowed_to('shd_reply_ticket_own', $ticketinfo['dept']))
 			{
 				if (!$ticketinfo['is_own'])
 					fatal_lang_error('shd_cannot_reply_any_but_own', false);
@@ -693,9 +703,9 @@ function shd_post_reply()
 
 		$reply = $smcFunc['db_fetch_assoc']($query);
 
-		if (!shd_allowed_to('shd_edit_reply_any'))
+		if (!shd_allowed_to('shd_edit_reply_any', $ticketinfo['dept']))
 		{
-			if (shd_allowed_to('shd_edit_reply_own'))
+			if (shd_allowed_to('shd_edit_reply_own', $ticketinfo['dept']))
 			{
 				if ($reply['id_member'] != $user_info['id'])
 					fatal_lang_error('shd_cannot_edit_reply_any_but_own', false);
@@ -712,6 +722,7 @@ function shd_post_reply()
 	// So it's either our ticket and we can reply to our own, or we can reply to any because we're awesome
 	// or we're editing and we can haz such powarz
 	$context['ticket_form'] = array( // yes, everything goes in here.
+		'dept' => $ticketinfo['dept'],
 		'form_title' => !empty($reply['id_msg']) ? $txt['shd_ticket_edit_reply'] : $txt['shd_reply_ticket'],
 		'form_action' => $scripturl . '?action=helpdesk;sa=savereply',
 		'first_msg' => $new_reply ? 0 : $ticketinfo['id_first_msg'],
@@ -746,17 +757,17 @@ function shd_post_reply()
 			'link' => !empty($ticketinfo['assigned_id']) ? shd_profile_link($ticketinfo['assigned_name'], $ticketinfo['assigned_id']) : '<span class="error">' . $txt['shd_unassigned'] . '</span>',
 		),
 		'num_replies' => !empty($ticketinfo['num_replies']) ? $ticketinfo['num_replies'] : 0,
-		'do_attach' => shd_allowed_to('shd_post_attachment'),
+		'do_attach' => shd_allowed_to('shd_post_attachment', $ticketinfo['dept']),
 		'reply' => !empty($reply['body']) ? $reply['body'] : '',
 		'return_to_ticket' => isset($_REQUEST['goback']),
 		'disable_smileys' => !$new_reply ? !empty($_REQUEST['no_smileys']) : ($ticketinfo['smileys_enabled'] == 0),
 	);
-	$context['can_solve'] = (shd_allowed_to('shd_resolve_ticket_any') || (shd_allowed_to('shd_resolve_ticket_own') && $ticketinfo['starter_id'] == $user_info['id']));
+	$context['can_solve'] = (shd_allowed_to('shd_resolve_ticket_any', $ticketinfo['dept']) || (shd_allowed_to('shd_resolve_ticket_own', $ticketinfo['dept']) && $ticketinfo['starter_id'] == $user_info['id']));
 	shd_posting_additional_options();
 
 	// Ticket privacy
 	if (empty($modSettings['shd_privacy_display']) || $modSettings['shd_privacy_display'] == 'smart')
-		$context['display_private'] = shd_allowed_to('shd_view_ticket_private_any') || shd_allowed_to('shd_alter_privacy_own') || shd_allowed_to('shd_alter_privacy_any') || $context['ticket_form']['private']['setting'];
+		$context['display_private'] = shd_allowed_to('shd_view_ticket_private_any', $ticketinfo['dept']) || shd_allowed_to('shd_alter_privacy_own', $ticketinfo['dept']) || shd_allowed_to('shd_alter_privacy_any', $ticketinfo['dept']) || $context['ticket_form']['private']['setting'];
 	else
 		$context['display_private'] = true;
 
@@ -1232,7 +1243,7 @@ function shd_done_posting()
 	if (!empty($modSettings['shd_thank_you_post']) && empty($context['ticket_form']['msg']))
 	{
 		// So we're doing a "thanks for posting, here's what's next" message. Well, it's only to new tickets (not on reply) - but... should it go to everyone, or only non staff?
-		if (empty($modSettings['shd_thank_you_nonstaff']) || !shd_allowed_to('shd_staff'))
+		if (empty($modSettings['shd_thank_you_nonstaff']) || !shd_allowed_to('shd_staff', 0))
 		{
 			$thank_you = true;
 			$context['sub_template'] = 'shd_thank_posting';
@@ -1241,7 +1252,7 @@ function shd_done_posting()
 
 			// Now customise it, including adding the preferences link if appropriate. Note that we don't have to verify they can create new tickets, they wouldn't be here if they couldn't.
 			$body = $txt['shd_ticket_posted_body'];
-			if (shd_allowed_to('shd_view_preferences_own', 'shd_view_preferences_any'))
+			if (shd_allowed_to(array('shd_view_preferences_own', 'shd_view_preferences_any'), $context['ticket_form']['dept']))
 				$body .= $txt['shd_ticket_posted_prefs'];
 			$body .= $txt['shd_ticket_posted_footer'];
 			$replacements = array(
@@ -1277,7 +1288,7 @@ function shd_setup_replies($first_msg)
 	$context['ticket_form']['do_replies'] = false;
 	$context['can_quote'] = false;
 
-	$context['can_see_ip'] = shd_allowed_to('shd_staff');
+	$context['can_see_ip'] = shd_allowed_to('shd_staff', $context['ticket_form']['dept']);
 
 	// OK, we're done with the ticket's own data. Now for replies.
 	$context['get_replies'] = 'shd_prepare_reply_context';
@@ -1462,7 +1473,7 @@ function shd_prepare_reply_context()
 		'timestamp' => forum_time(true, $message['poster_time']),
 		'body' => $message['body'],
 		'is_staff' => !empty($context['shd_is_staff'][$message['id_member']]),
-		'can_edit' => shd_allowed_to('shd_edit_reply_any') || ($message['id_member'] == $user_info['id'] && shd_allowed_to('shd_edit_reply_own')),
+		'can_edit' => shd_allowed_to('shd_edit_reply_any', $context['ticket_form']['dept']) || ($message['id_member'] == $user_info['id'] && shd_allowed_to('shd_edit_reply_own', $context['ticket_form']['dept'])),
 		'ip_address' => $message['poster_ip'],
 	);
 
@@ -1520,7 +1531,7 @@ function shd_check_attachments()
 	if (empty($context['current_attachments']))
 		$context['current_attachments'] = array();
 
-	if (shd_allowed_to('shd_post_attachment'))
+	if (shd_allowed_to('shd_post_attachment', $context['ticket_form']['dept']))
 	{
 		if (empty($_SESSION['temp_attachments']))
 			$_SESSION['temp_attachments'] = array();
@@ -1703,7 +1714,7 @@ function shd_handle_attachments()
 {
 	global $modSettings, $smcFunc, $context, $user_info, $sourcedir, $txt;
 
-	if (!shd_allowed_to('shd_post_attachment'))
+	if (!shd_allowed_to('shd_post_attachment', $context['ticket_form']['dept']))
 		return;
 
 	$attachIDs = array();

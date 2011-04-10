@@ -77,12 +77,12 @@ function shd_load_action_log_entries($start = 0, $items_per_page = 10, $sort = '
 
 	// We may have to exclude some items from this depending on who the user is or is not. Forum/HD admins can always see everything.
 	$exclude = array();
-	if (!$user_info['is_admin'] && !shd_allowed_to('admin_helpdesk'))
+	if (!$user_info['is_admin'] && !shd_allowed_to('admin_helpdesk', 0))
 	{
 		// First, custom field changes only available to admins.
 		$exclude = array('cf_tktchange_admin', 'cf_rplchange_admin', 'cf_tktchgdef_admin', 'cf_rplchgdef_admin');
 		// Next, staff only things
-		if (!shd_allowed_to('shd_staff'))
+		if (!shd_allowed_to('shd_staff', 0))
 		{
 			$exclude[] = 'cf_tktchange_staffadmin';
 			$exclude[] = 'cf_rplchange_staffadmin';
@@ -167,7 +167,7 @@ function shd_load_action_log_entries($start = 0, $items_per_page = 10, $sort = '
 		if (strpos($row['action'], 'cf_') === 0)
 			$actions[$row['id_action']]['action_icon'] = 'log_cfchange.png';
 
-		if (shd_allowed_to('shd_view_ip_any') || ($row['id_member'] == $user_info['id'] && shd_allowed_to('shd_view_ip_own')))
+		if (shd_allowed_to('shd_view_ip_any', 0) || ($row['id_member'] == $user_info['id'] && shd_allowed_to('shd_view_ip_own', 0)))
 			$actions[$row['id_action']]['member']['ip'] = !empty($row['ip']) ? $row['ip'] : $txt['shd_admin_actionlog_unknown'];
 	}
 
@@ -240,7 +240,7 @@ function shd_load_action_log_entries($start = 0, $items_per_page = 10, $sort = '
 				{
 					$emails = explode(',', $recipients['e']);
 					// Admins can see the actual emails.
-					if (shd_allowed_to('admin_helpdesk') || $user_info['is_admin'])
+					if ($user_info['is_admin'] || shd_allowed_to('admin_helpdesk', 0))
 					{
 						foreach ($emails as $key => $value)
 							$emails[$key] = '<a href="mailto:' . $value . '">' . $value . '</a>';
@@ -366,7 +366,7 @@ function shd_admin_bootstrap(&$admin_areas)
 		// The main menu
 		$admin_areas['helpdesk_info'] = array(
 			'title' => $txt['shd_helpdesk'],
-			'enabled' => allowedTo('admin_forum') || shd_allowed_to('admin_helpdesk'),
+			'enabled' => allowedTo('admin_forum') || shd_allowed_to('admin_helpdesk', 0),
 			'areas' => array(
 				'helpdesk_info' => array(
 					'label' => $txt['shd_admin_info'],
