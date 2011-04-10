@@ -537,21 +537,23 @@ if (empty($count))
 		),
 		array('id_dept')
 	);
+}
 
-	// Having made a new department, we need to move any outstanding tickets into it, if they didn't have a department already.
-	$new_dept = $smcFunc['db_insert_id']('{db_prefix}helpdesk_depts', 'id_dept');
-	if (!empty($new_dept))
-	{
-		$smcFunc['db_query']('', '
-			UPDATE {db_prefix}helpdesk_tickets
-			SET id_dept = {int:new_dept}
-			WHERE id_dept = {int:old_dept}',
-			array(
-				'new_dept' => $new_dept,
-				'old_dept' => 0,
-			)
-		);
-	}
+// Move any outstanding tickets into the last department we had, which will be the last one we created.
+$query = $smcFunc['db_query']('', 'SELECT MAX(id_dept) FROM {db_prefix}helpdesk_depts');
+list($new_dept) = $smcFunc['db_fetch_row']($query);
+$smcFunc['db_free_result']($query);
+if (!empty($new_dept))
+{
+	$smcFunc['db_query']('', '
+		UPDATE {db_prefix}helpdesk_tickets
+		SET id_dept = {int:new_dept}
+		WHERE id_dept = {int:old_dept}',
+		array(
+			'new_dept' => $new_dept,
+			'old_dept' => 0,
+		)
+	);
 }
 
 // Are we done?
