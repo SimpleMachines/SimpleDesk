@@ -145,4 +145,28 @@ function shd_add_to_boardindex(&$boardIndexOptions, &$categories)
 	);
 }
 
+function shd_get_ticket_counts()
+{
+	global $txt, $context, $smcFunc;
+
+	if (empty($context['dept_list']))
+		return;
+
+	$query = shd_db_query('', '
+		SELECT id_dept, status, COUNT(status) AS tickets
+		FROM {db_prefix}helpdesk_tickets AS hdt
+		WHERE {query_see_ticket}
+			AND id_dept IN ({array_int:depts})
+			AND status != {int:deleted}
+		GROUP BY id_dept, status
+		ORDER BY null',
+		array(
+			'depts' => array_keys($context['dept_list']),
+			'deleted' => TICKET_STATUS_DELETED,
+		)
+	);
+	while ($row = $smcFunc['db_fetch_assoc']($query))
+		$context['dept_list'][$row['id_dept']]['tickets'][$row['status'] == TICKET_STATUS_CLOSED ? 'closed' : 'open'] += $row['tickets'];
+}
+
 ?>

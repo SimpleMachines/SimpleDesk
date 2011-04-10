@@ -105,6 +105,11 @@ function shd_main()
 			'lang' => true,
 			'url' => $scripturl . '?action=helpdesk;sa=main',
 		),
+		'departments' => array(
+			'text' => 'shd_departments',
+			'lang' => true,
+			'url' => $scripturl . '?action=helpdesk;sa=dept',
+		),
 		'newticket' => array(
 			'text' => 'shd_new_ticket',
 			'test' => 'can_new_ticket',
@@ -383,6 +388,57 @@ function shd_main_helpdesk()
 	);
 
 	shd_helpdesk_listing();
+}
+
+/**
+ *	Sets up viewing the list of departments.
+ *
+ *	@since 1.1
+*/
+function shd_main_dept()
+{
+	global $context, $txt, $smcFunc, $scripturl, $user_info, $sourcedir;
+
+	$dept_list = shd_allowed_to('access_helpdesk', false);
+
+	$context += array(
+		'page_title' => $txt['shd_helpdesk'] . ' - ' . $txt['shd_departments'],
+		'sub_template' => 'shd_depts',
+		'shd_home_view' => shd_allowed_to('shd_staff', 0) ? 'staff' : 'user',
+	);
+
+	// Get the departments and order them in the same order they would be on the board index.
+	$context['dept_list'] = array();
+	$query = $smcFunc['db_query']('', '
+		SELECT hdd.id_dept, hdd.dept_name
+		FROM {db_prefix}helpdesk_depts AS hdd
+			INNER JOIN {db_prefix}categories AS c ON (hdd.board_cat = c.id_cat)
+		WHERE hdd.id_dept IN ({array_int:depts})
+		ORDER BY c.cat_order, hdd.before_after',
+		array(
+			'depts' => $dept_list,
+		)
+	);
+
+	while ($row = $smcFunc['db_fetch_assoc']($query))
+		$context['dept_list'][$row['id_dept']] = array(
+			'id_dept' => $row['id_dept'],
+			'dept_name' => $row['dept_name'],
+			'tickets' => array(
+				'open' => 0,
+				'closed' => 0,
+				'assigned' => 0,
+			),
+		);
+	$smcFunc['db_free_result']($query);
+
+	require_once($sourcedir . '/sd_source/Subs-SimpleDeskBoardIndex.php');
+	shd_get_ticket_counts();
+
+	$context['linktree'][] = array(
+		'url' => $scripturl . '?action=helpdesk;sa=dept',
+		'name' => $txt['shd_departments'],
+	);
 }
 
 /**

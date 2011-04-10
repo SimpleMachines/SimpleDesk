@@ -155,7 +155,8 @@ $txt['error_invalid_fields'] = 'The following fields have values that cannot be 
 $txt['error_missing_fields'] = 'The following fields were not completed and need to be: %1$s';
 
 // The main Helpdesk.
-$txt['shd_home'] = 'Helpdesk'; // separate string in case someone wants to change it independently of the main menu
+$txt['shd_home'] = 'Helpdesk'; // separate string in case someone wants to change it independently of the main/admin menu
+$txt['shd_departments'] = 'Departments'; // ditto
 $txt['shd_new_ticket'] = 'Post New Ticket';
 $txt['shd_new_ticket_proxy'] = 'Post Proxy Ticket';
 $txt['shd_helpdesk_profile'] = 'Helpdesk Profile';

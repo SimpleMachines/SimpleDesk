@@ -84,6 +84,71 @@ function template_main()
 	//echo 'I\'m alive!!!!!!!!!!1111oneone'; 	- I had to save this :P
 }
 
+function template_shd_depts()
+{
+	global $context, $txt, $settings, $scripturl;
+
+	echo '
+		<div class="modbuttons clearfix margintop">';
+
+	template_button_strip($context['navigation'], 'bottom');
+
+	echo '
+		</div>
+		<div id="admin_content">
+		<table width="100%" class="shd_main_hd">
+			<tr>
+				<td valign="top">
+					<div class="title_bar">
+						<h3 class="titlebg">
+							', $txt['shd_helpdesk'], '
+						</h3>
+					</div>
+					<span class="upperframe"><span></span></span>
+					<div class="roundframe">
+						<div class="shd_gototicket smalltext">
+							<form action="', $scripturl, '?action=helpdesk;sa=ticket" method="get">
+								', $txt['shd_go_to_ticket'], ':
+								<input type="hidden" name="action" value="helpdesk" />
+								<input type="hidden" name="sa" value="ticket" />
+								<input type="text" class="input_text" id="ticketJump" name="ticket" size="4" />
+								<input type="submit" class="button_submit" value="', $txt['shd_go'], '" onclick="shd_quickTicketJump(this.parentNode.ticketJump.value);" />
+							</form>
+						</div>
+						<div id="welcome">
+							<strong>', sprintf($txt['shd_welcome'], $context['user']['name']), '</strong><br />
+							', $txt['shd_' . $context['shd_home_view'] . '_greeting'], '
+						</div>
+					</div>
+					<span class="lowerframe"><span></span></span>
+					<br />
+					<div class="tborder">
+						<div class="cat_bar grid_header">
+							<h3 class="catbg grid_header">
+								<img src="', $settings['default_images_url'], '/simpledesk/departments.png" alt="*" />
+								', $txt['shd_departments'], '
+							</h3>
+						</div>
+						<table class="shd_ticketlist table_list" cellspacing="0" width="100%">';
+
+	foreach ($context['dept_list'] as $dept)
+	{
+		echo '
+							<tr class="windowbg2">
+								<td>', $dept['dept_name'], '</td>
+								<td class="stats windowbg">', $dept['tickets']['open'], ' open<br />', $dept['tickets']['closed'], ' closed</td>
+							</tr>';
+	}
+
+	echo '
+						</table>
+					</div>
+				</td>
+			</tr>
+			</table>
+		</div>';
+}
+
 /**
  *	Display the helpdesk view of resolved tickets.
  *
