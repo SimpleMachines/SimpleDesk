@@ -242,7 +242,7 @@ function shd_load_role_templates()
 */
 function shd_load_user_perms()
 {
-	global $user_info, $context, $smcFunc;
+	global $user_info, $context, $smcFunc, $modSettings;
 
 	// OK, have we been here before? If we have, we're done.
 	if (!empty($user_info['query_see_ticket']))
@@ -300,7 +300,7 @@ function shd_load_user_perms()
 						'roles' => array_keys($roles),
 					)
 				);
-				while ($row = $smcFunc['db_query']($query))
+				while ($row = $smcFunc['db_fetch_assoc']($query))
 					$depts[$row['id_role']][] = $row['id_dept'];
 				$smcFunc['db_free_result']($query);
 			}
@@ -308,7 +308,7 @@ function shd_load_user_perms()
 			$denied = array();
 
 			// 2.1. Apply role specific rules against their parent templates
-			if (!empty($roles))
+			if (!empty($depts))
 			{
 				$query = $smcFunc['db_query']('', '
 					SELECT id_role, permission, add_type
@@ -331,14 +331,15 @@ function shd_load_user_perms()
 
 			// 2.2 Having loaded all the roles, and applied role specific changes, fuse them all together
 			$user_info['shd_permissions'] = array();
-			foreach ($role_permissions as $role => $perm_list)
-			{
-				foreach ($perm_list as $perm => $value)
+			if (!empty($depts) && !empty($role_permissions))
+				foreach ($role_permissions as $role => $perm_list)
 				{
-					if ($value == ROLEPERM_ALLOW)
-						$user_info['shd_permissions'][$perm] = $depts[$role];
+					foreach ($perm_list as $perm => $value)
+					{
+						if ($value == ROLEPERM_ALLOW)
+							$user_info['shd_permissions'][$perm] = $depts[$role];
+					}
 				}
-			}
 
 			// 2.3 Apply any deny restrictions
 			if (!empty($denied))
@@ -422,11 +423,11 @@ function shd_allowed_to($permission, $dept = 0)
 	}
 	elseif ($dept == 0)
 	{
-		if (!is_array($permission) && !empty($user_info['shd_permissions'][$permission]))
+		if (!empty($user_info['is_admin']))
+			return true;
+		elseif (!is_array($permission) && !empty($user_info['shd_permissions'][$permission]))
 			return true;
 		elseif (is_array($permission) && count(array_intersect(array_keys($user_info['shd_permissions']), $permission)) != 0)
-			return true;
-		elseif (!empty($user_info['is_admin']))
 			return true;
 		else
 			return false;
