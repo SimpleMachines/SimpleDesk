@@ -65,7 +65,7 @@ function template_main()
 	{
 		$context['current_block'] = $block;
 		if (!empty($context['ticket_blocks'][$block]['count']) && $context['ticket_blocks'][$block]['count'] > 10)
-			$context['block_link'] = $_REQUEST['sa'] == 'viewblock' ? $scripturl . '?action=helpdesk;sa=main' : $scripturl . '?action=helpdesk;sa=viewblock;block=' . $block . '#shd_block_' . $block;
+			$context['block_link'] = $_REQUEST['sa'] == 'viewblock' ? $scripturl . '?' . $context['shd_home'] : $scripturl . '?action=helpdesk;sa=viewblock;block=' . $block . '#shd_block_' . $block;
 		else
 			$context['block_link'] = '';
 

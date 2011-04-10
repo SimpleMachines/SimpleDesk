@@ -1262,7 +1262,7 @@ function shd_done_posting()
 	{
 		// After all this time... after everything we saw, after everything we lost... I have only one thing to say to you... BYE!
 		if (empty($_REQUEST['goback']))
-			redirectexit('action=helpdesk;sa=main');
+			redirectexit($context['shd_home']);
 		elseif (!empty($context['ticket_form']['msg']))
 			redirectexit('action=helpdesk;sa=ticket;ticket=' . $context['ticket_id'] . '.msg' . $context['ticket_form']['msg'] . '#msg' . $context['ticket_form']['msg'], $context['browser']['is_ie']);
 		else

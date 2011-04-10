@@ -56,7 +56,7 @@ function shd_ticket_unread()
 			)
 		);
 
-	redirectexit('action=helpdesk;sa=main');
+	redirectexit($context['shd_home']);
 }
 
 /**
@@ -149,7 +149,7 @@ function shd_ticket_resolve()
 		shd_clear_active_tickets($row['id_member_started']);
 
 		if ($context['shd_return_to'] == 'home')
-			redirectexit('action=helpdesk;sa=main');
+			redirectexit($context['shd_home']);
 		else
 			redirectexit('action=helpdesk;sa=ticket;ticket=' . $context['ticket_id']);
 	}

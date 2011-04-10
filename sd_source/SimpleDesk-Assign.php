@@ -302,7 +302,7 @@ function shd_commit_assignment($ticket, $assignment, $is_ajax = false)
 		return;
 
 	if (!empty($context['shd_return_to']) && $context['shd_return_to'] == 'home')
-		redirectexit('action=helpdesk;sa=main');
+		redirectexit($context['shd_home']);
 	else
 		redirectexit('action=helpdesk;sa=ticket;ticket=' . $ticket);
 }

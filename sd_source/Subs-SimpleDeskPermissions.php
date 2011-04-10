@@ -288,6 +288,23 @@ function shd_load_user_perms()
 
 			$smcFunc['db_free_result']($query);
 
+			// 1a. Get all the departments these roles are in.
+			$depts = array();
+			if (!empty($roles))
+			{
+				$query = $smcFunc['db_query']('', '
+					SELECT id_role, id_dept
+					FROM {db_prefix}helpdesk_dept_roles
+					WHERE id_role IN ({array_int:roles})',
+					array(
+						'roles' => array_keys($roles),
+					)
+				);
+				while ($row = $smcFunc['db_query']($query))
+					$depts[$row['id_role']][] = $row['id_dept'];
+				$smcFunc['db_free_result']($query);
+			}
+
 			$denied = array();
 
 			// 2.1. Apply role specific rules against their parent templates
@@ -319,7 +336,7 @@ function shd_load_user_perms()
 				foreach ($perm_list as $perm => $value)
 				{
 					if ($value == ROLEPERM_ALLOW)
-						$user_info['shd_permissions'][$perm] = ROLEPERM_ALLOW;
+						$user_info['shd_permissions'][$perm] = $depts[$role];
 				}
 			}
 
@@ -332,11 +349,23 @@ function shd_load_user_perms()
 						unset($user_info['shd_permissions'][$perm]);
 				}
 			}
+
+			cache_put_data($permissions_cache, $user_info['shd_permissions'], $perm_cache_time);
 		}
 		else
 			$user_info['shd_permissions'] = $temp;
-
-		cache_get_data($permissions_cache, $user_info['shd_permissions'], $perm_cache_time);
+	}
+	elseif ($user_info['is_admin'])
+	{
+		// Figure out what departments there are, because these are the departments in which they have any given permission.
+		$context['shd_depts_list'] = array();
+		$query = $smcFunc['db_query']('', '
+			SELECT id_dept
+			FROM {db_prefix}helpdesk_dept_roles'
+		);
+		while ($row = $smcFunc['db_fetch_assoc']($query))
+			$context['shd_depts_list'][] = $row['id_dept'];
+		$smcFunc['db_free_result']($query);
 	}
 
 	if ($user_info['is_admin'] || shd_allowed_to('admin_helpdesk'))
@@ -374,36 +403,43 @@ function shd_load_user_perms()
  *
  *	Prior to 1.0, this function was in Subs-SimpleDesk.php
  *
- *	@param mixed $permission A string or array of strings naming a permission or permissions that wish to be examined
- *	@return bool True if any of the permission(s) outlined in $permission are true.
+ *	@param mixed $permission A string or array of strings naming a permission or permissions that wish to be examined. Array format is only supported if $dept is not identical to false.
+ *	@param mixed $dept Normally, the department number which the permission is considered for. Can also be 0 to indicate whether the user has that permission in any department, or false to indicate that it should return a list of all the departments where that permission is available.
+ *	@return bool True if any of the permission(s) outlined in $permission are true in the department(s) identified, or an array indicating the departments applicable for that permission if $dept is true boolean 'false'.
  *	@see shd_is_allowed_to()
  *	@since 1.0
 */
-function shd_allowed_to($permission)
+function shd_allowed_to($permission, $dept = 0)
 {
-	global $user_info;
+	global $user_info, $context;
 
-	// Can always do nothing
-	if (empty($permission))
-		return true;
-
-	// WTH, permissions not loaded yet?
-	if (empty($user_info))
-		return false;
-
-	// Oh my, it's the admin, run cuz he can do anything!
-	if ($user_info['is_admin'])
-		return true;
-
-	if (empty($user_info['shd_permissions']))
-		return false;
-
-	if (!is_array($permission) && !empty($user_info['shd_permissions'][$permission]))
-		return true;
-	elseif (is_array($permission) && count(array_intersect(array_keys($user_info['shd_permissions']), $permission)) != 0)
-		return true;
+	if ($dept === false)
+	{
+		if (!empty($user_info['is_admin']))
+			return $context['shd_depts_list'];
+		else
+			return empty($user_info['shd_permissions'][$permission]) ? array() : $user_info['shd_permissions'][$permission];
+	}
+	elseif ($dept == 0)
+	{
+		if (!is_array($permission) && !empty($user_info['shd_permissions'][$permission]))
+			return true;
+		elseif (is_array($permission) && count(array_intersect(array_keys($user_info['shd_permissions']), $permission)) != 0)
+			return true;
+		elseif (!empty($user_info['is_admin']))
+			return true;
+		else
+			return false;
+	}
 	else
+	{
+		$permission = is_array($permission) ? $permission : (array) $permission;
+		foreach ($permission as $perm)
+			if (!empty($user_info['shd_permissions'][$perm]) && in_array($dept, $user_info['shd_permissions'][$perm]))
+				return true;
+
 		return false;
+	}
 }
 
 /**
@@ -415,17 +451,18 @@ function shd_allowed_to($permission)
  *
  *	Prior to 1.0, this function was in Subs-SimpleDesk.php
  *
- *	@param mixed $permission A string or array of strings naming a permission or permissions that wish to be examined
+ *	@param mixed $permission A string or array of strings naming a permission or permissions that wish to be examined.
+ *	@param int $dept A number indicating a department that the user must the permission in, or 0 for not caring which department provided the user has that permission in at least one department.
  *	@see shd_allowed_to()
  *	@since 1.0
 */
-function shd_is_allowed_to($permission)
+function shd_is_allowed_to($permission, $dept = 0)
 {
 	global $user_info, $txt;
 
 	$permission = is_array($permission) ? $permission : (array) $permission;
 
-	if (!shd_allowed_to($permission))
+	if (!shd_allowed_to($permission, $dept))
 	{
 		// Pick the last array entry as the permission shown as the error.
 		$error_permission = array_shift($permission);

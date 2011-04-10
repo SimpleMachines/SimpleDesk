@@ -104,7 +104,7 @@ function shd_ticket_delete()
 	shd_clear_active_tickets($row['id_member_started']);
 
 	// Go to the home
-	redirectexit('action=helpdesk;sa=main');
+	redirectexit($context['shd_home']);
 }
 
 function shd_reply_delete()

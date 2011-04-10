@@ -53,6 +53,7 @@ function shd_main()
 
 	// Load stuff: preferences the core template - and any hook-required files
 	$context['shd_preferences'] = shd_load_user_prefs();
+	$context['shd_home'] = 'action=helpdesk;sa=main';
 	loadTemplate('sd_template/SimpleDesk');
 	shd_load_plugin_files('helpdesk');
 	shd_load_plugin_langfiles('helpdesk');
@@ -444,7 +445,7 @@ function shd_view_block()
 	);
 
 	if (empty($_REQUEST['block']) || empty($context['ticket_blocks'][$_REQUEST['block']]) || empty($context['ticket_blocks'][$_REQUEST['block']]['count']))
-		redirectexit('action=helpdesk;sa=main');
+		redirectexit($context['shd_home']);
 
 	$context['items_per_page'] = 10;
 	foreach ($context['ticket_blocks'] as $block => $details)
