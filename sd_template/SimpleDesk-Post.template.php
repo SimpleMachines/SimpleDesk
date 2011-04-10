@@ -166,7 +166,23 @@ function template_ticket_custom_fields()
 			elseif (!isset($field['value']))
 				$field['value'] = $field['default_value'];
 
-			echo '
+			if ($field['type'] == CFIELD_TYPE_LARGETEXT)
+			{
+				// Textareas are big and special and scary. They get their own template to cope with it.
+				if ($field['value'] == $field['default_value'])
+					$field['value'] = '';
+				echo '
+					<dl class="settings">
+						<dt id="field-' . $field['id'] . '" style="width:98%;">
+							', !empty($field['icon']) ? '<img src="' . $settings['default_images_url'] . '/simpledesk/cf/' . $field['icon'] . '" alt="" />' : '', '
+							<strong>' . $field['name'] . ': </strong><br />
+							<span class="smalltext">' . $field['desc'] . '</span><br />
+							<textarea name="field-', $field['id'], '"', !empty($field['default_value']) ? ' rows="' . $field['default_value'][0] . '" cols="' . $field['default_value'][1] . '" ' : '', ' style="width:auto; height:auto;">', $field['value'], '</textarea>
+						</dt>';
+			}
+			else
+			{
+				echo '
 					<dl class="settings">
 						<dt id="field-' . $field['id'] . '">
 							', !empty($field['icon']) ? '<img src="' . $settings['default_images_url'] . '/simpledesk/cf/' . $field['icon'] . '" alt="" />' : '', '
@@ -174,79 +190,71 @@ function template_ticket_custom_fields()
 							<span class="smalltext">' . $field['desc'] . '</span>
 						</dt>';
 
-			// Text
-			if ($field['type'] == CFIELD_TYPE_TEXT)
-			{
-				echo '
+				// Text
+				if ($field['type'] == CFIELD_TYPE_TEXT)
+				{
+					echo '
 						<dd><input type="text" name="field-', $field['id'], '" value="', $field['value'], '" class="input_text" /></dd>';
-			}
-			// Textarea
-			elseif ($field['type'] == CFIELD_TYPE_LARGETEXT)
-			{
-				if ($field['value'] == $field['default_value'])
-					$field['value'] = '';
-
-				echo '
-						<dd><textarea name="field-', $field['id'], '"', !empty($field['default_value']) ? ' rows="' . $field['default_value'][0] . '" cols="' . $field['default_value'][1] . '" ' : '', '>', $field['value'], '</textarea></dd>';
-			}
-			// Integers only
-			elseif ($field['type'] == CFIELD_TYPE_INT)
-			{
-				echo '
-						<dd><input name="field-', $field['id'], '" value="', $field['value'], '" size="10" /></dd>';
-			}
-			// Floating numbers
-			elseif ($field['type'] == CFIELD_TYPE_FLOAT)
-			{
-				echo '
-						<dd><input name="field-', $field['id'], '" value="', $field['value'], '" size="10" /></dd>';
-			}
-			// Select boxes
-			elseif ($field['type'] == CFIELD_TYPE_SELECT)
-			{
-				echo '
+				}
+				// Integers only
+				elseif ($field['type'] == CFIELD_TYPE_INT)
+				{
+					echo '
+						<dd><input name="field-', $field['id'], '" value="', $field['value'], '" size="10" class="input_text" /></dd>';
+				}
+				// Floating numbers
+				elseif ($field['type'] == CFIELD_TYPE_FLOAT)
+				{
+					echo '
+						<dd><input name="field-', $field['id'], '" value="', $field['value'], '" size="10" class="input_text" /></dd>';
+				}
+				// Select boxes
+				elseif ($field['type'] == CFIELD_TYPE_SELECT)
+				{
+					echo '
 						<dd>
 							<select name="field-', $field['id'], '">
 								<option value="0"', $field['value'] == 0 ? ' selected="selected"' : '', !empty($field['is_required']) ? ' disabled="disabled"' : '', '>', $txt['shd_choose_one'], '&nbsp;</option>';
 
-				foreach ($field['options'] as $key => $option)
-					echo '
+					foreach ($field['options'] as $key => $option)
+						echo '
 								<option value="', $key, '"', $field['value'] == $key ? ' selected="selected"' : '', '>', $option, '&nbsp;</option>';
 
-				echo '
+					echo '
 							</select>
 						</dd>';
-			}
-			// Checkboxes!
-			elseif ($field['type'] == CFIELD_TYPE_CHECKBOX)
-			{
-				echo '
-						<dd><input name="field-', $field['id'], '" type="checkbox"', !empty($field['value']) ? ' checked="checked"' : '', ' /></dd>';
-			}
-			// Last one, radio buttons
-			elseif ($field['type'] == CFIELD_TYPE_RADIO)
-			{
-				echo '
+				}
+				// Checkboxes!
+				elseif ($field['type'] == CFIELD_TYPE_CHECKBOX)
+				{
+					echo '
+						<dd><input name="field-', $field['id'], '" type="checkbox"', !empty($field['value']) ? ' checked="checked"' : '', ' class="input_check" /></dd>';
+				}
+				// Last one, radio buttons
+				elseif ($field['type'] == CFIELD_TYPE_RADIO)
+				{
+					echo '
 						<dd>';
-				if (empty($field['is_required']))
-					echo '
-							<input name="field-', $field['id'], '" type="radio" value="0"', $field['value'] == 0 ? ' checked="checked"' : '', ' /> <span>', $txt['shd_no_value'], '</span><br />';
+					if (empty($field['is_required']))
+						echo '
+							<input name="field-', $field['id'], '" type="radio" value="0"', $field['value'] == 0 ? ' checked="checked"' : '', ' class="input_radio" /> <span>', $txt['shd_no_value'], '</span><br />';
 
-				foreach ($field['options'] as $key => $option)
-					echo '
+					foreach ($field['options'] as $key => $option)
+						echo '
 							<input name="field-', $field['id'], '" type="radio" value="', $key, '"', $field['value'] == $key ? ' checked="checked"' : '', ' /> <span>', $option, '</span><br />';
 
-				echo '
+					echo '
 						</dd>';
-			}
-			// Default to a text input field
-			else
-				echo '
+				}
+				// Default to a text input field
+				else
+					echo '
 						<dd><input type="text" name="field-' . $field['id'] . '" value="' . $field['value'] . '" size="50" /></dd>';
 
-			echo '
+				echo '
 					</dl>
 					<hr class="hrcolor" />';
+			}
 		}
 
 	echo '
