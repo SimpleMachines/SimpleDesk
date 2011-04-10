@@ -178,7 +178,9 @@ function template_ticket_custom_fields()
 							<strong>' . $field['name'] . ': </strong><br />
 							<span class="smalltext">' . $field['desc'] . '</span><br />
 							<textarea name="field-', $field['id'], '"', !empty($field['default_value']) ? ' rows="' . $field['default_value'][0] . '" cols="' . $field['default_value'][1] . '" ' : '', ' style="width:auto; height:auto;">', $field['value'], '</textarea>
-						</dt>';
+						</dt>
+					</dl>
+					<hr class="hrcolor" />';
 			}
 			else
 			{
