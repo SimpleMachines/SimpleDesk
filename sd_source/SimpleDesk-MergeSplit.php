@@ -142,9 +142,9 @@ function shd_split_ticket()
 
 	// Permission checking time
 	if ($ticketinfo['id_member_started'] == $user_info['id'])
-		shd_is_allowed_to('shd_split_ticket_own', $ticketinfo['id_dept']);
+		shd_is_allowed_to('shd_split_ticket_own', $ticketinfo['dept']);
 	else
-		shd_is_allowed_to('shd_split_ticket_any', $ticketinfo['id_dept']);
+		shd_is_allowed_to('shd_split_ticket_any', $ticketinfo['dept']);
 
 	if (in_array($ticketinfo['status'], array(TICKET_STATUS_CLOSED, TICKET_STATUS_DELETED)))
 		fatal_lang_error('shd_ticket_unavailable', false);
@@ -212,9 +212,9 @@ function shd_split_ticket2()
 
 	// Permission checking time
 	if ($ticketinfo['id_member_started'] == $user_info['id'])
-		shd_is_allowed_to('shd_split_ticket_own', $ticketinfo['id_dept']);
+		shd_is_allowed_to('shd_split_ticket_own', $ticketinfo['dept']);
 	else
-		shd_is_allowed_to('shd_split_ticket_any', $ticketinfo['id_dept']);
+		shd_is_allowed_to('shd_split_ticket_any', $ticketinfo['dept']);
 
 	if (in_array($ticketinfo['status'], array(TICKET_STATUS_CLOSED, TICKET_STATUS_DELETED)))
 		fatal_lang_error('shd_ticket_unavailable', false);

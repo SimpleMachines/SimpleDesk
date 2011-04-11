@@ -135,7 +135,7 @@ function shd_view_ticket()
 
 	$context['ticket'] = array(
 		'id' => $context['ticket_id'],
-		'dept' => $ticketinfo['id_dept'],
+		'dept' => $ticketinfo['dept'],
 		'dept_name' => $ticketinfo['dept_name'],
 		'display_id' => str_pad($context['ticket_id'], 5, '0', STR_PAD_LEFT),
 		'subject' => $ticketinfo['subject'],
