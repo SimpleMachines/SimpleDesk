@@ -63,7 +63,7 @@ function shd_admin_dept_list()
 
 	// 1. Get all the departments
 	$query = $smcFunc['db_query']('', '
-		SELECT hdd.id_dept, hdd.dept_name, hdd.board_cat, c.name AS cat_name, hdd.before_after
+		SELECT hdd.id_dept, hdd.dept_name, hdd.description, hdd.board_cat, c.name AS cat_name, hdd.before_after
 		FROM {db_prefix}helpdesk_depts AS hdd
 			LEFT JOIN {db_prefix}categories AS c ON (hdd.board_cat = c.id_cat)
 		ORDER BY id_dept'
@@ -123,15 +123,17 @@ function shd_admin_create_dept()
 			$_POST['dept_cat'] = (int) $_POST['dept_cat'];
 
 		$_POST['dept_beforeafter'] = empty($_POST['dept_beforeafter']) || empty($_POST['dept_cat']) ? 0 : 1;
+		// Change '1 & 2' to '1 &amp; 2', but not '&amp;' to '&amp;amp;'...
+		$_POST['dept_desc'] = empty($_POST['dept_desc']) ? '' : preg_replace('~[&]([^;]{8}|[^;]{0,8}$)~', '&amp;$1', $_POST['dept_desc']);
 
 		// Create the department
 		$smcFunc['db_insert']('insert',
 			'{db_prefix}helpdesk_depts',
 			array(
-				'dept_name' => 'string', 'board_cat' => 'int', 'before_after' => 'int',
+				'dept_name' => 'string', 'description' => 'string', 'board_cat' => 'int', 'before_after' => 'int',
 			),
 			array(
-				$_POST['dept_name'], $_POST['dept_cat'], $_POST['dept_beforeafter'],
+				$_POST['dept_name'], $_POST['dept_desc'], $_POST['dept_cat'], $_POST['dept_beforeafter'],
 			),
 			array(
 				'id_dept',
@@ -157,7 +159,7 @@ function shd_admin_edit_dept()
 
 	// Get the current department
 	$query = $smcFunc['db_query']('', '
-		SELECT id_dept, dept_name, board_cat, before_after
+		SELECT id_dept, dept_name, description, board_cat, before_after
 		FROM {db_prefix}helpdesk_depts
 		WHERE id_dept = {int:dept}',
 		array(
@@ -170,6 +172,7 @@ function shd_admin_edit_dept()
 		fatal_lang_error('shd_unknown_dept', false);
 	}
 	$context['shd_dept'] = $smcFunc['db_fetch_assoc']($query);
+	$context['shd_dept']['description'] = htmlspecialchars($context['shd_dept']['description']);
 	$smcFunc['db_free_result']($query);
 
 	// Get the category list
@@ -219,7 +222,7 @@ function shd_admin_save_dept()
 	// 2. Check it's a valid department.
 	$_REQUEST['dept'] = isset($_REQUEST['dept']) ? (int) $_REQUEST['dept'] : 0;
 	$query = $smcFunc['db_query']('', '
-		SELECT id_dept, dept_name, board_cat, before_after
+		SELECT id_dept, dept_name, description, board_cat, before_after
 		FROM {db_prefix}helpdesk_depts
 		WHERE id_dept = {int:dept}',
 		array(
@@ -305,17 +308,21 @@ function shd_admin_save_dept()
 		$_POST['dept_cat'] = (int) $_POST['dept_cat'];
 
 	$_POST['dept_beforeafter'] = empty($_POST['dept_beforeafter']) || empty($_POST['dept_cat']) ? 0 : 1;
+	// Change '1 & 2' to '1 &amp; 2', but not '&amp;' to '&amp;amp;'...
+	$_POST['dept_desc'] = empty($_POST['dept_desc']) ? '' : preg_replace('~[&]([^;]{8}|[^;]{0,8}$)~', '&amp;$1', $_POST['dept_desc']);
 
 	// 6. Commit that to DB.
 	$smcFunc['db_query']('', '
 		UPDATE {db_prefix}helpdesk_depts
 		SET dept_name = {string:dept_name},
+			description = {string:description},
 			board_cat = {int:board_cat},
 			before_after = {int:before_after}
 		WHERE id_dept = {int:id_dept}',
 		array(
 			'id_dept' => $_REQUEST['dept'],
 			'dept_name' => $_POST['dept_name'],
+			'description' => $_POST['dept_desc'],
 			'board_cat' => $_POST['dept_cat'],
 			'before_after' => $_POST['dept_beforeafter'],
 		)

@@ -404,6 +404,7 @@ $tables[] = array(
 	'columns' => array(
 		db_field('id_dept', 'smallint', 0, true, true),
 		db_field('dept_name', 'varchar', 50),
+		db_field('description', 'text'),
 		db_field('board_cat', 'smallint'),
 		db_field('before_after', 'tinyint'),
 	),

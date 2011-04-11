@@ -48,6 +48,7 @@ function template_shd_departments_home()
 							<td></td>
 							<td>
 								', $department['dept_name'], '
+								<div class="smalltext">', $department['description'], '</div>
 								<div class="smalltext">[<a href="', $scripturl, '?action=admin;area=helpdesk_depts;sa=editdept;dept=', $department['id_dept'], '">', $txt['shd_edit_dept'], '</a>]</div></td>
 							<td>';
 
@@ -126,6 +127,8 @@ function template_shd_create_dept()
 							<dl class="settings">
 								<dt><strong>', $txt['shd_new_dept_name'], '</strong></dt>
 								<dd><input type="text" name="dept_name" id="dept_name" value="" class="input_text" size="30" /></dd>
+								<dt><strong>', $txt['shd_dept_description'], '</strong></dt>
+								<dd><textarea name="dept_desc" rows="3" cols="35" style="width: 99%"></textarea></dd>
 								<dt><strong>', $txt['shd_dept_boardindex_cat'], '</strong></dt>
 								<dd>
 									<select name="dept_cat" id="dept_cat" onchange="document.getElementById(\'dept_beforeafter\').disabled = (this.value == 0);">';
@@ -182,6 +185,8 @@ function template_shd_edit_dept()
 							<dl class="settings">
 								<dt><strong>', $txt['shd_department_name'], '</strong></dt>
 								<dd><input type="text" name="dept_name" id="dept_name" value="', $context['shd_dept']['dept_name'], '" class="input_text" size="30" /></dd>
+								<dt><strong>', $txt['shd_dept_description'], '</strong></dt>
+								<dd><textarea name="dept_desc" rows="3" cols="35" style="width: 99%">', $context['shd_dept']['description'], '</textarea></dd>
 								<dt><strong>', $txt['shd_dept_boardindex_cat'], '</strong></dt>
 								<dd>
 									<select name="dept_cat" id="dept_cat" onchange="document.getElementById(\'dept_beforeafter\').disabled = (this.value == 0);">';

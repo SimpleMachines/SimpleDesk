@@ -363,6 +363,7 @@ $txt['shd_boardindex_cat_none'] = 'No category (do not show)';
 $txt['shd_boardindex_cat_where'] = 'Where in the category should it show?';
 $txt['shd_boardindex_cat_before'] = 'Before any boards';
 $txt['shd_boardindex_cat_after'] = 'After any boards';
+$txt['shd_dept_description'] = 'Description';
 //@}
 
 //! Plugins

@@ -43,7 +43,7 @@ function shd_add_to_boardindex(&$boardIndexOptions, &$categories)
 
 	$cat_list = array();
 	$query = $smcFunc['db_query']('', '
-		SELECT id_dept, dept_name, board_cat, before_after
+		SELECT id_dept, dept_name, description, board_cat, before_after
 		FROM {db_prefix}helpdesk_depts
 		WHERE id_dept IN ({array_int:depts})
 		ORDER BY before_after DESC, id_dept',
@@ -54,11 +54,18 @@ function shd_add_to_boardindex(&$boardIndexOptions, &$categories)
 	$depts = array_flip($depts);
 	while ($row = $smcFunc['db_fetch_assoc']($query))
 	{
+		if ($row['board_cat'] == 0)
+		{
+			unset($depts[$row['id_dept']]);
+			continue;
+		}
+
 		$depts[$row['id_dept']] = $row;
 		$cat_list[] = $row['board_cat'];
 		$context['dept_list'][$row['id_dept']] = array(
 			'id_dept' => $row['id_dept'],
 			'dept_name' => $row['dept_name'],
+			'dept_desc' => $row['description'],
 			'tickets' => array(
 				'open' => 0,
 				'closed' => 0,
@@ -175,11 +182,11 @@ function shd_dept_board($dept)
 		'id' => 'shd' . $dept['id_dept'],
 		'shd' => true,
 		'name' => $dept['dept_name'],
-		'description' => '',
+		'description' => $dept['description'],
 		'new' => false,
 		'children_new' => false,
 		'topics' => 0,
-		'posts' => -$dept['id_dept'], // !!! This will later be the number of department
+		'posts' => -$dept['id_dept'],
 		'is_redirect' => true,
 		'unapproved_topics' => 0,
 		'unapproved_posts' => 0,
