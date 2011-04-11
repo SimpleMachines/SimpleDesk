@@ -666,7 +666,7 @@ function shd_modify_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
  *	@see SimpleDesk-Display.php
  *	@since 1.0
 */
-function shd_get_urgency_options($self_ticket = false)
+function shd_get_urgency_options($self_ticket = false, $dept = 0)
 {
 	global $context;
 	$context['ticket_form']['urgency']['options'] = array(
@@ -678,11 +678,11 @@ function shd_get_urgency_options($self_ticket = false)
 		TICKET_URGENCY_CRITICAL => 'shd_urgency_5',
 	);
 
-	if (shd_allowed_to('shd_alter_urgency_higher_any') || ($self_ticket && shd_allowed_to('shd_alter_urgency_higher_own')))
+	if (shd_allowed_to('shd_alter_urgency_higher_any', $dept) || ($self_ticket && shd_allowed_to('shd_alter_urgency_higher_own', $dept)))
 	{
 		$context['ticket_form']['urgency']['can_change'] = true;
 	}
-	elseif (shd_allowed_to('shd_alter_urgency_any') || ($self_ticket && shd_allowed_to('shd_alter_urgency_own')))
+	elseif (shd_allowed_to('shd_alter_urgency_any', $dept) || ($self_ticket && shd_allowed_to('shd_alter_urgency_own', $dept)))
 	{
 		if (!empty($context['ticket_form']['urgency']['setting']) && $context['ticket_form']['urgency']['setting'] > TICKET_URGENCY_HIGH)
 			$context['ticket_form']['urgency']['can_change'] = false;
@@ -708,7 +708,7 @@ function shd_get_urgency_options($self_ticket = false)
  *
  *	@since 1.1
 */
-function shd_load_custom_fields($is_ticket = true, $ticketContext = 0)
+function shd_load_custom_fields($is_ticket = true, $ticketContext = 0, $dept = 0)
 {
 	global $context, $smcFunc;
 
@@ -748,8 +748,8 @@ function shd_load_custom_fields($is_ticket = true, $ticketContext = 0)
 
 	$loc = $is_ticket ? 'ticket' : $ticketContext;
 
-	$is_staff = shd_allowed_to('shd_staff');
-	$is_admin = shd_allowed_to('admin_helpdesk'); // this includes forum admins
+	$is_staff = shd_allowed_to('shd_staff', $dept);
+	$is_admin = shd_allowed_to('admin_helpdesk', $dept); // this includes forum admins
 
 	// Loop through all fields and figure out where they should be.
 	while($row = $smcFunc['db_fetch_assoc']($custom_fields))

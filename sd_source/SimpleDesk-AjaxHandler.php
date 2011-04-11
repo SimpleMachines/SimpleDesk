@@ -138,7 +138,7 @@ function shd_ajax_privacy()
 	}
 
 	$query = shd_db_query('', '
-		SELECT id_member_started, subject, private, status
+		SELECT id_member_started, subject, private, status, id_dept
 		FROM {db_prefix}helpdesk_tickets AS hdt
 		WHERE {query_see_ticket}
 			AND id_ticket = {int:current_ticket}',
@@ -149,7 +149,7 @@ function shd_ajax_privacy()
 
 	if ($row = $smcFunc['db_fetch_assoc']($query))
 	{
-		if (in_array($row['status'], array(TICKET_STATUS_CLOSED, TICKET_STATUS_DELETED)) || !shd_allowed_to('shd_alter_privacy_any') && (!shd_allowed_to('shd_alter_privacy_own') || $row['id_member_started'] != $user_info['id']))
+		if (in_array($row['status'], array(TICKET_STATUS_CLOSED, TICKET_STATUS_DELETED)) || !shd_allowed_to('shd_alter_privacy_any', $row['id_dept']) && (!shd_allowed_to('shd_alter_privacy_own', $row['id_dept']) || $row['id_member_started'] != $user_info['id']))
 		{
 			$context['ajax_return'] = array('error' => $txt['shd_cannot_change_privacy']);
 			return;
@@ -377,9 +377,6 @@ function shd_ajax_assign()
 
 	checkSession('get');
 
-	if (!shd_allowed_to('shd_assign_ticket_any'))
-		return $context['ajax_return'] = array('error' => $txt['shd_cannot_assign']);
-
 	if (!empty($context['ticket_id']))
 	{
 		$query = shd_db_query('', '
@@ -404,6 +401,9 @@ function shd_ajax_assign()
 
 	if (empty($assignees))
 		return $context['ajax_return'] = array('error' => $txt['shd_no_staff_assign']);
+
+	if (!shd_allowed_to('shd_assign_ticket_any', $dept))
+		return $context['ajax_return'] = array('error' => $txt['shd_cannot_assign']);
 
 	// OK, so we have the general values we need. Let's get user names, and get ready to kick this back to the user. We'll build the XML here though.
 	loadMemberData($assignees);
@@ -434,9 +434,6 @@ function shd_ajax_assign2()
 
 	checkSession('get');
 
-	if (!shd_allowed_to('shd_assign_ticket_any'))
-		return $context['ajax_return'] = array('error' => $txt['shd_cannot_assign']);
-
 	if (!empty($context['ticket_id']))
 	{
 		$query = shd_db_query('', '
@@ -457,6 +454,9 @@ function shd_ajax_assign2()
 
 	if (!isset($_GET['to_user']) || !is_numeric($_GET['to_user']))
 		return $context['ajax_return'] = array('error' => $txt['shd_assigned_not_permitted'] . 'line459');
+
+	if (!shd_allowed_to('shd_assign_ticket_any', $dept))
+		return $context['ajax_return'] = array('error' => $txt['shd_cannot_assign']);
 
 	$_GET['to_user'] = isset($_GET['to_user']) ? (int) $_GET['to_user'] : 0;
 

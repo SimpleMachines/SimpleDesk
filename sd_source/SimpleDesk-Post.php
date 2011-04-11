@@ -61,8 +61,10 @@ function shd_post_ticket()
 	require_once($sourcedir . '/Subs-Post.php');
 	require_once($sourcedir . '/Subs-Editor.php');
 
+	$dept = $new_ticket ? $_REQUEST['dept'] : $ticketinfo['dept'];
+
 	$context['ticket_form'] = array( // yes, everything goes in here.
-		'dept' => $new_ticket ? $_REQUEST['dept'] : $ticketinfo['dept'],
+		'dept' => $dept,
 		'form_title' => $new_ticket ? $txt['shd_create_ticket'] : $txt['shd_edit_ticket'],
 		'form_action' => $scripturl . '?action=helpdesk;sa=saveticket',
 		'first_msg' => $new_ticket ? 0 : $ticketinfo['id_first_msg'],
@@ -78,7 +80,7 @@ function shd_post_ticket()
 		),
 		'private' => array(
 			'setting' => $new_ticket ? false : ($ticketinfo['private'] == 1),
-			'can_change' => shd_allowed_to('shd_alter_privacy_any') || (shd_allowed_to('shd_alter_privacy_own') && ($new_ticket || !empty($ticketinfo['is_own']))),
+			'can_change' => shd_allowed_to('shd_alter_privacy_any', $dept) || (shd_allowed_to('shd_alter_privacy_own', $dept) && ($new_ticket || !empty($ticketinfo['is_own']))),
 			'options' => array(
 				0 => 'shd_ticket_notprivate',
 				1 => 'shd_ticket_private',
@@ -86,13 +88,13 @@ function shd_post_ticket()
 		),
 		'errors' => array(),
 		'num_replies' => $new_ticket ? 0 : $ticketinfo['num_replies'],
-		'do_attach' => shd_allowed_to('shd_post_attachment'),
+		'do_attach' => shd_allowed_to('shd_post_attachment', $dept),
 		'num_allowed_attachments' => empty($modSettings['attachmentNumPerPostLimit']) || $modSettings['shd_attachments_mode'] == 'ticket' ? -1 : $modSettings['attachmentNumPerPostLimit'],
 		'return_to_ticket' => isset($_REQUEST['goback']),
 		'disable_smileys' => $new_ticket ? !empty($_REQUEST['no_smileys']) : ($ticketinfo['smileys_enabled'] == 0),
 	);
-	$context['can_solve'] = !$new_ticket && (shd_allowed_to('shd_resolve_ticket_any') || (shd_allowed_to('shd_resolve_ticket_own') && $ticketinfo['starter_id'] == $user_info['id']));
-	$context['can_post_proxy'] = $new_ticket && isset($_REQUEST['proxy']) && shd_allowed_to('shd_post_proxy');
+	$context['can_solve'] = !$new_ticket && (shd_allowed_to('shd_resolve_ticket_any', $dept) || (shd_allowed_to('shd_resolve_ticket_own', $dept) && $ticketinfo['starter_id'] == $user_info['id']));
+	$context['can_post_proxy'] = $new_ticket && isset($_REQUEST['proxy']) && shd_allowed_to('shd_post_proxy', $dept);
 	if ($context['can_post_proxy'] && !empty($_REQUEST['proxy']))
 	{
 		// Did they specify a user id?
@@ -114,11 +116,11 @@ function shd_post_ticket()
 	elseif ($context['ticket_form']['status'] == TICKET_STATUS_DELETED)
 		fatal_lang_error('shd_cannon_edit_deleted', false);
 
-	shd_load_custom_fields(true, $context['ticket_form']['ticket']);
+	shd_load_custom_fields(true, $context['ticket_form']['ticket'], $context['ticket_form']['dept']);
 
 	// Ticket privacy
 	if (empty($modSettings['shd_privacy_display']) || $modSettings['shd_privacy_display'] == 'smart')
-		$context['display_private'] = shd_allowed_to('shd_view_ticket_private_any') || shd_allowed_to('shd_alter_privacy_own') || shd_allowed_to('shd_alter_privacy_any') || $context['ticket_form']['private']['setting'];
+		$context['display_private'] = shd_allowed_to('shd_view_ticket_private_any', $dept) || shd_allowed_to('shd_alter_privacy_own', $dept) || shd_allowed_to('shd_alter_privacy_any', $dept) || $context['ticket_form']['private']['setting'];
 	else
 		$context['display_private'] = true;
 
@@ -176,7 +178,7 @@ function shd_post_ticket()
 		censorText($context['ticket_form']['message']);
 	}
 
-	shd_get_urgency_options($new_ticket || $ticketinfo['is_own']);
+	shd_get_urgency_options($new_ticket || $ticketinfo['is_own'], $ticketinfo['dept']);
 
 	if ($context['ticket_form']['num_replies'])
 		shd_setup_replies($ticketinfo['id_first_msg']);
@@ -254,7 +256,7 @@ function shd_save_post()
 		preparsecode($_POST['shd_message']);
 
 		// Make sure there's something underneath all the tags
-		if ($smcFunc['htmltrim'](strip_tags(shd_format_text($_POST['shd_message'], false), '<img>')) === '' && (!shd_allowed_to('admin_forum') || strpos($_POST['shd_message'], '[html]') === false))
+		if ($smcFunc['htmltrim'](strip_tags(shd_format_text($_POST['shd_message'], false), '<img>')) === '' && (!allowedTo('admin_forum') || strpos($_POST['shd_message'], '[html]') === false))
 			$context['shd_errors'][] = 'no_message';
 		elseif (!empty($modSettings['max_messageLength']) && $smcFunc['strlen']($_POST['shd_message']) > $modSettings['max_messageLength'])
 		{
@@ -347,7 +349,7 @@ function shd_save_ticket()
 		'status' => $new_status,
 		'private' => array(
 			'setting' => $private,
-			'can_change' => (shd_allowed_to('shd_alter_privacy_any') || ($is_own && shd_allowed_to('shd_alter_privacy_own'))),
+			'can_change' => (shd_allowed_to('shd_alter_privacy_any', $dept) || ($is_own && shd_allowed_to('shd_alter_privacy_own', $dept))),
 			'options' => array(
 				0 => 'shd_ticket_notprivate',
 				1 => 'shd_ticket_private',
@@ -355,15 +357,15 @@ function shd_save_ticket()
 		),
 		'assigned' => $assigned,
 		'num_replies' => $num_replies,
-		'do_attach' => shd_allowed_to('shd_post_attachment'),
+		'do_attach' => shd_allowed_to('shd_post_attachment', $dept),
 		'return_to_ticket' => isset($_REQUEST['goback']),
 		'disable_smileys' => !empty($_REQUEST['no_smileys']),
 	);
-	$context['can_solve'] = !$new_ticket && (shd_allowed_to('shd_resolve_ticket_any') || (shd_allowed_to('shd_resolve_ticket_own') && $ticketinfo['starter_id'] == $user_info['id']));
+	$context['can_solve'] = !$new_ticket && (shd_allowed_to('shd_resolve_ticket_any', $dept) || (shd_allowed_to('shd_resolve_ticket_own', $dept) && $ticketinfo['starter_id'] == $user_info['id']));
 	$context['log_action'] = $new_ticket ? 'newticket' : 'editticket';
 	$context['log_params']['subject'] = $context['ticket_form']['subject'];
 
-	$context['can_post_proxy'] = $new_ticket && isset($_REQUEST['proxy']) && shd_allowed_to('shd_post_proxy');
+	$context['can_post_proxy'] = $new_ticket && isset($_REQUEST['proxy']) && shd_allowed_to('shd_post_proxy', $dept);
 	if ($context['can_post_proxy'] && !empty($_REQUEST['proxy_author']))
 	{
 		// OK, so we have a name... do we know this person?
@@ -389,12 +391,12 @@ function shd_save_ticket()
 
 	// Ticket privacy
 	if (empty($modSettings['shd_privacy_display']) || $modSettings['shd_privacy_display'] == 'smart')
-		$context['display_private'] = shd_allowed_to('shd_view_ticket_private_any') || shd_allowed_to('shd_alter_privacy_own') || shd_allowed_to('shd_alter_privacy_any') || $context['ticket_form']['private']['setting'];
+		$context['display_private'] = shd_allowed_to('shd_view_ticket_private_any', $dept) || shd_allowed_to('shd_alter_privacy_own', $dept) || shd_allowed_to('shd_alter_privacy_any', $dept) || $context['ticket_form']['private']['setting'];
 	else
 		$context['display_private'] = true;
 
 	// Custom fields?
-	shd_load_custom_fields(true, $context['ticket_form']['ticket']);
+	shd_load_custom_fields(true, $context['ticket_form']['ticket'], $context['ticket_form']['dept']);
 	list($missing_fields, $invalid_fields) = shd_validate_custom_fields('ticket');
 
 	// Did any custom fields fail validation?
@@ -455,7 +457,7 @@ function shd_save_ticket()
 	}
 
 	// Ticket urgency
-	shd_get_urgency_options($is_own);
+	shd_get_urgency_options($is_own, $context['ticket_form']['dept']);
 	if ($context['ticket_form']['urgency']['can_change'])
 	{
 		$new_urgency = isset($_POST['shd_urgency']) ? (int) $_POST['shd_urgency'] : $urgency;
@@ -788,7 +790,7 @@ function shd_post_reply()
 		);
 	}
 
-	shd_get_urgency_options($ticketinfo['is_own']);
+	shd_get_urgency_options($ticketinfo['is_own'], $ticketinfo['dept']);
 	$context['ticket_form']['urgency']['can_change'] = false;
 
 	if (!empty($ticketinfo['num_replies']))
@@ -800,7 +802,7 @@ function shd_post_reply()
 	elseif ($context['ticket_form']['status'] == TICKET_STATUS_DELETED)
 		fatal_lang_error('shd_cannon_reply_deleted', false);
 
-	shd_load_custom_fields(false, $context['ticket_form']['msg']);
+	shd_load_custom_fields(false, $context['ticket_form']['msg'], $context['ticket_form']['dept']);
 
 	shd_load_attachments();
 	shd_check_attachments();
@@ -910,9 +912,9 @@ function shd_save_reply()
 	// Can we reply to any? If so, just go right along. If not, we need to do more work.
 	if ($new_reply)
 	{
-		if (!shd_allowed_to('shd_reply_ticket_any'))
+		if (!shd_allowed_to('shd_reply_ticket_any', $ticketinfo['dept']))
 		{
-			if (shd_allowed_to('shd_reply_ticket_own'))
+			if (shd_allowed_to('shd_reply_ticket_own', $ticketinfo['dept']))
 			{
 				if (!$ticketinfo['is_own'])
 					fatal_lang_error('shd_cannot_reply_any_but_own', false);
@@ -942,9 +944,9 @@ function shd_save_reply()
 
 		$reply = $smcFunc['db_fetch_assoc']($query);
 
-		if (!shd_allowed_to('shd_edit_reply_any'))
+		if (!shd_allowed_to('shd_edit_reply_any', $ticketinfo['dept']))
 		{
-			if (shd_allowed_to('shd_edit_reply_own'))
+			if (shd_allowed_to('shd_edit_reply_own', $ticketinfo['dept']))
 			{
 				if ($reply['id_member'] != $user_info['id'])
 					fatal_lang_error('shd_cannot_edit_reply_any_but_own', false);
@@ -955,6 +957,7 @@ function shd_save_reply()
 	}
 
 	$context['ticket_form'] = array(
+		'dept' => $ticketinfo['dept'],
 		'form_title' => $new_reply ? $txt['shd_reply_ticket'] : $txt['shd_ticket_edit_reply'],
 		'form_action' => $scripturl . '?action=helpdesk;sa=savereply',
 		'first_msg' => $new_reply ? 0 : $ticketinfo['id_first_msg'],
@@ -986,19 +989,19 @@ function shd_save_reply()
 			'link' => !empty($ticketinfo['assigned_id']) ? shd_profile_link($ticketinfo['assigned_name'], $ticketinfo['assigned_id']) : '<span class="error">' . $txt['shd_unassigned'] . '</span>',
 		),
 		'num_replies' => $ticketinfo['num_replies'],
-		'do_attach' => shd_allowed_to('shd_post_attachment'),
+		'do_attach' => shd_allowed_to('shd_post_attachment', $ticketinfo['dept']),
 		'reply' => $_POST['shd_message'],
 		'return_to_ticket' => isset($_REQUEST['goback']),
 		'disable_smileys' => !empty($_REQUEST['no_smileys']),
 	);
-	$context['can_solve'] = (shd_allowed_to('shd_resolve_ticket_any') || (shd_allowed_to('shd_resolve_ticket_own') && $ticketinfo['starter_id'] == $user_info['id']));
+	$context['can_solve'] = (shd_allowed_to('shd_resolve_ticket_any', $ticketinfo['dept']) || (shd_allowed_to('shd_resolve_ticket_own', $ticketinfo['dept']) && $ticketinfo['starter_id'] == $user_info['id']));
 	$context['log_action'] = $new_reply ? 'newreply' : 'editreply';
 	$context['log_params']['subject'] = $context['ticket_form']['subject'];
 	shd_posting_additional_options();
 
 	// Ticket privacy
 	if (empty($modSettings['shd_privacy_display']) || $modSettings['shd_privacy_display'] == 'smart')
-		$context['display_private'] = shd_allowed_to('shd_view_ticket_private_any') || shd_allowed_to('shd_alter_privacy_own') || shd_allowed_to('shd_alter_privacy_any') || $context['ticket_form']['private']['setting'];
+		$context['display_private'] = shd_allowed_to('shd_view_ticket_private_any', $ticketinfo['dept']) || shd_allowed_to('shd_alter_privacy_own', $ticketinfo['dept']) || shd_allowed_to('shd_alter_privacy_any', $ticketinfo['dept']) || $context['ticket_form']['private']['setting'];
 	else
 		$context['display_private'] = true;
 
@@ -1028,7 +1031,7 @@ function shd_save_reply()
 
 	shd_load_attachments();
 
-	shd_get_urgency_options($ticketinfo['is_own']);
+	shd_get_urgency_options($ticketinfo['is_own'], $ticketinfo['dept']);
 	$context['ticket_form']['urgency']['can_change'] = false;
 
 	if (!empty($ticketinfo['num_replies']))
@@ -1065,7 +1068,7 @@ function shd_save_reply()
 	}
 
 	// Custom fields?
-	shd_load_custom_fields(false, $context['ticket_form']['msg']);
+	shd_load_custom_fields(false, $context['ticket_form']['msg'], $context['ticket_form']['dept']);
 	list($missing_fields, $invalid_fields) = shd_validate_custom_fields($context['ticket_form']['msg']);
 
 	// Did any custom fields fail validation?
