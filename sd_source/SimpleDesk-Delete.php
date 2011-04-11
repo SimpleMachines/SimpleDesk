@@ -231,7 +231,43 @@ function shd_perma_delete()
 		// Expire the cache of count(active tickets)
 		shd_clear_active_tickets($row['id_member_started']);
 
-		// Start by deleting the actual ticket.
+		// Start by getting all the messages in this ticket, we'll need those for custom fields values that need purging.
+		$query = shd_db_query('', '
+			SELECT id_msg
+			FROM {db_prefix}helpdesk_ticket_replies
+			WHERE id_ticket = {int:current_ticket}',
+			array(
+				'current_ticket' => $context['ticket_id'],
+			)
+		);
+		$msgs = array();
+		while ($row = $smcFunc['db_fetch_assoc']($query))
+			$msgs[] = $row['id_msg'];
+		$smcFunc['db_free_result']($query);
+
+		if (!empty($msgs))
+		{
+			shd_db_query('', '
+				DELETE FROM {db_prefix}helpdesk_custom_fields_values
+				WHERE post_type = {int:type_reply}
+					AND id_post IN ({array_int:msgs})',
+				array(
+					'type_reply' => CFIELD_REPLY,
+					'msgs' => $msgs,
+				)
+			);
+		}
+		shd_db_query('', '
+			DELETE FROM {db_prefix}helpdesk_custom_fields_values
+			WHERE post_type = {int:type_ticket}
+				AND id_post = {int:ticket}',
+			array(
+				'type_ticket' => CFIELD_TICKET,
+				'ticket' => $context['ticket_id'],
+			)
+		);
+		
+		// Now deleting the actual ticket.
 		shd_db_query('', '
 			DELETE FROM {db_prefix}helpdesk_tickets
 			WHERE id_ticket = {int:current_ticket}',
@@ -248,8 +284,6 @@ function shd_perma_delete()
 				'current_ticket' => $context['ticket_id'],
 			)
 		);
-
-		// !!! Custom fields
 
 		// And attachments... work out which attachments that is
 		$query = shd_db_query('', '
@@ -326,7 +360,7 @@ function shd_perma_delete()
 		shd_clear_active_tickets($row['id_member_started']);
 
 		// Just remove the reply.
-		$query_reply = shd_db_query('', '
+		shd_db_query('', '
 			DELETE FROM {db_prefix}helpdesk_ticket_replies
 			WHERE id_msg = {int:current_reply}',
 			array(
@@ -334,7 +368,16 @@ function shd_perma_delete()
 			)
 		);
 
-		// !!! Custom fields
+		// Custom fields
+		shd_db_query('', '
+			DELETE FROM {db_prefix}helpdesk_custom_fields_values
+			WHERE id_post = {int:reply}
+				AND post_type = {int:type_reply}',
+			array(
+				'reply' => (int) $_REQUEST['reply'],
+				'type_reply' => CFIELD_REPLY,
+			)
+		);
 
 		// Now to handle attachments
 		$query = shd_db_query('', '
