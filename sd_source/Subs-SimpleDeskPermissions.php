@@ -532,14 +532,15 @@ function shd_is_allowed_to($permission, $dept = 0)
  *	Prior to 1.0, this function was in Subs-SimpleDesk.php
  *
  *	@param mixed $permission A string naming a permission that members should hold.
+ *	@param int $dept An integer indicating which department should be checked. If only confirmation that the user has the permission in at least one department without reference to any particular department, specify a department of 0.
  *	@return array Array of zero or more user ids who hold the stated permission.
  *	@since 1.0
 */
-function shd_members_allowed_to($permission)
+function shd_members_allowed_to($permission, $dept = 0)
 {
 	global $smcFunc;
 
-	$member_groups = shd_groups_allowed_to($permission);
+	$member_groups = shd_groups_allowed_to($permission, $dept);
 
 	$request = $smcFunc['db_query']('', '
 		SELECT mem.id_member
@@ -565,10 +566,11 @@ function shd_members_allowed_to($permission)
  *	Identifies which SMF membergroups hold a given permission.
  *
  *	@param string $permission A string naming a permission that members should hold.
+ *	@param int $dept An integer indicating which department should be checked. If only confirmation that the user has the permission in at least one department without reference to any particular department, specify a department of 0.
  *	@return array Array of arrays containing 'allowed' and 'denied', each of which can contain ids for zero or more membergroups that hold the relevant permission.
  *	@since 1.1
 */
-function shd_groups_allowed_to($permission)
+function shd_groups_allowed_to($permission, $dept = 0)
 {
 	global $smcFunc, $context;
 
@@ -591,11 +593,14 @@ function shd_groups_allowed_to($permission)
 	if (!empty($templates))
 	{
 		$query = $smcFunc['db_query']('', '
-			SELECT id_role
-			FROM {db_prefix}helpdesk_roles
-			WHERE template IN ({array_int:templates})',
+			SELECT hdr.id_role, hddr.id_dept
+			FROM {db_prefix}helpdesk_roles AS hdr
+				INNER JOIN {db_prefix}helpdesk_dept_roles AS hddr ON (hdr.id_role = hddr.id_role)
+			WHERE template IN ({array_int:templates})' . (!empty($dept) ? '
+				AND hddr.id_dept = {int:dept}' : ''),
 			array(
 				'templates' => $templates,
+				'dept' => $dept,
 			)
 		);
 

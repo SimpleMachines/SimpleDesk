@@ -61,7 +61,7 @@ function shd_assign()
 
 	// Get ticket details - and kick it out if they shouldn't be able to see it.
 	$query = shd_db_query('', '
-		SELECT id_member_started, id_member_assigned, private, subject
+		SELECT id_member_started, id_member_assigned, private, subject, id_dept
 		FROM {db_prefix}helpdesk_tickets AS hdt
 		WHERE {query_see_ticket} AND id_ticket = {int:ticket}',
 		array(
@@ -72,7 +72,7 @@ function shd_assign()
 	$log_params = array();
 	if ($row = $smcFunc['db_fetch_row']($query))
 	{
-		list($ticket_starter, $ticket_owner, $private, $subject) = $row;
+		list($ticket_starter, $ticket_owner, $private, $subject, $dept) = $row;
 		$log_params = array(
 			'subject' => $subject,
 			'ticket' => $context['ticket_id'],
@@ -84,9 +84,9 @@ function shd_assign()
 		fatal_lang_error('shd_no_ticket');
 	}
 
-	if (shd_allowed_to('shd_assign_ticket_any')) // can regularly assign? If so, load up potential candidates and throw it at the template.
+	if (shd_allowed_to('shd_assign_ticket_any', $dept)) // can regularly assign? If so, load up potential candidates and throw it at the template.
 	{
-		$members = shd_get_possible_assignees($private, $ticket_starter);
+		$members = shd_get_possible_assignees($private, $ticket_starter, $dept);
 
 		if (!in_array($ticket_owner, $members)) // if for whatever reason the current assignee is not accessible staff, treat it as unassigned
 			$ticket_owner = 0;
@@ -132,7 +132,7 @@ function shd_assign()
 		loadTemplate('sd_template/SimpleDesk-Assign');
 		$context['sub_template'] = 'assign';
 	}
-	elseif (shd_allowed_to('shd_assign_ticket_own') && shd_allowed_to('shd_staff')) // can't just randomly assign (and must be staff), so look at if it's already assigned or not.
+	elseif (shd_allowed_to('shd_assign_ticket_own', $dept) && shd_allowed_to('shd_staff', $dept)) // can't just randomly assign (and must be staff), so look at if it's already assigned or not.
 	{
 		if ($ticket_owner == 0) // unassigned
 		{
@@ -181,7 +181,7 @@ function shd_assign2()
 
 	// Get ticket details - and kick it out if they shouldn't be able to see it.
 	$query = shd_db_query('', '
-		SELECT id_member_started, id_member_assigned, private, subject
+		SELECT id_member_started, id_member_assigned, private, subject, id_dept
 		FROM {db_prefix}helpdesk_tickets AS hdt
 		WHERE {query_see_ticket} AND id_ticket = {int:ticket}',
 		array(
@@ -193,7 +193,7 @@ function shd_assign2()
 
 	if ($row = $smcFunc['db_fetch_row']($query))
 	{
-		list($ticket_starter, $ticket_owner, $private, $subject) = $row;
+		list($ticket_starter, $ticket_owner, $private, $subject, $dept) = $row;
 
 		// The core details that we'll be logging
 		$log_params = array(
@@ -211,7 +211,7 @@ function shd_assign2()
 	if (isset($_REQUEST['cancel']))
 		redirectexit('action=helpdesk;sa=ticket;ticket=' . $context['ticket_id']);
 
-	if (shd_allowed_to('shd_assign_ticket_any')) // can regularly assign? If so, see if our requested member is staff and can see the ticket
+	if (shd_allowed_to('shd_assign_ticket_any', $dept)) // can regularly assign? If so, see if our requested member is staff and can see the ticket
 	{
 		if ($assignee == 0) // can always unassign a ticket
 		{
@@ -220,7 +220,7 @@ function shd_assign2()
 		}
 		else
 		{
-			$members = shd_get_possible_assignees($private, $ticket_starter);
+			$members = shd_get_possible_assignees($private, $ticket_starter, $dept);
 
 			if (in_array($assignee, $members)) // can only assign a ticket to a member if they're on Santa's good list
 			{
@@ -237,7 +237,7 @@ function shd_assign2()
 				fatal_lang_error('shd_assigned_not_permitted', false);
 		}
 	}
-	elseif (shd_allowed_to('shd_assign_ticket_own') && shd_allowed_to('shd_staff')) // can't just randomly assign (and must be staff), so look at if it's already assigned or not.
+	elseif (shd_allowed_to('shd_assign_ticket_own', $dept) && shd_allowed_to('shd_staff', $dept)) // can't just randomly assign (and must be staff), so look at if it's already assigned or not.
 	{
 		if ($ticket_owner == 0) // unassigned
 		{
@@ -319,23 +319,24 @@ function shd_commit_assignment($ticket, $assignment, $is_ajax = false)
  *
  *	@param bool $private Whether the ticket in question is private or not.
  *	@param int $ticket_owner User id of the ticket owner
+ *	@param int $dept The department of the ticket, used for establishing permissions.
  *
  *	@return array An indexed array of member ids that this ticket could be assigned to.
  *	@see shd_assign()
  *	@see shd_assign2()
  *	@since 1.0
 */
-function shd_get_possible_assignees($private = false, $ticket_owner = 0)
+function shd_get_possible_assignees($private = false, $ticket_owner = 0, $dept = -1)
 {
 	global $context, $smcFunc, $modSettings;
 
 	// people who can handle a ticket
-	$staff = shd_members_allowed_to('shd_staff');
+	$staff = shd_members_allowed_to('shd_staff', $dept);
 
 	// is it private, if so, remove that list
 	if ((bool) $private == true)
 	{
-		$private = shd_members_allowed_to('shd_view_ticket_private_any');
+		$private = shd_members_allowed_to('shd_view_ticket_private_any', $dept);
 		$staff = array_intersect($staff, $private);
 	}
 
@@ -359,7 +360,7 @@ function shd_get_possible_assignees($private = false, $ticket_owner = 0)
 	}
 
 	// can they actually see said ticket
-	$visible = shd_members_allowed_to('shd_view_ticket_any');
+	$visible = shd_members_allowed_to('shd_view_ticket_any', $dept);
 
 	if (empty($modSettings['shd_staff_ticket_self'])) // by default, staff members can't be assigned a ticket if they started it
 		$staff = array_diff($staff, array($ticket_owner));

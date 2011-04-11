@@ -383,7 +383,7 @@ function shd_ajax_assign()
 	if (!empty($context['ticket_id']))
 	{
 		$query = shd_db_query('', '
-			SELECT hdt.private, hdt.id_member_started, id_member_assigned, 1 AS valid
+			SELECT hdt.private, hdt.id_member_started, id_member_assigned, id_dept, 1 AS valid
 			FROM {db_prefix}helpdesk_tickets AS hdt
 			WHERE {query_see_ticket}
 				AND hdt.id_ticket = {int:ticket}',
@@ -392,14 +392,14 @@ function shd_ajax_assign()
 			)
 		);
 		if ($smcFunc['db_num_rows']($query) != 0)
-			list($private, $ticket_starter, $ticket_assigned, $valid) = $smcFunc['db_fetch_row']($query);
+			list($private, $ticket_starter, $ticket_assigned, $dept, $valid) = $smcFunc['db_fetch_row']($query);
 		$smcFunc['db_free_result']($query);
 	}
 	if (empty($valid))
 		return $context['ajax_return'] = array('error' => $txt['shd_no_ticket']);
 
 	require_once($sourcedir . '/sd_source/SimpleDesk-Assign.php');
-	$assignees = shd_get_possible_assignees($private, $ticket_starter);
+	$assignees = shd_get_possible_assignees($private, $ticket_starter, $dept);
 	array_unshift($assignees, 0); // add the unassigned option in at the start
 
 	if (empty($assignees))
@@ -440,7 +440,7 @@ function shd_ajax_assign2()
 	if (!empty($context['ticket_id']))
 	{
 		$query = shd_db_query('', '
-			SELECT hdt.private, hdt.id_member_started, id_member_assigned, subject, 1 AS valid
+			SELECT hdt.private, hdt.id_member_started, id_member_assigned, subject, id_dept, 1 AS valid
 			FROM {db_prefix}helpdesk_tickets AS hdt
 			WHERE {query_see_ticket}
 				AND hdt.id_ticket = {int:ticket}',
@@ -449,7 +449,7 @@ function shd_ajax_assign2()
 			)
 		);
 		if ($smcFunc['db_num_rows']($query) != 0)
-			list($private, $ticket_starter, $ticket_assigned, $subject, $valid) = $smcFunc['db_fetch_row']($query);
+			list($private, $ticket_starter, $ticket_assigned, $subject, $dept, $valid) = $smcFunc['db_fetch_row']($query);
 		$smcFunc['db_free_result']($query);
 	}
 	if (empty($valid))
@@ -461,7 +461,7 @@ function shd_ajax_assign2()
 	$_GET['to_user'] = isset($_GET['to_user']) ? (int) $_GET['to_user'] : 0;
 
 	require_once($sourcedir . '/sd_source/SimpleDesk-Assign.php');
-	$assignees = shd_get_possible_assignees($private, $ticket_starter);
+	$assignees = shd_get_possible_assignees($private, $ticket_starter, $dept);
 	array_unshift($assignees, 0); // add the unassigned option in at the start
 
 	if (!in_array($_GET['to_user'], $assignees))

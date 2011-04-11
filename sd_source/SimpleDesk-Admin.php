@@ -665,8 +665,6 @@ function shd_modify_notifications_options($return_config)
 		'shd_notify_assign_own' => $txt['shd_notify_send_to'] . ': ' . $txt['shd_notify_ticket_starter'],
 	);
 
-	$staff = shd_members_allowed_to('shd_staff');
-
 	foreach ($config_vars as $id => $item)
 	{
 		list(, $item_id) = $item;
