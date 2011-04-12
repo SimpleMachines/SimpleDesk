@@ -277,6 +277,12 @@ $txt['shd_move_why_topic'] = 'Please enter a brief description as to why this to
 $txt['shd_ticket_moved_subject_topic'] = 'Your topic has been moved.';
 $txt['shd_move_default_topic'] = 'Hello {user},' . "\n\n" . 'Your topic, {subject}, has been moved from the forum to the Helpdesk section.' . "\n" . 'You can find your topic via this link:' . "\n\n" . '{link}' . "\n\n" . 'Thanks';
 
+$txt['shd_user_no_hd_access'] = 'Note: the person who started this topic cannot see the helpdesk!';
+$txt['shd_user_helpdesk_access'] = 'The person who started this topic can see the helpdesk.';
+$txt['shd_user_hd_access_dept_1'] = 'The person who started this topic can see the following department: ';
+$txt['shd_user_hd_access_dept'] = 'The person who started this topic can see the following departments: ';
+$txt['shd_move_ticket_department'] = 'Move ticket to which department';
+
 $txt['shd_ticket_move_deleted'] = 'This ticket has replies that are currently in the recycle bin. What do you wish to do?';
 $txt['shd_ticket_move_deleted_abort'] = 'Abort, take me to the recycle bin';
 $txt['shd_ticket_move_deleted_delete'] = 'Continue, abandon the deleted replies (do not move them into the new topic)';

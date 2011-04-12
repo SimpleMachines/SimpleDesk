@@ -186,7 +186,41 @@ function template_shd_topictoticket()
 							<textarea name="pm_content" rows="9" cols="70">', $txt['shd_move_default_topic'], '</textarea>
 						</dd>
 					</dl>
-				</fieldset>
+				</fieldset>';
+
+	if (count($context['dept_list']) == 1)
+	{
+		$dept = array_keys($context);
+		// We can only see one department, so that's the one we will use.
+		echo '
+				<dl class="settings">
+					<dt>', $context['ttm_move_dept'], '</dt>
+					<input type="hidden" name="dept" value="', $dept[0], '" />
+				</dl>';
+	}
+	else
+	{
+		// We can see multiple departments, so tell the moderator and also provide a list to pick from.
+		echo '
+				<dl class="settings">
+					<dt>
+						<strong>', $txt['shd_move_ticket_department'], ':</strong>
+						<div class="smalltext">', $context['ttm_move_dept'], '</div>
+					</dt>
+					<dd>
+						<select name="dept">';
+
+		foreach ($context['dept_list'] as $dept => $dept_name)
+			echo '
+							<option value="', $dept, '">', $dept_name, '</option>';
+
+		echo '
+						</select>
+					</dd>
+				</dl>';
+	}
+
+	echo '
 				<input type="submit" value="', $txt['shd_move_topic'], '" onclick="return submitThisOnce(this);" accesskey="s" class="button_submit" />
 				<input type="submit" name="cancel" value="', $txt['shd_cancel_topic'], '" accesskey="c" class="button_submit" />
 				<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
