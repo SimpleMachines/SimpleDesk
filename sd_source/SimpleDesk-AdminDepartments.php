@@ -210,7 +210,7 @@ function shd_admin_create_dept()
 		$smcFunc['db_insert']('insert',
 			'{db_prefix}helpdesk_depts',
 			array(
-				'dept_name' => 'string', 'description' => 'string', 'board_cat' => 'int', 'before_after' => 'int', 'dept_order',
+				'dept_name' => 'string', 'description' => 'string', 'board_cat' => 'int', 'before_after' => 'int', 'dept_order' => 'int',
 			),
 			array(
 				$_POST['dept_name'], $_POST['dept_desc'], $_POST['dept_cat'], $_POST['dept_beforeafter'], $maxdept + 1,
