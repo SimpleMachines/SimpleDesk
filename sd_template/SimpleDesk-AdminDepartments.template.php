@@ -30,7 +30,7 @@ function template_shd_departments_home()
 					</p>
 					<table class="shd_ticketlist" cellspacing="0" width="100%">
 						<tbody><tr class="titlebg">
-							<td width="2%"></td>
+							<td width="1%"></td>
 							<td width="25%" class="shd_nowrap">
 								', $txt['shd_department_name'], '
 							</td>
@@ -38,6 +38,7 @@ function template_shd_departments_home()
 							<td width="40%" class="shd_nowrap">
 								', $txt['shd_roles_in_dept'], '
 							</td>
+							<td colspan="3" width="1%" class="shd_nowrap">', $txt['shd_actions'], '</td>
 						</tr>';
 
 	$use_bg2 = true;
@@ -49,7 +50,7 @@ function template_shd_departments_home()
 							<td>
 								', $department['dept_name'], '
 								<div class="smalltext">', $department['description'], '</div>
-								<div class="smalltext">[<a href="', $scripturl, '?action=admin;area=helpdesk_depts;sa=editdept;dept=', $department['id_dept'], '">', $txt['shd_edit_dept'], '</a>]</div></td>
+							</td>
 							<td>';
 
 		if (!empty($department['cat_name']))
@@ -85,6 +86,11 @@ function template_shd_departments_home()
 
 		echo '
 							</td>
+							<td>', empty($department['is_first']) ? ('<a href="' . $scripturl . '?action=admin;area=helpdesk_depts;sa=move;dept=' . $department['id_dept'] . ';direction=up;' . $context['session_var'] . '=' . $context['session_id'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/move_up.png" alt="' . $txt['shd_admin_move_up'] . '" title="' . $txt['shd_admin_move_up'] . '" /></a>') : '', '</td>
+							<td>', empty($department['is_last']) ? ('<a href="' . $scripturl . '?action=admin;area=helpdesk_depts;sa=move;dept=' . $department['id_dept'] . ';direction=down;' . $context['session_var'] . '=' . $context['session_id'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/move_down.png" alt="' . $txt['shd_admin_move_down'] . '" title="' . $txt['shd_admin_move_down'] . '" /></a>') : '', '</td>
+							<td><a href="', $scripturl, '?action=admin;area=helpdesk_depts;sa=editdept;dept=', $department['id_dept'], '"><img src="', $settings['default_images_url'], '/simpledesk/edit.png" class="icon" alt="', $txt['shd_edit_dept'],'" title="', $txt['shd_edit_dept'], '" /></a></td>';
+
+		echo '
 						</tr>';
 		$use_bg2 = !$use_bg2;
 	}

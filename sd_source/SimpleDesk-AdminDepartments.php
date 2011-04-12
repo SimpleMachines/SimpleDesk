@@ -39,6 +39,7 @@ function shd_admin_departments()
 
 	$subactions = array(
 		'main' => 'shd_admin_dept_list',
+		'move' => 'shd_admin_dept_move',
 		'createdept' => 'shd_admin_create_dept',
 		'editdept' => 'shd_admin_edit_dept',
 		'savedept' => 'shd_admin_save_dept',
@@ -69,8 +70,18 @@ function shd_admin_dept_list()
 		ORDER BY dept_order'
 	);
 	while ($row = $smcFunc['db_fetch_assoc']($query))
+	{
 		$context['shd_departments'][$row['id_dept']] = $row;
+		// Also get the first and last for in a minute
+		$last = $row['id_dept'];
+		if (empty($first))
+			$first = $row['id_dept'];
+	}
 	$smcFunc['db_free_result']($query);
+
+	// 1a. Make sure to log that a given row is first or last for the move wotsits.
+	$context['shd_departments'][$first]['is_first'] = true;
+	$context['shd_departments'][$last]['is_last'] = true;
 
 	// 2. Just for niceness, get all the helpdesk roles attached to each department.
 	$query = $smcFunc['db_query']('', '
@@ -82,6 +93,68 @@ function shd_admin_dept_list()
 	while ($row = $smcFunc['db_fetch_assoc']($query))
 		$context['shd_departments'][$row['id_dept']]['roles'][$row['id_role']] = $row;
 	$smcFunc['db_free_result']($query);
+}
+
+function shd_admin_dept_move()
+{
+	global $context, $smcFunc, $modSettings;
+
+	checkSession('get');
+
+	$_REQUEST['dept'] = isset($_REQUEST['dept']) ? (int) $_REQUEST['dept'] : 0;
+	$_REQUEST['direction'] = isset($_REQUEST['direction']) && in_array($_REQUEST['direction'], array('up', 'down')) ? $_REQUEST['direction'] : '';
+
+	$query = shd_db_query('', '
+		SELECT id_dept, dept_order
+		FROM {db_prefix}helpdesk_depts',
+		array()
+	);
+
+	if ($smcFunc['db_num_rows']($query) == 0 || empty($_REQUEST['direction']))
+	{
+		$smcFunc['db_free_result']($query);
+		fatal_lang_error('shd_admin_cannot_move_dept', false);
+	}
+
+	$depts = array();
+	while ($row = $smcFunc['db_fetch_assoc']($query))
+		$depts[$row['dept_order']] = $row['id_dept'];
+
+	ksort($depts);
+
+	$depts_map = array_flip($depts);
+	if (empty($depts_map[$_REQUEST['dept']]))
+		fatal_lang_error('shd_admin_cannot_move_dept', false);
+
+	$current_pos = $depts_map[$_REQUEST['dept']];
+	$destination = $current_pos + ($_REQUEST['direction'] == 'up' ? -1 : 1);
+
+	if (empty($depts[$destination]))
+		fatal_lang_error('shd_admin_cannot_move_dept_' . $_REQUEST['direction'], false);
+
+	$other_dept = $depts[$destination];
+
+	shd_db_query('', '
+		UPDATE {db_prefix}helpdesk_depts
+		SET dept_order = {int:new_pos}
+		WHERE id_dept = {int:dept}',
+		array(
+			'new_pos' => $destination,
+			'dept' => $_REQUEST['dept'],
+		)
+	);
+
+	shd_db_query('', '
+		UPDATE {db_prefix}helpdesk_depts
+		SET dept_order = {int:old_pos}
+		WHERE id_dept = {int:other_dept}',
+		array(
+			'old_pos' => $current_pos,
+			'other_dept' => $other_dept,
+		)
+	);
+
+	redirectexit('action=admin;area=helpdesk_depts;' . $context['session_var'] . '=' . $context['session_id']);
 }
 
 function shd_admin_create_dept()

@@ -364,6 +364,9 @@ $txt['shd_boardindex_cat_where'] = 'Where in the category should it show?';
 $txt['shd_boardindex_cat_before'] = 'Before any boards';
 $txt['shd_boardindex_cat_after'] = 'After any boards';
 $txt['shd_dept_description'] = 'Description';
+$txt['shd_admin_cannot_move_dept'] = 'You cannot move that department.';
+$txt['shd_admin_cannot_move_dept_up'] = 'You cannot move that department up; it is the first item already.';
+$txt['shd_admin_cannot_move_dept_down'] = 'You cannot move that department down; it is the last item already.';
 //@}
 
 //! Plugins
