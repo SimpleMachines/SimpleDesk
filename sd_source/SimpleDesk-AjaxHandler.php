@@ -223,7 +223,7 @@ function shd_ajax_urgency()
 	}
 
 	$query = shd_db_query('', '
-		SELECT id_member_started, subject, urgency, status
+		SELECT id_member_started, subject, urgency, status, id_dept
 		FROM {db_prefix}helpdesk_tickets AS hdt
 		WHERE {query_see_ticket}
 			AND id_ticket = {int:current_ticket}',
@@ -234,7 +234,7 @@ function shd_ajax_urgency()
 
 	if ($row = $smcFunc['db_fetch_assoc']($query))
 	{
-		$can_urgency = shd_can_alter_urgency($row['urgency'], $row['id_member_started'], ($row['status'] == TICKET_STATUS_CLOSED), ($row['status'] == TICKET_STATUS_DELETED));
+		$can_urgency = shd_can_alter_urgency($row['urgency'], $row['id_member_started'], ($row['status'] == TICKET_STATUS_CLOSED), ($row['status'] == TICKET_STATUS_DELETED), $row['id_dept']);
 
 		if (empty($_GET['change']) || empty($can_urgency[$_GET['change']]))
 		{
@@ -263,7 +263,7 @@ function shd_ajax_urgency()
 			)
 		);
 
-		$new_options = shd_can_alter_urgency($new_urgency, $row['id_member_started'], ($row['status'] == TICKET_STATUS_CLOSED), ($row['status'] == TICKET_STATUS_DELETED));
+		$new_options = shd_can_alter_urgency($new_urgency, $row['id_member_started'], ($row['status'] == TICKET_STATUS_CLOSED), ($row['status'] == TICKET_STATUS_DELETED), $row['id_dept']);
 
 		$context['ajax_return'] = array(
 			'message' => $new_urgency > TICKET_URGENCY_HIGH ? '<span class="error">' . $txt['shd_urgency_' . $new_urgency] . '</span>' : $txt['shd_urgency_' . $new_urgency],

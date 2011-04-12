@@ -332,7 +332,7 @@ function shd_ticket_relation()
 	// Quick/consistent way to ensure permissions are adhered to and that the ticket exists. Might as well get the subject while here too.
 	$ticketinfo = shd_load_ticket($context['ticket_id']);
 	$primary_subject = $ticketinfo['subject'];
-	$dept = $ticketinfo['dept'],
+	$dept = $ticketinfo['dept'];
 	$ticketinfo = shd_load_ticket($otherticket);
 	$secondary_subject = $ticketinfo['subject'];
 
