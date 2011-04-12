@@ -407,7 +407,7 @@ $tables[] = array(
 		db_field('description', 'text'),
 		db_field('board_cat', 'smallint'),
 		db_field('before_after', 'tinyint'),
-		db_field('dept_order', 'small_int'),
+		db_field('dept_order', 'smallint'),
 	),
 	'indexes' => array(
 		array(
