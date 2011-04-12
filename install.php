@@ -532,7 +532,7 @@ if (empty($count))
 	$smcFunc['db_insert']('replace',
 		'{db_prefix}helpdesk_depts',
 		array(
-			'dept_name' => 'string', 'board_cat' => 'int', 'before_after' => 'int', 'dept_order',
+			'dept_name' => 'string', 'board_cat' => 'int', 'before_after' => 'int', 'dept_order' => 'int',
 		),
 		array(
 			!empty($txt['shd_helpdesk']) ? $txt['shd_helpdesk'] : 'Helpdesk', 0, 0, 1,
