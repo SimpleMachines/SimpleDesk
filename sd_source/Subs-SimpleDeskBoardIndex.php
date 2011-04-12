@@ -46,7 +46,7 @@ function shd_add_to_boardindex(&$boardIndexOptions, &$categories)
 		SELECT id_dept, dept_name, description, board_cat, before_after
 		FROM {db_prefix}helpdesk_depts
 		WHERE id_dept IN ({array_int:depts})
-		ORDER BY before_after DESC, id_dept',
+		ORDER BY before_after DESC, dept_order',
 		array(
 			'depts' => $depts,
 		)

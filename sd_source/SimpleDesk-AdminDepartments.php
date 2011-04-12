@@ -66,7 +66,7 @@ function shd_admin_dept_list()
 		SELECT hdd.id_dept, hdd.dept_name, hdd.description, hdd.board_cat, c.name AS cat_name, hdd.before_after
 		FROM {db_prefix}helpdesk_depts AS hdd
 			LEFT JOIN {db_prefix}categories AS c ON (hdd.board_cat = c.id_cat)
-		ORDER BY id_dept'
+		ORDER BY dept_order'
 	);
 	while ($row = $smcFunc['db_fetch_assoc']($query))
 		$context['shd_departments'][$row['id_dept']] = $row;
@@ -126,14 +126,21 @@ function shd_admin_create_dept()
 		// Change '1 & 2' to '1 &amp; 2', but not '&amp;' to '&amp;amp;'...
 		$_POST['dept_desc'] = empty($_POST['dept_desc']) ? '' : preg_replace('~[&]([^;]{8}|[^;]{0,8}$)~', '&amp;$1', $_POST['dept_desc']);
 
+		// Get the department's order position
+		$query = $smcFunc['db_query']('', '
+			SELECT MAX(dept_order)
+			FROM {db_prefix}helpdesk_depts');
+		list($maxdept) = $smcFunc['db_fetch_row']($query);
+		$smcFunc['db_free_result']($query);
+
 		// Create the department
 		$smcFunc['db_insert']('insert',
 			'{db_prefix}helpdesk_depts',
 			array(
-				'dept_name' => 'string', 'description' => 'string', 'board_cat' => 'int', 'before_after' => 'int',
+				'dept_name' => 'string', 'description' => 'string', 'board_cat' => 'int', 'before_after' => 'int', 'dept_order',
 			),
 			array(
-				$_POST['dept_name'], $_POST['dept_desc'], $_POST['dept_cat'], $_POST['dept_beforeafter'],
+				$_POST['dept_name'], $_POST['dept_desc'], $_POST['dept_cat'], $_POST['dept_beforeafter'], $maxdept + 1,
 			),
 			array(
 				'id_dept',
@@ -258,8 +265,26 @@ function shd_admin_save_dept()
 			)
 		);
 		list($count) = $smcFunc['db_fetch_row']($query);
+		$smcFunc['db_free_result']($query);
 		if (!empty($count))
 			fatal_lang_error('shd_dept_not_empty', false);
+
+		// Before we kill it, get its order position.
+		$query = $smcFunc['db_query']('', '
+			SELECT dept_order
+			FROM {db_prefix}helpdesk_depts
+			WHERE id_dept = {int:dept}',
+			array(
+				'dept' => $_REQUEST['dept'],
+			)
+		);
+		if ($smcFunc['db_num_rows']($query) == 0)
+		{
+			$smcFunc['db_free_result']($query);
+			fatal_lang_error(shd_unknown_dept, false);
+		}
+		list($dept_order) = $smcFunc['db_fetch_row']($query);
+		$smcFunc['db_free_result']($query);
 
 		// Oops, bang you're dead.
 		$smcFunc['db_query']('', '
@@ -275,6 +300,16 @@ function shd_admin_save_dept()
 			WHERE id_dept = {int:dept}',
 			array(
 				'dept' => $_REQUEST['dept'],
+			)
+		);
+
+		// Make sure to reset all the department orders from after this one.
+		$smcFunc['db_query']('', '
+			UPDATE {db_prefix}helpdesk_depts
+			SET dept_order = dept_order - 1
+			WHERE dept_order > {int:old_order}',
+			array(
+				'old_order' => $dept_order,
 			)
 		);
 

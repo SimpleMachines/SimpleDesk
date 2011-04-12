@@ -407,6 +407,7 @@ $tables[] = array(
 		db_field('description', 'text'),
 		db_field('board_cat', 'smallint'),
 		db_field('before_after', 'tinyint'),
+		db_field('dept_order', 'small_int'),
 	),
 	'indexes' => array(
 		array(
@@ -531,10 +532,10 @@ if (empty($count))
 	$smcFunc['db_insert']('replace',
 		'{db_prefix}helpdesk_depts',
 		array(
-			'dept_name' => 'string', 'board_cat' => 'int', 'before_after' => 'int',
+			'dept_name' => 'string', 'board_cat' => 'int', 'before_after' => 'int', 'dept_order',
 		),
 		array(
-			!empty($txt['shd_helpdesk']) ? $txt['shd_helpdesk'] : 'Helpdesk', 0, 0,
+			!empty($txt['shd_helpdesk']) ? $txt['shd_helpdesk'] : 'Helpdesk', 0, 0, 1,
 		),
 		array('id_dept')
 	);

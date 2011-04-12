@@ -423,7 +423,7 @@ function shd_main_dept()
 		SELECT hdd.id_dept, hdd.dept_name
 		FROM {db_prefix}helpdesk_depts AS hdd
 		WHERE hdd.id_dept IN ({array_int:depts})
-		ORDER BY hdd.id_dept',
+		ORDER BY hdd.dept_order',
 		array(
 			'depts' => $dept_list,
 		)
