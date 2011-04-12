@@ -414,7 +414,7 @@ function shd_load_user_perms()
 			$clauses[] = 'hdt.status != 3 OR (hdt.status = 3 AND hdt.id_dept IN (' . implode(',', $depts_closed_own) . ') AND hdt.id_member_started = {int:user_info_id})';
 
 		// And finally, deleted tickets.
-		$depts_deleted = shd_allowed_to('shd_access_recyclebin', 0);
+		$depts_deleted = shd_allowed_to('shd_access_recyclebin', false);
 		if (empty($depts_deleted))
 			$clauses[] = 'hdt.status != 6';
 		else
