@@ -428,7 +428,7 @@ function template_ticket_block()
 						break;
 					case 'ticket_name':
 						echo '
-							<td class="smalltext">', $ticket['link'];
+							<td class="smalltext">', $ticket['dept_link'], $ticket['link'];
 
 						if ($ticket['is_unread'] && !empty($ticket['new_href']))
 							echo ' <a href="', $ticket['new_href'], '"><img src="', $context['new_posts_image'], '" class="new_posts" alt="', $txt['new'], '" /></a>';
