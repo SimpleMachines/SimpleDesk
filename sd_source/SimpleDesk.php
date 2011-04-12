@@ -422,9 +422,8 @@ function shd_main_dept()
 	$query = $smcFunc['db_query']('', '
 		SELECT hdd.id_dept, hdd.dept_name
 		FROM {db_prefix}helpdesk_depts AS hdd
-			INNER JOIN {db_prefix}categories AS c ON (hdd.board_cat = c.id_cat)
 		WHERE hdd.id_dept IN ({array_int:depts})
-		ORDER BY c.cat_order, hdd.before_after',
+		ORDER BY hdd.id_dept',
 		array(
 			'depts' => $dept_list,
 		)
