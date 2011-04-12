@@ -73,6 +73,9 @@ function shd_add_to_boardindex(&$boardIndexOptions, &$categories)
 			),
 		);
 	}
+	if (empty($context['dept_list']))
+		return;
+
 	$cat_list = array_unique($cat_list);
 
 	// Do we have all these categories?
