@@ -715,7 +715,7 @@ function shd_helpdesk_listing()
 			'sql' => 'hdt.urgency',
 		),
 		'updated' => array(
-			'sql' => 'hdt.id_last_msg',
+			'sql' => 'hdt.last_updated',
 		),
 		'assigned' => array(
 			'sql' => 'assigned_name',
@@ -803,7 +803,7 @@ function shd_helpdesk_listing()
 		$query = shd_db_query('', '
 			SELECT hdt.id_ticket, hdt.id_dept, hdd.dept_name, hdt.id_last_msg, hdt.id_member_started, hdt.id_member_updated,
 				hdt.id_member_assigned, hdt.subject, hdt.status, hdt.num_replies, hdt.deleted_replies, hdt.private, hdt.urgency,
-				hdtr_first.poster_name AS ticket_opener, hdtr_last.poster_name AS respondent, hdtr_last.poster_time,
+				hdt.last_updated, hdtr_first.poster_name AS ticket_opener, hdtr_last.poster_name AS respondent, hdtr_last.poster_time,
 				IFNULL(hdlr.id_msg, 0) AS log_read' . (!empty($block['sort']['sql']['select']) ? ', ' . $block['sort']['sql']['select'] : '') . '
 			FROM {db_prefix}helpdesk_tickets AS hdt
 				INNER JOIN {db_prefix}helpdesk_ticket_replies AS hdtr_first ON (hdt.id_first_msg = hdtr_first.id_msg)
@@ -841,7 +841,7 @@ function shd_helpdesk_listing()
 					'id' => $row['id_member_started'],
 					'name' => $row['ticket_opener'],
 				),
-				'last_update' => $row['status'] != TICKET_STATUS_NEW ? timeformat($row['poster_time']) : $txt['never'],
+				'last_update' => timeformat($row['last_updated']),
 				'assigned' => array(
 					'id' => $row['id_member_assigned'],
 				),

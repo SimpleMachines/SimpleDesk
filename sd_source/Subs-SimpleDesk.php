@@ -284,6 +284,24 @@ function shd_clear_active_tickets($id = 0)
 function shd_log_action($action, $params)
 {
 	global $smcFunc, $context, $user_info, $modSettings;
+	static $last_cache;
+
+	// Before we go any further, we use this function to globally update tickets' last updated time (since every ticket action should potentially
+	// be logged) - but we don't do the query *every* time if we don't need to. Allows a two second leeway.
+
+	if (isset($params['ticket']) && ((int) $params['ticket'] != 0) && (empty($last_cache[$params['ticket']]) || $last_cache[$params['ticket']] < time() - 2))
+	{
+		$last_cache[$params['ticket']] = time();
+		$smcFunc['db_query']('', '
+			UPDATE {db_prefix}helpdesk_tickets
+			SET last_updated = {int:new_time}
+			WHERE id_ticket = {int:ticket}',
+			array(
+				'new_time' => $last_cache[$params['ticket']],
+				'ticket' => $params['ticket'],
+			)
+		);
+	}
 
 	if (!empty($modSettings['shd_disable_action_log']))
 		return;

@@ -49,14 +49,14 @@ function shd_unread_posts()
 			// Get all the outstanding tickets
 			$context['block_title'] = $txt['shd_tickets_open'];
 			$request = shd_db_query('', '
-				SELECT hdt.id_ticket, hdt.subject, hdt.id_ticket, hdt.num_replies, hdtr_last.poster_time AS last_updated,
+				SELECT hdt.id_ticket, hdt.subject, hdt.id_ticket, hdt.num_replies, hdt.last_updated,
 					hdtr_first.poster_name, hdt.urgency, hdt.status, hdt.id_member_started, hdt.id_member_assigned, hdt.id_last_msg AS log_read
 				FROM {db_prefix}helpdesk_tickets AS hdt
 					INNER JOIN {db_prefix}helpdesk_ticket_replies AS hdtr_first ON (hdt.id_first_msg = hdtr_first.id_msg)
 					INNER JOIN {db_prefix}helpdesk_ticket_replies AS hdtr_last ON (hdt.id_last_msg = hdtr_last.id_msg)
 				WHERE {query_see_ticket}
 					AND hdt.status IN ({array_int:status})
-				ORDER BY hdt.urgency, hdtr_last.poster_time',
+				ORDER BY hdt.urgency DESC, hdt.last_updated',
 				array(
 					'status' => array(TICKET_STATUS_NEW, TICKET_STATUS_PENDING_STAFF),
 				)
@@ -67,7 +67,7 @@ function shd_unread_posts()
 			// Only unread ones
 			$context['block_title'] = $txt['shd_unread_tickets'];
 			$request = shd_db_query('', '
-				SELECT hdt.id_ticket, hdt.subject, hdt.id_ticket, hdt.num_replies, hdtr_last.poster_time AS last_updated,
+				SELECT hdt.id_ticket, hdt.subject, hdt.id_ticket, hdt.num_replies, hdt.last_updated,
 					hdtr_first.poster_name, hdt.urgency, hdt.status, hdt.id_member_started, hdt.id_member_assigned, IFNULL(hdlr.id_msg, 0) AS log_read
 				FROM {db_prefix}helpdesk_tickets AS hdt
 					INNER JOIN {db_prefix}helpdesk_ticket_replies AS hdtr_first ON (hdt.id_first_msg = hdtr_first.id_msg)
@@ -76,7 +76,7 @@ function shd_unread_posts()
 				WHERE {query_see_ticket}
 					AND hdt.status IN ({array_int:status})
 					AND (hdlr.id_msg IS NULL OR hdlr.id_msg < hdt.id_last_msg)
-				ORDER BY hdt.urgency, hdtr_last.poster_time',
+				ORDER BY hdt.urgency DESC, hdt.last_updated',
 				array(
 					'user' => $context['user']['id'],
 					'status' => array(TICKET_STATUS_NEW, TICKET_STATUS_PENDING_STAFF),

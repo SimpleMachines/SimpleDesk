@@ -41,6 +41,9 @@ elseif (!defined('SMF')) // If we are outside SMF and can't find SSI.php, then t
 if (SMF == 'SSI')
 	db_extend('packages');
 
+// We have a lot to do. Make sure as best we can that we have the time to do so.
+@set_time_limit(600);
+
 global $modSettings, $smcFunc, $txt;
 
 // For our BBC settings, we first fetch a list off all BBC tags there are.
@@ -150,6 +153,7 @@ $tables[] = array(
 		db_field('status', 'tinyint'),
 		db_field('private', 'tinyint'),
 		db_field('withdeleted', 'tinyint'),
+		db_field('last_updated', 'int'),
 	),
 	'indexes' => array(
 		array(
@@ -557,6 +561,12 @@ if (!empty($new_dept))
 		)
 	);
 }
+
+// If we're updating an existing install, we need to make sure there is a normalised value in the last_updated column.
+$smcFunc['db_query']('', '
+	UPDATE {db_prefix}helpdesk_tickets AS hdt, {db_prefix}helpdesk_ticket_replies AS hdtr
+	SET hdt.last_updated = hdtr.poster_time
+	WHERE hdt.id_last_msg = hdtr.id_msg AND hdt.last_updated = 0');
 
 // Are we done?
 if (SMF == 'SSI')
