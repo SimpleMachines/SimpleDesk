@@ -408,10 +408,13 @@ function shd_ajax_assign()
 	// OK, so we have the general values we need. Let's get user names, and get ready to kick this back to the user. We'll build the XML here though.
 	loadMemberData($assignees);
 
+	// Just out of interest, who's an admin?
+	$admins = shd_members_allowed_to('admin_helpdesk', $dept);
+
 	$context['ajax_raw'] = '<response>';
 	foreach ($assignees as $assignee)
 		$context['ajax_raw'] .= '
-<member uid="' . $assignee . '"' . ($ticket_assigned == $assignee ? ' assigned="yes"' : '') . '><![CD' . 'ATA[' .(empty($assignee) ? '<span class="error">' . $txt['shd_unassigned'] . '</span>' : $user_profile[$assignee]['member_name']) . ']' . ']></member>';
+<member uid="' . $assignee . '"' . (!empty($assignee) ? (in_array($assignee, $admins) ? ' admin="yes"' : ' admin="no"') : '') . ($ticket_assigned == $assignee ? ' assigned="yes"' : '') . '><![CD' . 'ATA[' .(empty($assignee) ? '<span class="error">' . $txt['shd_unassigned'] . '</span>' : $user_profile[$assignee]['member_name']) . ']' . ']></member>';
 
 	$context['ajax_raw'] .= '
 </response>';

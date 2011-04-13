@@ -434,6 +434,8 @@ AjaxAssign.prototype.expand_callback = function (XMLDoc)
 		for (var i = 0, n = elements.length; i < n; i++)
 		{
 			newhtml += '<li class="shd_assignees" onclick="' + this.opt.sSelf + '.assign(' + elements[i].getAttribute('uid') + ');">';
+			if (elements[i].getAttribute('admin'))
+				newhtml += '<img src="' + smf_default_theme_url + '/images/simpledesk/' + (elements[i].getAttribute('admin') == 'yes' ? 'admin' : 'staff') + '.png" alt="" class="shd_smallicon" /> ';
 			newhtml += elements[i].childNodes[0].nodeValue + '</li>';
 		}
 
