@@ -160,11 +160,15 @@ function shd_admin_maint_findrepair()
 		),
 		array(
 			'name' => 'status',
-			'pc' => 20,
+			'pc' => 15,
 		),
 		array(
 			'name' => 'starter_updater',
-			'pc' => 20,
+			'pc' => 15,
+		),
+		array(
+			'name' => 'invalid_dept',
+			'pc' => 10,
 		),
 		array(
 			'name' => 'clean_cache',
@@ -613,6 +617,62 @@ function shd_maint_status()
 		$context['substep_title'] = $txt['shd_admin_maint_findrepair_firstlast'];
 		$context['substep_continue_percent'] = round(100 * $_REQUEST['start'] / $ticket_count);
 	}
+}
+
+// Make sure all tickets are in a valid department, creating a new one if necessary.
+function shd_maint_invalid_dept()
+{
+	global $context, $smcFunc, $txt;
+
+	$tickets = array();
+	$query = $smcFunc['db_query']('', '
+		SELECT hdt.id_ticket
+		FROM {db_prefix}helpdesk_tickets AS hdt
+			LEFT JOIN {db_prefix}helpdesk_depts AS hdd ON (hdt.id_dept = hdd.id_dept)
+		WHERE hdd.id_dept IS NULL');
+
+	while ($row = $smcFunc['db_fetch_assoc']($query))
+		$tickets[] = $row['id_ticket'];
+	$smcFunc['db_free_result']($query);
+
+	if (!empty($tickets))
+	{
+		// Uh-oh. OK, so let's make a new department.
+		// First, we get the last dept_order.
+		$query = $smcFunc['db_query']('', '
+			SELECT MAX(dept_order)
+			FROM {db_prefix}helpdesk_depts');
+		list($dept_order) = $smcFunc['db_fetch_row']($query);
+		$smcFunc['db_free_result']($query);
+
+		$dept_order++;
+
+		$smcFunc['db_insert']('replace',
+			'{db_prefix}helpdesk_depts',
+			array(
+				'dept_name' => 'string', 'description' => 'string', 'board_cat' => 'int', 'before_after' => 'int', 'dept_order' => 'int',
+			),
+			array(
+				$txt['shd_admin_recovered_dept'], $txt['shd_admin_recovered_dept_desc'], 0, 0, $dept_order,
+			),
+			array('id_dept')
+		);
+
+		$last_dept = $smcFunc['db_insert_id']('{db_prefix}hepldesk_depts', 'id_dept');
+		$smcFunc['db_query']('', '
+			UPDATE {db_prefix}helpdesk_tickets
+			SET id_dept = {int:new_dept}
+			WHERE id_ticket IN ({array_int:tickets})',
+			array(
+				'new_dept' => $last_dept,
+				'tickets' => $tickets,
+			)
+		);
+		$_SESSION['shd_maint']['invalid_dept'] = count($tickets);
+	}
+
+	// This is a simple operation, no suboperation, so just tell it to go onto the next step.
+	$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . ($context['step'] + 1) . '" />';
 }
 
 // Make sure all SimpleDesk cache items are forcibly flushed.

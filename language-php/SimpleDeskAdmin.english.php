@@ -455,12 +455,16 @@ $txt['shd_admin_maint_findrepair_status'] = 'Recalculating ticket counts...';
 $txt['shd_admin_maint_findrepair_firstlast'] = 'Recalculating ticket first/last associations...';
 $txt['shd_admin_maint_findrepair_starterupdater'] = 'Recalculating the ticket starter and last updated by associations...';
 
+$txt['shd_admin_recovered_dept'] = 'Recovered Tickets';
+$txt['shd_admin_recovered_dept_desc'] = 'These are tickets that were somehow outside of existing departments. You can move them to real departments, and you should delete this department when it is empty.';
+
 $txt['shd_maint_zero_tickets'] = '%1$d ticket(s) were found with invalid ids, they have all been given new ids, the next available id numbers.';
 $txt['shd_maint_zero_msgs'] = '%1$d ticket posts(s) were found with invalid ids, they have all been given new ids, the next available id numbers.';
 $txt['shd_maint_deleted'] = '%1$d ticket(s) had incorrect counts of the number of posts and/or deleted posts. All have been recalculated.';
-$txt['shd_maint_first_last'] = '%1$d tickets had incorrect messages flagged for the ticket content, or its last reply. All have been rectified.';
-$txt['shd_maint_status'] = '%1$d tickets had the wrong status set for them. All have been rectified.';
-$txt['shd_maint_starter_updater'] = '%1$d tickets had the wrong user listed as the person who opened the ticket or the last person to update the ticket. All have been rectified.';
+$txt['shd_maint_first_last'] = '%1$d ticket(s) had incorrect messages flagged for the ticket content, or its last reply. All have been rectified.';
+$txt['shd_maint_status'] = '%1$d ticket(s) had the wrong status set for them. All have been rectified.';
+$txt['shd_maint_starter_updater'] = '%1$d ticket(s) had the wrong user listed as the person who opened the ticket or the last person to update the ticket. All have been rectified.';
+$txt['shd_maint_invalid_dept'] = '%1$d ticket(s) were listed as being in departments that do not exist, all were moved to a new department entitled "Recovered Tickets".';
 //@}
 
 /**

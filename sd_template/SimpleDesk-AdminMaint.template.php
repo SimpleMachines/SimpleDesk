@@ -206,6 +206,9 @@ function template_shd_admin_maint_findrepairdone()
 		if (!empty($context['maintenance_result']['starter_updater']))
 			echo '
 				<p class="padding">', sprintf($txt['shd_maint_starter_updater'], $context['maintenance_result']['starter_updater']), '</p>';
+		if (!empty($context['maintenance_result']['invalid_dept']))
+			echo '
+				<p class="padding">', sprintf($txt['shd_maint_invalid_dept'], $context['maintenance_result']['invalid_dept']), '</p>';
 
 		echo '
 				<p class="padding">
