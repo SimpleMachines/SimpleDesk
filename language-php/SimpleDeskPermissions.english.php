@@ -215,6 +215,14 @@ $txt['permissionname_shd_view_ticket_logs_own'] = 'For own tickets';
 $txt['permissionname_shd_view_ticket_logs_any'] = 'For any ticket';
 //@}
 
+//! @name Moving between departments
+//@{
+$txt['permissionname_shd_move_dept'] = 'Move tickets between departments';
+$txt['permissionhelp_shd_move_dept'] = 'This permission allows the user to move a ticket from the department it is in to any other department that they can see; if they can only see one department, no option is given.';
+$txt['permissionname_shd_move_dept_no'] = 'No tickets';
+$txt['permissionname_shd_move_dept_own'] = 'Their own tickets';
+$txt['permissionname_shd_move_dept_any'] = 'Any tickets';
+
 //! @name Ticket merging
 //@{
 $txt['permissionname_shd_merge_ticket'] = 'Merge two tickets together';

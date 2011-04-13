@@ -97,6 +97,11 @@ function shd_load_action_log_entries($start = 0, $items_per_page = 10, $sort = '
 			$exclude[] = 'cf_tktchgdef_useradmin';
 			$exclude[] = 'cf_rplchgdef_useradmin';
 		}
+
+		// Can they see multiple departments? If not, exclude dept move notices too.
+		$dept = shd_allowed_to('access_helpdesk', false);
+		if (count($dept) == 1)
+			$exclude[] = 'move_dept';
 	}
 
 	if (!empty($exclude))
@@ -106,7 +111,6 @@ function shd_load_action_log_entries($start = 0, $items_per_page = 10, $sort = '
 		else
 			$clause .= ' AND la.action NOT IN ({array_string:exclude})';
 	}
-	
 
 	// Without further screaming and waving, fetch the actions.
 	$request = shd_db_query('','
@@ -273,6 +277,17 @@ function shd_load_action_log_entries($start = 0, $items_per_page = 10, $sort = '
 		{
 			$actions[$k]['action_text'] = str_replace('{othersubject}', $actions[$k]['extra']['othersubject'], $actions[$k]['action_text']);
 			$actions[$k]['action_text'] = str_replace('{otherticket}', $actions[$k]['extra']['otherticket'], $actions[$k]['action_text']);
+		}
+
+		if (isset($action['extra']['old_dept_id']))
+		{
+			$replace = array(
+				'{old_dept_id}' => $action['extra']['old_dept_id'],
+				'{old_dept_name}' => $action['extra']['old_dept_name'],
+				'{new_dept_id}' => $action['extra']['new_dept_id'],
+				'{new_dept_name}' => $action['extra']['new_dept_name'],
+			);
+			$actions[$k]['action_text'] = str_replace(array_keys($replace), array_values($replace), $actions[$k]['action_text']);
 		}
 
 		// Custom fields?

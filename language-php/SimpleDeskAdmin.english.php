@@ -197,6 +197,7 @@ $txt['shd_logopt_permadelete'] = 'Log tickets and replies being permadeleted';
 $txt['shd_logopt_relationships'] = 'Log any changes in ticket relationships';
 $txt['shd_logopt_split'] = 'Log splitting of a ticket into two tickets';
 $txt['shd_logopt_autoclose'] = 'Log tickets closed automatically by the helpdesk';
+$txt['shd_logopt_move_dept'] = 'Log tickets being moved between two departments';
 
 $txt['shd_notify_send_to'] = 'Will be sent to';
 $txt['shd_notify_ticket_starter'] = 'the user who started the ticket (if set in their preferences)';
@@ -352,7 +353,6 @@ $txt['shd_dept_boardindex_cat'] = 'Display this department in the board index in
 $txt['shd_no_dept_name'] = 'No department name was specified.';
 $txt['shd_no_category'] = 'The specified category does not exist. Please go back and reload the page.';
 $txt['shd_could_not_create_dept'] = 'The department could not be created.';
-$txt['shd_unknown_dept'] = 'The specified department does not exist.';
 $txt['shd_must_have_dept'] = 'You cannot delete the only department; one must always exist.';
 $txt['shd_dept_not_empty'] = 'You cannot delete this category, it contains at least one ticket.';
 $txt['shd_roles_in_dept'] = 'Roles Within This Department';

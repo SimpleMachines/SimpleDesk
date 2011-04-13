@@ -84,6 +84,8 @@ function shd_main()
 		'markunread' => array('SimpleDesk-MiscActions.php', 'shd_ticket_unread'),
 		'assign' => array('SimpleDesk-Assign.php', 'shd_assign'),
 		'assign2' => array('SimpleDesk-Assign.php', 'shd_assign2'),
+		'movedept' => array('SimpleDesk-MoveDept.php', 'shd_movedept'),
+		'movedept2' => array('SimpleDesk-MoveDept.php', 'shd_movedept2'),
 		'resolveticket' => array('SimpleDesk-MiscActions.php', 'shd_ticket_resolve'),
 		'relation' => array('SimpleDesk-MiscActions.php', 'shd_ticket_relation'),
 		'ajax' => array('SimpleDesk-AjaxHandler.php', 'shd_ajax'),
@@ -856,7 +858,9 @@ function shd_helpdesk_listing()
 				'is_unread' => ($row['id_last_msg'] > $row['log_read']),
 				'new_href' => ($row['id_last_msg'] <= $row['log_read']) ? '' : ($scripturl . '?action=helpdesk;sa=ticket;ticket=' . $row['id_ticket'] . '.new' . ($_REQUEST['sa'] == 'recyclebin' ? ';recycle' : '') . '#new'),
 				'private' => $row['private'],
-				'actions' => array(),
+				'actions' => array(
+					'movedept' => !empty($context['shd_multi_dept']) && (shd_allowed_to('shd_move_dept_any', $context['shd_department']) || ($is_own && shd_allowed_to('shd_move_dept_own', $context['shd_department']))) ? '<a href="' . $scripturl . '?action=helpdesk;sa=movedept;ticket=' . $row['id_ticket'] . ';home;' . $context['session_var'] . '=' . $context['session_id'] . '" title="' . $txt['shd_move_dept'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/movedept.png" alt="' . $txt['shd_move_dept'] . '" /></a>' : '',
+				),
 				'num_replies' => $row['num_replies'],
 				'all_replies' => (int) $row['num_replies'] + (int) $row['deleted_replies'],
 			);

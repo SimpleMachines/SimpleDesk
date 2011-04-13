@@ -153,6 +153,8 @@ $txt['shd_split_no_pm'] = 'You must enter a reason for splitting the ticket to s
 $txt['shd_relationships_are_disabled'] = 'Ticket relationships are currently disabled.';
 $txt['error_invalid_fields'] = 'The following fields have values that cannot be used: %1$s';
 $txt['error_missing_fields'] = 'The following fields were not completed and need to be: %1$s';
+$txt['shd_cannot_move_dept'] = 'You cannot move this ticket, there is nowhere to move it to.';
+$txt['shd_no_perm_move_dept'] = 'You are not permitted to move this ticket to another department.';
 
 // The main Helpdesk.
 $txt['shd_home'] = 'Helpdesk'; // separate string in case someone wants to change it independently of the main/admin menu
@@ -234,7 +236,7 @@ $txt['shd_ticket_quote'] = 'Reply with quote';
 $txt['shd_go_advanced'] = 'Go advanced!';
 $txt['shd_ticket_edit_reply'] = 'Edit reply';
 $txt['shd_ticket_quote_short'] = 'Quote';
-$txt['shd_ticket_markunread'] = 'Mark as unread';
+$txt['shd_ticket_markunread'] = 'Mark unread';
 $txt['shd_ticket_reply_short'] = 'Reply';
 $txt['shd_ticket_edit'] = 'Edit';
 $txt['shd_ticket_resolved'] = 'Mark resolved';
@@ -250,6 +252,7 @@ $txt['shd_ticket_restore'] = 'Restore';
 $txt['shd_delete_permanently'] = 'Delete permanently';
 $txt['shd_delete_permanently_confirm'] = 'Are you sure you want to permanently delete this ticket? This CAN NOT be undone!';
 $txt['shd_ticket_move_to_topic'] = 'Move to topic';
+$txt['shd_move_dept'] = 'Move dept.';
 $txt['shd_actions'] = 'Actions';
 $txt['shd_back_to_ticket'] = 'Return to this ticket after posting';
 $txt['shd_disable_smileys_post'] = 'Turn off smileys in this post';
@@ -257,6 +260,12 @@ $txt['shd_resolve_this_ticket'] = 'Mark this ticket as resolved';
 
 $txt['shd_ticket_assign_ticket'] = 'Assign Ticket';
 $txt['shd_ticket_assign_to'] = 'Assign ticket to';
+
+$txt['shd_ticket_move_dept'] = 'Move Ticket to another Department';
+$txt['shd_ticket_move_to'] = 'Move to';
+$txt['shd_current_dept'] = 'Currently in department';
+$txt['shd_ticket_move'] = 'Move Ticket';
+$txt['shd_unknown_dept'] = 'The specified department does not exist.';
 
 // Ticket to topic and back
 $txt['shd_new_subject'] = 'New subject';

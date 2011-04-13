@@ -537,10 +537,12 @@ function shd_modify_standalone_options($return_config)
  *	<li>'shd_logopt_privacy' (checkbox) - if checked, ticket privacy changes will be logged.</li>
  *	<li>'shd_logopt_urgency' (checkbox) - if checked, ticket urgency changes will be logged.</li>
  *	<li>'shd_logopt_tickettopicmove' (checkbox) - if checked, ticket to topic moves and back will be logged.</li>
+ *	<li>'shd_logopt_cfchanges' (checkbox) - if checked, changes to custom fields will be logged.</li>
  *	<li>'shd_logopt_delete' (checkbox) - if checked, ticket/reply deletions (not permadelete) will be logged.</li>
  *	<li>'shd_logopt_restore' (checkbox) - if checked, ticket/reply restores will be logged.</li>
  *	<li>'shd_logopt_permadelete' (checkbox) - if checked, permadeletes will be logged.</li>
  *	<li>'shd_logopt_relationships' (checkbox) - if checked, ticket relationship changes will be logged.</li>
+ *	<li>'shd_logopt_move_dept' (checkbox) - if checked, ticket moves between departments will be logged.</li>
  *	<li>'shd_logopt_split' (checkbox) - if checked, splitting a topic will be logged.</li>
  *	</ul>
  *
@@ -553,6 +555,8 @@ function shd_modify_standalone_options($return_config)
 function shd_modify_actionlog_options($return_config)
 {
 	global $context, $modSettings, $txt;
+
+	$multi_dept = shd_allowed_to('access_helpdesk', false);
 
 	$config_vars = array(
 		array('check', 'shd_disable_action_log', 'javascript' => ' onchange="javascript:switchitems();"'),
@@ -575,7 +579,8 @@ function shd_modify_actionlog_options($return_config)
 		array('check', 'shd_logopt_restore', 'disabled' => !empty($modSettings['shd_disable_action_log'])),
 		array('check', 'shd_logopt_permadelete', 'disabled' => !empty($modSettings['shd_disable_action_log'])),
 		array('check', 'shd_logopt_relationships', 'disabled' => (!empty($modSettings['shd_disable_action_log']) || !empty($modSettings['shd_disable_relationships']))),
-		array('checkall', 'shd_logopt_3', array('shd_logopt_delete', 'shd_logopt_restore', 'shd_logopt_permadelete', 'shd_logopt_relationships')),
+		array('check', 'shd_logopt_move_dept', 'disabled' => !empty($modSettings['shd_disable_action_log']) && !empty($multi_dept)),
+		array('checkall', 'shd_logopt_3', array('shd_logopt_delete', 'shd_logopt_restore', 'shd_logopt_permadelete', 'shd_logopt_relationships', 'shd_logopt_move_dept')),
 		//array('check', 'shd_logopt_split', 'disabled' => !empty($modSettings['shd_disable_action_log'])),
 	);
 	$context['settings_title'] = $txt['shd_admin_options_actionlog'];
@@ -592,6 +597,7 @@ function shd_modify_actionlog_options($return_config)
 			shd_switchable_item("shd_logopt_newposts", state);
 			shd_switchable_item("shd_logopt_editposts", state);
 			shd_switchable_item("shd_logopt_resolve", state);
+			shd_switchable_item("shd_logopt_autoclose", state);
 			shd_switchable_item("shd_logopt_assign", state);
 			shd_switchable_item("shd_logopt_privacy", state);
 			shd_switchable_item("shd_logopt_urgency", state);
@@ -601,6 +607,7 @@ function shd_modify_actionlog_options($return_config)
 			shd_switchable_item("shd_logopt_restore", state);
 			shd_switchable_item("shd_logopt_permadelete", state);
 			shd_switchable_item("shd_logopt_relationships", state);
+			shd_switchable_item("shd_logopt_move_dept", state);
 			/*shd_switchable_item("shd_logopt_split", state);*/
 		}';
 

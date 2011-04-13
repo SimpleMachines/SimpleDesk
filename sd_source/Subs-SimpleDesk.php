@@ -354,6 +354,7 @@ function shd_log_action($action, $params)
 		'cf_rplchgdef_staffadmin' => 'shd_logopt_cfchanges',
 		'cf_rplchgdef_useradmin' => 'shd_logopt_cfchanges',
 		'cf_rplchgdef_userstaffadmin' => 'shd_logopt_cfchanges',
+		'move_dept' => 'shd_logopt_move_dept',
 		//'split_origin' => 'shd_logopt_split',
 		//'split_new' => 'shd_logopt_split',
 	);

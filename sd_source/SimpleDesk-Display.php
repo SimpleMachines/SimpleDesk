@@ -494,6 +494,7 @@ function shd_view_ticket()
 		$context['page_title'] = $txt['shd_helpdesk'] . ' [' . $context['ticket']['display_id'] . '] ' . $context['ticket']['subject'];
 
 	// Ticket navigation / permission
+	$context['can_move_dept'] = !empty($context['shd_multi_dept']) && (shd_allowed_to('shd_move_dept_any', $context['ticket']['dept']) || ($context['ticket']['ticket_opener'] && shd_allowed_to('shd_move_dept_own', $context['ticket']['dept'])));
 	$context['can_reply'] = !$context['ticket']['closed'] && !$context['ticket']['deleted'] && (shd_allowed_to('shd_reply_ticket_any', $context['ticket']['dept']) || ($context['ticket']['ticket_opener'] && shd_allowed_to('shd_reply_ticket_own', $context['ticket']['dept']))); // needs perms - calc'd here because we use it in display template too
 	$context['can_quote'] = $context['can_reply'] && !empty($modSettings['shd_allow_ticket_bbc']);
 	$context['can_go_advanced'] = !empty($modSettings['shd_allow_ticket_bbc']) || !empty($modSettings['allow_ticket_smileys']) || shd_allowed_to('shd_post_attachment', $context['ticket']['dept']);
@@ -579,6 +580,13 @@ function shd_view_ticket()
 		'display' => $context['ticket']['deleted'] && shd_allowed_to('shd_delete_recycling', $context['ticket']['dept']),
 		'text' => 'shd_delete_permanently',
 		'onclick' => 'return confirm(' . JavaScriptEscape($txt['shd_delete_permanently_confirm']) . ');',
+	);
+	$context['ticket_navigation'][] = array(
+		'url' => $scripturl . '?action=helpdesk;sa=movedept;ticket=' . $context['ticket']['id'] . ';' . $context['session_var'] . '=' . $context['session_id'],
+		'icon' => 'movedept',
+		'alt' => '*',
+		'display' => $context['can_move_dept'],
+		'text' => 'shd_move_dept',
 	);
 	$context['ticket_navigation'][] = array(
 		'url' => $scripturl . '?action=helpdesk;sa=tickettotopic;ticket=' . $context['ticket']['id'] . ';' . $context['session_var'] . '=' . $context['session_id'],
