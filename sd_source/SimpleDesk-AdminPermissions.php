@@ -65,6 +65,16 @@ function shd_admin_role_list()
 	$context['sub_template'] = 'shd_permissions_home';
 
 	shd_load_role();
+
+	$context['role_depts'] = array();
+	$query = $smcFunc['db_query']('', '
+		SELECT hddr.id_role, hddr.id_dept, hdd.dept_name
+		FROM {db_prefix}helpdesk_dept_roles AS hddr
+			INNER JOIN {db_prefix}helpdesk_depts AS hdd ON (hddr.id_dept = hdd.id_dept)
+		ORDER BY hddr.id_role, hdd.dept_order');
+	while ($row = $smcFunc['db_fetch_assoc']($query))
+		$context['role_depts'][$row['id_role']][$row['id_dept']] = $row['dept_name'];
+	$smcFunc['db_free_result']($query);
 }
 
 /**
@@ -177,6 +187,21 @@ function shd_admin_edit_role()
 
 	$smcFunc['db_free_result']($query);
 
+	// Now for departments. But we're going to be clever and get the list of departments and whether this role is present in them - at the same time.
+	$context['role_depts'] = array();
+	$query = $smcFunc['db_query']('', '
+		SELECT hdd.id_dept, dept_name, IFNULL(hddr.id_role, 0) AS is_role
+		FROM {db_prefix}helpdesk_depts AS hdd
+			LEFT JOIN {db_prefix}helpdesk_dept_roles AS hddr ON (hddr.id_dept = hdd.id_dept AND hddr.id_role = {int:role})
+		ORDER BY hdd.dept_order',
+		array(
+			'role' => $_REQUEST['role'],
+		)
+	);
+	while ($row = $smcFunc['db_fetch_assoc']($query))
+		$context['role_depts'][$row['id_dept']] = $row;
+	$smcFunc['db_free_result']($query);
+
 	$context['page_title'] = $txt['shd_edit_role'];
 	$context['sub_template'] = 'shd_edit_role';
 }
@@ -250,7 +275,7 @@ function shd_admin_save_role()
 	else
 		$_POST['rolename'] = strtr($smcFunc['htmlspecialchars']($_POST['rolename']), array("\r" => '', "\n" => '', "\t" => ''));
 
-	// 4. Is the role different to what we thought it was? If so, informer the director, our good friend Mr. Database
+	// 5. Is the role different to what we thought it was? If so, informer the director, our good friend Mr. Database
 	if ($role['name'] != $_POST['rolename'])
 	{
 		$smcFunc['db_query']('', '
@@ -264,7 +289,7 @@ function shd_admin_save_role()
 		);
 	}
 
-	// 5. Tick off what we can and can't do, it all sounds like so much fun.
+	// 6. Tick off what we can and can't do, it all sounds like so much fun.
 	$perm_changes = array(
 		'add_update' => array(),
 		'remove' => array(),
@@ -332,7 +357,7 @@ function shd_admin_save_role()
 		}
 	}
 
-	// 6b. Rack 'em up for the database
+	// 7. Rack 'em up for the database
 	if (!empty($perm_changes['add_update']))
 	{
 		$insert = array();
@@ -366,7 +391,7 @@ function shd_admin_save_role()
 
 	}
 
-	// 7. (serious voice) OK let's do groups. Grab the ones that are valid groups in SMF, ignore everything else
+	// 8. (serious voice) OK let's do groups. Grab the ones that are valid groups in SMF, ignore everything else
 	// We're not interested in admin (group 1), board mod (group 3) or post count groups (min_posts != -1)
 	$context['membergroups'] = array(0);
 
@@ -431,6 +456,37 @@ function shd_admin_save_role()
 			)
 		);
 	}
+
+	// 9. Departments
+	$add = array();
+	// 9.1. Get all known departments
+	$query = $smcFunc['db_query']('', '
+		SELECT id_dept
+		FROM {db_prefix}helpdesk_depts');
+	while ($row = $smcFunc['db_fetch_assoc']($query))
+		if (!empty($_POST['dept' . $row['id_dept']]))
+			$add[] = array($_REQUEST['role'], $row['id_dept']);
+
+	// 9.2 Remove existing depts
+	$smcFunc['db_query']('', '
+		DELETE FROM {db_prefix}helpdesk_dept_roles
+		WHERE id_role = {int:role}',
+		array(
+			'role' => $_REQUEST['role'],
+		)
+	);
+
+	// 9.3 Add new associations
+	$smcFunc['db_insert']('replace',
+		'{db_prefix}helpdesk_dept_roles',
+		array(
+			'id_role' => 'int', 'id_dept' => 'int',
+		),
+		$add,
+		array(
+			'id_role', 'id_dept',
+		)
+	);
 
 	// All done, back to the main screen
 	redirectexit('action=admin;area=helpdesk_permissions');
@@ -518,9 +574,10 @@ function shd_admin_copy_role()
 			);
 		}
 
-		// Now copy the groups if they wanted to
+		// Now copy the groups and departments if they wanted to
 		if (!empty($_REQUEST['copygroups']))
 		{
+			// Groups first.
 			$groups = array();
 			$query = $smcFunc['db_query']('', '
 				SELECT id_group
@@ -532,8 +589,7 @@ function shd_admin_copy_role()
 			);
 
 			while ($row = $smcFunc['db_fetch_assoc']($query))
-				$groups = array((int) $newrole, (int) $row['id_group']);
-
+				$groups[] = array((int) $newrole, (int) $row['id_group']);
 			$smcFunc['db_free_result']($query);
 
 			if (!empty($groups))
@@ -546,6 +602,34 @@ function shd_admin_copy_role()
 					$groups,
 					array(
 						'id_role', 'id_group',
+					)
+				);
+			}
+
+			// Departments second.
+			$depts = array();
+			$query = $smcFunc['db_query']('', '
+				SELECT id_dept
+				FROM {db_prefix}helpdesk_dept_roles
+				WHERE id_role = {int:role}',
+				array(
+					'role' => $_REQUEST['role'],
+				)
+			);
+			while ($row = $smcFunc['db_fetch_assoc']($query))
+				$depts[] = array((int) $newrole, (int) $row['id_dept']);
+			$smcFunc['db_free_result']($query);
+
+			if (!empty($depts))
+			{
+				$smcFunc['db_insert']('insert',
+					'{db_prefix}helpdesk_dept_roles',
+					array(
+						'id_role' => 'int', 'id_dept' => 'int',
+					),
+					$depts,
+					array(
+						'id_role', 'id_dept',
 					)
 				);
 			}

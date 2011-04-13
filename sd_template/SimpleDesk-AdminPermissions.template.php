@@ -79,14 +79,15 @@ function template_shd_permissions_home()
 						<tr class="titlebg">
 							<td colspan="2" width="20%">', $txt['shd_role'], '</td>
 							<td colspan="', count($context['shd_permissions']['group_display']), '">', $txt['shd_permissions'], '</td>
-							<td width="20%">', $txt['shd_membergroups'], '</td>
+							<td width="15%">', $txt['shd_membergroups'], '</td>
+							<td width="15%">', $txt['shd_departments'], '</td>
 						</tr>';
 
 	if (empty($context['shd_permissions']['user_defined_roles']))
 	{
 		echo '
 						<tr class="windowbg">
-							<td colspan="', count($context['shd_permissions']['group_display']) + 3, '" class="centertext">', $txt['shd_no_defined_roles'], '</td>
+							<td colspan="', count($context['shd_permissions']['group_display']) + 4, '" class="centertext">', $txt['shd_no_defined_roles'], '</td>
 						</tr>';
 	}
 	else
@@ -116,6 +117,13 @@ function template_shd_permissions_home()
 				echo '
 							<td>', implode(', ', $array), '</td>';
 			}
+
+			if (!empty($context['role_depts'][$role]))
+				echo '
+							<td>', implode(', ', $context['role_depts'][$role]), '</td>';
+			else
+				echo '
+							<td>', $txt['shd_none'], '</td>';
 
 			echo '
 						</tr>';
@@ -455,6 +463,38 @@ function template_shd_edit_role()
 								<td><input type="checkbox" class="input_check" name="group', $id_group, '"', (in_array($id_group, $context['role_groups']) ? ' checked="checked"' : ''), ' /></td>
 							</tr>';
 
+		$use_bg2 = !$use_bg2;
+	}
+
+	echo '
+						</table>
+						<br />
+					</div>
+
+					<div class="tborder floatleft" style="width: 100%;">
+						<div class="cat_bar grid_header">
+							<h3 class="catbg sd_no_margin">
+								<img src="', $settings['default_images_url'], '/simpledesk/departments.png" alt="*" />
+								', $txt['shd_role_departments'], '
+							</h3>
+						</div>
+						<p class="description shd_actionloginfo">
+							', $txt['shd_role_departments_desc'], '
+						</p>
+						<table class="shd_ticketlist" cellspacing="0" width="100%">
+							<tr class="titlebg">
+								<td width="50%">', $txt['shd_department_name'], '</td>
+								<td width="50%">', $txt['shd_assign_dept'], '</td>
+							</tr>';
+
+	$use_bg2 = true;
+	foreach ($context['role_depts'] as $id_dept => $dept)
+	{
+		echo '
+							<tr class="', ($use_bg2 ? 'windowbg2' : 'windowbg'), '">
+								<td>', $dept['dept_name'], '</td>
+								<td><input type="checkbox" class="input_check" name="dept', $id_dept, '"', !empty($dept['is_role']) ? ' checked="checked"' : '', ' /></td>
+							</tr>';
 		$use_bg2 = !$use_bg2;
 	}
 

@@ -320,7 +320,7 @@ $txt['shd_edit_role'] = 'Edit this role';
 $txt['shd_create_role'] = 'Create New Role';
 $txt['shd_edit_role'] = 'Edit Role';
 $txt['shd_copy_role'] = 'Copy Role';
-$txt['shd_copy_role_groups'] = 'Copy this role\'s groups as well?';
+$txt['shd_copy_role_groups'] = 'Copy this role\'s groups and departments as well?';
 $txt['shd_delete_role'] = 'Delete Role';
 $txt['shd_delete_role_confirm'] = 'Do you really want to delete this role?';
 $txt['shd_create_based_on'] = 'The new role will be based on';
@@ -334,6 +334,9 @@ $txt['shd_assign_group'] = 'Assign Role/Group';
 $txt['shd_roleperm_allow'] = 'Allowed';
 $txt['shd_roleperm_disallow'] = 'Not allowed';
 $txt['shd_roleperm_deny'] = 'Never allowed';
+
+$txt['shd_role_departments'] = 'Departments This Role Is Part Of';
+$txt['shd_role_departments_desc'] = 'Each role that is used, will be part of one or more departments, to indicate that the groups contained within it (see above), are given positions in that department. For example, if this is a staff role, you use this area to indicate which department(s) the role applies to.';
 
 $txt['shd_unknown_template'] = 'The specified template does not exist.';
 $txt['shd_no_role_name'] = 'You did not enter the name of your new role.';
