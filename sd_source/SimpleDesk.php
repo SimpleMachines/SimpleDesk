@@ -182,7 +182,7 @@ function shd_main()
 		'name' => $txt['shd_helpdesk'],
 	);
 
-	if (!empty($context['shd_dept_name']) && !$context['shd_multi_dept'])
+	if (!empty($context['shd_dept_name']) && $context['shd_multi_dept'])
 		$context['linktree'][] = array(
 			'url' => $scripturl . '?' . $context['shd_home'] . $context['shd_dept_link'],
 			'name' => $context['shd_dept_name'],

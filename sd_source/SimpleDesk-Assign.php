@@ -61,8 +61,9 @@ function shd_assign()
 
 	// Get ticket details - and kick it out if they shouldn't be able to see it.
 	$query = shd_db_query('', '
-		SELECT id_member_started, id_member_assigned, private, subject, id_dept
+		SELECT id_member_started, id_member_assigned, private, subject, hdt.id_dept, hdd.dept_name
 		FROM {db_prefix}helpdesk_tickets AS hdt
+			INNER JOIN {db_prefix}helpdesk_depts AS hdd ON (hdt.id_dept = hdd.id_dept)
 		WHERE {query_see_ticket} AND id_ticket = {int:ticket}',
 		array(
 			'ticket' => $context['ticket_id'],
@@ -72,7 +73,7 @@ function shd_assign()
 	$log_params = array();
 	if ($row = $smcFunc['db_fetch_row']($query))
 	{
-		list($ticket_starter, $ticket_owner, $private, $subject, $dept) = $row;
+		list($ticket_starter, $ticket_owner, $private, $subject, $dept, $dept_name) = $row;
 		$log_params = array(
 			'subject' => $subject,
 			'ticket' => $context['ticket_id'],
@@ -111,6 +112,12 @@ function shd_assign()
 
 		if (empty($members))
 			fatal_lang_error('shd_no_staff_assign');
+
+		if ($context['shd_multi_dept'])
+			$context['linktree'][] = array(
+				'url' => $scripturl . '?' . $context['shd_home'] . ';dept=' . $dept,
+				'name' => $dept_name,
+			);
 
 		$context['linktree'][] = array(
 			'url' => $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $context['ticket_id'],
