@@ -468,33 +468,38 @@ function shd_view_ticket()
 			'url' => $scripturl . '?action=helpdesk;sa=closedtickets' . $context['shd_dept_link'],
 			'name' => $txt['shd_tickets_closed'],
 		);
-	// Lastly add the ticket name and link.
-	$context['linktree'][] = array(
-		'url' => $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $context['ticket_id'],
-		'name' => $context['ticket']['subject'],
-	);
 
 	// Template stuff
 	$context['sub_template'] = 'viewticket';
+	$ticketname = '';
 	if (!empty($context['ticket']['custom_fields']['prefix']))
 	{
-		$context['page_title'] = $txt['shd_helpdesk'] . ' [' . $context['ticket']['display_id'] . '] ';
+		$ticketname = '[' . $context['ticket']['display_id'] . '] ';
+		$fields = '';
 		foreach ($context['ticket']['custom_fields']['prefix'] AS $field)
 		{
 			if (empty($field['value']))
 				continue;
 
 			if ($field['type'] == CFIELD_TYPE_CHECKBOX)
-				$context['page_title'] .= !empty($field['value']) ? $txt['yes'] . ' ' : $txt['no'] . ' ';
+				$fields .= !empty($field['value']) ? $txt['yes'] . ' ' : $txt['no'] . ' ';
 			elseif ($field['type'] == CFIELD_TYPE_SELECT || $field['type'] == CFIELD_TYPE_RADIO)
-				$context['page_title'] .= $field['options'][$field['value']] . ' ';
+				$fields .= $field['options'][$field['value']] . ' ';
 			else
-				$context['page_title'] .= $field['value'] . ' ';
+				$fields .= $field['value'] . ' ';
 		}
-		$context['page_title'] .= $context['ticket']['subject'];
+		$ticketname .= '[' . trim($fields) . '] ' . $context['ticket']['subject'];
 	}
 	else
-		$context['page_title'] = $txt['shd_helpdesk'] . ' [' . $context['ticket']['display_id'] . '] ' . $context['ticket']['subject'];
+		$ticketname = '[' . $context['ticket']['display_id'] . '] ' . $context['ticket']['subject'];
+
+	$context['page_title'] = $txt['shd_helpdesk'] . ' ' . $ticketname;
+
+	// Lastly add the ticket name and link.
+	$context['linktree'][] = array(
+		'url' => $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $context['ticket_id'],
+		'name' => $ticketname,
+	);
 
 	// Ticket navigation / permission
 	$context['can_move_dept'] = !empty($context['shd_multi_dept']) && (shd_allowed_to('shd_move_dept_any', $context['ticket']['dept']) || ($context['ticket']['ticket_opener'] && shd_allowed_to('shd_move_dept_own', $context['ticket']['dept'])));

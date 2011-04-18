@@ -192,7 +192,7 @@ function template_viewticket()
 					$output .= $field['value'] . ' ';
 			}
 			if (!empty($output))
-				echo '[', trim($output), ']';
+				echo '[', trim($output), '] ';
 
 			echo $context['ticket']['subject'], '</strong><hr /><br />
 							<div id="shd_ticket_text">

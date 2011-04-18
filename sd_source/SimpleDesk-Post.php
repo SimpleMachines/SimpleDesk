@@ -1265,7 +1265,7 @@ function shd_done_posting()
 				'{ticketurl}' => $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $context['ticket_id'],
 				'{forum_name}' => $context['forum_name_html_safe'],
 				'{newticketlink}' => $scripturl . '?action=helpdesk;sa=newticket',
-				'{helpdesklink}' => $scripturl . '?action=helpdesk;sa=main',
+				'{helpdesklink}' => $scripturl . '?' . $context['shd_home'] . $context['shd_dept_link'],
 				'{forumlink}' => $scripturl,
 				'{prefslink}' => $scripturl . '?action=profile;area=hd_prefs',
 			);
