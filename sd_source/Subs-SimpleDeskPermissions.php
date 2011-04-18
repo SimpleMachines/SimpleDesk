@@ -368,7 +368,7 @@ function shd_load_user_perms()
 			FROM {db_prefix}helpdesk_depts'
 		);
 		while ($row = $smcFunc['db_fetch_assoc']($query))
-			$context['shd_depts_list'][] = $row['id_dept'];
+			$context['shd_depts_list'][] = (int) $row['id_dept'];
 		$smcFunc['db_free_result']($query);
 	}
 

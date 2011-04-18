@@ -43,9 +43,8 @@ function shd_post_ticket()
 	{
 		// Need to have a department to post in. If not, goodbye.
 		$_REQUEST['dept'] = isset($_REQUEST['dept']) ? (int) $_REQUEST['dept'] : 0;
-		if (empty($_REQUEST['dept']))
-			redirectexit($context['shd_home']);
-		shd_is_allowed_to('shd_new_ticket', $_REQUEST['dept']);
+
+		shd_is_allowed_to('shd_new_ticket', $_REQUEST['dept']); // If we don't have a department, we will verify the ability in any department, and figure it out later.
 	}
 	else
 	{
@@ -65,6 +64,7 @@ function shd_post_ticket()
 
 	$context['ticket_form'] = array( // yes, everything goes in here.
 		'dept' => $dept,
+		'selecting_dept' => $context['shd_multi_dept'] && empty($dept),
 		'form_title' => $new_ticket ? $txt['shd_create_ticket'] : $txt['shd_edit_ticket'],
 		'form_action' => $scripturl . '?action=helpdesk;sa=saveticket',
 		'first_msg' => $new_ticket ? 0 : $ticketinfo['id_first_msg'],
@@ -107,6 +107,8 @@ function shd_post_ticket()
 				$context['ticket_form']['proxy'] = $user_profile[$user]['real_name'];
 		}
 	}
+	if (!empty($context['ticket_form']['selecting_dept']))
+		shd_get_postable_depts();
 
 	shd_posting_additional_options();
 
@@ -288,8 +290,18 @@ function shd_save_ticket()
 
 	if (empty($context['ticket_id']))
 	{
+		// Are we inside a known department?
 		$dept = isset($_REQUEST['dept']) ? (int) $_REQUEST['dept'] : 0;
-		shd_is_allowed_to('shd_new_ticket', $dept);
+		if (!isset($_REQUEST['newdept']) || !$context['shd_multi_dept'])
+			shd_is_allowed_to('shd_new_ticket', $dept);
+		// What about specifying one explicitly?
+		else
+		{
+			$newdept = (int) $_REQUEST['newdept'];
+			if ($newdept == 0)
+				$newdept == -1; // This way if you specify something you shouldn't be, you are guaranteed to fail.
+			shd_is_allowed_to('shd_new_ticket', $newdept);
+		}
 
 		// some healthy defaults
 		$context['ticket_id'] = 0;
@@ -332,7 +344,7 @@ function shd_save_ticket()
 	}
 
 	$context['ticket_form'] = array(
-		'dept' => $dept,
+		'dept' => isset($newdept) ? $newdept : $dept,
 		'form_title' => $new_ticket ? $txt['shd_create_ticket'] : $txt['shd_edit_ticket'],
 		'form_action' => $scripturl . '?action=helpdesk;sa=saveticket',
 		'first_msg' => $new_ticket ? 0 : $ticketinfo['id_first_msg'],
@@ -357,6 +369,11 @@ function shd_save_ticket()
 		'return_to_ticket' => isset($_REQUEST['goback']),
 		'disable_smileys' => !empty($_REQUEST['no_smileys']),
 	);
+	if (isset($newdept))
+		$context['ticket_form']['selecting_dept'] = true;
+	if (!empty($context['ticket_form']['selecting_dept']))
+		shd_get_postable_depts();
+
 	$context['can_solve'] = !$new_ticket && (shd_allowed_to('shd_resolve_ticket_any', $dept) || (shd_allowed_to('shd_resolve_ticket_own', $dept) && $ticketinfo['starter_id'] == $user_info['id']));
 	$context['log_action'] = $new_ticket ? 'newticket' : 'editticket';
 	$context['log_params']['subject'] = $context['ticket_form']['subject'];
@@ -393,7 +410,7 @@ function shd_save_ticket()
 
 	// Custom fields?
 	shd_load_custom_fields(true, $context['ticket_form']['ticket'], $context['ticket_form']['dept']);
-	list($missing_fields, $invalid_fields) = shd_validate_custom_fields('ticket');
+	list($missing_fields, $invalid_fields) = shd_validate_custom_fields('ticket', $context['ticket_form']['dept']);
 
 	// Did any custom fields fail validation?
 	if (!empty($invalid_fields))
@@ -1057,7 +1074,7 @@ function shd_save_reply()
 
 	// Custom fields?
 	shd_load_custom_fields(false, $context['ticket_form']['msg'], $context['ticket_form']['dept']);
-	list($missing_fields, $invalid_fields) = shd_validate_custom_fields($context['ticket_form']['msg']);
+	list($missing_fields, $invalid_fields) = shd_validate_custom_fields($context['ticket_form']['msg'], $context['ticket_form']['dept']);
 
 	// Did any custom fields fail validation?
 	if (!empty($invalid_fields))

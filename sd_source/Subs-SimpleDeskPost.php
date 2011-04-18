@@ -734,9 +734,9 @@ function shd_load_custom_fields($is_ticket = true, $ticketContext = 0, $dept = 0
 	$custom_fields = shd_db_query('', '
 		SELECT cf.id_field, cf.active, cf.field_order, cf.field_name, cf.field_desc, cf.field_loc, cf.icon,
 			cf.field_type, cf.field_options, cf.default_value, cf.bbc, cf.can_see, cf.can_edit, cf.field_length,
-			cf.display_empty, cfd.required, cf.placement
+			cf.display_empty, cfd.required, cf.placement, cfd.id_dept
 		FROM {db_prefix}helpdesk_custom_fields AS cf
-			INNER JOIN {db_prefix}helpdesk_custom_fields_depts AS cfd ON (cf.id_field = cfd.id_field AND cfd.id_dept = {int:dept})
+			INNER JOIN {db_prefix}helpdesk_custom_fields_depts AS cfd ON (cf.id_field = cfd.id_field' . (!empty($dept) ? ' AND cfd.id_dept = {int:dept}' : '') .')
 		WHERE cf.active = 1
 			AND cf.field_loc IN ({array_int:visibility})
 		ORDER BY cf.field_order',
@@ -773,23 +773,26 @@ function shd_load_custom_fields($is_ticket = true, $ticketContext = 0, $dept = 0
 			continue;
 
 		// Load up the fields and do some extra parsing
-		$context['ticket_form']['custom_fields'][$loc][$row['id_field']] = array(
-			'id' => $row['id_field'],
-			'order' => $row['field_order'],
-			'location' => $row['field_loc'],
-			'length' => $row['field_length'],
-			'name' => $row['field_name'],
-			'desc' => $row['field_desc'],
-			'icon' => $row['icon'],
-			'options' => !empty($row['field_options']) ? unserialize($row['field_options']) : array(),
-			'type' => $row['field_type'],
-			'default_value' => $row['field_type'] == CFIELD_TYPE_LARGETEXT ? explode(',', $row['default_value']) : $row['default_value'],
-			'display_empty' => !empty($row['required']) ? 1 : $row['display_empty'], // Required and "selection" fields will always be displayed.
-			'bbc' => !empty($row['bbc']),
-			'is_required' => !empty($row['required']),
-			'visible' => array($user_see, $staff_see),
-			'editable' => !empty($editable),
-		);
+		if (!isset($context['ticket_form']['custom_fields'][$loc][$row['id_field']]))
+			$context['ticket_form']['custom_fields'][$loc][$row['id_field']] = array(
+				'id' => $row['id_field'],
+				'order' => $row['field_order'],
+				'location' => $row['field_loc'],
+				'length' => $row['field_length'],
+				'name' => $row['field_name'],
+				'desc' => $row['field_desc'],
+				'icon' => $row['icon'],
+				'options' => !empty($row['field_options']) ? unserialize($row['field_options']) : array(),
+				'type' => $row['field_type'],
+				'default_value' => $row['field_type'] == CFIELD_TYPE_LARGETEXT ? explode(',', $row['default_value']) : $row['default_value'],
+				'display_empty' => !empty($row['required']) ? 1 : $row['display_empty'], // Required and "selection" fields will always be displayed.
+				'bbc' => !empty($row['bbc']),
+				'is_required' => !empty($row['required']),
+				'visible' => array($user_see, $staff_see),
+				'editable' => !empty($editable),
+				'depts' => array(),
+			);
+		$context['ticket_form']['custom_fields'][$loc][$row['id_field']]['depts'][] = $row['id_dept'];
 
 		if (isset($field_values[$row['id_field']]))
 			$context['ticket_form']['custom_fields'][$loc][$row['id_field']]['value'] = $field_values[$row['id_field']];
@@ -798,7 +801,7 @@ function shd_load_custom_fields($is_ticket = true, $ticketContext = 0, $dept = 0
 	$context['ticket_form']['custom_fields_context'] = $loc;
 }
 
-function shd_validate_custom_fields($scope)
+function shd_validate_custom_fields($scope, $dept)
 {
 	global $context, $smcFunc;
 
@@ -810,7 +813,7 @@ function shd_validate_custom_fields($scope)
 
 	foreach ($context['ticket_form']['custom_fields'][$scope] as $field_id => $field)
 	{
-		if (!$field['editable'])
+		if (!$field['editable'] || !in_array($dept, $field['depts']))
 			continue;
 
 		// For each field, check it was sent in the form.
@@ -885,5 +888,35 @@ function shd_validate_custom_fields($scope)
 	}
 
 	return array($missing_fields, $invalid_fields);
+}
+
+function shd_get_postable_depts()
+{
+	global $context, $smcFunc;
+	$depts = shd_allowed_to('shd_new_ticket', false);
+	$context['postable_dept_list'] = array();
+	$context['ticket_form']['custom_field_dept'] = 0;
+	if (!empty($depts))
+	{
+		$query = $smcFunc['db_query']('', '
+			SELECT id_dept, dept_name
+			FROM {db_prefix}helpdesk_depts
+			WHERE id_dept IN ({array_int:depts})
+			ORDER BY dept_order',
+			array(
+				'depts' => $depts,
+			)
+		);
+		while ($row = $smcFunc['db_fetch_assoc']($query))
+			$context['postable_dept_list'][$row['id_dept']] = $row['dept_name'];
+		$smcFunc['db_free_result']($query);
+
+		// We do actually need to get the first one for the purposes of custom fields. But only the first one.
+		foreach ($context['postable_dept_list'] as $id => $dept)
+		{
+			$context['ticket_form']['custom_field_dept'] = $id;
+			break;
+		}
+	}
 }
 ?>

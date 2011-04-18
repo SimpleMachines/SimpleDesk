@@ -155,13 +155,16 @@ function template_ticket_custom_fields()
 		return;
 
 	echo '
-				<div class="information shd_customfields">';
+				<div class="information shd_customfields" id="shd_customfields">';
 
 		// Loop through each custom field
+		// See also template_ticket_subjectbox() for the department selector which affects these.
 		foreach ($context['ticket_form']['custom_fields'][$context['ticket_form']['custom_fields_context']] as $field)
 		{
 			if (!$field['editable'])
 				continue;
+
+			$field['hidden'] = (!empty($context['ticket_form']['selecting_dept']) && !in_array($context['ticket_form']['custom_field_dept'], $field['depts']));
 
 			if (isset($field['new_value']))
 				$field['value'] = $field['new_value'];
@@ -174,90 +177,94 @@ function template_ticket_custom_fields()
 				if ($field['value'] == $field['default_value'])
 					$field['value'] = '';
 				echo '
-					<dl class="settings">
-						<dt id="field-' . $field['id'] . '" style="width:98%;">
-							', !empty($field['icon']) ? '<img src="' . $settings['default_images_url'] . '/simpledesk/cf/' . $field['icon'] . '" alt="" />' : '', '
-							<strong>' . $field['name'] . ': </strong><br />
-							<span class="smalltext">' . $field['desc'] . '</span><br />
-							<textarea name="field-', $field['id'], '"', !empty($field['default_value']) ? ' rows="' . $field['default_value'][0] . '" cols="' . $field['default_value'][1] . '" ' : '', ' style="width:auto; height:auto;">', $field['value'], '</textarea>
-						</dt>
-					</dl>
-					<hr class="hrcolor" />';
+					<div id="field_', $field['id'], '_container"', $field['hidden'] ? ' style="display:none;"' : '', '>
+						<dl class="settings">
+							<dt id="field-' . $field['id'] . '" style="width:98%;">
+								', !empty($field['icon']) ? '<img src="' . $settings['default_images_url'] . '/simpledesk/cf/' . $field['icon'] . '" alt="" />' : '', '
+								<strong>' . $field['name'] . ': </strong><br />
+								<span class="smalltext">' . $field['desc'] . '</span><br />
+								<textarea name="field-', $field['id'], '"', !empty($field['default_value']) ? ' rows="' . $field['default_value'][0] . '" cols="' . $field['default_value'][1] . '" ' : '', ' style="width:auto; height:auto;">', $field['value'], '</textarea>
+							</dt>
+						</dl>
+						<hr class="hrcolor" />
+					</div>';
 			}
 			else
 			{
 				echo '
-					<dl class="settings">
-						<dt id="field-' . $field['id'] . '">
-							', !empty($field['icon']) ? '<img src="' . $settings['default_images_url'] . '/simpledesk/cf/' . $field['icon'] . '" alt="" />' : '', '
-							<strong>' . $field['name'] . ': </strong><br />
-							<span class="smalltext">' . $field['desc'] . '</span>
-						</dt>';
+					<div id="field_', $field['id'], '_container"', $field['hidden'] ? ' style="display:none;"' : '', '>
+						<dl class="settings">
+							<dt id="field-' . $field['id'] . '">
+								', !empty($field['icon']) ? '<img src="' . $settings['default_images_url'] . '/simpledesk/cf/' . $field['icon'] . '" alt="" />' : '', '
+								<strong>' . $field['name'] . ': </strong><br />
+								<span class="smalltext">' . $field['desc'] . '</span>
+							</dt>';
 
 				// Text
 				if ($field['type'] == CFIELD_TYPE_TEXT)
 				{
 					echo '
-						<dd><input type="text" name="field-', $field['id'], '" value="', $field['value'], '" class="input_text" /></dd>';
+							<dd><input type="text" name="field-', $field['id'], '" value="', $field['value'], '" class="input_text" /></dd>';
 				}
 				// Integers only
 				elseif ($field['type'] == CFIELD_TYPE_INT)
 				{
 					echo '
-						<dd><input name="field-', $field['id'], '" value="', $field['value'], '" size="10" class="input_text" /></dd>';
+							<dd><input name="field-', $field['id'], '" value="', $field['value'], '" size="10" class="input_text" /></dd>';
 				}
 				// Floating numbers
 				elseif ($field['type'] == CFIELD_TYPE_FLOAT)
 				{
 					echo '
-						<dd><input name="field-', $field['id'], '" value="', $field['value'], '" size="10" class="input_text" /></dd>';
+							<dd><input name="field-', $field['id'], '" value="', $field['value'], '" size="10" class="input_text" /></dd>';
 				}
 				// Select boxes
 				elseif ($field['type'] == CFIELD_TYPE_SELECT)
 				{
 					echo '
-						<dd>
-							<select name="field-', $field['id'], '">
-								<option value="0"', $field['value'] == 0 ? ' selected="selected"' : '', !empty($field['is_required']) ? ' disabled="disabled"' : '', '>', $txt['shd_choose_one'], '&nbsp;</option>';
+							<dd>
+								<select name="field-', $field['id'], '">
+									<option value="0"', $field['value'] == 0 ? ' selected="selected"' : '', !empty($field['is_required']) ? ' disabled="disabled"' : '', '>', $txt['shd_choose_one'], '&nbsp;</option>';
 
 					foreach ($field['options'] as $key => $option)
 						echo '
-								<option value="', $key, '"', $field['value'] == $key ? ' selected="selected"' : '', '>', $option, '&nbsp;</option>';
+									<option value="', $key, '"', $field['value'] == $key ? ' selected="selected"' : '', '>', $option, '&nbsp;</option>';
 
 					echo '
-							</select>
-						</dd>';
+								</select>
+							</dd>';
 				}
 				// Checkboxes!
 				elseif ($field['type'] == CFIELD_TYPE_CHECKBOX)
 				{
 					echo '
-						<dd><input name="field-', $field['id'], '" type="checkbox"', !empty($field['value']) ? ' checked="checked"' : '', ' class="input_check" /></dd>';
+							<dd><input name="field-', $field['id'], '" type="checkbox"', !empty($field['value']) ? ' checked="checked"' : '', ' class="input_check" /></dd>';
 				}
 				// Last one, radio buttons
 				elseif ($field['type'] == CFIELD_TYPE_RADIO)
 				{
 					echo '
-						<dd>';
+							<dd>';
 					if (empty($field['is_required']))
 						echo '
-							<input name="field-', $field['id'], '" type="radio" value="0"', $field['value'] == 0 ? ' checked="checked"' : '', ' class="input_radio" /> <span>', $txt['shd_no_value'], '</span><br />';
+								<input name="field-', $field['id'], '" type="radio" value="0"', $field['value'] == 0 ? ' checked="checked"' : '', ' class="input_radio" /> <span>', $txt['shd_no_value'], '</span><br />';
 
 					foreach ($field['options'] as $key => $option)
 						echo '
-							<input name="field-', $field['id'], '" type="radio" value="', $key, '"', $field['value'] == $key ? ' checked="checked"' : '', ' /> <span>', $option, '</span><br />';
+								<input name="field-', $field['id'], '" type="radio" value="', $key, '"', $field['value'] == $key ? ' checked="checked"' : '', ' /> <span>', $option, '</span><br />';
 
 					echo '
-						</dd>';
+							</dd>';
 				}
 				// Default to a text input field
 				else
 					echo '
-						<dd><input type="text" name="field-' . $field['id'] . '" value="' . $field['value'] . '" size="50" /></dd>';
+							<dd><input type="text" name="field-' . $field['id'] . '" value="' . $field['value'] . '" size="50" /></dd>';
 
 				echo '
-					</dl>
-					<hr class="hrcolor" />';
+						</dl>
+						<hr class="hrcolor" />
+					</div>';
 			}
 		}
 
@@ -302,6 +309,49 @@ function template_ticket_subjectbox()
 	echo '
 						<img src="', $settings['default_images_url'], '/simpledesk/name.png" alt="" class="shd_smallicon" /> <strong>', $txt['shd_ticket_subject'], ':</strong>
 						<input type="text" name="subject" size="50" maxlength="100" class="input_text" value="', $context['ticket_form']['subject'], '" tabindex="', $context['tabindex']++, '" />';
+
+	if (!empty($context['ticket_form']['selecting_dept']) && !empty($context['postable_dept_list']))
+	{
+		echo '
+						<br />
+						<img src="', $settings['default_images_url'], '/simpledesk/departments.png" alt="" class="shd_smallicon" /> <strong>', $txt['shd_ticket_dept'], '</strong>
+						<select name="newdept" onchange="updateDeptCFs(this.value)">';
+		foreach ($context['postable_dept_list'] as $id => $dept)
+			echo '
+							<option value="', $id, '"', $context['ticket_form']['dept'] == $id ? ' selected="selected"' : '', '>', $dept, '</option>';
+
+		echo '
+						</select>
+						<script type="text/javascript"><!-- // --><![CDATA[
+						var fields = new Array();';
+
+		foreach ($context['ticket_form']['custom_fields'][$context['ticket_form']['custom_fields_context']] as $field)
+		{
+			if (!$field['editable'])
+				continue;
+			echo '
+						fields[', $field['id'], '] = [', implode(',', $field['depts']), '];';
+		}
+		echo '
+						function updateDeptCFs(dept)
+						{
+							var displayed = 0;
+							for (i in fields)
+							{
+								if (in_array(dept, fields[i]))
+								{
+									document.getElementById("field_" + i + "_container").style.display = "";
+									displayed++;
+								}
+								else
+								{
+									document.getElementById("field_" + i + "_container").style.display = "none";
+								}
+								document.getElementById("shd_customfields").style.display = (displayed == 0) ? "none" : "";
+							}
+						}
+						// ]', ']></script>';
+	}
 
 	// Are we dealing with proxy tickets?
 	if (!empty($context['can_post_proxy']))
@@ -383,7 +433,7 @@ function template_ticket_meta()
 		echo '
 						<input type="hidden" name="num_replies" value="', $context['ticket_form']['num_replies'], '" />';
 
-	if (!empty($context['ticket_form']['dept']))
+	if (!empty($context['ticket_form']['dept']) && empty($context['ticket_form']['selecting_dept']))
 		echo '
 						<input type="hidden" name="dept" value="', $context['ticket_form']['dept'], '" />';
 }

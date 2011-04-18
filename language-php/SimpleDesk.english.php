@@ -339,6 +339,7 @@ $txt['shd_previewing_ticket'] = 'Previewing ticket';
 $txt['shd_previewing_reply'] = 'Previewing reply to';
 $txt['shd_choose_one'] = '[Choose one]';
 $txt['shd_no_value'] = '[no value]';
+$txt['shd_ticket_dept'] = 'Ticket department';
 
 // Profile / trackip
 $txt['shd_replies_from_ip'] = 'Helpdesk replies posted from IP (range)';
