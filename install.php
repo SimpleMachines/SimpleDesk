@@ -324,13 +324,30 @@ $tables[] = array(
 	'table_name' => '{db_prefix}helpdesk_custom_fields_values',
 	'columns' => array(
 		db_field('id_post', 'int', 0, true, true),
-		db_field('id_field', 'int'),
+		db_field('id_field', 'smallint'),
 		db_field('value', 'text'),
 		db_field('post_type', 'int'),
 	),
 	'indexes' => array(
 		array(
 			'columns' => array('id_post', 'id_field'),
+			'type' => 'primary',
+		),
+	),
+	'if_exists' => 'update',
+	'error' => 'fatal',
+	'parameters' => array(),
+);
+$tables[] = array(
+	'table_name' => '{db_prefix}helpdesk_custom_fields_depts',
+	'columns' => array(
+		db_field('id_field', 'smallint'),
+		db_field('id_dept', 'smallint'),
+		db_field('required', 'tinyint'),
+	),
+	'indexes' => array(
+		array(
+			'columns' => array('id_field', 'id_dept'),
 			'type' => 'primary',
 		),
 	),
@@ -538,10 +555,10 @@ if (empty($count))
 	$smcFunc['db_insert']('replace',
 		'{db_prefix}helpdesk_depts',
 		array(
-			'dept_name' => 'string', 'board_cat' => 'int', 'before_after' => 'int', 'dept_order' => 'int',
+			'dept_name' => 'string', 'board_cat' => 'int', 'description' => 'string', 'before_after' => 'int', 'dept_order' => 'int',
 		),
 		array(
-			!empty($txt['shd_helpdesk']) ? $txt['shd_helpdesk'] : 'Helpdesk', 0, 0, 1,
+			!empty($txt['shd_helpdesk']) ? $txt['shd_helpdesk'] : 'Helpdesk', 0, '', 0, 1,
 		),
 		array('id_dept')
 	);

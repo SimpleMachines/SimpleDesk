@@ -345,11 +345,14 @@ function shd_view_ticket()
 	$query = shd_db_query('', '
 		SELECT cf.id_field, cf.active, cf.field_order, cf.field_name, cf.field_desc, cf.field_loc, cf.icon,
 			cf.field_type, cf.default_value, cf.bbc, cf.can_see, cf.can_edit, cf.field_length,
-			cf.field_options, cf.display_empty, cf.required, cf.placement
+			cf.field_options, cf.display_empty, cfd.required, cf.placement
 		FROM {db_prefix}helpdesk_custom_fields AS cf
+			INNER JOIN {db_prefix}helpdesk_custom_fields_depts AS cfd ON (cf.id_field = cfd.id_field AND cfd.id_dept = {int:dept})
 		WHERE cf.active = 1
 		ORDER BY cf.field_order',
-		array()
+		array(
+			'dept' => $context['ticket']['dept'],
+		)
 	);
 
 	// Loop through all fields and figure out where they should be.

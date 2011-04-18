@@ -127,6 +127,17 @@ function shd_admin_custom_new()
 	$context['custom_field']['options'] = array(1 => '', '', '');
 	$context['custom_field']['default_value'] = false;
 
+	// Get the list of departments, and whether a field is required in each department.
+	$context['dept_fields'] = array();
+	$query = $smcFunc['db_query']('', '
+		SELECT hdd.id_dept, hdd.dept_name, 0 AS present, 0 AS required
+		FROM {db_prefix}helpdesk_depts AS hdd
+		ORDER BY hdd.dept_order',
+		array()
+	);
+	while ($row = $smcFunc['db_fetch_assoc']($query))
+		$context['dept_fields'][$row['id_dept']] = $row;
+	$smcFunc['db_free_result']($query);
 }
 
 /**
@@ -142,8 +153,7 @@ function shd_admin_custom_edit()
 
 	$query = shd_db_query('', '
 		SELECT id_field, active, field_order, field_name, field_desc, field_loc, icon, field_type,
-		field_length, field_options, bbc, default_value, can_see, can_edit, display_empty, required,
-		placement
+		field_length, field_options, bbc, default_value, can_see, can_edit, display_empty, placement
 		FROM {db_prefix}helpdesk_custom_fields
 		WHERE id_field = {int:field}',
 		array(
@@ -177,6 +187,20 @@ function shd_admin_custom_edit()
 			'placement' => $context['custom_field']['placement'],
 		));
 
+		// Get the list of departments, and whether a field is required in each department.
+		$context['dept_fields'] = array();
+		$query = $smcFunc['db_query']('', '
+			SELECT hdd.id_dept, hdd.dept_name, cfd.id_dept AS present, cfd.required
+			FROM {db_prefix}helpdesk_depts AS hdd
+				LEFT JOIN {db_prefix}helpdesk_custom_fields_depts AS cfd ON (cfd.id_field = {int:field} AND hdd.id_dept = cfd.id_dept)
+			ORDER BY hdd.dept_order',
+			array(
+				'field' => $_REQUEST['field'],
+			)
+		);
+		while ($row = $smcFunc['db_fetch_assoc']($query))
+			$context['dept_fields'][$row['id_dept']] = $row;
+		$smcFunc['db_free_result']($query);
 	}
 	else
 	{
@@ -216,6 +240,14 @@ function shd_admin_custom_save()
 			)
 		);
 
+		$smcFunc['db_query']('', '
+			DELETE FROM {db_prefix}helpdesk_custom_fields_depts
+			WHERE id_field = {int:field}',
+			array(
+				'field' => $_REQUEST['field'],
+			)
+		);
+
 		// End of the road
 		redirectexit('action=admin;area=helpdesk_customfield;' . $context['session_var'] . '=' . $context['session_id']);
 	}
@@ -233,9 +265,6 @@ function shd_admin_custom_save()
 	$_POST['description'] = $smcFunc['htmlspecialchars'](isset($_POST['description']) ? $_POST['description'] : '');
 	$_POST['bbc'] = isset($_POST['bbc']) && in_array($_POST['field_type'], array(CFIELD_TYPE_TEXT, CFIELD_TYPE_LARGETEXT)) ? 1 : 0;
 	$_POST['display_empty'] = isset($_POST['display_empty']) && $_POST['field_type'] != CFIELD_TYPE_CHECKBOX ? 1 : 0;
-	$_POST['required'] = isset($_POST['required']) ? 1 : 0;
-	if ($_POST['required'] == 1)
-		$_POST['display_empty'] = 0;
 
 	$_POST['active'] = isset($_POST['active']) ? 1 : 0;
 	$_POST['field_length'] = isset($_POST['field_length']) ? (int) $_POST['field_length'] : 255;
@@ -255,6 +284,26 @@ function shd_admin_custom_save()
 
 	$can_see = $users_see . ',' . $staff_see;
 	$can_edit = $users_edit . ',' . $staff_edit;
+
+	// Get the list of departments, and whether a field is required in each department.
+	$context['dept_fields'] = array();
+	$query = $smcFunc['db_query']('', '
+		SELECT hdd.id_dept, hdd.dept_name
+		FROM {db_prefix}helpdesk_depts AS hdd
+		ORDER BY hdd.dept_order',
+		array(
+			'field' => $_REQUEST['field'],
+		)
+	);
+	while ($row = $smcFunc['db_fetch_assoc']($query))
+	{
+		// Is the field meant to be in this department?
+		if (empty($_POST['present_dept' . $row['id_dept']]))
+			continue;
+		$context['dept_fields'][$row['id_dept']] = $row;
+		$context['dept_fields'][$row['id_dept']]['required'] = isset($_POST['required_dept' . $row['id_dept']]) ? 1 : 0;
+	}
+	$smcFunc['db_free_result']($query);
 
 	// Select options?
 	$newOptions = array();
@@ -297,13 +346,13 @@ function shd_admin_custom_save()
 				'active' => 'int', 'field_order' => 'int', 'field_name' => 'string', 'field_desc' => 'string',
 				'field_loc' => 'int', 'icon' => 'string', 'field_type' => 'int', 'field_length' => 'int',
 				'field_options' => 'string', 'bbc' => 'int', 'default_value' => 'string', 'can_see' => 'string',
-				'can_edit' => 'string', 'display_empty' => 'int', 'required' => 'int', 'placement' => 'int',
+				'can_edit' => 'string', 'display_empty' => 'int', 'placement' => 'int',
 			),
 			array(
 				$_POST['active'], $row['count'], $_POST['field_name'], $_POST['description'],
 				$_POST['field_visible'],$_POST['field_icon'], $_POST['field_type'], $_POST['field_length'],
 				$options, $_POST['bbc'], $_POST['default_check'], $can_see,
-				$can_edit, $_POST['display_empty'], $_POST['required'], $_POST['placement'],
+				$can_edit, $_POST['display_empty'], $_POST['placement'],
 			),
 			array(
 				'id_field',
@@ -313,6 +362,29 @@ function shd_admin_custom_save()
 		$new_field = $smcFunc['db_insert_id']('{db_prefix}helpdesk_custom_fields', 'id_field');
 		if (empty($new_field))
 			fatal_lang_error('shd_admin_could_not_create_field', false);
+
+		// Also update fields
+		$smcFunc['db_query']('', '
+			DELETE FROM {db_prefix}helpdesk_custom_fields_depts
+			WHERE id_field = {int:field}',
+			array(
+				'field' => $new_field,
+			)
+		);
+		$fields = array();
+		foreach ($context['dept_fields'] as $id => $row)
+			$fields[] = array($new_field, $id, $row['required']);
+
+		$smcFunc['db_insert']('replace',
+			'{db_prefix}helpdesk_custom_fields_depts',
+			array(
+				'id_field' => 'int', 'id_dept' => 'int', 'required' => 'int',
+			),
+			$fields,
+			array(
+				'id_field', 'id_dept',
+			)
+		);
 
 		redirectexit('action=admin;area=helpdesk_customfield;' . $context['session_var'] . '=' . $context['session_id']);
 	}
@@ -327,8 +399,7 @@ function shd_admin_custom_save()
 				icon = {string:field_icon}, field_type = {int:field_type},
 				field_length = {int:field_length}, field_options = {string:field_options},
 				bbc = {int:bbc}, default_value = {string:default_value}, can_see = {string:can_see},
-				can_edit = {string:can_edit}, display_empty = {int:display_empty}, required = {int:required},
-				placement = {int:placement}
+				can_edit = {string:can_edit}, display_empty = {int:display_empty}, placement = {int:placement}
 			WHERE id_field = {int:id_field}',
 			array(
 				'id_field' => $_REQUEST['field'],
@@ -345,8 +416,30 @@ function shd_admin_custom_save()
 				'can_see' => $can_see,
 				'can_edit' => $can_edit,
 				'display_empty' => $_POST['display_empty'],
-				'required' => $_POST['required'],
 				'placement' => $_POST['placement'],
+			)
+		);
+
+		// Also update fields
+		$smcFunc['db_query']('', '
+			DELETE FROM {db_prefix}helpdesk_custom_fields_depts
+			WHERE id_field = {int:field}',
+			array(
+				'field' => $_REQUEST['field'],
+			)
+		);
+		$fields = array();
+		foreach ($context['dept_fields'] as $id => $row)
+			$fields[] = array($_REQUEST['field'], $id, $row['required']);
+
+		$smcFunc['db_insert']('replace',
+			'{db_prefix}helpdesk_custom_fields_depts',
+			array(
+				'id_field' => 'int', 'id_dept' => 'int', 'required' => 'int',
+			),
+			$fields,
+			array(
+				'id_field', 'id_dept',
 			)
 		);
 

@@ -734,13 +734,15 @@ function shd_load_custom_fields($is_ticket = true, $ticketContext = 0, $dept = 0
 	$custom_fields = shd_db_query('', '
 		SELECT cf.id_field, cf.active, cf.field_order, cf.field_name, cf.field_desc, cf.field_loc, cf.icon,
 			cf.field_type, cf.field_options, cf.default_value, cf.bbc, cf.can_see, cf.can_edit, cf.field_length,
-			cf.display_empty, cf.required, cf.placement
+			cf.display_empty, cfd.required, cf.placement
 		FROM {db_prefix}helpdesk_custom_fields AS cf
+			INNER JOIN {db_prefix}helpdesk_custom_fields_depts AS cfd ON (cf.id_field = cfd.id_field AND cfd.id_dept = {int:dept})
 		WHERE cf.active = 1
 			AND cf.field_loc IN ({array_int:visibility})
 		ORDER BY cf.field_order',
 		array(
 			'visibility' => $is_ticket ? array(CFIELD_TICKET, CFIELD_REPLY | CFIELD_TICKET) : array(CFIELD_REPLY, CFIELD_REPLY | CFIELD_TICKET),
+			'dept' => $dept,
 		)
 	);
 

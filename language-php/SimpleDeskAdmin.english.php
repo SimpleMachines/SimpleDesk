@@ -330,6 +330,9 @@ $txt['shd_admin_custom_field_placement_desc'] = 'Where in the ticket should this
 $txt['shd_admin_custom_field_placement_details'] = 'Additional details (Left side box)';
 $txt['shd_admin_custom_field_placement_information'] = 'Additional information (Below ticket body)';
 $txt['shd_admin_custom_field_placement_prefix'] = 'As a prefix to the ticket\'s title';
+$txt['shd_admin_custom_field_department'] = 'Departments this field applies to';
+$txt['shd_admin_custom_field_dept_applies'] = 'Applies';
+$txt['shd_admin_custom_field_dept_required'] = 'Required';
 //@}
 
 //! Departments
