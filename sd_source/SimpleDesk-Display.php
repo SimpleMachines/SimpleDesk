@@ -483,7 +483,8 @@ function shd_view_ticket()
 			else
 				$fields .= $field['value'] . ' ';
 		}
-		$ticketname .= '[' . trim($fields) . '] ' . $context['ticket']['subject'];
+		$fields = trim($fields);
+		$ticketname .= (!empty($fields) ? '[' . trim($fields) . '] ' : '') . $context['ticket']['subject'];
 	}
 	else
 		$ticketname = '[' . $context['ticket']['display_id'] . '] ' . $context['ticket']['subject'];
