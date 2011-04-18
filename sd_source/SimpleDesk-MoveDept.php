@@ -88,6 +88,75 @@ function shd_movedept()
 			$context['dept_list'][$row['id_dept']] = $row['dept_name'];
 		$smcFunc['db_free_result']($query);
 
+		// We also want to be able to indicate whether the ticket starter will be able to see the message after.
+		// Firstly, figure out what groups they're in, so we can establish that kind of thing.
+		$groups = array();
+		$depts = array();
+		if (!empty($ticket_starter))
+		{
+			// Sadly, loadMemberData only fetches additional_groups in profile mode, which also triggers other queries. We're better just getting it ourselves.
+			$query = $smcFunc['db_query']('', '
+				SELECT id_group, additional_groups
+				FROM {db_prefix}members
+				WHERE id_member = {int:member}',
+				array(
+					'member' => $ticket_starter,
+				)
+			);
+			if ($row = $smcFunc['db_fetch_assoc']($query))
+			{
+				$groups[] = (int) $row['id_group'];
+				$row['additional_groups'] = explode(',', $row['additional_groups']);
+				foreach ($row['additional_groups'] as $group)
+					if (!empty($group))
+						$groups[] = (int) $group;
+			}
+			$smcFunc['db_free_result']($query);
+		}
+
+		if (!empty($groups))
+		{
+			// OK, so we have at least one member group. Now to find if there are any roles attached to the group(s) in question, and in the departments
+			// that our user can see. If there are any matches, we know that those are departments our target user can see - every role implicitly inclues access_helpdesk.
+			$query = $smcFunc['db_query']('', '
+				SELECT hdd.id_dept, hdd.dept_name
+				FROM {db_prefix}helpdesk_role_groups AS hdrg
+					INNER JOIN {db_prefix}helpdesk_dept_roles AS hddr ON (hdrg.id_role = hddr.id_role)
+					INNER JOIN {db_prefix}helpdesk_depts AS hdd ON (hddr.id_dept = hdd.id_dept)
+				WHERE hdrg.id_group IN ({array_int:groups})
+					AND hddr.id_dept IN ({array_int:depts})',
+				array(
+					'groups' => $groups,
+					'depts' => array_keys($context['dept_list']),
+				)
+			);
+			while ($row = $smcFunc['db_fetch_assoc']($query))
+				$depts[$row['id_dept']] = $row['dept_name'];
+			$smcFunc['db_free_result']($query);
+		}
+
+		// OK, so if we don't have any departments, is the person a forum administrator? If they are, they might not have any roles, just adminly powers.
+		if (empty($depts) && in_array(1, $groups))
+			$depts = $context['dept_list'];
+		// Oh, we might need to reorder the $depts list. It came out of the DB in any old order but we want it to adhere to the depts list ordering.
+		elseif (!empty($depts) && !empty($context['dept_list']))
+		{
+			$old_depts = $depts;
+			$depts = array();
+			foreach ($context['dept_list'] as $dept => $dept_name)
+				if (isset($old_depts[$dept]))
+					$depts[$dept] = $dept_name;
+			unset($old_depts);
+		}
+
+		// Figure out what message to send to users.
+		if (empty($depts))
+			$context['visible_move_dept'] = '<span class="error">' . $txt['shd_user_no_hd_access'] . '</span>'; // They can't see it.
+		elseif (count($context['dept_list']) == 1)
+			$context['visible_move_dept'] = $txt['shd_user_helpdesk_access']; // They can see in, as far as we know there's only one department, so even if it's not true, pretend it is.
+		else
+			$context['visible_move_dept'] = (count($depts) == 1 ? $txt['shd_user_hd_access_dept_1'] : $txt['shd_user_hd_access_dept']) . implode(', ', $depts);
+
 		$context['linktree'][] = array(
 			'url' => $scripturl . '?action=helpdesk;sa=main',
 			'name' => $txt['shd_linktree_tickets'],

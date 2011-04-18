@@ -48,6 +48,7 @@ function template_movedept()
 					</dd>
 					<dt>
 						<strong>', $txt['shd_ticket_move_to'], ':</strong>
+						<div class="smalltext">', $context['visible_move_dept'], '</div>
 					</dt>
 					<dd>
 						<select name="to_dept">';
