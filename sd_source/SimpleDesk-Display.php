@@ -363,7 +363,6 @@ function shd_view_ticket()
 	);
 
 	// Loop through all fields and figure out where they should be.
-
 	$is_staff = shd_allowed_to('shd_staff', $context['ticket']['dept']);
 	$is_admin = shd_allowed_to('admin_helpdesk', $context['ticket']['dept']); // this includes forum admins
 	$placements = array(

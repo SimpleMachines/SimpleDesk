@@ -239,7 +239,7 @@ function shd_admin_edit_dept()
 
 	// Get the current department
 	$query = $smcFunc['db_query']('', '
-		SELECT id_dept, dept_name, description, board_cat, before_after
+		SELECT id_dept, dept_name, description, board_cat, before_after, dept_theme
 		FROM {db_prefix}helpdesk_depts
 		WHERE id_dept = {int:dept}',
 		array(
@@ -287,6 +287,9 @@ function shd_admin_edit_dept()
 	while ($row = $smcFunc['db_fetch_assoc']($query))
 		$context['shd_roles'][$row['id_role']]['in_dept'] = true;
 	$smcFunc['db_free_result']($query);
+
+	// And the theme list
+	shd_get_dept_theme_list();
 
 	$context['page_title'] = $txt['shd_edit_dept'];
 	$context['sub_template'] = 'shd_edit_dept';
@@ -419,13 +422,18 @@ function shd_admin_save_dept()
 	// Change '1 & 2' to '1 &amp; 2', but not '&amp;' to '&amp;amp;'...
 	$_POST['dept_desc'] = empty($_POST['dept_desc']) ? '' : preg_replace('~[&]([^;]{8}|[^;]{0,8}$)~', '&amp;$1', $_POST['dept_desc']);
 
+	// 5c. Check the specified theme exists and reset to default if it doesn't.
+	shd_get_dept_theme_list();
+	$_POST['dept_theme'] = isset($_POST['dept_theme']) && isset($context['dept_theme_list'][$_POST['dept_theme']]) ? (int) $_POST['dept_theme'] : 0;
+
 	// 6. Commit that to DB.
 	$smcFunc['db_query']('', '
 		UPDATE {db_prefix}helpdesk_depts
 		SET dept_name = {string:dept_name},
 			description = {string:description},
 			board_cat = {int:board_cat},
-			before_after = {int:before_after}
+			before_after = {int:before_after},
+			dept_theme = {int:dept_theme}
 		WHERE id_dept = {int:id_dept}',
 		array(
 			'id_dept' => $_REQUEST['dept'],
@@ -433,6 +441,7 @@ function shd_admin_save_dept()
 			'description' => $_POST['dept_desc'],
 			'board_cat' => $_POST['dept_cat'],
 			'before_after' => $_POST['dept_beforeafter'],
+			'dept_theme' => $_POST['dept_theme'],
 		)
 	);
 
@@ -490,4 +499,29 @@ function shd_admin_save_dept()
 	// 8. Thank you and good night.
 	redirectexit('action=admin;area=helpdesk_depts');
 }
+
+function shd_get_dept_theme_list()
+{
+	global $txt, $context, $smcFunc;
+
+	$context['dept_theme_list'] = array(
+		0 => $txt['shd_dept_theme_use_default'],
+	);
+	$request = $smcFunc['db_query']('', '
+		SELECT id_theme, value
+		FROM {db_prefix}themes
+		WHERE id_member = {int:member}
+			AND id_theme > {int:theme}
+			AND variable = {string:name}',
+		array(
+			'member' => 0,
+			'theme' => 0,
+			'name' => 'name',
+		)
+	);
+	while ($row = $smcFunc['db_fetch_assoc']($request))
+		$context['dept_theme_list'][$row['id_theme']] = $row['value'];
+	$smcFunc['db_free_result']($request);
+}
+
 ?>

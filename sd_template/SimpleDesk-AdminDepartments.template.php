@@ -210,6 +210,29 @@ function template_shd_edit_dept()
 										<option value="1"', $context['shd_dept']['before_after'] == 1 ? ' selected="selected"' : '', '>', $txt['shd_boardindex_cat_after'], '</option>
 									</select>
 								</dd>
+								<dt><strong>', $txt['shd_dept_theme'], '</strong></dt>
+								<dd>';
+
+	if (empty($context['dept_theme_list']) || count($context['dept_theme_list']) == 1)
+	{
+		echo '
+									<input type="hidden" name="dept_theme" value="0" />', $txt['shd_dept_theme_use_default'];
+	}
+	else
+	{
+		echo '
+									<select name="dept_theme">';
+
+		foreach ($context['dept_theme_list'] as $id => $name)
+			echo '
+										<option value="', $id, '"', $context['shd_dept']['dept_theme'] == $id ? ' selected="selected"' : '', '>', $name, '</option>';
+
+		echo '
+									</select>';
+	}
+
+	echo '
+								</dd>
 							</dl>
 						</div>
 					</div>

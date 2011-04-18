@@ -41,7 +41,7 @@ if (!defined('SMF'))
 */
 function shd_init()
 {
-	global $modSettings, $sourcedir, $user_info, $context;
+	global $modSettings, $sourcedir, $user_info, $context, $smcFunc;
 	static $called = null;
 
 	if (!empty($called))
@@ -132,11 +132,75 @@ function shd_init()
 		shd_load_plugin_langfiles('init');
 
 		// Are they actually going into the helpdesk? If they are, do we need to deal with their theme?
-		if (!empty($modSettings['shd_theme']) && isset($_REQUEST['action']) && $_REQUEST['action'] == 'helpdesk')
+		if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'helpdesk')
 		{
-			// This is ever so slightly hacky. But as this function is called sufficiently early we can get away with it.
-			unset($_REQUEST['theme'], $modSettings['theme_allow']);
-			$modSettings['theme_guests'] = $modSettings['shd_theme'];
+			// First figure out what department they're in.
+			$this_dept = 0;
+			$depts = shd_allowed_to('access_helpdesk', false);
+			// Do they only have one dept? If so, that's the one.
+			if (count($depts) == 1)
+				$this_dept = $depts[0];
+			// They might explicitly say it on the request.
+			elseif (isset($_REQUEST['dept']))
+			{
+				$_REQUEST['dept'] = (int) $_REQUEST['dept'];
+				if (in_array($_REQUEST['dept'], $depts))
+					$this_dept = $_REQUEST['dept'];
+			}
+			// They might explicitly be posting into a dept from nowhere-land
+			elseif (isset($_REQUEST['newdept']))
+			{
+				$_REQUEST['newdept'] = (int) $_REQUEST['newdept'];
+				if (in_array($_REQUEST['newdept'], $depts))
+					$this_dept = $_REQUEST['newdept'];
+			}
+			// They might specify a ticket, see if we can get the dept from that. Validate we can see it and get the dept from there.
+			elseif (isset($_REQUEST['ticket']))
+			{
+				$ticket = (int) $_REQUEST['ticket'];
+				if (!empty($ticket))
+				{
+					$query = shd_db_query('', '
+						SELECT id_dept
+						FROM {db_prefix}helpdesk_tickets
+						WHERE id_ticket = {int:ticket}
+							AND {query_see_ticket}',
+						array(
+							'ticket' => $ticket,
+						)
+					);
+					if ($row = $smcFunc['db_fetch_row']($query))
+						if (in_array($row[0], $depts))
+							$this_dept = $row[0];
+					$smcFunc['db_free_result']($query);
+				}
+			}
+
+			if (!empty($this_dept))
+			{
+				$query = $smcFunc['db_query']('', '
+					SELECT dept_theme
+					FROM {db_prefix}helpdesk_depts
+					WHERE id_dept = {int:dept}',
+					array(
+						'dept' => $this_dept,
+					)
+				);
+				if ($row = $smcFunc['db_fetch_row']($query))
+					$theme = $row[0];
+				$smcFunc['db_free_result']($query);
+			}
+
+			// If for whatever reason we didn't establish a theme, see if there's a forum default one.
+			if (empty($theme) && !empty($modSettings['shd_theme']))
+				$theme = $modSettings['shd_theme'];
+			// Action.
+			if (!empty($theme))
+			{
+				// This is ever so slightly hacky. But as this function is called sufficiently early we can get away with it.
+				unset($_REQUEST['theme'], $modSettings['theme_allow']);
+				$modSettings['theme_guests'] = $theme;
+			}
 		}
 	}
 

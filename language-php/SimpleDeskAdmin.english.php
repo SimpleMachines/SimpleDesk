@@ -372,6 +372,9 @@ $txt['shd_dept_description'] = 'Description';
 $txt['shd_admin_cannot_move_dept'] = 'You cannot move that department.';
 $txt['shd_admin_cannot_move_dept_up'] = 'You cannot move that department up; it is the first item already.';
 $txt['shd_admin_cannot_move_dept_down'] = 'You cannot move that department down; it is the last item already.';
+$txt['shd_dept_theme'] = 'Use a specific theme in this department?';
+$txt['shd_dept_theme_note'] = 'You can set a theme for the helpdesk that differs to the main forum theme. This setting lets you override either the helpdesk or forum theme just within this department, for perhaps department specific branding.';
+$txt['shd_dept_theme_use_default'] = 'Use the helpdesk/forum default theme';
 //@}
 
 //! Plugins
