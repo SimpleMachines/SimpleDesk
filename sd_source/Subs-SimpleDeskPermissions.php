@@ -93,7 +93,7 @@ function shd_load_all_permission_sets()
 
 		'shd_ticket_to_topic' => array(false, 'moderation', 'log_tickettotopic.png'),
 		'shd_topic_to_ticket' => array(false, 'moderation', 'log_topictoticket.png'),
-		'shd_move_dept' => array(true, 'moderation', 'log_movedept.png'),
+		'shd_move_dept' => array(true, 'moderation', 'log_move_dept.png'),
 		//'shd_merge_ticket' => array(true, 'moderation', 'log_merge.png'),
 		//'shd_split_ticket' => array(true, 'moderation', 'log_split_origin.png'),
 	);
