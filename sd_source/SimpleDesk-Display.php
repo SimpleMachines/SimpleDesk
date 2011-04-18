@@ -174,6 +174,13 @@ function shd_view_ticket()
 		'deleted' => $ticketinfo['deleted'],
 	);
 
+	// Fix the departmental link since we know we're inside a department now.
+	if ($context['shd_multi_dept'])
+	{
+		$context['shd_department'] = $context['ticket']['dept'];
+		$context['shd_dept_link'] = ';dept=' . $context['ticket']['dept'];
+	}
+
 	// IP address next
 	$context['link_ip_address'] = allowedTo('moderate_forum'); // for trackip access
 	if (shd_allowed_to('shd_view_ip_any', $context['ticket']['dept']) || ($context['ticket']['ticket_opener'] && shd_allowed_to('shd_view_ip_own', $context['ticket']['dept'])))
@@ -457,18 +464,6 @@ function shd_view_ticket()
 		);
 	}
 
-	// Build the link tree. If the ticket is recycled, display 'Recycle bin', else 'Tickets'.
-	$context['linktree'][] = array(
-		'url' => $context['ticket']['status']['level'] == TICKET_STATUS_DELETED ? $scripturl . '?action=helpdesk;sa=recyclebin' . $context['shd_dept_link'] : $scripturl . '?' . $context['shd_home'] . $context['shd_dept_link'],
-		'name' => $context['ticket']['status']['level'] == TICKET_STATUS_DELETED ? $txt['shd_recycle_bin'] : $txt['shd_linktree_tickets'],
-	);
-	// If it's closed, add that to the linktree.
-	if ($context['ticket']['status']['level'] == TICKET_STATUS_CLOSED)
-		$context['linktree'][] = array(
-			'url' => $scripturl . '?action=helpdesk;sa=closedtickets' . $context['shd_dept_link'],
-			'name' => $txt['shd_tickets_closed'],
-		);
-
 	// Template stuff
 	$context['sub_template'] = 'viewticket';
 	$ticketname = '';
@@ -495,7 +490,19 @@ function shd_view_ticket()
 
 	$context['page_title'] = $txt['shd_helpdesk'] . ' ' . $ticketname;
 
-	// Lastly add the ticket name and link.
+	// Build the link tree. If the ticket is recycled, display 'Recycle bin', else 'Tickets'.
+	$context['linktree'][] = array(
+		'url' => $context['ticket']['status']['level'] == TICKET_STATUS_DELETED ? $scripturl . '?action=helpdesk;sa=recyclebin' . $context['shd_dept_link'] : $scripturl . '?' . $context['shd_home'] . $context['shd_dept_link'],
+		'name' => ($context['shd_multi_dept'] ? $context['ticket']['dept_name'] . ' - ' : '') . ($context['ticket']['status']['level'] == TICKET_STATUS_DELETED ? $txt['shd_recycle_bin'] : $txt['shd_linktree_tickets']),
+	);
+	// If it's closed, add that to the linktree.
+	if ($context['ticket']['status']['level'] == TICKET_STATUS_CLOSED)
+		$context['linktree'][] = array(
+			'url' => $scripturl . '?action=helpdesk;sa=closedtickets' . $context['shd_dept_link'],
+			'name' => $txt['shd_tickets_closed'],
+		);
+
+	// Lastly add the ticket name and link to the linktree.
 	$context['linktree'][] = array(
 		'url' => $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $context['ticket_id'],
 		'name' => $ticketname,
