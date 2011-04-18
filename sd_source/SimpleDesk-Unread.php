@@ -36,10 +36,10 @@ if (!defined('SMF'))
 */
 function shd_unread_posts()
 {
-	global $smcFunc, $context, $user_info, $sourcedir, $txt, $scripturl, $user_profile;
+	global $smcFunc, $context, $user_info, $sourcedir, $txt, $scripturl, $user_profile, $modSettings;
 
 	// We're only displaying this to staff. We didn't do this check on bootstrapping, no sense doing it every page load.
-	if (shd_allowed_to('shd_staff', 0))
+	if (shd_allowed_to('shd_staff', 0) && empty($modSettings['shd_disable_unread']))
 	{
 		// Get the data
 		$context['shd_preferences'] = shd_load_user_prefs();

@@ -370,6 +370,8 @@ function shd_modify_display_options($return_config)
 		array('select', 'shd_theme', $theme_list, 'subtext' => $txt['shd_theme_note']),
 		'',
 		array('check', 'shd_hidemenuitem'),
+		'',
+		array('check', 'shd_disable_unread'),
 	);
 	$context['settings_title'] = $txt['shd_admin_options_display'];
 	$context['settings_icon'] = 'details.png';

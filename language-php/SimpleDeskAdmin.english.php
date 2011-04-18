@@ -139,6 +139,8 @@ $txt['shd_theme_note'] = 'Normally the helpdesk will inherit the theme a user ha
 $txt['shd_theme_use_default'] = 'Use the forum default theme';
 $txt['shd_hidemenuitem'] = 'Hide the Helpdesk menu item?';
 $txt['shd_hidemenuitem_note'] = 'This is most useful if helpdesk departments are presented on the board index.';
+$txt['shd_disable_unread'] = 'Disable integration with Unread Posts/Unread Replies';
+$txt['shd_disable_unread_note'] = 'Normally, SimpleDesk adds a list of topics to the unread posts/unread replies page but sometimes (e.g. certain mobile themes) this does not always work so well.';
 //@}
 
 //! @name Configuration items on the Posting Options page

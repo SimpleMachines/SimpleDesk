@@ -1071,7 +1071,7 @@ function shd_load_user_prefs($user = 0)
 				'icon' => 'unread.png',
 				'group' => 'display',
 				'permission' => 'shd_staff',
-				'show' => empty($modSettings['shd_helpdesk_only']),
+				'show' => empty($modSettings['shd_helpdesk_only']) && empty($modSettings['shd_disable_unread']),
 			),
 			'display_order' => array(
 				'options' => array(
