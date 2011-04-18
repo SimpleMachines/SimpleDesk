@@ -377,7 +377,7 @@ function shd_load_user_perms()
 	if (!empty($tickets_any_dept) && !empty($tickets_own_dept))
 		$tickets_own_dept = array_diff($tickets_any_dept, $tickets_own_dept);
 
-	if ($user_info['is_admin'] || shd_allowed_to('admin_helpdesk', 0))
+	if ($user_info['is_admin'])
 		$user_info['query_see_ticket'] = '1=1';
 	elseif (!shd_allowed_to('access_helpdesk', 0))
 		$user_info['query_see_ticket'] = '1=0'; // no point going any further if they can't access the helpdesk
