@@ -62,7 +62,7 @@ function shd_unread_posts()
 				)
 			);
 		}
-		else
+		elseif ($context['shd_preferences']['display_unread_type'] == 'unread')
 		{
 			// Only unread ones
 			$context['block_title'] = $txt['shd_unread_tickets'];
@@ -84,34 +84,37 @@ function shd_unread_posts()
 			);
 		}
 
-		$members = array();
-		while ($row = $smcFunc['db_fetch_assoc']($request))
+		if (!empty($request))
 		{
-			$row['id_ticket_display'] = str_pad($row['id_ticket'], 5, '0', STR_PAD_LEFT);
-			$row['updated'] = timeformat($row['last_updated']);
-			$context['shd_unread_info'][] = $row;
-			if ($row['id_member_started'] != 0)
-				$members[] = $row['id_member_started'];
-			if ($row['id_member_assigned'] != 0)
-				$members[] = $row['id_member_assigned'];
-		}
-		loadMemberData(array_unique($members));
-		foreach ($context['shd_unread_info'] as $key => $ticket)
-		{
-			if (!empty($user_profile[$ticket['id_member_started']]))
-				$context['shd_unread_info'][$key]['ticket_starter'] = shd_profile_link($user_profile[$ticket['id_member_started']]['member_name'], $ticket['id_member_started']);
-			else
-				$context['shd_unread_info'][$key]['ticket_starter'] = $ticket['poster_name'];
+			$members = array();
+			while ($row = $smcFunc['db_fetch_assoc']($request))
+			{
+				$row['id_ticket_display'] = str_pad($row['id_ticket'], 5, '0', STR_PAD_LEFT);
+				$row['updated'] = timeformat($row['last_updated']);
+				$context['shd_unread_info'][] = $row;
+				if ($row['id_member_started'] != 0)
+					$members[] = $row['id_member_started'];
+				if ($row['id_member_assigned'] != 0)
+					$members[] = $row['id_member_assigned'];
+			}
+			loadMemberData(array_unique($members));
+			foreach ($context['shd_unread_info'] as $key => $ticket)
+			{
+				if (!empty($user_profile[$ticket['id_member_started']]))
+					$context['shd_unread_info'][$key]['ticket_starter'] = shd_profile_link($user_profile[$ticket['id_member_started']]['member_name'], $ticket['id_member_started']);
+				else
+					$context['shd_unread_info'][$key]['ticket_starter'] = $ticket['poster_name'];
 
-			if (!empty($user_profile[$ticket['id_member_assigned']]))
-				$context['shd_unread_info'][$key]['ticket_assigned'] = shd_profile_link($user_profile[$ticket['id_member_assigned']]['member_name'], $ticket['id_member_assigned']);
-			else
-				$context['shd_unread_info'][$key]['ticket_assigned'] = '<span class="error">' . $txt['shd_unassigned'] . '</span>';
-		}
+				if (!empty($user_profile[$ticket['id_member_assigned']]))
+					$context['shd_unread_info'][$key]['ticket_assigned'] = shd_profile_link($user_profile[$ticket['id_member_assigned']]['member_name'], $ticket['id_member_assigned']);
+				else
+					$context['shd_unread_info'][$key]['ticket_assigned'] = '<span class="error">' . $txt['shd_unassigned'] . '</span>';
+			}
 
-		// And set up the template too.
-		loadTemplate('sd_template/SimpleDesk-Unread', 'helpdesk');
-		$context['template_layers'][] = 'shd_unread';
+			// And set up the template too.
+			loadTemplate('sd_template/SimpleDesk-Unread', 'helpdesk');
+			$context['template_layers'][] = 'shd_unread';
+		}
 	}
 
 	// OK, time to get out of here. If we're here, it's because we have a $_REQUEST['action'] of 'unread' or 'unreadreplies', both of which

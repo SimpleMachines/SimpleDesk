@@ -1063,6 +1063,7 @@ function shd_load_user_prefs($user = 0)
 		$base_prefs = array(
 			'display_unread_type' => array(
 				'options' => array(
+					'none' => 'shd_pref_display_unread_none',
 					'unread' => 'shd_pref_display_unread_unread',
 					'outstanding' => 'shd_pref_display_unread_outstanding',
 				),
