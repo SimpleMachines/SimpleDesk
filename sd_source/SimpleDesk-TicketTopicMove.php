@@ -49,8 +49,9 @@ function shd_tickettotopic()
 
 	// Get ticket details - and kick it out if they shouldn't be able to see it.
 	$query = shd_db_query('', '
-		SELECT id_member_started, id_member_assigned, private, subject, deleted_replies, id_dept
+		SELECT id_member_started, id_member_assigned, private, subject, deleted_replies, hdt.id_dept, hdd.dept_name
 		FROM {db_prefix}helpdesk_tickets AS hdt
+			INNER JOIN {db_prefix}helpdesk_depts AS hdd ON (hdt.id_dept = hdd.id_dept)
 		WHERE {query_see_ticket} AND id_ticket = {int:ticket}',
 		array(
 			'ticket' => $context['ticket_id'],
@@ -59,7 +60,7 @@ function shd_tickettotopic()
 
 	if ($row = $smcFunc['db_fetch_row']($query))
 	{
-		list($ticket_starter, $ticket_owner, $private, $subject, $deleted_replies, $dept) = $row;
+		list($ticket_starter, $ticket_owner, $private, $subject, $deleted_replies, $dept, $dept_name) = $row;
 		$smcFunc['db_free_result']($query);
 	}
 	else
@@ -80,9 +81,18 @@ function shd_tickettotopic()
 			fatal_lang_error('shd_cannot_move_ticket_with_deleted');
 	}
 
+	// In a department, for the linktree?
+	if ($context['shd_multi_dept'])
+	{
+		$context['linktree'][] = array(
+			'url' => $scripturl . '?' . $context['shd_home'] . ';dept=' . $dept,
+			'name' => $dept_name,
+		);
+	}
+
 	// Build the linktree
 	$context['linktree'][] = array(
-		'url' => $scripturl . '?action=helpdesk;sa=main',
+		'url' => $scripturl . '?' . $context['shd_home'] . ($context['shd_multi_dept'] ? ';dept=' . $dept : ''),
 		'name' => $txt['shd_linktree_move_ticket'],
 	);
 	$context['linktree'][] = array(

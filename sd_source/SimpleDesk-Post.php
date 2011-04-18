@@ -196,10 +196,6 @@ function shd_post_ticket()
 
 	// Build the link tree and navigation
 	$context['linktree'][] = array(
-		'url' => $scripturl . '?action=helpdesk;sa=main',
-		'name' => $txt['shd_linktree_tickets'],
-	);
-	$context['linktree'][] = array(
 		'name' => $new_ticket ? $txt['shd_create_ticket'] : sprintf($txt['shd_edit_ticket_linktree'], $context['ticket_form']['link']),
 	);
 
@@ -500,10 +496,6 @@ function shd_save_ticket()
 		);
 
 		// Build the link tree and navigation
-		$context['linktree'][] = array(
-			'url' => $scripturl . '?action=helpdesk;sa=main',
-			'name' => $txt['shd_linktree_tickets'],
-		);
 		$context['linktree'][] = array(
 			'name' => $new_ticket ? $txt['shd_create_ticket'] : sprintf($txt['shd_edit_ticket_linktree'], $context['ticket_form']['link']),
 		);
@@ -882,10 +874,6 @@ function shd_post_reply()
 
 	// Build the link tree and navigation
 	$context['linktree'][] = array(
-		'url' => $scripturl . '?action=helpdesk;sa=main',
-		'name' => $txt['shd_linktree_tickets'],
-	);
-	$context['linktree'][] = array(
 		'name' => $new_reply ? sprintf($txt['shd_reply_ticket_linktree'], $context['ticket_form']['ticket_link']) : sprintf($txt['shd_edit_reply_linktree'], $context['ticket_form']['reply_link']),
 	);
 
@@ -1104,10 +1092,6 @@ function shd_save_reply()
 		);
 
 		// Build the link tree and navigation
-		$context['linktree'][] = array(
-			'url' => $scripturl . '?action=helpdesk;sa=main',
-			'name' => $txt['shd_linktree_tickets'],
-		);
 		$context['linktree'][] = array(
 			'name' => $txt['shd_reply_ticket'],
 		);

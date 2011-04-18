@@ -86,10 +86,6 @@ function shd_merge_ticket()
 
 	// OK, we've done all the easy bits, now just the boring bits like setting up the template.
 	$context['linktree'][] = array(
-		'url' => $scripturl . '?action=helpdesk;sa=main',
-		'name' => $txt['shd_linktree_tickets'],
-	);
-	$context['linktree'][] = array(
 		'url' => $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $context['ticket_id'],
 		'name' => $context['current_ticket']['subject'],
 	);
@@ -152,10 +148,6 @@ function shd_split_ticket()
 	// So, we know we can split at this point. Let's prep the items we need for the form: ticket id (check), msg id (check), current ticket title...
 	$context['ticket_title'] = $ticketinfo['subject'];
 
-	$context['linktree'][] = array(
-		'url' => $scripturl . '?action=helpdesk;sa=main',
-		'name' => $txt['shd_linktree_tickets'],
-	);
 	$context['linktree'][] = array(
 		'url' => $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $context['ticket_id'],
 		'name' => $ticketinfo['subject'],
@@ -377,10 +369,6 @@ function shd_split_ticket2()
 	}
 
 	// 8. Stick a fork in me, I'm done. User, you should go. Go soon. Go NAO.
-	$context['linktree'][] = array(
-		'url' => $scripturl . '?action=helpdesk;sa=main',
-		'name' => $txt['shd_linktree_tickets'],
-	);
 	$context['linktree'][] = array(
 		'name' => $txt['shd_ticket_split_ticket'],
 	);

@@ -113,10 +113,6 @@ function shd_assign()
 			fatal_lang_error('shd_no_staff_assign');
 
 		$context['linktree'][] = array(
-			'url' => $scripturl . '?action=helpdesk;sa=main',
-			'name' => $txt['shd_linktree_tickets'],
-		);
-		$context['linktree'][] = array(
 			'url' => $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $context['ticket_id'],
 			'name' => $subject,
 		);

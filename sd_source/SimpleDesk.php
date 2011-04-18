@@ -58,9 +58,24 @@ function shd_main()
 		$context['shd_multi_dept'] = false;
 	}
 
-	$context['shd_department'] = isset($_REQUEST['dept']) ? (int) $_REQUEST['dept'] : 0;
+	$context['shd_department'] = isset($_REQUEST['dept']) && isset($depts[$_REQUEST['dept']]) ? (int) $_REQUEST['dept'] : 0;
 	$context['shd_dept_link'] = !empty($context['shd_department']) && $context['shd_multi_dept'] ? ';dept=' . $context['shd_department'] : '';
 	shd_is_allowed_to('access_helpdesk', $context['shd_department']);
+
+	// If we know the department up front, we probably should get it now. Tickets themselves will deal with this but most other places won't.
+	if (!empty($context['shd_department']) && $context['shd_multi_dept'])
+	{
+		$query = $smcFunc['db_query']('', '
+			SELECT dept_name
+			FROM {db_prefix}helpdesk_depts
+			WHERE id_dept = {int:dept}',
+			array(
+				'dept' => $context['shd_department'],
+			)
+		);
+		list($context['shd_dept_name']) = $smcFunc['db_fetch_row']($query);
+		$smcFunc['db_free_result']($query);
+	}
 
 	// Load stuff: preferences the core template - and any hook-required files
 	$context['shd_preferences'] = shd_load_user_prefs();
@@ -166,6 +181,17 @@ function shd_main()
 		'url' => $scripturl . '?action=helpdesk;sa=main',
 		'name' => $txt['shd_helpdesk'],
 	);
+
+	if (!empty($context['shd_dept_name']))
+		$context['linktree'][] = array(
+			'url' => $scripturl . '?' . $context['shd_home'] . $context['shd_dept_link'],
+			'name' => $context['shd_dept_name'],
+		);
+	elseif (!$context['shd_multi_dept'])
+		$context['linktree'][] = array(
+			'url' => $scripturl . '?' . $context['shd_home'],
+			'name' => $txt['shd_linktree_tickets'],
+		);
 
 	// See if a ticket has been specified, like $topic can be.
 	if (!empty($_REQUEST['ticket']))
@@ -566,10 +592,6 @@ function shd_closed_tickets()
 
 	// Build the link tree.
 	$context['linktree'][] = array(
-		'url' => $scripturl . '?action=helpdesk;sa=main',
-		'name' => $txt['shd_linktree_tickets'],
-	);
-	$context['linktree'][] = array(
 		'url' => $scripturl . '?action=helpdesk;sa=closedtickets',
 		'name' => $txt['shd_tickets_closed'],
 	);
@@ -622,10 +644,6 @@ function shd_recycle_bin()
 	);
 
 	// Build the link tree.
-	$context['linktree'][] = array(
-		'url' => $scripturl . '?action=helpdesk;sa=main',
-		'name' => $txt['shd_linktree_tickets'],
-	);
 	$context['linktree'][] = array(
 		'url' => $scripturl . '?action=helpdesk;sa=recyclebin',
 		'name' => $txt['shd_recycle_bin'],

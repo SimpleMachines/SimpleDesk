@@ -158,11 +158,7 @@ function shd_movedept()
 			$context['visible_move_dept'] = (count($depts) == 1 ? $txt['shd_user_hd_access_dept_1'] : $txt['shd_user_hd_access_dept']) . implode(', ', $depts);
 
 		$context['linktree'][] = array(
-			'url' => $scripturl . '?action=helpdesk;sa=main',
-			'name' => $txt['shd_linktree_tickets'],
-		);
-		$context['linktree'][] = array(
-			'url' => $scripturl . '?action=helpdesk;sa=main;dept=' . $context['current_dept'],
+			'url' => $scripturl . '?' . $context['shd_home'] . ';dept=' . $context['current_dept'],
 			'name' => $context['current_dept_name'],
 		);
 		$context['linktree'][] = array(
@@ -170,7 +166,7 @@ function shd_movedept()
 			'name' => $subject,
 		);
 		$context['linktree'][] = array(
-			'name' => $txt['shd_ticket_assign_ticket'],
+			'name' => $txt['shd_ticket_move'],
 		);
 
 		$context['page_title'] = $txt['shd_ticket_move'];
