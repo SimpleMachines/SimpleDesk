@@ -162,7 +162,7 @@ function shd_init()
 				{
 					$query = shd_db_query('', '
 						SELECT id_dept
-						FROM {db_prefix}helpdesk_tickets
+						FROM {db_prefix}helpdesk_tickets AS hdt
 						WHERE id_ticket = {int:ticket}
 							AND {query_see_ticket}',
 						array(

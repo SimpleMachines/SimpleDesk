@@ -325,14 +325,16 @@ function template_ticket_subjectbox()
 						<script type="text/javascript"><!-- // --><![CDATA[
 						var fields = new Array();';
 
-		foreach ($context['ticket_form']['custom_fields'][$context['ticket_form']['custom_fields_context']] as $field)
+		if (!empty($context['ticket_form']['custom_fields'][$context['ticket_form']['custom_fields_context']]))
 		{
-			if (!$field['editable'])
-				continue;
-			echo '
+			foreach ($context['ticket_form']['custom_fields'][$context['ticket_form']['custom_fields_context']] as $field)
+			{
+				if (!$field['editable'])
+					continue;
+				echo '
 						fields[', $field['id'], '] = [', implode(',', $field['depts']), '];';
-		}
-		echo '
+			}
+			echo '
 						function updateDeptCFs(dept)
 						{
 							var displayed = 0;
@@ -351,6 +353,7 @@ function template_ticket_subjectbox()
 							}
 						}
 						// ]', ']></script>';
+		}
 	}
 
 	// Are we dealing with proxy tickets?
