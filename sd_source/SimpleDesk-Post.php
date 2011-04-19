@@ -650,6 +650,8 @@ function shd_save_ticket()
 			// OK, did we get any custom fields back?
 			foreach ($context['custom_fields_updated'] as $field)
 			{
+				if ($field['oldvalue'] == $field['newvalue'])
+					continue;
 				$action = 'cf_' . ($field['scope'] == CFIELD_TICKET ? 'tkt' : 'rpl') . (empty($field['default']) ? 'change_' : 'chgdef_') . ($field['visible'][0] ? 'user' : '') . ($field['visible'][1] ? 'staff' : '') . 'admin';
 				unset($field['default'], $field['scope'], $field['visible']);
 				$field['subject'] = $ticketinfo['subject'];
