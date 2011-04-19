@@ -58,7 +58,7 @@ function shd_main()
 		$context['shd_multi_dept'] = false;
 	}
 
-	$context['shd_department'] = isset($_REQUEST['dept']) && isset($depts[$_REQUEST['dept']]) ? (int) $_REQUEST['dept'] : 0;
+	$context['shd_department'] = isset($_REQUEST['dept']) && in_array($_REQUEST['dept'], $depts) ? (int) $_REQUEST['dept'] : 0;
 	$context['shd_dept_link'] = !empty($context['shd_department']) && $context['shd_multi_dept'] ? ';dept=' . $context['shd_department'] : '';
 	shd_is_allowed_to('access_helpdesk', $context['shd_department']);
 
