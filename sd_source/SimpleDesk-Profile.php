@@ -445,6 +445,29 @@ function shd_profile_permissions($memID)
 	if ($context['member']['has_all_permissions'])
 		return;
 
+	// 2. Do we have a department?
+	$_REQUEST['permdept'] = isset($_REQUEST['permdept']) ? (int) $_REQUEST['permdept'] : 0;
+	$depts = shd_allowed_to('access_helpdesk', false);
+	if (!in_array($_REQUEST['permdept'], $depts))
+		$_REQUEST['permdept'] = 0; // this way we know that 0 = show list only, non-0 means to show a listing.
+
+	// 2b. We still need to get the list of departments.
+	$context['depts_list'] = array();
+	$query = $smcFunc['db_query']('', '
+		SELECT id_dept, dept_name
+		FROM {db_prefix}helpdesk_depts
+		WHERE id_dept IN ({array_int:depts})
+		ORDER BY dept_order',
+		array(
+			'depts' => $depts,
+		)
+	);
+	while ($row = $smcFunc['db_fetch_assoc']($query))
+		$context['depts_list'][$row['id_dept']] = $row['dept_name'];
+
+	if (empty($_REQUEST['permdept']))
+		return $context['dept_list_only'] = true;
+
 	// 2. Get group colours and names.
 	$context['membergroups'][0] = array(
 		'group_name' => $txt['membergroups_members'],
@@ -475,13 +498,16 @@ function shd_profile_permissions($memID)
 
 	// 3. Get roles that apply to this user, and figure out their groups as we go.
 	$query = $smcFunc['db_query']('', '
-		SELECT hdrg.id_role, hdrg.id_group, hdr.template, hdr.role_name
+		SELECT hdrg.id_role, hdrg.id_group, hdr.template, hdr.role_name, hddr.id_dept
 		FROM {db_prefix}helpdesk_role_groups AS hdrg
 			INNER JOIN {db_prefix}helpdesk_roles AS hdr ON (hdrg.id_role = hdr.id_role)
+			INNER JOIN {db_prefix}helpdesk_dept_roles AS hddr ON (hdr.id_role = hddr.id_role)
 		WHERE hdrg.id_group IN ({array_int:groups})
+			AND hddr.id_dept = {int:dept}
 		ORDER BY hdrg.id_role, hdrg.id_group',
 		array(
 			'groups' => $groups,
+			'dept' => $_REQUEST['permdept'],
 		)
 	);
 

@@ -53,14 +53,16 @@ $txt['membergroups_members'] = 'Regular Members';
 $txt['shd_profile_permissions_header'] = 'Helpdesk Permissions - %s';
 $txt['shd_profile_permissions_description'] = 'This area displays all the permissions within the helpdesk for this user.';
 $txt['shd_profile_permissions_all_admin'] = 'This user is a full administrator within the forum, and as they have full permissions within the forum, they also have every possible permission within the helpdesk.';
-$txt['shd_profile_no_roles'] = 'No helpdesk roles are attached to this user.';
+$txt['shd_profile_no_roles'] = 'No helpdesk roles are attached to this user, within this department.';
 $txt['shd_profile_no_permissions'] = 'No permissions';
-$txt['shd_profile_roles_assigned'] = 'These are the roles assigned to this user.';
+$txt['shd_profile_roles_assigned'] = 'These are the roles assigned to this user, within this department.';
 $txt['shd_profile_role_membergroups'] = 'Associated Membergroups';
 $txt['shd_profile_granted'] = 'Granted Permissions';
 $txt['shd_profile_denied'] = 'Denied Permissions';
 $txt['shd_profile_granted_desc'] = 'These are all the permissions this member has, and what role allows them to have that permission. Note that if one role would grant access to a user\'s own area but another role grants access to any area (e.g. a "users" role grants access to their own profile, but staff grants access to any profile), only the "any" one will be displayed because that takes priority over the "own" one.';
 $txt['shd_profile_denied_desc'] = 'These are permissions denied to this member through one or more of the roles they have, and what role is preventing it.';
+$txt['shd_profile_showdept'] = 'Show all the permissions that apply in which department';
+$txt['shd_profile_selectdept'] = '[Select department]';
 
 // Profile logs
 $txt['shd_profile_log'] = 'Profile action log - %s';

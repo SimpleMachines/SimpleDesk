@@ -277,6 +277,30 @@ function template_shd_profile_permissions()
 					</p>
 				</div>';
 
+	// Now hang on a moment. We need to display the list of departments, and if that's all we have, stop there.
+	echo '
+				<span class="upperframe"><span></span></span>
+				<div class="roundframe">
+					<form action="', $scripturl, '?action=profile;u=', $context['member']['id'], ';area=hd_permissions" method="post">
+						', $txt['shd_profile_showdept'], ':
+						<select name="permdept">
+							<option value="0">', $txt['shd_profile_selectdept'], '</option>';
+
+	foreach ($context['depts_list'] as $id => $dept)
+		echo '
+							<option value="', $id, '"', $_REQUEST['permdept'] == $id ? ' selected="selected"' : '', '>', $dept, '</option>';
+
+	echo '
+						</select>
+						<input type="submit" class="button_submit" value="', $txt['go'], '" />
+					</form>
+				</div>
+				<span class="lowerframe"><span></span></span>
+				<br />';
+	// We're done?
+	if (!empty($context['dept_list_only']))
+		return;
+
 	// Now, display the roles that are attached to this user, and display the groups that make that link.
 	echo '
 				<div class="tborder">
