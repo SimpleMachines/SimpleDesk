@@ -298,12 +298,19 @@ function shd_load_action_log_entries($start = 0, $items_per_page = 10, $sort = '
 				$action['extra']['oldvalue'] = !empty($action['extra']['oldvalue']) ? $txt['yes'] : $txt['no'];
 				$action['extra']['newvalue'] = !empty($action['extra']['newvalue']) ? $txt['yes'] : $txt['no'];
 			}
-			if ($action['extra']['fieldtype'] == CFIELD_TYPE_RADIO || $action['extra']['fieldtype'] == CFIELD_TYPE_SELECT)
+			elseif ($action['extra']['fieldtype'] == CFIELD_TYPE_RADIO || $action['extra']['fieldtype'] == CFIELD_TYPE_SELECT)
 			{
 				if (empty($action['extra']['oldvalue']))
 					$action['extra']['oldvalue'] = $txt['shd_none_selected'];
 				if (empty($action['extra']['newvalue']))
 					$action['extra']['newvalue'] = $txt['shd_none_selected'];
+			}
+			else
+			{
+				if (empty($action['extra']['oldvalue']))
+					$action['extra']['oldvalue'] = $txt['shd_empty_item'];
+				if (empty($action['extra']['newvalue']))
+					$action['extra']['newvalue'] = $txt['shd_empty_item'];
 			}
 			$actions[$k]['action_text'] = str_replace('{fieldname}', $action['extra']['fieldname'], $actions[$k]['action_text']);
 			$actions[$k]['action_text'] = str_replace('{oldvalue}', $action['extra']['oldvalue'], $actions[$k]['action_text']);

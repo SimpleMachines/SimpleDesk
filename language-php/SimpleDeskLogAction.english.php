@@ -113,6 +113,7 @@ $txt['shd_log_cf_rplchgdef_staffadmin'] = 'A <a href="{scripturl}?action=helpdes
 $txt['shd_log_cf_rplchgdef_useradmin'] = 'A <a href="{scripturl}?action=helpdesk;sa=ticket;ticket={ticket}.msg{msg}#msg{msg}">reply</a> to &quot;<a href="{scripturl}?action=helpdesk;sa=ticket;ticket={ticket}">{subject}</a>&quot;, the value of &quot;{fieldname}&quot; was changed from <strong>{oldvalue}</strong> to the default of <strong>{newvalue}</strong>';
 $txt['shd_log_cf_rplchgdef_userstaffadmin'] = 'A <a href="{scripturl}?action=helpdesk;sa=ticket;ticket={ticket}.msg{msg}#msg{msg}">reply</a> to &quot;<a href="{scripturl}?action=helpdesk;sa=ticket;ticket={ticket}">{subject}</a>&quot;, the value of &quot;{fieldname}&quot; was changed from <strong>{oldvalue}</strong> to the default of <strong>{newvalue}</strong>';
 $txt['shd_none_selected'] = '<em>none selected</em>';
+$txt['shd_empty_item'] = '<em>empty</em>';
 //@}
 
 //! @name Other ticket events

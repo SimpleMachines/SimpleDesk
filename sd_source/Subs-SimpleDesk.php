@@ -161,8 +161,9 @@ function shd_init()
 				if (!empty($ticket))
 				{
 					$query = shd_db_query('', '
-						SELECT id_dept, dept_name
+						SELECT hdt.id_dept, dept_name
 						FROM {db_prefix}helpdesk_tickets AS hdt
+							INNER JOIN {db_prefix}helpdesk_depts AS hdd ON (hdt.id_dept = hdd.id_dept)
 						WHERE id_ticket = {int:ticket}
 							AND {query_see_ticket}',
 						array(
