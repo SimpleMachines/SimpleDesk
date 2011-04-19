@@ -131,7 +131,7 @@ function shd_main()
 			'lang' => true,
 			'url' => $scripturl . '?action=helpdesk;sa=main',
 		),
-		'departments' => array(
+		'dept' => array(
 			'text' => 'shd_departments',
 			'test' => 'shd_multi_dept',
 			'lang' => true,
