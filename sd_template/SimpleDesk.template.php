@@ -37,7 +37,7 @@ function template_main()
 				<td valign="top">
 					<div class="title_bar">
 						<h3 class="titlebg">
-							', $txt['shd_helpdesk'], '
+							', $txt['shd_helpdesk'], !empty($context['shd_dept_name']) && $context['shd_multi_dept'] ? ' - ' . $context['shd_dept_name'] : '', '
 						</h3>
 					</div>
 					<span class="upperframe"><span></span></span>

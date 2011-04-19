@@ -161,7 +161,7 @@ function shd_init()
 				if (!empty($ticket))
 				{
 					$query = shd_db_query('', '
-						SELECT id_dept
+						SELECT id_dept, dept_name
 						FROM {db_prefix}helpdesk_tickets AS hdt
 						WHERE id_ticket = {int:ticket}
 							AND {query_see_ticket}',
@@ -171,7 +171,7 @@ function shd_init()
 					);
 					if ($row = $smcFunc['db_fetch_row']($query))
 						if (in_array($row[0], $depts))
-							$this_dept = $row[0];
+							list($this_dept, $context['shd_dept_name']) = $row;
 					$smcFunc['db_free_result']($query);
 				}
 			}

@@ -63,7 +63,8 @@ function shd_main()
 	shd_is_allowed_to('access_helpdesk', $context['shd_department']);
 
 	// If we know the department up front, we probably should get it now. Tickets themselves will deal with this but most other places won't.
-	if (!empty($context['shd_department']) && $context['shd_multi_dept'])
+	// Note that we may already have loaded this if we went and got the department id earlier, but not always.
+	if (!empty($context['shd_department']) && $context['shd_multi_dept'] && empty($context['shd_dept_name']))
 	{
 		$query = $smcFunc['db_query']('', '
 			SELECT dept_name
