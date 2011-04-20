@@ -71,6 +71,7 @@ function shd_add_to_boardindex(&$boardIndexOptions, &$categories)
 				'closed' => 0,
 				'assigned' => 0,
 			),
+			'new' => false,
 		);
 	}
 	if (empty($context['dept_list']))
@@ -166,15 +167,18 @@ function shd_add_to_boardindex(&$boardIndexOptions, &$categories)
 	// Last but not least, fix up the replacements.
 	shd_get_ticket_counts();
 	
-	//$open_tickets = shd_count_helpdesk_tickets('open');
 	if (empty($context['shd_buffer_preg_replacements']))
 		$context['shd_buffer_preg_replacements'] = array();
 
 	foreach ($context['dept_list'] as $dept => $dept_details)
 	{
+		// Inject the count of tickets.
 		$dept_id = '~' . preg_quote(comma_format(-$dept), '~') . '\s+' . preg_quote($txt['redirects'], '~') . '~';
 		$context['shd_buffer_preg_replacements'][$dept_id] = $dept_details['tickets']['open'] . ' ' . ($dept_details['tickets']['open'] == 1 ? $txt['shd_open_ticket'] : $txt['shd_open_tickets']);
 	}
+
+	// Call the relevant function via hook.
+	add_integration_function('shd_hook_buffer', 'shd_buffer_boardindex', false);
 }
 
 function shd_dept_board($dept)
@@ -186,7 +190,7 @@ function shd_dept_board($dept)
 		'shd' => true,
 		'name' => $dept['dept_name'],
 		'description' => $dept['description'],
-		'new' => false,
+		'new' => false, // Even if we actually have something new, for the purposes of things, this is a redirect board, which cannot have new things.
 		'children_new' => false,
 		'topics' => 0,
 		'posts' => -$dept['id_dept'],
@@ -238,6 +242,30 @@ function shd_get_ticket_counts()
 	);
 	while ($row = $smcFunc['db_fetch_assoc']($query))
 		$context['dept_list'][$row['id_dept']]['tickets'][$row['status'] == TICKET_STATUS_CLOSED ? 'closed' : 'open'] += $row['tickets'];
+}
+
+function shd_buffer_boardindex(&$buffer)
+{
+	global $settings;
+
+	// Fix the icon. This is surprisingly complex: we have to find the link that links to this department, then find the image inside it and proceed to rewrite only that link.
+	if (preg_match_all('~<a[^>]+href="[^"]+dept[=,](\d+)"[^>]*>\s+<img.+src="([^"]+redirect\.(png|gif|jpg|jpeg))".+>\s+</a>~isU', $buffer, $matches, PREG_SET_ORDER))
+	{
+		// So, $matches is an array of matches, and each item is an array of data: 
+		// [0] is the entire block of HTML in the source, which is useful in a minute.
+		// [1] is the department number.
+		// [2] is the image URL.
+		// [3] is the image extension.
+		$buffer_search = array();
+		$buffer_replace = array();
+		foreach ($matches as $dept_match)
+		{
+			$icon = $settings['default_theme_url'] . '/images/simpledesk/helpdesk_' . ($context['dept_list'][$dept_match[1]]['new'] ? 'on' : 'off') . '.png';
+			$buffer_search = $dept_match[0];
+			$buffer_replace = str_replace($dept_match[2], $icon, $dept_match[0]);
+		}
+		$buffer = str_replace($buffer_search, $buffer_replace, $buffer);
+	}
 }
 
 ?>
