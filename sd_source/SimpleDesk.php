@@ -467,11 +467,13 @@ function shd_main_dept()
 				'closed' => 0,
 				'assigned' => 0,
 			),
+			'new' => false,
 		);
 	$smcFunc['db_free_result']($query);
 
 	require_once($sourcedir . '/sd_source/Subs-SimpleDeskBoardIndex.php');
 	shd_get_ticket_counts();
+	shd_get_unread_departments();
 
 	$context['linktree'][] = array(
 		'url' => $scripturl . '?action=helpdesk;sa=dept',

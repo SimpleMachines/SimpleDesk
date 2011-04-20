@@ -129,18 +129,22 @@ function template_shd_depts()
 								', $txt['shd_departments'], '
 							</h3>
 						</div>
-						<table class="shd_ticketlist table_list" cellspacing="0" width="100%">';
+						<table class="shd_ticketlist table_list" cellspacing="0" width="100%">
+							<tbody class="content">';
 
 	foreach ($context['dept_list'] as $dept)
 	{
 		echo '
-							<tr class="windowbg2">
-								<td><a href="', $scripturl, '?action=helpdesk;sa=main;dept=', $dept['id_dept'], '">', $dept['dept_name'], '</a></td>
-								<td class="stats windowbg">', $dept['tickets']['open'], ' open<br />', $dept['tickets']['closed'], ' closed</td>
-							</tr>';
+								<tr class="windowbg2">
+									<td class="icon windowbg"><img src="', $settings['default_theme_url'], '/images/simpledesk/helpdesk_', $dept['new'] ? 'on' : 'off', '.png" alt="*" /></td>
+									<td class="info"><a href="', $scripturl, '?action=helpdesk;sa=main;dept=', $dept['id_dept'], '">', $dept['dept_name'], '</a></td>
+									<td class="stats windowbg">', $dept['tickets']['open'], ' open<br />', $dept['tickets']['closed'], ' closed</td>
+									<td class="lastpost"></td>
+								</tr>';
 	}
 
 	echo '
+							</tbody>
 						</table>
 					</div>
 				</td>
