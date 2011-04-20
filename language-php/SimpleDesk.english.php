@@ -274,7 +274,7 @@ $txt['shd_move_ticket'] = 'Move ticket';
 $txt['shd_ticket_board'] = 'Board';
 $txt['shd_change_ticket_subject'] = 'Change the ticket subject';
 $txt['shd_move_send_pm'] = 'Send a PM to the ticket owner';
-$txt['shd_move_why'] = 'Please enter a brief description as to why this ticket is being moved to a forum topic. ';
+$txt['shd_move_why'] = 'Please enter a brief description as to why this ticket is being moved to a forum topic.';
 $txt['shd_ticket_moved_subject'] = 'Your ticket has been moved.';
 $txt['shd_move_default'] = 'Hello {user},' . "\n\n" . 'Your ticket, {subject}, has been moved from the helpdesk to a topic in the forum.' . "\n" . 'You can find your ticket in the board {board} or via this link:' . "\n\n" . '{link}' . "\n\n" . 'Thanks';
 
@@ -291,6 +291,8 @@ $txt['shd_user_helpdesk_access'] = 'The person who started this topic can see th
 $txt['shd_user_hd_access_dept_1'] = 'The person who started this topic can see the following department: ';
 $txt['shd_user_hd_access_dept'] = 'The person who started this topic can see the following departments: ';
 $txt['shd_move_ticket_department'] = 'Move ticket to which department';
+$txt['shd_move_dept_why'] = 'Please enter a brief description as to why this ticket is being moved to a different department.';
+$txt['shd_move_dept_default'] = 'Hello {user},' . "\n\n" . 'Your ticket, {subject}, has been moved from the {current_dept} department into the {new_dept} department.' . "\n" . 'You can find your ticket via this link:' . "\n\n" . '{link}' . "\n\n" . 'Thanks';
 
 $txt['shd_ticket_move_deleted'] = 'This ticket has replies that are currently in the recycle bin. What do you wish to do?';
 $txt['shd_ticket_move_deleted_abort'] = 'Abort, take me to the recycle bin';

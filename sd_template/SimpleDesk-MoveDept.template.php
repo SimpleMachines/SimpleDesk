@@ -60,13 +60,25 @@ function template_movedept()
 	echo '
 						</select>
 					</dd>
+				</dl>
+				<dl class="settings">
 					<dt>
-						<input type="submit" name="cancel" value="', ($context['shd_return_to'] == 'home' ? $txt['shd_cancel_home'] : $txt['shd_cancel_ticket']), '" accesskey="c" class="button_submit" />
+						<strong>', $txt['shd_move_send_pm'], ':</strong>
 					</dt>
 					<dd>
-						<input type="submit" value="', $txt['shd_ticket_move'], '" onclick="return submitThisOnce(this);" accesskey="s" class="button_submit" />
+						<input type="checkbox" name="send_pm" id="send_pm" checked="checked" onclick="document.getElementById(\'pm_message\').style.display = this.checked ? \'block\' : \'none\';" class="input_check" />
 					</dd>
 				</dl>
+				<fieldset id="pm_message">
+					<dl class="settings">
+						<dt>
+							', $txt['shd_move_why'], '
+						</dt>
+						<dd>
+							<textarea name="pm_content" rows="9" cols="70">', $txt['shd_move_dept_default'], '</textarea>
+						</dd>
+					</dl>
+				</fieldset>
 				<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />';
 
 	if ($context['shd_return_to'] == 'home')
@@ -74,6 +86,8 @@ function template_movedept()
 				<input type="hidden" name="home" value="1" />';
 
 	echo '
+				<input type="submit" name="cancel" value="', ($context['shd_return_to'] == 'home' ? $txt['shd_cancel_home'] : $txt['shd_cancel_ticket']), '" accesskey="c" class="button_submit" />
+				<input type="submit" value="', $txt['shd_ticket_move'], '" onclick="return submitThisOnce(this);" accesskey="s" class="button_submit" />
 			</div>
 		</form>
 	</div>

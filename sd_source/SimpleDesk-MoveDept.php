@@ -49,6 +49,8 @@ function shd_movedept()
 
 	$context['shd_return_to'] = isset($_REQUEST['home']) ? 'home' : 'ticket';
 
+	$context['can_pm'] = empty($modSettings['shd_helpdesk_only']) || empty($modSettings['shd_disable_pm']);
+
 	// Get ticket details - and kick it out if they shouldn't be able to see it.
 	$query = shd_db_query('', '
 		SELECT id_member_started, subject, hdt.id_dept, dept_name
@@ -189,13 +191,16 @@ function shd_movedept()
 */
 function shd_movedept2()
 {
-	global $context, $smcFunc, $user_info, $sourcedir;
+	global $context, $smcFunc, $user_info, $sourcedir, $txt, $scripturl;
 
 	checkSession();
 	checkSubmitOnce('check');
 
 	if (empty($context['ticket_id']))
 		fatal_lang_error('shd_no_ticket', false);
+
+	if ((isset($_POST['send_pm']) && (!isset($_POST['pm_content']) || trim($_POST['pm_content']) == '')) && (empty($modSettings['shd_helpdesk_only']) || empty($modSettings['shd_disable_pm'])))
+		fatal_lang_error('shd_move_no_pm', false);
 
 	// Just in case, are they cancelling?
 	if (isset($_REQUEST['cancel']))
@@ -265,6 +270,41 @@ function shd_movedept2()
 				'ticket' => $context['ticket_id'],
 			)
 		);
+
+		// Now, notify the ticket starter if that's what we wanted to do.
+		if (isset($_POST['send_pm']))
+		{
+			require_once($sourcedir . '/Subs-Post.php');
+
+			$request = shd_db_query('pm_find_username', '
+				SELECT id_member, real_name
+				FROM {db_prefix}members
+				WHERE id_member = {int:user}
+				LIMIT 1',
+				array(
+					'user' => $ticket_starter,
+				)
+			);
+			list ($userid,$username) = $smcFunc['db_fetch_row']($request);
+			$smcFunc['db_free_result']($request);
+
+			// Fix the content
+			$replacements = array(
+				'{user}' => $username,
+				'{subject}' => $subject,
+				'{current_dept}' => $context['current_dept_name'],
+				'{new_dept}' => $dept_name,
+				'{link}' => $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $context['ticket_id'],
+			);
+			$message = str_replace(array_keys($replacements), array_values($replacements), $_POST['pm_content']);
+
+			$recipients = array(
+				'to' => array($ticket_starter),
+				'bcc' => array()
+			);
+
+			sendpm($recipients, $txt['shd_ticket_moved_subject'], un_htmlspecialchars($message));
+		}
 
 		if (!empty($context['shd_return_to']) && $context['shd_return_to'] == 'home')
 			redirectexit($context['shd_home'] . ';dept=' . $new_dept);
