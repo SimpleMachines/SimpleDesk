@@ -262,8 +262,8 @@ function shd_buffer_boardindex(&$buffer)
 		foreach ($matches as $dept_match)
 		{
 			$icon = $settings['default_theme_url'] . '/images/simpledesk/helpdesk_' . ($context['dept_list'][$dept_match[1]]['new'] ? 'on' : 'off') . '.png';
-			$buffer_search = $dept_match[0];
-			$buffer_replace = str_replace($dept_match[2], $icon, $dept_match[0]);
+			$buffer_search[] = $dept_match[0];
+			$buffer_replace[] = str_replace($dept_match[2], $icon, $dept_match[0]);
 		}
 		$buffer = str_replace($buffer_search, $buffer_replace, $buffer);
 	}
