@@ -164,9 +164,10 @@ function shd_add_to_boardindex(&$boardIndexOptions, &$categories)
 		);
 	}
 
-	// Last but not least, fix up the replacements.
+	// Last but not least, fix up the replacements and some figuring out.
 	shd_get_ticket_counts();
-	
+	shd_get_unread_departments();
+
 	if (empty($context['shd_buffer_preg_replacements']))
 		$context['shd_buffer_preg_replacements'] = array();
 
@@ -246,10 +247,10 @@ function shd_get_ticket_counts()
 
 function shd_buffer_boardindex(&$buffer)
 {
-	global $settings;
+	global $settings, $context;
 
 	// Fix the icon. This is surprisingly complex: we have to find the link that links to this department, then find the image inside it and proceed to rewrite only that link.
-	if (preg_match_all('~<a[^>]+href="[^"]+dept[=,](\d+)"[^>]*>\s+<img.+src="([^"]+redirect\.(png|gif|jpg|jpeg))".+>\s+</a>~isU', $buffer, $matches, PREG_SET_ORDER))
+	if (preg_match_all('~<a[^>]+href="[^"]+dept[=,](\d+)/?"[^>]*>\s+<img.+src="([^"]+redirect\.(png|gif|jpg|jpeg))".+>\s+</a>~isU', $buffer, $matches, PREG_SET_ORDER))
 	{
 		// So, $matches is an array of matches, and each item is an array of data: 
 		// [0] is the entire block of HTML in the source, which is useful in a minute.
@@ -265,6 +266,33 @@ function shd_buffer_boardindex(&$buffer)
 			$buffer_replace = str_replace($dept_match[2], $icon, $dept_match[0]);
 		}
 		$buffer = str_replace($buffer_search, $buffer_replace, $buffer);
+	}
+}
+
+function shd_get_unread_departments()
+{
+	global $context, $smcFunc;
+
+	$query = shd_db_query('', '
+		SELECT hdd.id_dept, MAX(hdt.id_last_msg) AS last_msg, MAX(hdlr.id_msg) AS last_read
+		FROM {db_prefix}helpdesk_depts AS hdd
+			INNER JOIN {db_prefix}helpdesk_tickets AS hdt ON (hdd.id_dept = hdt.id_dept)
+			LEFT JOIN {db_prefix}helpdesk_log_read AS hdlr ON (hdt.id_ticket = hdlr.id_ticket AND hdlr.id_member = {int:user_id})
+		WHERE hdd.id_dept IN ({array_int:dept_list})
+			AND {query_see_ticket}
+			AND hdt.last_updated > {int:the_last_week}
+		GROUP BY hdd.id_dept',
+		array(
+			'dept_list' => array_keys($context['dept_list']),
+			'the_last_week' => time() - (86400 * 7),
+			'user_id' => $context['user']['id'],
+		)
+	);
+	while ($row = $smcFunc['db_fetch_assoc']($query))
+	{
+		$row['last_read'] = (int) $row['last_read'];
+		if ($row['last_msg'] > $row['last_read'])
+			$context['dept_list'][$row['id_dept']]['new'] = true;
 	}
 }
 
