@@ -83,7 +83,7 @@ function shd_movedept()
 			WHERE id_dept IN ({array_int:depts})
 			ORDER BY dept_order',
 			array(
-				'depts' => $visible_depts,
+				'depts' => array_diff($visible_depts, array($context['current_dept'])),
 			)
 		);
 		while ($row = $smcFunc['db_fetch_assoc']($query))
@@ -236,6 +236,9 @@ function shd_movedept2()
 	}
 
 	$smcFunc['db_free_result']($query);
+
+	if ($context['current_dept'] == $dest)
+		fatal_lang_error('shd_cannot_move_dept', false);
 
 	if (shd_allowed_to('shd_move_dept_any', $context['current_dept']) || (shd_allowed_to('shd_move_dept_own', $context['current_dept']) && $ticket_starter == $user_info['id']))
 	{
