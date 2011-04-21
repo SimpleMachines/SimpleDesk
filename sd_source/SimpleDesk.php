@@ -183,12 +183,7 @@ function shd_main()
 		'name' => $txt['shd_helpdesk'],
 	);
 
-	if (!empty($context['shd_dept_name']) && $context['shd_multi_dept'])
-		$context['linktree'][] = array(
-			'url' => $scripturl . '?' . $context['shd_home'] . $context['shd_dept_link'],
-			'name' => $context['shd_dept_name'],
-		);
-	elseif (!$context['shd_multi_dept'])
+	if (!$context['shd_multi_dept'])
 		$context['linktree'][] = array(
 			'url' => $scripturl . '?' . $context['shd_home'],
 			'name' => $txt['shd_linktree_tickets'],
@@ -426,6 +421,12 @@ function shd_main_helpdesk()
 		'shd_home_view' => $is_staff ? 'staff' : 'user',
 	);
 
+	if (!empty($context['shd_dept_name']) && $context['shd_multi_dept'])
+		$context['linktree'][] = array(
+			'url' => $scripturl . '?' . $context['shd_home'] . $context['shd_dept_link'],
+			'name' => $context['shd_dept_name'],
+		);
+
 	shd_helpdesk_listing();
 }
 
@@ -555,6 +556,12 @@ function shd_view_block()
 			$context['ticket_blocks'][$block]['collapsed'] = true;
 	}
 
+	if (!empty($context['shd_dept_name']) && $context['shd_multi_dept'])
+		$context['linktree'][] = array(
+			'url' => $scripturl . '?' . $context['shd_home'] . $context['shd_dept_link'],
+			'name' => $context['shd_dept_name'],
+		);
+
 	shd_helpdesk_listing();
 }
 
@@ -594,8 +601,13 @@ function shd_closed_tickets()
 	);
 
 	// Build the link tree.
+	if (!empty($context['shd_dept_name']) && $context['shd_multi_dept'])
+		$context['linktree'][] = array(
+			'url' => $scripturl . '?' . $context['shd_home'] . $context['shd_dept_link'],
+			'name' => $context['shd_dept_name'],
+		);
 	$context['linktree'][] = array(
-		'url' => $scripturl . '?action=helpdesk;sa=closedtickets',
+		'url' => $scripturl . '?action=helpdesk;sa=closedtickets' . $context['shd_dept_link'],
 		'name' => $txt['shd_tickets_closed'],
 	);
 
@@ -647,8 +659,13 @@ function shd_recycle_bin()
 	);
 
 	// Build the link tree.
+	if (!empty($context['shd_dept_name']) && $context['shd_multi_dept'])
+		$context['linktree'][] = array(
+			'url' => $scripturl . '?' . $context['shd_home'] . $context['shd_dept_link'],
+			'name' => $context['shd_dept_name'],
+		);
 	$context['linktree'][] = array(
-		'url' => $scripturl . '?action=helpdesk;sa=recyclebin',
+		'url' => $scripturl . '?action=helpdesk;sa=recyclebin' . $context['shd_dept_link'],
 		'name' => $txt['shd_recycle_bin'],
 	);
 
