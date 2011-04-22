@@ -116,6 +116,25 @@ div.grid_header img
 	cursor: pointer;
 }
 
+.information li dt
+{
+	color: gray;
+	font-weight: bold;
+	float: left;
+}
+
+.information li dd
+{
+	float: left;
+	margin: 0;
+	padding: 0 4px 0 7px;
+}
+
+dd#assigned_button
+{
+	padding: 1px 0;
+}
+
 /**********************************
 * Stuff used within the actual tickets 	*
 ***********************************/

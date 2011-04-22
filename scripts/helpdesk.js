@@ -382,14 +382,7 @@ function AjaxAssign(oOptions)
 	this.bCollapsed = true;
 
 	// Insert the expand/collapse button
-	var maincontainer = document.getElementById(this.opt.sId);
-	var listcontainer = document.getElementById(this.opt.sListId);
-	var newhtml = document.createElement('img');
-	newhtml.setAttribute('id', 'assign_' + this.opt.sSelf);
-	newhtml.setAttribute('class', 'shd_assign_button');
-	newhtml.setAttribute('src', this.opt.sImagesUrl + "/" + this.opt.sImageCollapsed);
-	newhtml.setAttribute('onclick', this.opt.sSelf + '.click()');
-	maincontainer.insertBefore(newhtml, listcontainer);
+	document.getElementById(this.opt.sId).innerHTML = '<img src="' + this.opt.sImagesUrl + "/" + this.opt.sImageCollapsed + '" id="assign_' + this.opt.sSelf + '" class="shd_assign_button" onclick="' + this.opt.sSelf + '.click();" />';
 }
 
 AjaxAssign.prototype.click = function ()
