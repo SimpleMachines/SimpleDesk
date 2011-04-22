@@ -257,6 +257,7 @@ $txt['shd_actions'] = 'Actions';
 $txt['shd_back_to_ticket'] = 'Return to this ticket after posting';
 $txt['shd_disable_smileys_post'] = 'Turn off smileys in this post';
 $txt['shd_resolve_this_ticket'] = 'Mark this ticket as resolved';
+$txt['shd_override_cf'] = 'Override the custom fields requirements';
 
 $txt['shd_ticket_assign_ticket'] = 'Assign Ticket';
 $txt['shd_ticket_assign_to'] = 'Assign ticket to';

@@ -67,6 +67,7 @@ function shd_load_all_permission_sets()
 		'shd_edit_reply' => array(true, 'posting', 'log_editreply.png'),
 		'shd_post_attachment' => array(false, 'posting', 'attachments.png'),
 		'shd_post_proxy' => array(false, 'posting', 'proxy.png'),
+		'shd_override_cf' => array(false, 'posting', 'custom_fields.png'),
 
 		'shd_resolve_ticket' => array(true, 'ticketactions', 'log_resolve.png'),
 		'shd_unresolve_ticket' => array(true, 'ticketactions', 'log_unresolve.png'),
@@ -201,6 +202,7 @@ function shd_load_role_templates()
 				'shd_edit_reply_any' => ROLEPERM_ALLOW,
 				'shd_post_attachment' => ROLEPERM_ALLOW,
 				'shd_post_proxy' => ROLEPERM_ALLOW,
+				'shd_override_cf' => ROLEPERM_ALLOW,
 				'shd_resolve_ticket_any' => ROLEPERM_ALLOW,
 				'shd_unresolve_ticket_any' => ROLEPERM_ALLOW,
 				'shd_view_ticket_logs_any' => ROLEPERM_ALLOW,

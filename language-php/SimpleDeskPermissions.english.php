@@ -198,6 +198,13 @@ $txt['permissionhelp_shd_post_attachment'] = 'This permission allows a user to p
 //@{
 $txt['permissionname_shd_post_proxy'] = 'Post proxy tickets';
 $txt['permissionhelp_shd_post_proxy'] = 'This permission allows a user, typically staff, to create a ticket on behalf of another user (e.g. from a telephone call)';
+//@}
+
+//! @name Overriding custom fields requirements
+//@{
+$txt['permissionname_shd_override_cf'] = 'Override custom fields';
+$txt['permissionhelp_shd_override_cf'] = 'Some custom fields are set as being required, but there will be times when the field should not be made to be required. This permission will allow users to override the check on saving a ticket or reply as necessary, but not without informing them first.';
+//@}
 
 //! @name Ticket to topic, topic to ticket movement
 //@{

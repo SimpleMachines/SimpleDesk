@@ -411,6 +411,8 @@ function shd_save_ticket()
 	// Custom fields?
 	shd_load_custom_fields(true, $context['ticket_form']['ticket'], $context['ticket_form']['dept']);
 	list($missing_fields, $invalid_fields) = shd_validate_custom_fields('ticket', $context['ticket_form']['dept']);
+	$context['can_override_fields'] = shd_allowed_to('shd_override_cf', $context['ticket_form']['dept']);
+	$context['overriding_fields'] = $context['can_override_fields'] && isset($_POST['override_cf']);
 
 	// Did any custom fields fail validation?
 	if (!empty($invalid_fields))
@@ -419,11 +421,18 @@ function shd_save_ticket()
 		$txt['error_invalid_fields'] = sprintf($txt['error_invalid_fields'], implode(', ', $invalid_fields));
 	}
 	// Any flat-out missing?
-	if (!empty($missing_fields))
+	if (!empty($missing_fields) && !$context['overriding_fields'])
 	{
 		$context['shd_errors'][] = 'missing_fields';
 		$txt['error_missing_fields'] = sprintf($txt['error_missing_fields'], implode(', ', $missing_fields));
 	}
+
+	if ($context['can_override_fields'])
+		$context['ticket_form']['additional_opts']['override_cf'] = array(
+			'show' => true,
+			'checked' => false,
+			'text' => $txt['shd_override_cf'],
+		);
 
 	// Preview?
 	if (isset($_REQUEST['preview']))
@@ -1077,6 +1086,8 @@ function shd_save_reply()
 	// Custom fields?
 	shd_load_custom_fields(false, $context['ticket_form']['msg'], $context['ticket_form']['dept']);
 	list($missing_fields, $invalid_fields) = shd_validate_custom_fields($context['ticket_form']['msg'], $context['ticket_form']['dept']);
+	$context['can_override_fields'] = shd_allowed_to('shd_override_cf', $context['ticket_form']['dept']);
+	$context['overriding_fields'] = $context['can_override_fields'] && isset($_POST['override_cf']);
 
 	// Did any custom fields fail validation?
 	if (!empty($invalid_fields))
@@ -1085,11 +1096,18 @@ function shd_save_reply()
 		$txt['error_invalid_fields'] = sprintf($txt['error_invalid_fields'], implode(', ', $invalid_fields));
 	}
 	// Any flat-out missing?
-	if (!empty($missing_fields))
+	if (!empty($missing_fields) && !$context['overriding_fields'])
 	{
 		$context['shd_errors'][] = 'missing_fields';
 		$txt['error_missing_fields'] = sprintf($txt['error_missing_fields'], implode(', ', $missing_fields));
 	}
+
+	if ($context['can_override_fields'])
+		$context['ticket_form']['additional_opts']['override_cf'] = array(
+			'show' => true,
+			'checked' => false,
+			'text' => $txt['shd_override_cf'],
+		);
 
 	if (!empty($context['shd_errors']) || !empty($context['ticket_form']['preview'])) // Uh oh, something went wrong, or we're previewing
 	{
