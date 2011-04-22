@@ -321,12 +321,13 @@ function template_ticket_subjectbox()
 							<option value="', $id, '"', $context['ticket_form']['dept'] == $id ? ' selected="selected"' : '', '>', $dept, '</option>';
 
 		echo '
-						</select>
-						<script type="text/javascript"><!-- // --><![CDATA[
-						var fields = new Array();';
+						</select>';
 
 		if (!empty($context['ticket_form']['custom_fields'][$context['ticket_form']['custom_fields_context']]))
 		{
+			echo '
+						<script type="text/javascript"><!-- // --><![CDATA[
+						var fields = new Array();';
 			foreach ($context['ticket_form']['custom_fields'][$context['ticket_form']['custom_fields_context']] as $field)
 			{
 				if (!$field['editable'])
