@@ -210,7 +210,7 @@ require_once($sourcedir . '/sd_source/SimpleDesk-SSI.php');]]></add>
 			<add><![CDATA[
 
 	// Are we adding any SimpleDesk boards in?
-	if (!empty($modSettings['shd_boardindex_cat']) && !empty($modSettings['helpdesk_active']) && shd_allowed_to('access_helpdesk'))
+	if (!empty($modSettings['helpdesk_active']) && shd_allowed_to('access_helpdesk'))
 	{
 		global $sourcedir;
 		require_once($sourcedir . '/sd_source/Subs-SimpleDeskBoardIndex.php');
