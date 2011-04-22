@@ -134,9 +134,15 @@ function template_shd_depts()
 
 	foreach ($context['dept_list'] as $dept)
 	{
+		$state = $context['dept_list'][$dept['id_dept']]['new'] ? 'on' : 'off';
+		if (file_exists($settings['theme_dir'] . '/icons/shd' . $dept['id_dept'] . '/on.png'))
+			$icon = $settings['theme_url'] . '/icons/shd' . $dept['id_dept'] . '/' . $state . '.png';
+		else
+			$icon = $settings['default_theme_url'] . '/images/simpledesk/helpdesk_' . $state . '.png';
+
 		echo '
 								<tr class="windowbg2">
-									<td class="icon windowbg"><img src="', $settings['default_theme_url'], '/images/simpledesk/helpdesk_', $dept['new'] ? 'on' : 'off', '.png" alt="*" /></td>
+									<td class="icon windowbg"><img src="', $icon, '" alt="*" /></td>
 									<td class="info"><a href="', $scripturl, '?action=helpdesk;sa=main;dept=', $dept['id_dept'], '">', $dept['dept_name'], '</a></td>
 									<td class="stats windowbg">', $dept['tickets']['open'], ' open<br />', $dept['tickets']['closed'], ' closed</td>
 									<td class="lastpost"></td>
