@@ -456,6 +456,14 @@ $txt['shd_reattribute_no_user'] = 'No username was supplied.';
 $txt['shd_reattribute_no_messages'] = 'No messages were found to be re-attributed.';
 $txt['shd_reattribute_in_use'] = 'The only messages found to be re-attributed are all listed against a current user, and so no further re-attribution can be done on those messages.';
 
+$txt['shd_admin_maint_massdeptmove'] = 'Move Tickets';
+$txt['shd_admin_maint_massdeptmove_desc'] = 'This area allows you to mass-move tickets between departments.';
+$txt['shd_admin_maint_massdeptmove_select'] = '(Select department)';
+$txt['shd_admin_maint_massdeptmove_from'] = 'Move tickets from';
+$txt['shd_admin_maint_massdeptmove_to'] = 'to';
+$txt['shd_admin_maint_massdeptmove_success'] = 'All matching tickets were moved successfully to their new department.';
+$txt['shd_admin_maint_massdeptmove_samedept'] = 'You must select different start and destination departments to move tickets to.';
+
 $txt['shd_admin_maint_findrepair'] = 'Find and Repair Errors';
 $txt['shd_admin_maint_findrepair_desc'] = 'Sometimes, however unlikely, things get a little out of step inside the database. This operation performs an integrity check on the database and attempts to repair any errors it encounters.';
 

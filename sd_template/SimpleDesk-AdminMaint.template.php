@@ -140,6 +140,46 @@ function template_shd_admin_maint_home()
 			});
 		// ]]></script>';
 
+	// Moving home?
+	if (!empty($context['dept_list']))
+	{
+		echo '
+		<div class="cat_bar grid_header">
+			<h3 class="catbg">
+				<img src="', $settings['default_images_url'], '/simpledesk/movedept.png" alt="*">
+				', $txt['shd_admin_maint_massdeptmove'], '
+			</h3>
+		</div>
+		<div class="roundframe">
+			<div class="content">
+				<p>', $txt['shd_admin_maint_massdeptmove_desc'], '</p>
+				<form action="', $scripturl, '?action=admin;area=helpdesk_maint;sa=massdeptmove" method="post">
+					<p>
+						<label for="id_dept_from">', $txt['shd_admin_maint_massdeptmove_from'], ' </label>
+						<select name="id_dept_from" id="id_dept_from">';
+		foreach ($context['dept_list'] as $id => $dept)
+			echo '
+							<option value="', $id, '"', $id == 0 ? ' disabled="disabled"' : '', '> =&gt;&nbsp;', $dept, '</option>';
+
+		echo '
+						</select>
+						<label for="id_dept_to">', $txt['shd_admin_maint_massdeptmove_to'], '</label>
+						<select name="id_dept_to" id="id_dept_to">';
+		foreach ($context['dept_list'] as $id => $dept)
+			echo '
+							<option value="', $id, '"', $id == 0 ? ' disabled="disabled"' : '', '> =&gt;&nbsp;', $dept, '</option>';
+
+		echo '
+						</select>
+					</p>
+					<input type="submit" value="', $txt['shd_admin_maint_massdeptmove'], '" onclick="return submitThisOnce(this);" class="button_submit">
+					<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">
+				</form>
+			</div>
+		</div>
+		<span class="lowerframe"><span></span></span><br />';
+	}
+
 	// And we're done.
 	echo '
 	</div>';
@@ -245,6 +285,36 @@ function template_shd_admin_maint_reattributedone()
 			<span class="topslice"><span></span></span>
 			<div class="content">
 				<p>', $txt['shd_admin_maint_reattribute_success'], '</p>
+				<p class="padding">
+					<a href="', $scripturl, '?action=admin;area=helpdesk_maint;', $context['session_var'], '=', $context['session_id'], '">', $txt['shd_admin_maint_back'], '</a>
+				</p>
+			</div>
+			<span class="botslice"><span></span></span>
+		</div>
+	</div>';
+}
+
+function template_shd_admin_maint_massdeptmovedone()
+{
+	global $context, $settings, $txt, $scripturl;
+
+	echo '
+	<div id="admincenter">
+		<div class="tborder">
+			<div class="cat_bar">
+				<h3 class="catbg">
+					<img src="', $settings['default_images_url'], '/simpledesk/movedept.png" class="icon" alt="*" />
+					', $txt['shd_admin_maint_massdeptmove'], '
+				</h3>
+			</div>
+			<p class="description">
+				', $txt['shd_admin_maint_massdeptmove_desc'], '
+			</p>
+		</div>
+		<div class="windowbg">
+			<span class="topslice"><span></span></span>
+			<div class="content">
+				<p>', $txt['shd_admin_maint_massdeptmove_success'], '</p>
 				<p class="padding">
 					<a href="', $scripturl, '?action=admin;area=helpdesk_maint;', $context['session_var'], '=', $context['session_id'], '">', $txt['shd_admin_maint_back'], '</a>
 				</p>

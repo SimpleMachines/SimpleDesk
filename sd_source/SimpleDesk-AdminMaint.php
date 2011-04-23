@@ -47,6 +47,7 @@ function shd_admin_maint()
 	$subactions = array(
 		'main' => 'shd_admin_maint_home',
 		'reattribute' => 'shd_admin_maint_reattribute',
+		'massdeptmove' => 'shd_admin_maint_massdeptmove',
 		'findrepair' => 'shd_admin_maint_findrepair',
 	);
 
@@ -56,7 +57,27 @@ function shd_admin_maint()
 
 function shd_admin_maint_home()
 {
-	global $context, $txt;
+	global $context, $txt, $smcFunc;
+
+	$depts = shd_allowed_to('access_helpdesk', false);
+	if (count($depts) > 1)
+	{
+		$context['dept_list'] = array(
+			0 => $txt['shd_admin_maint_massdeptmove_select'],
+		);
+		$query = $smcFunc['db_query']('', '
+			SELECT id_dept, dept_name
+			FROM {db_prefix}helpdesk_depts
+			WHERE id_dept IN ({array_int:depts})
+			ORDER BY dept_order',
+			array(
+				'depts' => $depts,
+			)
+		);
+		while ($row = $smcFunc['db_fetch_assoc']($query))
+			$context['dept_list'][$row['id_dept']] = $row['dept_name'];
+		$smcFunc['db_free_result']($query);
+	}
 
 	$context['sub_template'] = 'shd_admin_maint_home';
 	$context['page_title'] = $txt['shd_admin_maint'];
@@ -135,6 +156,125 @@ function shd_admin_maint_reattribute()
 			'old_ids' => $members,
 		)
 	);
+}
+
+function shd_admin_maint_massdeptmove()
+{
+	global $context, $txt, $smcFunc, $sourcedir;
+	checkSession('request');
+
+	$context['page_title'] = $txt['shd_admin_maint_massdeptmove'];
+	$depts = shd_allowed_to('access_helpdesk', false);
+
+	$_POST['id_dept_from'] = isset($_POST['id_dept_from']) ? (int) $_POST['id_dept_from'] : 0;
+	$_POST['id_dept_to'] = isset($_POST['id_dept_to']) ? (int) $_POST['id_dept_to'] : 0;
+	if ($_POST['id_dept_from'] == 0 || $_POST['id_dept_to'] == 0 || !in_array($_POST['id_dept_from'], $depts) || !in_array($_POST['id_dept_to'], $depts))
+		fatal_lang_error('shd_unknown_dept', false);
+	elseif ($_POST['id_dept_from'] == $_POST['id_dept_to'])
+		fatal_lang_error('shd_admin_maint_massdeptmove_samedept', false);
+
+	// OK, let's start. How many tickets are there to move?
+	if (empty($_SESSION['massdeptmove']))
+	{
+		$query = $smcFunc['db_query']('', '
+			SELECT COUNT(*)
+			FROM {db_prefix}helpdesk_tickets
+			WHERE id_dept = {int:dept_from}',
+			array(
+				'dept_from' => $_POST['id_dept_from'],
+			)
+		);
+		list($count) = $smcFunc['db_fetch_row']($query);
+		$smcFunc['db_free_result']($query);
+
+		if (!empty($count))
+			$_SESSION['massdeptmove'] = $count;
+		else
+			$_GET['done'] = true;
+	}
+
+	// OK, so we know we're going to be doing some tickets, or do we?
+	$_POST['tickets_done'] = isset($_POST['tickets_done']) ? (int) $_POST['tickets_done'] : 0;
+
+	if (isset($_GET['done']) || $_POST['tickets_done'] >= $_SESSION['massdeptmove'])
+	{
+		unset($_SESSION['massdeptmove']);
+		$context['sub_template'] = 'shd_admin_maint_massdeptmovedone';
+		return;
+	}
+
+	// So, do this batch.
+	$step_count = 10;
+	$tickets = array();
+
+	// We don't need to get particularly clever; whatever tickets we did in any previous batch, well, they will be gone by now.
+	$query = $smcFunc['db_query']('', '
+		SELECT id_ticket, subject
+		FROM {db_prefix}helpdesk_tickets
+		WHERE id_dept = {int:dept_from}
+		ORDER BY id_ticket
+		LIMIT {int:step}',
+		array(
+			'dept_from' => $_POST['id_dept_from'],
+			'step' => $step_count,
+		)
+	);
+	while ($row = $smcFunc['db_fetch_assoc']($query))
+		$tickets[$row['id_ticket']] = $row['subject'];
+	$smcFunc['db_free_result']($query);
+
+	if (!empty($tickets))
+	{
+		// Get department ids.
+		$query = $smcFunc['db_query']('', '
+			SELECT id_dept, dept_name
+			FROM {db_prefix}helpdesk_depts
+			WHERE id_dept IN ({array_int:depts})',
+			array(
+				'depts' => array($_POST['id_dept_from'], $_POST['id_dept_to']),
+			)
+		);
+		$depts = array();
+		while ($row = $smcFunc['db_fetch_assoc']($query))
+			$depts[$row['id_dept']] = $row['dept_name'];
+		$smcFunc['db_free_result']($query);
+
+		// OK, we have the ticket ids. Now we'll move the set and log each one moved.
+		$smcFunc['db_query']('', '
+			UPDATE {db_prefix}helpdesk_tickets
+			SET id_dept = {int:dept_to}
+			WHERE id_ticket IN ({array_int:ids})',
+			array(
+				'dept_to' => $_POST['id_dept_to'],
+				'ids' => array_keys($tickets),
+			)
+		);
+
+		// This is the same every time.
+		$log_params = array(
+			'old_dept_id' => $_POST['id_dept_from'],
+			'old_dept_name' => $depts[$_POST['id_dept_from']],
+			'new_dept_id' => $_POST['id_dept_to'],
+			'new_dept_name' => $depts[$_POST['id_dept_to']],
+		);
+		foreach ($tickets as $id => $subject)
+		{
+			$log_params['subject'] = $subject;
+			$log_params['ticket'] = $id;
+			shd_log_action('move_dept', $log_params);
+		}
+
+		$_POST['tickets_done'] += $step_count;
+	}
+
+	$context['continue_countdown'] = 3;
+	$context['continue_get_data'] = '?action=admin;area=helpdesk_maint;sa=massdeptmove;' . $context['session_var'] . '=' . $context['session_id'];
+	$context['continue_post_data'] = '
+		<input type="hidden" name="id_dept_from" value="' . $_POST['id_dept_from'] . '" />
+		<input type="hidden" name="id_dept_to" value="' . $_POST['id_dept_to'] . '" />
+		<input type="hidden" name="tickets_done" value="' . $_POST['tickets_done'] . '" />';
+	$context['sub_template'] = 'not_done';
+	$context['continue_percent'] = $_POST['tickets_done'] > $_SESSION['massdeptmove'] ? 100 : floor($_POST['tickets_done'] / $_SESSION['massdeptmove'] * 100);
 }
 
 function shd_admin_maint_findrepair()
