@@ -540,7 +540,7 @@ function template_preview()
 
 function template_ticket_additional_options()
 {
-	global $context, $options, $txt, $modSettings;
+	global $context, $options, $txt, $modSettings, $settings;
 
 	echo '
 					<div class="information shd_reply_attachments" id="shd_attach_container"', !empty($context['shd_display']) ? ' style="display:none;"' : '', '>
@@ -566,16 +566,37 @@ function template_ticket_additional_options()
 						<dl id="postAttachment">
 							<dt>
 								', $txt['attached'], ':
-							</dt>
+							</dt>';
+
+		$can_delete = false;
+		foreach ($context['current_attachments'] as $attachment)
+		{
+			if (!empty($attachment['can_delete']))
+				$can_delete = true;
+			break;
+		}
+
+		if ($can_delete)
+		{
+
+			echo '
 							<dd class="smalltext">
 								<input type="hidden" name="attach_del[]" value="0" />
 								', $txt['uncheck_unwatchd_attach'], ':
 							</dd>';
-		foreach ($context['current_attachments'] as $attachment)
-			echo '
+			foreach ($context['current_attachments'] as $attachment)
+				echo '
 							<dd class="smalltext">
 								<label for="attachment_', $attachment['id'], '"><input type="checkbox" id="attachment_', $attachment['id'], '" name="attach_del[]" value="', $attachment['id'], '"', empty($attachment['unchecked']) ? ' checked="checked"' : '', ' class="input_check" onclick="javascript:oAttach.checkActive();" /> ', $attachment['name'], '</label>
 							</dd>';
+		}
+		else
+		{
+			foreach ($context['current_attachments'] as $attachment)
+				echo '
+							<dd class="smalltext">', $attachment['name'], '</dd>';
+		}
+
 		echo '
 						</dl>';
 	}

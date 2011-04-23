@@ -431,6 +431,64 @@ function shd_perma_delete()
 		fatal_lang_error('shd_no_ticket');
 }
 
+// Delete a given attachment from the one-click interface.
+function shd_attach_delete()
+{
+	global $smcFunc, $user_info, $context, $sourcedir;
+
+	if (empty($context['ticket_id']) || empty($_GET['attach']) || (int) $_GET['attach'] == 0)
+		fatal_lang_error('no_access', false);
+
+	$_GET['attach'] = (int) $_GET['attach'];
+
+	// Well, we have a ticket id. Let's figure out what department we're in so we can check permissions.
+	$query = shd_db_query('', '
+		SELECT hdt.id_dept, a.filename, hda.id_msg, hdt.subject
+		FROM {db_prefix}attachments AS a
+			INNER JOIN {db_prefix}helpdesk_attachments AS hda ON (hda.id_attach = a.id_attach)
+			INNER JOIN {db_prefix}helpdesk_tickets AS hdt ON (hda.id_ticket = hdt.id_ticket)
+		WHERE {query_see_ticket}
+			AND hda.id_ticket = {int:ticket}
+			AND hda.id_attach = {int:attach}
+			AND a.attachment_type = 0',
+		array(
+			'attach' => $_GET['attach'],
+			'ticket' => $context['ticket_id'],
+		)
+	);
+	if ($smcFunc['db_num_rows']($query) == 0)
+	{
+		$smcFunc['db_free_result']($query);
+		fatal_lang_error('no_access');
+	}
+
+	list($dept, $filename, $id_msg, $subject) = $smcFunc['db_fetch_row']($query);
+	$smcFunc['db_free_result']($query);
+
+	shd_is_allowed_to('shd_delete_attachment', $dept);
+
+	// So, we can delete the attachment. We already know it exists, we know we have permission.
+	$log_params = array(
+		'subject' => $subject,
+		'ticket' => $context['ticket_id'],
+		'msg' => $id_msg,
+		'att_removed' => array(htmlspecialchars($filename)),
+	);
+
+	shd_log_action('editticket', $log_params);
+
+	// Now you can delete
+	require_once($sourcedir . '/ManageAttachments.php');
+	$attachmentQuery = array(
+		'attachment_type' => 0,
+		'id_msg' => 0,
+		'id_attach' => array($_GET['attach']),
+	);
+	removeAttachments($attachmentQuery);
+
+	redirectexit('action=helpdesk;sa=ticket;ticket=' . $context['ticket_id']);
+}
+
 // Restore the given ticket from the recycling bin.
 function shd_ticket_restore()
 {

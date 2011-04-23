@@ -357,14 +357,16 @@ function template_ticket_leftcolumn()
 */
 function template_viewticketattach()
 {
-	global $context, $settings, $txt;
+	global $context, $settings, $txt, $scripturl;
+
+	$remove_txt = JavaScriptEscape($txt['shd_delete_attach_confirm']);
 
 	if (!empty($context['ticket_attach']['ticket']))
 	{
 		echo '	<div class="tborder">
 					<div class="title_bar grid_header">
 						<h3 class="titlebg">
-							<img src="', $settings['default_images_url'], '/simpledesk/attachments.png" alt="x" />', $txt['shd_ticket_attachments'], ' (', count($context['ticket_attach']['ticket']), ')
+							<img src="', $settings['default_images_url'], '/simpledesk/attachments.png" alt="" />', $txt['shd_ticket_attachments'], ' (', count($context['ticket_attach']['ticket']), ')
 						</h3>
 					</div>
 					<div class="windowbg2">
@@ -388,7 +390,13 @@ function template_viewticketattach()
 			echo '
 								<strong>', $attachment['link'], '</strong>
 								<span class="smalltext">
-									(', $attachment['size'], ')
+									(', $attachment['size'], ')';
+
+			if (!empty($attachment['can_delete']))
+				echo '
+									<a href="', $scripturl, '?action=helpdesk;sa=deleteattach;ticket=', $context['ticket_id'], ';attach=', $attachment['id'], '" onclick="return confirm(', $remove_txt, ');"><img src="', $settings['default_images_url'], '/simpledesk/delete.png" title="', $txt['shd_delete_attach'], '" alt="', $txt['shd_delete_attach'], '" /></a>';
+
+			echo '
 								</span>
 							</div>';
 		}
@@ -537,7 +545,9 @@ function template_quickreply()
 // Arantor: I swear I spent more time farting around with this trying to make it not look like crap than I did the rest of the thumbnail code.
 function template_inline_attachments($msg)
 {
-	global $context, $txt;
+	global $context, $txt, $scripturl, $settings;
+
+	$remove_txt = JavaScriptEscape($txt['shd_delete_attach_confirm']);
 
 	if (!empty($context['ticket_attach']['reply'][$msg]))
 	{
@@ -576,7 +586,14 @@ function template_inline_attachments($msg)
 			}
 
 			echo '
-										', $attachment['link'], '
+										', $attachment['link'];
+
+
+			if (!empty($attachment['can_delete']))
+				echo '
+									<a href="', $scripturl, '?action=helpdesk;sa=deleteattach;ticket=', $context['ticket_id'], ';attach=', $attachment['id'], '" onclick="return confirm(', $remove_txt, ');"><img src="', $settings['default_images_url'], '/simpledesk/delete.png" title="', $txt['shd_delete_attach'], '" alt="', $txt['shd_delete_attach'], '" /></a>';
+
+			echo '
 									</td>';
 
 			$count++;

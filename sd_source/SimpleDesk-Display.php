@@ -231,7 +231,6 @@ function shd_view_ticket()
 	$context['total_visible_posts'] = empty($context['display_recycle']) ? $context['ticket']['num_replies'] : (int) $context['ticket']['num_replies'] + (int) $context['ticket']['deleted_replies'];
 
 	// OK, before we go crazy, we might need to alter the ticket start. If we're in descending order (non default), we need to reverse it.
-
 	if (!empty($context['shd_preferences']['display_order']) && $context['shd_preferences']['display_order'] == 'desc')
 	{
 		if (empty($context['ticket_start_natural']))
@@ -904,6 +903,9 @@ function shd_display_load_attachments()
 
 	$context['ticket_attach'][$modSettings['shd_attachments_mode']] = array();
 
+	if (!shd_allowed_to('shd_view_attachment', $context['ticket']['dept']))
+		return;
+
 	if ($modSettings['shd_attachments_mode'] == 'ticket')
 	{
 		$query = shd_db_query('', '
@@ -973,6 +975,7 @@ function shd_attachment_info($attach_info)
 	global $scripturl, $context, $modSettings, $txt, $sourcedir, $smcFunc;
 
 	$filename = preg_replace('~&amp;#(\\d{1,7}|x[0-9a-fA-F]{1,6});~', '&#\\1;', htmlspecialchars($attach_info['filename']));
+	$deleteable = shd_allowed_to('shd_delete_attachment', $context['ticket']['dept']);
 
 	$attach = array(
 		'id' => $attach_info['id_attach'],
@@ -982,6 +985,7 @@ function shd_attachment_info($attach_info)
 		'href' => $scripturl . '?action=dlattach;ticket=' . $context['ticket_id'] . '.0;attach=' . $attach_info['id_attach'],
 		'link' => shd_attach_icon($filename) . '&nbsp;<a href="' . $scripturl . '?action=dlattach;ticket=' . $context['ticket_id'] . '.0;attach=' . $attach_info['id_attach'] . '">' . htmlspecialchars($attach_info['filename']) . '</a>',
 		'is_image' => !empty($modSettings['attachmentShowImages']) && !empty($attach_info['width']) && !empty($attach_info['height']),
+		'can_delete' => $deleteable,
 	);
 
 	if ($attach['is_image'])

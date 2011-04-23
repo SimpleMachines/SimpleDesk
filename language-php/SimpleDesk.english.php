@@ -155,6 +155,7 @@ $txt['error_invalid_fields'] = 'The following fields have values that cannot be 
 $txt['error_missing_fields'] = 'The following fields were not completed and need to be: %1$s';
 $txt['shd_cannot_move_dept'] = 'You cannot move this ticket, there is nowhere to move it to.';
 $txt['shd_no_perm_move_dept'] = 'You are not permitted to move this ticket to another department.';
+$txt['cannot_shd_delete_attachment'] = 'You are not permitted to delete attachments.';
 
 // The main Helpdesk.
 $txt['shd_home'] = 'Helpdesk'; // separate string in case someone wants to change it independently of the main/admin menu
@@ -248,9 +249,11 @@ $txt['shd_ticket_unassign'] = 'Un-Assign';
 $txt['shd_ticket_delete'] = 'Delete';
 $txt['shd_delete_confirm'] = 'Are you sure you want to delete this ticket? If deleted, this ticket will be moved to recycling bin.';
 $txt['shd_delete_reply_confirm'] = 'Are you sure you want to delete this reply? If deleted, this reply will be moved to the recycling bin.';
+$txt['shd_delete_attach_confirm'] = 'Are you sure you want to delete this attachment? (This cannot be undone!)';
+$txt['shd_delete_attach'] = 'Delete this attachment';
 $txt['shd_ticket_restore'] = 'Restore';
 $txt['shd_delete_permanently'] = 'Delete permanently';
-$txt['shd_delete_permanently_confirm'] = 'Are you sure you want to permanently delete this ticket? This CAN NOT be undone!';
+$txt['shd_delete_permanently_confirm'] = 'Are you sure you want to permanently delete this ticket? This CANNOT be undone!';
 $txt['shd_ticket_move_to_topic'] = 'Move to topic';
 $txt['shd_move_dept'] = 'Move dept.';
 $txt['shd_actions'] = 'Actions';

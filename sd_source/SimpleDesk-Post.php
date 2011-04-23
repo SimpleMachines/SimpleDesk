@@ -657,14 +657,17 @@ function shd_save_ticket()
 			shd_modify_ticket_post($msgOptions, $ticketOptions, $posterOptions);
 
 			// OK, did we get any custom fields back?
-			foreach ($context['custom_fields_updated'] as $field)
+			if (!empty($context['custom_fields_updated']))
 			{
-				if ($field['oldvalue'] == $field['newvalue'])
-					continue;
-				$action = 'cf_' . ($field['scope'] == CFIELD_TICKET ? 'tkt' : 'rpl') . (empty($field['default']) ? 'change_' : 'chgdef_') . ($field['visible'][0] ? 'user' : '') . ($field['visible'][1] ? 'staff' : '') . 'admin';
-				unset($field['default'], $field['scope'], $field['visible']);
-				$field['subject'] = $ticketinfo['subject'];
-				shd_log_action($action, $field);
+				foreach ($context['custom_fields_updated'] as $field)
+				{
+					if ($field['oldvalue'] == $field['newvalue'])
+						continue;
+					$action = 'cf_' . ($field['scope'] == CFIELD_TICKET ? 'tkt' : 'rpl') . (empty($field['default']) ? 'change_' : 'chgdef_') . ($field['visible'][0] ? 'user' : '') . ($field['visible'][1] ? 'staff' : '') . 'admin';
+					unset($field['default'], $field['scope'], $field['visible']);
+					$field['subject'] = $ticketinfo['subject'];
+					shd_log_action($action, $field);
+				}
 			}
 			shd_clear_active_tickets($ticketinfo['id_member_started']);
 		}
@@ -1524,6 +1527,7 @@ function shd_load_attachments()
 		$context['current_attachments'] = array();
 
 	$context['ticket_attach'][$modSettings['shd_attachments_mode']] = array();
+	$deleteable = shd_allowed_to('shd_delete_attachment', $context['ticket_form']['dept']);
 
 	// Get existing attachments
 	$query = shd_db_query('', '
@@ -1544,6 +1548,7 @@ function shd_load_attachments()
 		$context['current_attachments'][] = array(
 			'id' => $row['id_attach'],
 			'name' => preg_replace('~&amp;#(\\d{1,7}|x[0-9a-fA-F]{1,6});~', '&#\\1;', htmlspecialchars($row['filename'])),
+			'can_delete' => $deleteable,
 		);
 
 	$smcFunc['db_free_result']($query);
@@ -1747,6 +1752,8 @@ function shd_handle_attachments()
 	// Check if they are trying to delete any current attachments....
 	if (isset($_POST['attach_del']))
 	{
+		shd_is_allowed_to('shd_delete_attachment', $context['ticket_form']['dept']);
+
 		$del_temp = array();
 		foreach ($_POST['attach_del'] as $i => $dummy)
 			$del_temp[$i] = (int) $dummy;

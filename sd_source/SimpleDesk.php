@@ -116,6 +116,7 @@ function shd_main()
 		'permadelete' => array('SimpleDesk-Delete.php', 'shd_perma_delete'),
 		'deleteticket' => array('SimpleDesk-Delete.php', 'shd_ticket_delete'),
 		'deletereply' => array('SimpleDesk-Delete.php', 'shd_reply_delete'),
+		'deleteattach' => array('SimpleDesk-Delete.php', 'shd_attach_delete'),
 		'restoreticket' => array('SimpleDesk-Delete.php', 'shd_ticket_restore'),
 		'restorereply' => array('SimpleDesk-Delete.php', 'shd_reply_restore'),
 		'emaillog' => array('SimpleDesk-Notifications.php', 'shd_notify_popup'),
