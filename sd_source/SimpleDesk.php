@@ -1081,6 +1081,9 @@ function shd_helpdesk_listing()
 	// 3. Apply the values into the tickets.
 	foreach ($context['ticket_blocks'] as $block_id => $block)
 	{
+		if (empty($block['tickets']))
+			continue;
+
 		foreach ($block['tickets'] as $ticket_id => $ticket)
 		{
 			if (isset($tickets[$ticket_id]))
