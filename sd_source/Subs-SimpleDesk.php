@@ -545,7 +545,9 @@ function shd_count_helpdesk_tickets($status = '', $is_staff = false)
 		for ($i = 0; $i <= 6; $i++)
 			$context['ticket_count'][$i] = 0; // set the count to zero for all known states
 
-		$temp = cache_get_data('shd_ticket_count_' . $user_info['id'], 180);
+		$cache_id = 'shd_ticket_count_' . (!empty($context['shd_department']) ? 'dept' . $context['shd_department'] . '_' : '') . $user_info['id'];
+
+		$temp = cache_get_data($cache_id, 180);
 		if ($temp !== null)
 		{
 			$context['ticket_count'] = $temp;
@@ -555,7 +557,8 @@ function shd_count_helpdesk_tickets($status = '', $is_staff = false)
 			$query = shd_db_query('', '
 				SELECT status, COUNT(status) AS tickets
 				FROM {db_prefix}helpdesk_tickets AS hdt
-				WHERE {query_see_ticket}
+				WHERE {query_see_ticket}' . (!empty($context['shd_department']) ? '
+					AND id_dept = ' . $context['shd_department'] : '') . '
 				GROUP BY status
 				ORDER BY null',
 				array()
@@ -573,7 +576,8 @@ function shd_count_helpdesk_tickets($status = '', $is_staff = false)
 					SELECT status, COUNT(status) AS tickets
 					FROM {db_prefix}helpdesk_tickets AS hdt
 					WHERE {query_see_ticket}
-						AND id_member_assigned = {int:user}
+						AND id_member_assigned = {int:user}' . (!empty($context['shd_department']) ? '
+						AND id_dept = ' . $context['shd_department'] : '') . '
 					GROUP BY status
 					ORDER BY null',
 					array(
@@ -598,7 +602,8 @@ function shd_count_helpdesk_tickets($status = '', $is_staff = false)
 				$query = shd_db_query('', '
 					SELECT COUNT(id_ticket) AS tickets
 					FROM {db_prefix}helpdesk_tickets AS hdt
-					WHERE {query_see_ticket}
+					WHERE {query_see_ticket}' . (!empty($context['shd_department']) ? '
+						AND id_dept = ' . $context['shd_department'] : '') . '
 						AND hdt.withdeleted = {int:has_deleted}
 						AND hdt.status != {int:ticket_deleted}',
 					array(
@@ -614,7 +619,7 @@ function shd_count_helpdesk_tickets($status = '', $is_staff = false)
 			else
 				$context['ticket_count']['withdeleted'] = 0;
 
-			cache_put_data('shd_ticket_count_' . $user_info['id'], $context['ticket_count'], 180);
+			cache_put_data($cache_id, $context['ticket_count'], 180);
 		}
 	}
 

@@ -1022,7 +1022,7 @@ function shd_helpdesk_listing()
 			}
 
 			$context['start'] = $context['ticket_blocks'][$block_id]['start'];
-			$context['ticket_blocks'][$block_id]['page_index'] = shd_no_expand_pageindex($scripturl . $primary_url . $url_fragment . '#shd_block_' . $block_id, $context['start'], $block['count'], $num_per_page, true);
+			$context['ticket_blocks'][$block_id]['page_index'] = shd_no_expand_pageindex($scripturl . $primary_url . $url_fragment . $context['shd_dept_link'] . '#shd_block_' . $block_id, $context['start'], $block['count'], $num_per_page, true);
 		}
 	}
 
