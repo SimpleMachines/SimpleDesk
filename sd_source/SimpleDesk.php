@@ -552,7 +552,10 @@ function shd_view_block()
 	foreach ($context['ticket_blocks'] as $block => $details)
 	{
 		if ($block == $_REQUEST['block'])
+		{
 			$context['items_per_page'] = $details['count'];
+			$context['ticket_blocks'][$block]['viewing_as_block'] = true;
+		}
 		else
 			$context['ticket_blocks'][$block]['collapsed'] = true;
 	}
@@ -720,9 +723,18 @@ function shd_helpdesk_listing()
 	// First figure out the start positions of each item and sanitise them
 	foreach ($context['ticket_blocks'] as $block_key => $block)
 	{
-		$num_per_page = !empty($context['shd_preferences']['blocks_' . $block_key . '_count']) ? $context['shd_preferences']['blocks_' . $block_key . '_count'] : $context['items_per_page'];
-		$start = empty($_REQUEST['st_' . $block_key]) ? 0 : (int) $_REQUEST['st_' . $block_key];
-		$max_value = $block['count']; // easier to read
+		if (empty($block['viewing_as_block']))
+		{
+			$num_per_page = !empty($context['shd_preferences']['blocks_' . $block_key . '_count']) ? $context['shd_preferences']['blocks_' . $block_key . '_count'] : $context['items_per_page'];
+			$start = empty($_REQUEST['st_' . $block_key]) ? 0 : (int) $_REQUEST['st_' . $block_key];
+			$max_value = $block['count']; // easier to read
+		}
+		else
+		{
+			$num_per_page = $context['items_per_page'];
+			$max_value = $context['items_per_page'];
+			$start = 0;
+		}
 
 		if ($start < 0)
 			$start = 0;
@@ -732,6 +744,8 @@ function shd_helpdesk_listing()
 			$start = max(0, (int) $start - ((int) $start % (int) $num_per_page));
 
 		$context['ticket_blocks'][$block_key]['start'] = $start;
+		$context['ticket_blocks'][$block_key]['num_per_page'] = $num_per_page;
+
 		if ($start != 0)
 			$_REQUEST['st_' . $block_key] = $start; // sanitise!
 		elseif (isset($_REQUEST['st_' . $block_key]))
@@ -839,8 +853,6 @@ function shd_helpdesk_listing()
 
 		$context['ticket_blocks'][$block_key]['tickets'] = array();
 
-		$num_per_page = !empty($context['shd_preferences']['blocks_' . $block_key . '_count']) ? $context['shd_preferences']['blocks_' . $block_key . '_count'] : $context['items_per_page'];
-
 		$query = shd_db_query('', '
 			SELECT hdt.id_ticket, hdt.id_dept, hdd.dept_name, hdt.id_last_msg, hdt.id_member_started, hdt.id_member_updated,
 				hdt.id_member_assigned, hdt.subject, hdt.status, hdt.num_replies, hdt.deleted_replies, hdt.private, hdt.urgency,
@@ -859,7 +871,7 @@ function shd_helpdesk_listing()
 				'dept' => $context['shd_department'],
 				'user' => $context['user']['id'],
 				'start' => $block['start'],
-				'items_per_page' => $num_per_page,
+				'items_per_page' => $block['num_per_page'],
 			)
 		);
 
