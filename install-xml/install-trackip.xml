@@ -90,8 +90,8 @@
 			'additional_rows' => array(
 				array(
 					'position' => 'after_title',
-					'value' => '<span class="smalltext">' . $txt['shd_replies_from_ip_desc'] . '</span>',
-					'class' => 'windowbg',
+					'value' => $txt['shd_replies_from_ip_desc'],
+					'class' => 'smalltext',
 					'style' => 'padding: 2ex;',
 				),
 			),

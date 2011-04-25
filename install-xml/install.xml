@@ -151,10 +151,11 @@
 
 	<file name="$sourcedir/Who.php"><!-- load the who's online strings... we don't use it much now, but maybe later... -->
 		<operation>
-			<search position="before"><![CDATA[loadLanguage('Who');]]></search>
-			<add><![CDATA[
-	shd_load_language('SimpleDeskWho');
-	shd_load_plugin_langfiles('who');]]></add>
+			<search position="after"><![CDATA[// Actions that require a specific permission level.]]></search>
+			<add><![CDATA[	shd_load_language('SimpleDeskWho');
+	shd_load_plugin_langfiles('who');
+
+	]]></add>
 		</operation>
 	</file>
 
