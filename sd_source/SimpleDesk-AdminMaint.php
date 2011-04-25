@@ -173,13 +173,19 @@ function shd_admin_maint_massdeptmove()
 	elseif ($_POST['id_dept_from'] == $_POST['id_dept_to'])
 		fatal_lang_error('shd_admin_maint_massdeptmove_samedept', false);
 
+	$clauses = array();
+	if (empty($_POST['moveclosed']))
+		$clauses[] = 'AND status != ' . TICKET_STATUS_CLOSED;
+	if (empty($_POST['movedeleted']))
+		$clauses[] = 'AND status != ' . TICKET_STATUS_DELETED;
+
 	// OK, let's start. How many tickets are there to move?
 	if (empty($_SESSION['massdeptmove']))
 	{
 		$query = $smcFunc['db_query']('', '
 			SELECT COUNT(*)
 			FROM {db_prefix}helpdesk_tickets
-			WHERE id_dept = {int:dept_from}',
+			WHERE id_dept = {int:dept_from} ' . implode(' ', $clauses),
 			array(
 				'dept_from' => $_POST['id_dept_from'],
 			)
@@ -211,7 +217,7 @@ function shd_admin_maint_massdeptmove()
 	$query = $smcFunc['db_query']('', '
 		SELECT id_ticket, subject
 		FROM {db_prefix}helpdesk_tickets
-		WHERE id_dept = {int:dept_from}
+		WHERE id_dept = {int:dept_from} ' . implode(' ', $clauses) . '
 		ORDER BY id_ticket
 		LIMIT {int:step}',
 		array(
@@ -264,6 +270,8 @@ function shd_admin_maint_massdeptmove()
 			shd_log_action('move_dept', $log_params);
 		}
 
+		shd_clear_active_tickets();
+
 		$_POST['tickets_done'] += $step_count;
 	}
 
@@ -273,6 +281,13 @@ function shd_admin_maint_massdeptmove()
 		<input type="hidden" name="id_dept_from" value="' . $_POST['id_dept_from'] . '" />
 		<input type="hidden" name="id_dept_to" value="' . $_POST['id_dept_to'] . '" />
 		<input type="hidden" name="tickets_done" value="' . $_POST['tickets_done'] . '" />';
+	if (!empty($_POST['moveclosed']))
+		$context['continue_post_data'] .= '
+		<input type="hidden" name="moveclosed" value="' . $_POST['moveclosed'] . '" />';
+	if (!empty($_POST['movedeleted']))
+		$context['continue_post_data'] .= '
+		<input type="hidden" name="movedeleted" value="' . $_POST['movedeleted'] . '" />';
+
 	$context['sub_template'] = 'not_done';
 	$context['continue_percent'] = $_POST['tickets_done'] > $_SESSION['massdeptmove'] ? 100 : floor($_POST['tickets_done'] / $_SESSION['massdeptmove'] * 100);
 }

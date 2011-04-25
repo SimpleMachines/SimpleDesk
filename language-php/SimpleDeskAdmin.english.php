@@ -463,6 +463,8 @@ $txt['shd_admin_maint_massdeptmove_from'] = 'Move tickets from';
 $txt['shd_admin_maint_massdeptmove_to'] = 'to';
 $txt['shd_admin_maint_massdeptmove_success'] = 'All matching tickets were moved successfully to their new department.';
 $txt['shd_admin_maint_massdeptmove_samedept'] = 'You must select different start and destination departments to move tickets to.';
+$txt['shd_admin_maint_massdeptmove_closed'] = 'Move closed tickets from this department';
+$txt['shd_admin_maint_massdeptmove_deleted'] = 'Move deleted tickets from this department';
 
 $txt['shd_admin_maint_findrepair'] = 'Find and Repair Errors';
 $txt['shd_admin_maint_findrepair_desc'] = 'Sometimes, however unlikely, things get a little out of step inside the database. This operation performs an integrity check on the database and attempts to repair any errors it encounters.';
