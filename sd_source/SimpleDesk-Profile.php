@@ -161,7 +161,8 @@ function shd_profile_frontpage($memID)
 	$smcFunc['db_free_result']($query);
 	$context['shd_numassigned'] = comma_format($context['shd_numassigned']);
 
-	$context['can_post_proxy'] = shd_allowed_to('shd_new_ticket', 0) && shd_allowed_to('shd_post_proxy', 0); // since it's YOUR permissions, whether you can post on behalf of this user!
+	$context['can_post_ticket'] = shd_allowed_to('shd_new_ticket', 0) && $memID == $context['user']['id'];
+	$context['can_post_proxy'] = shd_allowed_to('shd_new_ticket', 0) && shd_allowed_to('shd_post_proxy', 0) && $memID != $context['user']['id']; // since it's YOUR permissions, whether you can post on behalf of this user and this user isn't you!
 }
 
 function shd_profile_preferences($memID)

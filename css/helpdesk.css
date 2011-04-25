@@ -368,6 +368,11 @@ h3.ticketheader img
 	background: url(../images/simpledesk/proxy.png) no-repeat left;
 	background-position: 10px;
 }
+#shd_post_ticket
+{
+	background: url(../images/simpledesk/ticket.png) no-repeat left;
+	background-position: 10px;
+}
 
 /**********************************
 * Ticket replies				 *

@@ -32,8 +32,10 @@ function template_shd_profile_main()
 	if (!empty($context['shd_numopentickets']))
 		echo ' <span class="smalltext">(', $context['shd_numopentickets'], ' ', $txt['shd_profile_currently_open'], ')</span>';
 
-	echo '<br />
+	echo '
+				<br />
 				', $txt['shd_profile_tickets_assigned'], ': <a href="', $scripturl, '?action=profile;u=', $context['member']['id'], ';area=hd_showtickets">', $context['shd_numassigned'], '</a>
+				<br /><br />
 
 				<div class="description shd_showtickets floatright" id="shd_showtickets">
 					<a href="', $scripturl, '?action=profile;u=', $context['member']['id'], ';area=hd_showtickets">', $txt['shd_profile_view_tickets'], '</a><br />
@@ -43,6 +45,12 @@ function template_shd_profile_main()
 		echo '
 				<div class="description shd_showtickets floatright" id="shd_post_proxy">
 					<a href="', $scripturl, '?action=helpdesk;sa=newticket;proxy=', $context['member']['id'], '">', $txt['shd_profile_proxy'], '</a><br />
+				</div>';
+
+	if (!empty($context['can_post_ticket']))
+		echo '
+				<div class="description shd_showtickets floatright" id="shd_post_ticket">
+					<a href="', $scripturl, '?action=helpdesk;sa=newticket">', $txt['shd_profile_newticket'], '</a><br />
 				</div>';
 
 	echo '

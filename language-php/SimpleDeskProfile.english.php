@@ -41,6 +41,7 @@ $txt['shd_profile_go_to_helpdesk'] = 'Go to the helpdesk';
 $txt['shd_profile_heading'] = 'Helpdesk Profile - %s';
 $txt['shd_profile_edit_settings'] = 'Edit my settings';
 $txt['shd_profile_view_tickets'] = 'View my tickets';
+$txt['shd_profile_newticket'] = 'Post new ticket';
 $txt['shd_profile_proxy'] = 'Post proxy ticket';
 $txt['shd_profile_tickets'] = 'Ticket Information';
 $txt['shd_profile_tickets_created'] = 'Tickets created by this user';
