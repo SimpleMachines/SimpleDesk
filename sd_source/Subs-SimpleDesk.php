@@ -315,23 +315,10 @@ function shd_get_active_tickets()
  *	@see shd_get_active_tickets()
  *	@since 1.0
 */
-function shd_clear_active_tickets($id = 0)
+function shd_clear_active_tickets()
 {
-	global $user_info;
-
-	$members = shd_members_allowed_to('shd_staff');
-	if ($id != 0)
-		$members[] = $id;
-
-	$members[] = $user_info['id'];
-
-	$members = array_unique($members);
-
-	foreach ($members as $member)
-	{
-		cache_put_data('shd_active_tickets_' . $member, null, 0);
-		cache_put_data('shd_ticket_count_' . $member, null, 0);
-	}
+	clean_cache('shd_active_tickets');
+	clean_cache('shd_ticket_count');
 }
 
 /**

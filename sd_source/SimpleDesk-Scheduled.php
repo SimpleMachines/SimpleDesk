@@ -128,13 +128,8 @@ function shd_scheduled_close_tickets()
 	// No need to dump all SD cache items though, though we have to get all those whose tickets were affected, plus all staff.
 	if (!empty($modSettings['cache_enable']))
 	{
-		$members = array_merge($members, shd_members_allowed_to('shd_staff'));
-		$members = array_unique($members);
-		foreach ($members as $member)
-		{
-			cache_put_data('shd_active_tickets_' . $member, null, 0);
-			cache_put_data('shd_ticket_count_' . $member, null, 0);
-		}
+		clean_cache('shd_active_tickets');
+		clean_cache('shd_ticket_count');
 	}
 }
 

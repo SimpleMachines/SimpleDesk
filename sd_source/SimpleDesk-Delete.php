@@ -101,7 +101,7 @@ function shd_ticket_delete()
 	);
 
 	// Expire the cache of count(active tickets)
-	shd_clear_active_tickets($row['id_member_started']);
+	shd_clear_active_tickets();
 
 	// Go to the home
 	redirectexit($context['shd_home']);
@@ -181,7 +181,7 @@ function shd_reply_delete()
 	);
 
 	// Expire the cache of count(active tickets)
-	shd_clear_active_tickets($row['id_member_started']);
+	shd_clear_active_tickets();
 
 	// Back to the ticket
 	redirectexit('action=helpdesk;sa=ticket;ticket=' . $context['ticket_id']);
@@ -229,7 +229,7 @@ function shd_perma_delete()
 
 		$subject = $row['subject'];
 		// Expire the cache of count(active tickets)
-		shd_clear_active_tickets($row['id_member_started']);
+		shd_clear_active_tickets();
 
 		// Start by getting all the messages in this ticket, we'll need those for custom fields values that need purging.
 		$query = shd_db_query('', '
@@ -357,7 +357,7 @@ function shd_perma_delete()
 
 		$subject = $row['subject'];
 		// Expire the cache of count(active tickets)
-		shd_clear_active_tickets($row['id_member_started']);
+		shd_clear_active_tickets();
 
 		// Just remove the reply.
 		shd_db_query('', '
@@ -539,7 +539,7 @@ function shd_ticket_restore()
 	);
 
 	// Expire the cache of count(active tickets)
-	shd_clear_active_tickets($row['id_member_started']);
+	shd_clear_active_tickets();
 
 	shd_log_action('restore',
 		array(
@@ -628,7 +628,7 @@ function shd_reply_restore()
 	);
 
 	// Expire the cache of count(active tickets)
-	shd_clear_active_tickets($row['id_member_started']);
+	shd_clear_active_tickets();
 
 	redirectexit('action=helpdesk;sa=ticket;ticket=' . $context['ticket_id']);
 }

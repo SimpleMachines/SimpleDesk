@@ -145,9 +145,6 @@ function shd_ticket_resolve()
 			)
 		);
 
-		// Make sure we recalculate the number of tickets on next page load (here it will affect visibility)
-		shd_clear_active_tickets($row['id_member_started']);
-
 		if ($context['shd_return_to'] == 'home')
 			redirectexit($context['shd_home']);
 		else
@@ -214,9 +211,6 @@ function shd_privacy_change_noajax()
 				'subject' => $row['subject'],
 			)
 		);
-
-		// Make sure we recalculate the number of tickets on next page load (here it may affect ticket visibility so we do it)
-		shd_clear_active_tickets($row['id_member_started']);
 
 		redirectexit('action=helpdesk;sa=ticket;ticket=' . $context['ticket_id']);
 	}

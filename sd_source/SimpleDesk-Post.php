@@ -573,7 +573,6 @@ function shd_save_ticket()
 			}
 
 			shd_create_ticket_post($msgOptions, $ticketOptions, $posterOptions);
-			shd_clear_active_tickets();
 
 			// Update our nice ticket store with the ticket id
 			$context['ticket_id'] = $ticketOptions['id'];
@@ -669,7 +668,6 @@ function shd_save_ticket()
 					shd_log_action($action, $field);
 				}
 			}
-			shd_clear_active_tickets($ticketinfo['id_member_started']);
 		}
 		shd_done_posting();
 	}
@@ -1142,7 +1140,6 @@ function shd_save_reply()
 	{
 		// It all worked, w00t, so let's get ready to rumble
 		$attachIDs = shd_handle_attachments();
-		shd_clear_active_tickets($ticketinfo['id_member_started']);
 
 		if ($new_reply)
 		{
@@ -1236,7 +1233,6 @@ function shd_save_reply()
 				$field['subject'] = $ticketinfo['subject'];
 				shd_log_action($action, $field);
 			}
-			shd_clear_active_tickets($ticketinfo['id_member_started']);
 		}
 
 		$context['ticket_form']['msg'] = $msgOptions['id'];

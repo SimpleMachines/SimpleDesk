@@ -977,9 +977,6 @@ function shd_topictoticket2()
 	else
 		fatal_lang_error('shd_move_ticket_not_created',false);
 
-	// Clear our cache
-	shd_clear_active_tickets($owner);
-
 	// Send them to the ticket.
 	redirectexit('action=helpdesk;sa=ticket;ticket=' . $ticket);
 }

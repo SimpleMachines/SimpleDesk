@@ -178,7 +178,7 @@ function shd_ajax_privacy()
 		);
 
 		// Make sure we recalculate the number of tickets on next page load
-		shd_clear_active_tickets($row['id_member_started']);
+		shd_clear_active_tickets();
 
 		$context['ajax_return'] = array('message' => $new ? $txt['shd_ticket_private'] : $txt['shd_ticket_notprivate']);
 	}

@@ -352,6 +352,8 @@ function shd_create_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 
 	ignore_user_abort($previous_ignore_user_abort);
 
+	shd_clear_active_tickets();
+
 	// Success.
 	return true;
 }
@@ -646,6 +648,8 @@ function shd_modify_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 	call_integration_hook('shd_hook_modpost', array(&$msgOptions, &$ticketOptions, &$posterOptions));
 
 	ignore_user_abort($previous_ignore_user_abort);
+
+	shd_clear_active_tickets();
 
 	// Success.
 	return true;
