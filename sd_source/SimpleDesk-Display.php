@@ -403,6 +403,13 @@ function shd_view_ticket()
 			'editable' => !empty($editable),
 		);
 
+		if ($field['type'] == CFIELD_TYPE_RADIO || $field['type'] == CFIELD_TYPE_SELECT)
+		{
+			foreach ($field['options'] as $k => $v)
+				if (strpos($v, '[') !== false)
+					$field['options'][$k] = parse_bbc($v, false);
+		}
+
 		if (($row['field_loc'] & CFIELD_REPLY) && $field['editable'])
 			$context['ticket_form']['custom_fields']['reply'][$field['id']] = $field;
 
@@ -477,7 +484,7 @@ function shd_view_ticket()
 			if ($field['type'] == CFIELD_TYPE_CHECKBOX)
 				$fields .= !empty($field['value']) ? $txt['yes'] . ' ' : $txt['no'] . ' ';
 			elseif ($field['type'] == CFIELD_TYPE_SELECT || $field['type'] == CFIELD_TYPE_RADIO)
-				$fields .= $field['options'][$field['value']] . ' ';
+				$fields .= trim(strip_tags($field['options'][$field['value']])) . ' ';
 			else
 				$fields .= $field['value'] . ' ';
 		}

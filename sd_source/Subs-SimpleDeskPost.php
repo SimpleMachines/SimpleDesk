@@ -778,6 +778,7 @@ function shd_load_custom_fields($is_ticket = true, $ticketContext = 0, $dept = 0
 
 		// Load up the fields and do some extra parsing
 		if (!isset($context['ticket_form']['custom_fields'][$loc][$row['id_field']]))
+		{
 			$context['ticket_form']['custom_fields'][$loc][$row['id_field']] = array(
 				'id' => $row['id_field'],
 				'order' => $row['field_order'],
@@ -796,6 +797,19 @@ function shd_load_custom_fields($is_ticket = true, $ticketContext = 0, $dept = 0
 				'editable' => !empty($editable),
 				'depts' => array(),
 			);
+			if ($row['field_type'] == CFIELD_TYPE_RADIO)
+			{
+				foreach ($context['ticket_form']['custom_fields'][$loc][$row['id_field']]['options'] as $k => $v)
+					if (strpos($v, '[') !== false)
+						$context['ticket_form']['custom_fields'][$loc][$row['id_field']]['options'][$k] = parse_bbc($v);
+			}
+			elseif ($row['field_type'] == CFIELD_TYPE_SELECT)
+			{
+				foreach ($context['ticket_form']['custom_fields'][$loc][$row['id_field']]['options'] as $k => $v)
+					if (strpos($v, '[') !== false)
+						$context['ticket_form']['custom_fields'][$loc][$row['id_field']]['options'][$k] = trim(strip_tags(parse_bbc($v)));
+			}
+		}
 		$context['ticket_form']['custom_fields'][$loc][$row['id_field']]['depts'][] = $row['id_dept'];
 
 		if (isset($field_values[$row['id_field']]))

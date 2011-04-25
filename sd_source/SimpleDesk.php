@@ -1065,7 +1065,12 @@ function shd_helpdesk_listing()
 		if ($is_admin || ($is_staff && $staff_see == '1') || (!$is_staff && $user_see == '1'))
 		{
 			if (!empty($row['field_options']))
+			{
 				$row['field_options'] = unserialize($row['field_options']);
+				foreach ($row['field_options'] as $k => $v)
+					if (strpos($v, '[') !== false)
+						$row['field_options'][$k] = parse_bbc($v);
+			}
 			$fields[$row['id_field']] = $row;
 		}
 	}

@@ -216,7 +216,7 @@ function shd_admin_custom_edit()
 */
 function shd_admin_custom_save()
 {
-	global $context, $smcFunc, $modSettings;
+	global $context, $smcFunc, $modSettings, $sourcedir;
 
 	checkSession('request');
 
@@ -309,10 +309,12 @@ function shd_admin_custom_save()
 	$newOptions = array();
 	if (!empty($_POST['select_option']) && ($_POST['field_type'] == CFIELD_TYPE_SELECT || $_POST['field_type'] == CFIELD_TYPE_RADIO))
 	{
+		require_once($sourcedir . '/Subs-Post.php');
 		foreach ($_POST['select_option'] as $k => $v)
 		{
 			// Clean, clean, clean...
 			$v = $smcFunc['htmlspecialchars']($v);
+			preparsecode($v);
 
 			// Nada, zip, etc...
 			if (trim($v) == '')
