@@ -130,7 +130,7 @@
 		<operation>
 			<search position="after"><![CDATA[	// The account page allows the change of your id_group - but not to a protected group!]]></search>
 			<add><![CDATA[	// Ensure we uncache stuff that might change in the helpdesk
-	shd_clear_active_tickets($context['id_member']);
+	shd_clear_active_tickets();
 
 ]]></add>
 		</operation>
