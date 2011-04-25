@@ -427,7 +427,7 @@ function shd_save_ticket()
 		$txt['error_missing_fields'] = sprintf($txt['error_missing_fields'], implode(', ', $missing_fields));
 	}
 
-	if ($context['can_override_fields'])
+	if ($context['can_override_fields'] && !empty($missing_fields))
 		$context['ticket_form']['additional_opts']['override_cf'] = array(
 			'show' => true,
 			'checked' => false,
@@ -1103,7 +1103,7 @@ function shd_save_reply()
 		$txt['error_missing_fields'] = sprintf($txt['error_missing_fields'], implode(', ', $missing_fields));
 	}
 
-	if ($context['can_override_fields'])
+	if ($context['can_override_fields'] && !empty($missing_fields))
 		$context['ticket_form']['additional_opts']['override_cf'] = array(
 			'show' => true,
 			'checked' => false,
