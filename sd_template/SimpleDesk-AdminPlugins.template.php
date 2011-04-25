@@ -92,7 +92,7 @@ function template_shd_plugin_listing()
 		}
 
 		echo '
-					<h4>', (!empty($plugin['details']['acp_url']) ? '<a href="' . $scripturl . '?' . $plugin['details']['acp_url'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '">' . $plugin['details']['title'] . '</a>' : $plugin['details']['title']), '</h4>
+					<h4>', (!empty($plugin['details']['acp_url']) ? '<a href="' . $plugin['details']['acp_url'] . '">' . $plugin['details']['title'] . '</a>' : $plugin['details']['title']), '</h4>
 					<p>';
 		if (!empty($plugin['details']['description']))
 			echo '

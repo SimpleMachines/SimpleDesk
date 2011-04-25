@@ -148,7 +148,7 @@ function shd_admin_plugins()
 
 		// 3.4 Is it enabled?
 		$plugins[$id]['enabled'] = in_array($id, $context['shd_enabled_plugins']);
-		$plugins[$id]['details']['acp_url'] = !empty($plugin['details']['acp_url']) && $plugins[$id]['enabled'] ? $plugin['details']['acp_url'] : false;
+		$plugins[$id]['details']['acp_url'] = !empty($plugin['details']['acp_url']) && $plugins[$id]['enabled'] ? (strpos($plugin['details']['acp_url'], 'http') === false ? $scripturl . '?' . $plugin['details']['acp_url'] . ';' . $context['session_var'] . '=' . $context['session_id'] : $plugin['details']['acp_url']) : false;
 	}
 
 	// 3. Throw it at the template.
