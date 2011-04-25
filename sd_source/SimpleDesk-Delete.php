@@ -104,7 +104,7 @@ function shd_ticket_delete()
 	shd_clear_active_tickets();
 
 	// Go to the home
-	redirectexit($context['shd_home']);
+	redirectexit($context['shd_home'] . $context['shd_dept_link']);
 }
 
 function shd_reply_delete()

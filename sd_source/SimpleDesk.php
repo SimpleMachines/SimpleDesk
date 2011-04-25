@@ -546,7 +546,7 @@ function shd_view_block()
 	);
 
 	if (empty($_REQUEST['block']) || empty($context['ticket_blocks'][$_REQUEST['block']]) || empty($context['ticket_blocks'][$_REQUEST['block']]['count']))
-		redirectexit($context['shd_home']);
+		redirectexit($context['shd_home'] . $context['shd_dept_link']);
 
 	$context['items_per_page'] = 10;
 	foreach ($context['ticket_blocks'] as $block => $details)

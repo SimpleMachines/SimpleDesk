@@ -56,7 +56,7 @@ function shd_ticket_unread()
 			)
 		);
 
-	redirectexit($context['shd_home']);
+	redirectexit($context['shd_home'] . $context['shd_dept_link']);
 }
 
 /**
@@ -146,7 +146,7 @@ function shd_ticket_resolve()
 		);
 
 		if ($context['shd_return_to'] == 'home')
-			redirectexit($context['shd_home']);
+			redirectexit($context['shd_home'] . $context['shd_dept_link']);
 		else
 			redirectexit('action=helpdesk;sa=ticket;ticket=' . $context['ticket_id']);
 	}
