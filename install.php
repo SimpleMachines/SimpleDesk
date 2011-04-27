@@ -517,20 +517,9 @@ foreach ($mod_settings as $new_setting => $new_value)
 
 // Create new tables, if any
 foreach ($tables as $table)
-{
-	$smcFunc['db_create_table']($table['table_name'], $table['columns'], $table['indexes'], $table['parameters'], $table['if_exists'], $table['error']);
-
-	// Because of issues with SMF at least in 2.0 RC5, users coming from older installs may not have all the columns as if_exists => update doesn't appear to work.
-	// So, for every column, add it to the columns addition - and let SMF deal with it that way.
-	foreach ($table['columns'] as $table_info)
-		$columns[] = array(
-			'table_name' => $table['table_name'],
-			'column_info' => $table_info,
-			'parameters' => array(),
-			'if_exists' => 'ignore',
-			'error' => 'fatal',
-		);
-}
+	shd_db_create_table($table['table_name'], $table['columns'], $table['indexes'], $table['parameters'], $table['if_exists'], $table['error']);
+// We would do it using the proper method but the team felt it was better to remove the 'update' facility that had been present in 2.0 RC2 and RC3
+// rather than fix it.
 
 // Create new rows, if any
 foreach ($rows as $row)
@@ -649,5 +638,78 @@ function db_field($name, $type, $size = 0, $unsigned = true, $auto = false)
 	$field['name'] = $name;
 
 	return $field;
+}
+
+// Wrapper around the DB create statements to handle cases where we're updating the tables since SMF can't.
+function shd_db_create_table($table_name, $columns, $indexes = array(), $parameters = array(), $if_exists = 'update', $error = 'fatal')
+{
+	global $reservedTables, $smcFunc, $db_package_log, $db_prefix;
+	static $table_list = null;
+
+	$real_prefix = preg_match('~^(`?)(.+?)\\1\\.(.*?)$~', $db_prefix, $match) === 1 ? $match[3] : $db_prefix;
+	$full_table_name = str_replace('{db_prefix}', $real_prefix, $table_name);
+	$table_name = str_replace('{db_prefix}', $db_prefix, $table_name);
+	// First - no way do we touch SMF tables.
+	if (in_array(strtolower($table_name), $reservedTables))
+		return false;
+
+	// We call this a bit. Internally cache the list of tables.
+	if ($table_list === null)
+		$table_list = $smcFunc['db_list_tables']();
+
+	// OK, so does it exist, and what are we going to do about it?
+	if (!in_array($full_table_name, $table_list) || $if_exists == 'overwrite')
+		return $smcFunc['db_create_table']($table_name, $columns, $indexes, $parameters, $if_exists, $error); // It doesn't exist or we don't care, SMF can deal with this just fine without our help.
+	elseif ($if_exists == 'ignore')
+		return true; // We don't care, pretend it was successful.
+	elseif ($if_exists == 'error')
+		return false; // Oh dear, this wasn't good.
+	else
+	{
+		// OK, we're updating the table in some way, shape or form.
+		$old_columns = $smcFunc['db_list_columns']($table_name, false);
+		foreach ($old_columns as $k => $v)
+			$old_columns[$k] = strtolower($v);
+
+		foreach ($columns as $column)
+		{
+			$col_name = strtolower($column['name']);
+			$k = array_search($col_name, $old_columns);
+			
+			if ($k !== false) // Is it in our list (does it already exist)?
+				unset($old_columns[$k]);
+			else // Doesn't - add it!
+				$smcFunc['db_add_column']($table_name, $column);
+		}
+
+		// Anything left, and we want to remove it, remove it.
+		if ($if_exists == 'update_remove')
+			foreach ($old_columns as $column)
+				$smcFunc['db_remove_column']($table_name, $column);
+
+		$old_indexes = $smcFunc['db_list_indexes']($table_name, false);
+		foreach ($old_indexes as $k => $v)
+			$old_indexes[$k] = strtolower($v);
+
+		foreach ($indexes as $index)
+		{
+			// Figure out the index's name
+			if (!isset($index['name']))
+				$index['name'] = (strtolower($index['type']) == 'primary') ? '' : implode('_', $index_info['columns']);
+
+			$k = array_search(strtolower($index['name']), $old_indexes);
+			if ($k !== false) // Is it in our list (does it already exist)?
+				unset($old_indexes[$k]);
+			else // Doesn't - add it!
+				$smcFunc['db_add_index']($table_name, $index);
+		}
+
+		// Anything left, and we want to remove it, remove it.
+		if ($if_exists == 'update_remove')
+			foreach ($old_indexes as $index)
+				$smcFunc['db_remove_column']($table_name, $index);
+	}
+
+	return true;
 }
 ?>
