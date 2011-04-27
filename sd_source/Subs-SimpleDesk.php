@@ -179,6 +179,7 @@ function shd_init()
 
 			if (!empty($this_dept))
 			{
+				$context['queried_dept'] = $this_dept;
 				$query = $smcFunc['db_query']('', '
 					SELECT dept_theme
 					FROM {db_prefix}helpdesk_depts

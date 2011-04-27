@@ -57,6 +57,8 @@ function shd_main()
 		$_REQUEST['dept'] = $depts[0];
 		$context['shd_multi_dept'] = false;
 	}
+	elseif (empty($_REQUEST['dept']) && !empty($context['queried_dept']) && in_array($context['queried_dept'], $depts))
+		$_REQUEST['dept'] = $context['queried_dept'];
 
 	$context['shd_department'] = isset($_REQUEST['dept']) && in_array($_REQUEST['dept'], $depts) ? (int) $_REQUEST['dept'] : 0;
 	$context['shd_dept_link'] = !empty($context['shd_department']) && $context['shd_multi_dept'] ? ';dept=' . $context['shd_department'] : '';
