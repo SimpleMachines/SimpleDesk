@@ -137,7 +137,7 @@ function shd_reply_delete()
 	if ($row = $smcFunc['db_fetch_assoc']($query_ticket))
 	{
 		$smcFunc['db_free_result']($query_ticket);
-		if (($row['status'] == TICKET_STATUS_CLOSED || $row['status'] == TICKET_STATUS_DELETED) || (!shd_allowed_to('shd_delete_ticket_any', $row['id_dept']) && (!shd_allowed_to('shd_delete_ticket_own', $row['id_dept']) || $user_info['id'] != $row['id_member'])))
+		if (($row['status'] == TICKET_STATUS_CLOSED || $row['status'] == TICKET_STATUS_DELETED) || (!shd_allowed_to('shd_delete_reply_any', $row['id_dept']) && (!shd_allowed_to('shd_delete_reply_own', $row['id_dept']) || $user_info['id'] != $row['id_member'])))
 			fatal_lang_error('shd_cannot_delete_reply', false);
 	}
 	else
