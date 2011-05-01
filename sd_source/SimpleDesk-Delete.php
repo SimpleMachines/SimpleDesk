@@ -101,7 +101,7 @@ function shd_ticket_delete()
 	);
 
 	// Expire the cache of count(active tickets)
-	shd_clear_active_tickets();
+	shd_clear_active_tickets($row['id_dept']);
 
 	// Go to the home
 	redirectexit($context['shd_home'] . $context['shd_dept_link']);
@@ -181,7 +181,7 @@ function shd_reply_delete()
 	);
 
 	// Expire the cache of count(active tickets)
-	shd_clear_active_tickets();
+	shd_clear_active_tickets($row['id_dept']);
 
 	// Back to the ticket
 	redirectexit('action=helpdesk;sa=ticket;ticket=' . $context['ticket_id']);
@@ -229,7 +229,7 @@ function shd_perma_delete()
 
 		$subject = $row['subject'];
 		// Expire the cache of count(active tickets)
-		shd_clear_active_tickets();
+		shd_clear_active_tickets($row['id_dept']);
 
 		// Start by getting all the messages in this ticket, we'll need those for custom fields values that need purging.
 		$query = shd_db_query('', '
@@ -327,7 +327,7 @@ function shd_perma_delete()
 	{
 		// Check we can actually see the ticket we're deleting, that this reply is in this ticket and that we can delete this reply
 		$query_ticket = shd_db_query('', '
-			SELECT hdt.id_ticket, hdtr.id_member, hdt.subject, hdt.id_member_started, hdt.status, hdtr.message_status
+			SELECT hdt.id_ticket, hdt.id_dept, hdtr.id_member, hdt.subject, hdt.id_member_started, hdt.status, hdtr.message_status
 			FROM {db_prefix}helpdesk_tickets AS hdt
 				INNER JOIN {db_prefix}helpdesk_ticket_replies AS hdtr ON (hdt.id_ticket = hdtr.id_ticket)
 			WHERE {query_see_ticket}
@@ -349,6 +349,7 @@ function shd_perma_delete()
 		else
 		{
 			$row = $smcFunc['db_fetch_assoc']($query_ticket);
+			shd_is_allowed_to('shd_delete_recycling', $row['id_dept']);
 			$smcFunc['db_free_result']($query_ticket);
 		}
 
@@ -357,7 +358,7 @@ function shd_perma_delete()
 
 		$subject = $row['subject'];
 		// Expire the cache of count(active tickets)
-		shd_clear_active_tickets();
+		shd_clear_active_tickets($row['id_dept']);
 
 		// Just remove the reply.
 		shd_db_query('', '
@@ -539,7 +540,7 @@ function shd_ticket_restore()
 	);
 
 	// Expire the cache of count(active tickets)
-	shd_clear_active_tickets();
+	shd_clear_active_tickets($row['id_dept']);
 
 	shd_log_action('restore',
 		array(
@@ -548,7 +549,11 @@ function shd_ticket_restore()
 		)
 	);
 
-	redirectexit('action=helpdesk;sa=ticket;ticket=' . $context['ticket_id']);
+	// And home.
+	if ($context['shd_return_to'] == 'home')
+		redirectexit($context['shd_home'] . $context['shd_dept_link']);
+	else
+		redirectexit('action=helpdesk;sa=ticket;ticket=' . $context['ticket_id']);
 }
 
 // Restore the given reply from the recycling bin.
@@ -628,7 +633,7 @@ function shd_reply_restore()
 	);
 
 	// Expire the cache of count(active tickets)
-	shd_clear_active_tickets();
+	shd_clear_active_tickets($row['id_dept']);
 
 	redirectexit('action=helpdesk;sa=ticket;ticket=' . $context['ticket_id']);
 }

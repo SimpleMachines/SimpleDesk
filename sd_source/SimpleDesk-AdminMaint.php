@@ -280,7 +280,8 @@ function shd_admin_maint_massdeptmove()
 			shd_log_action('move_dept', $log_params);
 		}
 
-		shd_clear_active_tickets();
+		shd_clear_active_tickets($_POST['id_dept_from']);
+		shd_clear_active_tickets($_POST['id_dept_to']);
 
 		$_POST['tickets_done'] += $step_count;
 	}
@@ -856,7 +857,7 @@ function shd_maint_invalid_dept()
 function shd_maint_clean_cache()
 {
 	global $context;
-	clean_cache('shd');
+	clean_cache();
 
 	// Normally, we'd update $context['continue_post_data'] to indicate our next port of call. But here, we don't have to.
 	redirectexit('action=admin;area=helpdesk_maint;sa=findrepair;done;' . $context['session_var'] . '=' . $context['session_id']);

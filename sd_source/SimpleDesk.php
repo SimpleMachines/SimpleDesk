@@ -927,7 +927,7 @@ function shd_helpdesk_listing()
 			elseif ($row['status'] == TICKET_STATUS_DELETED) // and thus, we're in the recycle bin
 			{
 				$new_block['actions'] += array(
-					'restore' => shd_allowed_to('shd_restore_ticket_any', $context['shd_department']) || ($is_own && shd_allowed_to('shd_restore_ticket_own', $context['shd_department'])) ? '<a href="' . $scripturl . '?action=helpdesk;sa=restoreticket;ticket=' . $row['id_ticket'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '" title="' . $txt['shd_ticket_restore'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/restore.png" alt="' . $txt['shd_ticket_restore'] . '" /></a>' : '',
+					'restore' => shd_allowed_to('shd_restore_ticket_any', $context['shd_department']) || ($is_own && shd_allowed_to('shd_restore_ticket_own', $context['shd_department'])) ? '<a href="' . $scripturl . '?action=helpdesk;sa=restoreticket;ticket=' . $row['id_ticket'] . ';home;' . $context['session_var'] . '=' . $context['session_id'] . '" title="' . $txt['shd_ticket_restore'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/restore.png" alt="' . $txt['shd_ticket_restore'] . '" /></a>' : '',
 					'permadelete' => shd_allowed_to('shd_delete_recycling', $context['shd_department']) ? '<a href="' . $scripturl . '?action=helpdesk;sa=permadelete;ticket=' . $row['id_ticket'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '" title="' . $txt['shd_delete_permanently'] . '" onclick="return confirm(' . JavaScriptEscape($txt['shd_delete_permanently_confirm']) . ');"><img src="' . $settings['default_images_url'] . '/simpledesk/delete.png" alt="' . $txt['shd_delete_permanently'] . '" /></a>' : '',
 				);
 			}

@@ -333,7 +333,7 @@ function shd_split_ticket2()
 	);
 
 	// 6. Empty the cache
-	shd_clear_active_tickets();
+	shd_clear_active_tickets($ticketinfo['dept']);
 
 	// 7. Spam the ticket starter
 	if (isset($_POST['send_pm']))

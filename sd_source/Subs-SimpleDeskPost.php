@@ -352,7 +352,23 @@ function shd_create_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 
 	ignore_user_abort($previous_ignore_user_abort);
 
-	shd_clear_active_tickets();
+	if (empty($ticketOptions['dept']) && !empty($ticketOptions['id']))
+	{
+		// So we're making a reply, we need the department id. The ticket will already exist - we just added to it!
+		$query = $smcFunc['db_query']('', '
+			SELECT id_dept
+			FROM {db_prefix}helpdesk_tickets
+			WHERE id_ticket = {int:id_ticket}',
+			array(
+				'id_ticket' => $ticketOptions['id'],
+			)
+		);
+		list($ticketOptions['dept']) = $smcFunc['db_fetch_row']($query);
+		$smcFunc['db_free_result']($query);
+	}
+
+	if (!empty($ticketOptions['dept']))
+		shd_clear_active_tickets($ticketOptions['dept']);
 
 	// Success.
 	return true;
@@ -649,7 +665,23 @@ function shd_modify_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 
 	ignore_user_abort($previous_ignore_user_abort);
 
-	shd_clear_active_tickets();
+	if (empty($ticketOptions['dept']) && !empty($ticketOptions['id']))
+	{
+		// So we're making a reply, we need the department id. The ticket will already exist - we just added to it!
+		$query = $smcFunc['db_query']('', '
+			SELECT id_dept
+			FROM {db_prefix}helpdesk_tickets
+			WHERE id_ticket = {int:id_ticket}',
+			array(
+				'id_ticket' => $ticketOptions['id'],
+			)
+		);
+		list($ticketOptions['dept']) = $smcFunc['db_fetch_row']($query);
+		$smcFunc['db_free_result']($query);
+	}
+
+	if (!empty($ticketOptions['dept']))
+		shd_clear_active_tickets($ticketOptions['dept']);
 
 	// Success.
 	return true;

@@ -313,13 +313,49 @@ function shd_get_active_tickets()
  *	{@link shd_get_active_tickets()} generates the number of active tickets for the user display, and caches it for 180 seconds
  *	normally. This function clears the cache and should be called whenever any operation modifies the state of a ticket.
  *
+ *	@param int $dept The department that is being affected by this change. Users who cannot see this department will not be affected.
  *	@see shd_get_active_tickets()
  *	@since 1.0
 */
-function shd_clear_active_tickets()
+function shd_clear_active_tickets($dept = 0)
 {
-	clean_cache('shd_active_tickets');
-	clean_cache('shd_ticket_count');
+	global $modSettings;
+
+	$items = array();
+
+	// This isn't very nice, unfortunately. But it's the only way to ensure that caches are flushed as necessary and to prevent us having to query so much more on every page.
+	// Firstly, the active ticket count. Needs to be for every person that can see this department.
+	$members = shd_members_allowed_to('access_helpdesk', $dept);
+	foreach ($members as $member)
+	{
+		cache_put_data('shd_active_tickets_' . $member, null, 120);
+		cache_put_data('shd_ticket_count_' . $member, null, 120);
+		$items[] = 'shd_active_tickets_' . $member;
+		$items[] = 'shd_ticket_count_' . $member;
+	}
+
+	// This is going to hurt.
+	if ($dept == 0)
+	{
+		$depts = shd_allowed_to('access_helpdesk', false);
+		foreach ($depts as $dept)
+			foreach ($members as $member)
+			{
+				cache_put_data('shd_ticket_count_dept' . $dept . '_' . $member, null, 120);
+				$items[] = 'shd_ticket_count_dept' . $dept . '_' . $member;
+			}
+	}
+	// Not so much?
+	else
+	{
+		foreach ($members as $member)
+		{
+			cache_put_data('shd_ticket_count_dept' . $dept . '_' . $member, null, 120);
+			$items[] = 'shd_ticket_count_dept' . $dept . '_' . $member;
+		}
+	}
+
+	trigger_error('Clearing cache items: ' . implode(', ', $items));
 }
 
 /**

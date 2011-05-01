@@ -516,7 +516,7 @@ function shd_tickettotopic2()
 		fatal_lang_error('shd_move_topic_not_created',false);
 
 	// Clear our cache
-	shd_clear_active_tickets($owner);
+	shd_clear_active_tickets($dept);
 
 	// Send them to the topic.
 	redirectexit('topic=' . $topic . '.0');

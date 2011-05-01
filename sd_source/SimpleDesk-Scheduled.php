@@ -126,11 +126,7 @@ function shd_scheduled_close_tickets()
 
 	// 4. If caching is enabled, make sure to purge the cache for members so their number of tickets will be recalculated.
 	// No need to dump all SD cache items though, though we have to get all those whose tickets were affected, plus all staff.
-	if (!empty($modSettings['cache_enable']))
-	{
-		clean_cache('shd_active_tickets');
-		clean_cache('shd_ticket_count');
-	}
+	shd_clear_active_tickets();
 }
 
 function shd_scheduled_purge_tickets()

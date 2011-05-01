@@ -145,6 +145,8 @@ function shd_ticket_resolve()
 			)
 		);
 
+		shd_clear_active_tickets($row['id_dept']);
+
 		if ($context['shd_return_to'] == 'home')
 			redirectexit($context['shd_home'] . $context['shd_dept_link']);
 		else
