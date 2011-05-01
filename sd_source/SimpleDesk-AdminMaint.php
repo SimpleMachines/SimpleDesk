@@ -174,6 +174,8 @@ function shd_admin_maint_massdeptmove()
 		fatal_lang_error('shd_admin_maint_massdeptmove_samedept', false);
 
 	$clauses = array();
+	if (empty($_POST['moveopen']))
+		$clauses[] = 'AND status NOT IN (' . implode(',', array(TICKET_STATUS_NEW, TICKET_STATUS_PENDING_USER, TICKET_STATUS_PENDING_STAFF, TICKET_STATUS_WITH_SUPERVISOR, TICKET_STATUS_ESCALATED)) . ')';
 	if (empty($_POST['moveclosed']))
 		$clauses[] = 'AND status != ' . TICKET_STATUS_CLOSED;
 	if (empty($_POST['movedeleted']))

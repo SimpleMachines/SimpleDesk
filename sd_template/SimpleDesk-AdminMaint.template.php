@@ -173,10 +173,9 @@ function template_shd_admin_maint_home()
 						</select>
 					</p>
 					<dl class="settings">
-						<dt>', $txt['shd_admin_maint_massdeptmove_closed'], '</dt>
-						<dd><input type="checkbox" checked="checked" name="moveclosed" class="input_check" /></dd>
-						<dt>', $txt['shd_admin_maint_massdeptmove_deleted'], '</dt>
-						<dd><input type="checkbox" checked="checked" name="movedeleted" class="input_check" /></dd>
+						<dt><input type="checkbox" checked="checked" id="moveopen" name="moveopen" class="input_check" /> <label for="moveopen">', $txt['shd_admin_maint_massdeptmove_open'], '</label></dt>
+						<dt><input type="checkbox" checked="checked" id="moveclosed" name="moveclosed" class="input_check" /> <label for="moveclosed">', $txt['shd_admin_maint_massdeptmove_closed'], '</label></dt>
+						<dt><input type="checkbox" checked="checked" id="movedeleted" name="movedeleted" class="input_check" /> <label for="movedeleted">', $txt['shd_admin_maint_massdeptmove_deleted'], '</label></dt>
 					</dl>
 					<input type="submit" value="', $txt['shd_admin_maint_massdeptmove'], '" onclick="return submitThisOnce(this);" class="button_submit">
 					<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">
