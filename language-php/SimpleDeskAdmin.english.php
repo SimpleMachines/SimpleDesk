@@ -468,6 +468,8 @@ $txt['shd_admin_maint_massdeptmove_samedept'] = 'You must select different start
 $txt['shd_admin_maint_massdeptmove_open'] = 'Move open/outstanding tickets from this department';
 $txt['shd_admin_maint_massdeptmove_closed'] = 'Move closed tickets from this department';
 $txt['shd_admin_maint_massdeptmove_deleted'] = 'Move deleted tickets from this department';
+$txt['shd_admin_maint_massdeptmove_lastupd_less'] = 'Tickets must have been last updated in the last %1$s days';
+$txt['shd_admin_maint_massdeptmove_lastupd_more'] = 'Tickets must have been last updated more than %1$s days ago';
 
 $txt['shd_admin_maint_findrepair'] = 'Find and Repair Errors';
 $txt['shd_admin_maint_findrepair_desc'] = 'Sometimes, however unlikely, things get a little out of step inside the database. This operation performs an integrity check on the database and attempts to repair any errors it encounters.';

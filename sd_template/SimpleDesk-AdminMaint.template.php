@@ -177,6 +177,11 @@ function template_shd_admin_maint_home()
 						<dt><input type="checkbox" checked="checked" id="moveclosed" name="moveclosed" class="input_check" /> <label for="moveclosed">', $txt['shd_admin_maint_massdeptmove_closed'], '</label></dt>
 						<dt><input type="checkbox" checked="checked" id="movedeleted" name="movedeleted" class="input_check" /> <label for="movedeleted">', $txt['shd_admin_maint_massdeptmove_deleted'], '</label></dt>
 					</dl>
+					<br />
+					<dl class="settings">
+						<dt><input type="checkbox" id="movelast_less" name="movelast_less" class="input_check" /> ', sprintf($txt['shd_admin_maint_massdeptmove_lastupd_less'], '<input type="text" name="movelast_less_days" value="30" size="3" />'), '</dt>
+						<dt><input type="checkbox" id="movelast_more" name="movelast_more" class="input_check" /> ', sprintf($txt['shd_admin_maint_massdeptmove_lastupd_more'], '<input type="text" name="movelast_more_days" value="30" size="3" />'), '</dt>
+					</dl>
 					<input type="submit" value="', $txt['shd_admin_maint_massdeptmove'], '" onclick="return submitThisOnce(this);" class="button_submit">
 					<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">
 				</form>

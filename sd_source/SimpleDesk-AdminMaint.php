@@ -181,6 +181,14 @@ function shd_admin_maint_massdeptmove()
 	if (empty($_POST['movedeleted']))
 		$clauses[] = 'AND status != ' . TICKET_STATUS_DELETED;
 
+	$_POST['movelast_less_days'] = isset($_POST['movelast_less_days']) && !empty($_POST['movelast_less']) ? (int) $_POST['movelast_less_days'] : 0;
+	if ($_POST['movelast_less_days'] > 0)
+		$clauses[] = 'AND last_updated >= ' . (time() - ($_POST['movelast_less_days'] * 86400));
+
+	$_POST['movelast_more_days'] = isset($_POST['movelast_more_days']) && !empty($_POST['movelast_more']) ? (int) $_POST['movelast_more_days'] : 0;
+	if ($_POST['movelast_more_days'] > 0)
+		$clauses[] = 'AND last_updated < ' . (time() - ($_POST['movelast_more_days'] * 86400));
+
 	// OK, let's start. How many tickets are there to move?
 	if (empty($_SESSION['massdeptmove']))
 	{
@@ -277,18 +285,30 @@ function shd_admin_maint_massdeptmove()
 		$_POST['tickets_done'] += $step_count;
 	}
 
+	// Prepare to shove everything we need into the form so we can go again.
 	$context['continue_countdown'] = 3;
 	$context['continue_get_data'] = '?action=admin;area=helpdesk_maint;sa=massdeptmove;' . $context['session_var'] . '=' . $context['session_id'];
 	$context['continue_post_data'] = '
 		<input type="hidden" name="id_dept_from" value="' . $_POST['id_dept_from'] . '" />
 		<input type="hidden" name="id_dept_to" value="' . $_POST['id_dept_to'] . '" />
 		<input type="hidden" name="tickets_done" value="' . $_POST['tickets_done'] . '" />';
+	if (!empty($_POST['moveopen']))
+		$context['continue_post_data'] .= '
+		<input type="hidden" name="moveclosed" value="' . $_POST['moveopen'] . '" />';
 	if (!empty($_POST['moveclosed']))
 		$context['continue_post_data'] .= '
 		<input type="hidden" name="moveclosed" value="' . $_POST['moveclosed'] . '" />';
 	if (!empty($_POST['movedeleted']))
 		$context['continue_post_data'] .= '
 		<input type="hidden" name="movedeleted" value="' . $_POST['movedeleted'] . '" />';
+	if ($_POST['movelast_less_days'] > 0)
+		$context['continue_post_data'] .= '
+		<input type="hidden" name="movelast_less" value="1" />
+		<input type="hidden" name="movelast_less_days" value="' . $_POST['movelast_less_days'] . '" />';
+	if ($_POST['movelast_more_days'] > 0)
+		$context['continue_post_data'] .= '
+		<input type="hidden" name="movelast_more" value="1" />
+		<input type="hidden" name="movelast_more_days" value="' . $_POST['movelast_more_days'] . '" />';
 
 	$context['sub_template'] = 'not_done';
 	$context['continue_percent'] = $_POST['tickets_done'] > $_SESSION['massdeptmove'] ? 100 : floor($_POST['tickets_done'] / $_SESSION['massdeptmove'] * 100);
