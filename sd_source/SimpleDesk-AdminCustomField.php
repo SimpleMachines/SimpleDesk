@@ -83,8 +83,8 @@ function shd_admin_custom_main()
 	{
 		$row['active_string'] = empty($row['active']) ? 'inactive' : 'active';
 		$row['field_type'] = $context['field_types'][$row['field_type']][1]; // convert the integer in the DB into the string for language + image uses
-		$row['can_see'] = explode(',',$row['can_see']);
-		$row['can_edit'] = explode(',',$row['can_edit']);
+		$row['can_see'] = explode(',', $row['can_see']);
+		$row['can_edit'] = explode(',', $row['can_edit']);
 		$context['custom_fields'][] = $row;
 	}
 
@@ -187,6 +187,12 @@ function shd_admin_custom_edit()
 			'placement' => $context['custom_field']['placement'],
 		));
 
+		// Get the possible field types and exclude types that we can't change it to.
+		$types = shd_admin_cf_change_types($context['custom_field']['field_type']);
+		foreach ($context['field_types'] as $k => $v)
+			if (!in_array($k, $types))
+				unset($context['field_types'][$k]);
+
 		// Get the list of departments, and whether a field is required in each department.
 		$context['dept_fields'] = array();
 		$query = $smcFunc['db_query']('', '
@@ -254,9 +260,7 @@ function shd_admin_custom_save()
 
 	// Aborting mission!
 	if (isset($_POST['cancel']))
-	{
 		redirectexit('action=admin;area=helpdesk_customfield;' . $context['session_var'] . '=' . $context['session_id']);
-	}
 
 	// Fix all the input
 	if (trim($_POST['field_name']) == '')
@@ -266,9 +270,12 @@ function shd_admin_custom_save()
 	$_POST['bbc'] = isset($_POST['bbc']) && in_array($_POST['field_type'], array(CFIELD_TYPE_TEXT, CFIELD_TYPE_LARGETEXT)) ? 1 : 0;
 	$_POST['display_empty'] = isset($_POST['display_empty']) && $_POST['field_type'] != CFIELD_TYPE_CHECKBOX ? 1 : 0;
 
+	$_POST['field_type'] == isset($_POST['field_type']) ? (int) $_POST['field_type'] : 0;
+
 	$_POST['active'] = isset($_POST['active']) ? 1 : 0;
 	$_POST['field_length'] = isset($_POST['field_length']) ? (int) $_POST['field_length'] : 255;
 	$_POST['default_check'] = isset($_POST['default_check']) && $_POST['field_type'] == CFIELD_TYPE_CHECKBOX ? 1 : '';
+
 	if ($_POST['field_type'] == CFIELD_TYPE_LARGETEXT)
 		$_POST['default_check'] = (int) $_POST['rows'] . ',' . (int) $_POST['cols'];
 	if (!isset($_POST['placement']) || !in_array($_POST['placement'], array(CFIELD_PLACE_DETAILS, CFIELD_PLACE_INFO, CFIELD_PLACE_PREFIX)))
@@ -333,6 +340,10 @@ function shd_admin_custom_save()
 	// Do I feel a new field being born?
 	if (isset($_REQUEST['new']))
 	{
+		$types = shd_admin_cf_change_types(false);
+		if (!in_array($_POST['field_type'], $types))
+			fatal_lang_error('shd_admin_custom_field_invalid', false);
+
 		// Order??
 		$count_query = shd_db_query('', '
 			SELECT COUNT(id_field) AS count
@@ -393,6 +404,28 @@ function shd_admin_custom_save()
 	// No? Meh. Update it is then.
 	else
 	{
+		// Before we do, just double check the type of data in the field.
+		$query = shd_db_query('', '
+			SELECT field_type
+			FROM {db_prefix}helpdesk_custom_fields
+			WHERE id_field = {int:id_field}',
+			array(
+				'id_field' => $_REQUEST['field'],
+			)
+		);
+		if ($row = $smcFunc['db_fetch_assoc']($query))
+		{
+			$smcFunc['db_free_result']($query);
+			$types = shd_admin_cf_change_types($row['field_type']);
+			if (!in_array($_POST['field_type'], $types))
+				fatal_lang_error('shd_admin_custom_field_reselect_invalid', false);
+		}
+		else
+		{
+			$smcFunc['db_free_result']($query);
+			fatal_lang_error('shd_admin_cannot_edit_custom_field', false);
+		}
+
 		shd_db_query('', '
 			UPDATE {db_prefix}helpdesk_custom_fields
 			SET
@@ -562,6 +595,35 @@ function shd_admin_cf_icons()
 	}
 
 	return $iconlist;
+}
+
+/**
+ *	This function takes a given type of field and indicates what possible types it could be changed to afterwards.
+ *
+ *	@param mixed $from_type One of the CFIELD_TYPE constants to indicate the type of field. Alternatively, can be boolean false to return a list of all known types.
+ *	@return array An array of CFIELD_TYPE constants indicating the possible field types it can be turned into.
+ */
+function shd_admin_cf_change_types($from_type)
+{
+	switch ($from_type)
+	{
+		case false: // All known types.
+			return array(CFIELD_TYPE_TEXT, CFIELD_TYPE_LARGETEXT, CFIELD_TYPE_INT, CFIELD_TYPE_FLOAT, CFIELD_TYPE_SELECT, CFIELD_TYPE_CHECKBOX, CFIELD_TYPE_RADIO);
+		case CFIELD_TYPE_TEXT: // Textbox and large textbox are interchangeable in all practical respects.
+		case CFIELD_TYPE_LARGETEXT:
+			return array(CFIELD_TYPE_TEXT, CFIELD_TYPE_LARGETEXT);
+		case CFIELD_TYPE_INT: // Can always convert an int to a float
+			return array(CFIELD_TYPE_INT, CFIELD_TYPE_FLOAT);
+		case CFIELD_TYPE_FLOAT: // But you can't safely go back the other way
+			return array(CFIELD_TYPE_FLOAT);
+		case CFIELD_TYPE_SELECT: // Different ways of showing/selecting the same thing, really
+		case CFIELD_TYPE_RADIO:
+			return array(CFIELD_TYPE_SELECT, CFIELD_TYPE_RADIO);
+		case CFIELD_TYPE_CHECKBOX: // And, well, this is all you can do.
+			return array(CFIELD_TYPE_CHECKBOX);
+		default:
+			return array();
+	}
 }
 
 ?>

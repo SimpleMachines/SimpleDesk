@@ -335,6 +335,8 @@ $txt['shd_admin_custom_field_placement_prefix'] = 'As a prefix to the ticket\'s 
 $txt['shd_admin_custom_field_department'] = 'Departments this field applies to';
 $txt['shd_admin_custom_field_dept_applies'] = 'Applies';
 $txt['shd_admin_custom_field_dept_required'] = 'Required';
+$txt['shd_admin_custom_field_invalid'] = 'Invalid type of field selected.';
+$txt['shd_admin_custom_field_reselect_invalid'] = 'You have tried to change this custom field, but to a type that is incompatible with the data already stored for this field, and to avoid damaging existing data, the change has been prevented.';
 //@}
 
 //! Departments
