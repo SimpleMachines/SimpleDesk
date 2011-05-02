@@ -550,7 +550,7 @@ function shd_ticket_restore()
 	);
 
 	// And home.
-	if ($context['shd_return_to'] == 'home')
+	if (isset($_REQUEST['home']))
 		redirectexit($context['shd_home'] . $context['shd_dept_link']);
 	else
 		redirectexit('action=helpdesk;sa=ticket;ticket=' . $context['ticket_id']);
