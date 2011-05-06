@@ -193,7 +193,7 @@ h3 a.permcollapse img
 	padding-bottom:3px;
 }
 
-.cf_ui_text, .cf_ui_largetext, .cf_ui_int, .cf_ui_float, .cf_ui_select, .cf_ui_checkbox, .cf_ui_radio
+.cf_ui_text, .cf_ui_largetext, .cf_ui_int, .cf_ui_float, .cf_ui_select, .cf_ui_checkbox, .cf_ui_radio, .cf_ui_multi
 {
 	padding-left:19px;
 	padding-bottom:3px;
@@ -226,6 +226,10 @@ h3 a.permcollapse img
 .cf_ui_radio
 {
 	background:url(../images/simpledesk/cf_ui_radio.png) no-repeat;
+}
+.cf_ui_multi
+{
+	background:url(../images/simpledesk/cf_ui_multi.png) no-repeat;
 }
 
 .langblock
