@@ -284,26 +284,26 @@ function template_shd_custom_field_edit()
 	echo '
 									</select>
 								</dd>
-								<dt id="max_length_dt"',$context['field_type_value'] == 1 || $context['field_type_value'] == 2  || $context['field_type_value'] == 3 || $context['field_type_value'] == 4 ? '' : ' style="display: none;"','><strong>',$txt['shd_admin_custom_field_maxlength'],':</strong><br /><span class="smalltext">',$txt['shd_admin_custom_field_maxlength_desc'],'</span></dt>
-								<dd id="max_length_dd"',$context['field_type_value'] == 1 || $context['field_type_value'] == 2  || $context['field_type_value'] == 3 || $context['field_type_value'] == 4 ? '' : ' style="display: none;"','>
+								<dt id="max_length_dt"', in_array($context['field_type_value'], array(CFIELD_TYPE_TEXT, CFIELD_TYPE_LARGETEXT, CFIELD_TYPE_INT, CFIELD_TYPE_FLOAT)) ? '' : ' style="display: none;"','><strong>',$txt['shd_admin_custom_field_maxlength'],':</strong><br /><span class="smalltext">',$txt['shd_admin_custom_field_maxlength_desc'],'</span></dt>
+								<dd id="max_length_dd"', in_array($context['field_type_value'], array(CFIELD_TYPE_TEXT, CFIELD_TYPE_LARGETEXT, CFIELD_TYPE_INT, CFIELD_TYPE_FLOAT)) ? '' : ' style="display: none;"','>
 									<input type="text" value="',!empty($context['custom_field']['field_length']) ? $context['custom_field']['field_length'] : 255,'" size="7" maxlength="6" name="field_length" id="cf_field_length" />
 								</dd>
-								<dt id="dimension_dt"',$context['field_type_value'] == 2 ? '' : ' style="display: none;"','>
+								<dt id="dimension_dt"', $context['field_type_value'] == CFIELD_TYPE_LARGETEXT ? '' : ' style="display: none;"','>
 									<strong>',$txt['shd_admin_custom_field_dimensions'],':</strong>
 								</dt>
-								<dd id="dimension_dd"',$context['field_type_value'] == 2 ? '' : ' style="display: none;"','>
+								<dd id="dimension_dd"', $context['field_type_value'] == CFIELD_TYPE_LARGETEXT ? '' : ' style="display: none;"','>
 									<strong>',$txt['shd_admin_custom_field_dimensions_rows'],':</strong> <input type="text" name="rows" value="',!empty($context['custom_field']['dimensions'][0]) ? $context['custom_field']['dimensions'][0] : 4,'" size="5" maxlength="3" class="input_text" />
 									<strong>',$txt['shd_admin_custom_field_dimensions_columns'],':</strong> <input type="text" name="cols" value="',!empty($context['custom_field']['dimensions'][1]) ? $context['custom_field']['dimensions'][1] : 30,'" size="5" maxlength="3" class="input_text" />
 								</dd>
-								<dt id="bbc_dt"',$context['field_type_value'] == 1 || $context['field_type_value'] == 2 ? '' : ' style="display: none;"','><strong',empty($modSettings['shd_allow_ticket_bbc']) ? ' class="disabled"' : '', '>',$txt['shd_admin_custom_field_bbc'],':</strong><br /><span class="smalltext">', $txt['shd_admin_custom_field_bbc_note'], '</span><br />', empty($modSettings['shd_allow_ticket_bbc']) ? '<span class="smalltext error">' . sprintf($txt['shd_admin_custom_field_bbc_off'],$scripturl . '?action=admin;area=helpdesk_options;sa=posting'). '</span>' : '', '</dt>
-								<dd id="bbc_dd"',$context['field_type_value'] == 1 || $context['field_type_value'] == 2 ? '' : ' style="display: none;"','>
+								<dt id="bbc_dt"', $context['field_type_value'] == CFIELD_TYPE_TEXT || $context['field_type_value'] == CFIELD_TYPE_LARGETEXT ? '' : ' style="display: none;"','><strong',empty($modSettings['shd_allow_ticket_bbc']) ? ' class="disabled"' : '', '>',$txt['shd_admin_custom_field_bbc'],':</strong><br /><span class="smalltext">', $txt['shd_admin_custom_field_bbc_note'], '</span><br />', empty($modSettings['shd_allow_ticket_bbc']) ? '<span class="smalltext error">' . sprintf($txt['shd_admin_custom_field_bbc_off'],$scripturl . '?action=admin;area=helpdesk_options;sa=posting'). '</span>' : '', '</dt>
+								<dd id="bbc_dd"', $context['field_type_value'] == CFIELD_TYPE_TEXT || $context['field_type_value'] == CFIELD_TYPE_LARGETEXT ? '' : ' style="display: none;"','>
 									<input type="checkbox" name="bbc" id="cf_bbc"',empty($modSettings['shd_allow_ticket_bbc']) ? ' disabled="disabled"' : (!empty($context['custom_field']['bbc']) ? ' checked="checked"' : ''), ' />
 								</dd>
-								<dt id="options_dt"',$context['field_type_value'] == 5 || $context['field_type_value'] == 7 ? '' : ' style="display: none;"','>
+								<dt id="options_dt"', in_array($context['field_type_value'], array(CFIELD_TYPE_SELECT, CFIELD_TYPE_RADIO, CFIELD_TYPE_MULTI)) ? '' : ' style="display: none;"','>
 									<strong>',$txt['shd_admin_custom_field_options'],':</strong><br />
 									<span class="smalltext">',$txt['shd_admin_custom_field_options_desc'],'</span>
 								</dt>
-								<dd id="options_dd"',$context['field_type_value'] == 5 || $context['field_type_value'] == 7 ? '' : ' style="display: none;"','>
+								<dd id="options_dd"', in_array($context['field_type_value'], array(CFIELD_TYPE_SELECT, CFIELD_TYPE_RADIO, CFIELD_TYPE_MULTI)) ? '' : ' style="display: none;"','>
 										<div>
 											<input type="radio" name="default_select" value="0"', $context['custom_field']['default_value'] == 0 ? ' checked="checked"' : '', ' class="input_radio" /> ', $txt['shd_admin_custom_field_no_selected_default'];
 
@@ -316,10 +316,10 @@ function template_shd_custom_field_edit()
 									[<a href="" onclick="add_option(); return false;">',$txt['more'],'</a>]
 									</div>
 								</dd>
-								<dt id="default_dt"',$context['field_type_value'] == 6 ? '' : ' style="display: none;"','>
+								<dt id="default_dt"', $context['field_type_value'] == CFIELD_TYPE_CHECKBOX ? '' : ' style="display: none;"','>
 									<strong>',$txt['shd_admin_custom_field_default_state'],':</strong>
 								</dt>
-								<dd id="default_dd"',$context['field_type_value'] == 6 ? '' : ' style="display: none;"','>
+								<dd id="default_dd"',$context['field_type_value'] == CFIELD_TYPE_CHECKBOX ? '' : ' style="display: none;"','>
 									<input type="checkbox" name="default_check" class="input_check"',($context['custom_field']['default_value'] == 1 ? ' checked="checked"' : ''), 'onchange="javascript:update_default_label(this.value);" />
 									<span class="smalltext" id="default_label">',$txt['shd_admin_default_state_' . ($context['custom_field']['default_value'] == 1 ? 'on' : 'off')],'</span>
 								</dd>
