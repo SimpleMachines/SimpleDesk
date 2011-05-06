@@ -942,11 +942,11 @@ function shd_validate_custom_fields($scope, $dept)
 					break;
 				case CFIELD_TYPE_MULTI:
 					$newvalue = array();
-					if (!is_array($value))
+					if (empty($_POST['field-' . $field_id]) || !is_array($_POST['field-' . $field_id]))
 						$value = 0;
 					else
 					{
-						foreach ($value as $item)
+						foreach ($_POST['field-' . $field_id] as $item)
 						{
 							if (!empty($item) && is_numeric($item) && isset($field['options'][(int) $item]))
 								$newvalue[] = $item;
