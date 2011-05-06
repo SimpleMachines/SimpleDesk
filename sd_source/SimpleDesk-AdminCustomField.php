@@ -57,6 +57,7 @@ function shd_admin_custom()
 		CFIELD_TYPE_SELECT => array($txt['shd_admin_custom_fields_ui_select'], 'select'),
 		CFIELD_TYPE_CHECKBOX => array($txt['shd_admin_custom_fields_ui_checkbox'], 'checkbox'),
 		CFIELD_TYPE_RADIO => array($txt['shd_admin_custom_fields_ui_radio'], 'radio'),
+		CFIELD_TYPE_MULTI => array($txt['shd_admin_custom_fields_ui_multi'], 'multi'),
 	);
 
 	$subactions[$_REQUEST['sa']]();
@@ -314,7 +315,7 @@ function shd_admin_custom_save()
 
 	// Select options?
 	$newOptions = array();
-	if (!empty($_POST['select_option']) && ($_POST['field_type'] == CFIELD_TYPE_SELECT || $_POST['field_type'] == CFIELD_TYPE_RADIO))
+	if (!empty($_POST['select_option']) && ($_POST['field_type'] == CFIELD_TYPE_SELECT || $_POST['field_type'] == CFIELD_TYPE_RADIO || $_POST['field_type'] == CFIELD_TYPE_MULTI))
 	{
 		require_once($sourcedir . '/Subs-Post.php');
 		foreach ($_POST['select_option'] as $k => $v)
@@ -608,7 +609,7 @@ function shd_admin_cf_change_types($from_type)
 	switch ($from_type)
 	{
 		case false: // All known types.
-			return array(CFIELD_TYPE_TEXT, CFIELD_TYPE_LARGETEXT, CFIELD_TYPE_INT, CFIELD_TYPE_FLOAT, CFIELD_TYPE_SELECT, CFIELD_TYPE_CHECKBOX, CFIELD_TYPE_RADIO);
+			return array(CFIELD_TYPE_TEXT, CFIELD_TYPE_LARGETEXT, CFIELD_TYPE_INT, CFIELD_TYPE_FLOAT, CFIELD_TYPE_SELECT, CFIELD_TYPE_CHECKBOX, CFIELD_TYPE_RADIO, CFIELD_TYPE_MULTI);
 		case CFIELD_TYPE_TEXT: // Textbox and large textbox are interchangeable in all practical respects.
 		case CFIELD_TYPE_LARGETEXT:
 			return array(CFIELD_TYPE_TEXT, CFIELD_TYPE_LARGETEXT);
@@ -616,11 +617,13 @@ function shd_admin_cf_change_types($from_type)
 			return array(CFIELD_TYPE_INT, CFIELD_TYPE_FLOAT);
 		case CFIELD_TYPE_FLOAT: // But you can't safely go back the other way
 			return array(CFIELD_TYPE_FLOAT);
-		case CFIELD_TYPE_SELECT: // Different ways of showing/selecting the same thing, really
+		case CFIELD_TYPE_SELECT: // Different ways of showing/selecting the same thing, really - and multiselect is a superset of these.
 		case CFIELD_TYPE_RADIO:
-			return array(CFIELD_TYPE_SELECT, CFIELD_TYPE_RADIO);
+			return array(CFIELD_TYPE_SELECT, CFIELD_TYPE_RADIO, CFIELD_TYPE_MULTI);
 		case CFIELD_TYPE_CHECKBOX: // And, well, this is all you can do.
 			return array(CFIELD_TYPE_CHECKBOX);
+		case CFIELD_TYPE_MULTI: // Multiselectors can't become anything else, because you're implicitly holding multiple values.
+			return array(CFIELD_TYPE_MULTI);
 		default:
 			return array();
 	}

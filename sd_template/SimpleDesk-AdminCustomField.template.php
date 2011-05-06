@@ -117,18 +117,18 @@ function template_shd_custom_field_edit()
 	echo '
 					document.getElementById("cf_fieldtype_icon").setAttribute("class", icons[ftype]);
 
-					document.getElementById("max_length_dt").style.display = ftype == ',CFIELD_TYPE_TEXT,' || ftype == ',CFIELD_TYPE_LARGETEXT,' || ftype == ',CFIELD_TYPE_INT,' || ftype == ',CFIELD_TYPE_FLOAT,' ? "" : "none";
-					document.getElementById("max_length_dd").style.display = ftype == ',CFIELD_TYPE_TEXT,' || ftype == ',CFIELD_TYPE_LARGETEXT,' || ftype == ',CFIELD_TYPE_INT,' || ftype == ',CFIELD_TYPE_FLOAT,' ? "" : "none";
-					document.getElementById("display_empty_dt").style.display = ftype != ',CFIELD_TYPE_CHECKBOX,' ? "" : "none";
-					document.getElementById("display_empty_dd").style.display = ftype != ',CFIELD_TYPE_CHECKBOX,' ? "" : "none";
-					document.getElementById("dimension_dt").style.display = ftype == ',CFIELD_TYPE_LARGETEXT,' ? "" : "none";
-					document.getElementById("dimension_dd").style.display = ftype == ',CFIELD_TYPE_LARGETEXT,' ? "" : "none";
-					document.getElementById("bbc_dt").style.display = ftype == ',CFIELD_TYPE_TEXT,' || ftype == ',CFIELD_TYPE_LARGETEXT,' ? "" : "none";
-					document.getElementById("bbc_dd").style.display = ftype == ',CFIELD_TYPE_TEXT,' || ftype == ',CFIELD_TYPE_LARGETEXT,' ? "" : "none";
-					document.getElementById("options_dt").style.display = ftype == ',CFIELD_TYPE_SELECT,' || ftype == ',CFIELD_TYPE_RADIO,' ? "" : "none";
-					document.getElementById("options_dd").style.display = ftype == ',CFIELD_TYPE_SELECT,' || ftype == ',CFIELD_TYPE_RADIO,' ? "" : "none";
-					document.getElementById("default_dt").style.display = ftype == ',CFIELD_TYPE_CHECKBOX,' ? "" : "none";
-					document.getElementById("default_dd").style.display = ftype == ',CFIELD_TYPE_CHECKBOX,' ? "" : "none";';
+					document.getElementById("max_length_dt").style.display = ftype == ', CFIELD_TYPE_TEXT, ' || ftype == ', CFIELD_TYPE_LARGETEXT, ' || ftype == ', CFIELD_TYPE_INT, ' || ftype == ', CFIELD_TYPE_FLOAT, ' ? "" : "none";
+					document.getElementById("max_length_dd").style.display = ftype == ', CFIELD_TYPE_TEXT, ' || ftype == ', CFIELD_TYPE_LARGETEXT, ' || ftype == ', CFIELD_TYPE_INT, ' || ftype == ', CFIELD_TYPE_FLOAT, ' ? "" : "none";
+					document.getElementById("display_empty_dt").style.display = ftype != ', CFIELD_TYPE_CHECKBOX, ' ? "" : "none";
+					document.getElementById("display_empty_dd").style.display = ftype != ', CFIELD_TYPE_CHECKBOX, ' ? "" : "none";
+					document.getElementById("dimension_dt").style.display = ftype == ', CFIELD_TYPE_LARGETEXT, ' ? "" : "none";
+					document.getElementById("dimension_dd").style.display = ftype == ', CFIELD_TYPE_LARGETEXT, ' ? "" : "none";
+					document.getElementById("bbc_dt").style.display = ftype == ', CFIELD_TYPE_TEXT, ' || ftype == ', CFIELD_TYPE_LARGETEXT, ' ? "" : "none";
+					document.getElementById("bbc_dd").style.display = ftype == ', CFIELD_TYPE_TEXT, ' || ftype == ', CFIELD_TYPE_LARGETEXT, ' ? "" : "none";
+					document.getElementById("options_dt").style.display = ftype == ', CFIELD_TYPE_SELECT, ' || ftype == ', CFIELD_TYPE_RADIO, ' || ftype == ', CFIELD_TYPE_MULTI, ' ? "" : "none";
+					document.getElementById("options_dd").style.display = ftype == ', CFIELD_TYPE_SELECT, ' || ftype == ', CFIELD_TYPE_RADIO, ' || ftype == ', CFIELD_TYPE_MULTI, ' ? "" : "none";
+					document.getElementById("default_dt").style.display = ftype == ', CFIELD_TYPE_CHECKBOX, ' ? "" : "none";
+					document.getElementById("default_dd").style.display = ftype == ', CFIELD_TYPE_CHECKBOX, ' ? "" : "none";';
 	if (!empty($context['dept_fields']))
 	{
 		echo '
@@ -179,8 +179,8 @@ function template_shd_custom_field_edit()
 				}
 				function update_field_location(loc)
 				{
-					document.getElementById("placement_dt").style.display = loc == ',CFIELD_TICKET,' || loc == ',(CFIELD_TICKET | CFIELD_REPLY),' ? "" : "none";
-					document.getElementById("placement_dd").style.display = loc == ',CFIELD_TICKET,' || loc == ',(CFIELD_TICKET | CFIELD_REPLY),' ? "" : "none";
+					document.getElementById("placement_dt").style.display = loc == ', CFIELD_TICKET, ' || loc == ', (CFIELD_TICKET | CFIELD_REPLY), ' ? "" : "none";
+					document.getElementById("placement_dd").style.display = loc == ', CFIELD_TICKET, ' || loc == ', (CFIELD_TICKET | CFIELD_REPLY), ' ? "" : "none";
 				}
 				// ]', ']></script>
 				<form action="', $scripturl, '?action=admin;area=helpdesk_customfield;sa=save',!empty($context['new_field']) ? ';new' : '','" method="post">

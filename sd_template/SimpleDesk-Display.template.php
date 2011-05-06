@@ -191,6 +191,14 @@ function template_viewticket()
 									echo !empty($field['value']) ? $txt['yes'] : $txt['no'];
 								elseif ($field['type'] == CFIELD_TYPE_SELECT || $field['type'] == CFIELD_TYPE_RADIO)
 									echo $field['options'][$field['value']];
+								elseif ($field['type'] == CFIELD_TYPE_MULTI)
+								{
+									$values = explode(',', $field['value']);
+									$string = array();
+									foreach ($values as $value)
+										$string[] = $field['options'][$value];
+									echo implode(', ', $string);
+								}
 								else
 									echo $field['value'];
 							}
@@ -231,6 +239,14 @@ function template_viewticket()
 				{
 					if (!empty($field['value']))
 						$output .= $field['options'][$field['value']] . ' ';
+				}
+				elseif ($field['type'] == CFIELD_TYPE_MULTI)
+				{
+					$values = explode(',', $field['value']);
+					$string = array();
+					foreach ($values as $value)
+						$string[] = $field['options'][$value];
+					$output .= implode(', ', $string);
 				}
 				elseif (!empty($field['value']))
 					$output .= $field['value'] . ' ';
@@ -465,6 +481,14 @@ function template_additional_fields()
 					{
 						if ($field['type'] == CFIELD_TYPE_SELECT || $field['type'] == CFIELD_TYPE_RADIO)
 							echo $field['options'][$field['value']];
+						elseif ($field['type'] == CFIELD_TYPE_MULTI)
+						{
+							$values = explode(',', $field['value']);
+							$string = array();
+							foreach ($values as $value)
+								$string[] = $field['options'][$value];
+							echo implode(', ', $string);
+						}
 						else
 							echo $field['value'];
 					}
@@ -724,6 +748,14 @@ function template_viewreplies()
 					{
 						if ($field['type'] == CFIELD_TYPE_SELECT || $field['type'] == CFIELD_TYPE_RADIO)
 							echo $field['options'][$field['value']], '<br /><br />';
+						elseif ($field['type'] == CFIELD_TYPE_MULTI)
+						{
+							$values = explode(',', $field['value']);
+							$string = '';
+							foreach ($values as $value)
+								$string .= $field['options'][$value] . ' ';
+							echo trim($string), '<br /><br />';
+						}
 						else
 							echo $field['value'], '<br /><br />';
 					}

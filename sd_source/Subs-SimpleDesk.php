@@ -90,6 +90,7 @@ function shd_init()
 	define('CFIELD_TYPE_SELECT', 5);
 	define('CFIELD_TYPE_CHECKBOX', 6);
 	define('CFIELD_TYPE_RADIO', 7);
+	define('CFIELD_TYPE_MULTI', 8);
 
 	define('ROLE_USER', 1);
 	define('ROLE_STAFF', 2);

@@ -560,6 +560,7 @@ function shd_modify_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 					'value' => $field['new_value'],
 					'post_type' => CFIELD_TICKET, // See, I said so!
 				);
+				// !!! Fix this for multivalues
 				$context['custom_fields_updated'][] = array(
 					'ticket' => $ticketOptions['id'],
 					'fieldname' => $field['name'],
@@ -577,6 +578,7 @@ function shd_modify_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 					'id_field' => $field_id,
 					'post_type' => CFIELD_TICKET,
 				);
+				// !!! Fix this for multivalues
 				$context['custom_fields_updated'][] = array(
 					'ticket' => $ticketOptions['id'],
 					'fieldname' => $field['name'],
@@ -606,6 +608,7 @@ function shd_modify_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 					'value' => $field['new_value'],
 					'post_type' => CFIELD_REPLY,
 				);
+				// !!! Fix this for multivalues
 				$context['custom_fields_updated'][] = array(
 					'ticket' => $ticketOptions['id'],
 					'msg' => $msgOptions['id'],
@@ -624,11 +627,29 @@ function shd_modify_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 					'id_field' => $field_id,
 					'post_type' => CFIELD_REPLY,
 				);
+				if (!empty($field['value']))
+				{
+					if ($field['type'] == CFIELD_TYPE_RADIO || $field['type'] == CFIELD_TYPE_SELECT)
+						$oldvalue = $field['options'][$field['value']];
+					elseif ($field['type'] == CFIELD_TYPE_MULTI)
+					{
+						$oldvalue = '';
+						$values = explode(',', $field['value']);
+						foreach ($values as $value)
+							$oldvalue .= $field['options'][$value] . ' ';
+						$oldvalue = trim($oldvalue);
+					}
+					else
+						$oldvalue = $field['value'];
+				}
+				else
+					$oldvalue = '';
+
 				$context['custom_fields_updated'][] = array(
 					'ticket' => $ticketOptions['id'],
 					'msg' => $msgOptions['id'],
 					'fieldname' => $field['name'],
-					'oldvalue' => !empty($field['value']) && ($field['type'] == CFIELD_TYPE_RADIO || $field['type'] == CFIELD_TYPE_SELECT) ? $field['options'][$field['value']] : $field['value'],
+					'oldvalue' => $oldvalue,
 					'default' => true,
 					'newvalue' => $field['default_value'],
 					'scope' => CFIELD_REPLY,
@@ -829,23 +850,25 @@ function shd_load_custom_fields($is_ticket = true, $ticketContext = 0, $dept = 0
 				'editable' => !empty($editable),
 				'depts' => array(),
 			);
-			if ($row['field_type'] == CFIELD_TYPE_RADIO)
+			if ($row['field_type'] == CFIELD_TYPE_RADIO || $row['field_type'] == CFIELD_TYPE_MULTI)
 			{
 				foreach ($context['ticket_form']['custom_fields'][$loc][$row['id_field']]['options'] as $k => $v)
-					if (strpos($v, '[') !== false)
-						$context['ticket_form']['custom_fields'][$loc][$row['id_field']]['options'][$k] = parse_bbc($v);
+					$context['ticket_form']['custom_fields'][$loc][$row['id_field']]['options'][$k] = (strpos($v, '[') !== false) ? parse_bbc($v) : $v;
 			}
 			elseif ($row['field_type'] == CFIELD_TYPE_SELECT)
 			{
 				foreach ($context['ticket_form']['custom_fields'][$loc][$row['id_field']]['options'] as $k => $v)
-					if (strpos($v, '[') !== false)
-						$context['ticket_form']['custom_fields'][$loc][$row['id_field']]['options'][$k] = trim(strip_tags(parse_bbc($v)));
+					$context['ticket_form']['custom_fields'][$loc][$row['id_field']]['options'][$k] = (strpos($v, '[') !== false) ? trim(strip_tags(parse_bbc($v))) : trim($v);
 			}
 		}
 		$context['ticket_form']['custom_fields'][$loc][$row['id_field']]['depts'][] = $row['id_dept'];
 
 		if (isset($field_values[$row['id_field']]))
+		{
+			if ($context['ticket_form']['custom_fields'][$loc][$row['id_field']]['type'] == CFIELD_TYPE_MULTI)
+				$field_values[$row['id_field']] = explode(',', $field_values[$row['id_field']]);
 			$context['ticket_form']['custom_fields'][$loc][$row['id_field']]['value'] = $field_values[$row['id_field']];
+		}
 	}
 
 	$context['ticket_form']['custom_fields_context'] = $loc;
@@ -869,7 +892,9 @@ function shd_validate_custom_fields($scope, $dept)
 		// For each field, check it was sent in the form.
 		if (isset($_POST['field-' . $field_id]))
 		{
-			$value = trim($_POST['field-' . $field_id]);
+			if ($field['type'] != CFIELD_TYPE_MULTI)
+				$value = trim($_POST['field-' . $field_id]);
+
 			// Now to sanitise the individual value.
 			switch ($field['type'])
 			{
@@ -914,6 +939,23 @@ function shd_validate_custom_fields($scope, $dept)
 						$missing_fields[$field_id] = $field['name'];
 					elseif (!empty($value) && (!is_numeric($value) || !isset($field['options'][(int) $value])))
 						$invalid_fields[$field_id] = $field['name'];
+					break;
+				case CFIELD_TYPE_MULTI:
+					$newvalue = array();
+					if (!is_array($value))
+						$value = 0;
+					else
+					{
+						foreach ($value as $item)
+						{
+							if (!empty($item) && is_numeric($item) && isset($field['options'][(int) $item]))
+								$newvalue[] = $item;
+						}
+						if (!empty($newvalue))
+							$value = implode(',', $newvalue);
+						else
+							$value = 0;
+					}
 					break;
 				case CFIELD_TYPE_CHECKBOX:
 					// If there's something in it, it's on, simple as that.

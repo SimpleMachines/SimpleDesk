@@ -403,7 +403,7 @@ function shd_view_ticket()
 			'editable' => !empty($editable),
 		);
 
-		if ($field['type'] == CFIELD_TYPE_RADIO || $field['type'] == CFIELD_TYPE_SELECT)
+		if (in_array($field['type'], array(CFIELD_TYPE_RADIO, CFIELD_TYPE_SELECT, CFIELD_TYPE_MULTI)))
 		{
 			foreach ($field['options'] as $k => $v)
 				if (strpos($v, '[') !== false)
@@ -485,6 +485,12 @@ function shd_view_ticket()
 				$fields .= !empty($field['value']) ? $txt['yes'] . ' ' : $txt['no'] . ' ';
 			elseif ($field['type'] == CFIELD_TYPE_SELECT || $field['type'] == CFIELD_TYPE_RADIO)
 				$fields .= trim(strip_tags($field['options'][$field['value']])) . ' ';
+			elseif ($field['type'] == CFIELD_TYPE_MULTI)
+			{
+				$values = explode(',', $field['value']);
+				foreach ($values as $value)
+					$fields .= trim(strip_tags($field['options'][$value])) . ' ';
+			}
 			else
 				$fields .= $field['value'] . ' ';
 		}

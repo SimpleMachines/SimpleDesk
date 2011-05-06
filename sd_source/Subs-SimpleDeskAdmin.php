@@ -298,7 +298,7 @@ function shd_load_action_log_entries($start = 0, $items_per_page = 10, $sort = '
 				$action['extra']['oldvalue'] = !empty($action['extra']['oldvalue']) ? $txt['yes'] : $txt['no'];
 				$action['extra']['newvalue'] = !empty($action['extra']['newvalue']) ? $txt['yes'] : $txt['no'];
 			}
-			elseif ($action['extra']['fieldtype'] == CFIELD_TYPE_RADIO || $action['extra']['fieldtype'] == CFIELD_TYPE_SELECT)
+			elseif ($action['extra']['fieldtype'] == CFIELD_TYPE_RADIO || $action['extra']['fieldtype'] == CFIELD_TYPE_SELECT || $action['extra']['fieldtype'] == CFIELD_TYPE_MULTI)
 			{
 				if (empty($action['extra']['oldvalue']))
 					$action['extra']['oldvalue'] = $txt['shd_none_selected'];

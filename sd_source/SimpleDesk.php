@@ -1117,6 +1117,12 @@ function shd_helpdesk_listing()
 						$prefix .= !empty($tickets[$ticket_id][$field_id]) ? $txt['yes'] . ' ' : $txt['no'] . ' ';
 					elseif ($field['field_type'] == CFIELD_TYPE_SELECT || $field['field_type'] == CFIELD_TYPE_RADIO)
 						$prefix .= $field['field_options'][$tickets[$ticket_id][$field_id]] . ' ';
+					elseif ($field['field_type'] == CFIELD_TYPE_MULTI)
+					{
+						$values = explode(',', $tickets[$ticket_id][$field_id]);
+						foreach ($values as $value)
+							$prefix .= $field['field_options'][$value] . ' ';
+					}
 					else
 						$prefix .= $tickets[$ticket_id][$field_id] . ' ';
 				}

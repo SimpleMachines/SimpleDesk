@@ -288,6 +288,7 @@ $txt['shd_admin_custom_fields_ui_float'] = 'Floating (fractional) numbers';
 $txt['shd_admin_custom_fields_ui_select'] = 'Select from a dropdown';
 $txt['shd_admin_custom_fields_ui_checkbox'] = 'Tickbox (yes/no)';
 $txt['shd_admin_custom_fields_ui_radio'] = 'Select from radio buttons';
+$txt['shd_admin_custom_fields_ui_multi'] = 'Select multiple items';
 $txt['shd_admin_cannot_edit_custom_field'] = 'You cannot edit that custom field.';
 $txt['shd_admin_cannot_move_custom_field'] = 'You cannot move that custom field.';
 $txt['shd_admin_cannot_move_custom_field_up'] = 'You cannot move that custom field up; it is the first item already.';
