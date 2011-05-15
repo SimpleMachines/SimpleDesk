@@ -227,8 +227,13 @@ function template_ticket_custom_fields()
 									<option value="0"', $field['value'] == 0 ? ' selected="selected"' : '', !empty($field['is_required']) ? ' disabled="disabled"' : '', '>', $txt['shd_choose_one'], '&nbsp;</option>';
 
 					foreach ($field['options'] as $key => $option)
+					{
+						if ($key == 'inactive' || in_array($key, $field['options']['inactive']))
+							continue;
+
 						echo '
 									<option value="', $key, '"', $field['value'] == $key ? ' selected="selected"' : '', '>', $option, '&nbsp;</option>';
+					}
 
 					echo '
 								</select>
@@ -249,8 +254,13 @@ function template_ticket_custom_fields()
 						$field['value'] = explode(',', $field['value']);
 
 					foreach ($field['options'] as $key => $option)
+					{
+						if ($key == 'inactive' || in_array($key, $field['options']['inactive']))
+							continue;
+
 						echo '
 								<input name="field-', $field['id'], '-', $key, '" type="checkbox" value="', $key, '"', in_array($key, $field['value']) ? ' checked="checked"' : '', ' /> <span>', $option, '</span><br />';
+					}
 
 					echo '
 							</dd>';
@@ -265,8 +275,13 @@ function template_ticket_custom_fields()
 								<input name="field-', $field['id'], '" type="radio" value="0"', $field['value'] == 0 ? ' checked="checked"' : '', ' class="input_radio" /> <span>', $txt['shd_no_value'], '</span><br />';
 
 					foreach ($field['options'] as $key => $option)
+					{
+						if ($key == 'inactive' || in_array($key, $field['options']['inactive']))
+							continue;
+
 						echo '
 								<input name="field-', $field['id'], '" type="radio" value="', $key, '"', $field['value'] == $key ? ' checked="checked"' : '', ' /> <span>', $option, '</span><br />';
+					}
 
 					echo '
 							</dd>';

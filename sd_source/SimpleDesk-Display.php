@@ -402,11 +402,13 @@ function shd_view_ticket()
 			'bbc' => !empty($row['bbc']) && ($row['field_type'] == CFIELD_TYPE_TEXT || $row['field_type'] == CFIELD_TYPE_LARGETEXT) && $row['placement'] != CFIELD_PLACE_PREFIX,
 			'editable' => !empty($editable),
 		);
+		if (!empty($field['options']) && empty($field['options']['inactive']))
+			$field['options']['inactive'] = array();
 
 		if (in_array($field['type'], array(CFIELD_TYPE_RADIO, CFIELD_TYPE_SELECT, CFIELD_TYPE_MULTI)))
 		{
 			foreach ($field['options'] as $k => $v)
-				if (strpos($v, '[') !== false)
+				if ($k != 'inactive' && strpos($v, '[') !== false)
 					$field['options'][$k] = parse_bbc($v, false);
 		}
 

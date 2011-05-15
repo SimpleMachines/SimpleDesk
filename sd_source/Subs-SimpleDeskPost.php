@@ -903,15 +903,23 @@ function shd_load_custom_fields($is_ticket = true, $ticketContext = 0, $dept = 0
 			if ($row['field_type'] == CFIELD_TYPE_RADIO || $row['field_type'] == CFIELD_TYPE_MULTI)
 			{
 				foreach ($context['ticket_form']['custom_fields'][$loc][$row['id_field']]['options'] as $k => $v)
-					$context['ticket_form']['custom_fields'][$loc][$row['id_field']]['options'][$k] = (strpos($v, '[') !== false) ? parse_bbc($v) : $v;
+				{
+					if ($k != 'inactive')
+						$context['ticket_form']['custom_fields'][$loc][$row['id_field']]['options'][$k] = (strpos($v, '[') !== false) ? parse_bbc($v) : $v;
+				}
 			}
 			elseif ($row['field_type'] == CFIELD_TYPE_SELECT)
 			{
 				foreach ($context['ticket_form']['custom_fields'][$loc][$row['id_field']]['options'] as $k => $v)
-					$context['ticket_form']['custom_fields'][$loc][$row['id_field']]['options'][$k] = (strpos($v, '[') !== false) ? trim(strip_tags(parse_bbc($v))) : trim($v);
+				{
+					if ($k != 'inactive')
+						$context['ticket_form']['custom_fields'][$loc][$row['id_field']]['options'][$k] = (strpos($v, '[') !== false) ? trim(strip_tags(parse_bbc($v))) : trim($v);
+				}
 			}
 		}
 		$context['ticket_form']['custom_fields'][$loc][$row['id_field']]['depts'][] = $row['id_dept'];
+		if (!empty($context['ticket_form']['custom_fields'][$loc][$row['id_field']]['options']) && empty($context['ticket_form']['custom_fields'][$loc][$row['id_field']]['options']['inactive']))
+			$context['ticket_form']['custom_fields'][$loc][$row['id_field']]['options']['inactive'] = array();
 
 		if (isset($field_values[$row['id_field']]))
 		{

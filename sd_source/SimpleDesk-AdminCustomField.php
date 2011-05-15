@@ -437,7 +437,7 @@ function shd_admin_custom_save()
 	{
 		// Before we do, just double check the type of data in the field.
 		$query = shd_db_query('', '
-			SELECT field_type
+			SELECT field_type, field_options
 			FROM {db_prefix}helpdesk_custom_fields
 			WHERE id_field = {int:id_field}',
 			array(
@@ -455,6 +455,30 @@ function shd_admin_custom_save()
 		{
 			$smcFunc['db_free_result']($query);
 			fatal_lang_error('shd_admin_cannot_edit_custom_field', false);
+		}
+
+		// Depending on the field type, we may need to be funky about overlaying things, hence grabbing the old options.
+		if (!empty($row['field_options']) && in_array($row['field_type'], array(CFIELD_TYPE_SELECT, CFIELD_TYPE_RADIO, CFIELD_TYPE_MULTI)))
+		{
+			$row['field_options'] = unserialize($row['field_options']);
+			ksort($row['field_options']);
+			ksort($newOptions);
+			$inactive = array();
+			$new_fields = array();
+			// First, figure out what fields we had before.
+			foreach ($row['field_options'] as $k => $v)
+			{
+				if ($k == 'inactive')
+					continue;
+				if (!isset($newOptions[$k]))
+					$inactive[] = $k;
+				$new_fields[$k] = $v;
+			}
+			// Now, take any of the new stuff and overwrite the old.
+			foreach ($newOptions as $k => $v)
+				$new_fields[$k] = $v;
+			$new_fields['inactive'] = $inactive;
+			$options = serialize($new_fields);
 		}
 
 		shd_db_query('', '
