@@ -547,6 +547,9 @@ function shd_modify_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 		// Some may be pre-existing, some may need purging.
 		foreach ($ticketOptions['custom_fields'] as $field_id => $field)
 		{
+			if ($field['type'] == CFIELD_TYPE_MULTI)
+				trigger_error(serialize($field));
+
 			// No new value, or new value is the same as the old one.
 			if (!isset($field['new_value']) || (isset($field['value']) && $field['value'] == $field['new_value']))
 				continue;
@@ -939,9 +942,22 @@ function shd_validate_custom_fields($scope, $dept)
 		if (!$field['editable'] || !in_array($dept, $field['depts']))
 			continue;
 
-		// For each field, check it was sent in the form.
-		if (isset($_POST['field-' . $field_id]))
+		// Multi-selects are special. Deal with them first.
+		if ($field['type'] == CFIELD_TYPE_MULTI)
 		{
+			$newvalues = array();
+			foreach ($field['options'] as $k => $v)
+				if (!empty($_POST['field-' . $field_id . '-' . $k]))
+					$newvalues[] = $k;
+			if (!empty($newvalues))
+				$value = implode(',', $newvalues);
+			else
+				$value = 0;
+		}
+		// Otherwise, for each field, check it was sent in the form.
+		elseif (isset($_POST['field-' . $field_id]))
+		{
+			trigger_error('editing field ' . $field_id);
 			if ($field['type'] != CFIELD_TYPE_MULTI)
 				$value = trim($_POST['field-' . $field_id]);
 
@@ -989,23 +1005,6 @@ function shd_validate_custom_fields($scope, $dept)
 						$missing_fields[$field_id] = $field['name'];
 					elseif (!empty($value) && (!is_numeric($value) || !isset($field['options'][(int) $value])))
 						$invalid_fields[$field_id] = $field['name'];
-					break;
-				case CFIELD_TYPE_MULTI:
-					$newvalue = array();
-					if (empty($_POST['field-' . $field_id]) || !is_array($_POST['field-' . $field_id]))
-						$value = 0;
-					else
-					{
-						foreach ($_POST['field-' . $field_id] as $item)
-						{
-							if (!empty($item) && is_numeric($item) && isset($field['options'][(int) $item]))
-								$newvalue[] = $item;
-						}
-						if (!empty($newvalue))
-							$value = implode(',', $newvalue);
-						else
-							$value = 0;
-					}
 					break;
 				case CFIELD_TYPE_CHECKBOX:
 					// If there's something in it, it's on, simple as that.

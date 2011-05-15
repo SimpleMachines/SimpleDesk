@@ -250,7 +250,7 @@ function template_ticket_custom_fields()
 
 					foreach ($field['options'] as $key => $option)
 						echo '
-								<input name="field-', $field['id'], '[', $key, ']" type="checkbox" value="', $key, '"', in_array($key, $field['value']) ? ' checked="checked"' : '', ' /> <span>', $option, '</span><br />';
+								<input name="field-', $field['id'], '-', $key, '" type="checkbox" value="', $key, '"', in_array($key, $field['value']) ? ' checked="checked"' : '', ' /> <span>', $option, '</span><br />';
 
 					echo '
 							</dd>';
