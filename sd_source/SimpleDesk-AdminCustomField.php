@@ -76,7 +76,8 @@ function shd_admin_custom_main()
 
 	$query = shd_db_query('', '
 		SELECT id_field, active, field_order, field_name, field_desc, field_loc, icon, field_type, can_see, can_edit
-		FROM {db_prefix}helpdesk_custom_fields',
+		FROM {db_prefix}helpdesk_custom_fields
+		ORDER BY field_order',
 		array()
 	);
 
@@ -231,11 +232,38 @@ function shd_admin_custom_save()
 	if (isset($_REQUEST['delete']) && !empty($_REQUEST['field']))
 	{
 		$_REQUEST['field'] = (int) $_REQUEST['field'];
+		// We actually have to get the current position, because we need to shove everything else up one after.
+		$query = $smcFunc['db_query']('', '
+			SELECT field_order
+			FROM {db_prefix}helpdesk_custom_fields
+			WHERE id_field = {int:field}',
+			array(
+				'field' => $_REQUEST['field'],
+			)
+		);
+		if ($smcFunc['db_num_rows']($query) == 0)
+		{
+			$smcFunc['db_free_result']($query);
+			redirectexit('action=admin;area=helpdesk_customfield;' . $context['session_var'] . '=' . $context['session_id']);
+		}
+
+		list($current_pos) = $smcFunc['db_fetch_row']($query);
+		$smcFunc['db_free_result']($query);
+
 		$smcFunc['db_query']('', '
 			DELETE FROM {db_prefix}helpdesk_custom_fields
 			WHERE id_field = {int:field}',
 			array(
 				'field' => $_REQUEST['field'],
+			)
+		);
+
+		$smcFunc['db_query']('', '
+			UPDATE {db_prefix}helpdesk_custom_fields
+			SET field_order = field_order - 1
+			WHERE field_order > {int:current_pos}',
+			array(
+				'current_pos' => $current_pos,
 			)
 		);
 
@@ -511,11 +539,13 @@ function shd_admin_custom_move()
 
 	$fields = array();
 	while ($row = $smcFunc['db_fetch_assoc']($query))
+	{
 		$fields[$row['field_order']] = $row['id_field'];
+		$fields_map[$row['id_field']] = $row['field_order'];
+	}
 
 	ksort($fields);
 
-	$fields_map = array_flip($fields);
 	if (empty($fields_map[$_REQUEST['field']]))
 		fatal_lang_error('shd_admin_cannot_move_custom_field', false);
 
