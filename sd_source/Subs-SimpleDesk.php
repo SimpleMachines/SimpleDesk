@@ -124,7 +124,27 @@ function shd_init()
 	shd_load_user_perms();
 
 	if (!empty($modSettings['shd_maintenance_mode']))
-		$modSettings['helpdesk_active'] &= ($user_info['is_admin'] || shd_allowed_to('admin_helpdesk', 0));
+	{
+		if (!empty($modSettings['shd_helpdesk_only']) && !$user_info['is_admin'] && !shd_allowed_to('admin_helpdesk', 0))
+		{
+			// You can only login.... otherwise, you're getting the "maintenance mode" display. Except we have to boot up a decent amount of SMF.
+			if (empty($_REQUEST['action']) || ($_REQUEST['action'] != 'login2' && $_REQUEST['action'] != 'logout'))
+			{
+				$_GET['action'] = '';
+				$_REQUEST['action'] = '';
+				$context['shd_maintenance_mode'] = true;
+				loadBoard();
+				loadPermissions();
+				loadTheme();
+				is_not_banned();
+				require_once($sourcedir . '/Subs-Auth.php');
+				InMaintenance();
+				obExit(null, null, false);
+			}
+		}
+		else
+			$modSettings['helpdesk_active'] &= ($user_info['is_admin'] || shd_allowed_to('admin_helpdesk', 0));
+	}
 
 	// Call for any init level hooks and last minute stuff
 	if ($modSettings['helpdesk_active'])
@@ -259,7 +279,7 @@ function shd_get_active_tickets()
 	if (empty($txt['shd_helpdesk'])) // provide a last-ditch fallback in the event we can't even find the file; SimpleDesk.{language}.php should be loaded by now (falling back to english if lang-specific doesn't exist)
 		$txt['shd_helpdesk'] = 'Helpdesk';
 
-	if (!$modSettings['helpdesk_active'] || $context['user']['is_guest'])
+	if (!$modSettings['helpdesk_active'] || $context['user']['is_guest'] || !empty($context['shd_maintenance_mode']))
 		return $txt['shd_helpdesk'];
 
 	// Have we already run on this page? If so we already have the answer.
