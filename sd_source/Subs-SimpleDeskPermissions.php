@@ -347,6 +347,9 @@ function shd_load_user_perms()
 			if (!empty($depts) && !empty($role_permissions))
 				foreach ($role_permissions as $role => $perm_list)
 				{
+					if (empty($depts[$role]))
+						continue;
+
 					foreach ($perm_list as $perm => $value)
 					{
 						if ($value == ROLEPERM_ALLOW)
