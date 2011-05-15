@@ -145,7 +145,7 @@ function template_shd_custom_field_edit()
 				{
 					document.getElementById("required_dept" + id).disabled = !document.getElementById("present_dept" + id).checked;
 				}
-				var startOptID = ', count($context['custom_field']['options']) + 1, ';
+				var startOptID = ', count($context['custom_field']['options']), ';
 				function add_option()
 				{
 					setOuterHTML(document.getElementById("addopt"), \'<br /><input type="radio" name="default_select" value="\' + startOptID + \'" id="\' + startOptID + \'" class="input_radio" /><input type="text" name="select_option[\' + startOptID + \']" value="" class="input_text" /><span id="addopt"></span>\');
@@ -313,6 +313,9 @@ function template_shd_custom_field_edit()
 
 	foreach ($context['custom_field']['options'] as $k => $option)
 	{
+		if ($k == 'inactive' || in_array($k, $context['custom_field']['options']['inactive']))
+			continue;
+
 		echo '
 									<br />
 									<input type="radio" name="default_select" value="', $k, '"', $context['field_type_value'] != CFIELD_TYPE_MULTI && $context['custom_field']['default_value'] == $k ? ' checked="checked"' : '', ' class="input_radio default_select_radio" />
@@ -322,7 +325,7 @@ function template_shd_custom_field_edit()
 
 	echo '
 									<span id="addopt"></span>
-									[<a href="" onclick="add_option(); return false;">',$txt['more'],'</a>]
+									[<a href="" onclick="add_option(); return false;">', $txt['more'], '</a>]
 									</div>
 								</dd>
 								<dt id="default_dt"', $context['field_type_value'] == CFIELD_TYPE_CHECKBOX ? '' : ' style="display: none;"','>

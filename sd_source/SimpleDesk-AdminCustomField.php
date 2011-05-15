@@ -172,6 +172,8 @@ function shd_admin_custom_edit()
 		$context['page_title'] = $txt['shd_admin_edit_custom_field'];
 		$context['sub_template'] = 'shd_custom_field_edit';
 		$context['custom_field']['options'] = !empty($row['field_options']) ? unserialize($row['field_options']) : array(1 => '', '', '');
+		if (empty($context['custom_field']['options']['inactive']))
+			$context['custom_field']['options']['inactive'] = array();
 
 		// If this is a textarea, we need to get its dimensions too.
 		if ($context['custom_field']['field_type'] == CFIELD_TYPE_LARGETEXT)
