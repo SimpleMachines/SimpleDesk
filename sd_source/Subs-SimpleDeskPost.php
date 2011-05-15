@@ -547,9 +547,6 @@ function shd_modify_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 		// Some may be pre-existing, some may need purging.
 		foreach ($ticketOptions['custom_fields'] as $field_id => $field)
 		{
-			if ($field['type'] == CFIELD_TYPE_MULTI)
-				trigger_error(serialize($field));
-
 			// No new value, or new value is the same as the old one.
 			if (!isset($field['new_value']) || (isset($field['value']) && $field['value'] == $field['new_value']))
 				continue;
@@ -957,7 +954,6 @@ function shd_validate_custom_fields($scope, $dept)
 		// Otherwise, for each field, check it was sent in the form.
 		elseif (isset($_POST['field-' . $field_id]))
 		{
-			trigger_error('editing field ' . $field_id);
 			if ($field['type'] != CFIELD_TYPE_MULTI)
 				$value = trim($_POST['field-' . $field_id]);
 
