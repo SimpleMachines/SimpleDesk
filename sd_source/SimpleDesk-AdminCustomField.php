@@ -13,15 +13,15 @@
 #   Any questions, please contact SimpleDesk.net              #
 #                                                             #
 ###############################################################
-# SimpleDesk Version: 1.0 Felidae                             #
-# File Info: SimpleDesk-AdminCustomField.php / 1.0 Felidae    #
+# SimpleDesk Version: 2.0 Anatidae                            #
+# File Info: SimpleDesk-AdminCustomField.php / 2.0 Anatidae   #
 ###############################################################
 
 /**
  *	This file handles the core of SimpleDesk's custom ticket fields interface and code.
  *
  *	@package source
- *	@since 1.1
+ *	@since 2.0
 */
 if (!defined('SMF'))
 	die('Hacking attempt...');
@@ -31,7 +31,7 @@ if (!defined('SMF'))
  *
  *	Directed here from the main administration centre, after permission checks and a few dependencies loaded, this deals solely with managing custom fields.
  *
- *	@since 1.1
+ *	@since 2.0
 */
 function shd_admin_custom()
 {
@@ -66,7 +66,7 @@ function shd_admin_custom()
 /**
  *	Display all the custom fields, including new/edit/save/delete UI hooks
  *
- *	@since 1.1
+ *	@since 2.0
 */
 function shd_admin_custom_main()
 {
@@ -105,7 +105,7 @@ function shd_admin_custom_main()
 /**
  *	Display the new field UI
  *
- *	@since 1.1
+ *	@since 2.0
 */
 function shd_admin_custom_new()
 {
@@ -144,7 +144,7 @@ function shd_admin_custom_new()
 /**
  *	Display the edit field UI
  *
- *	@since 1.1
+ *	@since 2.0
 */
 function shd_admin_custom_edit()
 {
@@ -219,7 +219,7 @@ function shd_admin_custom_edit()
 /**
  *	Handle saving a field
  *
- *	@since 1.1
+ *	@since 2.0
 */
 function shd_admin_custom_save()
 {
@@ -486,7 +486,7 @@ function shd_admin_custom_save()
 /**
  *	Handle moving a custom field up or down
  *
- *	@since 1.1
+ *	@since 2.0
 */
 function shd_admin_custom_move()
 {
@@ -554,7 +554,7 @@ function shd_admin_custom_move()
  *	Get possible icons
  *
  *	@return array A list of possible images for the icon selector (everything in Themes/default/images/simpledesk/cf/ that's an image). Each item in the principle array is an array of value/caption pairs.
- *	@since 1.1
+ *	@since 2.0
 */
 function shd_admin_cf_icons()
 {

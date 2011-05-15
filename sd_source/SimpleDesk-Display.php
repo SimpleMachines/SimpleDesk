@@ -13,8 +13,8 @@
 #   Any questions, please contact SimpleDesk.net              #
 #                                                             #
 ###############################################################
-# SimpleDesk Version: 1.0 Felidae                             #
-# File Info: SimpleDesk-Display.php / 1.0 Felidae             #
+# SimpleDesk Version: 2.0 Anatidae                            #
+# File Info: SimpleDesk-Display.php / 2.0 Anatidae            #
 ###############################################################
 
 /**
@@ -1220,7 +1220,7 @@ function shd_attach_icon($filename)
  *	- status: status of the discovered ticket (numeric)
  *	- status_txt: status of the discovered ticket (textual)
  *
- *	@since 1.1
+ *	@since 2.0
 */
 function shd_load_relationships($ticket = 0)
 {

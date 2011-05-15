@@ -13,15 +13,15 @@
 #   Any questions, please contact SimpleDesk.net              #
 #                                                             #
 ###############################################################
-# SimpleDesk Version: 1.0 Felidae                             #
-# File Info: SimpleDesk-AdminDepartments.php / 1.0 Felidae    #
+# SimpleDesk Version: 2.0 Anatidae                            #
+# File Info: SimpleDesk-AdminDepartments.php / 2.0 Anatidae   #
 ###############################################################
 
 /**
  *	This file handles the core of SimpleDesk's departmental administration.
  *
  *	@package source
- *	@since 1.1
+ *	@since 2.0
 */
 if (!defined('SMF'))
 	die('Hacking attempt...');
@@ -29,7 +29,7 @@ if (!defined('SMF'))
 /**
  *	The start point for all interaction with the SimpleDesk departments
  *
- *	@since 1.1
+ *	@since 2.0
 */
 function shd_admin_departments()
 {
@@ -53,7 +53,7 @@ function shd_admin_departments()
 /**
  *	Display a list of all the departments currently in the system, with appropriate navigation to edit or create more.
  *
- *	@since 1.1
+ *	@since 2.0
  */
 function shd_admin_dept_list()
 {

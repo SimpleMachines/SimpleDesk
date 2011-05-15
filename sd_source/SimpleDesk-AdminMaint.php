@@ -13,15 +13,15 @@
 #   Any questions, please contact SimpleDesk.net              #
 #                                                             #
 ###############################################################
-# SimpleDesk Version: 1.0 Felidae                             #
-# File Info: SimpleDesk-AdminMaint.php / 1.0 Felidae          #
+# SimpleDesk Version: 2.0 Anatidae                            #
+# File Info: SimpleDesk-AdminMaint.php / 2.0 Anatidae         #
 ###############################################################
 
 /**
  *	This file handles the core of SimpleDesk's administrative maintenance.
  *
  *	@package source
- *	@since 1.1
+ *	@since 2.0
 */
 if (!defined('SMF'))
 	die('Hacking attempt...');
@@ -31,7 +31,7 @@ if (!defined('SMF'))
  *
  *	We're directed here from the main administration centre, after permission checks and a few dependencies loaded.
  *
- *	@since 1.1
+ *	@since 2.0
 */
 function shd_admin_maint()
 {

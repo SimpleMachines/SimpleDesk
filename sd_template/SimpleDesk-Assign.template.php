@@ -1,5 +1,5 @@
 <?php
-// Version: 1.0 Felidae; SimpleDesk ticket assignment
+// Version: 2.0 Anatidae; SimpleDesk ticket assignment
 
 /**
  *	Handles ticket assignment.

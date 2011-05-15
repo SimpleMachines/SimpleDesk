@@ -14,13 +14,13 @@
 #     Any questions, please contact SimpleDesk.net                #
 #                                                                 #
 ###################################################################
-# SimpleDesk Version: 1.0 Felidae                                 #
-# File Info: SimpleDesk-Notifications.php / 1.0 Felidae           #
+# SimpleDesk Version: 2.0 Anatidae                                #
+# File Info: SimpleDesk-Notifications.php / 2.0 Anatidae          #
 ###################################################################
 
 /**
  *	@package source
- *	@since 1.1
+ *	@since 2.0
 */
 
 if (!defined('SMF'))
@@ -296,7 +296,7 @@ function shd_notifications_notify_assign(&$ticket, &$assignment)
  *	Handle email notifications
  *
  *	@todo Finish documenting
- *	@since 1.1
+ *	@since 2.0
 */
 function shd_notify_users($notify_data)
 {
@@ -411,7 +411,7 @@ function shd_notify_users($notify_data)
  *	Display the notice of email.
  *
  *	@todo Finish documenting
- *	@since 1.1
+ *	@since 2.0
 */
 function shd_notify_popup()
 {

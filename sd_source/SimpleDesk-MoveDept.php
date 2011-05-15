@@ -13,15 +13,15 @@
 #   Any questions, please contact SimpleDesk.net              #
 #                                                             #
 ###############################################################
-# SimpleDesk Version: 1.0 Felidae                             #
-# File Info: SimpleDesk-Assign.php / 1.0 Felidae              #
+# SimpleDesk Version: 2.0 Anatidae                            #
+# File Info: SimpleDesk-MoveDept.php / 2.0 Anatidae           #
 ###############################################################
 
 /**
  *	This file handles moving tickets between departments.
  *
  *	@package source
- *	@since 1.1
+ *	@since 2.0
 */
 
 if (!defined('SMF'))
@@ -33,7 +33,7 @@ if (!defined('SMF'))
  *	This validates that the user can see the ticket in question initially, and at least one other department.
  *
  *	@see shd_movedept2()
- *	@since 1.1
+ *	@since 2.0
 */
 function shd_movedept()
 {
@@ -187,7 +187,7 @@ function shd_movedept()
  *	logging the action before updating the database.
  *
  *	@see shd_movedept()
- *	@since 1.1
+ *	@since 2.0
 */
 function shd_movedept2()
 {

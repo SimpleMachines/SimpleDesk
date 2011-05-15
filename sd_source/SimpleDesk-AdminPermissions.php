@@ -13,15 +13,15 @@
 #   Any questions, please contact SimpleDesk.net              #
 #                                                             #
 ###############################################################
-# SimpleDesk Version: 1.0 Felidae                             #
-# File Info: SimpleDesk-AdminPermissions.php / 1.0 Felidae    #
+# SimpleDesk Version: 2.0 Anatidae                            #
+# File Info: SimpleDesk-AdminPermissions.php / 2.0 Anatidae   #
 ###############################################################
 
 /**
  *	This file handles the core of SimpleDesk's permissions system.
  *
  *	@package source
- *	@since 1.1
+ *	@since 2.0
 */
 if (!defined('SMF'))
 	die('Hacking attempt...');
@@ -29,7 +29,7 @@ if (!defined('SMF'))
 /**
  *	This function is the start point for configuration of permissions within SimpleDesk.
  *
- *	@since 1.1
+ *	@since 2.0
 */
 function shd_admin_permissions()
 {
@@ -55,7 +55,7 @@ function shd_admin_permissions()
 /**
  *	This function handles displaying a list of roles known to the system.
  *
- *	@since 1.1
+ *	@since 2.0
 */
 function shd_admin_role_list()
 {
@@ -80,7 +80,7 @@ function shd_admin_role_list()
 /**
  *	This function deals with creating a new role in the database, based on a specified template.
  *
- *	@since 1.1
+ *	@since 2.0
 */
 function shd_admin_create_role()
 {
@@ -209,7 +209,7 @@ function shd_admin_edit_role()
 /**
  *	Handle saving a user defined role.
  *
- *	@since 1.1
+ *	@since 2.0
 */
 function shd_admin_save_role()
 {
@@ -495,7 +495,7 @@ function shd_admin_save_role()
 /**
  *	Handles user requests to copy an existing role.
  *
- *	@since 1.1
+ *	@since 2.0
 */
 function shd_admin_copy_role()
 {
@@ -645,7 +645,7 @@ function shd_admin_copy_role()
  *
  *	@param int $loadrole Specifies the role to load from the database. If not specified, loads all known roles.
  *
- *	@since 1.1
+ *	@since 2.0
 */
 function shd_load_role($loadrole = 0)
 {

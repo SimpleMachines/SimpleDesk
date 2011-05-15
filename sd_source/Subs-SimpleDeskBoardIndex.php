@@ -13,15 +13,15 @@
 #   Any questions, please contact SimpleDesk.net              #
 #                                                             #
 ###############################################################
-# SimpleDesk Version: 1.0 Felidae                             #
-# File Info: Subs-SimpleDeskBoardIndex.php / 1.0 Felidae      #
+# SimpleDesk Version: 2.0 Anatidae                            #
+# File Info: Subs-SimpleDeskBoardIndex.php / 2.0 Anatidae     #
 ###############################################################
 
 /**
  *	This file deals with changes for the board index for board integration.
  *
  *	@package subs
- *	@since 1.1
+ *	@since 2.0
  */
 
 if (!defined('SMF'))

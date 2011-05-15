@@ -13,10 +13,10 @@
 #   Any questions, please contact SimpleDesk.net              #
 #                                                             #
 ###############################################################
-# SimpleDesk Version: 1.0 Felidae                             #
-# File Info: SimpleDesk-LogAction.english.php / 1.0 Felidae   #
+# SimpleDesk Version: 2.0 Anatidae                            #
+# File Info: SimpleDeskLogAction.english.php / 2.0 Anatidae   #
 ###############################################################
-// Version: 1.0 Felidae; SimpleDesk action log
+// Version: 2.0 Anatidae; SimpleDesk action log
 
 // Important! Before editing these language files please read the text at the top of index.english.php.
 

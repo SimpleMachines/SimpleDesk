@@ -13,13 +13,13 @@
 # Any questions, please contact SimpleDesk.net            #
 #                                                         #
 ###########################################################
-# SimpleDesk Version: 1.0 Felidae                         #
-# File Info: index.php / 1.0 Felidae                      #
+# SimpleDesk Version: 2.0 Anatidae                        #
+# File Info: index.php / 2.0 Anatidae                     #
 ###########################################################
 
 /**
- *	@package plugin-emailnotifications
- *	@since 1.1
+ *	@package plugin-frontpage
+ *	@since 2.0
 */
 
 if (!defined('SHD_VERSION'))
@@ -43,7 +43,7 @@ if (!defined('SHD_VERSION'))
  *	hooks
  *	- key-value pair of hook name to function name or array of function names to be called at the hook point
  *
- *	@since 1.1
+ *	@since 2.0
 */
 function shdplugin_front_page()
 {
@@ -55,7 +55,7 @@ function shdplugin_front_page()
 			'website' => 'http://www.simpledesk.net/',
 			'version' => '1.0',
 			'compatibility' => array(
-				'SimpleDesk 1.0 Felidae', // should tie up with the SHD_VERSION constants
+				'SimpleDesk 2.0 Anatidae', // should tie up with the SHD_VERSION constants
 			),
 			'acp_url' => 'action=admin;area=helpdesk_options;sa=frontpage',
 		),

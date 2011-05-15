@@ -13,8 +13,8 @@
 #   Any questions, please contact SimpleDesk.net              #
 #                                                             #
 ###############################################################
-# SimpleDesk Version: 1.0 Felidae                             #
-# File Info: SimpleDesk-TopicTicketMove.php / 1.0 Felidae     #
+# SimpleDesk Version: 2.0 Anatidae                            #
+# File Info: SimpleDesk-TicketTopicMove.php / 2.0 Anatidae    #
 ###############################################################
 
 /**

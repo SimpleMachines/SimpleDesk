@@ -1,17 +1,17 @@
 <?php
-// Version: 1.0 Felidae; SimpleDesk's administration/permissions area
+// Version: 2.0 Anatidae; SimpleDesk's administration/permissions area
 
 /**
  *	Displays SimpleDesk's administration for permissions - front page, listing the templates and known defined roles.
  *
  *	@package template
- *	@since 1.1
+ *	@since 2.0
 */
 
 /**
  *	Display the front page of the SimpleDesk permissions area.
  *
- *	@since 1.1
+ *	@since 2.0
 */
 function template_shd_permissions_home()
 {
@@ -140,7 +140,7 @@ function template_shd_permissions_home()
  *	Display the list of icons for a role's permissions.
  *
  *	@param array $permissions An array listing the permissions a given role has.
- *	@since 1.1
+ *	@since 2.0
 */
 function template_shd_display_permission_list($permissions)
 {
@@ -199,7 +199,7 @@ function template_shd_display_permission_list($permissions)
 /**
  *	Display the form to create a new role.
  *
- *	@since 1.1
+ *	@since 2.0
 */
 function template_shd_create_role()
 {
@@ -248,7 +248,7 @@ function template_shd_create_role()
 /**
  *	Display the form to edit a role's permissions and settings.
  *
- *	@since 1.1
+ *	@since 2.0
 */
 function template_shd_edit_role()
 {
@@ -516,7 +516,7 @@ function template_shd_edit_role()
 /**
  *	Display the form to clone an existing role.
  *
- *	@since 1.1
+ *	@since 2.0
 */
 function template_shd_copy_role()
 {

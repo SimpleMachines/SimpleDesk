@@ -1,17 +1,17 @@
 <?php
-// Version: 1.0 Felidae; SimpleDesk's administration/departments area
+// Version: 2.0 Anatidae; SimpleDesk's administration/departments area
 
 /**
  *	Displays SimpleDesk's administration for departments - front page, listing the departments, plus the create/edit dialogs.
  *
  *	@package template
- *	@since 1.1
+ *	@since 2.0
 */
 
 /**
  *	Display the front page of the SimpleDesk departments.
  *
- *	@since 1.1
+ *	@since 2.0
 */
 function template_shd_departments_home()
 {

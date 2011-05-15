@@ -1,5 +1,5 @@
 <?php
-// Version: 1.0 Felidae; SimpleDesk front page template
+// Version: 2.0 Anatidae; SimpleDesk front page template
 
 /**
  *	This file handles displaying the blocks of tickets for the front page, as well as the slightly
@@ -568,7 +568,7 @@ function template_shd_menu_header($header, $string)
  *	Displays a header to admins while the helpdesk is in maintenance mode.
  *
  *	The helpdesk is disabled to non admins while in maintenance mode, but this template is added to the template layers if the user is an admin and it's in maintenance mode.
- *	@since 1.1
+ *	@since 2.0
 */
 function template_shd_maintenance_above()
 {
@@ -580,7 +580,7 @@ function template_shd_maintenance_above()
  *	Displays a footer to admins while the helpdesk is in maintenance mode.
  *
  *	The helpdesk is disabled to non admins while in maintenance mode, but this template is added to the template layers if the user is an admin and it's in maintenance mode.
- *	@since 1.1
+ *	@since 2.0
 */
 function template_shd_maintenance_below()
 {

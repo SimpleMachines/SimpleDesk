@@ -13,8 +13,8 @@
 #   Any questions, please contact SimpleDesk.net              #
 #                                                             #
 ###############################################################
-# SimpleDesk Version: 1.1                                     #
-# File Info: SimpleDesk-Profile.php / 1.1                     #
+# SimpleDesk Version: 2.0 Anatidae                            #
+# File Info: SimpleDesk-Profile.php / 2.0 Anatidae            #
 ###############################################################
 
 /**
@@ -22,7 +22,7 @@
  *	to personal stats as well as sensitive information (site URL, contact email, etc.).
  *
  *	@package source
- *	@since 1.1
+ *	@since 2.0
  */
 
 if (!defined('SMF'))

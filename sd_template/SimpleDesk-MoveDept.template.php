@@ -1,5 +1,5 @@
 <?php
-// Version: 1.0 Felidae; SimpleDesk department moving.
+// Version: 2.0 Anatidae; SimpleDesk department moving.
 
 /**
  *	Handles moving a ticket between departments.
@@ -14,7 +14,7 @@
  *	Will have been populated by shd_movedept() in SimpleDesk-MoveDept.php, adding into $context['dept_list'].
  *
  *	@see shd_movedept()
- *	@since 1.1
+ *	@since 2.0
 */
 function template_movedept()
 {

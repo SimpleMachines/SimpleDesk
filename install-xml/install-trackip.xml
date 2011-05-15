@@ -2,7 +2,7 @@
 <!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
 <modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
 	<id>SimpleDeskTeam:SimpleDesk</id>
-	<version>1.1 rev753</version>
+	<version>2.0</version>
 
 	<file name="$sourcedir/Profile-View.php">
 		<operation><!-- add the code to call for IP tracking -->

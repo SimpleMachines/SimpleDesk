@@ -1,18 +1,18 @@
 <?php
-// Version: 1.0 Felidae; SimpleDesk unread posts layout
+// Version: 2.0 Anatidae; SimpleDesk unread posts layout
 
 /**
  *	Displays the ticket information in the unread posts page
  *
  *	@package template
- *	@since 1.0
+ *	@since 2.0
 */
 
 /**
  *	Placeholder for the top part of the 'template layer' as required by SMF.
  *
  *	@see template_shd_unread_below()
- *	@since 1.1
+ *	@since 2.0
 */
 function template_shd_unread_above()
 {
@@ -25,7 +25,7 @@ function template_shd_unread_above()
  *	Will have been populated by shd_unread_posts() in SimpleDesk-Unread.php, adding into $context['shd_unread_info'].
  *
  *	@see shd_unread_posts()
- *	@since 1.1
+ *	@since 2.0
 */
 function template_shd_unread_below()
 {

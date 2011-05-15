@@ -13,8 +13,8 @@
 #   Any questions, please contact SimpleDesk.net              #
 #                                                             #
 ###############################################################
-# SimpleDesk Version: 1.0 Felidae                             #
-# File Info: SimpleDesk-SSI.php / 1.0 Felidae                 #
+# SimpleDesk Version: 2.0 Anatidae                            #
+# File Info: SimpleDesk-SSI.php / 2.0 Anatidae                #
 ###############################################################
 
 /**
@@ -30,7 +30,7 @@
  *	Unlike other SimpleDesk functions, these use a SSI style camel casing.
  *
  *	@package source
- *	@since 1.1
+ *	@since 2.0
  */
 
 if (!defined('SMF'))
@@ -43,7 +43,7 @@ if (!defined('SMF'))
  *	@param int $limit The number of tickets to limit to, default 10.
  *	@param string $output_method Set to 'echo' for displaying content, set to 'array' to simply return data.
  *	@return array An array of data, more details under the underlying function {@link ssi_getSDTickets()}
- *	@since 1.1
+ *	@since 2.0
 */
 function ssi_userTickets($started_by = 0, $limit = 10, $output_method = 'echo')
 {
@@ -71,7 +71,7 @@ function ssi_userTickets($started_by = 0, $limit = 10, $output_method = 'echo')
  *	@param int $limit The number of tickets to limit to, default 10.
  *	@param string $output_method Set to 'echo' for displaying content, set to 'array' to simply return data.
  *	@return array An array of data, more details under the underlying function {@link ssi_getSDTickets()}
- *	@since 1.1
+ *	@since 2.0
 */
 function ssi_staffAssignedTickets($assignee = 0, $limit = 10, $output_method = 'echo')
 {
@@ -99,7 +99,7 @@ function ssi_staffAssignedTickets($assignee = 0, $limit = 10, $output_method = '
  *	@param int $limit The number of tickets to limit to, default 10.
  *	@param string $output_method Set to 'echo' for displaying content, set to 'array' to simply return data.
  *	@return array An array of data, more details under the underlying function {@link ssi_getSDTickets()}
- *	@since 1.1
+ *	@since 2.0
 */
 function ssi_staffTicketsUrgency($urgency, $limit = 10, $output_method = 'echo')
 {
@@ -159,7 +159,7 @@ function ssi_staffTicketsUrgency($urgency, $limit = 10, $output_method = 'echo')
  *	<li>status_id: Number representing ticket status</li>
  *	<li>status_text: String representing ticket status</li>
  *	</ul>
- *	@since 1.1
+ *	@since 2.0
 */
 function ssi_getSDTickets($query_where, $query_where_params = array(), $query_limit = 0, $query_order = 'hdt.id_ticket ASC', $output_method = 'echo')
 {
@@ -257,7 +257,7 @@ function ssi_getSDTickets($query_where, $query_where_params = array(), $query_li
  *	@param boolean $honour_admin_setting Within the administration panel is the option to exclude forum admins from being considered staff (so can't assign tickets to them). If true (default), assume the outcome of that should be applied here too.
  *	@param string $output_method Leave as default or explicitly set to 'echo' for this function to output a list of helpdesk staff members, set to 'array' to block output, and have the standard contents back.
  *	@return array The return is always an array of members that are staff; contains many details about members since SMF's member context is loaded (including avatar, personal text and so on)
- *	@since 1.1
+ *	@since 2.0
 */
 function ssi_staffMembers($honour_admin_setting = true, $output_method = 'echo')
 {

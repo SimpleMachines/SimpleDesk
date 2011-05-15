@@ -13,8 +13,8 @@
 #   Any questions, please contact SimpleDesk.net              #
 #                                                             #
 ###############################################################
-# SimpleDesk Version: 1.0 Felidae                             #
-# File Info: uninstall-optional.php / 1.0 Felidae             #
+# SimpleDesk Version: 2.0 Anatidae                            #
+# File Info: uninstall-optional.php / 2.0 Anatidae            #
 ###############################################################
 
 /**

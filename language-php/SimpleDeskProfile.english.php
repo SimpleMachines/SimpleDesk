@@ -13,10 +13,10 @@
 #   Any questions, please contact SimpleDesk.net              #
 #                                                             #
 ###############################################################
-# SimpleDesk Version: 1.1                                     #
-# File Info: SimpleDesk-Profile.english.php / 1.1             #
+# SimpleDesk Version: 2.0 Anatidae                            #
+# File Info: SimpleDeskProfile.english.php / 2.0 Anatidae     #
 ###############################################################
-// Version: 1.0; SimpleDesk Profile language file
+// Version: 2.0 Anatidae; SimpleDesk Profile language file
 
 // Important! Before editing these language files please read the text at the top of index.english.php.
 
@@ -24,7 +24,7 @@
  *	This file contains all of the principle language strings used by the Profile page.
  *
  *	@package language
- *	@since 1.1
+ *	@since 2.0
  */
 
 $txt['shd_profile_area'] = 'Helpdesk';
@@ -36,7 +36,6 @@ $txt['shd_profile_show_replies'] = 'Show Replies';
 $txt['shd_profile_permissions'] = 'Permissions';
 $txt['shd_profile_actionlog'] = 'Action Log';
 $txt['shd_profile_go_to_helpdesk'] = 'Go to the helpdesk';
-
 
 $txt['shd_profile_heading'] = 'Helpdesk Profile - %s';
 $txt['shd_profile_edit_settings'] = 'Edit my settings';

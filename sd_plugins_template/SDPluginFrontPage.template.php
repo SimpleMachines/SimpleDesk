@@ -1,6 +1,18 @@
 <?php
-// Version: 1.0
+// Version: 2.0 Anatidae; SimpleDesk alternate front page template
 
+/**
+ *	This file handles the replacement front page.
+ *
+ *	@package plugin-frontpage
+ *	@since 2.0
+*/
+
+/**
+ *	Display the replacement front page.
+ *
+ *	@since 2.0
+*/
 function template_shd_frontpage()
 {
 	global $context, $txt, $settings, $scripturl;

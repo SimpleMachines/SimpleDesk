@@ -13,15 +13,15 @@
 #   Any questions, please contact SimpleDesk.net              #
 #                                                             #
 ###############################################################
-# SimpleDesk Version: 1.0 Felidae                             #
-# File Info: SimpleDesk-AdminPlugins.php / 1.0 Felidae        #
+# SimpleDesk Version: 2.0 Anatidae                            #
+# File Info: SimpleDesk-AdminPlugins.php / 2.0 Anatidae       #
 ###############################################################
 
 /**
  *	This file handles the core of SimpleDesk's plugin system administration.
  *
  *	@package source
- *	@since 1.1
+ *	@since 2.0
 */
 if (!defined('SMF'))
 	die('Hacking attempt...');
@@ -31,7 +31,7 @@ if (!defined('SMF'))
  *
  *	Directed here from the main administration centre, after permission checks and a few dependencies loaded, this deals solely with managing custom fields.
  *
- *	@since 1.1
+ *	@since 2.0
 */
 function shd_admin_plugins()
 {
@@ -234,7 +234,7 @@ function shd_admin_plugins()
  *	- 'languages' as an array of files to be purged from language loaders (e.g. SDPluginMymod)
  *	- 'functions' as an array of functions to be purged from function calls (e.g. shd_mymod_helpdesk, shd_mymod_adminopts)
  *
- *	@since 1.1
+ *	@since 2.0
 */
 function shd_unregister_plugin()
 {

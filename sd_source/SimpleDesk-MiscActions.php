@@ -13,8 +13,8 @@
 #   Any questions, please contact SimpleDesk.net              #
 #                                                             #
 ###############################################################
-# SimpleDesk Version: 1.0 Felidae                             #
-# File Info: SimpleDesk-MiscActions.php / 1.0 Felidae         #
+# SimpleDesk Version: 2.0 Anatidae                            #
+# File Info: SimpleDesk-MiscActions.php / 2.0 Anatidae        #
 ###############################################################
 
 /**
@@ -294,7 +294,7 @@ function shd_urgency_change_noajax()
  *
  *	Accessed through ?action=helpdesk;sa=relation;ticket=x;linkticket=y;relation=[linked|duplicated|parent|child|delete];sessvar=sessid and will redirect back to the ticket once complete.
  *
- *	@since 1.1
+ *	@since 2.0
 */
 function shd_ticket_relation()
 {

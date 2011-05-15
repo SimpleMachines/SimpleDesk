@@ -13,8 +13,8 @@
 #   Any questions, please contact SimpleDesk.net              #
 #                                                             #
 ###############################################################
-# SimpleDesk Version: 1.0 Felidae                             #
-# File Info: Subs-SimpleDesk.php / 1.0 Felidae                #
+# SimpleDesk Version: 2.0 Anatidae                            #
+# File Info: Subs-SimpleDesk.php / 2.0 Anatidae               #
 ###############################################################
 
 /**
@@ -37,7 +37,7 @@ if (!defined('SMF'))
  *	Calling multiple times is not significantly detrimental to performance; the function is aware if it has been
  *	called previously.
  *
- *	@since 1.1
+ *	@since 2.0
 */
 function shd_init()
 {
@@ -50,7 +50,7 @@ function shd_init()
 	$called = true;
 
 	// What SD version are we on? It's now here!
-	define('SHD_VERSION', 'SimpleDesk 1.0 Felidae');
+	define('SHD_VERSION', 'SimpleDesk 2.0 Anatidae');
 
 	// This isn't the SMF way. But for something like this, it's way way more logical and readable.
 	define('TICKET_STATUS_NEW', 0);
@@ -997,7 +997,7 @@ function shd_no_expand_pageindex($base_url, &$start, $max_value, $num_per_page, 
  *
  *	@param string $langfile Name of a language file to load, typically SimpleDesk prefixed, though could be used for any SMF language file.
  *	@param string $override_lang Name of a language to load as an override, rather than just the user's default.
- *	@since 1.1
+ *	@since 2.0
 */
 function shd_load_language($langfile, $override_lang = '')
 {
@@ -1118,7 +1118,7 @@ function shd_recalc_ids($ticket)
  *	@param mixed $user Normally, an int being the user id of the user whose preferences should be attempted to be loaded. If === false, return the list of default prefs (for the pref UI), or if 0 or omitted, load the current user.
  *
  *	@return array If $user === false, the list of options, their types and default values is returned. Otherwise, return an array of prefs (adjusted for this user)
- *	@since 1.1
+ *	@since 2.0
 */
 function shd_load_user_prefs($user = 0)
 {
@@ -1358,7 +1358,7 @@ function shd_load_user_prefs($user = 0)
 /**
  *	Loads any source files directed by integration hooks.
  *
- *	@since 1.1
+ *	@since 2.0
 */
 function shd_load_plugin_files($hook = '')
 {
@@ -1378,7 +1378,7 @@ function shd_load_plugin_files($hook = '')
 /**
  *	Loads any language files directed by integration hooks.
  *
- *	@since 1.1
+ *	@since 2.0
 */
 function shd_load_plugin_langfiles($hook = '')
 {
@@ -1397,7 +1397,7 @@ function shd_load_plugin_langfiles($hook = '')
  *
  *	This explicitly relies on the display template hook for such things. If the theme does not provide it, the theme author needs to update their theme.
  *
- *	@since 1.1
+ *	@since 2.0
 */
 function shd_display_btn_mvtopic(&$normal_buttons)
 {
@@ -1412,7 +1412,7 @@ function shd_display_btn_mvtopic(&$normal_buttons)
  *
  *	All scheduled tasks have to have the name prefix scheduled_ and must be defined by the time we get to running AutoTask() in Scheduled.php. Short of modifying that file, we can define a placeholder here (which will exist for AutoTask) and have that be called.
  *
- *	@since 1.1
+ *	@since 2.0
 */
 function scheduled_simpledesk()
 {
@@ -1430,7 +1430,7 @@ function scheduled_simpledesk()
  *
  *	@param string &$actionArray The master list of actions from index.php
  *
- *	@since 1.1
+ *	@since 2.0
 */
 function shd_init_actions(&$actionArray)
 {
@@ -1487,7 +1487,7 @@ function shd_init_actions(&$actionArray)
 /**
  *	Last-minute buffer replacements to be made, e.g. removing unwanted content in helpdesk-only mode.
  *
- *	@since 1.1
+ *	@since 2.0
 */
 function shd_buffer_replace(&$buffer)
 {
@@ -1528,7 +1528,7 @@ function shd_buffer_replace(&$buffer)
  *	Add the SimpleDesk options to the main site menu.
  *
  *	@param array &$menu_buttons The main menu buttons as provided by Subs.php.
- *	@since 1.1
+ *	@since 2.0
 */
 function shd_main_menu(&$menu_buttons)
 {

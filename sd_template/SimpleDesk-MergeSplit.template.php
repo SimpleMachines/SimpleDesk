@@ -1,11 +1,11 @@
 <?php
-// Version: 1.0 Felidae; SimpleDesk merge/split template
+// Version: 2.0 Anatidae; SimpleDesk merge/split template
 
 /**
  *	This file handles gathering information from users for splitting and merging topics.
  *
  *	@package template
- *	@since 1.1
+ *	@since 2.0
 */
 
 /**
@@ -14,7 +14,7 @@
  *	@see shd_merge_ticket()
  *	@see shd_merge_ticket2()
  *
- *	@since 1.1
+ *	@since 2.0
 */
 function template_shd_merge_ticket()
 {
@@ -78,7 +78,7 @@ function template_shd_merge_ticket()
  *	@see shd_split_ticket()
  *	@see shd_split_ticket2()
  *
- *	@since 1.1
+ *	@since 2.0
 */
 function template_shd_split_ticket()
 {
@@ -148,7 +148,7 @@ function template_shd_split_ticket()
  *
  *	@see shd_split_ticket2()
  *
- *	@since 1.1
+ *	@since 2.0
 */
 function template_shd_split_ticket2()
 {

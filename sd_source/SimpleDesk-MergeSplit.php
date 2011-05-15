@@ -13,15 +13,15 @@
 #   Any questions, please contact SimpleDesk.net              #
 #                                                             #
 ###############################################################
-# SimpleDesk Version: 1.0 Felidae                             #
-# File Info: SimpleDesk-MergeSplit.php / 1.0 Felidae          #
+# SimpleDesk Version: 2.0 Anatidae                            #
+# File Info: SimpleDesk-MergeSplit.php / 2.0 Anatidae         #
 ###############################################################
 
 /**
  *	This file handles merging and splitting of tickets, both handling the interface and actual processing thereof.
  *
  *	@package source
- *	@since 1.1
+ *	@since 2.0
 */
 
 if (!defined('SMF'))

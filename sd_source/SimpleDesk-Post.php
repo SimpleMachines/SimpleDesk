@@ -13,8 +13,8 @@
 #   Any questions, please contact SimpleDesk.net              #
 #                                                             #
 ###############################################################
-# SimpleDesk Version: 1.0 Felidae                             #
-# File Info: SimpleDesk-Post.php / 1.0 Felidae                #
+# SimpleDesk Version: 2.0 Anatidae                            #
+# File Info: SimpleDesk-Post.php / 2.0 Anatidae               #
 ###############################################################
 
 /**
@@ -1960,7 +1960,7 @@ function shd_handle_attachments()
 /**
  *	Establishes the items for the 'additional options' in the posting screen.
  *
- *	@since 1.1
+ *	@since 2.0
 */
 function shd_posting_additional_options()
 {
@@ -1989,7 +1989,7 @@ function shd_posting_additional_options()
  *	Checks dependencies of the current ticket to see if it can be closed.
  *
  *	@return string Returns empty string if the ticket has no dependency issues, or returns the id for $txt to use as error message.
- *	@since 1.1
+ *	@since 2.0
 */
 function shd_check_dependencies()
 {

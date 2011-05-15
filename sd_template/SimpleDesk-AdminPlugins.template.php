@@ -1,17 +1,17 @@
 <?php
-// Version: 1.0 Felidae; SimpleDesk's administration/plugins area
+// Version: 2.0 Anatidae; SimpleDesk's administration/plugins area
 
 /**
  *	Displays SimpleDesk's administration for plugins.
  *
  *	@package template
- *	@since 1.1
+ *	@since 2.0
 */
 
 /**
  *	Display the front page of the SimpleDesk plugins area.
  *
- *	@since 1.1
+ *	@since 2.0
 */
 function template_shd_plugin_listing()
 {

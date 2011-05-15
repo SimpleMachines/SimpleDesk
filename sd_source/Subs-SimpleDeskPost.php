@@ -13,8 +13,8 @@
 #   Any questions, please contact SimpleDesk.net              #
 #                                                             #
 ###############################################################
-# SimpleDesk Version: 1.0 Felidae                             #
-# File Info: Subs-SimpleDeskPost.php / 1.0 Felidae            #
+# SimpleDesk Version: 2.0 Anatidae                            #
+# File Info: Subs-SimpleDeskPost.php / 2.0 Anatidae           #
 ###############################################################
 
 /**
@@ -763,7 +763,7 @@ function shd_get_urgency_options($self_ticket = false, $dept = 0)
  *	@param bool $is_ticket (default true) Whether to load custom fields based on editing a ticket or a message.
  *	@param int $ticketContext The appropriate value to load for; if editing a ticket this represents the ticket id, if editing a reply this represents the message id, if empty this is a new instance of either so no need to attempt loading data.
  *
- *	@since 1.1
+ *	@since 2.0
 */
 function shd_load_custom_fields($is_ticket = true, $ticketContext = 0, $dept = 0)
 {

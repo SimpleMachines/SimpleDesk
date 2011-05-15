@@ -13,15 +13,15 @@
 #   Any questions, please contact SimpleDesk.net              #
 #                                                             #
 ###############################################################
-# SimpleDesk Version: 1.0 Felidae                             #
-# File Info: Subs-SimpleDeskPermissions.php / 1.0 Felidae     #
+# SimpleDesk Version: 2.0 Anatidae                            #
+# File Info: Subs-SimpleDeskPermissions.php / 2.0 Anatidae    #
 ###############################################################
 
 /**
  *	This file handles the core permissions systems for SimpleDesk, including the permissions templates, loading and checking permissions.
  *
  *	@package subs
- *	@since 1.1
+ *	@since 2.0
  */
 
 if (!defined('SMF'))
@@ -30,7 +30,7 @@ if (!defined('SMF'))
 /**
  *	This function stores the master list of permissions.
  *
- *	@since 1.1
+ *	@since 2.0
 */
 function shd_load_all_permission_sets()
 {
@@ -116,7 +116,7 @@ function shd_load_all_permission_sets()
 /**
  *	Provides a list of the known role/permission templates for the system.
  *
- *	@since 1.1
+ *	@since 2.0
 */
 function shd_load_role_templates()
 {
@@ -584,7 +584,7 @@ function shd_members_allowed_to($permission, $dept = 0)
  *	@param string $permission A string naming a permission that members should hold.
  *	@param int $dept An integer indicating which department should be checked. If only confirmation that the user has the permission in at least one department without reference to any particular department, specify a department of 0.
  *	@return array Array of arrays containing 'allowed' and 'denied', each of which can contain ids for zero or more membergroups that hold the relevant permission.
- *	@since 1.1
+ *	@since 2.0
 */
 function shd_groups_allowed_to($permission, $dept = 0)
 {

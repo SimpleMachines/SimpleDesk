@@ -1,17 +1,17 @@
 <?php
-// Version: 1.0 Felidae; SimpleDesk's administration maintenance
+// Version: 2.0 Anatidae; SimpleDesk's administration maintenance
 
 /**
  *	Displays SimpleDesk's administration maintenance
  *
  *	@package template
- *	@since 1.1
+ *	@since 2.0
 */
 
 /**
  *	Display the front page of the SimpleDesk admin maintenance, including a list of all the tasks.
  *
- *	@since 1.1
+ *	@since 2.0
 */
 function template_shd_admin_maint_home()
 {

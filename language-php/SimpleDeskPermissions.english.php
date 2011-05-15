@@ -13,16 +13,15 @@
 #   Any questions, please contact SimpleDesk.net              #
 #                                                             #
 ###############################################################
-# SimpleDesk Version: 1.0 Felidae                             #
-# File Info: SimpleDesk-Permissions.english.php / 1.0 Felidae #
+# SimpleDesk Version: 2.0 Anatidae                            #
+# File Info: SimpleDeskPermissions.english.php / 2.0 Anatidae #
 ###############################################################
-// Version: 1.0 Felidae; SimpleDesk permissions
+// Version: 2.0 Anatidae; SimpleDesk permissions
 
 // Important! Before editing these language files please read the text at the top of index.english.php.
 
 /**
- *	This file contains all of the language strings (both main description and help text) for all permissions that SimpleDesk adds to the
- *	permissions pages. Note that both classic and simple view are accounted for, explaining the large number of strings per permission.
+ *	This file contains all of the language strings (both main description and help text) for all permissions that SimpleDesk contains.
  *
  *	@package language
  *	@todo Document the text groups in this file.

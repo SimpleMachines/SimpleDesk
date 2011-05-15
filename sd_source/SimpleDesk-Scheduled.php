@@ -13,8 +13,8 @@
 #   Any questions, please contact SimpleDesk.net              #
 #                                                             #
 ###############################################################
-# SimpleDesk Version: 1.0 Felidae                             #
-# File Info: SimpleDesk-Assign.php / 1.0 Felidae              #
+# SimpleDesk Version: 2.0 Anatidae                            #
+# File Info: SimpleDesk-Scheduled.php / 2.0 Anatidae          #
 ###############################################################
 
 /**
@@ -33,7 +33,7 @@ if (!defined('SMF'))
  *	- close older open tickets (if not replied to within a given number of days)
  *	- purge deleted tickets (delete their contents aftet a given number of days of being already deleted)
  *
- *	@since 1.1
+ *	@since 2.0
 */
 
 function shd_scheduled()

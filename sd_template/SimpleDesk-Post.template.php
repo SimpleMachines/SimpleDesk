@@ -1,5 +1,5 @@
 <?php
-// Version: 1.0 Felidae; SimpleDesk posting and replying
+// Version: 2.0 Anatidae; SimpleDesk posting and replying
 
 /**
  *	This file handles everything concerning posting, including displaying the display of ticket facia
@@ -798,7 +798,7 @@ function template_ticket_pageend()
  *	Display the message thanking the user for posting.
  *
  *	@see shd_done_posting()
- *	@since 1.1
+ *	@since 2.0
 */
 function template_shd_thank_posting()
 {

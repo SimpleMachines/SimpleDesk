@@ -2,7 +2,7 @@
 <!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
 <modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
 	<id>SimpleDeskTeam:SimpleDesk</id>
-	<version>1.1</version>
+	<version>2.0</version>
 
 	<file name="$sourcedir/Admin.php"><!-- adds the navbar links to the admin panel -->
 		<operation><!-- prepend SimpleDesk's ACP helper functions to the list of places to search -->

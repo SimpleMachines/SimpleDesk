@@ -14,10 +14,10 @@
 #     Any questions, please contact SimpleDesk.net                #
 #                                                                 #
 ###################################################################
-# SimpleDesk Version: 1.0 Felidae                                 #
-# File Info: SimpleDeskNotifications.english.php / 1.0 Felidae    #
+# SimpleDesk Version: 2.0 Anatidae                                #
+# File Info: SimpleDeskNotifications.english.php / 2.0 Anatidae   #
 ###################################################################
-// Version: 1.0 Felidae; SimpleDesk main language file
+// Version: 2.0 Anatidae; SimpleDesk main language file
 
 // Important! Before editing these language files please read the text at the top of index.english.php.
 
@@ -26,7 +26,7 @@
  *
  *	@package language
  *	@todo Document the text groups in this file.
- *	@since 1.1
+ *	@since 2.0
 */
 
 // Email subject and body contents

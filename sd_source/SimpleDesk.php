@@ -13,8 +13,8 @@
 #   Any questions, please contact SimpleDesk.net              #
 #                                                             #
 ###############################################################
-# SimpleDesk Version: 1.0 Felidae                             #
-# File Info: SimpleDesk.php / 1.0 Felidae                     #
+# SimpleDesk Version: 2.0 Anatidae                            #
+# File Info: SimpleDesk.php / 2.0 Anatidae                    #
 ###############################################################
 
 /**
@@ -436,7 +436,7 @@ function shd_main_helpdesk()
 /**
  *	Sets up viewing the list of departments.
  *
- *	@since 1.1
+ *	@since 2.0
 */
 function shd_main_dept()
 {

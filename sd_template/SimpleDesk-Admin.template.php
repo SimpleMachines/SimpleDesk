@@ -1,5 +1,5 @@
 <?php
-// Version: 1.0 Felidae; SimpleDesk's administration area
+// Version: 2.0 Anatidae; SimpleDesk's administration area
 
 /**
  *	Displays SimpleDesk's administration panel, options pages, action log and the get-support page.

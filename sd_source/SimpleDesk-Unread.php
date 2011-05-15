@@ -13,15 +13,15 @@
 #   Any questions, please contact SimpleDesk.net              #
 #                                                             #
 ###############################################################
-# SimpleDesk Version: 1.0 Felidae                             #
-# File Info: SimpleDesk-Unread.php / 1.0 Felidae              #
+# SimpleDesk Version: 2.0 Anatidae                            #
+# File Info: SimpleDesk-Unread.php / 2.0 Anatidae             #
 ###############################################################
 
 /**
  *	This file handles displaying ticket information in the 'unread' and 'unreadreplies' pages.
  *
  *	@package source
- *	@since 1.1
+ *	@since 2.0
 */
 
 if (!defined('SMF'))
@@ -32,7 +32,7 @@ if (!defined('SMF'))
  *
  *	The content is 'appended' below the unread posts information by way of a template layer.
  *
- *	@since 1.1
+ *	@since 2.0
 */
 function shd_unread_posts()
 {

@@ -1,5 +1,5 @@
 <?php
-// Version: 1.0 Felidae; SimpleDesk's administration/custom fields area
+// Version: 2.0 Anatidae; SimpleDesk's administration/custom fields area
 
 /**
  *	Displays SimpleDesk's administration for custom fields.
@@ -307,9 +307,18 @@ function template_shd_custom_field_edit()
 										<div>
 											<input type="radio" name="default_select" value="0"', $context['custom_field']['default_value'] == 0 ? ' checked="checked"' : '', ' class="input_radio" /> ', $txt['shd_admin_custom_field_no_selected_default'];
 
+	// Convert it to an array for displaying the main doodah
+	if ($context['field_type_value'] == CFIELD_TYPE_MULTI)
+		$context['custom_field']['default_value'] = explode(',', $context['custom_field']['default_value']);
+
 	foreach ($context['custom_field']['options'] as $k => $option)
+	{
 		echo '
-									<br /><input type="radio" name="default_select" value="', $k, '"', $context['custom_field']['default_value'] == $k ? ' checked="checked"' : '', ' class="input_radio" /><input type="text" name="select_option[', $k, ']" value="', $option, '" class="input_text" />';
+									<br />
+									<input type="radio" name="default_select" value="', $k, '"', $context['field_type_value'] != CFIELD_TYPE_MULTI && $context['custom_field']['default_value'] == $k ? ' checked="checked"' : '', ' class="input_radio default_select_radio" />
+									<!-- <input type="checkbox" name="default_select_multi[', $k, ']" value="', $k, '"', $context['field_type_value'] == CFIELD_TYPE_MULTI && in_array($k, $context['custom_field']['default_value']) ? ' checked="checked"' : '', ' class="input_check default_select_check" /> -->
+									<input type="text" name="select_option[', $k, ']" value="', $option, '" class="input_text" />';
+	}
 
 	echo '
 									<span id="addopt"></span>

@@ -13,8 +13,8 @@
 #   Any questions, please contact SimpleDesk.net              #
 #                                                             #
 ###############################################################
-# SimpleDesk Version: 1.0 Felidae                             #
-# File Info: Subs-SimpleDeskAdmin.php / 1.0 Felidae           #
+# SimpleDesk Version: 2.0 Anatidae                            #
+# File Info: Subs-SimpleDeskAdmin.php / 2.0 Anatidae          #
 ###############################################################
 
 /**
@@ -366,7 +366,7 @@ function shd_count_action_log_entries($clause = '')
  *	Perform all the operations required for SimpleDesk to safely start operations inside the admin panel.
  *
  *	@param array &$admin_areas The full admin area array from SMF's Admin.php.
- *	@since 1.1
+ *	@since 2.0
 */
 function shd_admin_bootstrap(&$admin_areas)
 {
@@ -487,7 +487,7 @@ function shd_admin_core_features(&$core_features)
  *	Perform any processing on SMF permissions subject to SimpleDesk options (namely removing permissions that make no sense in helpdesk-only mode)
  *
  *	All of the parameters are the normal variables provided by ManagePermissions.php to its integration hook.
- *	@since 1.1
+ *	@since 2.0
  *	@param array &$permissionGroups The array of groups of permissions
  *	@param array &$permissionList The master list of permissions themselves
  *	@param array &$leftPermissionGroups The list of permission groups that are displayed on the left hand side of the screen in Classic Mode

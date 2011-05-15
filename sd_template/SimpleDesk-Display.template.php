@@ -1,5 +1,5 @@
 <?php
-// Version: 1.0 Felidae; SimpleDesk ticket display
+// Version: 2.0 Anatidae; SimpleDesk ticket display
 
 /**
  *	This file handles just displaying a ticket, its replies and working with SimpleDesk-Post.template.php to arrange the quick reply area.
@@ -338,7 +338,7 @@ function template_viewticket()
  *
  *	We pull the content into a single column this way to ensure floatleft items are handled properly.
  *
- *	@since 1.1
+ *	@since 2.0
 */
 function template_ticket_leftcolumn()
 {
@@ -369,7 +369,7 @@ function template_ticket_leftcolumn()
  *
  *	This function displays all the attachments in the current ticket while in ticket view, rather than when in replies view (which is handled by {@link template_viewreplies()} instead; this function was previously was part of {@link template_viewticket()}.
  *
- *	@since 1.1
+ *	@since 2.0
 */
 function template_viewticketattach()
 {
@@ -430,7 +430,7 @@ function template_viewticketattach()
  *
  *	This template displays the "Additional information" block below the ticket body. It contains any custom fields that the admin has set to display there.
  *
- *	@since 1.1
+ *	@since 2.0
 */
 function template_additional_fields()
 {
@@ -514,7 +514,7 @@ function template_additional_fields()
  *
  *	Prior to 1.1 this was part of {@link template_viewticket()}
  *
- *	@since 1.1
+ *	@since 2.0
 */
 function template_quickreply()
 {
@@ -563,7 +563,7 @@ function template_quickreply()
  *
  *	@param int $msg The message id to look in $context['ticket_attach']['reply'] for attachments.
  *
- *	@since 1.1
+ *	@since 2.0
  *	@todo See if it's possible to do a sane CSS replacement instead of using tables.
 */
 // Arantor: I swear I spent more time farting around with this trying to make it not look like crap than I did the rest of the thumbnail code.
@@ -800,7 +800,7 @@ function template_viewreplies()
  *
  *	Displays the block of tickets that have a relationship to this one.
  *
- *	@since 1.1
+ *	@since 2.0
 */
 function template_viewrelationships()
 {
@@ -877,7 +877,7 @@ function template_viewrelationships()
  *
  *	Displays all the non-post type events that apply to the current ticket, as a subset of the master action log. Data is gathered from {@link shd_load_action_log_entries()}
  *
- *	@since 1.1
+ *	@since 2.0
 */
 function template_ticketactionlog()
 {

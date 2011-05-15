@@ -1,17 +1,17 @@
 <?php
-// Version: 1.1; SimpleDesk profile page template
+// Version: 2.0 Anatidae; SimpleDesk profile page template
 
 /**
  *	This file handles displaying the blocks of the profile area for SimpleDesk.
  *
  *	@package template
- *	@since 1.1
+ *	@since 2.0
 */
 
 /**
  *	Display the profile section.
  *
- *	@since 1.1
+ *	@since 2.0
 */
 function template_shd_profile_main()
 {
