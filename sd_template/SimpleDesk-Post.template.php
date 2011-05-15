@@ -245,7 +245,7 @@ function template_ticket_custom_fields()
 				{
 					echo '
 							<dd>';
-					if (!empty($field['value']))
+					if (!empty($field['value']) && !is_array($field['value']))
 						$field['value'] = explode(',', $field['value']);
 
 					foreach ($field['options'] as $key => $option)
