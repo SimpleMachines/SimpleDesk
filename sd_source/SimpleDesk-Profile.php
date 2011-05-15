@@ -61,7 +61,7 @@ function shd_profile_main($memID)
 			'image' => 'preferences.png',
 			'link' => $scripturl . '?action=profile;u=' . $context['member']['id'] . ';area=hd_prefs',
 			'text' => $txt['shd_profile_preferences'],
-			'show' => true, // !!!
+			'show' => true,
 		),
 		array(
 			'image' => 'ticket.png',

@@ -499,8 +499,8 @@ $rows[] = array(
 		'url' => 'string',
 	),
 	'data' => array(
-		'SimpleDesk Plugins', // !!! Does this need to be multi-lingual?
-		'http://www.simpledesk.net/downloads/plugins/1.1/', // !!! This should be updated in later releases!
+		'SimpleDesk Plugins',
+		'http://www.simpledesk.net/downloads/plugins/2.0/', // !!! This should be updated in later releases!
 	),
 	'keys' => array('id_server'),
 );

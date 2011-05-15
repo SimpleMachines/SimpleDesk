@@ -665,8 +665,6 @@ function shd_topictoticket()
 		'name' => $subject,
 	);
 
-	// !!! Need to get the list of HD categories we can move it to.
-
 	// Store the subject for the template
 	$context['topic_subject'] = $subject;
 

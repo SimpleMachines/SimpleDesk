@@ -560,12 +560,29 @@ function shd_modify_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 					'value' => $field['new_value'],
 					'post_type' => CFIELD_TICKET, // See, I said so!
 				);
-				// !!! Fix this for multivalues
+				if ($field['type'] == CFIELD_TYPE_MULTI)
+				{
+					$values = array();
+					foreach ($field['value'] as $value)
+						$values[] = $field['options'][$value];
+					$oldvalue = implode(', ', $values);
+
+					$values = array();
+					$newvalues = explode(',', $field['new_value']);
+					foreach ($newvalues as $value)
+						$values[] = $field['options'][$value];
+					$newvalue = implode(', ', $values);
+				}
+				else
+				{
+					$oldvalue = !empty($field['value']) && ($field['type'] == CFIELD_TYPE_RADIO || $field['type'] == CFIELD_TYPE_SELECT) ? $field['options'][$field['value']] : (empty($field['value']) ? ($field['type'] != CFIELD_TYPE_LARGETEXT ? $field['default_value'] : '') : $field['value']);
+					$newvalue = !empty($field['new_value']) && ($field['type'] == CFIELD_TYPE_RADIO || $field['type'] == CFIELD_TYPE_SELECT) ? $field['options'][$field['new_value']] : $field['new_value'];
+				}
 				$context['custom_fields_updated'][] = array(
 					'ticket' => $ticketOptions['id'],
 					'fieldname' => $field['name'],
-					'oldvalue' => !empty($field['value']) && ($field['type'] == CFIELD_TYPE_RADIO || $field['type'] == CFIELD_TYPE_SELECT) ? $field['options'][$field['value']] : (empty($field['value']) ? ($field['type'] != CFIELD_TYPE_LARGETEXT ? $field['default_value'] : '') : $field['value']),
-					'newvalue' => !empty($field['new_value']) && ($field['type'] == CFIELD_TYPE_RADIO || $field['type'] == CFIELD_TYPE_SELECT) ? $field['options'][$field['new_value']] : $field['new_value'],
+					'oldvalue' => $oldvalue,
+					'newvalue' => $newvalue,
 					'scope' => CFIELD_TICKET,
 					'visible' => $field['visible'],
 					'fieldtype' => $field['type'],
@@ -578,11 +595,26 @@ function shd_modify_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 					'id_field' => $field_id,
 					'post_type' => CFIELD_TICKET,
 				);
-				// !!! Fix this for multivalues
+
+				if ($field['type'] == CFIELD_TYPE_MULTI)
+				{
+					if (!empty($field['value']))
+					{
+						$values = array();
+						foreach ($field['value'] as $value)
+							$values[] = $field['options'][$value];
+						$oldvalue = implode(', ', $values);
+					}
+					else
+						$oldvalue = $field['default_value'];
+				}
+				else
+					$oldvalue = !empty($field['value']) && ($field['type'] == CFIELD_TYPE_RADIO || $field['type'] == CFIELD_TYPE_SELECT) ? $field['options'][$field['value']] : (empty($field['value']) ? $field['default_value'] : $field['value']);
+
 				$context['custom_fields_updated'][] = array(
 					'ticket' => $ticketOptions['id'],
 					'fieldname' => $field['name'],
-					'oldvalue' => !empty($field['value']) && ($field['type'] == CFIELD_TYPE_RADIO || $field['type'] == CFIELD_TYPE_SELECT) ? $field['options'][$field['value']] : (empty($field['value']) ? $field['default_value'] : $field['value']),
+					'oldvalue' => $oldvalue,
 					'default' => true,
 					'newvalue' => $field['default_value'],
 					'scope' => CFIELD_TICKET,
@@ -608,13 +640,31 @@ function shd_modify_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 					'value' => $field['new_value'],
 					'post_type' => CFIELD_REPLY,
 				);
-				// !!! Fix this for multivalues
+
+				if ($field['type'] == CFIELD_TYPE_MULTI)
+				{
+					$values = array();
+					foreach ($field['value'] as $value)
+						$values[] = $field['options'][$value];
+					$oldvalue = implode(', ', $values);
+
+					$values = array();
+					$newvalues = explode(',', $field['new_value']);
+					foreach ($newvalues as $value)
+						$values[] = $field['options'][$value];
+					$newvalue = implode(', ', $values);
+				}
+				else
+				{
+					$oldvalue = !empty($field['value']) && ($field['type'] == CFIELD_TYPE_RADIO || $field['type'] == CFIELD_TYPE_SELECT) ? $field['options'][$field['value']] : $field['value'];
+					$newvalue = !empty($field['new_value']) && ($field['type'] == CFIELD_TYPE_RADIO || $field['type'] == CFIELD_TYPE_SELECT) ? $field['options'][$field['new_value']] : $field['new_value'];
+				}
 				$context['custom_fields_updated'][] = array(
 					'ticket' => $ticketOptions['id'],
 					'msg' => $msgOptions['id'],
 					'fieldname' => $field['name'],
-					'oldvalue' => !empty($field['value']) && ($field['type'] == CFIELD_TYPE_RADIO || $field['type'] == CFIELD_TYPE_SELECT) ? $field['options'][$field['value']] : $field['value'],
-					'newvalue' => !empty($field['new_value']) && ($field['type'] == CFIELD_TYPE_RADIO || $field['type'] == CFIELD_TYPE_SELECT) ? $field['options'][$field['new_value']] : $field['new_value'],
+					'oldvalue' => $oldvalue,
+					'newvalue' => $newvalue,
 					'scope' => CFIELD_REPLY,
 					'visible' => $field['visible'],
 					'fieldtype' => $field['type'],
