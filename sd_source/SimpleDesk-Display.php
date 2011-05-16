@@ -545,7 +545,7 @@ function shd_view_ticket()
 		'url' => $scripturl . '?action=helpdesk;sa=editticket;ticket=' . $context['ticket']['id'] . ';' . $context['session_var'] . '=' . $context['session_id'],
 		'icon' => 'edit',
 		'alt' => '*',
-		'display' => !$context['ticket']['closed'] && !$context['ticket']['deleted'] && (shd_allowed_to('shd_edit_reply_any', $context['ticket']['dept']) || ($context['ticket']['ticket_opener'] && shd_allowed_to('shd_edit_reply_own', $context['ticket']['dept']))),
+		'display' => !$context['ticket']['closed'] && !$context['ticket']['deleted'] && (shd_allowed_to('shd_edit_ticket_any', $context['ticket']['dept']) || ($context['ticket']['ticket_opener'] && shd_allowed_to('shd_edit_ticket_own', $context['ticket']['dept']))),
 		'text' => 'shd_ticket_edit',
 	);
 	$context['ticket_navigation'][] = array(
