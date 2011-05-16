@@ -551,83 +551,44 @@ function shd_modify_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 			if (!isset($field['new_value']) || (isset($field['value']) && $field['value'] == $field['new_value']))
 				continue;
 
-			// So we have a new value, or a changed value. If it's changed, but changed to default, get rid of it unless it's listed as required (default should pick up the slack)
-			if (($field['new_value'] == $field['default_value'] && $field['is_required']) || ($field['new_value'] != $field['default_value']))
+			// So we have a new value, or a changed value. If it's changed, but changed to default, mark it as default
+			$rows[] = array(
+				'id_post' => $ticketOptions['id'], // since custom fields for tickets are attached to the ticket id, with post_type as CFIELD_TICKET
+				'id_field' => $field_id,
+				'value' => $field['new_value'],
+				'post_type' => CFIELD_TICKET, // See, I said so!
+			);
+			if ($field['type'] == CFIELD_TYPE_MULTI)
 			{
-				$rows[] = array(
-					'id_post' => $ticketOptions['id'], // since custom fields for tickets are attached to the ticket id, with post_type as CFIELD_TICKET
-					'id_field' => $field_id,
-					'value' => $field['new_value'],
-					'post_type' => CFIELD_TICKET, // See, I said so!
-				);
-				if ($field['type'] == CFIELD_TYPE_MULTI)
-				{
-					$values = array();
-					foreach ($field['value'] as $value)
-						if (!empty($value))
-							$values[] = $field['options'][$value];
-					$oldvalue = implode(', ', $values);
-
-					$values = array();
-					$newvalues = explode(',', $field['new_value']);
-					foreach ($newvalues as $value)
-						if (!empty($value))
-							$values[] = $field['options'][$value];
-					$newvalue = implode(', ', $values);
-				}
-				else
-				{
-					$oldvalue = !empty($field['value']) && ($field['type'] == CFIELD_TYPE_RADIO || $field['type'] == CFIELD_TYPE_SELECT) ? $field['options'][$field['value']] : (empty($field['value']) ? ($field['type'] != CFIELD_TYPE_LARGETEXT ? $field['default_value'] : '') : $field['value']);
-					$newvalue = !empty($field['new_value']) && ($field['type'] == CFIELD_TYPE_RADIO || $field['type'] == CFIELD_TYPE_SELECT) ? $field['options'][$field['new_value']] : $field['new_value'];
-				}
-				$context['custom_fields_updated'][] = array(
-					'ticket' => $ticketOptions['id'],
-					'fieldname' => $field['name'],
-					'oldvalue' => $oldvalue,
-					'newvalue' => $newvalue,
-					'scope' => CFIELD_TICKET,
-					'visible' => $field['visible'],
-					'fieldtype' => $field['type'],
-				);
-			}
-			elseif ($field['new_value'] == $field['default_value'] && !$field['is_required'])
-			{
-				$rows_remove[] = array(
-					'id_post' => $ticketOptions['id'],
-					'id_field' => $field_id,
-					'post_type' => CFIELD_TICKET,
-				);
-
-				$default_value = $field['default_value'];
-				if ($field['type'] == CFIELD_TYPE_MULTI)
-				{
-					$source = !empty($field['value']) ? $field['value'] : explode(',', $field['default_value']);
-					$values = array();
-					foreach ($source as $value)
+				$values = array();
+				foreach ($field['value'] as $value)
+					if (!empty($value))
 						$values[] = $field['options'][$value];
-					$oldvalue = implode(', ', $values);
+				$oldvalue = implode(', ', $values);
 
-					$values = array();
-					$default_value = explode(',', $default_value);
-					foreach ($default_value as $value)
-						if (!empty($value))
-							$values[] = $field['options'][$value];
-					$default_value = implode(', ', $values);
-				}
-				else
-					$oldvalue = !empty($field['value']) && ($field['type'] == CFIELD_TYPE_RADIO || $field['type'] == CFIELD_TYPE_SELECT) ? $field['options'][$field['value']] : (empty($field['value']) ? $field['default_value'] : $field['value']);
-
-				$context['custom_fields_updated'][] = array(
-					'ticket' => $ticketOptions['id'],
-					'fieldname' => $field['name'],
-					'oldvalue' => $oldvalue,
-					'default' => true,
-					'newvalue' => $default_value,
-					'scope' => CFIELD_TICKET,
-					'visible' => $field['visible'],
-					'fieldtype' => $field['type'],
-				);
+				$values = array();
+				$newvalues = explode(',', $field['new_value']);
+				foreach ($newvalues as $value)
+					if (!empty($value))
+						$values[] = $field['options'][$value];
+				$newvalue = implode(', ', $values);
 			}
+			else
+			{
+				$oldvalue = !empty($field['value']) && ($field['type'] == CFIELD_TYPE_RADIO || $field['type'] == CFIELD_TYPE_SELECT) ? $field['options'][$field['value']] : (empty($field['value']) ? ($field['type'] != CFIELD_TYPE_LARGETEXT ? $field['default_value'] : '') : $field['value']);
+				$newvalue = !empty($field['new_value']) && ($field['type'] == CFIELD_TYPE_RADIO || $field['type'] == CFIELD_TYPE_SELECT) ? $field['options'][$field['new_value']] : $field['new_value'];
+			}
+			$context['custom_fields_updated'][] = array(
+				'ticket' => $ticketOptions['id'],
+				'fieldname' => $field['name'],
+				'oldvalue' => $oldvalue,
+				'newvalue' => $newvalue,
+				'scope' => CFIELD_TICKET,
+				'visible' => $field['visible'],
+				'fieldtype' => $field['type'],
+			);
+			if ($field['new_value'] == $field['default_value'])
+				$context['custom_fields_updated'][count($context['custom_fields_updated'])-1]['default'] = true;
 		}
 	}
 	// Same deal, this time for message options. See above for comments.
@@ -638,81 +599,45 @@ function shd_modify_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 			if (!isset($field['new_value']) || (isset($field['value']) && $field['value'] == $field['new_value']))
 				continue;
 
-			if (($field['new_value'] == $field['default_value'] && $field['is_required']) || ($field['new_value'] != $field['default_value']))
+			$rows[] = array(
+				'id_post' => $msgOptions['id'],
+				'id_field' => $field_id,
+				'value' => $field['new_value'],
+				'post_type' => CFIELD_REPLY,
+			);
+			if ($field['type'] == CFIELD_TYPE_MULTI)
 			{
-				$rows[] = array(
-					'id_post' => $msgOptions['id'],
-					'id_field' => $field_id,
-					'value' => $field['new_value'],
-					'post_type' => CFIELD_REPLY,
-				);
-
-				if ($field['type'] == CFIELD_TYPE_MULTI)
-				{
-					$values = array();
-					foreach ($field['value'] as $value)
+				$values = array();
+				foreach ($field['value'] as $value)
+					if (!empty($value))
 						$values[] = $field['options'][$value];
-					$oldvalue = implode(', ', $values);
+				$oldvalue = implode(', ', $values);
 
-					$values = array();
-					$newvalues = explode(',', $field['new_value']);
-					foreach ($newvalues as $value)
+				$values = array();
+				$newvalues = explode(',', $field['new_value']);
+				foreach ($newvalues as $value)
+					if (!empty($value))
 						$values[] = $field['options'][$value];
-					$newvalue = implode(', ', $values);
-				}
-				else
-				{
-					$oldvalue = !empty($field['value']) && ($field['type'] == CFIELD_TYPE_RADIO || $field['type'] == CFIELD_TYPE_SELECT) ? $field['options'][$field['value']] : $field['value'];
-					$newvalue = !empty($field['new_value']) && ($field['type'] == CFIELD_TYPE_RADIO || $field['type'] == CFIELD_TYPE_SELECT) ? $field['options'][$field['new_value']] : $field['new_value'];
-				}
-				$context['custom_fields_updated'][] = array(
-					'ticket' => $ticketOptions['id'],
-					'msg' => $msgOptions['id'],
-					'fieldname' => $field['name'],
-					'oldvalue' => $oldvalue,
-					'newvalue' => $newvalue,
-					'scope' => CFIELD_REPLY,
-					'visible' => $field['visible'],
-					'fieldtype' => $field['type'],
-				);
+				$newvalue = implode(', ', $values);
 			}
-			elseif ($field['new_value'] == $field['default_value'] && !$field['is_required'])
+			else
 			{
-				$rows_remove[] = array(
-					'id_post' => $msgOptions['id'],
-					'id_field' => $field_id,
-					'post_type' => CFIELD_REPLY,
-				);
-				if (!empty($field['value']))
-				{
-					if ($field['type'] == CFIELD_TYPE_RADIO || $field['type'] == CFIELD_TYPE_SELECT)
-						$oldvalue = $field['options'][$field['value']];
-					elseif ($field['type'] == CFIELD_TYPE_MULTI)
-					{
-						$oldvalue = '';
-						$values = explode(',', $field['value']);
-						foreach ($values as $value)
-							$oldvalue .= $field['options'][$value] . ' ';
-						$oldvalue = trim($oldvalue);
-					}
-					else
-						$oldvalue = $field['value'];
-				}
-				else
-					$oldvalue = '';
-
-				$context['custom_fields_updated'][] = array(
-					'ticket' => $ticketOptions['id'],
-					'msg' => $msgOptions['id'],
-					'fieldname' => $field['name'],
-					'oldvalue' => $oldvalue,
-					'default' => true,
-					'newvalue' => $field['default_value'],
-					'scope' => CFIELD_REPLY,
-					'visible' => $field['visible'],
-					'fieldtype' => $field['type'],
-				);
+				$oldvalue = !empty($field['value']) && ($field['type'] == CFIELD_TYPE_RADIO || $field['type'] == CFIELD_TYPE_SELECT) ? $field['options'][$field['value']] : (empty($field['value']) ? ($field['type'] != CFIELD_TYPE_LARGETEXT ? $field['default_value'] : '') : $field['value']);
+				$newvalue = !empty($field['new_value']) && ($field['type'] == CFIELD_TYPE_RADIO || $field['type'] == CFIELD_TYPE_SELECT) ? $field['options'][$field['new_value']] : $field['new_value'];
 			}
+
+			$context['custom_fields_updated'][] = array(
+				'ticket' => $ticketOptions['id'],
+				'msg' => $msgOptions['id'],
+				'fieldname' => $field['name'],
+				'oldvalue' => $oldvalue,
+				'newvalue' => $newvalue,
+				'scope' => CFIELD_REPLY,
+				'visible' => $field['visible'],
+				'fieldtype' => $field['type'],
+			);
+			if ($field['new_value'] == $field['default_value'])
+				$context['custom_fields_updated'][count($context['custom_fields_updated'])-1]['default'] = true;
 		}
 	}
 	// Purge any rows that need to disappear; note that if there aren't any, we skip this.
