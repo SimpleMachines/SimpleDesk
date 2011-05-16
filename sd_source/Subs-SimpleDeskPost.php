@@ -564,13 +564,15 @@ function shd_modify_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 				{
 					$values = array();
 					foreach ($field['value'] as $value)
-						$values[] = $field['options'][$value];
+						if (!empty($value))
+							$values[] = $field['options'][$value];
 					$oldvalue = implode(', ', $values);
 
 					$values = array();
 					$newvalues = explode(',', $field['new_value']);
 					foreach ($newvalues as $value)
-						$values[] = $field['options'][$value];
+						if (!empty($value))
+							$values[] = $field['options'][$value];
 					$newvalue = implode(', ', $values);
 				}
 				else
@@ -957,7 +959,7 @@ function shd_validate_custom_fields($scope, $dept)
 			if (!empty($newvalues))
 				$value = implode(',', $newvalues);
 			else
-				$value = 0;
+				$value = '';
 		}
 		// Otherwise, for each field, check it was sent in the form.
 		elseif (isset($_POST['field-' . $field_id]))
