@@ -814,7 +814,7 @@ function shd_load_custom_fields($is_ticket = true, $ticketContext = 0, $dept = 0
 				'default_value' => $row['field_type'] == CFIELD_TYPE_LARGETEXT ? explode(',', $row['default_value']) : $row['default_value'],
 				'display_empty' => !empty($row['required']) ? 1 : $row['display_empty'], // Required and "selection" fields will always be displayed.
 				'bbc' => !empty($row['bbc']),
-				'is_required' => !empty($row['required']),
+				'is_required' => $row['field_type'] == CFIELD_TYPE_MULTI ? (int) $row['required'] : !empty($row['required']),
 				'visible' => array($user_see, $staff_see),
 				'editable' => !empty($editable),
 				'depts' => array(),
