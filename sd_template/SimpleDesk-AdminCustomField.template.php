@@ -149,7 +149,16 @@ function template_shd_custom_field_edit()
 					var cbstyle = ftype != ', CFIELD_TYPE_CHECKBOX, ' ? "" : "none";
 					for (i = 0, n = field_list.length; i < n; i++)
 					{
-						document.getElementById("required_dept" + field_list[i] + "_span").style.display = cbstyle;
+						if (ftype != ', CFIELD_TYPE_CHECKBOX, ')
+						{
+							document.getElementById("required_dept" + field_list[i] + "_span").style.display = "";
+							document.getElementById("required_dept" + field_list[i]).style.display = ftype == ', CFIELD_TYPE_MULTI, ' ? "none" : "";
+							document.getElementById("required_dept_multi_" + field_list[i]).style.display = ftype != ', CFIELD_TYPE_MULTI, ' ? "none" : "";
+						}
+						else
+						{
+							document.getElementById("required_dept" + field_list[i] + "_span").style.display = "none";
+						}
 					}';
 	}
 	echo '
@@ -161,7 +170,18 @@ function template_shd_custom_field_edit()
 				var startOptID = ', count($context['custom_field']['options']), ';
 				function add_option()
 				{
-					setOuterHTML(document.getElementById("addopt"), \'<br /><input type="radio" name="default_select" value="\' + startOptID + \'" id="\' + startOptID + \'" class="input_radio" /><input type="text" name="select_option[\' + startOptID + \']" value="" class="input_text" /><span id="addopt"></span>\');
+					var ftype = document.getElementById("cf_fieldtype").value;
+					var newHTML = \'<br /><input type="radio" id="radio_\' + startOptID + \'" name="default_select" value="\' + startOptID + \'" id="\' + startOptID + \'"\';
+					if (ftype == ', CFIELD_TYPE_MULTI, ')
+						newHTML += \' style="display:none;"\';
+					newHTML += \' class="input_radio" />\' + "\n";
+					newHTML += \'<input type="checkbox" id="multi_\' + startOptID + \'" name="default_select_multi[\' + startOptID + \']" value="\' + startOptID + \'"\';
+					if (ftype != ', CFIELD_TYPE_MULTI, ')
+						newHTML += \' style="display:none;"\';
+					newHTML += \' class="input_check" />\' + "\n";
+					newHTML += \'<input type="text" name="select_option[\' + startOptID + \']" value="" class="input_text" /><span id="addopt"></span>\';
+					
+					setOuterHTML(document.getElementById("addopt"), newHTML);
 					startOptID++;
 				}
 				function update_default_label(defstate)
@@ -344,7 +364,7 @@ function template_shd_custom_field_edit()
 								<dt id="default_dt"', $context['field_type_value'] == CFIELD_TYPE_CHECKBOX ? '' : ' style="display: none;"','>
 									<strong>',$txt['shd_admin_custom_field_default_state'],':</strong>
 								</dt>
-								<dd id="default_dd"',$context['field_type_value'] == CFIELD_TYPE_CHECKBOX ? '' : ' style="display: none;"','>
+								<dd id="default_dd"', $context['field_type_value'] == CFIELD_TYPE_CHECKBOX ? '' : ' style="display: none;"', '>
 									<input type="checkbox" name="default_check" class="input_check"',($context['custom_field']['default_value'] == 1 ? ' checked="checked"' : ''), 'onchange="javascript:update_default_label(this.value);" />
 									<span class="smalltext" id="default_label">',$txt['shd_admin_default_state_' . ($context['custom_field']['default_value'] == 1 ? 'on' : 'off')],'</span>
 								</dd>
@@ -375,7 +395,10 @@ function template_shd_custom_field_edit()
 								<dt id="required_dt', $id, '"><strong>', $row['dept_name'], '</strong></dt>
 								<dd id="required_dd', $id, '">
 									<span id="present_dept', $id, '_span">', $txt['shd_admin_custom_field_dept_applies'], ': <input type="checkbox" name="present_dept', $id, '" id="present_dept', $id, '" class="input_check"', !empty($row['present']) ? ' checked="checked"' : '', ' onclick="updateDeptHidden(', $id, ');" /></span>
-									<span id="required_dept', $id, '_span">', $txt['shd_admin_custom_field_dept_required'], ': <input type="checkbox" name="required_dept', $id, '" id="required_dept', $id, '" class="input_check"', !empty($row['required']) ? ' checked="checked"' : '', empty($row['present']) ? ' disabled="disabled"' : '', ' /></span>
+									<span id="required_dept', $id, '_span">', $txt['shd_admin_custom_field_dept_required'], ':
+										<input type="checkbox" name="required_dept', $id, '" id="required_dept', $id, '" class="input_check"', !empty($row['required']) ? ' checked="checked"' : '', empty($row['present']) ? ' disabled="disabled"' : '', $context['field_type_value'] != CFIELD_TYPE_MULTI ? '' : ' style="display: none;"', ' />
+										<input type="text" name="required_dept_multi_', $id, '" id="required_dept_multi_', $id, '" class="input_text" size="3" maxlength="3" value="', $row['required'], '"', empty($row['present']) ? ' disabled="disabled"' : '', $context['field_type_value'] == CFIELD_TYPE_MULTI ? '' : ' style="display: none;"', ' />
+									</span>
 								</dd>';
 
 		echo '
