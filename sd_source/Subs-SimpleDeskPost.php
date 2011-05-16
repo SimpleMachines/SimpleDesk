@@ -540,8 +540,7 @@ function shd_modify_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 
 	// Are we updating custom fields?
 	$rows = array();
-	$rows_remove = array();
-	$context['custom_fields_updated'] = array(); // for logging later if we decide
+	$context['custom_fields_updated'] = array();
 	if (!empty($ticketOptions['custom_fields']))
 	{
 		// Some may be pre-existing, some may need purging.
@@ -639,17 +638,6 @@ function shd_modify_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 			if ($field['new_value'] == $field['default_value'])
 				$context['custom_fields_updated'][count($context['custom_fields_updated'])-1]['default'] = true;
 		}
-	}
-	// Purge any rows that need to disappear; note that if there aren't any, we skip this.
-	foreach ($rows_remove as $row)
-	{
-		$smcFunc['db_query']('', '
-			DELETE FROM {db_prefix}helpdesk_custom_fields_values
-			WHERE id_post = {int:id_post}
-				AND id_field = {int:id_field}
-				AND post_type = {int:post_type}',
-			$row
-		);
 	}
 	// If there are rows to add or update, commence.
 	if (!empty($rows))
