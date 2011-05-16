@@ -866,13 +866,19 @@ function shd_validate_custom_fields($scope, $dept)
 		if (!$field['editable'] || !in_array($dept, $field['depts']))
 			continue;
 
+		if (empty($field['options']['inactive']))
+			$field['options']['inactive'] = array();
+
 		// Multi-selects are special. Deal with them first.
 		if ($field['type'] == CFIELD_TYPE_MULTI)
 		{
 			$newvalues = array();
 			foreach ($field['options'] as $k => $v)
 				if (!empty($_POST['field-' . $field_id . '-' . $k]))
-					$newvalues[] = $k;
+				{
+					if (!in_array($k, $field['options']['inactive']) || empty($field['is_required']))
+						$newvalues[] = $k;
+				}
 
 			if (!empty($field['is_required']) && count($newvalues) < $field['is_required'])
 				$missing_fields[$field_id] = sprintf($txt['error_missing_multi'], $field['name'], $field['is_required']);
@@ -925,7 +931,7 @@ function shd_validate_custom_fields($scope, $dept)
 				case CFIELD_TYPE_SELECT:
 				case CFIELD_TYPE_RADIO:
 					// It's set but is it a number and a number that represents a key in the array? Same principle for select and radio.
-					if (empty($value) && $field['is_required'])
+					if ($field['is_required'] && (empty($value) || in_array($value, $field['options']['inactive']))
 						$missing_fields[$field_id] = $field['name'];
 					elseif (!empty($value) && (!is_numeric($value) || !isset($field['options'][(int) $value])))
 						$invalid_fields[$field_id] = $field['name'];

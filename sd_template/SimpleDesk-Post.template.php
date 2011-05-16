@@ -257,11 +257,17 @@ function template_ticket_custom_fields()
 
 					foreach ($field['options'] as $key => $option)
 					{
-						if ($key == 'inactive' || in_array($key, $field['options']['inactive']))
+						if ($key == 'inactive')
 							continue;
 
-						echo '
+						// If the field is active, display it normally
+						if (!in_array($key, $field['options']['inactive']))
+							echo '
 								<input name="field-', $field['id'], '-', $key, '" type="checkbox" value="', $key, '"', in_array($key, $field['value']) ? ' checked="checked"' : '', ' /> <span>', $option, '</span><br />';
+						// If it's not required and inactive and present, display a hidden form item for it.
+						elseif (empty($field['is_required']) && in_array($key, $field['options']['inactive']) && in_array($key, $field['value']))
+							echo '
+								<input type="hidden" name="field-', $field['id'], '-', $key, '" value="', $key, '" />';
 					}
 
 					echo '
