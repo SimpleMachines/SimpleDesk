@@ -345,6 +345,7 @@ function shd_admin_custom_save()
 
 	// Select options?
 	$newOptions = array();
+	$defaultOptions = array();
 	if (!empty($_POST['select_option']) && ($_POST['field_type'] == CFIELD_TYPE_SELECT || $_POST['field_type'] == CFIELD_TYPE_RADIO || $_POST['field_type'] == CFIELD_TYPE_MULTI))
 	{
 		require_once($sourcedir . '/Subs-Post.php');
@@ -355,11 +356,13 @@ function shd_admin_custom_save()
 			preparsecode($v);
 
 			// Nada, zip, etc...
-			if (trim($v) == '')
+			if (trim($v) == '' || !is_numeric($k))
 				continue;
 
 			// This is just for working out what happened with old options...
 			$newOptions[$k] = $v;
+			if (!empty($_POST['default_select_multi'][$k]))
+				$defaultOptions[] = $k;
 
 			// Is it default?
 			if (isset($_POST['default_select']) && $_POST['default_select'] == $k)
@@ -367,6 +370,10 @@ function shd_admin_custom_save()
 		}
 		$options = serialize($newOptions);
 	}
+
+	// Sort out the default selection if it's a multi-select
+	if ($_POST['field_type'] == CFIELD_TYPE_MULTI)
+		$_POST['default_check'] = implode(',', $defaultOptions);
 
 	// Do I feel a new field being born?
 	if (isset($_REQUEST['new']))
