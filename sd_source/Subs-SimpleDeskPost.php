@@ -560,9 +560,10 @@ function shd_modify_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 			if ($field['type'] == CFIELD_TYPE_MULTI)
 			{
 				$values = array();
-				foreach ($field['value'] as $value)
-					if (!empty($value))
-						$values[] = $field['options'][$value];
+				if (!empty($field['value']))
+					foreach ($field['value'] as $value)
+						if (!empty($value))
+							$values[] = $field['options'][$value];
 				$oldvalue = implode(', ', $values);
 
 				$values = array();
@@ -607,9 +608,10 @@ function shd_modify_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 			if ($field['type'] == CFIELD_TYPE_MULTI)
 			{
 				$values = array();
-				foreach ($field['value'] as $value)
-					if (!empty($value))
-						$values[] = $field['options'][$value];
+				if (!empty($field['value']))
+					foreach ($field['value'] as $value)
+						if (!empty($value))
+							$values[] = $field['options'][$value];
 				$oldvalue = implode(', ', $values);
 
 				$values = array();
