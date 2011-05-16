@@ -1484,7 +1484,7 @@ function shd_init_actions(&$actionArray)
 		$unwanted_actions = array('announce', 'attachapprove', 'buddy', 'calendar', 'clock', 'collapse', 'deletemsg', 'display', 'editpoll', 'editpoll2',
 			'emailuser', 'lock', 'lockvoting', 'markasread', 'mergetopics', 'moderate', 'modifycat', 'modifykarma', 'movetopic', 'movetopic2',
 			'notify', 'notifyboard', 'post', 'post2', 'printpage', 'quotefast', 'quickmod', 'quickmod2', 'recent', 'reminder', 'removepoll', 'removetopic2',
-			'reporttm', 'restoretopic', 'search', 'search2', 'sendtopic', 'smstats', 'splittopics', 'stats', 'sticky', 'trackip', 'about:mozilla', 'about:unknown',
+			'reporttm', 'restoretopic', 'search', 'search2', 'sendtopic', 'smstats', 'splittopics', 'stats', 'sticky', 'about:mozilla', 'about:unknown',
 			'unread', 'unreadreplies', 'vote', 'viewquery', 'who', '.xml', 'xmlhttp');
 
 		// that's the generic stuff, now for specific options
