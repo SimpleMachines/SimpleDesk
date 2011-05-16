@@ -165,7 +165,9 @@ function template_shd_custom_field_edit()
 				}
 				function updateDeptHidden(id)
 				{
-					document.getElementById("required_dept" + id).disabled = !document.getElementById("present_dept" + id).checked;
+					var state = !document.getElementById("present_dept" + id).checked;
+					document.getElementById("required_dept" + id).disabled = state;
+					document.getElementById("required_dept_multi_" + id).disabled = state;
 				}
 				var startOptID = ', count($context['custom_field']['options']), ';
 				function add_option()
