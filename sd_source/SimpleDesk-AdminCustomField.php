@@ -126,7 +126,7 @@ function shd_admin_custom_new()
 		'placement' => CFIELD_PLACE_DETAILS,
 	));
 
-	$context['custom_field']['options'] = array(1 => '', '', '');
+	$context['custom_field']['options'] = array(1 => '', '', '', 'inactive' => array());
 	$context['custom_field']['default_value'] = false;
 
 	// Get the list of departments, and whether a field is required in each department.
