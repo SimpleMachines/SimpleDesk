@@ -931,7 +931,7 @@ function shd_validate_custom_fields($scope, $dept)
 				case CFIELD_TYPE_SELECT:
 				case CFIELD_TYPE_RADIO:
 					// It's set but is it a number and a number that represents a key in the array? Same principle for select and radio.
-					if ($field['is_required'] && (empty($value) || in_array($value, $field['options']['inactive']))
+					if ($field['is_required'] && (empty($value) || in_array($value, $field['options']['inactive'])))
 						$missing_fields[$field_id] = $field['name'];
 					elseif (!empty($value) && (!is_numeric($value) || !isset($field['options'][(int) $value])))
 						$invalid_fields[$field_id] = $field['name'];
