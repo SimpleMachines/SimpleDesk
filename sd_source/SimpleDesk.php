@@ -1069,6 +1069,8 @@ function shd_helpdesk_listing()
 			if (!empty($row['field_options']))
 			{
 				$row['field_options'] = unserialize($row['field_options']);
+				if (isset($row['field_options']['inactive']))
+					unset($row['field_options']['inactive']);
 				foreach ($row['field_options'] as $k => $v)
 					if (strpos($v, '[') !== false)
 						$row['field_options'][$k] = parse_bbc($v);
