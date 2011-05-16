@@ -380,7 +380,7 @@ function shd_ajax_assign()
 	if (!empty($context['ticket_id']))
 	{
 		$query = shd_db_query('', '
-			SELECT hdt.private, hdt.id_member_started, id_member_assigned, id_dept, 1 AS valid
+			SELECT hdt.private, hdt.id_member_started, id_member_assigned, id_dept, hdt.status, 1 AS valid
 			FROM {db_prefix}helpdesk_tickets AS hdt
 			WHERE {query_see_ticket}
 				AND hdt.id_ticket = {int:ticket}',
@@ -389,7 +389,7 @@ function shd_ajax_assign()
 			)
 		);
 		if ($smcFunc['db_num_rows']($query) != 0)
-			list($private, $ticket_starter, $ticket_assigned, $dept, $valid) = $smcFunc['db_fetch_row']($query);
+			list($private, $ticket_starter, $ticket_assigned, $dept, $status, $valid) = $smcFunc['db_fetch_row']($query);
 		$smcFunc['db_free_result']($query);
 	}
 	if (empty($valid))
@@ -402,7 +402,7 @@ function shd_ajax_assign()
 	if (empty($assignees))
 		return $context['ajax_return'] = array('error' => $txt['shd_no_staff_assign']);
 
-	if (!shd_allowed_to('shd_assign_ticket_any', $dept))
+	if (!shd_allowed_to('shd_assign_ticket_any', $dept) || $status == TICKET_STATUS_CLOSED || $status == TICKET_STATUS_DELETED)
 		return $context['ajax_return'] = array('error' => $txt['shd_cannot_assign']);
 
 	// OK, so we have the general values we need. Let's get user names, and get ready to kick this back to the user. We'll build the XML here though.
@@ -440,7 +440,7 @@ function shd_ajax_assign2()
 	if (!empty($context['ticket_id']))
 	{
 		$query = shd_db_query('', '
-			SELECT hdt.private, hdt.id_member_started, id_member_assigned, subject, id_dept, 1 AS valid
+			SELECT hdt.private, hdt.id_member_started, id_member_assigned, subject, id_dept, hdt.status, 1 AS valid
 			FROM {db_prefix}helpdesk_tickets AS hdt
 			WHERE {query_see_ticket}
 				AND hdt.id_ticket = {int:ticket}',
@@ -449,7 +449,7 @@ function shd_ajax_assign2()
 			)
 		);
 		if ($smcFunc['db_num_rows']($query) != 0)
-			list($private, $ticket_starter, $ticket_assigned, $subject, $dept, $valid) = $smcFunc['db_fetch_row']($query);
+			list($private, $ticket_starter, $ticket_assigned, $subject, $dept, $status, $valid) = $smcFunc['db_fetch_row']($query);
 		$smcFunc['db_free_result']($query);
 	}
 	if (empty($valid))
@@ -458,7 +458,7 @@ function shd_ajax_assign2()
 	if (!isset($_GET['to_user']) || !is_numeric($_GET['to_user']))
 		return $context['ajax_return'] = array('error' => $txt['shd_assigned_not_permitted'] . 'line459');
 
-	if (!shd_allowed_to('shd_assign_ticket_any', $dept))
+	if (!shd_allowed_to('shd_assign_ticket_any', $dept) || $status == TICKET_STATUS_CLOSED || $status == TICKET_STATUS_DELETED)
 		return $context['ajax_return'] = array('error' => $txt['shd_cannot_assign']);
 
 	$_GET['to_user'] = isset($_GET['to_user']) ? (int) $_GET['to_user'] : 0;

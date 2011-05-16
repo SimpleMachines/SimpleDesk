@@ -585,7 +585,7 @@ function shd_view_ticket()
 	{
 		$assign_nav['display'] = shd_allowed_to('shd_staff', $context['ticket']['dept']) && !$context['ticket']['closed'] && !$context['ticket']['deleted'];
 		$assign_nav['text'] = empty($context['ticket']['id_member_assigned']) ? 'shd_ticket_assign' : 'shd_ticket_reassign';
-		$context['ajax_assign'] = true;
+		$context['ajax_assign'] = $assign_nav['display'];
 	}
 	elseif (shd_allowed_to('shd_assign_ticket_own', $context['ticket']['dept']))
 	{

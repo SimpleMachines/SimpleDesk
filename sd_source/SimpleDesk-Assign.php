@@ -61,7 +61,7 @@ function shd_assign()
 
 	// Get ticket details - and kick it out if they shouldn't be able to see it.
 	$query = shd_db_query('', '
-		SELECT id_member_started, id_member_assigned, private, subject, hdt.id_dept, hdd.dept_name
+		SELECT id_member_started, id_member_assigned, private, subject, hdt.id_dept, hdt.status, hdd.dept_name
 		FROM {db_prefix}helpdesk_tickets AS hdt
 			INNER JOIN {db_prefix}helpdesk_depts AS hdd ON (hdt.id_dept = hdd.id_dept)
 		WHERE {query_see_ticket} AND id_ticket = {int:ticket}',
@@ -73,7 +73,7 @@ function shd_assign()
 	$log_params = array();
 	if ($row = $smcFunc['db_fetch_row']($query))
 	{
-		list($ticket_starter, $ticket_owner, $private, $subject, $dept, $dept_name) = $row;
+		list($ticket_starter, $ticket_owner, $private, $subject, $dept, $status, $dept_name) = $row;
 		$log_params = array(
 			'subject' => $subject,
 			'ticket' => $context['ticket_id'],
@@ -84,6 +84,9 @@ function shd_assign()
 		$smcFunc['db_free_result']($query);
 		fatal_lang_error('shd_no_ticket');
 	}
+
+	if ($status == TICKET_STATUS_CLOSED || $status == TICKET_STATUS_DELETED)
+		fatal_lang_error('shd_cannot_assign', false);
 
 	if (shd_allowed_to('shd_assign_ticket_any', $dept)) // can regularly assign? If so, load up potential candidates and throw it at the template.
 	{
@@ -184,7 +187,7 @@ function shd_assign2()
 
 	// Get ticket details - and kick it out if they shouldn't be able to see it.
 	$query = shd_db_query('', '
-		SELECT id_member_started, id_member_assigned, private, subject, id_dept
+		SELECT id_member_started, id_member_assigned, private, subject, status, id_dept
 		FROM {db_prefix}helpdesk_tickets AS hdt
 		WHERE {query_see_ticket} AND id_ticket = {int:ticket}',
 		array(
@@ -196,7 +199,7 @@ function shd_assign2()
 
 	if ($row = $smcFunc['db_fetch_row']($query))
 	{
-		list($ticket_starter, $ticket_owner, $private, $subject, $dept) = $row;
+		list($ticket_starter, $ticket_owner, $private, $subject, $status, $dept) = $row;
 
 		// The core details that we'll be logging
 		$log_params = array(
@@ -213,6 +216,9 @@ function shd_assign2()
 	// Just in case, are they cancelling?
 	if (isset($_REQUEST['cancel']))
 		redirectexit('action=helpdesk;sa=ticket;ticket=' . $context['ticket_id']);
+
+	if ($status == TICKET_STATUS_CLOSED || $status == TICKET_STATUS_DELETED)
+		fatal_lang_error('shd_cannot_assign', false);
 
 	if (shd_allowed_to('shd_assign_ticket_any', $dept)) // can regularly assign? If so, see if our requested member is staff and can see the ticket
 	{
