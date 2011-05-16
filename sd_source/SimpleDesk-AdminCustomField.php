@@ -339,7 +339,17 @@ function shd_admin_custom_save()
 		if (empty($_POST['present_dept' . $row['id_dept']]))
 			continue;
 		$context['dept_fields'][$row['id_dept']] = $row;
-		$context['dept_fields'][$row['id_dept']]['required'] = isset($_POST['required_dept' . $row['id_dept']]) ? 1 : 0;
+		if ($_POST['field_type'] == CFIELD_TYPE_MULTI)
+		{
+			$required = isset($_POST['required_dept_multi_' . $row['id_dept']]) ? (int) $_POST['required_dept_multi_' . $row['id_dept']] : 0;
+			if ($required < 0)
+				$required = 0;
+			elseif ($required > 100)
+				$required = 100;
+			$context['dept_fields'][$row['id_dept']]['required'] = $required;
+		}
+		else
+			$context['dept_fields'][$row['id_dept']]['required'] = isset($_POST['required_dept' . $row['id_dept']]) ? 1 : 0;
 	}
 	$smcFunc['db_free_result']($query);
 
@@ -371,9 +381,15 @@ function shd_admin_custom_save()
 		$options = serialize($newOptions);
 	}
 
-	// Sort out the default selection if it's a multi-select
+	// Sort out the default selection if it's a multi-select, as well as required amounts
 	if ($_POST['field_type'] == CFIELD_TYPE_MULTI)
+	{
 		$_POST['default_check'] = implode(',', $defaultOptions);
+		$max = count($newOptions);
+		foreach ($context['dept_fields'] as $dept => $field)
+			if ($field['required'] > $max)
+				$context['dept_fields'][$dept]['required'] = $max;
+	}
 
 	// Do I feel a new field being born?
 	if (isset($_REQUEST['new']))
