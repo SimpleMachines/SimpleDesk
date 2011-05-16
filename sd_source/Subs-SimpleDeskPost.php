@@ -598,17 +598,21 @@ function shd_modify_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 					'post_type' => CFIELD_TICKET,
 				);
 
+				$default_value = $field['default_value'];
 				if ($field['type'] == CFIELD_TYPE_MULTI)
 				{
-					if (!empty($field['value']))
-					{
-						$values = array();
-						foreach ($field['value'] as $value)
+					$source = !empty($field['value']) ? $field['value'] : explode(',', $field['default_value']);
+					$values = array();
+					foreach ($source as $value)
+						$values[] = $field['options'][$value];
+					$oldvalue = implode(', ', $values);
+
+					$values = array();
+					$default_value = explode(',', $default_value);
+					foreach ($default_value as $value)
+						if (!empty($value))
 							$values[] = $field['options'][$value];
-						$oldvalue = implode(', ', $values);
-					}
-					else
-						$oldvalue = $field['default_value'];
+					$default_value = implode(', ', $values);
 				}
 				else
 					$oldvalue = !empty($field['value']) && ($field['type'] == CFIELD_TYPE_RADIO || $field['type'] == CFIELD_TYPE_SELECT) ? $field['options'][$field['value']] : (empty($field['value']) ? $field['default_value'] : $field['value']);
@@ -618,7 +622,7 @@ function shd_modify_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 					'fieldname' => $field['name'],
 					'oldvalue' => $oldvalue,
 					'default' => true,
-					'newvalue' => $field['default_value'],
+					'newvalue' => $default_value,
 					'scope' => CFIELD_TICKET,
 					'visible' => $field['visible'],
 					'fieldtype' => $field['type'],
