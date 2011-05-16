@@ -882,10 +882,9 @@ function shd_validate_custom_fields($scope, $dept)
 						$newvalues[] = $k;
 				}
 
+			$value = !empty($newvalues) ? implode(',', $newvalues) : '';
 			if (!empty($field['is_required']) && count($newvalues) < $field['is_required'])
 				$missing_fields[$field_id] = sprintf($txt['error_missing_multi'], $field['name'], $field['is_required']);
-			else
-				$value = !empty($newvalues) ? implode(',', $newvalues) : '';
 		}
 		// Otherwise, for each field, check it was sent in the form.
 		elseif (isset($_POST['field-' . $field_id]))
