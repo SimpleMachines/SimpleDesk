@@ -855,7 +855,9 @@ function shd_load_custom_fields($is_ticket = true, $ticketContext = 0, $dept = 0
 
 function shd_validate_custom_fields($scope, $dept)
 {
-	global $context, $smcFunc, $txt;
+	global $context, $smcFunc, $txt, $sourcedir;
+
+	require_once($sourcedir . '/Subs-Post.php');
 
 	if (empty($context['ticket_form']['custom_fields'][$scope]))
 		return array(array(), array());
@@ -896,15 +898,6 @@ function shd_validate_custom_fields($scope, $dept)
 			switch ($field['type'])
 			{
 				case CFIELD_TYPE_TEXT:
-					if ($field['is_required'] && empty($value))
-						$missing_fields[$field_id] = $field['name'];
-					else
-					{
-						if (!empty($field['length']))
-							$value = $smcFunc['substr']($value, 0, $field['length']);
-						$value = $smcFunc['htmlspecialchars']($value, ENT_QUOTES);
-					}
-					break;
 				case CFIELD_TYPE_LARGETEXT:
 					if ($field['is_required'] && empty($value))
 						$missing_fields[$field_id] = $field['name'];
@@ -913,6 +906,7 @@ function shd_validate_custom_fields($scope, $dept)
 						if (!empty($field['length']))
 							$value = $smcFunc['substr']($value, 0, $field['length']);
 						$value = $smcFunc['htmlspecialchars']($value, ENT_QUOTES);
+						preparsecode($value);
 					}
 					break;
 				case CFIELD_TYPE_INT:
