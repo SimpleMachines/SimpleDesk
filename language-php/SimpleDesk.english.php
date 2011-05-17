@@ -316,6 +316,7 @@ $txt['shd_ticket_move_cfs_admin'] = 'Currently visible to administrators';
 $txt['shd_ticket_move_accept'] = 'I accept that some of the fields being manipulated here are not visible to all users, and that this topic should be moved to the forum, with the above settings.';
 $txt['shd_ticket_move_reqd'] = 'This option must be selected in order for you to move this ticket to the forum.';
 $txt['shd_ticket_move_ok'] = 'This field is safe to move, all the users who can see the ticket can see this field, there is no information hidden from users or staff.';
+$txt['shd_ticket_move_reqd_nonselected'] = 'This ticket has fields that users or staff may not be able to see, as such you specifically need to confirm you are aware of this - please go back to the previous page, the checkbox for confirming your awareness of this is at the bottom of the form.';
 
 // Merge ticket
 $txt['shd_merge_ticket'] = 'Merge ticket';

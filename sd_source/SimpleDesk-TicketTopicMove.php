@@ -133,7 +133,6 @@ function shd_tickettotopic()
 			'name' => strip_tags($row['name']),
 			'category' => strip_tags($row['cat_name']),
 			'child_level' => $row['child_level'],
-			'selected' => !empty($_SESSION['move_to_topic']) && $_SESSION['move_to_topic'] == $row['id_board'] && $row['id_board'] != $board,
 		);
 	}
 
@@ -361,6 +360,113 @@ function shd_tickettotopic2()
 	if (!empty($context['deleted_prompt']) && $context['deleted_prompt'] == 'abort')
 		redirectexit('action=helpdesk;sa=ticket;ticket=' . $context['ticket_id'] . ';recycle');
 
+	// Now the madness that is custom fields. First, load the custom fields we might/will be using.
+	$query = $smcFunc['db_query']('', '
+		SELECT hdcf.id_field, hdcf.field_name, hdcf.field_order, hdcf.field_type, hdcf.can_see, hdcf.field_options, hdcf.bbc, hdcf.placement
+		FROM {db_prefix}helpdesk_custom_fields_depts AS hdd
+			INNER JOIN {db_prefix}helpdesk_custom_fields AS hdcf ON (hdd.id_field = hdcf.id_field)
+		WHERE hdd.id_dept = {int:dept}
+			AND hdcf.active = {int:active}
+		ORDER BY hdcf.field_order',
+		array(
+			'dept' => $dept,
+			'active' => 1,
+		)
+	);
+	$context['custom_fields'] = array();
+	$is_staff = shd_allowed_to('shd_staff', $dept);
+	$is_admin = shd_allowed_to('admin_helpdesk', $dept);
+	while ($row = $smcFunc['db_fetch_assoc']($query))
+	{
+		list($user_see, $staff_see) = explode(',', $row['can_see']);
+		$context['custom_fields'][$row['id_field']] = array(
+			'id_field' => $row['id_field'],
+			'name' => $row['field_name'],
+			'type' => $row['field_type'],
+			'bbc' => !empty($row['bbc']),
+			'options' => !empty($row['field_options']) ? unserialize($row['field_options']) : array(),
+			'placement' => $row['placement'],
+			'visible' => array(
+				'user' => $user_see,
+				'staff' => $staff_see,
+				'admin' => true,
+			),
+			'values' => array(),
+		);
+	}
+	$smcFunc['db_free_result']($query);
+
+	// Having got all the possible fields for this ticket, let's fetch the values for it. That way if we don't have any values for a field, we don't have to care about showing the user.
+	// But first, we need all the message ids.
+	$context['ticket_messages'] = array();
+	$query = $smcFunc['db_query']('', '
+		SELECT id_msg
+		FROM {db_prefix}helpdesk_ticket_replies AS hdtr
+		WHERE id_ticket = {int:ticket}',
+		array(
+			'ticket' => $context['ticket_id'],
+		)
+	);
+	while ($row = $smcFunc['db_fetch_row']($query))
+		$context['ticket_messages'][] = $row[0];
+	$smcFunc['db_free_result']($query);
+
+	// Now get a reference for the field values.
+	$query = $smcFunc['db_query']('', '
+		SELECT cfv.id_post, cfv.id_field, cfv.post_type, cfv.value
+		FROM {db_prefix}helpdesk_custom_fields_values AS cfv
+		WHERE (cfv.id_post = {int:ticket} AND cfv.post_type = 1)' . (!empty($context['ticket_messages']) ? '
+			OR (cfv.id_post IN ({array_int:msgs}) AND cfv.post_type = 2)' : ''),
+		array(
+			'ticket' => $context['ticket_id'],
+			'msgs' => $context['ticket_messages'],
+		)
+	);
+	while ($row = $smcFunc['db_fetch_assoc']($query))
+		$context['custom_fields'][$row['id_field']]['values'][$row['post_type']][$row['id_post']] = $row['value'];
+	$smcFunc['db_free_result']($query);
+
+	// Having now established what fields we do actually have values for, let's proceed to deal with them.
+	foreach ($context['custom_fields'] as $field_id => $field)
+	{
+		// Didn't we have any values? If not, prune it, not interested.
+		if (empty($field['values']))
+			unset($context['custom_fields'][$field_id]);
+
+		// If the user is an administrator, they can always see the fields.
+		if ($is_admin)
+		{
+			// But users might not be able to, in which case we need to validate that actually, they did need to authorise this one.
+			if (!$field['visible']['user'] || !$field['visible']['staff'])
+				$context['custom_fields_warning'] = true;
+		}
+		elseif ($is_staff)
+		{
+			// So they're staff. But the field might not be visible to them; they can't deal with it whatever.
+			if (!$field['visible']['staff'])
+				fatal_lang_error('cannot_shd_move_ticket_topic_hidden_cfs', false);
+			elseif (!$field['visible']['user'])
+				$context['custom_fields_warning'] = true;
+		}
+		else
+		{
+			// Non staff aren't special. They should not be able to make this decision. If someone can't see it, they don't get to make the choice.
+			if (!$field['visible']['user'] || !$field['visible']['staff'])
+				fatal_lang_error('cannot_shd_move_ticket_topic_hidden_cfs', false);
+		}
+
+		// Are we ignoring this field? If so, we can now safely get rid of it at this very point.
+		if (isset($_POST['field' . $field_id]) && $_POST['field' . $field_id] == 'lose')
+			unset($context['custom_fields'][$field_id]);
+	}
+
+	// Were there any special fields? We need to check - and check that they ticked the right box!
+	if (!empty($context['custom_fields_warning']) && empty($_POST['accept_move']))
+		fatal_lang_error('shd_ticket_move_reqd_nonselected', false);
+
+	// OK, so we have some fields, and we're doing something with them. First we need to attach the fields from the ticket to the opening post.
+	shd_append_custom_fields($body, $context['ticket_id'], CFIELD_TICKET);
+
 	// All okay, it seems. Let's go create the topic.
 	$msgOptions = array(
 		'subject' => $subject,
@@ -409,7 +515,8 @@ function shd_tickettotopic2()
 				modified_time, modified_member, modified_name, poster_time, id_msg, message_status
 			FROM {db_prefix}helpdesk_ticket_replies AS hdtr
 			WHERE id_ticket = {int:ticket}
-				AND id_msg > {int:ticket_msg}',
+				AND id_msg > {int:ticket_msg}
+			ORDER BY id_msg',
 			array(
 				'ticket' => $context['ticket_id'],
 				'ticket_msg' => $firstmsg,
@@ -426,6 +533,8 @@ function shd_tickettotopic2()
 			{
 				if ($row['message_status'] == MSG_STATUS_DELETED && !empty($context['deleted_prompt']) && $context['deleted_prompt'] == 'delete') // we don't want these replies!
 					continue;
+
+				shd_append_custom_fields($row['body'], $row['id_msg'], CFIELD_REPLY);
 
 				$msgOptions = array(
 					'subject' => $txt['response_prefix'] . $subject,
@@ -622,7 +731,16 @@ function shd_tickettotopic2()
 				'ticket' => $context['ticket_id'],
 			)
 		);
-
+		// And custom fields.
+		shd_db_query('', '
+			DELETE FROM {db_prefix}helpdesk_custom_fields_values
+			WHERE (id_post = {int:ticket} AND post_type = 1)' . (!empty($context['ticket_messages']) ? '
+				OR (id_post IN ({array_int:msgs}) AND post_type = 2)' : ''),
+			array(
+				'ticket' => $context['ticket_id'],
+				'msgs' => $context['ticket_messages'],
+			)
+		);
 	}
 	else
 		fatal_lang_error('shd_move_topic_not_created',false);
@@ -632,7 +750,71 @@ function shd_tickettotopic2()
 
 	// Send them to the topic.
 	redirectexit('topic=' . $topic . '.0');
+}
 
+/**
+ *	Processes the custom fields for making them part of the body of the new post.
+ *
+ *	Expects $context['custom_fields'] to have been prepared already in {@link shd_tickettotopic2()}
+ *
+ *	@param string &$body The body of the message, to which the custom fields should be appended.
+ *	@param int $id_msg The message id to consider, or in the case of the ticket's opening post, the ticket id.
+ *	@param int $type Should contain either CFIELD_TICKET or CFIELD_REPLY to confirm whether we are looking at the ticket or the post.
+ *	@see shd_tickettotopic2()
+ *	@since 2.0
+*/
+function shd_append_custom_fields(&$body, $id_msg, $type)
+{
+	global $context, $txt;
+
+	$content = array();
+
+	foreach ($context['custom_fields'] as $field_id => $field)
+	{
+		if (empty($field['values'][$type][$id_msg]))
+			continue;
+
+		switch ($field['type'])
+		{
+			case CFIELD_TYPE_TEXT:
+			case CFIELD_TYPE_LARGETEXT:
+				// If the field was used for bbc, display bbc. Otherwise convert it to a nobbc entry.
+				if ($field['bbc'])
+					$item = $field['name'] . ': ' . $field['values'][$type][$id_msg];
+				else
+					$item = $field['name'] . ': [nobbc]' . strtr($field['values'][$type][$id_msg], array('[' => '&#91;', ']' => '&#93;', ':' => '&#58;', '@' => '&#64;')) . '[/nobbc]';
+				break;
+			case CFIELD_TYPE_INT:
+			case CFIELD_TYPE_FLOAT:
+				$item = $field['name'] . ': ' . $field['values'][$type][$id_msg];
+				break;
+			case CFIELD_TYPE_CHECKBOX:
+				$item = $field['name'] . ': ' . (!empty($field['values'][$type][$id_msg]) ? $txt['yes'] : $txt['no']);
+				break;
+			case CFIELD_TYPE_SELECT:
+			case CFIELD_TYPE_RADIO:
+				if (isset($field['options'][$field['values'][$type][$id_msg]]))
+					$item = $field['name'] . ': ' . $field['options'][$field['values'][$type][$id_msg]];
+				break;
+			case CFIELD_TYPE_MULTI:
+				$opts = array();
+				$values = explode(',', $field['values'][$type][$id_msg]);
+				foreach ($values as $value)
+					if (isset($field['options'][$value]))
+						$opts[] = $field['options'][$value];
+				if (!empty($opts))
+					$item = $field['name'] . ': ' . implode(', ', $opts);
+				break;
+
+
+		}
+		if (!empty($item))
+			$content[] = $item;
+		unset($item);
+	}
+
+	if (!empty($content))
+		$body .= '[hr]<br />' . implode('<br />', $content);
 }
 
 /**
