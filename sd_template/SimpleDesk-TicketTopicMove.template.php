@@ -144,7 +144,7 @@ function template_shd_tickettotopic()
 							<img src="' . $settings['default_images_url'] . '/simpledesk/warning.png" alt="', $txt['shd_ticket_move_cfs_warn_user'], '" title="', $txt['shd_ticket_move_cfs_warn_user'], '" />';
 			else
 				echo '
-							<img src="' . $settings['default_images_url'] . '/simpledesk/perm_yes.png" />';
+							<img src="' . $settings['default_images_url'] . '/simpledesk/perm_yes.png" alt="', $txt['shd_ticket_move_ok'], '" title="', $txt['shd_ticket_move_ok'], '" />';
 
 			echo '
 							<img src="', $settings['default_images_url'], '/simpledesk/cf_ui_', $context['field_types'][$field['type']][1], '.png" class="icon" alt="', $context['field_types'][$field['type']][0], '" title="', $context['field_types'][$field['type']][0], '" />', $field['name'];
