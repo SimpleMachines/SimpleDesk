@@ -313,6 +313,8 @@ $txt['shd_ticket_move_cfs_embed'] = 'Keep the field and put it in the new topic'
 $txt['shd_ticket_move_cfs_user'] = 'Currently visible to regular users';
 $txt['shd_ticket_move_cfs_staff'] = 'Currently visible to staff members';
 $txt['shd_ticket_move_cfs_admin'] = 'Currently visible to administrators';
+$txt['shd_ticket_move_accept'] = 'I accept that some of the fields being manipulated here are not visible to all users, and that this topic should be moved to the forum, with the above settings.';
+$txt['shd_ticket_move_reqd'] = 'This option must be selected in order for you to move this ticket to the forum.';
 
 // Merge ticket
 $txt['shd_merge_ticket'] = 'Merge ticket';

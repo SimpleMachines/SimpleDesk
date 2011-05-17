@@ -171,7 +171,20 @@ function template_shd_tickettotopic()
 
 		echo '
 						</dd>
-					</dl>
+					</dl>';
+
+		if (!empty($context['custom_fields_warning']))
+			echo '
+					<hr />
+					<dl class="settings">
+						<dt>
+							<strong>', $txt['shd_ticket_move_accept'], '</strong>
+							<div class="error">', $txt['shd_ticket_move_reqd'], '</div>
+						</dt>
+						<dd><input type="checkbox" name="accept_move" class="input_check" /></dd>
+					</dl>';
+
+		echo '
 				</fieldset>';
 	}
 
