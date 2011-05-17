@@ -296,7 +296,10 @@ function shd_tickettotopic2()
 		fatal_lang_error('shd_no_ticket');
 
 	if (isset($_POST['send_pm']) && (!isset($_POST['pm_content']) || trim($_POST['pm_content']) == ''))
+	{
+		checkSubmitOnce('free');
 		fatal_lang_error('shd_move_no_pm', false);
+	}
 
 	// Just in case, are they cancelling?
 	if (isset($_REQUEST['cancel']))
@@ -464,7 +467,10 @@ function shd_tickettotopic2()
 
 	// Were there any special fields? We need to check - and check that they ticked the right box!
 	if (!empty($context['custom_fields_warning']) && empty($_POST['accept_move']))
+	{
+		checkSubmitOnce('free');
 		fatal_lang_error('shd_ticket_move_reqd_nonselected', false);
+	}
 
 	// OK, so we have some fields, and we're doing something with them. First we need to attach the fields from the ticket to the opening post.
 	shd_append_custom_fields($body, $context['ticket_id'], CFIELD_TICKET);
