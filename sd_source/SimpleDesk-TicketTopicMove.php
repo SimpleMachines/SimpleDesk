@@ -424,7 +424,8 @@ function shd_tickettotopic2()
 		)
 	);
 	while ($row = $smcFunc['db_fetch_assoc']($query))
-		$context['custom_fields'][$row['id_field']]['values'][$row['post_type']][$row['id_post']] = $row['value'];
+		if (isset($context['custom_fields'][$row['id_field']]))
+			$context['custom_fields'][$row['id_field']]['values'][$row['post_type']][$row['id_post']] = $row['value'];
 	$smcFunc['db_free_result']($query);
 
 	// Having now established what fields we do actually have values for, let's proceed to deal with them.
