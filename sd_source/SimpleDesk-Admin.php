@@ -268,6 +268,10 @@ function shd_admin_options($return_config)
 		),
 	);
 
+	loadTemplate('sd_template/SimpleDesk-Admin');
+	$context['sub_template'] = 'shd_show_settings';
+	$context['post_url'] = $scripturl . '?action=admin;area=helpdesk_options;save;sa=' . $_REQUEST['sa'];
+
 	// Int hooks - after we basically set everything up (so it's manipulatable by the hook, but before we do the last bits of finalisation)
 	call_integration_hook('shd_hook_hdadminopts');
 
@@ -278,11 +282,6 @@ function shd_admin_options($return_config)
 	if ($return_config)
 		return $config_vars;
 
-	loadTemplate('sd_template/SimpleDesk-Admin');
-	$context['sub_template'] = 'shd_show_settings';
-
-	$context['post_url'] = $scripturl . '?action=admin;area=helpdesk_options;save;sa=' . $_REQUEST['sa'];
-
 	// Saving?
 	if (isset($_GET['save']))
 	{
@@ -292,7 +291,6 @@ function shd_admin_options($return_config)
 		// If we're saving the posting options, we need to process the BBC tags.
 		if ($_REQUEST['sa'] == 'posting')
 		{
-
 			if (!isset($_POST['shd_bbc_enabledTags']))
 				$_POST['shd_bbc_enabledTags'] = array();
 			elseif (!is_array($_POST['shd_bbc_enabledTags']))
