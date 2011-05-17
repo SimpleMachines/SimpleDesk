@@ -305,6 +305,15 @@ $txt['shd_ticket_move_deleted_abort'] = 'Abort, take me to the recycle bin';
 $txt['shd_ticket_move_deleted_delete'] = 'Continue, abandon the deleted replies (do not move them into the new topic)';
 $txt['shd_ticket_move_deleted_undelete'] = 'Continue, undelete the replies (move them into the new topic)';
 
+$txt['shd_ticket_move_cfs'] = 'This ticket has custom fields that may need to be moved.';
+$txt['shd_ticket_move_cfs_warn'] = 'Some of these fields may not be visible to other users. These fields are indicated with an exclamation mark.';
+$txt['shd_ticket_move_cfs_warn_user'] = 'You can see this field, other users cannot - but once it becomes part of the forum, it will become visible to everyone who can access the forum.';
+$txt['shd_ticket_move_cfs_purge'] = 'Delete the field contents';
+$txt['shd_ticket_move_cfs_embed'] = 'Keep the field and put it in the new topic';
+$txt['shd_ticket_move_cfs_user'] = 'Currently visible to regular users';
+$txt['shd_ticket_move_cfs_staff'] = 'Currently visible to staff members';
+$txt['shd_ticket_move_cfs_admin'] = 'Currently visible to administrators';
+
 // Merge ticket
 $txt['shd_merge_ticket'] = 'Merge ticket';
 $txt['shd_ticket_to_merge'] = 'Ticket to merge';

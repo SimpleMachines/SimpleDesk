@@ -118,6 +118,63 @@ function template_shd_tickettotopic()
 				</fieldset>';
 	}
 
+	if (!empty($context['custom_fields']))
+	{
+		echo '
+				<br />
+				<fieldset id="custom_fields">
+					<dl class="settings">
+						<dt>
+							<strong>', $txt['shd_ticket_move_cfs'], '</strong>';
+		if (!empty($context['custom_fields_warning']))
+			echo '
+							<div class="error">', $txt['shd_ticket_move_cfs_warn'], '</div>';
+
+		echo '
+						</dt>
+						<br />';
+
+		foreach ($context['custom_fields'] as $field)
+		{
+			echo '
+						<dt>';
+
+			if (!empty($field['visible_warn']))
+				echo '
+							<img src="' . $settings['default_images_url'] . '/simpledesk/warning.png" alt="', $txt['shd_ticket_move_cfs_warn_user'], '" title="', $txt['shd_ticket_move_cfs_warn_user'], '" />';
+			else
+				echo '
+							<img src="' . $settings['default_images_url'] . '/simpledesk/perm_yes.png" />';
+
+			echo '
+							<img src="', $settings['default_images_url'], '/simpledesk/cf_ui_', $context['field_types'][$field['type']][1], '.png" class="icon" alt="', $context['field_types'][$field['type']][0], '" title="', $context['field_types'][$field['type']][0], '" />', $field['name'];
+
+			foreach ($field['visible'] as $group => $visible)
+			{
+				if (!$visible)
+					continue;
+
+				echo '
+							<img src="' . $settings['default_images_url'] . '/simpledesk/', $group, '.png" alt="', $txt['shd_ticket_move_cfs_' . $group], '" title="', $txt['shd_ticket_move_cfs_' . $group], '" style="margin-right:0px;" />';
+
+			}
+
+			echo '
+						</dt>
+						<dd>
+							<select name="field', $field['id_field'], '">
+								<option value="keep">', $txt['shd_ticket_move_cfs_embed'], '</option>
+								<option value="lose">', $txt['shd_ticket_move_cfs_purge'], '</option>
+							</select>
+						</dd>';
+		}
+
+		echo '
+						</dd>
+					</dl>
+				</fieldset>';
+	}
+
 	echo '
 				<input type="submit" value="', $txt['shd_move_ticket'], '" onclick="return submitThisOnce(this);" accesskey="s" class="button_submit" />
 				<input type="submit" name="cancel" value="', $txt['shd_cancel_ticket'], '" accesskey="c" class="button_submit" />

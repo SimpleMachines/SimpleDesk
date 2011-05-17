@@ -142,6 +142,118 @@ function shd_tickettotopic()
 	if (empty($context['categories']))
 		fatal_lang_error('shd_moveticket_noboards', false);
 
+	// OK, now we got to check for custom fields. In any case, we need to fetch the list of fields that might be applicable to this ticket.
+	shd_load_language('SimpleDeskAdmin');
+	$context['field_types'] = array(
+		CFIELD_TYPE_TEXT => array($txt['shd_admin_custom_fields_ui_text'], 'text'),
+		CFIELD_TYPE_LARGETEXT => array($txt['shd_admin_custom_fields_ui_largetext'], 'largetext'),
+		CFIELD_TYPE_INT => array($txt['shd_admin_custom_fields_ui_int'], 'int'),
+		CFIELD_TYPE_FLOAT => array($txt['shd_admin_custom_fields_ui_float'], 'float'),
+		CFIELD_TYPE_SELECT => array($txt['shd_admin_custom_fields_ui_select'], 'select'),
+		CFIELD_TYPE_CHECKBOX => array($txt['shd_admin_custom_fields_ui_checkbox'], 'checkbox'),
+		CFIELD_TYPE_RADIO => array($txt['shd_admin_custom_fields_ui_radio'], 'radio'),
+		CFIELD_TYPE_MULTI => array($txt['shd_admin_custom_fields_ui_multi'], 'multi'),
+	);
+
+	$query = $smcFunc['db_query']('', '
+		SELECT hdcf.id_field, hdcf.field_name, hdcf.field_order, hdcf.field_type, hdcf.can_see
+		FROM {db_prefix}helpdesk_custom_fields_depts AS hdd
+			INNER JOIN {db_prefix}helpdesk_custom_fields AS hdcf ON (hdd.id_field = hdcf.id_field)
+		WHERE hdd.id_dept = {int:dept}
+			AND hdcf.active = {int:active}
+		ORDER BY hdcf.field_order',
+		array(
+			'dept' => $dept,
+			'active' => 1,
+		)
+	);
+	$context['custom_fields'] = array();
+	$is_staff = shd_allowed_to('shd_staff', $dept);
+	$is_admin = shd_allowed_to('admin_helpdesk', $dept);
+	while ($row = $smcFunc['db_fetch_assoc']($query))
+	{
+		list($user_see, $staff_see) = explode(',', $row['can_see']);
+		$context['custom_fields'][$row['id_field']] = array(
+			'id_field' => $row['id_field'],
+			'name' => $row['field_name'],
+			'type' => $row['field_type'],
+			'visible' => array(
+				'user' => $user_see,
+				'staff' => $staff_see,
+				'admin' => true,
+			),
+			'values' => array(),
+		);
+	}
+	$smcFunc['db_free_result']($query);
+
+	// Having got all the possible fields for this ticket, let's fetch the values for it. That way if we don't have any values for a field, we don't have to care about showing the user.
+	// But first, we need all the message ids.
+	$context['ticket_messages'] = array();
+	$query = $smcFunc['db_query']('', '
+		SELECT id_msg
+		FROM {db_prefix}helpdesk_ticket_replies AS hdtr
+		WHERE id_ticket = {int:ticket}',
+		array(
+			'ticket' => $context['ticket_id'],
+		)
+	);
+	while ($row = $smcFunc['db_fetch_row']($query))
+		$context['ticket_messages'][] = $row[0];
+	$smcFunc['db_free_result']($query);
+
+	// Now get a reference for the field values.
+	$query = shd_db_query('', '
+		SELECT cfv.id_post, cfv.id_field, cfv.post_type
+		FROM {db_prefix}helpdesk_custom_fields_values AS cfv
+		WHERE (cfv.id_post = {int:ticket} AND cfv.post_type = 1)' . (!empty($context['ticket_messages']) ? '
+			OR (cfv.id_post IN ({array_int:msgs}) AND cfv.post_type = 2)' : ''),
+		array(
+			'ticket' => $context['ticket_id'],
+			'msgs' => $context['ticket_messages'],
+		)
+	);
+	while ($row = $smcFunc['db_fetch_assoc']($query))
+		$context['custom_fields'][$row['id_field']]['values'][$row['post_type']][$row['id_post']] = true;
+	$smcFunc['db_free_result']($query);
+
+	// Having now established what fields we do actually have values for, let's proceed to deal with them.
+	foreach ($context['custom_fields'] as $field_id => $field)
+	{
+		// Didn't we have any values? If not, prune it, not interested.
+		if (empty($field['values']))
+			unset($context['custom_fields'][$field_id]);
+
+		// If the user is an administrator, they can always see the fields.
+		if ($is_admin)
+		{
+			// But users might not be able to, in which case warn the user.
+			if (!$field['visible']['user'] || !$field['visible']['staff'])
+			{
+				$context['custom_fields'][$field_id]['visible_warn'] = true;
+				$context['custom_fields_warning'] = true;
+			}
+		}
+		elseif ($is_staff)
+		{
+			// So they're staff. But the field might not be visible to them; they can't deal with it.
+			if (!$field['visible']['staff'])
+				fatal_lang_error('cannot_shd_move_ticket_topic_hidden_cfs', false);
+			elseif (!$field['visible']['user'])
+			{
+				// Normal mortals can't see it even if this person can, so warn them.
+				$context['custom_fields'][$field_id]['visible_warn'] = true;
+				$context['custom_fields_warning'] = true;
+			}
+		}
+		else
+		{
+			// Non staff aren't special. They should not be able to make this decision. If someone can't see it, they don't get to make the choice.
+			if (!$field['visible']['user'] || !$field['visible']['staff'])
+				fatal_lang_error('cannot_shd_move_ticket_topic_hidden_cfs', false);
+		}
+	}
+
 	// Store the ticket subject for the template
 	$context['ticket_subject'] = $subject;
 
