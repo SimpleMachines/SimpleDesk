@@ -270,12 +270,13 @@ function shd_admin_options($return_config)
 
 	loadTemplate('sd_template/SimpleDesk-Admin');
 	$context['sub_template'] = 'shd_show_settings';
-	$context['post_url'] = $scripturl . '?action=admin;area=helpdesk_options;save;sa=' . $_REQUEST['sa'];
 
 	// Int hooks - after we basically set everything up (so it's manipulatable by the hook, but before we do the last bits of finalisation)
 	call_integration_hook('shd_hook_hdadminopts');
 
 	$_REQUEST['sa'] = isset($_REQUEST['sa']) && isset($context[$context['admin_menu_name']]['tab_data']['tabs'][$_REQUEST['sa']]) ? $_REQUEST['sa'] : 'display';
+	if (empty($context['post_url']))
+		$context['post_url'] = $scripturl . '?action=admin;area=helpdesk_options;save;sa=' . $_REQUEST['sa'];
 
 	$config_vars = $context[$context['admin_menu_name']]['tab_data']['tabs'][$_REQUEST['sa']]['function']($return_config);
 
