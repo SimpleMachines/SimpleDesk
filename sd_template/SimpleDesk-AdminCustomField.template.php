@@ -130,11 +130,6 @@ function template_shd_custom_field_edit()
 					document.getElementById("default_dt").style.display = ftype == ', CFIELD_TYPE_CHECKBOX, ' ? "" : "none";
 					document.getElementById("default_dd").style.display = ftype == ', CFIELD_TYPE_CHECKBOX, ' ? "" : "none";
 
-					if (ftype == ', CFIELD_TYPE_SELECT, ' || ftype == ', CFIELD_TYPE_RADIO, ')
-						document.getElementById("place_prefixfilter").removeAttribute("disabled");
-					else
-						document.getElementById("place_prefixfilter").setAttribute("disabled", "disabled");
-
 					var disp_radio = ftype != ', CFIELD_TYPE_MULTI, ' ? "" : "none";
 					var disp_multi = ftype == ', CFIELD_TYPE_MULTI, ' ? "" : "none";
 					for (i = 1; i <= startOptID; i++)
@@ -281,7 +276,7 @@ function template_shd_custom_field_edit()
 										<option id="details" value="', CFIELD_PLACE_DETAILS, '"', ($context['placement'] == CFIELD_PLACE_DETAILS ? ' selected="selected"' : ''), '>', $txt['shd_admin_custom_field_placement_details'], '</option>
 										<option id="place_info" value="', CFIELD_PLACE_INFO, '"', ($context['placement'] == CFIELD_PLACE_INFO ? ' selected="selected"' : ''), '>', $txt['shd_admin_custom_field_placement_information'], '</option>
 										<option id="place_prefix" value="', CFIELD_PLACE_PREFIX, '"', ($context['placement'] == CFIELD_PLACE_PREFIX ? ' selected="selected"' : ''), '>', $txt['shd_admin_custom_field_placement_prefix'], '</option>
-										<option id="place_prefixfilter" value="', CFIELD_PLACE_PREFIXFILTER, '"', ($context['placement'] == CFIELD_PLACE_PREFIXFILTER ? ' selected="selected"' : ''), ($context['field_type_value'] != CFIELD_TYPE_SELECT && $context['field_type_value'] != CFIELD_TYPE_RADIO ? ' disabled="disabled"' : ''), '>', $txt['shd_admin_custom_field_placement_prefixfilter'], '</option>
+										<option id="place_prefixfilter" value="', CFIELD_PLACE_PREFIXFILTER, '"', ($context['placement'] == CFIELD_PLACE_PREFIXFILTER ? ' selected="selected"' : ''), '>', $txt['shd_admin_custom_field_placement_prefixfilter'], '</option>
 									</select>
 								</dd>
 								<dt><strong>', $txt['shd_admin_custom_field_can_see'], ':</strong><br /><span class="smalltext">', $txt['shd_admin_custom_field_can_see_desc'], '</span></dt>
