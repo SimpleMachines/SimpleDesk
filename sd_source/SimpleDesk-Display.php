@@ -344,6 +344,7 @@ function shd_view_ticket()
 		'details' => array(),
 		'information' => array(),
 		'prefix' => array(),
+		'prefixfilter' => array(),
 	);
 	$context['ticket_form']['custom_fields_context'] = 'reply';
 	$context['ticket_form']['custom_fields'] = array();
@@ -368,6 +369,7 @@ function shd_view_ticket()
 		CFIELD_PLACE_DETAILS => 'details',
 		CFIELD_PLACE_INFO => 'information',
 		CFIELD_PLACE_PREFIX => 'prefix',
+		CFIELD_PLACE_PREFIXFILTER => 'prefixfilter',
 	);
 	while ($row = $smcFunc['db_fetch_assoc']($query))
 	{

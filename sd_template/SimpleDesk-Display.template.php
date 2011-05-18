@@ -141,6 +141,52 @@ function template_viewticket()
 				echo '
 							</ul>';
 
+			// Display ticket custom fields/filters, if any
+			if (!empty($context['ticket']['custom_fields']['prefixfilter']))
+			{
+				// No need to display anything if there isn't any content to display.
+				$content = false;
+				foreach ($context['ticket']['custom_fields']['prefixfilter'] AS $field)
+				{
+					if (!empty($field['value']) || $field['display_empty'])
+					{
+						$content = true;
+						break;
+					}
+				}
+
+				if ($content)
+				{
+					echo '
+							<hr />
+							<ul>';
+
+					foreach ($context['ticket']['custom_fields']['prefixfilter'] AS $field)
+					{
+						if ($field['display_empty'] || !empty($field['value']))
+						{
+							echo '
+								<li>
+									<dl>
+										<dt>', !empty($field['icon']) ? '<img src="' . $settings['default_images_url'] . '/simpledesk/cf/' . $field['icon'] . '" alt="" class="shd_smallicon" />' : '', ' ', $field['name'],':</dt>
+										<dd>';
+
+							if (empty($field['value']) && $field['display_empty'])
+								echo $txt['shd_ticket_empty_field'];
+							elseif (isset($field['value']))
+								echo preg_replace('~<a (.*?)</a>~is', '', $field['options'][$field['value']]);
+
+							echo '</dd>
+									</dl>
+								</li>';
+						}
+					}
+
+					echo '
+							</ul>';
+				}
+			}
+
 			// Display ticket poster avatar?
 			if (!empty($modSettings['shd_display_avatar']) && empty($options['show_no_avatars']) && !empty($context['ticket']['poster_avatar']['image']))
 				echo '
