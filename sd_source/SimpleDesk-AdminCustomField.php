@@ -309,8 +309,10 @@ function shd_admin_custom_save()
 
 	if ($_POST['field_type'] == CFIELD_TYPE_LARGETEXT)
 		$_POST['default_check'] = (int) $_POST['rows'] . ',' . (int) $_POST['cols'];
-	if (!isset($_POST['placement']) || !in_array($_POST['placement'], array(CFIELD_PLACE_DETAILS, CFIELD_PLACE_INFO, CFIELD_PLACE_PREFIX)))
+	if (!isset($_POST['placement']) || !in_array($_POST['placement'], array(CFIELD_PLACE_DETAILS, CFIELD_PLACE_INFO, CFIELD_PLACE_PREFIX, CFIELD_PLACE_PREFIXFILTER)))
 		$_POST['placement'] = CFIELD_PLACE_DETAILS;
+	if ($_POST['placement'] == CFIELD_PLACE_PREFIXFILTER && !in_array($_POST['field_type'], array(CFIELD_TYPE_SELECT, CFIELD_TYPE_RADIO)))
+		$_POST['placement'] = CFIELD_PLACE_PREFIX;
 	$_POST['field_icon'] = isset($_POST['field_icon']) && preg_match('~^[A-Za-z0-9.-_]+$~', $_POST['field_icon']) ? $_POST['field_icon'] : '';
 	$options = '';
 
