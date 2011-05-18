@@ -844,6 +844,25 @@ function shd_helpdesk_listing()
 		foreach ($sort_methods as $method => $sort_details)
 			$context['ticket_blocks'][$block_key]['sort']['link_bits'][$method] = ';so_' . $block_key . '=' . $method . '_' . $block['sort']['direction'];
 
+	// Figure out if the user is filtering on anything, and if so, set up containers for the extra joins, selects, pagination link fragments, etc
+	$_REQUEST['field'] = isset($_REQUEST['field']) ? (int) $_REQUEST['field'] : 0;
+	$_REQUEST['filter'] = isset($_REQUEST['filter']) ? (int) $_REQUEST['filter'] : 0;
+	if ($_REQUEST['field'] > 0 && $_REQUEST['filter'] > 0)
+	{
+		$context['filter_fragment'] = ';field=' . $_REQUEST['field'] . ';filter=' . $_REQUEST['filter'];
+		$context['filter_join'] = '
+				INNER JOIN {db_prefix}helpdesk_custom_fields_values AS hdcfv ON (hdcfv.id_post = hdt.id_ticket AND hdcfv.id_field = {int:field} AND hdcfv.post_type = {int:type_ticket})
+				INNER JOIN {db_prefix}helpdesk_custom_fields AS hdcf ON (hdcf.id_field = hdcfv.id_field AND hdcf.active = {int:active})';
+		$context['filter_where'] = '
+				AND hdcfv.value = {string:filter}';
+	}
+	else
+	{
+		$context['filter_fragment'] = '';
+		$context['filter_join'] = '';
+		$context['filter_where'] = '';
+	}
+
 	// Now go actually do the whole block thang, setting up space for a list of users and tickets as we go along
 	$users = array();
 	$tickets = array();
@@ -865,8 +884,8 @@ function shd_helpdesk_listing()
 				INNER JOIN {db_prefix}helpdesk_ticket_replies AS hdtr_last ON (hdt.id_last_msg = hdtr_last.id_msg)
 				INNER JOIN {db_prefix}helpdesk_depts AS hdd ON (hdt.id_dept = hdd.id_dept)
 				LEFT JOIN {db_prefix}helpdesk_log_read AS hdlr ON (hdt.id_ticket = hdlr.id_ticket AND hdlr.id_member = {int:user})
-				' . (!empty($block['sort']['sql']['join']) ? $block['sort']['sql']['join'] : '') . '
-			WHERE {query_see_ticket}' . (!empty($block['where']) ? ' AND ' . $block['where'] : '') . (!empty($context['shd_department']) ? ' AND hdt.id_dept = {int:dept}' : '') . '
+				' . (!empty($block['sort']['sql']['join']) ? $block['sort']['sql']['join'] : '') . $context['filter_join'] . '
+			WHERE {query_see_ticket}' . (!empty($block['where']) ? ' AND ' . $block['where'] : '') . (!empty($context['shd_department']) ? ' AND hdt.id_dept = {int:dept}' : '') . $context['filter_where'] . '
 			ORDER BY ' . (!empty($block['sort']['sql']['sort']) ? $block['sort']['sql']['sort'] : 'hdt.id_last_msg ASC') . '
 			LIMIT {int:start}, {int:items_per_page}',
 			array(
@@ -874,6 +893,10 @@ function shd_helpdesk_listing()
 				'user' => $context['user']['id'],
 				'start' => $block['start'],
 				'items_per_page' => $block['num_per_page'],
+				'field' => $_REQUEST['field'],
+				'filter' => $_REQUEST['filter'],
+				'type_ticket' => CFIELD_TICKET,
+				'active' => 1,
 			)
 		);
 
@@ -1036,7 +1059,7 @@ function shd_helpdesk_listing()
 			}
 
 			$context['start'] = $context['ticket_blocks'][$block_id]['start'];
-			$context['ticket_blocks'][$block_id]['page_index'] = shd_no_expand_pageindex($scripturl . $primary_url . $url_fragment . $context['shd_dept_link'] . '#shd_block_' . $block_id, $context['start'], $block['count'], $block['num_per_page'], true);
+			$context['ticket_blocks'][$block_id]['page_index'] = shd_no_expand_pageindex($scripturl . $primary_url . $url_fragment . $context['shd_dept_link'] . $context['filter_fragment'] . '#shd_block_' . $block_id, $context['start'], $block['count'], $block['num_per_page'], true);
 		}
 	}
 
