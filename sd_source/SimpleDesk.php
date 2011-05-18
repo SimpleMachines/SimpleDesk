@@ -1122,7 +1122,7 @@ function shd_helpdesk_listing()
 						if (!isset($field['field_options'][$tickets[$ticket_id][$field_id]]))
 							continue;
 
-						$prefix_filter .= '[' . $field['field_options'][$tickets[$ticket_id][$field_id]] . '] ';
+						$prefix_filter .= '[<a href="' . $scripturl . '?' . $context['shd_home'] . $context['shd_dept_link'] . ';field=' . $field_id . ';filter=' . $tickets[$ticket_id][$field_id] . '">' . $field['field_options'][$tickets[$ticket_id][$field_id]] . '</a>] ';
 					}
 					else
 					{
