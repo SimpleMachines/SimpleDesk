@@ -1134,7 +1134,7 @@ function shd_helpdesk_listing()
 					$subject = $ticket['subject'];
 					$prefix = trim($prefix);
 					$context['ticket_blocks'][$block_id]['tickets'][$ticket_id]['subject'] = '[' . $prefix . '] ' . $subject;
-					$context['ticket_blocks'][$block_id]['tickets'][$ticket_id]['link'] = '<a href="' . $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $ticket_id . ($_REQUEST['sa'] == 'recyclebin' ? ';recycle' : '') . '">' . '[' . $prefix . '] ' . $subject . '</a>';
+					$context['ticket_blocks'][$block_id]['tickets'][$ticket_id]['link'] = '[' . $prefix . '] ' . '<a href="' . $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $ticket_id . ($_REQUEST['sa'] == 'recyclebin' ? ';recycle' : '') . '">' . $subject . '</a>';
 				}
 			}
 		}
