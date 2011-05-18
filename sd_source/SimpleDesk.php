@@ -1047,15 +1047,15 @@ function shd_helpdesk_listing()
 	// 1. Figure out if there are any custom fields that apply to us or not.
 	$fields = array();
 	$query = $smcFunc['db_query']('', '
-		SELECT id_field, can_see, field_type, field_options
+		SELECT id_field, can_see, field_type, field_options, placement
 		FROM {db_prefix}helpdesk_custom_fields
-		WHERE placement = {int:placement_prefix}
+		WHERE placement IN ({array_int:placement_prefix})
 			AND field_loc IN ({array_int:locations})
 			AND active = {int:active}
 		ORDER BY field_order',
 		array(
 			'locations' => array(CFIELD_TICKET, CFIELD_TICKET | CFIELD_REPLY),
-			'placement_prefix' => CFIELD_PLACE_PREFIX,
+			'placement_prefix' => array(CFIELD_PLACE_PREFIX, CFIELD_PLACE_PREFIXFILTER),
 			'active' => 1,
 		)
 	);
@@ -1109,32 +1109,50 @@ function shd_helpdesk_listing()
 		{
 			if (isset($tickets[$ticket_id]))
 			{
+				$prefix_filter = '';
 				$prefix = '';
+				
 				foreach ($fields as $field_id => $field)
 				{
 					if (empty($tickets[$ticket_id][$field_id]))
 						continue;
 
-					if ($field['field_type'] == CFIELD_TYPE_CHECKBOX)
-						$prefix .= !empty($tickets[$ticket_id][$field_id]) ? $txt['yes'] . ' ' : $txt['no'] . ' ';
-					elseif ($field['field_type'] == CFIELD_TYPE_SELECT || $field['field_type'] == CFIELD_TYPE_RADIO)
-						$prefix .= $field['field_options'][$tickets[$ticket_id][$field_id]] . ' ';
-					elseif ($field['field_type'] == CFIELD_TYPE_MULTI)
+					if ($field['placement'] == CFIELD_PLACE_PREFIXFILTER)
 					{
-						$values = explode(',', $tickets[$ticket_id][$field_id]);
-						foreach ($values as $value)
-							$prefix .= $field['field_options'][$value] . ' ';
+						if (!isset($field['field_options'][$tickets[$ticket_id][$field_id]]))
+							continue;
+
+						$prefix_filter .= '[' . $field['field_options'][$tickets[$ticket_id][$field_id]] . '] ';
 					}
 					else
-						$prefix .= $tickets[$ticket_id][$field_id] . ' ';
+					{
+						if ($field['field_type'] == CFIELD_TYPE_CHECKBOX)
+							$prefix .= !empty($tickets[$ticket_id][$field_id]) ? $txt['yes'] . ' ' : $txt['no'] . ' ';
+						elseif ($field['field_type'] == CFIELD_TYPE_SELECT || $field['field_type'] == CFIELD_TYPE_RADIO)
+							$prefix .= $field['field_options'][$tickets[$ticket_id][$field_id]] . ' ';
+						elseif ($field['field_type'] == CFIELD_TYPE_MULTI)
+						{
+							$values = explode(',', $tickets[$ticket_id][$field_id]);
+							foreach ($values as $value)
+								$prefix .= $field['field_options'][$value] . ' ';
+						}
+						else
+							$prefix .= $tickets[$ticket_id][$field_id] . ' ';
+					}
 				}
 
-				if ($prefix !== '')
+				// First, set aside the subject, and if there is a non category prefix, strip links from it.
+				$subject = $ticket['subject'];
+				if (!empty($prefix))
+					$prefix = '[' . trim(preg_replace('~<a (.*?)</a>~is', '', $prefix)) . '] ';
+				// Then, if we have a category prefix, prepend that to any other prefix we have.
+				if (!empty($prefix_filter))
+					$prefix = $prefix_filter . $prefix;
+				// Lastly, if we have some kind of prefix to put in front of this ticket, do so.
+				if (!empty($prefix))
 				{
-					$subject = $ticket['subject'];
-					$prefix = trim(preg_replace('~<a (.*?)</a>~is', '', $prefix));
-					$context['ticket_blocks'][$block_id]['tickets'][$ticket_id]['subject'] = '[' . $prefix . '] ' . $subject;
-					$context['ticket_blocks'][$block_id]['tickets'][$ticket_id]['link'] = '[' . $prefix . '] ' . '<a href="' . $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $ticket_id . ($_REQUEST['sa'] == 'recyclebin' ? ';recycle' : '') . '">' . $subject . '</a>';
+					$context['ticket_blocks'][$block_id]['tickets'][$ticket_id]['subject'] = $prefix . $subject;
+					$context['ticket_blocks'][$block_id]['tickets'][$ticket_id]['link'] = $prefix . '<a href="' . $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $ticket_id . ($_REQUEST['sa'] == 'recyclebin' ? ';recycle' : '') . '">' . $subject . '</a>';
 				}
 			}
 		}
