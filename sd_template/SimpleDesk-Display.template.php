@@ -169,7 +169,7 @@ function template_viewticket()
 				{
 					echo '
 						<div class="information shd_additional_details">
-							<strong><img src="', $settings['default_images_url'], '/simpledesk/additional_details.png" alt="" class="shd_smallicon shd_icon_minihead" /> ',$txt['shd_ticket_additional_details'],'</strong>
+							<strong><img src="', $settings['default_images_url'], '/simpledesk/additional_details.png" alt="" class="shd_smallicon shd_icon_minihead" /> ', $txt['shd_ticket_additional_details'], '</strong>
 							<hr />
 							<ul>';
 
@@ -458,7 +458,7 @@ function template_additional_fields()
 						<h3 class="titlebg">
 							<span class="floatright"><a href="javascript:oCustomFields.infoswap();"><img src="', $settings['images_url'], '/collapse.gif" alt="+" id="shd_custom_fields_swap" class="icon" /></a></span>
 							<img src="', $settings['default_images_url'], '/simpledesk/additional_information.png" alt="x" />
-							<a href="javascript:oCustomFields.infoswap();">',$txt['shd_ticket_additional_information'],'</a>
+							<a href="javascript:oCustomFields.infoswap();">', $txt['shd_ticket_additional_information'], '</a>
 						</h3>
 					</div>
 					<div class="roundframe" id="additional_info">
@@ -892,7 +892,7 @@ function template_ticketactionlog()
 							<span class="floatright shd_ticket_log_expand_container"> <a href="javascript:ActionLog.swap();"><img src="', $settings['images_url'], '/expand.gif" alt="+" id="shd_ticket_log_expand" class="icon" /></a></span>
 							<img src="', $settings['default_images_url'], '/simpledesk/log.png" class="icon" alt="*" />
 							<a href="javascript:ActionLog.swap();">', $txt['shd_ticket_log'], '</a>
-							<span class="smalltext">(', $context['ticket_log_count'] == 1 ? $txt['shd_ticket_log_count_one'] : sprintf($txt['shd_ticket_log_count_more'],$context['ticket_log_count']) , ')</span>
+							<span class="smalltext">(', $context['ticket_log_count'] == 1 ? $txt['shd_ticket_log_count_one'] : sprintf($txt['shd_ticket_log_count_more'], $context['ticket_log_count']), ')</span>
 						</h3>
 					</div>
 					<table class="shd_ticketlist" id="ticket_log" cellspacing="0" width="100%" style="display: none;">

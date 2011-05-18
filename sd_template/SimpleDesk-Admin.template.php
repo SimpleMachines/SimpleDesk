@@ -156,7 +156,7 @@ function template_shd_admin()
 					$cur_member = 1;
 					foreach ($group['members'] AS $member)
 					{
-						echo $member[1] == true ? '<span class="shd_former_contributor">' : '', '', $member[0], '',$member[1] == true ? '</span>' : '';
+						echo $member[1] ? '<span class="shd_former_contributor">' . $member[0] . '</span>' : $member[0];
 
 						if ($cur_member < count($group['members']))
 							echo ', ';
@@ -662,7 +662,7 @@ function template_shd_action_log()
 					<tr class="titlebg">
 						<td colspan="7">
 							<span class="floatright smalltext">', $txt['pages'], ': ', $context['page_index'], '</span>
-							<span class="smalltext shd_empty_log"><img src="', $settings['default_images_url'], '/simpledesk/delete.png" alt="X" /> <a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=actionlog', $context['url_sort'], $context['url_order'], ';removeall" onclick="return confirm(', JavaScriptEscape(sprintf($txt['shd_admin_actionlog_removeall_confirm'],$context['hoursdisable'])), ');">', $txt['shd_admin_actionlog_removeall'], '</a></span>
+							<span class="smalltext shd_empty_log"><img src="', $settings['default_images_url'], '/simpledesk/delete.png" alt="X" /> <a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=actionlog', $context['url_sort'], $context['url_order'], ';removeall" onclick="return confirm(', JavaScriptEscape(sprintf($txt['shd_admin_actionlog_removeall_confirm'], $context['hoursdisable'])), ');">', $txt['shd_admin_actionlog_removeall'], '</a></span>
 						</td>
 					</tr>
 					</table>

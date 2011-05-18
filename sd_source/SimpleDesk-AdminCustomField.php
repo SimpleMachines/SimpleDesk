@@ -177,10 +177,10 @@ function shd_admin_custom_edit()
 
 		// If this is a textarea, we need to get its dimensions too.
 		if ($context['custom_field']['field_type'] == CFIELD_TYPE_LARGETEXT)
-			$context['custom_field']['dimensions'] = explode(',',$context['custom_field']['default_value']);
+			$context['custom_field']['dimensions'] = explode(',', $context['custom_field']['default_value']);
 
-		$context['custom_field']['can_see'] = explode(',',$context['custom_field']['can_see']);
-		$context['custom_field']['can_edit'] = explode(',',$context['custom_field']['can_edit']);
+		$context['custom_field']['can_see'] = explode(',', $context['custom_field']['can_see']);
+		$context['custom_field']['can_edit'] = explode(',', $context['custom_field']['can_edit']);
 
 		$context = array_merge($context, array(
 			'field_type_value' => $context['custom_field']['field_type'],
@@ -419,7 +419,7 @@ function shd_admin_custom_save()
 			),
 			array(
 				$_POST['active'], $row['count'], $_POST['field_name'], $_POST['description'],
-				$_POST['field_visible'],$_POST['field_icon'], $_POST['field_type'], $_POST['field_length'],
+				$_POST['field_visible'], $_POST['field_icon'], $_POST['field_type'], $_POST['field_length'],
 				$options, $_POST['bbc'], $_POST['default_check'], $can_see,
 				$can_edit, $_POST['display_empty'], $_POST['placement'],
 			),

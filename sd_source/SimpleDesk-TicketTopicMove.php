@@ -601,7 +601,7 @@ function shd_tickettotopic2()
 					'user' => $owner,
 				)
 			);
-			list ($userid,$username) = $smcFunc['db_fetch_row']($request);
+			list ($userid, $username) = $smcFunc['db_fetch_row']($request);
 			$smcFunc['db_free_result']($request);
 
 			// Fix the content
@@ -1138,7 +1138,7 @@ function shd_topictoticket2()
 					'user' => $owner,
 				)
 			);
-			list ($userid,$username) = $smcFunc['db_fetch_row']($request);
+			list ($userid, $username) = $smcFunc['db_fetch_row']($request);
 			$smcFunc['db_free_result']($request);
 
 			// Fix the content

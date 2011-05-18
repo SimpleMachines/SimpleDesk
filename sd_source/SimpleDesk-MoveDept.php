@@ -288,7 +288,7 @@ function shd_movedept2()
 					'user' => $ticket_starter,
 				)
 			);
-			list ($userid,$username) = $smcFunc['db_fetch_row']($request);
+			list ($userid, $username) = $smcFunc['db_fetch_row']($request);
 			$smcFunc['db_free_result']($request);
 
 			// Fix the content
