@@ -30,7 +30,8 @@ $txt['shdp_frontpage_type_bbcode'] = 'Bulletin board code (as given in the main 
 
 $txt['shdp_frontpage_appear'] = 'When it should appear';
 $txt['shdp_frontpage_appear_always'] = 'Always as the front page';
-$txt['shdp_frontpage_appear_firstload'] = 'Only at the first time of login';
+$txt['shdp_frontpage_appear_firstload'] = 'Only at the first time of login (and then remain hidden)';
+$txt['shdp_frontpage_appear_firstdefault'] = 'At the first time of login (with tickets being the default "home")';
 
 $txt['shdp_frontpage_content'] = 'Main content';
 

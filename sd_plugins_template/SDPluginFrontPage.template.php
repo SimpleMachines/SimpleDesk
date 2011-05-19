@@ -41,6 +41,8 @@ function template_shd_frontpage_admin()
 
 	if (empty($modSettings['shdp_frontpage_type']))
 		$modSettings['shdp_frontpage_type'] = 'bbcode';
+	if (empty($modSettings['shdp_frontpage_appear']))
+		$modSettings['shdp_frontpage_appear'] = 'firstdefault';
 
 	echo '
 	<div id="admincenter">
@@ -59,8 +61,9 @@ function template_shd_frontpage_admin()
 						</dt>
 						<dd style="width: 68%;">
 							<select name="shdp_frontpage_appear" id="shdp_frontpage_appear">
-								<option value="always" selected="selected">', $txt['shdp_frontpage_appear_always'], '</option>
-								<option value="firstload">', $txt['shdp_frontpage_appear_firstload'], '</option>
+								<option value="always"', $modSettings['shdp_frontpage_appear'] == 'always' ? ' selected="selected"' : '', '>', $txt['shdp_frontpage_appear_always'], '</option>
+								<option value="firstload"', $modSettings['shdp_frontpage_appear'] == 'firstload' ? ' selected="selected"' : '', '>', $txt['shdp_frontpage_appear_firstload'], '</option>
+								<option value="firstdefault"', $modSettings['shdp_frontpage_appear'] == 'firstdefault' ? ' selected="selected"' : '', '>', $txt['shdp_frontpage_appear_firstdefault'], '</option>
 							</select>
 							</dd>
 					</dl>

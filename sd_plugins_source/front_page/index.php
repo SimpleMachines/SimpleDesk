@@ -75,6 +75,7 @@ function shdplugin_front_page()
 			'adminmenu' => 'shd_frontpage_adminmenu',
 			'helpdesk' => 'shd_frontpage_helpdesk',
 			'after_main' => 'shd_frontpage_aftermain',
+			'mainmenu' => 'shd_frontpage_mainmenu',
 		),
 	);
 }

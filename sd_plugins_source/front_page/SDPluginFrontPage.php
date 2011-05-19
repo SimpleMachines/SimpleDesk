@@ -36,7 +36,10 @@ function shd_frontpage_helpdesk(&$subactions)
 		return;
 
 	// Are we doing it this load or not?
-	if (!empty($modSettings['shdp_frontpage_appear']) && $modSettings['shdp_frontpage_appear'] == 'firstload')
+	if (empty($modSettings['shdp_frontpage_appear']))
+		$modSettings['shdp_frontpage_appear'] = 'firstdefault';
+
+	if ($modSettings['shdp_frontpage_appear'] == 'firstload')
 	{
 		// So, check $_SESSION. If it's set (i.e. we've been here this session, leave; otherwise skip this section, we're coming here every time)
 		if (isset($_SESSION['shdp_frontpage']))
@@ -44,9 +47,15 @@ function shd_frontpage_helpdesk(&$subactions)
 		else
 			$_SESSION['shdp_frontpage'] = 1;
 	}
+	elseif ($modSettings['shdp_frontpage_appear'] == 'firstdefault')
+	{
+		if (!isset($_SESSION['shdp_frontpage']))
+			$_SESSION['shdp_frontpage'] = 1;
+	}
 
 	// Fix the navigation to have a tickets button as well as the main button
-	$context['shd_home'] = 'action=helpdesk;sa=tickets';
+	if ($modSettings['shdp_frontpage_appear'] != 'always')
+		$context['shd_home'] = 'action=helpdesk;sa=tickets';
 	$navigation = $context['navigation'];
 	$context['navigation'] = array();
 
@@ -80,7 +89,7 @@ function shd_frontpage_options($return_config)
 	isAllowedTo('admin_forum');
 
 	$config_vars = array(
-		array('select', 'shdp_frontpage_appear', array('always' => $txt['shdp_frontpage_appear_always'], 'firstload' => $txt['shdp_frontpage_appear_firstload'])),
+		array('select', 'shdp_frontpage_appear', array('always' => $txt['shdp_frontpage_appear_always'], 'firstload' => $txt['shdp_frontpage_appear_firstload'], 'firstdefault' => $txt['shdp_frontpage_appear_firstdefault'])),
 		'',
 		array('select', 'shdp_frontpage_type', array('php' => $txt['shdp_frontpage_type_php'], 'bbcode' => $txt['shdp_frontpage_type_bbcode'])),
 		array('large_text', 'shdp_frontpage_content', 'size' => 30),
@@ -223,6 +232,23 @@ function shd_frontpage_aftermain()
 			'url' => $scripturl . '?action=helpdesk;sa=tickets',
 			'name' => $txt['shdp_tickets'],
 		);
+}
+
+function shd_frontpage_mainmenu(&$menu_buttons)
+{
+	global $context, $scripturl, $modSettings;
+
+	// Enabled?
+	if (empty($modSettings['shdp_frontpage_content']) || !in_array('front_page', $context['shd_plugins']))
+		return;
+
+	if (!empty($modSettings['shdp_frontpage_appear']) && $modSettings['shdp_frontpage_appear'] == 'firstdefault' && !empty($_SESSION['shdp_frontpage']))
+	{
+		if (empty($modSettings['shd_helpdesk_only']) && isset($menu_buttons['helpdesk']))
+			$menu_buttons['helpdesk']['href'] = $scripturl . '?action=helpdesk;sa=tickets';
+		elseif (!empty($modSettings['shd_helpdesk_only']))
+			$menu_buttons['home']['href'] = $scripturl . '?action=helpdesk;sa=tickets';
+	}
 }
 
 ?>
