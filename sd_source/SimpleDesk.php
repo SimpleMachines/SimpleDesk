@@ -1064,18 +1064,27 @@ function shd_helpdesk_listing()
 		return; // We're all done here.
 
 	// 1. Figure out if there are any custom fields that apply to us or not.
+	if ($context['shd_multi_dept'])
+		$dept_list = shd_allowed_to('access_helpdesk', false);
+	else
+		$dept_list = array($context['shd_department']);
+
 	$fields = array();
 	$query = $smcFunc['db_query']('', '
-		SELECT id_field, can_see, field_type, field_options, placement
-		FROM {db_prefix}helpdesk_custom_fields
+		SELECT hdcf.id_field, can_see, field_type, field_options, placement
+		FROM {db_prefix}helpdesk_custom_fields AS hdcf
+			INNER JOIN {db_prefix}helpdesk_custom_fields_depts AS hdcfd ON (hdcfd.id_field = hdcf.id_field)
 		WHERE placement IN ({array_int:placement_prefix})
 			AND field_loc IN ({array_int:locations})
+			AND hdcfd.id_dept IN ({array_int:dept_list})
 			AND active = {int:active}
+		GROUP BY hdcf.id_field
 		ORDER BY field_order',
 		array(
 			'locations' => array(CFIELD_TICKET, CFIELD_TICKET | CFIELD_REPLY),
 			'placement_prefix' => array(CFIELD_PLACE_PREFIX, CFIELD_PLACE_PREFIXFILTER),
 			'active' => 1,
+			'dept_list' => $dept_list,
 		)
 	);
 	$is_staff = shd_allowed_to('shd_staff', $context['shd_department']);
