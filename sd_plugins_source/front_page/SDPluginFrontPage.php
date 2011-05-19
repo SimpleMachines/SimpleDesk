@@ -255,8 +255,15 @@ function shd_frontpage_mainmenu(&$menu_buttons)
 
 function shd_frontpage_boardindex()
 {
-	global $context;
-	$context['shd_home'] = 'action=helpdesk;sa=tickets';
+	global $context, $modSettings;
+	if (empty($modSettings['shdp_frontpage_content']) || !in_array('front_page', $context['shd_plugins']))
+		return;
+
+	if (!empty($modSettings['shdp_frontpage_appear']))
+	{
+		if (($modSettings['shdp_frontpage_appear'] == 'firstlogin' && empty($_SESSION['shdp_frontpage'])) || $modSettings['shdp_frontpage_appear'] != 'firstlogin')
+			$context['shd_home'] = 'action=helpdesk;sa=tickets';
+	}
 }
 
 ?>
