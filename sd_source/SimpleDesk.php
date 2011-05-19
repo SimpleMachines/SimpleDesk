@@ -166,7 +166,7 @@ function shd_main()
 			'text' => 'shd_back_to_hd',
 			'test' => 'display_back_to_hd',
 			'lang' => true,
-			'url' => $scripturl . '?action=helpdesk;sa=main',
+			'url' => $scripturl . '?' . $context['shd_home'] . $context['shd_dept_link'],
 		),
 		'options' => array(
 			'text'=> 'shd_options',

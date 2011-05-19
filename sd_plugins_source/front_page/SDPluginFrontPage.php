@@ -66,7 +66,7 @@ function shd_frontpage_helpdesk(&$subactions)
 			$context['navigation']['tickets'] = array(
 				'text' => 'shdp_tickets',
 				'lang' => true,
-				'url' => $scripturl . '?action=helpdesk;sa=tickets',
+				'url' => $scripturl . '?action=helpdesk;sa=tickets' . $context['shd_dept_link'],
 			);
 		}
 	}
