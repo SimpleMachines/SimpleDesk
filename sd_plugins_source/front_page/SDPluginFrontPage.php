@@ -46,6 +46,7 @@ function shd_frontpage_helpdesk(&$subactions)
 	}
 
 	// Fix the navigation to have a tickets button as well as the main button
+	$context['shd_home'] = 'action=helpdesk;sa=tickets';
 	$navigation = $context['navigation'];
 	$context['navigation'] = array();
 
