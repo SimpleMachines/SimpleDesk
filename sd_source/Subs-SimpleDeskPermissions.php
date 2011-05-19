@@ -418,11 +418,11 @@ function shd_load_user_perms()
 		// That's the core stuff done. We also need to ensure that closed tickets aren't visible either.
 		$depts_closed_any = shd_allowed_to('shd_view_closed_any', false);
 		$depts_closed_own = shd_allowed_to('shd_view_closed_own', false);
-		$depts_closed_own = array_diff($depts_closed_any, $depts_closed_own);
+		$depts_closed_own = array_diff($depts_closed_own, $depts_closed_any);
 
 		if (empty($depts_closed_any) && empty($depts_closed_own)) // No access at all. Disable all access to closed tickets.
 			$clauses[] = 'hdt.status != 3';
-		if (!empty($depts_closed_any) && empty($depts_closed_own)) // Only where we can access 'all closed' but not 'any of our own closed', e.g. admins
+		elseif (!empty($depts_closed_any) && empty($depts_closed_own)) // Only where we can access 'all closed' but not 'any of our own closed', e.g. admins
 			$clauses[] = 'hdt.status != 3 OR (hdt.status = 3 AND hdt.id_dept IN (' . implode(',', $depts_closed_any) . '))';
 		elseif (!empty($depts_closed_any) && !empty($depts_closed_own)) // So we have a mixture
 			$clauses[] = 'hdt.status != 3 OR (hdt.status = 3 AND (hdt.id_dept IN (' . implode(',', $depts_closed_any) . ') OR (hdt.id_member_started = {int:user_info_id} AND hdt.id_dept IN (' . implode(',', $depts_closed_own) . '))))';
