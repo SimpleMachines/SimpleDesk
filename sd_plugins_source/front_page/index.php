@@ -61,8 +61,7 @@ function shdplugin_front_page()
 		),
 		'includes' => array(
 			'source' => array(
-				'hdadmin' => 'SDPluginFrontPage.php',
-				'helpdesk' => 'SDPluginFrontPage.php',
+				'init' => 'SDPluginFrontPage.php',
 			),
 			'language' => array(
 				'hdadmin' => 'SDPluginFrontPage',
