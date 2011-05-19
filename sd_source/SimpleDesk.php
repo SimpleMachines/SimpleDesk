@@ -904,7 +904,7 @@ function shd_helpdesk_listing()
 			$new_block = array(
 				'id' => $row['id_ticket'],
 				'display_id' => str_pad($row['id_ticket'], 5, '0', STR_PAD_LEFT),
-				'dept_link' => empty($context['shd_department']) && $context['shd_multi_dept'] ? '[<a href="' . $scripturl . '?action=helpdesk;sa=main;dept=' . $row['id_dept'] . '">' . $row['dept_name'] . '</a>] ' : '',
+				'dept_link' => empty($context['shd_department']) && $context['shd_multi_dept'] ? '[<a href="' . $scripturl . '?' . $context['shd_home'] . ';dept=' . $row['id_dept'] . '">' . $row['dept_name'] . '</a>] ' : '',
 				'link' => '<a href="' . $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $row['id_ticket'] . ($_REQUEST['sa'] == 'recyclebin' ? ';recycle' : '') . '">' . $row['subject'] . '</a>',
 				'subject' => $row['subject'],
 				'status' => array(
