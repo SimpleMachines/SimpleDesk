@@ -99,8 +99,6 @@ function shd_load_all_permission_sets()
 		'shd_ticket_to_topic' => array(false, 'moderation', 'log_tickettotopic.png'),
 		'shd_topic_to_ticket' => array(false, 'moderation', 'log_topictoticket.png'),
 		'shd_move_dept' => array(true, 'moderation', 'log_move_dept.png'),
-		//'shd_merge_ticket' => array(true, 'moderation', 'log_merge.png'),
-		//'shd_split_ticket' => array(true, 'moderation', 'log_split_origin.png'),
 	);
 
 	if (!empty($modSettings['shd_disable_tickettotopic']))
@@ -187,8 +185,6 @@ function shd_load_role_templates()
 				'shd_ticket_to_topic' => ROLEPERM_ALLOW,
 				'shd_topic_to_ticket' => ROLEPERM_ALLOW,
 				'shd_move_dept_own' => ROLEPERM_ALLOW,
-				//'shd_merge_ticket_any' => ROLEPERM_ALLOW,
-				//'shd_split_ticket_any' => ROLEPERM_ALLOW,
 			),
 		),
 		ROLE_ADMIN => array(
@@ -232,8 +228,6 @@ function shd_load_role_templates()
 				'shd_ticket_to_topic' => ROLEPERM_ALLOW,
 				'shd_topic_to_ticket' => ROLEPERM_ALLOW,
 				'shd_move_dept_any' => ROLEPERM_ALLOW,
-				//'shd_merge_ticket_any' => ROLEPERM_ALLOW,
-				//'shd_split_ticket_any' => ROLEPERM_ALLOW,
 			),
 		),
 	);

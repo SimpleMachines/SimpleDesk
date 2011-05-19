@@ -233,22 +233,6 @@ $txt['permissionname_shd_move_dept_no'] = 'No tickets';
 $txt['permissionname_shd_move_dept_own'] = 'Their own tickets';
 $txt['permissionname_shd_move_dept_any'] = 'Any tickets';
 
-//! @name Ticket merging
-//@{
-$txt['permissionname_shd_merge_ticket'] = 'Merge two tickets together';
-$txt['permissionhelp_shd_merge_ticket'] = 'This allows a user to merge two tickets from the same creator together (to ensure the creator can still see the result ticket)';
-$txt['permissionname_shd_merge_ticket_own'] = 'Two of their own';
-$txt['permissionname_shd_merge_ticket_any'] = 'Two from any user';
-//@}
-
-//! @name Ticket splitting
-//@{
-$txt['permissionname_shd_split_ticket'] = 'Split a ticket into two';
-$txt['permissionhelp_shd_split_ticket'] = 'This allows a user to split a ticket they can see into two tickets, maybe if the ticket has started discussing a separate issue.';
-$txt['permissionname_shd_split_ticket_own'] = 'One of their own';
-$txt['permissionname_shd_split_ticket_any'] = 'One from any user';
-//@}
-
 //! @name Ticket relationships
 //@{
 $txt['permissionname_shd_view_relationships'] = 'View relationships';

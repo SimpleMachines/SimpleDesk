@@ -80,7 +80,6 @@ if (empty($modSettings['shd_attachments_mode']))
 		'shd_logopt_relationships' => 1,
 		'shd_logopt_newposts' => 1,
 		'shd_logopt_editposts' => 1,
-		'shd_logopt_split' => 1,
 		'shd_thank_you_post' => 1,
 		'shd_theme' => 0,
 		'shd_hidemenuitem' => 0,

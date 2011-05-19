@@ -454,8 +454,6 @@ function shd_log_action($action, $params)
 		'cf_rplchgdef_useradmin' => 'shd_logopt_cfchanges',
 		'cf_rplchgdef_userstaffadmin' => 'shd_logopt_cfchanges',
 		'move_dept' => 'shd_logopt_move_dept',
-		//'split_origin' => 'shd_logopt_split',
-		//'split_new' => 'shd_logopt_split',
 	);
 
 	if (empty($logopt[$action]) || empty($modSettings[$logopt[$action]]))
@@ -930,7 +928,7 @@ function shd_image_url($filename)
  *	we should route everything through here all the time.
  *
  *	@param string $action (required), represents the action carried out by the calling function
- *			Known values: new, resolve, unresolve, deleteticket, restoreticket, deletereply, restorereply, reply, merge, topictoticket (new is default)
+ *			Known values: new, resolve, unresolve, deleteticket, restoreticket, deletereply, restorereply, reply, topictoticket (new is default)
  *	@param int $starter_id Numeric id of the ticket's starter (should be provided)
  *	@param int $replier_id Numeric id of the ticket's last reply author (should be provided)
  *	@param int $replies Number of replies in the ticket (should be provided)
@@ -955,7 +953,6 @@ function shd_determine_status($action, $starter_id = 0, $replier_id = 0, $replie
 		'restorereply',
 		'reply',
 		'topictoticket',
-		'mergesplit',
 	);
 
 	if (!in_array($action, $known_states))
@@ -969,7 +966,6 @@ function shd_determine_status($action, $starter_id = 0, $replier_id = 0, $replie
 			return TICKET_STATUS_CLOSED; // yup, all done
 		case 'deleteticket':
 			return TICKET_STATUS_DELETED; // bye bye
-		case 'mergesplit': // used in handling deleted replies
 		case 'deletereply':
 		case 'restorereply':
 		case 'unresolve':
@@ -1033,7 +1029,7 @@ function shd_load_language($langfile, $override_lang = '')
 }
 
 /**
- *	Clean up tickets that have been modified by replies being altered through restore, delete, merge and split.
+ *	Clean up tickets that have been modified by replies being altered through restore, delete, and possibly other operations.
  *
  *	Operations:
  *	- Identify how many deleted and non deleted replies there are in the ticket.

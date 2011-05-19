@@ -89,7 +89,7 @@ function shd_ticket_delete()
 			AND {query_see_ticket}',
 		array(
 			'current_ticket' => $context['ticket_id'],
-			'status_deleted' => TICKET_STATUS_DELETED, // just move it, don't bother calling merge (or shd_determine_status)
+			'status_deleted' => TICKET_STATUS_DELETED, // just move it, don't bother calling shd_determine_status
 		)
 	);
 

@@ -33,8 +33,7 @@ if (!defined('SMF'))
  *	Creates a new ticket or reply in the database.
  *
  *	This function handles all of the creation of posts and tickets within SimpleDesk, even with respect to managing tickets spawned
- *	from forum topics being moved, as well as newly deleted tickets (formed as a split when replies are deleted). New tickets' contents
- *	as well as replies to tickets generally hold the same format.
+ *	from forum topics being moved. New tickets' contents as well as replies to tickets generally hold the same format.
  *
  *	All three parameters are by <b>reference</b> meaning they WILL be updated if things change. Note that this function
  *	is not validating that they are sensible values; it is up to the calling function to ascertain that.

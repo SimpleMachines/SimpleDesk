@@ -79,7 +79,6 @@ $to_remove = array(
 	'shd_logopt_permadelete',
 	'shd_logopt_relationships',
 	'shd_logopt_move_dept',
-	'shd_logopt_split',
 	// General options
 	'shd_maintenance_mode',
 	'shd_allow_wikilinks',

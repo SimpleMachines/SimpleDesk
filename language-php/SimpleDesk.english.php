@@ -139,17 +139,10 @@ $txt['shd_cannot_view_resolved'] = 'You are not permitted to access resolved tic
 $txt['cannot_shd_access_recyclebin'] = 'You cannot access the recycle bin.';
 $txt['shd_cannot_move_ticket_with_deleted'] = 'You cannot move this ticket to the forum; there are one or more deleted replies, which your current permissions do not permit access to.';
 $txt['shd_cannot_attach_ext'] = 'The type of file you have tried to attach ({ext}) is not allowed here. The allowed types of file are: {attach_exts}';
-$txt['shd_cannot_merge'] = 'You do not have permission to merge this ticket.';
-$txt['shd_no_tickets_to_merge'] = 'There are no currently open tickets started by the same user; you cannot merge this ticket with any others at this time.';
-$txt['cannot_shd_split_ticket_own'] = 'You are not permitted to split your own tickets.';
-$txt['cannot_shd_split_ticket_any'] = 'You are not permitted to split any tickets.';
-$txt['shd_split_no_title'] = 'You must specify a title for the newly split ticket.';
-$txt['shd_split_invalid_type'] = 'That operation on splitting a ticket is not supported.';
 $txt['shd_ticket_unavailable'] = 'This ticket is currently not available for modification.';
 $txt['shd_invalid_relation'] = 'You must provide a valid type of relationship for these tickets.';
 $txt['shd_no_relation_delete'] = 'You cannot delete a relationship that does not exist.';
 $txt['shd_cannot_relate_self'] = 'You cannot make a ticket relate to itself.';
-$txt['shd_split_no_pm'] = 'You must enter a reason for splitting the ticket to send to the ticket owner, or uncheck the option to \'send a PM to the ticket owner\'.';
 $txt['shd_relationships_are_disabled'] = 'Ticket relationships are currently disabled.';
 $txt['error_invalid_fields'] = 'The following fields have values that cannot be used: %1$s';
 $txt['error_missing_fields'] = 'The following fields were not completed and need to be: %1$s';
@@ -317,30 +310,6 @@ $txt['shd_ticket_move_accept'] = 'I accept that some of the fields being manipul
 $txt['shd_ticket_move_reqd'] = 'This option must be selected in order for you to move this ticket to the forum.';
 $txt['shd_ticket_move_ok'] = 'This field is safe to move, all the users who can see the ticket can see this field, there is no information hidden from users or staff.';
 $txt['shd_ticket_move_reqd_nonselected'] = 'This ticket has fields that users or staff may not be able to see, as such you specifically need to confirm you are aware of this - please go back to the previous page, the checkbox for confirming your awareness of this is at the bottom of the form.';
-
-// Merge ticket
-$txt['shd_merge_ticket'] = 'Merge ticket';
-$txt['shd_ticket_to_merge'] = 'Ticket to merge';
-$txt['shd_ticket_merge_tickets'] = 'Merge Tickets';
-$txt['shd_merge_send_pm'] = 'Send a PM to the ticket starter';
-$txt['shd_merge_why'] = 'Please enter a brief description as to why this ticket has been merged with another.';
-$txt['shd_merge_default_msg'] = 'Hello {user},' . "\n\n" . 'Your tickets, {source} and {destination}, have been merged together to form a single ticket.' . "\n\n" . 'You can find your ticket here:' . "\n" . '{link}' . "\n\n" . 'Thanks';
-
-// Split ticket
-$txt['shd_ticket_split_ticket'] = 'Split';
-$txt['shd_split_ticket'] = 'Split Ticket';
-$txt['shd_split_new_subject'] = 'Subject for newly split ticket';
-$txt['shd_split_type'] = 'What replies should make up the new ticket?';
-$txt['shd_split_only_this'] = 'The new ticket should only have this reply';
-$txt['shd_split_after_this'] = 'The new ticket should contain all replies from this message forward';
-$txt['shd_split_done'] = 'The ticket has been split into two tickets.';
-$txt['shd_split_origin_ticket'] = 'Go back to the original ticket';
-$txt['shd_split_new_ticket'] = 'Go to the new ticket';
-$txt['shd_split_send_pm'] = 'Send a PM to the ticket starter';
-$txt['shd_split_why'] = 'Please enter a brief description as to why this ticket has been split into two.';
-$txt['shd_split_why_note'] = 'It is possible the ticket starter will not be able to see the split ticket, depending on how the split is done.';
-$txt['shd_ticket_split_subject'] = 'Your ticket has been split.';
-$txt['shd_split_default_msg'] = 'Hello {user},' . "\n\n" . 'Your ticket, {source}, has been split into another ticket.' . "\n" . 'You can find your original ticket here:' . "\n\n" . '{link}' . "\n\n" . 'The new ticket is:' . "\n" . '{splitlink}' . "\n\n" . 'Thanks';
 
 // Recycling
 $txt['shd_recycle_bin'] = 'Recycle Bin';

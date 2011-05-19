@@ -197,7 +197,6 @@ $txt['shd_logopt_delete'] = 'Log tickets and replies being deleted';
 $txt['shd_logopt_restore'] = 'Log tickets and replies being restored';
 $txt['shd_logopt_permadelete'] = 'Log tickets and replies being permadeleted';
 $txt['shd_logopt_relationships'] = 'Log any changes in ticket relationships';
-$txt['shd_logopt_split'] = 'Log splitting of a ticket into two tickets';
 $txt['shd_logopt_autoclose'] = 'Log tickets closed automatically by the helpdesk';
 $txt['shd_logopt_move_dept'] = 'Log tickets being moved between two departments';
 

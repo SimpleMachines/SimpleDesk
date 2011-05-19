@@ -760,9 +760,6 @@ function template_viewreplies()
 			if ($reply['can_permadelete'])
 				echo '
 									<img src="', $settings['default_images_url'], '/simpledesk/delete.png" class="shd_smallicon" alt="*" /><a href="', $scripturl, '?action=helpdesk;sa=permadelete;reply=', $reply['id'], ';ticket=', $context['ticket']['id'], ';', $context['session_var'], '=', $context['session_id'], '" onclick="return confirm(', JavaScriptEscape($txt['shd_delete_permanently_confirm']), ');">', $txt['shd_delete_permanently'], '</a>';
-			/*if ($reply['can_split'])
-				echo '
-									<img src="', $settings['default_images_url'], '/simpledesk/split.png" class="shd_smallicon" alt="*" /><a href="', $scripturl, '?action=helpdesk;sa=splitticket;at_msg=', $reply['id'], ';ticket=', $context['ticket']['id'], '">', $txt['shd_ticket_split_ticket'], '</a>';*/
 
 			echo '
 								</span>

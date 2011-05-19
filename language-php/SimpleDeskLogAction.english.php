@@ -88,12 +88,6 @@ $txt['shd_log_rel_re_child'] = 'Updated &quot;<a href="{scripturl}?action=helpde
 $txt['shd_log_rel_delete'] = 'Removed relationship between &quot;<a href="{scripturl}?action=helpdesk;sa=ticket;ticket={ticket}.0">{subject}</a>&quot; and &quot;<a href="{scripturl}?action=helpdesk;sa=ticket;ticket={otherticket}.0">{othersubject}</a>&quot;.';
 //@}
 
-//! @name Ticket merge/split
-//@{
-$txt['shd_log_split_origin'] = 'Split &quot;<a href="{scripturl}?action=helpdesk;sa=ticket;ticket={ticket}.0">{subject}</a>&quot; to create &quot;<a href="{scripturl}?action=helpdesk;sa=ticket;ticket={otherticket}.0">{othersubject}</a>&quot;.';
-$txt['shd_log_split_new'] = '&quot;<a href="{scripturl}?action=helpdesk;sa=ticket;ticket={ticket}.0">{subject}</a>&quot; was split from &quot;<a href="{scripturl}?action=helpdesk;sa=ticket;ticket={otherticket}.0">{othersubject}</a>&quot;.';
-//@}
-
 //! @name Custom fields being edited (done this way to preserve filtering at the broadest level, sorry)
 //@{
 $txt['shd_log_cf_tktchange_admin'] = 'On &quot;<a href="{scripturl}?action=helpdesk;sa=ticket;ticket={ticket}">{subject}</a>&quot;, the value of &quot;{fieldname}&quot; was changed from <strong>{oldvalue}</strong> to <strong>{newvalue}</strong>';
