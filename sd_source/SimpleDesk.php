@@ -1123,6 +1123,13 @@ function shd_helpdesk_listing()
 		$tickets[$row['id_post']][$row['id_field']] = $row['value'];
 
 	// 3. Apply the values into the tickets.
+	if ($_REQUEST['sa'] == 'closedtickets')
+		$filterbase = $scripturl . '?action=helpdesk;sa=closedtickets';
+	elseif ($_REQUEST['sa'] == 'recyclebin')
+		$filterbase = $scripturl . '?action=helpdesk;sa=recyclebin';
+	else
+		$filterbase = $scripturl . '?' . $context['shd_home'];
+
 	foreach ($context['ticket_blocks'] as $block_id => $block)
 	{
 		if (empty($block['tickets']))
@@ -1145,7 +1152,7 @@ function shd_helpdesk_listing()
 						if (!isset($field['field_options'][$tickets[$ticket_id][$field_id]]))
 							continue;
 
-						$prefix_filter .= '[<a href="' . $scripturl . '?' . $context['shd_home'] . $context['shd_dept_link'] . ';field=' . $field_id . ';filter=' . $tickets[$ticket_id][$field_id] . '">' . $field['field_options'][$tickets[$ticket_id][$field_id]] . '</a>] ';
+						$prefix_filter .= '[<a href="' . $filterbase . $context['shd_dept_link'] . ';field=' . $field_id . ';filter=' . $tickets[$ticket_id][$field_id] . '">' . $field['field_options'][$tickets[$ticket_id][$field_id]] . '</a>] ';
 					}
 					else
 					{
