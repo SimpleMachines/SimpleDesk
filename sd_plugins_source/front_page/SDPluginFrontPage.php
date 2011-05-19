@@ -73,16 +73,51 @@ function shd_frontpage_helpdesk(&$subactions)
 
 function shd_frontpage_options($return_config)
 {
-	global $context, $modSettings, $txt;
+	global $context, $modSettings, $txt, $sourcedir;
 
 	$config_vars = array(
 		array('select', 'shdp_frontpage_appear', array('always' => $txt['shdp_frontpage_appear_always'], 'firstload' => $txt['shdp_frontpage_appear_firstload'])),
 		'',
-		array('select', 'shdp_frontpage_type', array('html' => $txt['shdp_frontpage_type_html'], 'php' => $txt['shdp_frontpage_type_php'], 'bbcode' => $txt['shdp_frontpage_type_bbcode'])),
+		array('select', 'shdp_frontpage_type', array('php' => $txt['shdp_frontpage_type_php'], 'bbcode' => $txt['shdp_frontpage_type_bbcode'])),
 		array('large_text', 'shdp_frontpage_content', 'size' => 30),
 	);
 	$context['settings_title'] = $txt['shdp_frontpage'];
 	$context['settings_icon'] = 'frontpage.png';
+
+	// Are we actually going to display this, or bouncing it back just for admin search?
+	if (!$return_config)
+	{
+		require_once($sourcedir . '/Subs-Post.php');
+		require_once($sourcedir . '/Subs-Editor.php');
+		loadTemplate('sd_plugins_template/SDPluginFrontPage');
+		$context['sub_template'] = 'shd_frontpage_admin';
+
+		$context['shdp_frontpage_content'] = !empty($modSettings['shdp_frontpage_content']) ? un_preparsecode($modSettings['shdp_frontpage_content']) : '';
+		if (isset($_GET['save']))
+		{
+			if (!empty($_REQUEST['shdp_frontpage_content_mode']) && isset($_REQUEST['shdp_frontpage_content']))
+			{
+				$_REQUEST['shdp_frontpage_content'] = un_htmlspecialchars(html_to_bbc($_REQUEST['shdp_frontpage_content']));
+				$_POST['shdp_frontpage_content'] = $_REQUEST['shdp_frontpage_content'];
+				$_POST['shdp_frontpage_content'] = $smcFunc['htmlspecialchars']($_POST['shdp_frontpage_content'], ENT_QUOTES);
+				preparsecode($_POST['shdp_frontpage_content']);
+				$context['shdp_frontpage_content'] = un_preparsecode($_POST['shdp_frontpage_content']); // So it's a known safe version.
+			}
+		}
+
+		$editorOptions = array(
+			'id' => 'shdp_frontpage_content',
+			'value' => $context['shdp_frontpage_content'],
+			'labels' => array(
+				'post_button' => $txt['save'],
+			),
+			'preview_type' => 0,
+			'width' => '70%',
+			'disable_smiley_box' => false,
+		);
+		create_control_richedit($editorOptions);
+		$context['post_box_name'] = $editorOptions['id'];
+	}
 
 	return $config_vars;
 }
@@ -138,9 +173,6 @@ function shd_frontpage_source()
 
 	switch ($modSettings['shdp_frontpage_type'])
 	{
-		case 'html':
-			$context['shdp_frontpage_content'] = $modSettings['shdp_frontpage_content'];
-			break;
 		case 'php':
 			ob_start();
 			eval($modSettings['shdp_frontpage_content']);
@@ -148,7 +180,7 @@ function shd_frontpage_source()
 			ob_end_clean();
 			break;
 		case 'bbcode':
-			$context['shdp_frontpage_content'] = shd_format_text($modSettings['shdp_frontpage_content'], true, 'shdp_frontpage');
+			$context['shdp_frontpage_content'] = parse_bbc($modSettings['shdp_frontpage_content'], true, 'shdp_frontpage');
 			break;
 	}
 }

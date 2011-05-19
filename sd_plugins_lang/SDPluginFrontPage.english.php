@@ -25,9 +25,8 @@ $txt['shdp_frontpage_desc'] = 'This plugin allows you to create a front page in 
 $txt['shdp_frontpage_main_desc'] = 'This area allows you to configure the front page of the helpdesk, when it is presented and what it contains.';
 
 $txt['shdp_frontpage_type'] = 'Type of front page content';
-$txt['shdp_frontpage_type_html'] = 'Plain HTML';
 $txt['shdp_frontpage_type_php'] = 'Raw PHP';
-$txt['shdp_frontpage_type_bbcode'] = 'Bulletin board code';
+$txt['shdp_frontpage_type_bbcode'] = 'Bulletin board code (as given in the main forum configuration)';
 
 $txt['shdp_frontpage_appear'] = 'When it should appear';
 $txt['shdp_frontpage_appear_always'] = 'Always as the front page';
