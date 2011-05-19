@@ -1143,7 +1143,7 @@ function shd_recalc_ids($ticket)
 */
 function shd_load_user_prefs($user = 0)
 {
-	global $modSettings, $smcFunc, $user_info, $txt;
+	global $modSettings, $smcFunc, $user_info, $txt, $sourcedir;
 	static $pref_groups = null, $base_prefs = null;
 
 	if ($pref_groups === null)
@@ -1160,6 +1160,10 @@ function shd_load_user_prefs($user = 0)
 			),
 			'blocks' => array(
 				'icon' => 'log.png',
+				'enabled' => true,
+			),
+			'block_order' => array(
+				'icon' => 'move_down.png',
 				'enabled' => true,
 			),
 		);
@@ -1302,7 +1306,90 @@ function shd_load_user_prefs($user = 0)
 				'permission' => 'shd_new_ticket',
 				'show' => !empty($modSettings['shd_notify_assign_own']),
 			),
+			'block_order_assigned_block' => array(
+				'default' => 'updated_asc',
+				'type' => 'select',
+				'icon' => 'assign.png',
+				'group' => 'block_order',
+				'permission' => 'shd_staff',
+				'show' => true,
+			),
+			'block_order_new_block' => array(
+				'default' => 'updated_asc',
+				'type' => 'select',
+				'icon' => 'status.png',
+				'group' => 'block_order',
+				'permission' => 'access_helpdesk',
+				'show' => true,
+			),
+			'block_order_staff_block' => array(
+				'default' => 'updated_asc',
+				'type' => 'select',
+				'icon' => 'staff.png',
+				'group' => 'block_order',
+				'permission' => 'access_helpdesk',
+				'show' => true,
+			),
+			'block_order_user_block' => array(
+				'default' => 'updated_asc',
+				'type' => 'select',
+				'icon' => 'user.png',
+				'group' => 'block_order',
+				'permission' => 'access_helpdesk',
+				'show' => true,
+			),
+			'block_order_closed_block' => array(
+				'default' => 'updated_desc',
+				'type' => 'select',
+				'icon' => 'resolved.png',
+				'group' => 'block_order',
+				'permission' => array('shd_view_closed_own', 'shd_view_closed_any'),
+				'show' => true,
+			),
+			'block_order_recycle_block' => array(
+				'default' => 'updated_desc',
+				'type' => 'select',
+				'icon' => 'recycle.png',
+				'group' => 'block_order',
+				'permission' => 'shd_access_recyclebin',
+				'show' => true,
+			),
+			'block_order_withdeleted_block' => array(
+				'default' => 'updated_desc',
+				'type' => 'select',
+				'icon' => 'recycle.png',
+				'group' => 'block_order',
+				'permission' => 'shd_access_recyclebin',
+				'show' => true,
+			),
 		);
+
+		// We want to add the preferences per block. Because we already know what options there are per block elsewhere, let's reuse that.
+		if (!function_exists('shd_get_block_columns'))
+			require_once($sourcedir . '/sd_source/SimpleDesk.php');
+		$blocks = array('assigned', 'new', 'staff', shd_allowed_to('shd_staff', 0) ? 'user_staff' : 'user_user', 'closed', 'recycled', 'withdeleted');
+		foreach ($blocks as $block)
+		{
+			$items = shd_get_block_columns($block);
+			if (empty($items))
+				continue;
+
+			if ($block == 'user_staff' || $block == 'user_user')
+				$block = 'user';
+			elseif ($block == 'recycled')
+				$block = 'recycle';
+			$block_id = 'block_order_' . $block . '_block';
+			$base_prefs[$block_id]['options'] = array();
+			foreach ($items as $item)
+			{
+				if ($item != 'actions')
+				{
+					$item = str_replace(array('_', 'startinguser'), array('', 'starter'), $item);
+					$base_prefs[$block_id]['options'][$item . '_asc'] = 'shd_pref_block_order_' . $item . '_asc';
+					$base_prefs[$block_id]['options'][$item . '_desc'] = 'shd_pref_block_order_' . $item . '_desc';
+				}
+			}
+		}
 
 		// Now engage any hooks.
 		call_integration_hook('shd_hook_prefs', array(&$pref_groups, &$base_prefs));

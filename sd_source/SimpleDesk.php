@@ -796,7 +796,7 @@ function shd_helpdesk_listing()
 
 	foreach ($context['ticket_blocks'] as $block_key => $block)
 	{
-		$sort = isset($_REQUEST['so_' . $block_key]) ? $_REQUEST['so_' . $block_key] : '';
+		$sort = isset($_REQUEST['so_' . $block_key]) ? $_REQUEST['so_' . $block_key] : (!empty($context['shd_preferences']['block_order_' . $block_key . '_block']) ? $context['shd_preferences']['block_order_' . $block_key . '_block'] : '');
 
 		if (strpos($sort, '_') > 0 && substr_count($sort, '_') == 1)
 		{

@@ -103,6 +103,37 @@ $txt['shd_pref_blocks_closed_count'] = 'Number of tickets per page in the "Close
 $txt['shd_pref_blocks_recycle_count'] = 'Number of tickets per page in the "Recycled Tickets" block';
 $txt['shd_pref_blocks_withdeleted_count'] = 'Number of tickets per page in the "Tickets with Deleted Replies" block';
 
+// Preferences: block ordering
+$txt['shd_pref_group_block_order'] = 'Ordering tickets within blocks';
+$txt['shd_pref_block_order_assigned_block'] = 'Normal ordering in the "Assigned to Me" block';
+$txt['shd_pref_block_order_new_block'] = 'Normal ordering of tickets in the "New Tickets" block';
+$txt['shd_pref_block_order_staff_block'] = 'Normal ordering of tickets in the "Tickets Awaiting Staff Response" block';
+$txt['shd_pref_block_order_user_block'] = 'Normal ordering of tickets in the "Tickets Awaiting User Response" block';
+$txt['shd_pref_block_order_closed_block'] = 'Normal ordering of tickets in the "Closed Tickets" block';
+$txt['shd_pref_block_order_recycle_block'] = 'Normal ordering of tickets in the "Recycled Tickets" block';
+$txt['shd_pref_block_order_withdeleted_block'] = 'Normal ordering of tickets in the "Tickets with Deleted Replies" block';
+
+$txt['shd_pref_block_order_ticketid_asc'] = 'Ticket number - lowest first';
+$txt['shd_pref_block_order_ticketid_desc'] = 'Ticket number - highest first';
+$txt['shd_pref_block_order_ticketname_asc'] = 'Ticket name - alphabetic A-Z';
+$txt['shd_pref_block_order_ticketname_desc'] = 'Ticket name - alphabetic Z-A';
+$txt['shd_pref_block_order_replies_asc'] = 'Replies - least first';
+$txt['shd_pref_block_order_replies_desc'] = 'Replies - most first';
+$txt['shd_pref_block_order_allreplies_asc'] = 'Replies (incl. deleted) - least first';
+$txt['shd_pref_block_order_allreplies_desc'] = 'Replies (incl. deleted) - most first';
+$txt['shd_pref_block_order_urgency_asc'] = 'Urgency - lowest first';
+$txt['shd_pref_block_order_urgency_desc'] = 'Urgency - highest first';
+$txt['shd_pref_block_order_updated_asc'] = 'Last updated - earliest first';
+$txt['shd_pref_block_order_updated_desc'] = 'Last updated - latest first';
+$txt['shd_pref_block_order_assigned_asc'] = 'Assigned - by name, unassigned then A-Z';
+$txt['shd_pref_block_order_assigned_desc'] = 'Assigned - by name, Z-A then unassigned';
+$txt['shd_pref_block_order_status_asc'] = 'Ticket status - new first';
+$txt['shd_pref_block_order_status_desc'] = 'Ticket status - pending first';
+$txt['shd_pref_block_order_starter_asc'] = 'Ticket starter - alphabetic A-Z';
+$txt['shd_pref_block_order_starter_desc'] = 'Ticket starter - alphabetic Z-A';
+$txt['shd_pref_block_order_lastreply_asc'] = 'Last reply - earliest first';
+$txt['shd_pref_block_order_lastreply_desc'] = 'Last reply - latest first';
+
 // Preferences: email notifications
 $txt['shd_pref_group_notify'] = 'Notifications By Email';
 $txt['shd_pref_notify_new_ticket'] = 'Email me when a new ticket is posted';
