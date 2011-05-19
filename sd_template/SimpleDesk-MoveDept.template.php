@@ -44,7 +44,7 @@ function template_movedept()
 						<strong>', $txt['shd_current_dept'], ':</strong>
 					</dt>
 					<dd>
-						<a href="', $scripturl, '?action=helpdesk;sa=main;dept=', $context['current_dept'], '">', $context['current_dept_name'], '</a>
+						<a href="', $scripturl, '?', $context['shd_home'], ';dept=', $context['current_dept'], '">', $context['current_dept_name'], '</a>
 					</dd>
 					<dt>
 						<strong>', $txt['shd_ticket_move_to'], ':</strong>

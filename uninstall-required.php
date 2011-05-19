@@ -109,6 +109,7 @@ $smcFunc['db_query']('', '
 );
 
 // 4. Forcing all SD plugin hooks to be disabled.
+
 $shd_hooks = array(
 	// Plugin related: general
 	'shd_enabled_plugins',
@@ -133,6 +134,8 @@ $shd_hooks = array(
 	'shd_hook_assign',
 	'shd_hook_buffer',
 	'shd_hook_after_main',
+	'shd_hook_boardindex_before',
+	'shd_hook_boardindex_after',
 	// Plugin: menu hooks
 	'shd_hook_mainmenu',
 	'shd_hook_profilemenu',

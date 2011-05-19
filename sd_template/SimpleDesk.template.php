@@ -143,7 +143,7 @@ function template_shd_depts()
 		echo '
 								<tr class="windowbg2">
 									<td class="icon windowbg"><img src="', $icon, '" alt="*" /></td>
-									<td class="info"><a href="', $scripturl, '?action=helpdesk;sa=main;dept=', $dept['id_dept'], '">', $dept['dept_name'], '</a></td>
+									<td class="info"><a href="', $scripturl, '?', $context['shd_home'], ';dept=', $dept['id_dept'], '">', $dept['dept_name'], '</a></td>
 									<td class="stats windowbg">', $dept['tickets']['open'], ' open<br />', $dept['tickets']['closed'], ' closed</td>
 									<td class="lastpost"></td>
 								</tr>';

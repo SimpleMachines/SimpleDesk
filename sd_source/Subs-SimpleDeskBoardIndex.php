@@ -36,6 +36,8 @@ function shd_add_to_boardindex(&$boardIndexOptions, &$categories)
 	if (!empty($board))
 		return;
 
+	call_integration_hook('shd_hook_boardindex_before');
+
 	// OK, so what helpdesks are we displaying?
 	$depts = shd_allowed_to('access_helpdesk', false);
 	if (empty($depts))
@@ -180,11 +182,12 @@ function shd_add_to_boardindex(&$boardIndexOptions, &$categories)
 
 	// Call the relevant function via hook.
 	add_integration_function('shd_hook_buffer', 'shd_buffer_boardindex', false);
+	call_integration_hook('shd_hook_boardindex_after', array(&$categories));
 }
 
 function shd_dept_board($dept)
 {
-	global $txt, $scripturl;
+	global $txt, $scripturl, $context;
 
 	return array(
 		'id' => 'shd' . $dept['id_dept'],
@@ -199,8 +202,8 @@ function shd_dept_board($dept)
 		'unapproved_topics' => 0,
 		'unapproved_posts' => 0,
 		'can_approve_posts' => false,
-		'href' => $scripturl . '?action=helpdesk;sa=main' . $dept['link'],
-		'link' => '<a href="' . $scripturl . '?action=helpdesk;sa=main' . $dept['link'] . '">' . $dept['dept_name'] . '</a>',
+		'href' => $scripturl . '?' . $context['shd_home'] . $dept['link'],
+		'link' => '<a href="' . $scripturl . '?' . $context['shd_home'] . $dept['link'] . '">' . $dept['dept_name'] . '</a>',
 		'last_post' => array(
 			'id' => 0,
 			'time' => $txt['not_applicable'],

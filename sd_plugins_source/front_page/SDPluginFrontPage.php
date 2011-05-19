@@ -179,6 +179,9 @@ function shd_frontpage_source()
 {
 	global $context, $txt, $modSettings;
 
+	if (!in_array('front_page', $context['shd_plugins']))
+		return;
+
 	loadTemplate('sd_plugins_template/SDPluginFrontPage');
 	$context['sub_template'] = 'shd_frontpage';
 	$context['page_title'] = $txt['shd_helpdesk'];
@@ -248,6 +251,12 @@ function shd_frontpage_mainmenu(&$menu_buttons)
 		elseif (!empty($modSettings['shd_helpdesk_only']))
 			$menu_buttons['home']['href'] = $scripturl . '?action=helpdesk;sa=tickets';
 	}
+}
+
+function shd_frontpage_boardindex()
+{
+	global $context;
+	$context['shd_home'] = 'action=helpdesk;sa=tickets';
 }
 
 ?>

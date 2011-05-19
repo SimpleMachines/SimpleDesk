@@ -184,6 +184,7 @@ function shd_load_action_log_entries($start = 0, $items_per_page = 10, $sort = '
 			$actions[$k]['action_text'] = isset($txt['shd_log_' . $action['action']]) ? $txt['shd_log_' . $action['action']] : $action['action'];
 
 		$actions[$k]['action_text'] = str_replace('{scripturl}', $scripturl, $actions[$k]['action_text']);
+		$actions[$k]['action_text'] = str_replace('{shd_home}', $context['shd_home'], $actions[$k]['action_text']);
 
 		if (isset($action['extra']['subject']))
 		{

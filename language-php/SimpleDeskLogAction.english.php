@@ -117,7 +117,7 @@ $txt['shd_log_editticket'] = '&quot;<a href="{scripturl}?action=helpdesk;sa=tick
 $txt['shd_log_newreply'] = '<a href="{scripturl}?action=helpdesk;sa=ticket;ticket={ticket}.msg{msg}#msg{msg}">New reply</a> to &quot;<a href="{scripturl}?action=helpdesk;sa=ticket;ticket={ticket}.0">{subject}</a>&quot;.';
 $txt['shd_log_editreply'] = 'A <a href="{scripturl}?action=helpdesk;sa=ticket;ticket={ticket}.msg{msg}#msg{msg}">reply</a> was edited in &quot;<a href="{scripturl}?action=helpdesk;sa=ticket;ticket={ticket}.0">{subject}</a>&quot;.';
 $txt['shd_log_newticketproxy'] = '&quot;<a href="{scripturl}?action=helpdesk;sa=ticket;ticket={ticket}">{subject}</a>&quot; opened on behalf of {profile_link}.';
-$txt['shd_log_move_dept'] = '&quot;<a href="{scripturl}?action=helpdesk;sa=ticket;ticket={ticket}">{subject}</a>&quot; was moved from <a href="{scripturl}?action=helpdesk;sa=main;dept={old_dept_id}">{old_dept_name}</a> to <a href="{scripturl}?action=helpdesk;sa=main;dept={new_dept_id}">{new_dept_name}</a>.';
+$txt['shd_log_move_dept'] = '&quot;<a href="{scripturl}?action=helpdesk;sa=ticket;ticket={ticket}">{subject}</a>&quot; was moved from <a href="{scripturl}?{shd_home};dept={old_dept_id}">{old_dept_name}</a> to <a href="{scripturl}?{shd_home};dept={new_dept_id}">{new_dept_name}</a>.';
 
 $txt['shd_logpart_att_added'] = 'Files added';
 $txt['shd_logpart_att_removed'] = 'Files removed';

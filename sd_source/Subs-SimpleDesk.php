@@ -48,6 +48,7 @@ function shd_init()
 		return;
 
 	$called = true;
+	$context['shd_home'] = 'action=helpdesk;sa=main';
 
 	// What SD version are we on? It's now here!
 	define('SHD_VERSION', 'SimpleDesk 2.0 Anatidae');

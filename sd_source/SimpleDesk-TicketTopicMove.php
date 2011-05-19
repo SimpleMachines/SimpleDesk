@@ -959,7 +959,7 @@ function shd_topictoticket()
 
 	// Build the linktree
 	$context['linktree'][] = array(
-		'url' => $scripturl . '?action=helpdesk;sa=main',
+		'url' => $scripturl . '?' . $context['shd_home'],
 		'name' => $txt['shd_linktree_move_topic'],
 	);
 	$context['linktree'][] = array(
