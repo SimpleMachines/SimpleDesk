@@ -73,7 +73,10 @@ function shd_frontpage_helpdesk(&$subactions)
 
 function shd_frontpage_options($return_config)
 {
-	global $context, $modSettings, $txt, $sourcedir;
+	global $context, $modSettings, $txt, $sourcedir, $smcFunc;
+
+	// Since this is potentially dangerous, real admins only, thanks.
+	isAllowedTo('admin_forum');
 
 	$config_vars = array(
 		array('select', 'shdp_frontpage_appear', array('always' => $txt['shdp_frontpage_appear_always'], 'firstload' => $txt['shdp_frontpage_appear_firstload'])),
@@ -95,16 +98,20 @@ function shd_frontpage_options($return_config)
 		$context['shdp_frontpage_content'] = !empty($modSettings['shdp_frontpage_content']) ? un_preparsecode($modSettings['shdp_frontpage_content']) : '';
 		if (isset($_GET['save']))
 		{
-			if (!empty($_REQUEST['shdp_frontpage_content_mode']) && isset($_REQUEST['shdp_frontpage_content']))
+			$_POST['shdp_frontpage_content'] = isset($_POST['shdp_frontpage_content']) ? $_POST['shdp_frontpage_content'] : '';
+			if (!empty($_POST['shdp_frontpage_type']) && $_POST['shdp_frontpage_type'] == 'php')
 			{
-				$_REQUEST['shdp_frontpage_content'] = un_htmlspecialchars(html_to_bbc($_REQUEST['shdp_frontpage_content']));
-				$_POST['shdp_frontpage_content'] = $_REQUEST['shdp_frontpage_content'];
+				$context['shdp_frontpage_content'] = $smcFunc['htmlspecialchars']($_POST['shdp_frontpage_content'], ENT_QUOTES);
+			}
+			else
+			{
 				$_POST['shdp_frontpage_content'] = $smcFunc['htmlspecialchars']($_POST['shdp_frontpage_content'], ENT_QUOTES);
 				preparsecode($_POST['shdp_frontpage_content']);
 				$context['shdp_frontpage_content'] = un_preparsecode($_POST['shdp_frontpage_content']); // So it's a known safe version.
 			}
 		}
 
+		$modSettings['disable_wysiwyg'] = true;
 		$editorOptions = array(
 			'id' => 'shdp_frontpage_content',
 			'value' => $context['shdp_frontpage_content'],
@@ -130,7 +137,8 @@ function shd_frontpage_adminmenu(&$admin_areas)
 	if (!in_array('front_page', $context['shd_plugins']))
 		return;
 
-	$admin_areas['helpdesk_info']['areas']['helpdesk_options']['subsections']['frontpage'] = array($txt['shdp_frontpage']);
+	if (allowedTo('admin_forum'))
+		$admin_areas['helpdesk_info']['areas']['helpdesk_options']['subsections']['frontpage'] = array($txt['shdp_frontpage']);
 }
 
 function shd_frontpage_hdadminopts()
