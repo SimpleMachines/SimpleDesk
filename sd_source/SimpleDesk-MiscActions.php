@@ -128,12 +128,10 @@ function shd_ticket_resolve()
 
 		shd_db_query('', '
 			UPDATE {db_prefix}helpdesk_tickets
-			SET status = {int:status},
-				id_member_assigned = {int:unassigned}
+			SET status = {int:status}
 			WHERE id_ticket = {int:ticket}',
 			array(
 				'status' => $new,
-				'unassigned' => 0,
 				'ticket' => $context['ticket_id'],
 			)
 		);
