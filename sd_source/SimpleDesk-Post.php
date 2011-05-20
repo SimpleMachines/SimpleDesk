@@ -1299,7 +1299,13 @@ function shd_done_posting()
 		if (empty($_REQUEST['goback']))
 			redirectexit($context['shd_home'] . $context['shd_dept_link']);
 		elseif (!empty($context['ticket_form']['msg']))
-			redirectexit('action=helpdesk;sa=ticket;ticket=' . $context['ticket_id'] . '.msg' . $context['ticket_form']['msg'] . '#msg' . $context['ticket_form']['msg'], $context['browser']['is_ie']);
+		{
+			// IE prior to 9 has issues with the ; in the URL and preserving the # fragment, so we give it & instead.
+			if ($context['browser']['is_ie'])
+				redirectexit('action=helpdesk&sa=ticket&ticket=' . $context['ticket_id'] . '.msg' . $context['ticket_form']['msg'] . '#msg' . $context['ticket_form']['msg'], true);
+			else
+				redirectexit('action=helpdesk;sa=ticket;ticket=' . $context['ticket_id'] . '.msg' . $context['ticket_form']['msg'] . '#msg' . $context['ticket_form']['msg'], false);
+		}
 		else
 			redirectexit('action=helpdesk;sa=ticket;ticket=' . $context['ticket_id']);
 	}
