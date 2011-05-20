@@ -123,6 +123,12 @@ function shd_init()
 
 	$modSettings['helpdesk_active'] = isset($modSettings['admin_features']) ? in_array('shd', explode(',', $modSettings['admin_features'])) : false;
 
+	if ($modSettings['helpdesk_active'])
+	{
+		shd_load_plugin_files('init');
+		shd_load_plugin_langfiles('init');
+	}
+
 	shd_load_user_perms();
 
 	if (!empty($modSettings['shd_maintenance_mode']))
@@ -148,12 +154,9 @@ function shd_init()
 			$modSettings['helpdesk_active'] &= ($user_info['is_admin'] || shd_allowed_to('admin_helpdesk', 0));
 	}
 
-	// Call for any init level hooks and last minute stuff
+	// Last minute stuff
 	if ($modSettings['helpdesk_active'])
 	{
-		shd_load_plugin_files('init');
-		shd_load_plugin_langfiles('init');
-
 		// Are they actually going into the helpdesk? If they are, do we need to deal with their theme?
 		if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'helpdesk')
 		{
