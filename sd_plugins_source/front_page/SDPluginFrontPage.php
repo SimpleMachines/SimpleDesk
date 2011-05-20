@@ -70,6 +70,7 @@ function shd_frontpage_helpdesk(&$subactions)
 			);
 		}
 	}
+	$context['navigation']['back']['url'] = $scripturl . '?' . $context['shd_home'] . $context['shd_dept_link'];
 
 	// Now, fix the actions
 	$subactions['main'] = array(null, 'shd_frontpage_source');
