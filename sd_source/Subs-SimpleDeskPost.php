@@ -919,8 +919,13 @@ function shd_validate_custom_fields($scope, $dept)
 					// Ordinarily we'd use PHP internally to do this and just cast it. But prior to 5.2.17 / 5.3.5 on x86 builds... it can hang PHP.
 					if (empty($value) && $field['is_required'])
 						$missing_fields[$field_id] = $field['name'];
-					elseif (!empty($value) && !preg_match('~^[-+]?\d+(\.\d{0,10}([eE][-+]?\d{1,2})?)?$~', $value))
+					elseif (!empty($value) && !preg_match('~^[-+]?\d*(\.\d{0,10}([eE][-+]?\d{1,2})?)?$~', $value))
 						$invalid_fields[$field_id] = $field['name'];
+					// If we're here, it's valid. But we need to make sure there's a leading zero because we're nice like that. Or one after a leading -, that's cool too.
+					elseif (strpos($value, '.') === 0)
+						$value = '0' . $value;
+					elseif (strpos($value, '-.') === 0)
+						$value = str_replace('-.', '-0.', $value);
 					break;
 				case CFIELD_TYPE_SELECT:
 				case CFIELD_TYPE_RADIO:
