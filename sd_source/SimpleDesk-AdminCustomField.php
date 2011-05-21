@@ -304,7 +304,11 @@ function shd_admin_custom_save()
 	$_POST['field_type'] == isset($_POST['field_type']) ? (int) $_POST['field_type'] : 0;
 
 	$_POST['active'] = isset($_POST['active']) ? 1 : 0;
-	$_POST['field_length'] = isset($_POST['field_length']) ? (int) $_POST['field_length'] : 255;
+	$_POST['field_length'] = isset($_POST['field_length']) ? (int) $_POST['field_length'] : 0;
+	if ($_POST['field_length'] < 0)
+		$_POST['field_length'] = 0;
+	elseif ($_POST['field_length'] > 32000)
+		$_POST['field_length'] = 32000;
 	$_POST['default_check'] = isset($_POST['default_check']) && $_POST['field_type'] == CFIELD_TYPE_CHECKBOX ? 1 : '';
 
 	if ($_POST['field_type'] == CFIELD_TYPE_LARGETEXT)
