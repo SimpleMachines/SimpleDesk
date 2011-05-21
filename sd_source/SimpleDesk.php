@@ -870,6 +870,37 @@ function shd_helpdesk_listing()
 
 		$context['ticket_blocks'][$block_key]['tickets'] = array();
 
+		// If we're filtering, we have to query it first to figure out how many rows there are in this block. It's not pretty.
+		if (!empty($context['filter_join']))
+		{
+			$query = shd_db_query('', '
+				SELECT COUNT(hdt.id_ticket)
+				FROM {db_prefix}helpdesk_tickets AS hdt
+					INNER JOIN {db_prefix}helpdesk_ticket_replies AS hdtr_first ON (hdt.id_first_msg = hdtr_first.id_msg)
+					INNER JOIN {db_prefix}helpdesk_ticket_replies AS hdtr_last ON (hdt.id_last_msg = hdtr_last.id_msg)
+					INNER JOIN {db_prefix}helpdesk_depts AS hdd ON (hdt.id_dept = hdd.id_dept)
+					' . (!empty($block['sort']['sql']['join']) ? $block['sort']['sql']['join'] : '') . $context['filter_join'] . '
+				WHERE {query_see_ticket}' . (!empty($block['where']) ? ' AND ' . $block['where'] : '') . (!empty($context['shd_department']) ? ' AND hdt.id_dept = {int:dept}' : '') . $context['filter_where'],
+				array(
+					'dept' => $context['shd_department'],
+					'user' => $context['user']['id'],
+					'field' => $_REQUEST['field'],
+					'filter' => $_REQUEST['filter'],
+					'type_ticket' => CFIELD_TICKET,
+					'active' => 1,
+				)
+			);
+			list($context['ticket_blocks'][$block_key]['count']) = $smcFunc['db_fetch_row']($query);
+			$block['count'] = $context['ticket_blocks'][$block_key]['count'];
+			$smcFunc['db_free_result']($query);
+
+			if ($block['start'] >= $block['count'])
+			{
+				$context['ticket_blocks'][$block_key]['start'] = max(0, (int) $block['count'] - (((int) $block['count'] % (int) $block['num_per_page']) == 0 ? $block['num_per_page'] : ((int) $block['count'] % (int) $block['num_per_page'])));
+				$block['start'] = $context['ticket_blocks'][$block_key]['start'];
+			}
+		}
+
 		$query = shd_db_query('', '
 			SELECT hdt.id_ticket, hdt.id_dept, hdd.dept_name, hdt.id_last_msg, hdt.id_member_started, hdt.id_member_updated,
 				hdt.id_member_assigned, hdt.subject, hdt.status, hdt.num_replies, hdt.deleted_replies, hdt.private, hdt.urgency,
