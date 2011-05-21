@@ -82,6 +82,28 @@ function template_shd_profile_preferences()
 						</h3>
 					</div>
 				</div>
+				<script type="text/javascript"><!-- // --><![CDATA[
+				function shd_toggleblock(block)
+				{
+					var collapsed = (document.getElementById("prefheader_" + block).getAttribute("class") == "cat_bar");
+					if (collapsed)
+					{
+						document.getElementById("prefheader_" + block).setAttribute("class", "cat_bar grid_header");
+						document.getElementById("prefgroup_" + block).style.display = "";
+						document.getElementById("preffooter_" + block).style.display = "";
+						document.getElementById("prefexpandicon_" + block).src = ', JavaScriptEscape($settings['images_url'] . '/collapse.gif'), ';
+					}
+					else
+					{
+						document.getElementById("prefheader_" + block).setAttribute("class", "cat_bar");
+						document.getElementById("prefgroup_" + block).style.display = "none";
+						document.getElementById("preffooter_" + block).style.display = "none";
+						document.getElementById("prefexpandicon_" + block).src = ', JavaScriptEscape($settings['images_url'] . '/expand.gif'), ';
+					}
+					return false;
+				}
+
+				// ]', ']></script>
 				<form action="', $scripturl, '?action=profile;area=hd_prefs;u=', $context['member']['id'], ';save" method="post">';
 
 	$display_save = false;
@@ -96,13 +118,18 @@ function template_shd_profile_preferences()
 		echo '
 						<br />
 						<div class="tborder">
-							<div class="cat_bar grid_header">
+							<div class="cat_bar" id="prefheader_', $group, '">
 								<h3 class="catbg">
+									<span class="floatright">
+										<a class="permcollapse" href="#" onclick="shd_toggleblock(\'', $group, '\');">
+											<img src="', $settings['images_url'], '/expand.gif" id="prefexpandicon_', $group, '" />
+										</a>
+									</span>
 									<img src="', shd_image_url($details['icon']), '" class="icon" alt="*" />
 									', $txt['shd_pref_group_' . $group], '
 								</h3>
 							</div>
-							<div class="roundframe">
+							<div class="roundframe" id="prefgroup_', $group, '" style="display:none;">
 								<div class="content">
 									<dl class="permsettings">';
 
@@ -156,7 +183,7 @@ function template_shd_profile_preferences()
 		echo '
 								</div>
 							</div>
-							<span class="lowerframe"><span></span></span>
+							<span class="lowerframe" id="preffooter_', $group, '" style="display:none;"><span></span></span>
 						</div>';
 	}
 

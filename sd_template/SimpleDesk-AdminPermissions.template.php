@@ -308,6 +308,7 @@ function template_shd_edit_role()
 						document.getElementById("permfooter_" + block).style.display = "none";
 						document.getElementById("permexpandicon_" + block).src = ', JavaScriptEscape($settings['images_url'] . '/expand.gif'), ';
 					}
+					return false;
 				}
 
 				// ]', ']></script>
@@ -356,7 +357,7 @@ function template_shd_edit_role()
 						<div class="cat_bar" id="permheader_', $rowitem, '">
 							<h3 class="catbg">
 								<span class="floatright">
-									<a class="permcollapse" href="javascript:shd_toggleblock(\'', $rowitem, '\');">
+									<a class="permcollapse" href="#" onclick="shd_toggleblock(\'', $rowitem, '\');">
 										<img src="', $settings['images_url'], '/expand.gif" id="permexpandicon_', $rowitem, '" />
 									</a>
 								</span>
