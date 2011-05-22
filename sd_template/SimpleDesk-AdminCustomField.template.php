@@ -320,8 +320,8 @@ function template_shd_custom_field_edit()
 	echo '
 									</select>
 								</dd>
-								<dt id="max_length_dt"', in_array($context['field_type_value'], array(CFIELD_TYPE_TEXT, CFIELD_TYPE_LARGETEXT, CFIELD_TYPE_INT, CFIELD_TYPE_FLOAT)) ? '' : ' style="display: none;"','><strong>', $txt['shd_admin_custom_field_maxlength'], ':</strong><br /><span class="smalltext">', $txt['shd_admin_custom_field_maxlength_desc'], '</span></dt>
-								<dd id="max_length_dd"', in_array($context['field_type_value'], array(CFIELD_TYPE_TEXT, CFIELD_TYPE_LARGETEXT, CFIELD_TYPE_INT, CFIELD_TYPE_FLOAT)) ? '' : ' style="display: none;"','>
+								<dt id="max_length_dt"', in_array($context['field_type_value'], array(CFIELD_TYPE_TEXT, CFIELD_TYPE_LARGETEXT)) ? '' : ' style="display: none;"','><strong>', $txt['shd_admin_custom_field_maxlength'], ':</strong><br /><span class="smalltext">', $txt['shd_admin_custom_field_maxlength_desc'], '</span></dt>
+								<dd id="max_length_dd"', in_array($context['field_type_value'], array(CFIELD_TYPE_TEXT, CFIELD_TYPE_LARGETEXT)) ? '' : ' style="display: none;"','>
 									<input type="text" value="', isset($context['custom_field']['field_length']) ? $context['custom_field']['field_length'] : 255, '" size="7" maxlength="6" name="field_length" id="cf_field_length" />
 								</dd>
 								<dt id="dimension_dt"', $context['field_type_value'] == CFIELD_TYPE_LARGETEXT ? '' : ' style="display: none;"','>
