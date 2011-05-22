@@ -100,7 +100,6 @@ function template_shd_profile_preferences()
 						document.getElementById("preffooter_" + block).style.display = "none";
 						document.getElementById("prefexpandicon_" + block).src = ', JavaScriptEscape($settings['images_url'] . '/expand.gif'), ';
 					}
-					return false;
 				}
 
 				// ]', ']></script>
@@ -121,12 +120,12 @@ function template_shd_profile_preferences()
 							<div class="cat_bar" id="prefheader_', $group, '">
 								<h3 class="catbg">
 									<span class="floatright">
-										<a class="permcollapse" href="#" onclick="shd_toggleblock(\'', $group, '\');">
+										<a class="permcollapse" href="#" onclick="shd_toggleblock(\'', $group, '\'); return false;">
 											<img src="', $settings['images_url'], '/expand.gif" id="prefexpandicon_', $group, '" />
 										</a>
 									</span>
 									<img src="', shd_image_url($details['icon']), '" class="icon" alt="*" />
-									', $txt['shd_pref_group_' . $group], '
+									<a class="prefcollapse" href="#" onclick="shd_toggleblock(\'', $group, '\'); return false;">', $txt['shd_pref_group_' . $group], '</a>
 								</h3>
 							</div>
 							<div class="roundframe" id="prefgroup_', $group, '" style="display:none;">
