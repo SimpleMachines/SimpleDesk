@@ -235,7 +235,7 @@ function template_shd_admin()
 					<div class="windowbg" id="update_container">
 						<div class="content" id="update_content">
 							<p id="update_critical_alert" class="alert" style="display: none;">!!</p>
-							<h3 id="update_critical_title" style="display: none;">%criticaltitle%</h3>
+							<h3 id="update_critical_title" class="alert" style="display: none;">%criticaltitle%</h3>
 							<div id="update_message" class="smalltext">
 								<p>
 									%message%
