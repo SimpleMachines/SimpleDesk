@@ -56,6 +56,6 @@ $txt['template_log_notify_assign_me'] = 'Assigned to';
 
 $txt['template_subject_notify_assign_own'] = 'Helpdesk ticket assigned: {subject}';
 $txt['template_body_notify_assign_own'] = 'Your helpdesk ticket, "{subject}", has been assigned to a member of staff to be dealt with.' . "\n\n" . 'You can access your ticket here:' . "\n" . '{ticketlink}';
-$txt['template_log_notify_assign_own'] = 'Assigned to self';
+$txt['template_log_notify_assign_own'] = 'Assigned to staff';
 
 ?>
