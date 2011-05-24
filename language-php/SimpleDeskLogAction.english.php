@@ -124,6 +124,7 @@ $txt['shd_logpart_att_removed'] = 'Files removed';
 
 $txt['shd_log_autoclose'] = '&quot;<a href="{scripturl}?action=helpdesk;sa=ticket;ticket={ticket}">{subject}</a>&quot; marked as <strong>resolved</strong> due to inactivity.';
 
+//! @name Notifications and monitoring, there's a lot of them.
 $txt['shd_log_notify'] = 'Sent email notification regarding &quot;<a href="{scripturl}?action=helpdesk;sa=ticket;ticket={ticket}">{subject}</a>&quot;. ';
 $txt['shd_log_notify_to'] = 'Message sent to: ';
 $txt['shd_log_notify_hiddenemail'] = '%1$d other email addresses';
@@ -133,5 +134,7 @@ $txt['shd_log_notify_email'] = 'email';
 $txt['shd_log_notifications'] = 'Notifications';
 $txt['shd_log_unknown_user_1'] = '1 former user';
 $txt['shd_log_unknown_user_n'] = '%1$d former users';
+$txt['shd_log_monitor'] = 'Added &quot;<a href="{scripturl}?action=helpdesk;sa=ticket;ticket={ticket}">{subject}</a>&quot; to their monitor list.';
+$txt['shd_log_unmonitor'] = 'Removed &quot;<a href="{scripturl}?action=helpdesk;sa=ticket;ticket={ticket}">{subject}</a>&quot; from their monitor list.';
 //@}
 ?>

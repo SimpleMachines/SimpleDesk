@@ -76,6 +76,7 @@ function shd_load_all_permission_sets()
 		'shd_alter_urgency_higher' => array(true, 'ticketactions', 'log_urgency_increase.png'),
 		'shd_alter_privacy' => array(true, 'ticketactions', 'log_markprivate.png'),
 		'shd_assign_ticket' => array(true, 'ticketactions', 'log_assign.png'),
+		'shd_monitor_ticket' => array(true, 'ticketactions', 'log_notify.png'),
 
 		'shd_view_attachment' => array(false, 'attachments', 'attachments.png'),
 		'shd_post_attachment' => array(false, 'attachments', 'attachments_add.png'),
@@ -163,6 +164,7 @@ function shd_load_role_templates()
 				'shd_reply_ticket_any' => ROLEPERM_ALLOW,
 				'shd_edit_reply_any' => ROLEPERM_ALLOW,
 				'shd_post_proxy' => ROLEPERM_ALLOW,
+				'shd_monitor_ticket_any' => ROLEPERM_ALLOW,
 				'shd_view_attachment' => ROLEPERM_ALLOW,
 				'shd_post_attachment' => ROLEPERM_ALLOW,
 				'shd_resolve_ticket_any' => ROLEPERM_ALLOW,
@@ -204,6 +206,7 @@ function shd_load_role_templates()
 				'shd_edit_reply_any' => ROLEPERM_ALLOW,
 				'shd_post_proxy' => ROLEPERM_ALLOW,
 				'shd_override_cf' => ROLEPERM_ALLOW,
+				'shd_monitor_ticket_any' => ROLEPERM_ALLOW,
 				'shd_view_attachment' => ROLEPERM_ALLOW,
 				'shd_post_attachment' => ROLEPERM_ALLOW,
 				'shd_delete_attachment' => ROLEPERM_ALLOW,

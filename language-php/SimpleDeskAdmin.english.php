@@ -199,6 +199,7 @@ $txt['shd_logopt_permadelete'] = 'Log tickets and replies being permadeleted';
 $txt['shd_logopt_relationships'] = 'Log any changes in ticket relationships';
 $txt['shd_logopt_autoclose'] = 'Log tickets closed automatically by the helpdesk';
 $txt['shd_logopt_move_dept'] = 'Log tickets being moved between two departments';
+$txt['shd_logopt_monitor'] = 'Log tickets being added to their monitor lists';
 
 $txt['shd_notify_send_to'] = 'Will be sent to';
 $txt['shd_notify_ticket_starter'] = 'the user who started the ticket (if set in their preferences)';

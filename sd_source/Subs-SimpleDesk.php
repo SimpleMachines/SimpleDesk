@@ -384,7 +384,7 @@ function shd_clear_active_tickets($dept = 0)
  *	@see shd_load_action_log_entries()
  *	@since 1.0
 */
-function shd_log_action($action, $params)
+function shd_log_action($action, $params, $do_last_update = true)
 {
 	global $smcFunc, $context, $user_info, $modSettings;
 	static $last_cache;
@@ -392,7 +392,7 @@ function shd_log_action($action, $params)
 	// Before we go any further, we use this function to globally update tickets' last updated time (since every ticket action should potentially
 	// be logged) - but we don't do the query *every* time if we don't need to. Allows a two second leeway.
 
-	if (isset($params['ticket']) && ((int) $params['ticket'] != 0) && (empty($last_cache[$params['ticket']]) || $last_cache[$params['ticket']] < time() - 2))
+	if ($do_last_update && isset($params['ticket']) && ((int) $params['ticket'] != 0) && (empty($last_cache[$params['ticket']]) || $last_cache[$params['ticket']] < time() - 2))
 	{
 		$last_cache[$params['ticket']] = time();
 		$smcFunc['db_query']('', '
@@ -458,6 +458,8 @@ function shd_log_action($action, $params)
 		'cf_rplchgdef_useradmin' => 'shd_logopt_cfchanges',
 		'cf_rplchgdef_userstaffadmin' => 'shd_logopt_cfchanges',
 		'move_dept' => 'shd_logopt_move_dept',
+		'monitor' => 'shd_logopt_monitor',
+		'unmonitor' => 'shd_logopt_monitor',
 	);
 
 	if (empty($logopt[$action]) || empty($modSettings[$logopt[$action]]))

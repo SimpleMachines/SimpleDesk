@@ -544,6 +544,7 @@ function shd_modify_standalone_options($return_config)
  *	<li>'shd_logopt_permadelete' (checkbox) - if checked, permadeletes will be logged.</li>
  *	<li>'shd_logopt_relationships' (checkbox) - if checked, ticket relationship changes will be logged.</li>
  *	<li>'shd_logopt_move_dept' (checkbox) - if checked, ticket moves between departments will be logged.</li>
+ *	<li>'shd_logopt_monitor' (checkbox) - if checked, users adding/removing tickets to/from their monitor lists will be logged.</li>
  *	</ul>
  *
  *	@param bool $return_config Whether to return configuration items or not; this is provided solely for SMF ACP compatibility (it expects to pass bool true in to get a list of options)
@@ -579,8 +580,11 @@ function shd_modify_actionlog_options($return_config)
 		array('check', 'shd_logopt_restore', 'disabled' => !empty($modSettings['shd_disable_action_log'])),
 		array('check', 'shd_logopt_permadelete', 'disabled' => !empty($modSettings['shd_disable_action_log'])),
 		array('check', 'shd_logopt_relationships', 'disabled' => (!empty($modSettings['shd_disable_action_log']) || !empty($modSettings['shd_disable_relationships']))),
+		array('checkall', 'shd_logopt_3', array('shd_logopt_delete', 'shd_logopt_restore', 'shd_logopt_permadelete', 'shd_logopt_relationships')),
+		'',
 		array('check', 'shd_logopt_move_dept', 'disabled' => !empty($modSettings['shd_disable_action_log']) && !empty($multi_dept)),
-		array('checkall', 'shd_logopt_3', array('shd_logopt_delete', 'shd_logopt_restore', 'shd_logopt_permadelete', 'shd_logopt_relationships', 'shd_logopt_move_dept')),
+		array('check', 'shd_logopt_monitor', 'disabled' => !empty($modSettings['shd_disable_action_log'])),
+		array('checkall', 'shd_logopt_4', array('shd_logopt_move_dept', 'shd_logopt_monitor')),
 	);
 	$context['settings_title'] = $txt['shd_admin_options_actionlog'];
 	$context['settings_icon'] = 'log.png';
@@ -607,6 +611,7 @@ function shd_modify_actionlog_options($return_config)
 			shd_switchable_item("shd_logopt_permadelete", state);
 			shd_switchable_item("shd_logopt_relationships", state);
 			shd_switchable_item("shd_logopt_move_dept", state);
+			shd_switchable_item("shd_logopt_monitor", state);
 		}';
 
 	return $config_vars;

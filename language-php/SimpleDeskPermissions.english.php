@@ -95,6 +95,12 @@ $txt['permissionname_shd_assign_ticket_own'] = 'To themselves';
 $txt['permissionname_shd_assign_ticket_any'] = 'Any staff member';
 //@}
 
+//! @name Ticket modification: monitoring
+$txt['permissionname_shd_monitor_ticket'] = 'Monitor a ticket';
+$txt['permissionhelp_shd_monitor_ticket'] = 'This permission allows users to monitor tickets, to be notified on any changes to the ticket in addition to any of the usual email notifications. Use for example, to be notified about a ticket without replying to it or turning on the preferences for all tickets.';
+$txt['permissionname_shd_monitor_ticket_own'] = 'Their own tickets';
+$txt['permissionname_shd_monitor_ticket_any'] = 'Any tickets';
+
 //! @name Ticket modification: resolution
 //@{
 $txt['permissionname_shd_resolve_ticket'] = 'Mark a ticket resolved';

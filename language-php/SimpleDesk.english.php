@@ -408,4 +408,7 @@ $txt['shd_ticket_additional_information'] = 'Additional information';
 $txt['shd_ticket_additional_details'] = 'Additional details';
 $txt['shd_ticket_empty_field'] = 'This field is empty.';
 $txt['shd_ticket_empty_field_short'] = '-';
+
+// Notifications
+$txt['shd_ticket_notify'] = 'Notifications';
 ?>

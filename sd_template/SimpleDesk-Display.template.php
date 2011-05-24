@@ -405,6 +405,9 @@ function template_ticket_leftcolumn()
 	// The attachments column
 	template_viewticketattach();
 
+	// The notifications columns
+	template_viewnotifications();
+
 	echo '
 					</div>
 				</div>';
@@ -468,6 +471,33 @@ function template_viewticketattach()
 						<span class="botslice"><span></span></span>
 					</div>
 				</div>';
+	}
+}
+
+/**
+ *	Display user-specific notification information.
+ *
+ *	@since 2.0
+*/
+function template_viewnotifications()
+{
+	global $context, $settings, $txt, $scripturl;
+
+	if (!empty($context['display_notifications']))
+	{
+		echo '
+				<div class="tborder">
+					<div class="title_bar grid_header">
+						<h3 class="titlebg">
+							<img src="', $settings['default_images_url'], '/simpledesk/log_notify.png" alt="" />', $txt['shd_ticket_notify'], ' (', $context['relationships_count'], ')
+						</h3>
+					</div>
+					<div class="windowbg2">
+						
+						<span class="botslice"><span></span></span>
+					</div>
+				</div>
+				<br />';
 	}
 }
 
@@ -851,10 +881,11 @@ function template_viewrelationships()
 
 	if (!empty($context['display_relationships']))
 	{
-		echo '	<div class="tborder">
+		echo '
+				<div class="tborder">
 					<div class="title_bar grid_header">
 						<h3 class="titlebg">
-							<img src="', $settings['default_images_url'], '/simpledesk/relationships.png" alt="x" />', $txt['shd_ticket_relationships'], ' (', $context['relationships_count'], ')
+							<img src="', $settings['default_images_url'], '/simpledesk/relationships.png" alt="" />', $txt['shd_ticket_relationships'], ' (', $context['relationships_count'], ')
 						</h3>
 					</div>
 					<div class="windowbg2">
