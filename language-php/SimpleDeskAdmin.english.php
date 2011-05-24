@@ -208,6 +208,7 @@ $txt['shd_notify_nobody'] = 'nobody';
 
 //! @name Configuration items on the Notifications Options page
 //@{
+$txt['shd_notify_email'] = 'Email address to use in the notifications, leave blank to use the forum default (%1$s)';
 $txt['shd_notify_log'] = 'Log notifications being sent (what notification, when sent, user(s) involved)';
 $txt['shd_notify_new_ticket'] = 'Allow staff to receive notifications on new tickets';
 $txt['shd_notify_new_reply_own'] = 'Allow users to receive notifications when their tickets are replied to';

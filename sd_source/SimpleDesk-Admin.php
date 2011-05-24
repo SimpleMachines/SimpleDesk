@@ -636,9 +636,12 @@ function shd_modify_actionlog_options($return_config)
 */
 function shd_modify_notifications_options($return_config)
 {
-	global $context, $modSettings, $txt;
+	global $context, $modSettings, $txt, $webmaster_email;
+
+	$txt['shd_notify_email'] = sprintf($txt['shd_notify_email'], $webmaster_email);
 
 	$config_vars = array(
+		array('text', 'shd_notify_email'),
 		array('check', 'shd_notify_log'),
 		array('check', 'shd_notify_new_ticket'),
 		array('check', 'shd_notify_new_reply_own'),

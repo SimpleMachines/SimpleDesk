@@ -365,6 +365,8 @@ function shd_notify_users($notify_data)
 				$log['emails'][$email_type]['u'][] = $member;
 
 			//function sendmail($to, $subject, $message, $from = null, $message_id = null, $send_html = false, $priority = 3, $hotmail_fix = null, $is_private = false)
+			if (!empty($modSettings['shd_notify_email']))
+				$modSettings['mail_from'] = $modSettings['shd_notify_email'];
 			sendmail($emails[$member], $subject, $body, null, 'shd_notify_' . $email_type . '_' . $member);
 		}
 	}
