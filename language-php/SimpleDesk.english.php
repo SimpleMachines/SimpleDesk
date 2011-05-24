@@ -176,6 +176,7 @@ $txt['shd_staff_greeting'] = 'Here are all the tickets that require attention.';
 $txt['shd_shd_greeting'] = 'This is the Helpdesk. Here you waste your time to help newbies. Enjoy! ;D';
 $txt['shd_closed_user_greeting'] = 'These are all the closed/resolved tickets you have posted to the helpdesk.';
 $txt['shd_closed_staff_greeting'] = 'These are all closed/resolved tickets submitted to the helpdesk.';
+$txt['shd_category_filter'] = 'Category filtering';
 
 $txt['shd_ticket_posted_header'] = 'Your ticket has been created!';
 $txt['shd_ticket_posted_body'] = 'Thank you for posting your ticket, {membername}!' . "\n\n" . 'The helpdesk staff will review it and get back to you as soon as possible.' . "\n\n" . 'In the meantime, you can view your ticket, &quot;[iurl={ticketurl}]{subject}[/iurl]&quot; at the following URL:' . "\n" . '[iurl={ticketurl}]{ticketurl}[/iurl]' . "\n\n" .'[iurl={newticketlink}]Open another ticket[/iurl] | [iurl={helpdesklink}]Back to the main helpdesk[/iurl] | [iurl={forumlink}]Back to the forum[/iurl]';

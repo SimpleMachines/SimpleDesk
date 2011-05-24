@@ -1102,7 +1102,7 @@ function shd_helpdesk_listing()
 
 	$fields = array();
 	$query = $smcFunc['db_query']('', '
-		SELECT hdcf.id_field, can_see, field_type, field_options, placement
+		SELECT hdcf.id_field, can_see, field_type, field_options, placement, field_name
 		FROM {db_prefix}helpdesk_custom_fields AS hdcf
 			INNER JOIN {db_prefix}helpdesk_custom_fields_depts AS hdcfd ON (hdcfd.id_field = hdcf.id_field)
 		WHERE placement IN ({array_int:placement_prefix})
@@ -1160,12 +1160,13 @@ function shd_helpdesk_listing()
 
 	// 3. Apply the values into the tickets.
 	if ($_REQUEST['sa'] == 'closedtickets')
-		$filterbase = $scripturl . '?action=helpdesk;sa=closedtickets';
+		$context['filterbase'] = $scripturl . '?action=helpdesk;sa=closedtickets';
 	elseif ($_REQUEST['sa'] == 'recyclebin')
-		$filterbase = $scripturl . '?action=helpdesk;sa=recyclebin';
+		$context['filterbase'] = $scripturl . '?action=helpdesk;sa=recyclebin';
 	else
-		$filterbase = $scripturl . '?' . $context['shd_home'];
+		$context['filterbase'] = $scripturl . '?' . $context['shd_home'];
 
+	$context['shd_filter_fields'] = array();
 	foreach ($context['ticket_blocks'] as $block_id => $block)
 	{
 		if (empty($block['tickets']))
@@ -1185,10 +1186,17 @@ function shd_helpdesk_listing()
 
 					if ($field['placement'] == CFIELD_PLACE_PREFIXFILTER)
 					{
+						if (empty($context['shd_filter_fields'][$field_id]))
+							$context['shd_filter_fields'][$field_id] = array(
+								'name' => $field['field_name'],
+								'options' => $field['field_options'],
+								'in_use' => array(),
+							);
+
 						if (!isset($field['field_options'][$tickets[$ticket_id][$field_id]]))
 							continue;
 
-						$prefix_filter .= '[<a href="' . $filterbase . $context['shd_dept_link'] . ';field=' . $field_id . ';filter=' . $tickets[$ticket_id][$field_id] . '">' . $field['field_options'][$tickets[$ticket_id][$field_id]] . '</a>] ';
+						$prefix_filter .= '[<a href="' . $context['filterbase'] . $context['shd_dept_link'] . ';field=' . $field_id . ';filter=' . $tickets[$ticket_id][$field_id] . '">' . $field['field_options'][$tickets[$ticket_id][$field_id]] . '</a>] ';
 					}
 					else
 					{
@@ -1220,6 +1228,37 @@ function shd_helpdesk_listing()
 					$context['ticket_blocks'][$block_id]['tickets'][$ticket_id]['subject'] = $prefix . $subject;
 					$context['ticket_blocks'][$block_id]['tickets'][$ticket_id]['link'] = $prefix . '<a href="' . $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $ticket_id . ($_REQUEST['sa'] == 'recyclebin' ? ';recycle' : '') . '">' . $subject . '</a>';
 				}
+			}
+		}
+	}
+
+	// 4. We've collected the list of prefix-filter fields in use, now establish which values are actually in use.
+	if (!empty($context['shd_filter_fields']))
+	{
+		$query = $smcFunc['db_query']('', '
+			SELECT id_field, value
+			FROM {db_prefix}helpdesk_custom_fields_values
+			WHERE id_field IN ({array_int:fields})',
+			array(
+				'fields' => array_keys($context['shd_filter_fields']),
+			)
+		);
+		while ($row = $smcFunc['db_fetch_assoc']($query))
+			$context['shd_filter_fields'][$row['id_field']]['in_use'][$row['value']] = true;
+		$smcFunc['db_free_result']($query);
+
+		foreach ($context['shd_filter_fields'] as $id_field => $field)
+		{
+			if (empty($field['in_use']))
+				unset($context['shd_filter_fields'][$id_field]);
+			else
+			{
+				foreach ($field['options'] as $k => $v)
+					if (!isset($field['in_use'][$k]))
+						unset($context['shd_filter_fields'][$id_field]['options'][$k]);
+
+				if (empty($context['shd_filter_fields'][$id_field]['options']))
+					unset($context['shd_filter_fields'][$id_field]);
 			}
 		}
 	}
