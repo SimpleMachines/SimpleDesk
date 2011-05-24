@@ -387,13 +387,13 @@ function shd_notify_users($notify_data)
 			unset($log['emails'][$type]['e']);
 
 		$log['emails'][$type]['u'] = !empty($data['u']) ? implode(',', $data['u']) : '';
-		$log['emails'][$type]['e'] = !empty($data['e']) ? implode(',', $data['u']) : '';
+		$log['emails'][$type]['e'] = !empty($data['e']) ? implode(',', $data['e']) : '';
 
 		if (empty($log['emails'][$type]))
 			unset($log['emails'][$type]);
 	}
 
-	// We're doing it manually because we're bending some of the rules. It bypasses the usual shd_logopt_* check for one.
+	// We're doing it manually because we're bending some of the rules. It bypasses the usual shd_logopt_* check and the last_update change.
 	if (empty($modSettings['shd_disable_action_log']) && !empty($log['emails']) && (!empty($log['emails']['u']) || !empty($log['emails']['e'])) && !empty($modSettings['shd_notify_log']))
 		$smcFunc['db_insert']('',
 			'{db_prefix}helpdesk_log_action',
