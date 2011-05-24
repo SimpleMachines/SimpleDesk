@@ -35,7 +35,7 @@ function shd_notifications_notify_newticket(&$msgOptions, &$ticketOptions, &$pos
 		return;
 
 	// So, we're getting the list of people that are being affected by this ticket being posted. Basically, that's a list of staff on new ticket, less people who've set preferences otherwise.
-	$members = shd_members_allowed_to('shd_staff');
+	$members = shd_members_allowed_to('shd_staff', $ticketOptions['dept']);
 	if (empty($members))
 		return;
 
@@ -100,7 +100,7 @@ function shd_notifications_notify_newreply(&$msgOptions, &$ticketOptions, &$post
 
 	// We're doing various things here, so grab some general details, not just what we may have been passed before.
 	$ticketinfo = shd_load_ticket($ticketOptions['id']);
-	$staff = shd_members_allowed_to('shd_staff');
+	$staff = shd_members_allowed_to('shd_staff', $ticketOptions['dept']);
 
 	// Might as well kick this off here.
 	$notify_data = array(
@@ -385,9 +385,6 @@ function shd_notify_users($notify_data)
 			$log['emails'][$type]['e'] = implode(',', $data['e']);
 		else
 			unset($log['emails'][$type]['e']);
-
-		$log['emails'][$type]['u'] = !empty($data['u']) ? implode(',', $data['u']) : '';
-		$log['emails'][$type]['e'] = !empty($data['e']) ? implode(',', $data['e']) : '';
 
 		if (empty($log['emails'][$type]))
 			unset($log['emails'][$type]);

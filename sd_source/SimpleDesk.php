@@ -1120,6 +1120,7 @@ function shd_helpdesk_listing()
 	);
 	$is_staff = shd_allowed_to('shd_staff', $context['shd_department']);
 	$is_admin = $context['user']['is_admin'] || shd_allowed_to('admin_helpdesk', $context['shd_department']);
+	$context['shd_filter_fields'] = array();
 	while ($row = $smcFunc['db_fetch_assoc']($query))
 	{
 		list($user_see, $staff_see) = explode(',', $row['can_see']);
@@ -1135,6 +1136,13 @@ function shd_helpdesk_listing()
 						$row['field_options'][$k] = parse_bbc($v);
 			}
 			$fields[$row['id_field']] = $row;
+
+			if ($row['placement'] == CFIELD_PLACE_PREFIXFILTER)
+				$context['shd_filter_fields'][$row['id_field']] = array(
+					'name' => $row['field_name'],
+					'options' => $row['field_options'],
+					'in_use' => array(),
+				);
 		}
 	}
 	$smcFunc['db_free_result']($query);
@@ -1166,7 +1174,6 @@ function shd_helpdesk_listing()
 	else
 		$context['filterbase'] = $scripturl . '?' . $context['shd_home'];
 
-	$context['shd_filter_fields'] = array();
 	foreach ($context['ticket_blocks'] as $block_id => $block)
 	{
 		if (empty($block['tickets']))
@@ -1186,13 +1193,6 @@ function shd_helpdesk_listing()
 
 					if ($field['placement'] == CFIELD_PLACE_PREFIXFILTER)
 					{
-						if (empty($context['shd_filter_fields'][$field_id]))
-							$context['shd_filter_fields'][$field_id] = array(
-								'name' => $field['field_name'],
-								'options' => $field['field_options'],
-								'in_use' => array(),
-							);
-
 						if (!isset($field['field_options'][$tickets[$ticket_id][$field_id]]))
 							continue;
 

@@ -223,7 +223,27 @@ function template_closedtickets()
 						</div>
 						<div id="welcome">
 							<strong>', sprintf($txt['shd_welcome'], $context['user']['name']), '</strong><br />
-							', $txt['shd_closed_' . $context['shd_home_view'] . '_greeting'], '
+							', $txt['shd_closed_' . $context['shd_home_view'] . '_greeting'];
+
+	if (!empty($context['shd_filter_fields']))
+	{
+		echo '
+			<br /><br /><strong>', $txt['shd_category_filter'], ':</strong>';
+		foreach ($context['shd_filter_fields'] as $id_field => $field)
+		{
+			echo '
+			<br />', $field['name'], ':';
+			foreach ($field['options'] as $key => $opt)
+			{
+				if (!empty($context['filter_fragment']) && $_REQUEST['field'] == $id_field && $_REQUEST['filter'] == $key)
+					echo ' [', $opt, ']';
+				else
+					echo ' [<a href="' . $context['filterbase'] . $context['shd_dept_link'] . ';field=' . $id_field . ';filter=' . $key . '">' . $opt . '</a>]';
+			}
+		}
+	}
+
+	echo '
 						</div>
 					</div>
 					<span class="lowerframe"><span></span></span>
@@ -288,7 +308,27 @@ function template_recyclebin()
 						</div>
 						<div id="welcome">
 							<strong>', sprintf($txt['shd_welcome'], $context['user']['name']), '</strong><br />
-							', $txt['shd_recycle_greeting'], '
+							', $txt['shd_recycle_greeting'];
+
+	if (!empty($context['shd_filter_fields']))
+	{
+		echo '
+			<br /><br /><strong>', $txt['shd_category_filter'], ':</strong>';
+		foreach ($context['shd_filter_fields'] as $id_field => $field)
+		{
+			echo '
+			<br />', $field['name'], ':';
+			foreach ($field['options'] as $key => $opt)
+			{
+				if (!empty($context['filter_fragment']) && $_REQUEST['field'] == $id_field && $_REQUEST['filter'] == $key)
+					echo ' [', $opt, ']';
+				else
+					echo ' [<a href="' . $context['filterbase'] . $context['shd_dept_link'] . ';field=' . $id_field . ';filter=' . $key . '">' . $opt . '</a>]';
+			}
+		}
+	}
+
+	echo '
 						</div>
 					</div>
 					<span class="lowerframe"><span></span></span>
