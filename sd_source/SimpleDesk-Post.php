@@ -1976,7 +1976,7 @@ function shd_posting_additional_options()
 		'goback' => array(
 			'checked' => !empty($context['ticket_form']['return_to_ticket']) || !empty($options['return_to_post']),
 			'text' => $txt['shd_back_to_ticket'],
-			'show' => ($new_ticket && !empty($modSettings['shd_thank_you_post'])) ? false : true,
+			'show' => (empty($context['ticket_form']['ticket']) && !empty($modSettings['shd_thank_you_post'])) ? false : true,
 		),
 		'no_smileys' => array(
 			'checked' => !empty($context['ticket_form']['disable_smileys']),
