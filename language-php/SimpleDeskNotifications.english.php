@@ -40,7 +40,7 @@ $txt['template_log_notify_new_reply_own'] = 'User updated';
 
 $txt['template_subject_notify_new_reply_assigned'] = 'Helpdesk - assigned ticket updated: {subject}';
 $txt['template_body_notify_new_reply_assigned'] = 'A ticket assigned to you, "{subject}", has been replied to.' . "\n\n" . 'You can read the reply here:' . "\n" . '{ticketlink}';
-$txt['template_log_notify_new_reply_assigned'] = 'Ticket assigned';
+$txt['template_log_notify_new_reply_assigned'] = 'Assigned ticket updated';
 
 $txt['template_subject_notify_new_reply_previous'] = 'Helpdesk ticket updated: {subject}';
 $txt['template_body_notify_new_reply_previous'] = 'A ticket you previously replied to, "{subject}", has been replied to again.' . "\n\n" . 'You can read the reply here:' . "\n" . '{ticketlink}';
