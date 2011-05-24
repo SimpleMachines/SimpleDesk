@@ -355,7 +355,7 @@ function template_ticket_subjectbox()
 						<br />
 						<img src="', $settings['default_images_url'], '/simpledesk/departments.png" alt="" class="shd_smallicon" /> <strong>', $txt['shd_ticket_dept'], '</strong>
 						<select name="newdept" onchange="updateDeptCFs(this.value)">
-							<option value="0" disabled="disabled">', $txt['shd_select_dept'], '</option>';
+							<option value="0">', $txt['shd_select_dept'], '</option>';
 		foreach ($context['postable_dept_list'] as $id => $dept)
 			echo '
 							<option value="', $id, '"', $context['ticket_form']['dept'] == $id ? ' selected="selected"' : '', '>', $dept, '</option>';
