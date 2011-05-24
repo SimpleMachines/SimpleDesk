@@ -135,6 +135,7 @@ function shd_load_action_log_entries($start = 0, $items_per_page = 10, $sort = '
 	);
 
 	$actions = array();
+	$notify_members = array();
 	while ($row = $smcFunc['db_fetch_assoc']($request))
 	{
 		$row['extra'] = @unserialize($row['extra']);
@@ -173,9 +174,19 @@ function shd_load_action_log_entries($start = 0, $items_per_page = 10, $sort = '
 
 		if (shd_allowed_to('shd_view_ip_any', 0) || ($row['id_member'] == $user_info['id'] && shd_allowed_to('shd_view_ip_own', 0)))
 			$actions[$row['id_action']]['member']['ip'] = !empty($row['ip']) ? $row['ip'] : $txt['shd_admin_actionlog_unknown'];
-	}
 
+		// Notifications require us to collate all the user ids as we go along.
+		if ($row['action'] == 'notify' && !empty($row['extra']['emails']))
+		{
+			foreach ($row['extra']['emails'] as $email_type => $recipients)
+				if (!empty($recipients['u']))
+					$notify_members = array_merge($notify_members, explode(',', $recipients['u']));
+		}
+	}
 	$smcFunc['db_free_result']($request);
+
+	if (!empty($notify_members))
+		$notify_members = loadMemberData(array_unique($notify_members), false, 'minimal');
 
 	// Do some formatting of the action string.
 	foreach ($actions as $k => $action)
@@ -203,22 +214,6 @@ function shd_load_action_log_entries($start = 0, $items_per_page = 10, $sort = '
 		{
 			// Because this could be a lot of people etc., we compact its storage heavily compared to a conventional serialize().
 			// See shd_notify_users in SimpleDesk-Notifications.php for what this is.
-			$users = array();
-			// First, get the list of users, and load their username etc if we haven't already attempted it before.
-			foreach ($action['extra']['emails'] as $email_type => $recipients)
-			{
-				if (isset($recipients['u']))
-					$users = array_merge($users, explode(',', $recipients['u']));
-			}
-			if (!empty($users))
-			{
-				$users = array_unique($users);
-				$unloaded = array_diff($loaded_users, $users);
-				if (!empty($unloaded))
-					$unloaded = loadMemberData($unloaded, false, 'minimal');
-				if (!empty($unloaded))
-					$loaded_users = array_merge($loaded_users, $unloaded);
-			}
 
 			// Now we have all the usernames for this instance, let's go and build this entry.
 			$content = '';
@@ -231,14 +226,20 @@ function shd_load_action_log_entries($start = 0, $items_per_page = 10, $sort = '
 				{
 					$first = true;
 					$users = explode(',', $recipients['u']);
+					$unknown_users = 0;
 					foreach ($users as $user)
 					{
 						if (empty($user_profile[$user]))
+						{
+							$unknown_users++;
 							continue;
+						}
 
 						$new_content .= ($first ? $txt['shd_log_notify_users'] . ': ' : ', ') . shd_profile_link($user_profile[$user]['real_name'], $user);
 						$first = false;
 					}
+					if ($unknown_users > 0)
+						$new_content .= ($first ? $txt['shd_log_notify_users'] . ': ' : ', ') . ($unknown_users == 1 ? $txt['shd_log_unknown_user_1'] : sprintf($txt['shd_log_unknown_user_n'], $unknown_users));
 				}
 
 				if (!empty($recipients['e']))
@@ -249,11 +250,11 @@ function shd_load_action_log_entries($start = 0, $items_per_page = 10, $sort = '
 					{
 						foreach ($emails as $key => $value)
 							$emails[$key] = '<a href="mailto:' . $value . '">' . $value . '</a>';
-						$new_content .= $txt['shd_log_notify_email'] . ': ' . implode(', ', $emails);
+						$new_content .= (!empty($new_content) ? '<br />' : '') . $txt['shd_log_notify_email'] . ': ' . implode(', ', $emails);
 					}
 					// No-one else can at the moment.
 					else
-						$new_content .= $txt['shd_log_notify_email'] . ': ' . (count($emails) == 1 ? $txt['shd_log_notify_hiddenemail_1'] : sprintf($txt['shd_log_notify_hiddenemail'], count($emails)));
+						$new_content .= (!empty($new_content) ? '<br />' : '') . $txt['shd_log_notify_email'] . ': ' . (count($emails) == 1 ? $txt['shd_log_notify_hiddenemail_1'] : sprintf($txt['shd_log_notify_hiddenemail'], count($emails)));
 				}
 				if (!empty($new_content))
 					$content .= $this_content . $new_content;
