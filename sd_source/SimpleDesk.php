@@ -1095,7 +1095,7 @@ function shd_helpdesk_listing()
 		return; // We're all done here.
 
 	// 1. Figure out if there are any custom fields that apply to us or not.
-	if ($context['shd_multi_dept'])
+	if ($context['shd_multi_dept'] && empty($context['shd_department']))
 		$dept_list = shd_allowed_to('access_helpdesk', false);
 	else
 		$dept_list = array($context['shd_department']);
