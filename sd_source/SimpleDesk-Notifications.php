@@ -358,14 +358,11 @@ function shd_notify_users($notify_data)
 			if (!isset($log['emails'][$email_type]))
 				$log['emails'][$email_type] = array(
 					'u' => array(),
-					'e' => array(),
 				);
 
 			// Now then, do we have a member?
 			if (!empty($member))
 				$log['emails'][$email_type]['u'][] = $member;
-			else
-				$log['emails'][$email_type]['e'][] = $emails[$member];
 
 			//function sendmail($to, $subject, $message, $from = null, $message_id = null, $send_html = false, $priority = 3, $hotmail_fix = null, $is_private = false)
 			sendmail($emails[$member], $subject, $body, null, 'shd_notify_' . $email_type . '_' . $member);
@@ -381,17 +378,12 @@ function shd_notify_users($notify_data)
 		else
 			unset($log['emails'][$type]['u']);
 
-		if (!empty($data['e']))
-			$log['emails'][$type]['e'] = implode(',', $data['e']);
-		else
-			unset($log['emails'][$type]['e']);
-
 		if (empty($log['emails'][$type]))
 			unset($log['emails'][$type]);
 	}
 
 	// We're doing it manually because we're bending some of the rules. It bypasses the usual shd_logopt_* check and the last_update change.
-	if (empty($modSettings['shd_disable_action_log']) && !empty($log['emails']) && (!empty($log['emails']['u']) || !empty($log['emails']['e'])) && !empty($modSettings['shd_notify_log']))
+	if (empty($modSettings['shd_disable_action_log']) && !empty($log['emails']) && !empty($modSettings['shd_notify_log']))
 		$smcFunc['db_insert']('',
 			'{db_prefix}helpdesk_log_action',
 			array(

@@ -242,20 +242,6 @@ function shd_load_action_log_entries($start = 0, $items_per_page = 10, $sort = '
 						$new_content .= ($first ? $txt['shd_log_notify_users'] . ': ' : ', ') . ($unknown_users == 1 ? $txt['shd_log_unknown_user_1'] : sprintf($txt['shd_log_unknown_user_n'], $unknown_users));
 				}
 
-				if (!empty($recipients['e']))
-				{
-					$emails = explode(',', $recipients['e']);
-					// Admins can see the actual emails.
-					if ($user_info['is_admin'] || shd_allowed_to('admin_helpdesk', 0))
-					{
-						foreach ($emails as $key => $value)
-							$emails[$key] = '<a href="mailto:' . $value . '">' . $value . '</a>';
-						$new_content .= (!empty($new_content) ? '<br />' : '') . $txt['shd_log_notify_email'] . ': ' . implode(', ', $emails);
-					}
-					// No-one else can at the moment.
-					else
-						$new_content .= (!empty($new_content) ? '<br />' : '') . $txt['shd_log_notify_email'] . ': ' . (count($emails) == 1 ? $txt['shd_log_notify_hiddenemail_1'] : sprintf($txt['shd_log_notify_hiddenemail'], count($emails)));
-				}
 				if (!empty($new_content))
 					$content .= $this_content . $new_content;
 			}
