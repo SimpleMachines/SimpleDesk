@@ -394,7 +394,7 @@ function shd_notify_users($notify_data)
 	}
 
 	// We're doing it manually because we're bending some of the rules. It bypasses the usual shd_logopt_* check for one.
-	if (empty($modSettings['shd_disable_action_log']) && !empty($log['emails']) && !empty($modSettings['shd_notify_log']))
+	if (empty($modSettings['shd_disable_action_log']) && !empty($log['emails']) && (!empty($log['emails']['u']) || !empty($log['emails']['e'])) && !empty($modSettings['shd_notify_log']))
 		$smcFunc['db_insert']('',
 			'{db_prefix}helpdesk_log_action',
 			array(
