@@ -158,6 +158,7 @@ function template_ticket_custom_fields()
 				<div class="information shd_customfields" id="shd_customfields">';
 
 		// Loop through each custom field
+		// Loop through each custom field
 		// See also template_ticket_subjectbox() for the department selector which affects these.
 		foreach ($context['ticket_form']['custom_fields'][$context['ticket_form']['custom_fields_context']] as $field)
 		{
@@ -353,7 +354,8 @@ function template_ticket_subjectbox()
 		echo '
 						<br />
 						<img src="', $settings['default_images_url'], '/simpledesk/departments.png" alt="" class="shd_smallicon" /> <strong>', $txt['shd_ticket_dept'], '</strong>
-						<select name="newdept" onchange="updateDeptCFs(this.value)">';
+						<select name="newdept" onchange="updateDeptCFs(this.value)">
+							<option value="0" disabled="disabled">', $txt['shd_select_dept'], '</option>';
 		foreach ($context['postable_dept_list'] as $id => $dept)
 			echo '
 							<option value="', $id, '"', $context['ticket_form']['dept'] == $id ? ' selected="selected"' : '', '>', $dept, '</option>';
@@ -379,7 +381,7 @@ function template_ticket_subjectbox()
 							var displayed = 0;
 							for (i in fields)
 							{
-								if (in_array(dept, fields[i]))
+								if (dept != 0 && in_array(dept, fields[i]))
 								{
 									document.getElementById("field_" + i + "_container").style.display = "";
 									displayed++;

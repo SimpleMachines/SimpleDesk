@@ -147,6 +147,7 @@ $txt['shd_relationships_are_disabled'] = 'Ticket relationships are currently dis
 $txt['error_invalid_fields'] = 'The following fields have values that cannot be used: %1$s';
 $txt['error_missing_fields'] = 'The following fields were not completed and need to be: %1$s';
 $txt['error_missing_multi'] = '%1$s (at least %2$d must be selected)';
+$txt['error_no_dept'] = 'You did not select a department to post this ticket into.';
 $txt['shd_cannot_move_dept'] = 'You cannot move this ticket, there is nowhere to move it to.';
 $txt['shd_no_perm_move_dept'] = 'You are not permitted to move this ticket to another department.';
 $txt['cannot_shd_delete_attachment'] = 'You are not permitted to delete attachments.';
@@ -331,6 +332,7 @@ $txt['shd_previewing_reply'] = 'Previewing reply to';
 $txt['shd_choose_one'] = '[Choose one]';
 $txt['shd_no_value'] = '[no value]';
 $txt['shd_ticket_dept'] = 'Ticket department';
+$txt['shd_select_dept'] = '-- Select a department --';
 
 // Profile / trackip
 $txt['shd_replies_from_ip'] = 'Helpdesk replies posted from IP (range)';

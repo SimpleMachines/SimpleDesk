@@ -292,15 +292,15 @@ function shd_save_ticket()
 	{
 		// Are we inside a known department?
 		$dept = isset($_REQUEST['dept']) ? (int) $_REQUEST['dept'] : 0;
-		if (!isset($_REQUEST['newdept']) || !$context['shd_multi_dept'])
-			shd_is_allowed_to('shd_new_ticket', $dept);
+		if (!$context['shd_multi_dept'])
+			shd_is_allowed_to('shd_new_ticket', $context['shd_department']);
 		// What about specifying one explicitly?
 		else
 		{
-			$newdept = (int) $_REQUEST['newdept'];
+			$newdept = isset($_REQUEST['newdept']) ? (int) $_REQUEST['newdept'] : 0;
+			shd_is_allowed_to('shd_new_ticket', $newdept); // But if they didn't specify a department, execution won't have ended here if they had the ability in at least one department.
 			if ($newdept == 0)
-				$newdept == -1; // This way if you specify something you shouldn't be, you are guaranteed to fail.
-			shd_is_allowed_to('shd_new_ticket', $newdept);
+				$context['shd_errors'][] = 'no_dept';
 		}
 
 		// some healthy defaults
