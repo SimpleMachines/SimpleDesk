@@ -92,6 +92,13 @@
 		{
 			$profile_areas['helpdesk'] = $context['helpdesk_menu'];
 			$profile_areas += $old_profile_areas;
+			if (!empty($modSettings['shd_disable_pm']))
+			{
+				if (!empty($profile_areas['profile_action']['areas']['sendpm']))
+					$profile_areas['profile_action']['areas']['sendpm']['enabled'] = false;
+				if (!empty($profile_areas['edit_profile']['areas']['pmprefs']))
+					$profile_areas['edit_profile']['areas']['pmprefs']['enabled'] = false;
+			}
 		}
 		else
 		// In non HD only, put it before the editing stuff menu
