@@ -132,7 +132,6 @@ function template_shd_profile_preferences()
 								<div class="content">
 									<dl class="permsettings">';
 
-		$displayed = 0;
 		foreach ($details['groups'] as $pref)
 		{
 			$thispref = $context['shd_preferences_options']['prefs'][$pref];
@@ -172,7 +171,7 @@ function template_shd_profile_preferences()
 									</dl>';
 
 		// Only display if the preference group is set to actually have said option, and if 3+ were actually being displayed, otherwise it looks stupid.
-		if (!empty($details['check_all']) && $displayed > 2)
+		if (!empty($details['check_all']) && count($details['groups']) > 2)
 		{
 			echo '
 									<div class="padding">
