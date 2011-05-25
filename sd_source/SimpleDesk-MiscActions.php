@@ -266,7 +266,7 @@ function shd_urgency_change_noajax()
 		$posterOptions = array();
 		$ticketOptions = array(
 			'id' => $context['ticket_id'],
-			'private' => empty($row['private']),
+			'urgency' => $new_urgency,
 		);
 
 		shd_modify_ticket_post($msgOptions, $ticketOptions, $posterOptions);
