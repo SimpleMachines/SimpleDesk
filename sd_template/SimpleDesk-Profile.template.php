@@ -100,12 +100,15 @@ function template_shd_profile_preferences()
 						document.getElementById("preffooter_" + block).style.display = "none";
 						document.getElementById("prefexpandicon_" + block).src = ', JavaScriptEscape($settings['images_url'] . '/expand.gif'), ';
 					}
+					document.getElementById("prefexpandicon_" + block).style.display = "";
 				}
 
 				// ]', ']></script>
 				<form action="', $scripturl, '?action=profile;area=hd_prefs;u=', $context['member']['id'], ';save" method="post">';
 
 	$display_save = false;
+	$displayed_groups = array();
+	$checkall_items = array();
 
 	foreach ($context['shd_preferences_options']['groups'] as $group => $details)
 	{
@@ -113,22 +116,23 @@ function template_shd_profile_preferences()
 			continue;
 
 		$display_save = true;
+		$displayed_groups[] = $group;
 
 		echo '
 						<br />
 						<div class="tborder">
-							<div class="cat_bar" id="prefheader_', $group, '">
+							<div class="cat_bar grid_header" id="prefheader_', $group, '">
 								<h3 class="catbg">
 									<span class="floatright">
 										<a class="permcollapse" href="#" onclick="shd_toggleblock(\'', $group, '\'); return false;">
-											<img src="', $settings['images_url'], '/expand.gif" id="prefexpandicon_', $group, '" />
+											<img src="', $settings['images_url'], '/expand.gif" id="prefexpandicon_', $group, '" style="display:none;" />
 										</a>
 									</span>
 									<img src="', shd_image_url($details['icon']), '" class="icon" alt="*" />
-									<a class="prefcollapse" href="#" onclick="shd_toggleblock(\'', $group, '\'); return false;">', $txt['shd_pref_group_' . $group], '</a>
+									<a class="prefcollapse" href="#prefheader_', $group, '" onclick="shd_toggleblock(\'', $group, '\'); return false;">', $txt['shd_pref_group_' . $group], '</a>
 								</h3>
 							</div>
-							<div class="roundframe" id="prefgroup_', $group, '" style="display:none;">
+							<div class="roundframe" id="prefgroup_', $group, '">
 								<div class="content">
 									<dl class="permsettings">';
 
@@ -174,17 +178,44 @@ function template_shd_profile_preferences()
 		if (!empty($details['check_all']) && count($details['groups']) > 2)
 		{
 			echo '
-									<div class="padding">
+									<div class="padding" id="checkall_div_', $group, '" style="display:none;">
 										<input type="checkbox" name="all" id="check_all" value="" onclick="invertAll(this, this.form, \'', $group, '\');" class="input_check floatleft">
 										<label for="check_all" class="floatleft">', $txt['check_all'], '</label>
 									</div>';
+			$checkall_items[] = $group;
 		}
 
 		echo '
 								</div>
 							</div>
-							<span class="lowerframe" id="preffooter_', $group, '" style="display:none;"><span></span></span>
+							<span class="lowerframe" id="preffooter_', $group, '"><span></span></span>
 						</div>';
+	}
+
+	// And the JS required to hide everything.
+	if (!empty($displayed_groups) || !empty($checkall_items))
+	{
+		echo '
+						<script type="text/javascript"><!-- // --><![CDATA[';
+
+		if (!empty($displayed_groups))
+			echo '
+						var hidden_blocks = ["', implode('","', $displayed_groups), '"];
+						for (i in hidden_blocks)
+						{
+							shd_toggleblock(hidden_blocks[i]);
+						}';
+
+		if (!empty($checkall_items))
+			echo '
+						var checkall_items = ["', implode('","', $checkall_items), '"];
+						for (i in checkall_items)
+						{
+							document.getElementById("checkall_div_" + checkall_items[i]).style.display = "";
+						}';
+
+		echo '
+						// ]', ']></script>';
 	}
 
 	if ($display_save)
