@@ -414,7 +414,7 @@ function shd_load_user_perms()
 		if (!empty($tickets_own_private)) // Depts where we can see our own private tickets, so need to validate id_dept and id_member_started, but we can discount checking private here.
 			$privacy_clauses[] = '(hdt.id_dept IN (' . implode(',', $tickets_own_private) . ') AND hdt.id_member_started = {int:user_info_id})';
 		if (!empty($tickets_any_nonprivate)) // Depts where we can see nonprivate tickets. We need to validate privacy on these but that's it.
-			$privacy_clauses[] = '(hdt.id_dept IN (' . implode(',', $tickets_any_nonprivate) . ') AND hdt.status = 0)';
+			$privacy_clauses[] = '(hdt.id_dept IN (' . implode(',', $tickets_any_nonprivate) . ') AND hdt.private = 0)';
 		if (!empty($tickets_own_nonprivate)) // Depts where we can see our own nonprivate tickets. Validate id_dept, id_member_started and private.
 			$privacy_clauses[] = '(hdt.id_dept IN (' . implode(',', $tickets_own_nonprivate) . ') AND hdt.private = 0 AND hdt.id_member_started = {int:user_info_id})';
 
