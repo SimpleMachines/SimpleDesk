@@ -18,6 +18,7 @@
 		<modification format="xml" type="file">install-xml/install.xml</modification>
 		<modification format="xml" type="file">install-xml/install-attachments.xml</modification>
 		<modification format="xml" type="file">install-xml/install-trackip.xml</modification>
+		<modification format="xml" type="file">install-xml/install-packages.xml</modification>
 
 		<!-- language files -->
 		<require-file name="language-php/SimpleDesk.english.php" destination="$languagedir" />
@@ -69,6 +70,7 @@
 		<modification format="xml" type="file" reverse="true">install-xml/install.xml</modification>
 		<modification format="xml" type="file" reverse="true">install-xml/install-attachments.xml</modification>
 		<modification format="xml" type="file" reverse="true">install-xml/install-trackip.xml</modification>
+		<modification format="xml" type="file" reverse="true">install-xml/install-packages.xml</modification>
 
 		<!-- language files, removed -->
 		<remove-file name="$languagedir/SimpleDesk.english.php" />

@@ -386,6 +386,8 @@ $txt['shd_dept_theme_use_default'] = 'Use the helpdesk/forum default theme';
 
 //! Plugins
 //@{
+$txt['shd_admin_plugins_packman'] = 'SimpleDesk Plugins';
+$txt['shd_install_plugin'] = 'Install Plugin';
 $txt['shd_admin_plugins_homedesc'] = 'This area allows you to manage any additional components for SimpleDesk. They are installed through the Package Manager as regular mods, and configured from here.';
 $txt['shd_admin_plugins_none'] = 'No plugins are currently installed.';
 $txt['shd_admin_plugins_writtenby'] = 'Written by';
