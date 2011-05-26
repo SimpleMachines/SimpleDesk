@@ -1816,7 +1816,7 @@ function shd_main_menu(&$menu_buttons)
 
 			// If we're in HD only mode, we definitely don't want the regular forum profile item.
 			if (!empty($modSettings['shd_helpdesk_only']))
-				unset($menu_buttons['profile']['sub_buttons']['profile']);
+				unset($menu_buttons['profile']['sub_buttons']['profile'], $menu_buttons['profile']['sub_buttons']['summary']);
 
 			// Add the helpdesk profile to the profile menu (either the original or our reconstituted one)
 			$menu_buttons['profile']['show'] = true;
