@@ -104,6 +104,16 @@
 					$profile_areas['info']['areas']['summary']['function'] = 'shd_profile_summary_wrapper';
 				}
 			}
+			if (!empty($profile_areas['info']['areas']['statistics']))
+				$profile_areas['info']['areas']['statistics']['enabled'] = false;
+			if (!empty($profile_areas['info']['areas']['showposts']))
+				$profile_areas['info']['areas']['showposts']['enabled'] = false;
+			if (!empty($profile_areas['edit_profile']['areas']['ignoreboards']))
+				$profile_areas['edit_profile']['areas']['ignoreboards']['enabled'] = false;
+			if (!empty($profile_areas['edit_profile']['areas']['lists']))
+				$profile_areas['edit_profile']['areas']['lists']['enabled'] = false;
+			if (!empty($profile_areas['profile_action']['areas']['issuewarning']))
+				$profile_areas['profile_action']['areas']['issuewarning']['enabled'] = false;
 		}
 		else
 		// In non HD only, put it before the editing stuff menu
