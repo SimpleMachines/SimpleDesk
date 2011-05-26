@@ -614,7 +614,23 @@ function shd_profile_theme_wrapper($memID)
 	foreach ($lang_strings as $str)
 		$txt[$str] = $txt['shd_' . $str];
 
-	theme($memID);
+	loadThemeOptions($memID);
+	if (allowedTo(array('profile_extra_own', 'profile_extra_any')))
+		loadCustomFields($memID, 'theme');
+
+	$context['sub_template'] = 'edit_options';
+	$context['page_desc'] = $txt['theme_info'];
+
+	$opts = array(
+		'id_theme', 'smiley_set', 'hr',
+		'time_format', 'time_offset', 'hr',
+		'theme_settings',
+	);
+
+	if (!empty($modSettings['shd_display_avatar']))
+		$opts = array_merge(array('avatar_choice', 'hr'), $opts);
+
+	setupProfileContext($opts);
 
 	$context['profile_fields']['theme_settings']['callback_func'] = 'shd_theme_settings';
 }

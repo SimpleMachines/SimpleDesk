@@ -110,12 +110,16 @@
 				$profile_areas['info']['areas']['statistics']['enabled'] = false;
 			if (!empty($profile_areas['info']['areas']['showposts']))
 				$profile_areas['info']['areas']['showposts']['enabled'] = false;
+			if (!empty($profile_areas['edit_profile']['areas']['forumprofile']))
+				$profile_areas['edit_profile']['areas']['forumprofile']['enabled'] = false;
 			if (!empty($profile_areas['edit_profile']['areas']['ignoreboards']))
 				$profile_areas['edit_profile']['areas']['ignoreboards']['enabled'] = false;
 			if (!empty($profile_areas['edit_profile']['areas']['lists']))
 				$profile_areas['edit_profile']['areas']['lists']['enabled'] = false;
 			if (!empty($profile_areas['profile_action']['areas']['issuewarning']))
 				$profile_areas['profile_action']['areas']['issuewarning']['enabled'] = false;
+			if (!empty($profile_areas['edit_profile']['areas']['notifications']))
+				$profile_areas['edit_profile']['areas']['notifications']['enabled'] = false;
 
 			$profile_areas['edit_profile']['areas']['theme']['file'] = 'sd_source/SimpleDesk-Profile.php';
 			$profile_areas['edit_profile']['areas']['theme']['function'] = 'shd_profile_theme_wrapper';
