@@ -718,14 +718,6 @@ function shd_view_ticket()
 	});';
 
 	$context['html_headers'] .= '
-	var ActionLog = new ActionLog({
-		sImagesUrl: "' . $settings['images_url'] . '",
-		sContainerId: "ticket_log",
-		sImageId: "shd_ticket_log_expand",
-		sImageCollapsed: "collapse.gif",
-		sImageExpanded: "expand.gif",
-		sHeaderId: "ticket_log_header",
-	});
 	var oCustomFields = new CustomFields({
 		sImagesUrl: "' . $settings['images_url'] . '",
 		sContainerId: "additional_info",

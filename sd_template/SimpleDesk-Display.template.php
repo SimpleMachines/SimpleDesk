@@ -963,13 +963,13 @@ function template_ticketactionlog()
 				<div class="tborder">
 					<div class="title_bar" id="ticket_log_header">
 						<h3 class="titlebg">
-							<span class="floatright shd_ticket_log_expand_container"> <a href="javascript:ActionLog.swap();"><img src="', $settings['images_url'], '/expand.gif" alt="+" id="shd_ticket_log_expand" class="icon" /></a></span>
+							<span class="floatright shd_ticket_log_expand_container"> <a href="#" onclick="ActionLog.swap(); return false;"><img src="', $settings['images_url'], '/expand.gif" alt="+" id="shd_ticket_log_expand" class="icon" style="display:none;" /></a></span>
 							<img src="', $settings['default_images_url'], '/simpledesk/log.png" class="icon" alt="*" />
-							<a href="javascript:ActionLog.swap();">', $txt['shd_ticket_log'], '</a>
+							<a href="#" onclick="ActionLog.swap(); return false;">', $txt['shd_ticket_log'], '</a>
 							<span class="smalltext">(', $context['ticket_log_count'] == 1 ? $txt['shd_ticket_log_count_one'] : sprintf($txt['shd_ticket_log_count_more'], $context['ticket_log_count']), ')</span>
 						</h3>
 					</div>
-					<table class="shd_ticketlist" id="ticket_log" cellspacing="0" width="100%" style="display: none;">
+					<table class="shd_ticketlist" id="ticket_log" cellspacing="0" width="100%">
 						<tr class="titlebg">
 							<td width="15%">
 								<img src="', $settings['default_images_url'], '/simpledesk/time.png" class="shd_smallicon" alt="" />
@@ -1016,7 +1016,18 @@ function template_ticketactionlog()
 							</td>
 						</tr>
 					</table>
-				</div>';
+				</div>
+				<script type="text/javascript"><!-- // --><![CDATA[
+				var ActionLog = new ActionLog({
+					sImagesUrl: "' . $settings['images_url'] . '",
+					sContainerId: "ticket_log",
+					sImageId: "shd_ticket_log_expand",
+					sImageCollapsed: "collapse.gif",
+					sImageExpanded: "expand.gif",
+					sHeaderId: "ticket_log_header",
+				});
+				ActionLog.swap();
+				// ]' . ']></script>';
 	}
 }
 ?>

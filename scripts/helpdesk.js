@@ -345,7 +345,9 @@ function shd_quickTicketJump(id_ticket)
 function ActionLog(oOptions)
 {
 	this.opt = oOptions;
-	this.bCollapsed = true;
+	this.bCollapsed = false;
+	document.getElementById(this.opt.sImageId).style.display = '';
+	return false;
 }
 
 // The function handling the swapping of the ticket log.
