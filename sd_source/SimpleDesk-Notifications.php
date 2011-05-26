@@ -344,7 +344,7 @@ function shd_notify_users($notify_data)
 	);
 	foreach ($notify_lang as $this_lang => $lang_members)
 	{
-		shd_load_language('SimpleDeskNotifications', $this_lang);
+		shd_load_language('sd_language/SimpleDeskNotifications', $this_lang);
 
 		foreach ($lang_members as $member)
 		{
@@ -448,9 +448,9 @@ function shd_notify_popup()
 
 	// We're reusing the Help template, need its language file.
 	loadLanguage('Help');
-	shd_load_language('SimpleDeskAdmin');
-	shd_load_language('SimpleDeskLogAction');
-	shd_load_language('SimpleDeskNotifications');
+	shd_load_language('sd_language/SimpleDeskAdmin');
+	shd_load_language('sd_language/SimpleDeskLogAction');
+	shd_load_language('sd_language/SimpleDeskNotifications');
 
 	// Set the page up
 	loadTemplate('Help');

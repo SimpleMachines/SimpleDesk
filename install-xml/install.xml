@@ -44,7 +44,7 @@
 			<add><![CDATA[	// SimpleDesk sections. Added here after the initial cleaning is done, so that we can do our own permission checks without arguing with SMF's system (so much)
 	if (!empty($modSettings['helpdesk_active']))
 	{
-		shd_load_language('SimpleDeskProfile');
+		shd_load_language('sd_language/SimpleDeskProfile');
 
 		// Put it here so we can reuse it for the left menu a bit
 		$context['helpdesk_menu'] = array(
@@ -206,7 +206,7 @@
 	<file name="$sourcedir/Who.php"><!-- load the who's online strings... we don't use it much now, but maybe later... -->
 		<operation>
 			<search position="after"><![CDATA[// Actions that require a specific permission level.]]></search>
-			<add><![CDATA[	shd_load_language('SimpleDeskWho');
+			<add><![CDATA[	shd_load_language('sd_language/SimpleDeskWho');
 	shd_load_plugin_langfiles('who');
 
 	]]></add>

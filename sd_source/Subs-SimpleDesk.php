@@ -104,7 +104,7 @@ function shd_init()
 	define('ROLEPERM_DENY', 2);
 
 	// Load some stuff
-	shd_load_language('SimpleDesk');
+	shd_load_language('sd_language/SimpleDesk');
 	require($sourcedir . '/sd_source/Subs-SimpleDeskPermissions.php');
 
 	// Set up defaults
@@ -1562,7 +1562,7 @@ function shd_init_actions(&$actionArray)
 
 	// If we're going to a help page (for admin), make sure to load the relevant text.
 	if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'helpadmin')
-		shd_load_language('SimpleDeskAdmin');
+		shd_load_language('sd_language/SimpleDeskAdmin');
 
 	// Now engage any SD specific hooks.
 	call_integration_hook('shd_hook_actions', array(&$actionArray));

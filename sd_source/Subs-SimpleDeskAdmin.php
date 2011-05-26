@@ -69,9 +69,9 @@ function shd_load_action_log_entries($start = 0, $items_per_page = 10, $sort = '
 	global $smcFunc, $txt, $scripturl, $context, $user_info, $user_profile;
 
 	// Load languages incase they aren't there (Read: ticket-specific logs)
-	shd_load_language('SimpleDeskAdmin');
-	shd_load_language('SimpleDeskLogAction');
-	shd_load_language('SimpleDeskNotifications');
+	shd_load_language('sd_language/SimpleDeskAdmin');
+	shd_load_language('sd_language/SimpleDeskLogAction');
+	shd_load_language('sd_language/SimpleDeskNotifications');
 
 	$loaded_users = array();
 
@@ -362,7 +362,7 @@ function shd_admin_bootstrap(&$admin_areas)
 
 	// Load the main admin language files and any needed for SD plugins in the admin panel.
 	require_once($sourcedir . '/sd_source/SimpleDesk-Admin.php');
-	shd_load_language('SimpleDeskAdmin');
+	shd_load_language('sd_language/SimpleDeskAdmin');
 	shd_load_plugin_files('hdadmin');
 	shd_load_plugin_langfiles('hdadmin');
 

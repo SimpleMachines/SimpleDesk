@@ -37,7 +37,7 @@ function shd_admin_permissions()
 
 	shd_load_all_permission_sets();
 	loadTemplate('sd_template/SimpleDesk-AdminPermissions');
-	shd_load_language('SimpleDeskPermissions');
+	shd_load_language('sd_language/SimpleDeskPermissions');
 
 	$subactions = array(
 		'main' => 'shd_admin_role_list',

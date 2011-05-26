@@ -142,7 +142,7 @@ function shd_tickettotopic()
 		fatal_lang_error('shd_moveticket_noboards', false);
 
 	// OK, now we got to check for custom fields. In any case, we need to fetch the list of fields that might be applicable to this ticket.
-	shd_load_language('SimpleDeskAdmin');
+	shd_load_language('sd_language/SimpleDeskAdmin');
 	$context['field_types'] = array(
 		CFIELD_TYPE_TEXT => array($txt['shd_admin_custom_fields_ui_text'], 'text'),
 		CFIELD_TYPE_LARGETEXT => array($txt['shd_admin_custom_fields_ui_largetext'], 'largetext'),

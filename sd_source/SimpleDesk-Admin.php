@@ -39,7 +39,7 @@ function shd_admin_main()
 	global $context, $scripturl, $sourcedir, $settings, $txt, $modSettings, $scripturl;
 
 	shd_init();
-	shd_load_language('SimpleDeskAdmin');
+	shd_load_language('sd_language/SimpleDeskAdmin');
 
 	// Kick them in the kneecaps!
 	if (!shd_allowed_to('admin_helpdesk', 0))
@@ -704,7 +704,7 @@ function shd_admin_action_log()
 {
 	global $context, $settings, $scripturl, $txt, $sourcedir, $smcFunc, $sort_types;
 
-	shd_load_language('SimpleDeskLogAction');
+	shd_load_language('sd_language/SimpleDeskLogAction');
 
 	$context['can_delete'] = allowedTo('admin_forum');
 

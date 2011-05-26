@@ -21,13 +21,7 @@
 		<modification format="xml" type="file">install-xml/install-packages.xml</modification>
 
 		<!-- language files -->
-		<require-file name="language-php/SimpleDesk.english.php" destination="$languagedir" />
-		<require-file name="language-php/SimpleDeskPermissions.english.php" destination="$languagedir" />
-		<require-file name="language-php/SimpleDeskLogAction.english.php" destination="$languagedir" />
-		<require-file name="language-php/SimpleDeskAdmin.english.php" destination="$languagedir" />
-		<require-file name="language-php/SimpleDeskWho.english.php" destination="$languagedir" />
-		<require-file name="language-php/SimpleDeskNotifications.english.php" destination="$languagedir" />
-		<require-file name="language-php/SimpleDeskProfile.english.php" destination="$languagedir" />
+		<require-dir name="sd_language" destination="$themes_dir/default/languages" />
 
 		<!-- sources -->
 		<require-dir name="sd_source" destination="$sourcedir" />
@@ -73,13 +67,7 @@
 		<modification format="xml" type="file" reverse="true">install-xml/install-packages.xml</modification>
 
 		<!-- language files, removed -->
-		<remove-file name="$languagedir/SimpleDesk.english.php" />
-		<remove-file name="$languagedir/SimpleDeskPermissions.english.php" />
-		<remove-file name="$languagedir/SimpleDeskLogAction.english.php" />
-		<remove-file name="$languagedir/SimpleDeskAdmin.english.php" />
-		<remove-file name="$languagedir/SimpleDeskWho.english.php" />
-		<remove-file name="$languagedir/SimpleDeskNotifications.english.php" />
-		<remove-file name="$languagedir/SimpleDeskProfile.english.php" />
+		<remove-dir name="$themes_dir/default/languages/sd_language" />
 
 		<!-- source files, removed -->
 		<remove-dir name="$sourcedir/sd_source" />

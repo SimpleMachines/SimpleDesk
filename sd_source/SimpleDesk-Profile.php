@@ -34,7 +34,7 @@ function shd_profile_main($memID)
 
 	// Load the profile details
 	loadTemplate('sd_template/SimpleDesk-Profile', array('helpdesk', 'helpdesk_admin'));
-	shd_load_language('SimpleDeskProfile');
+	shd_load_language('sd_language/SimpleDeskProfile');
 	$context['shd_preferences'] = shd_load_user_prefs();
 	shd_load_plugin_files('hdprofile');
 	shd_load_plugin_langfiles('hdprofile');
@@ -540,7 +540,7 @@ function shd_profile_permissions($memID)
 {
 	global $context, $txt, $scripturl, $sourcedir, $user_info, $smcFunc, $user_profile, $settings;
 
-	shd_load_language('SimpleDeskPermissions');
+	shd_load_language('sd_language/SimpleDeskPermissions');
 
 	$context['page_title'] = $txt['shd_profile_area'] . ' - ' . $txt['shd_profile_permissions'];
 	$context['sub_template'] = 'shd_profile_permissions';
@@ -686,7 +686,7 @@ function shd_profile_actionlog($memID)
 	global $context, $txt, $scripturl, $sourcedir, $user_info, $settings;
 
 	loadTemplate('sd_template/SimpleDesk-Profile');
-	shd_load_language('SimpleDeskProfile');
+	shd_load_language('sd_language/SimpleDeskProfile');
 
 	require_once($sourcedir . '/sd_source/Subs-SimpleDeskAdmin.php');
 	$context['action_log'] = shd_load_action_log_entries(0, 10, '', '', 'la.id_member = ' . $memID);

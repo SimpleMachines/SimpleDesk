@@ -233,7 +233,7 @@ function shd_admin_edit_dept()
 {
 	global $context, $txt, $smcFunc, $scripturl;
 
-	shd_load_language('SimpleDeskPermissions');
+	shd_load_language('sd_language/SimpleDeskPermissions');
 
 	$_REQUEST['dept'] = isset($_REQUEST['dept']) ? (int) $_REQUEST['dept'] : 0;
 
