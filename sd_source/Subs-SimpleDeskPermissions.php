@@ -403,14 +403,25 @@ function shd_load_user_perms()
 		$tickets_own_nonprivate = array_diff($tickets_own_dept, $tickets_own_private);
 
 		$clauses = array();
+		$privacy_clauses = array();
+		// Ticket access is:
+		// WHERE (ticket is in a department where we can see any private ticket) OR
+		//       (ticket is in a department where we can see our own private tickets AND it's our ticket) OR
+		//       (ticket is in a department where we can see any non private ticket AND not private) OR
+		//       (ticket is in a department where we can see our own non private ticket AND it's not private)
 		if (!empty($tickets_any_private)) // Depts where we can see private tickets, thus we don't need to check anything else for this part.
-			$clauses[] = 'hdt.id_dept IN (' . implode(',', $tickets_any_private) . ')';
-		if (!empty($tickets_any_nonprivate)) // Depts where we can see nonprivate tickets. We need to validate privacy on these but that's it.
-			$clauses[] = 'hdt.id_dept IN (' . implode(',', $tickets_any_nonprivate) . ') AND hdt.status = 0';
+			$privacy_clauses[] = '(hdt.id_dept IN (' . implode(',', $tickets_any_private) . '))';
 		if (!empty($tickets_own_private)) // Depts where we can see our own private tickets, so need to validate id_dept and id_member_started, but we can discount checking private here.
-			$clauses[] = 'hdt.id_dept IN (' . implode(',', $tickets_own_private) . ') AND hdt.id_member_started = {int:user_info_id}';
+			$privacy_clauses[] = '(hdt.id_dept IN (' . implode(',', $tickets_own_private) . ') AND hdt.id_member_started = {int:user_info_id})';
+		if (!empty($tickets_any_nonprivate)) // Depts where we can see nonprivate tickets. We need to validate privacy on these but that's it.
+			$privacy_clauses[] = '(hdt.id_dept IN (' . implode(',', $tickets_any_nonprivate) . ') AND hdt.status = 0)';
 		if (!empty($tickets_own_nonprivate)) // Depts where we can see our own nonprivate tickets. Validate id_dept, id_member_started and private.
-			$clauses[] = 'hdt.id_dept IN (' . implode(',', $tickets_own_nonprivate) . ') AND hdt.private = 0 AND hdt.id_member_started = {int:user_info_id}';
+			$privacy_clauses[] = '(hdt.id_dept IN (' . implode(',', $tickets_own_nonprivate) . ') AND hdt.private = 0 AND hdt.id_member_started = {int:user_info_id})';
+
+		if (!empty($privacy_clauses))
+			$clauses[] = implode(' OR ', $privacy_clauses);
+		else
+			$clauses[] = '1=0'; // Cannot access anything!
 
 		// That's the core stuff done. We also need to ensure that closed tickets aren't visible either.
 		$depts_closed_any = shd_allowed_to('shd_view_closed_any', false);
