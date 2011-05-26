@@ -603,19 +603,19 @@ function template_quickreply()
 		<div class="tborder">
 			<div class="title_bar', $options['display_quick_reply'] == 2 ? ' grid_header' : '', '" id="quickreplyheader">
 				<h3 class="titlebg">
-					<span class="floatright"><a href="javascript:oQuickReply.swap();"><img src="', $settings['images_url'], '/', $options['display_quick_reply'] == 2 ? 'collapse' : 'expand', '.gif" alt="+" id="quickReplyExpand" class="icon" /></a></span>
+					<span class="floatright"><a href="#" onclick="oQuickReply.swap(); return false;"><img src="', $settings['images_url'], '/', $options['display_quick_reply'] == 2 ? 'collapse' : 'expand', '.gif" alt="+" id="quickReplyExpand" class="icon" style="display:none;" /></a></span>
 					<img src="', $settings['default_images_url'], '/simpledesk/respond.png" alt="x" />
-					<a href="javascript:oQuickReply.swap();">', $txt['shd_reply_ticket'], '</a>
+					<a href="', $scripturl, '?action=helpdesk;sa=reply;ticket=', $context['ticket_id'], ';num_replies=', $context['ticket']['num_replies'], ';', $context['session_var'], '=', $context['session_id'], '" onclick="oQuickReply.swap(); return false;">', $txt['shd_reply_ticket'], '</a>
 				</h3>
 			</div>
-			<div class="roundframe" id="quickReplyOptions"', $options['display_quick_reply'] == 2 ? '' : ' style="display: none"', '>
+			<div class="roundframe" id="quickReplyOptions"', $options['display_quick_reply'] != 2 ? ' style="display: none"' : '', '>
 				<div class="content">
 					<form action="', $scripturl, '?action=helpdesk;sa=savereply" method="post" accept-charset="', $context['character_set'], '" name="postreply" id="postreply" onsubmit="submitonce(this);smc_saveEntities(\'postreply\', [\'shd_reply\'], \'options\');" enctype="multipart/form-data" style="margin: 0;">';
 
 		if ($context['can_go_advanced'])
 		{
 			echo '
-					<div class="description shd_advancedbutton floatright" id="shd_goadvancedbutton">
+					<div class="description shd_advancedbutton floatright" id="shd_goadvancedbutton" style="display:none;">
 						<a onclick="goAdvanced(); return false;" href="', $scripturl, '?action=helpdesk;sa=reply;ticket=', $context['ticket_id'], ';', $context['session_var'], '=', $context['session_id'], '">', $txt['shd_go_advanced'], '</a><br />
 					</div>';
 		}
@@ -628,7 +628,11 @@ function template_quickreply()
 				</div>
 			</div>
 			<span id="quickreplyfooter" class="lowerframe"', $options['display_quick_reply'] == 2 ? '' : ' style="display: none"', '><span></span></span>
-		</div>';
+		</div>
+		<script type="text/javascript"><!-- // --><![CDATA[
+		document.getElementById("quickReplyExpand").style.display = "";
+		document.getElementById("shd_goadvancedbutton").style.display = "";
+		// ]]></script>';
 	}
 }
 
