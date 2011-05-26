@@ -90,8 +90,6 @@ function shd_admin_custom_main()
 		$context['custom_fields'][] = $row;
 	}
 
-	ksort($context['custom_fields']);
-
 	if (!empty($context['custom_fields']))
 	{
 		$context['custom_fields'][0]['is_first'] = true;
