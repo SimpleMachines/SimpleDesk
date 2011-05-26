@@ -98,6 +98,11 @@
 					$profile_areas['profile_action']['areas']['sendpm']['enabled'] = false;
 				if (!empty($profile_areas['edit_profile']['areas']['pmprefs']))
 					$profile_areas['edit_profile']['areas']['pmprefs']['enabled'] = false;
+				if (!empty($profile_areas['info']['areas']['summary']))
+				{
+					$profile_areas['info']['areas']['summary']['file'] = 'sd_source/SimpleDesk-Profile.php';
+					$profile_areas['info']['areas']['summary']['function'] = 'shd_profile_summary_wrapper';
+				}
 			}
 		}
 		else

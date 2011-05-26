@@ -489,7 +489,7 @@ function template_viewnotifications()
 				<div class="tborder">
 					<div class="title_bar grid_header">
 						<h3 class="titlebg">
-							<img src="', $settings['default_images_url'], '/simpledesk/log_notify.png" alt="" />', $txt['shd_ticket_notify'], ' (', $context['relationships_count'], ')
+							<img src="', $settings['default_images_url'], '/simpledesk/log_notify.png" alt="" />', $txt['shd_ticket_notify'], '
 						</h3>
 					</div>
 					<div class="windowbg2">

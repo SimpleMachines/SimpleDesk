@@ -582,4 +582,21 @@ function shd_profile_actionlog($memID)
 	$context['sub_template'] = 'shd_profile_actionlog';
 
 }
+
+function shd_profile_summary_wrapper($memID)
+{
+	global $context, $modSettings, $sourcedir;
+
+	require_once($sourcedir . '/Profile-View.php');
+	loadTemplate('Profile');
+	loadTemplate('sd_template/SimpleDesk-Profile');
+	summary($memID);
+
+	if (!empty($modSettings['shd_helpdesk_only']))
+	{
+		if (!empty($modSettings['shd_disable_pm']))
+		$context['can_send_pm'] = false;
+	}
+}
+
 ?>

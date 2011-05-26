@@ -606,4 +606,9 @@ function template_shd_profile_navigation_below()
 		<br class="clear" />';
 }
 
+function template_shd_profile_summary_wrapper()
+{
+	template_summary();
+}
+
 ?>
