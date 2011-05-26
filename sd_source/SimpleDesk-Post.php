@@ -1267,7 +1267,7 @@ function shd_done_posting()
 	if (!empty($modSettings['shd_thank_you_post']) && empty($context['ticket_form']['msg']))
 	{
 		// So we're doing a "thanks for posting, here's what's next" message. Well, it's only to new tickets (not on reply) - but... should it go to everyone, or only non staff?
-		if (empty($modSettings['shd_thank_you_nonstaff']) || !shd_allowed_to('shd_staff', 0))
+		if (empty($modSettings['shd_thank_you_nonstaff']) || !shd_allowed_to('shd_staff', $context['shd_department']))
 		{
 			$thank_you = true;
 			$context['sub_template'] = 'shd_thank_posting';
@@ -1976,7 +1976,7 @@ function shd_posting_additional_options()
 		'goback' => array(
 			'checked' => !empty($context['ticket_form']['return_to_ticket']) || !empty($options['return_to_post']),
 			'text' => $txt['shd_back_to_ticket'],
-			'show' => (empty($context['ticket_form']['ticket']) && !empty($modSettings['shd_thank_you_post'])) ? false : true,
+			'show' => (empty($context['ticket_form']['ticket']) && !empty($modSettings['shd_thank_you_post']) && (empty($modSettings['shd_thank_you_nonstaff']) || !shd_allowed_to('shd_staff', 0))) ? false : true,
 		),
 		'no_smileys' => array(
 			'checked' => !empty($context['ticket_form']['disable_smileys']),
