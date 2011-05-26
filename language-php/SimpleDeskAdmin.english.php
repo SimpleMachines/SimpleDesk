@@ -38,6 +38,8 @@ $txt['core_settings_item_shd_desc'] = 'The helpdesk allows you to expand your fo
 //@{
 $txt['errortype_simpledesk'] = 'SimpleDesk';
 $txt['errortype_simpledesk_desc'] = 'Errors most likely related to SimpleDesk. Please report any such errors on www.simpledesk.net.';
+$txt['errortype_sdplugin'] = 'SimpleDesk Plugin';
+$txt['errortype_sdplugin_desc'] = 'Errors most likely related to a SimpleDesk plugin. The file name should generally indicate the plugin, so you can check to see who the author is.';
 $txt['scheduled_task_simpledesk'] = 'SimpleDesk daily maintenance';
 $txt['scheduled_task_desc_simpledesk'] = 'Maintenance tasks and internal processing to be run daily for SimpleDesk. It is strongly not advised to disable this task.';
 //@}

@@ -218,7 +218,10 @@
 			<search position="after"><![CDATA[	// Make sure the category that was specified is a valid one]]></search>
 			<add><![CDATA[	// Is this a SimpleDesk error?
 	$known_error_types[] = 'simpledesk';
-	if (strpos($file, 'SimpleDesk') !== false || strpos($error_message, 'shd_') !== false || strpos($error_message, 'SimpleDesk') !== false)
+	$known_error_types[] = 'sdplugin';
+	if (stripos($file, 'sdplugin') !== false || stripos($error_message, 'shdp_') !== false)
+		$error_type = 'sdplugin';
+	elseif (stripos($file, 'simpledesk') !== false || stripos($error_message, 'shd_') !== false || stripos($error_message, 'simpledesk') !== false)
 		$error_type = 'simpledesk';
 
 ]]></add>
