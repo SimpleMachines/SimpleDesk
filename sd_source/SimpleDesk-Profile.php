@@ -119,7 +119,11 @@ function shd_profile_main($memID)
 
 function shd_profile_frontpage($memID)
 {
-	global $context, $txt, $scripturl, $sourcedir, $user_info, $smcFunc;
+	global $context, $memberContext, $txt, $modSettings, $user_info, $user_profile, $sourcedir, $scripturl, $smcFunc;
+
+	// Attempt to load the member's profile data.
+	if (!loadMemberContext($memID) || !isset($memberContext[$memID]))
+		fatal_lang_error('not_a_user', false);
 
 	$context['page_title'] = $txt['shd_profile_area'] . ' - ' . $txt['shd_profile_main'];
 	$context['sub_template'] = 'shd_profile_main';
@@ -163,6 +167,117 @@ function shd_profile_frontpage($memID)
 
 	$context['can_post_ticket'] = shd_allowed_to('shd_new_ticket', 0) && $memID == $context['user']['id'];
 	$context['can_post_proxy'] = shd_allowed_to('shd_new_ticket', 0) && shd_allowed_to('shd_post_proxy', 0) && $memID != $context['user']['id']; // since it's YOUR permissions, whether you can post on behalf of this user and this user isn't you!
+
+	// Everything hereafter is HD only stuff.
+	if (empty($modSettings['shd_helpdesk_only']))
+		return;
+
+	$context['can_send_pm'] = allowedTo('pm_send') && (empty($modSettings['shd_helpdesk_only']) || empty($modSettings['shd_disable_pm']));
+	$context['member'] = &$memberContext[$memID];
+
+	if (allowedTo('moderate_forum'))
+	{
+		// Make sure it's a valid ip address; otherwise, don't bother...
+		if (preg_match('/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/', $memberContext[$memID]['ip']) == 1 && empty($modSettings['disableHostnameLookup']))
+			$context['member']['hostname'] = host_from_ip($memberContext[$memID]['ip']);
+		else
+			$context['member']['hostname'] = '';
+
+		$context['can_see_ip'] = true;
+	}
+	else
+		$context['can_see_ip'] = false;
+
+	// If the user is awaiting activation, and the viewer has permission - setup some activation context messages.
+	if ($context['member']['is_activated'] % 10 != 1 && allowedTo('moderate_forum'))
+	{
+		$context['activate_type'] = $context['member']['is_activated'];
+		// What should the link text be?
+		$context['activate_link_text'] = in_array($context['member']['is_activated'], array(3, 4, 5, 13, 14, 15)) ? $txt['account_approve'] : $txt['account_activate'];
+
+		// Should we show a custom message?
+		$context['activate_message'] = isset($txt['account_activate_method_' . $context['member']['is_activated'] % 10]) ? $txt['account_activate_method_' . $context['member']['is_activated'] % 10] : $txt['account_not_activated'];
+	}
+
+	// How about, are they banned?
+	$context['member']['bans'] = array();
+	if (allowedTo('moderate_forum'))
+	{
+		// Can they edit the ban?
+		$context['can_edit_ban'] = allowedTo('manage_bans');
+
+		$ban_query = array();
+		$ban_query_vars = array(
+			'time' => time(),
+		);
+		$ban_query[] = 'id_member = ' . $context['member']['id'];
+
+		// Valid IP?
+		if (preg_match('/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/', $memberContext[$memID]['ip'], $ip_parts) == 1)
+		{
+			$ban_query[] = '((' . $ip_parts[1] . ' BETWEEN bi.ip_low1 AND bi.ip_high1)
+						AND (' . $ip_parts[2] . ' BETWEEN bi.ip_low2 AND bi.ip_high2)
+						AND (' . $ip_parts[3] . ' BETWEEN bi.ip_low3 AND bi.ip_high3)
+						AND (' . $ip_parts[4] . ' BETWEEN bi.ip_low4 AND bi.ip_high4))';
+
+			// Do we have a hostname already?
+			if (!empty($context['member']['hostname']))
+			{
+				$ban_query[] = '({string:hostname} LIKE hostname)';
+				$ban_query_vars['hostname'] = $context['member']['hostname'];
+			}
+		}
+		// Use '255.255.255.255' for 'unknown' - it's not valid anyway.
+		elseif ($memberContext[$memID]['ip'] == 'unknown')
+			$ban_query[] = '(bi.ip_low1 = 255 AND bi.ip_high1 = 255
+						AND bi.ip_low2 = 255 AND bi.ip_high2 = 255
+						AND bi.ip_low3 = 255 AND bi.ip_high3 = 255
+						AND bi.ip_low4 = 255 AND bi.ip_high4 = 255)';
+
+		// Check their email as well...
+		if (strlen($context['member']['email']) != 0)
+		{
+			$ban_query[] = '({string:email} LIKE bi.email_address)';
+			$ban_query_vars['email'] = $context['member']['email'];
+		}
+
+		// So... are they banned?  Dying to know!
+		$request = $smcFunc['db_query']('', '
+			SELECT bg.id_ban_group, bg.name, bg.cannot_access, bg.cannot_post, bg.cannot_register,
+				bg.cannot_login, bg.reason
+			FROM {db_prefix}ban_items AS bi
+				INNER JOIN {db_prefix}ban_groups AS bg ON (bg.id_ban_group = bi.id_ban_group AND (bg.expire_time IS NULL OR bg.expire_time > {int:time}))
+			WHERE (' . implode(' OR ', $ban_query) . ')',
+			$ban_query_vars
+		);
+		while ($row = $smcFunc['db_fetch_assoc']($request))
+		{
+			// Work out what restrictions we actually have.
+			$ban_restrictions = array();
+			foreach (array('access', 'register', 'login', 'post') as $type)
+				if ($row['cannot_' . $type])
+					$ban_restrictions[] = $txt['ban_type_' . $type];
+
+			// No actual ban in place?
+			if (empty($ban_restrictions))
+				continue;
+
+			// Prepare the link for context.
+			$ban_explanation = sprintf($txt['user_cannot_due_to'], implode(', ', $ban_restrictions), '<a href="' . $scripturl . '?action=admin;area=ban;sa=edit;bg=' . $row['id_ban_group'] . '">' . $row['name'] . '</a>');
+
+			$context['member']['bans'][$row['id_ban_group']] = array(
+				'reason' => empty($row['reason']) ? '' : '<br /><br /><strong>' . $txt['ban_reason'] . ':</strong> ' . $row['reason'],
+				'cannot' => array(
+					'access' => !empty($row['cannot_access']),
+					'register' => !empty($row['cannot_register']),
+					'post' => !empty($row['cannot_post']),
+					'login' => !empty($row['cannot_login']),
+				),
+				'explanation' => $ban_explanation,
+			);
+		}
+		$smcFunc['db_free_result']($request);
+	}
 }
 
 function shd_profile_preferences($memID)
@@ -581,22 +696,6 @@ function shd_profile_actionlog($memID)
 	$context['page_title'] = $txt['shd_profile_area'] . ' - ' . $txt['shd_profile_actionlog'];
 	$context['sub_template'] = 'shd_profile_actionlog';
 
-}
-
-function shd_profile_summary_wrapper($memID)
-{
-	global $context, $modSettings, $sourcedir;
-
-	require_once($sourcedir . '/Profile-View.php');
-	loadTemplate('Profile');
-	loadTemplate('sd_template/SimpleDesk-Profile');
-	summary($memID);
-
-	if (!empty($modSettings['shd_helpdesk_only']))
-	{
-		if (!empty($modSettings['shd_disable_pm']))
-		$context['can_send_pm'] = false;
-	}
 }
 
 function shd_profile_theme_wrapper($memID)

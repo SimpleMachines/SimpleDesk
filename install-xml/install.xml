@@ -92,34 +92,57 @@
 		{
 			require_once($sourcedir . '/Profile-Modify.php');
 
+			// Move some stuff around.
+			$context['helpdesk_menu']['areas']['permissions'] = array(
+				'label' => $txt['shd_show_forum_permissions'],
+				'file' => 'Profile-View.php',
+				'function' => 'showPermissions',
+				'enabled' => allowedTo('manage_permissions'),
+			);
+			$context['helpdesk_menu']['areas']['tracking'] = array(
+				'label' => $txt['trackUser'],
+				'file' => 'Profile-View.php',
+				'function' => 'tracking',
+				'subsections' => array(
+					'activity' => array($txt['trackActivity'], 'moderate_forum'),
+					'ip' => array($txt['trackIP'], 'moderate_forum'),
+					'edits' => array($txt['trackEdits'], 'moderate_forum'),
+				),
+				'enabled' => allowedTo('moderate_forum'),
+			);
+
 			$profile_areas['helpdesk'] = $context['helpdesk_menu'];
 			$profile_areas += $old_profile_areas;
+
+			unset($profile_areas['info']['areas']['permissions'], $profile_areas['info']['areas']['tracking']);
+
+			$remove = array(
+				'info' => array(
+					'summary',
+					'statistics',
+					'showposts',
+					'viewwarning',
+				),
+				'edit_profile' => array(
+					'forumprofile',
+					'ignoreboards',
+					'lists',
+					'notification',
+				),
+				'profile_action' => array(
+					'issuewarning',
+				),
+			);
 			if (!empty($modSettings['shd_disable_pm']))
 			{
-				if (!empty($profile_areas['profile_action']['areas']['sendpm']))
-					$profile_areas['profile_action']['areas']['sendpm']['enabled'] = false;
-				if (!empty($profile_areas['edit_profile']['areas']['pmprefs']))
-					$profile_areas['edit_profile']['areas']['pmprefs']['enabled'] = false;
-				if (!empty($profile_areas['info']['areas']['summary']))
-				{
-					$profile_areas['info']['areas']['summary']['file'] = 'sd_source/SimpleDesk-Profile.php';
-					$profile_areas['info']['areas']['summary']['function'] = 'shd_profile_summary_wrapper';
-				}
+				$remove['profile_action'][] = 'sendpm';
+				$remove['edit_profile'][] = 'pmprefs';
 			}
-			if (!empty($profile_areas['info']['areas']['statistics']))
-				$profile_areas['info']['areas']['statistics']['enabled'] = false;
-			if (!empty($profile_areas['info']['areas']['showposts']))
-				$profile_areas['info']['areas']['showposts']['enabled'] = false;
-			if (!empty($profile_areas['edit_profile']['areas']['forumprofile']))
-				$profile_areas['edit_profile']['areas']['forumprofile']['enabled'] = false;
-			if (!empty($profile_areas['edit_profile']['areas']['ignoreboards']))
-				$profile_areas['edit_profile']['areas']['ignoreboards']['enabled'] = false;
-			if (!empty($profile_areas['edit_profile']['areas']['lists']))
-				$profile_areas['edit_profile']['areas']['lists']['enabled'] = false;
-			if (!empty($profile_areas['profile_action']['areas']['issuewarning']))
-				$profile_areas['profile_action']['areas']['issuewarning']['enabled'] = false;
-			if (!empty($profile_areas['edit_profile']['areas']['notification']))
-				$profile_areas['edit_profile']['areas']['notification']['enabled'] = false;
+
+			foreach ($remove as $area => $items)
+				foreach ($items as $item)
+					if (!empty($profile_areas[$area]['areas'][$item]))
+						$profile_areas[$area]['areas'][$item]['enabled'] = false;
 
 			$profile_areas['edit_profile']['areas']['theme']['file'] = 'sd_source/SimpleDesk-Profile.php';
 			$profile_areas['edit_profile']['areas']['theme']['function'] = 'shd_profile_theme_wrapper';

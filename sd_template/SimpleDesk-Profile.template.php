@@ -15,7 +15,7 @@
 */
 function template_shd_profile_main()
 {
-	global $context, $txt, $settings, $scripturl;
+	global $context, $txt, $settings, $scripturl, $modSettings;
 
 	echo '
 	<div class="tborder shd_profile_navigation">
@@ -59,6 +59,111 @@ function template_shd_profile_main()
 			<span class="botslice"><span></span></span>
 		</div>
 	</div>';
+
+	// In helpdesk-only mode, we don't have the forum profile, so we need to display what's useful and relevant on here.
+	if (!empty($modSettings['shd_helpdesk_only']))
+	{
+		echo '
+	<br />
+	<div class="tborder shd_profile_navigation" id="tracking">
+		<div class="cat_bar grid_header">
+			<h3 class="catbg">
+				<img src="', $settings['default_images_url'], '/simpledesk/user.png" alt="" class="shd_icon_minihead" />
+				', $txt['summary'], ' - ', $context['member']['name'], '
+			</h3>
+		</div>
+		<div class="windowbg">
+			<div class="content">
+			<img src="', $settings['default_images_url'], '/simpledesk/user.png" alt="" class="shd_icon_minihead" /> <strong>', $txt['shd_acct_information'], '</strong><hr />
+				<dl>';
+
+		if ($context['user']['is_owner'] || $context['user']['is_admin'])
+			echo '
+					<dt>', $txt['username'], ': </dt>
+					<dd>', $context['member']['username'], '</dd>';
+
+		// Is this member requiring activation and/or banned?
+		if (!empty($context['activate_message']) || !empty($context['member']['bans']))
+		{
+
+			// If the person looking at the summary has permission, and the account isn't activated, give the viewer the ability to do it themselves.
+			if (!empty($context['activate_message']))
+				echo '
+					<dt class="clear"><span class="alert">', $context['activate_message'], '</span>&nbsp;(<a href="' . $scripturl . '?action=profile;save;area=activateaccount;u=' . $context['id_member'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '"', ($context['activate_type'] == 4 ? ' onclick="return confirm(\'' . $txt['profileConfirm'] . '\');"' : ''), '>', $context['activate_link_text'], '</a>)</dt>';
+
+			// If the current member is banned, show a message and possibly a link to the ban.
+			if (!empty($context['member']['bans']))
+			{
+				echo '
+					<dt class="clear"><span class="alert">', $txt['user_is_banned'], '</span>&nbsp;[<a href="#" onclick="document.getElementById(\'ban_info\').style.display = document.getElementById(\'ban_info\').style.display == \'none\' ? \'\' : \'none\';return false;">' . $txt['view_ban'] . '</a>]</dt>
+					<dt class="clear" id="ban_info" style="display: none;">
+						<strong>', $txt['user_banned_by_following'], ':</strong>';
+
+				foreach ($context['member']['bans'] as $ban)
+					echo '
+						<br /><span class="smalltext">', $ban['explanation'], '</span>';
+
+				echo '
+					</dt>';
+			}
+		}
+
+		echo '
+					<dt>', $txt['date_registered'], ': </dt>
+					<dd>', $context['member']['registered'], '</dd>';
+
+		echo '
+					<dt>', $txt['lastLoggedIn'], ': </dt>
+					<dd>', $context['member']['last_login'], '</dd>';
+
+		echo '
+					<dt>', $txt['local_time'], ':</dt>
+					<dd>', $context['member']['local_time'], '</dd>';
+
+		if (!empty($modSettings['userLanguage']) && !empty($context['member']['language']))
+			echo '
+					<dt>', $txt['language'], ':</dt>
+					<dd>', $context['member']['language'], '</dd>';
+
+		echo '
+				</dl>
+				<hr />
+				<dl>';
+
+		if ($context['member']['show_email'] == 'yes')
+			echo '
+					<dt>', $txt['email'], ': </dt>
+					<dd><a href="', $scripturl, '?action=emailuser;sa=email;uid=', $context['member']['id'], '">', $context['member']['email'], '</a></dd>';
+		// ... Or if the one looking at the profile is an admin they can see it anyway.
+		elseif ($context['member']['show_email'] == 'yes_permission_override')
+			echo '
+					<dt>', $txt['email'], ': </dt>
+					<dd><em><a href="', $scripturl, '?action=emailuser;sa=email;uid=', $context['member']['id'], '">', $context['member']['email'], '</a></em></dd>';
+
+		// If the person looking is allowed, they can check the members IP address and hostname.
+		if ($context['can_see_ip'])
+		{
+			if (!empty($context['member']['ip']))
+			echo '
+					<dt>', $txt['ip'], ': </dt>
+					<dd><a href="', $scripturl, '?action=profile;area=tracking;sa=ip;searchip=', $context['member']['ip'], ';u=', $context['member']['id'], '">', $context['member']['ip'], '</a></dd>';
+
+			if (empty($modSettings['disableHostnameLookup']) && !empty($context['member']['ip']))
+				echo '
+					<dt>', $txt['hostname'], ': </dt>
+					<dd>', $context['member']['hostname'], '</dd>';
+		}
+
+		echo '
+				</dl>';
+
+		echo '
+				<br />
+			</div>
+			<span class="botslice"><span></span></span>
+		</div>
+	</div>';
+	}
 }
 
 function template_shd_profile_preferences()

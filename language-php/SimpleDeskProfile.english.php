@@ -159,5 +159,7 @@ $txt['shd_return_to_post'] = 'Return to tickets after posting by default.';
 $txt['shd_timeformat_default'] = '(Helpdesk Default)';
 $txt['shd_theme_forum_default'] = '(Helpdesk Default)';
 $txt['shd_theme_forum_default_desc'] = 'This is the default theme, which means your theme will change along with the administrator\'s settings.';
+$txt['shd_show_forum_permissions'] = 'Show Forum Permissions';
+$txt['shd_acct_information'] = 'Account Information';
 
 ?>
