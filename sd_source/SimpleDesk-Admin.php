@@ -47,6 +47,7 @@ function shd_admin_main()
 
 	// Templates and stuff (like hook files)
 	loadTemplate('sd_template/SimpleDesk-Admin');
+	$context['template_layers'][] = 'shd_nojs';
 	$context['shd_preferences'] = shd_load_user_prefs();
 	shd_load_plugin_files('hdadmin');
 	shd_load_plugin_langfiles('hdadmin');

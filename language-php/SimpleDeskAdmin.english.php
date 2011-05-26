@@ -92,6 +92,8 @@ $txt['shd_closed_tickets'] = 'Closed tickets';
 $txt['shd_recycled_tickets'] = 'Recycled tickets';
 $txt['shd_need_support'] = 'Help with SimpleDesk?';
 $txt['shd_support_start_here'] = 'See our <a href="%1$s">Support Page</a>';
+
+$txt['shd_helpdesk_nojs'] = 'JavaScript is not enabled in your browser. Some functions may not work properly (or at all) in the administration area.';
 //@}
 
 //! @name Translatable strings for the credits
