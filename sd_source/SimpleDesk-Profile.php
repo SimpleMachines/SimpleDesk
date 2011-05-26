@@ -599,4 +599,24 @@ function shd_profile_summary_wrapper($memID)
 	}
 }
 
+function shd_profile_theme_wrapper($memID)
+{
+	global $txt, $context, $user_profile, $modSettings, $settings, $user_info, $smcFunc, $sourcedir, $profile_fields;
+
+	loadTemplate('Profile');
+	loadTemplate('sd_template/SimpleDesk-Profile');
+
+	$lang_strings = array(
+		'current_time', 'theme_info', 'date_format', 'return_to_post', 'timeformat_default', 'theme_forum_default', 'theme_forum_default_desc',
+	);
+
+	// Replace the standard profile strings with SD specific ones.
+	foreach ($lang_strings as $str)
+		$txt[$str] = $txt['shd_' . $str];
+
+	theme($memID);
+
+	$context['profile_fields']['theme_settings']['callback_func'] = 'shd_theme_settings';
+}
+
 ?>

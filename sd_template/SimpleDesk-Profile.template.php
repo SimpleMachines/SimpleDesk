@@ -642,4 +642,68 @@ function template_shd_profile_summary_wrapper()
 	template_summary();
 }
 
+// Template for showing theme settings. Note: template_options() actually adds the theme specific options.
+function template_profile_shd_theme_settings()
+{
+	global $context, $settings, $options, $scripturl, $modSettings, $txt;
+
+	echo '
+							<dd></dd>
+						</dl>
+						<ul id="theme_settings">
+							<li>
+								<input type="hidden" name="default_options[use_sidebar_menu]" value="0" />
+								<label for="use_sidebar_menu"><input type="checkbox" name="default_options[use_sidebar_menu]" id="use_sidebar_menu" value="1"', !empty($context['member']['options']['use_sidebar_menu']) ? ' checked="checked"' : '', ' class="input_check" /> ', $txt['use_sidebar_menu'], '</label>
+							</li>';
+
+	if ($settings['allow_no_censored'])
+		echo '
+							<li>
+								<input type="hidden" name="default_options[show_no_censored]" value="0" />
+								<label for="show_no_censored"><input type="checkbox" name="default_options[show_no_censored]" id="show_no_censored" value="1"' . (!empty($context['member']['options']['show_no_censored']) ? ' checked="checked"' : '') . ' class="input_check" /> ' . $txt['show_no_censored'] . '</label>
+							</li>';
+
+	echo '
+							<li>
+								<input type="hidden" name="default_options[return_to_post]" value="0" />
+								<label for="return_to_post"><input type="checkbox" name="default_options[return_to_post]" id="return_to_post" value="1"', !empty($context['member']['options']['return_to_post']) ? ' checked="checked"' : '', ' class="input_check" /> ', $txt['return_to_post'], '</label>
+							</li>
+							<li>
+								<input type="hidden" name="default_options[no_new_reply_warning]" value="0" />
+								<label for="no_new_reply_warning"><input type="checkbox" name="default_options[no_new_reply_warning]" id="no_new_reply_warning" value="1"', !empty($context['member']['options']['no_new_reply_warning']) ? ' checked="checked"' : '', ' class="input_check" /> ', $txt['no_new_reply_warning'], '</label>
+							</li>';
+
+	// Choose WYSIWYG settings?
+	if (empty($modSettings['disable_wysiwyg']))
+		echo '
+							<li>
+								<input type="hidden" name="default_options[wysiwyg_default]" value="0" />
+								<label for="wysiwyg_default"><input type="checkbox" name="default_options[wysiwyg_default]" id="wysiwyg_default" value="1"', !empty($context['member']['options']['wysiwyg_default']) ? ' checked="checked"' : '', ' class="input_check" /> ', $txt['wysiwyg_default'], '</label>
+							</li>';
+
+	if (!empty($modSettings['cal_enabled']))
+		echo '
+							<li>
+								<label for="calendar_start_day">', $txt['calendar_start_day'], ':</label>
+								<select name="default_options[calendar_start_day]" id="calendar_start_day">
+									<option value="0"', empty($context['member']['options']['calendar_start_day']) ? ' selected="selected"' : '', '>', $txt['days'][0], '</option>
+									<option value="1"', !empty($context['member']['options']['calendar_start_day']) && $context['member']['options']['calendar_start_day'] == 1 ? ' selected="selected"' : '', '>', $txt['days'][1], '</option>
+									<option value="6"', !empty($context['member']['options']['calendar_start_day']) && $context['member']['options']['calendar_start_day'] == 6 ? ' selected="selected"' : '', '>', $txt['days'][6], '</option>
+								</select>
+							</li>';
+
+	echo '
+							<li>
+								<label for="display_quick_reply">', $txt['display_quick_reply'], '</label>
+								<select name="default_options[display_quick_reply]" id="display_quick_reply">
+									<option value="0"', empty($context['member']['options']['display_quick_reply']) ? ' selected="selected"' : '', '>', $txt['display_quick_reply1'], '</option>
+									<option value="1"', !empty($context['member']['options']['display_quick_reply']) && $context['member']['options']['display_quick_reply'] == 1 ? ' selected="selected"' : '', '>', $txt['display_quick_reply2'], '</option>
+									<option value="2"', !empty($context['member']['options']['display_quick_reply']) && $context['member']['options']['display_quick_reply'] == 2 ? ' selected="selected"' : '', '>', $txt['display_quick_reply3'], '</option>
+								</select>
+							</li>
+						</ul>
+						<dl>
+							<dd></dd>';
+}
+
 ?>

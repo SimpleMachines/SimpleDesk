@@ -151,4 +151,13 @@ $txt['shd_profile_view_full_ticket'] = 'View the full ticket';
 $txt['shd_profile_a_ticket'] = 'Ticket %s';
 $txt['shd_profile_reply_to_ticket'] = 'Reply to ticket %s';
 
+// When in HD only mode, we need to remove hints of 'forum' from the language strings. These essentially replace the non shd_ prefixed ones in Profile.language.php.
+$txt['shd_current_time'] = 'Current helpdesk time';
+$txt['shd_theme_info'] = 'This section allows you to customize the more general look and layout options of the helpdesk.';
+$txt['shd_date_format'] = 'The format here will be used to show dates throughout the helpdesk.';
+$txt['shd_return_to_post'] = 'Return to tickets after posting by default.';
+$txt['shd_timeformat_default'] = '(Helpdesk Default)';
+$txt['shd_theme_forum_default'] = '(Helpdesk Default)';
+$txt['shd_theme_forum_default_desc'] = 'This is the default theme, which means your theme will change along with the administrator\'s settings.';
+
 ?>

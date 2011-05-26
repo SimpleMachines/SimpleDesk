@@ -90,6 +90,8 @@
 		// Now, where we add this depends very much on what mode we're in. In HD only mode, we want our menu first before anything else.
 		if (!empty($modSettings['shd_helpdesk_only']))
 		{
+			require_once($sourcedir . '/Profile-Modify.php');
+
 			$profile_areas['helpdesk'] = $context['helpdesk_menu'];
 			$profile_areas += $old_profile_areas;
 			if (!empty($modSettings['shd_disable_pm']))
@@ -114,6 +116,9 @@
 				$profile_areas['edit_profile']['areas']['lists']['enabled'] = false;
 			if (!empty($profile_areas['profile_action']['areas']['issuewarning']))
 				$profile_areas['profile_action']['areas']['issuewarning']['enabled'] = false;
+
+			$profile_areas['edit_profile']['areas']['theme']['file'] = 'sd_source/SimpleDesk-Profile.php';
+			$profile_areas['edit_profile']['areas']['theme']['function'] = 'shd_profile_theme_wrapper';
 		}
 		else
 		// In non HD only, put it before the editing stuff menu
