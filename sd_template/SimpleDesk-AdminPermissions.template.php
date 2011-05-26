@@ -308,6 +308,7 @@ function template_shd_edit_role()
 						document.getElementById("permfooter_" + block).style.display = "none";
 						document.getElementById("permexpandicon_" + block).src = ', JavaScriptEscape($settings['images_url'] . '/expand.gif'), ';
 					}
+					document.getElementById("permexpandicon_" + block).style.display = "";
 				}
 
 				// ]', ']></script>
@@ -342,6 +343,8 @@ function template_shd_edit_role()
 			$permission_set[$details[1]][] = $permission;
 	}
 
+	$displayed_sets = array();
+
 	foreach ($context['shd_permissions']['group_display'] as $cell => $rows)
 	{
 		echo '
@@ -352,19 +355,21 @@ function template_shd_edit_role()
 			if (empty($permission_set[$rowitem]))
 				continue;
 
+			$displayed_sets[] = $rowitem;
+
 			echo '
-						<div class="cat_bar" id="permheader_', $rowitem, '">
+						<div class="cat_bar grid_header" id="permheader_', $rowitem, '">
 							<h3 class="catbg">
 								<span class="floatright">
 									<a class="permcollapse" href="#" onclick="shd_toggleblock(\'', $rowitem, '\'); return false;">
-										<img src="', $settings['images_url'], '/expand.gif" id="permexpandicon_', $rowitem, '" />
+										<img src="', $settings['images_url'], '/expand.gif" id="permexpandicon_', $rowitem, '" style="display:none;" />
 									</a>
 								</span>
 								<img src="', $settings['default_images_url'], '/simpledesk/', $rowicon, '" alt="*" />
 								<a href="#" onclick="shd_toggleblock(\'', $rowitem, '\'); return false;">', $txt['shd_permgroup_' . $rowitem], '</a>
 							</h3>
 						</div>
-						<div class="roundframe" id="permcontent_', $rowitem, '" style="display:none;">
+						<div class="roundframe" id="permcontent_', $rowitem, '">
 							<div class="content">
 								<dl class="permsettings">';
 
@@ -418,12 +423,29 @@ function template_shd_edit_role()
 								</dl>
 							</div>
 						</div>
-						<span class="lowerframe" id="permfooter_', $rowitem, '" style="display:none;"><span></span></span>
+						<span class="lowerframe" id="permfooter_', $rowitem, '"><span></span></span>
 						<br />';
 		}
 
 		echo '
 					</div>';
+	}
+
+	if (!empty($displayed_sets))
+	{
+		echo '
+						<script type="text/javascript"><!-- // --><![CDATA[';
+
+		if (!empty($displayed_sets))
+			echo '
+						var hidden_blocks = ["', implode('","', $displayed_sets), '"];
+						for (i in hidden_blocks)
+						{
+							shd_toggleblock(hidden_blocks[i]);
+						}';
+
+		echo '
+						// ]', ']></script>';
 	}
 
 	echo '
