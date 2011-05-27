@@ -772,11 +772,12 @@ function shd_load_ticket($ticket = 0)
 function shd_format_text($text, $smileys = true, $cache = '')
 {
 	global $modSettings, $scripturl, $smcFunc;
-	static $wikilinks = array();
 	static $smf_disabled = false, $shd_disabled = false;
 
 	if (empty($modSettings['shd_allow_ticket_bbc']))
 	{
+		if (!empty($modSettings['shd_allow_wikilinks']))
+			shd_parse_wikilinks($text);
 		if (!empty($modSettings['shd_allow_ticket_smileys']) && $smileys)
 			parsesmileys($text);
 	}
@@ -825,11 +826,21 @@ function shd_format_text($text, $smileys = true, $cache = '')
 		}
 	}
 
-	if (!empty($modSettings['shd_allow_wikilinks']))
-	{
-		// Check for wiki syntax links - first figure out what links match in this text
-		preg_match_all('~\[\[ticket\:([0-9]+)\]\]~iU', $text, $matches, PREG_SET_ORDER);
+	return $text;
+}
 
+/**
+ *	Processes the incoming message for wiki-links.
+ *
+ *	@param string &$message The message to be parsed.
+ *	@since 2.0
+*/
+function shd_parse_wikilinks(&$message)
+{
+	global $modSettings, $smcFunc, $scripturl;
+	static $wikilinks = array();
+	if (preg_match_all('~\[\[ticket\:([0-9]+)\]\]~iU', $message, $matches, PREG_SET_ORDER))
+	{
 		// Step through the matches, check if it's one we already had in $wikilinks (where persists through the life of this page)
 		$ticketlist = array();
 		$ticketcount = count($matches);
@@ -871,10 +882,8 @@ function shd_format_text($text, $smileys = true, $cache = '')
 				$replacements[$matches[$i][0]] = '<a href="' . $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $id . '.0">[' . str_pad($id, $modSettings['shd_zerofill'], '0', STR_PAD_LEFT) . '] ' . $wikilinks[$id] . '</a>';
 		}
 
-		$text = str_replace(array_keys($replacements), array_values($replacements), $text);
+		$message = str_replace(array_keys($replacements), array_values($replacements), $message);
 	}
-
-	return $text;
 }
 
 /**

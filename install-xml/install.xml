@@ -166,20 +166,6 @@
 		</operation>
 	</file>
 
-	<file name="$sourcedir/Subs.php"><!-- reconfigure the main menu somewhat -->
-		<operation><!-- expand the quote link= parameter -->
-			<search position="before"><![CDATA[(?:topic|threadid)=[\dmsg#\./]{1,40}(?:;start=[\dmsg#\./]{1,40})?]]></search>
-			<add><![CDATA[|action=helpdesk;sa=ticket;ticket=[\dmsg#\./]{1,40}(?:;start=[\dmsg#\./]{1,40})?]]></add>
-		</operation>
-		<operation><!-- Force the log of disabled tags to be reset if we're calling it in such a condition as it is being re-evaluated anyway -->
-			<search position="before"><![CDATA[		if (!empty($modSettings['disabledBBC']))
-		{]]></search>
-			<add><![CDATA[
-			$disabled = array(); // SimpleDesk added! Forces reset of $disabled if we're calling in an unusual way
-]]></add>
-		</operation>
-	</file>
-
 	<file name="$sourcedir/Profile-Modify.php"><!-- Ensure things get uncached if we change groups (which means permissions) -->
 		<operation>
 			<search position="after"><![CDATA[	// The account page allows the change of your id_group - but not to a protected group!]]></search>
