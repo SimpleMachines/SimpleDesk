@@ -42,6 +42,14 @@ $txt['errortype_sdplugin'] = 'SimpleDesk Plugin';
 $txt['errortype_sdplugin_desc'] = 'Errors most likely related to a SimpleDesk plugin. The file name should generally indicate the plugin, so you can check to see who the author is.';
 $txt['scheduled_task_simpledesk'] = 'SimpleDesk daily maintenance';
 $txt['scheduled_task_desc_simpledesk'] = 'Maintenance tasks and internal processing to be run daily for SimpleDesk. It is strongly not advised to disable this task.';
+
+$txt['lang_file_desc_SimpleDesk'] = 'Main helpdesk';
+$txt['lang_file_desc_SimpleDeskAdmin'] = 'Helpdesk Administration';
+$txt['lang_file_desc_SimpleDeskLogAction'] = 'Action Log Entries';
+$txt['lang_file_desc_SimpleDeskNotifications'] = 'Email Notifications';
+$txt['lang_file_desc_SimpleDeskPermissions'] = 'Permissions';
+$txt['lang_file_desc_SimpleDeskProfile'] = 'Profile Area';
+$txt['lang_file_desc_SimpleDeskWho'] = 'Who\'s Online';
 //@}
 
 //! @name Items for the administration menu structure

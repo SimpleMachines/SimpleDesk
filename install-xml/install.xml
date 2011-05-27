@@ -263,4 +263,14 @@ require_once($sourcedir . '/sd_source/SimpleDesk-SSI.php');]]></add>
 		</operation>
 	</file>
 
+	<file name="$sourcedir/ManageServer.php"><!-- Language file handling -->
+		<operation>
+			<search position="after"><![CDATA[	// Check we have themes with a path and a name - just in case - and add the path.]]></search>
+			<add><![CDATA[	// Add SimpleDesk to the list of possible places to look.
+	$themes['shd'] = array('name' => 'SimpleDesk', 'theme_dir' => $settings['default_theme_dir'] . '/languages/sd_language');
+	$lang_dirs['shd'] = $settings['default_theme_dir'] . '/languages/sd_language';
+
+]]></add>
+		</operation>
+	</file>
 </modification>
