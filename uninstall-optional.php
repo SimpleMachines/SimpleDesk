@@ -87,6 +87,7 @@ $to_remove = array(
 	'shd_thank_you_nonstaff',
 	'shd_theme',
 	'shd_disable_unread',
+	'shd_zerofill',
 	// Board integration
 	'shd_hidemenuitem',
 	// Email notifications

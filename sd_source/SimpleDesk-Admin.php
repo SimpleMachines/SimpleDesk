@@ -333,6 +333,9 @@ function shd_admin_options($return_config)
  *			<li>smf: use an SMF style button-strip above the ticket menu</li>
  *		</ul>
  *	</li>
+ *	<li>'shd_theme' (dropdown) - selects the theme id to be used in the helpdesk, or 0 for the forum default</li>
+ *	<li>'shd_hidemenuitem' (checkbox) - whether to show or hide the menu item, typically used with multiple departments</li>
+ *	<li>'shd_disable_unread' (checkbox) - if checked, the integration of outstanding helpdesk tickets into the unread page is disabled</li>
  *
  *	@param bool $return_config Whether to return configuration items or not; this is provided solely for SMF ACP compatibility (it expects to pass bool true in to get a list of options)
  *
@@ -368,6 +371,7 @@ function shd_modify_display_options($return_config)
 		array('check', 'shd_display_avatar'),
 		array('select', 'shd_ticketnav_style', array('sd' => $txt['shd_ticketnav_style_sd'], 'sdcompact' => $txt['shd_ticketnav_style_sdcompact'], 'smf' => $txt['shd_ticketnav_style_smf']), 'subtext' => $txt['shd_ticketnav_style_note']),
 		array('select', 'shd_theme', $theme_list, 'subtext' => $txt['shd_theme_note']),
+		array('int', 'shd_zerofill', 'subtext' => $txt['shd_zerofill_note']),
 		'',
 		array('check', 'shd_hidemenuitem'),
 		'',

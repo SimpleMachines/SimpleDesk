@@ -163,7 +163,7 @@ function ssi_staffTicketsUrgency($urgency, $limit = 10, $output_method = 'echo')
 */
 function ssi_getSDTickets($query_where, $query_where_params = array(), $query_limit = 0, $query_order = 'hdt.id_ticket ASC', $output_method = 'echo')
 {
-	global $smcFunc, $scripturl, $txt;
+	global $smcFunc, $scripturl, $txt, $modSettings;
 
 	$query_limit = (int) $query_limit;
 
@@ -193,7 +193,7 @@ function ssi_getSDTickets($query_where, $query_where_params = array(), $query_li
 
 		$tickets[] = array(
 			'id' => $row['id_ticket'],
-			'display_id' => str_pad($row['id_ticket'], 5, '0', STR_PAD_LEFT),
+			'display_id' => str_pad($row['id_ticket'], $modSettings['shd_zerofill'], '0', STR_PAD_LEFT),
 			'subject' => $row['subject'],
 			'short_subject' => shorten_subject($row['subject'], 25),
 			'href' => $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $row['id_ticket'],

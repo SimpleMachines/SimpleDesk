@@ -137,7 +137,7 @@ function shd_view_ticket()
 		'id' => $context['ticket_id'],
 		'dept' => $ticketinfo['dept'],
 		'dept_name' => $ticketinfo['dept_name'],
-		'display_id' => str_pad($context['ticket_id'], 5, '0', STR_PAD_LEFT),
+		'display_id' => str_pad($context['ticket_id'], $modSettings['shd_zerofill'], '0', STR_PAD_LEFT),
 		'subject' => $ticketinfo['subject'],
 		'first_msg' => $ticketinfo['id_first_msg'],
 		'body' => shd_format_text($ticketinfo['body'], $ticketinfo['smileys_enabled'], 'shd_reply_' . $ticketinfo['id_first_msg']),
@@ -1219,7 +1219,7 @@ function shd_attach_icon($filename)
 */
 function shd_load_relationships($ticket = 0)
 {
-	global $context, $smcFunc, $txt;
+	global $context, $smcFunc, $txt, $modSettings;
 
 	if ($ticket == 0)
 		$ticket = $context['ticket_id'];
@@ -1251,7 +1251,7 @@ function shd_load_relationships($ticket = 0)
 		$context['relationships_count']++;
 		$context['ticket_relationships'][$reltypes[$row['rel_type']]][] = array(
 			'id' => $row['id_ticket'],
-			'display_id' => str_pad($row['id_ticket'], 5, '0', STR_PAD_LEFT),
+			'display_id' => str_pad($row['id_ticket'], $modSettings['shd_zerofill'], '0', STR_PAD_LEFT),
 			'subject' => $row['subject'],
 			'status' => $row['status'],
 			'status_txt' => $txt['shd_status_' . $row['status']],

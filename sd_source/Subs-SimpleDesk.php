@@ -72,11 +72,13 @@ function shd_init()
 	define('MSG_STATUS_NORMAL', 0);
 	define('MSG_STATUS_DELETED', 1);
 
+	// Relationship types
 	define('RELATIONSHIP_LINKED', 0);
 	define('RELATIONSHIP_DUPLICATED', 1);
 	define('RELATIONSHIP_ISPARENT', 2);
 	define('RELATIONSHIP_ISCHILD', 3);
 
+	// Custom fields, their types, positions, content type
 	define('CFIELD_TICKET', 1);
 	define('CFIELD_REPLY', 2);
 
@@ -94,6 +96,7 @@ function shd_init()
 	define('CFIELD_TYPE_RADIO', 7);
 	define('CFIELD_TYPE_MULTI', 8);
 
+	// Roles and permissions
 	define('ROLE_USER', 1);
 	define('ROLE_STAFF', 2);
 	//define('ROLE_SUPERVISOR', 3);
@@ -102,6 +105,10 @@ function shd_init()
 	define('ROLEPERM_DISALLOW', 0);
 	define('ROLEPERM_ALLOW', 1);
 	define('ROLEPERM_DENY', 2);
+
+	// How many digits should we show for ticket numbers? Normally we pad to 5 digits, e.g. 00001 - this is how we set that width.
+	if (empty($modSettings['shd_zerofill']) || $modSettings['shd_zerofill'] < 0)
+		$modSettings['shd_zerofill'] = 0;
 
 	// Load some stuff
 	shd_load_language('sd_language/SimpleDesk');
@@ -861,7 +868,7 @@ function shd_format_text($text, $smileys = true, $cache = '')
 		{
 			$id = (int) $matches[$i][1];
 			if (!empty($wikilinks[$id]))
-				$replacements[$matches[$i][0]] = '<a href="' . $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $id . '.0">[' . str_pad($id, 5, '0', STR_PAD_LEFT) . '] ' . $wikilinks[$id] . '</a>';
+				$replacements[$matches[$i][0]] = '<a href="' . $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $id . '.0">[' . str_pad($id, $modSettings['shd_zerofill'], '0', STR_PAD_LEFT) . '] ' . $wikilinks[$id] . '</a>';
 		}
 
 		$text = str_replace(array_keys($replacements), array_values($replacements), $text);

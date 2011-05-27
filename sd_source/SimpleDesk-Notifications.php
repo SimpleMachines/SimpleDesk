@@ -331,7 +331,7 @@ function shd_notify_users($notify_data)
 
 	// So, at this point, we have our list of language files to load so we can minimise the amount of actual work going on, and let's get ready
 	$replacements = array(
-		'{ticket_id}' => str_pad($notify_data['ticket'], 5, '0', STR_PAD_LEFT),
+		'{ticket_id}' => str_pad($notify_data['ticket'], $modSettings['shd_zerofill'], '0', STR_PAD_LEFT),
 		'{subject}' => $notify_data['subject'],
 		'{ticketlink}' => $notify_data['ticketlink'],
 	);
@@ -518,7 +518,7 @@ function shd_notify_popup()
 
 	$replacements = array(
 		"\n" => '<br />',
-		'{ticket_id}' => str_pad($row['id_ticket'], 5, '0', STR_PAD_LEFT),
+		'{ticket_id}' => str_pad($row['id_ticket'], $modSettings['shd_zerofill'], '0', STR_PAD_LEFT),
 		'{subject}' => empty($row['extra']['subject']) ? $txt['no_subject'] : $row['extra']['subject'],
 		'{ticketlink}' => $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $row['id_ticket'] . (empty($row['id_msg']) ? '.0' : '.msg' . $row['id_msg'] . '#msg' . $row['id_msg']),
 		'{body}' => empty($row['extra']['withbody']) || empty($row['body']) ? '' : strip_tags(shd_format_text($row['body'])),

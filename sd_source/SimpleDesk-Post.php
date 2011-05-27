@@ -34,7 +34,7 @@ if (!defined('SMF'))
 */
 function shd_post_ticket()
 {
-	global $context, $user_info, $sourcedir, $txt, $scripturl, $reply_request, $smcFunc, $options, $memberContext, $new_ticket;
+	global $context, $user_info, $sourcedir, $txt, $scripturl, $reply_request, $smcFunc, $options, $memberContext, $new_ticket, $modSettings;
 	$context['tabindex'] = 1;
 
 	$new_ticket = $_REQUEST['sa'] == 'newticket';
@@ -73,7 +73,7 @@ function shd_post_ticket()
 		'ticket' => $new_ticket ? 0 : $context['ticket_id'],
 		'link' => $new_ticket ? '' : '<a href="' . $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $context['ticket_id'] . '">' . $ticketinfo['subject'] . '</a>',
 		'msg' => $new_ticket ? 0 : $ticketinfo['id_first_msg'],
-		'display_id' => $new_ticket ? '' : str_pad($context['ticket_id'], 5, '0', STR_PAD_LEFT),
+		'display_id' => $new_ticket ? '' : str_pad($context['ticket_id'], $modSettings['shd_zerofill'], '0', STR_PAD_LEFT),
 		'status' => $new_ticket ? TICKET_STATUS_NEW : $ticketinfo['status'],
 		'urgency' => array(
 			'setting' => $new_ticket ? TICKET_URGENCY_LOW : $ticketinfo['urgency'],
@@ -353,7 +353,7 @@ function shd_save_ticket()
 		'ticket' => $context['ticket_id'],
 		'link' => $new_ticket ? '' : '<a href="' . $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $context['ticket_id'] . '">' . $ticketinfo['subject'] . '</a>',
 		'msg' => $msg,
-		'display_id' => empty($context['ticket_id']) ? '' : str_pad($context['ticket_id'], 5, '0', STR_PAD_LEFT),
+		'display_id' => empty($context['ticket_id']) ? '' : str_pad($context['ticket_id'], $modSettings['shd_zerofill'], '0', STR_PAD_LEFT),
 		'status' => $new_status,
 		'private' => array(
 			'setting' => $private,
@@ -756,7 +756,7 @@ function shd_post_reply()
 		'msg' => !empty($reply['id_msg']) ? $reply['id_msg'] : 0,
 		'ticket_link' => '<a href="' . $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $context['ticket_id'] . '">' . $ticketinfo['subject'] . '</a>',
 		'reply_link' => $new_reply ? 0 : '<a href="' . $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $context['ticket_id'] . '.msg' . $reply['id_msg'] . '#msg' . $reply['id_msg'] . '">' . $txt['response_prefix'] . ' ' . $ticketinfo['subject'] . '</a>',
-		'display_id' => str_pad($context['ticket_id'], 5, '0', STR_PAD_LEFT),
+		'display_id' => str_pad($context['ticket_id'], $modSettings['shd_zerofill'], '0', STR_PAD_LEFT),
 		'status' => $ticketinfo['status'],
 		'urgency' => array(
 			'setting' => $ticketinfo['urgency'],
@@ -982,7 +982,7 @@ function shd_save_reply()
 		'subject' => $ticketinfo['subject'],
 		'ticket' => $context['ticket_id'],
 		'msg' => $_REQUEST['msg'],
-		'display_id' => str_pad($context['ticket_id'], 5, '0', STR_PAD_LEFT),
+		'display_id' => str_pad($context['ticket_id'], $modSettings['shd_zerofill'], '0', STR_PAD_LEFT),
 		'urgency' => array(
 			'setting' => $ticketinfo['urgency'],
 		),

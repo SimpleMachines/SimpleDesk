@@ -83,6 +83,7 @@ if (empty($modSettings['shd_attachments_mode']))
 		'shd_thank_you_post' => 1,
 		'shd_theme' => 0,
 		'shd_hidemenuitem' => 0,
+		'shd_zerofill' => 5,
 	);
 }
 // shd_disable_tickettotopic, shd_maintenance_mode should not be added because it's empty by default!

@@ -93,7 +93,7 @@ function shd_unread_posts()
 			$members = array();
 			while ($row = $smcFunc['db_fetch_assoc']($request))
 			{
-				$row['id_ticket_display'] = str_pad($row['id_ticket'], 5, '0', STR_PAD_LEFT);
+				$row['id_ticket_display'] = str_pad($row['id_ticket'], $modSettings['shd_zerofill'], '0', STR_PAD_LEFT);
 				$row['updated'] = timeformat($row['last_updated']);
 				$context['shd_unread_info'][] = $row;
 				if ($row['id_member_started'] != 0)
