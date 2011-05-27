@@ -86,6 +86,7 @@ function shd_notifications_notify_newticket(&$msgOptions, &$ticketOptions, &$pos
 		'subject' => $ticketOptions['subject'],
 		'ticket' => $ticketOptions['id'],
 		'body' => $msgOptions['body'],
+		'poster_name' => $posterOptions['name'],
 	);
 
 	shd_notify_users($notify_data);
@@ -111,6 +112,7 @@ function shd_notifications_notify_newreply(&$msgOptions, &$ticketOptions, &$post
 		'ticket' => $ticketOptions['id'],
 		'msg' => $msgOptions['id'],
 		'body' => $msgOptions['body'],
+		'poster_name' => $posterOptions['name'],
 	);
 
 	$members = array(); // who should get what type of notification, preferences depending
@@ -336,6 +338,8 @@ function shd_notify_users($notify_data)
 		'{ticketlink}' => $notify_data['ticketlink'],
 	);
 
+	if (isset($notify_data['poster_name']))
+		$replacements['{poster_name}'] = $notify_data['poster_name'];
 	if (isset($notify_data['body']))
 		$replacements['{body}'] = trim(un_htmlspecialchars(strip_tags(strtr(shd_format_text($notify_data['body'], false), array('<br />' => "\n", '</div>' => "\n", '</li>' => "\n", '&#91;' => '[', '&#93;' => ']')))));
 	$withbody = isset($notify_data['body']) && !empty($modSettings['shd_notify_with_body']) ? 'bodyfull' : 'body';
@@ -425,9 +429,10 @@ function shd_notify_popup()
 		fatal_lang_error('no_access', false);
 
 	$query = $smcFunc['db_query']('', '
-		SELECT hdla.id_member, hdla.id_ticket, hdla.id_msg, hdla.extra, IFNULL(hdtr.body, {string:empty}) AS body
+		SELECT hdla.id_member, hdla.id_ticket, hdla.id_msg, hdla.extra, IFNULL(hdtr.body, {string:empty}) AS body, IFNULL(mem.real_name, hdtr.poster_name) AS poster_name
 		FROM {db_prefix}helpdesk_log_action AS hdla
 			LEFT JOIN {db_prefix}helpdesk_ticket_replies AS hdtr ON (hdla.id_msg = hdtr.id_msg)
+			LEFT JOIN {db_prefix}members AS mem ON (hdtr.id_member = mem.id_member)
 		WHERE id_action = {int:log}
 			AND action = {string:notify}',
 		array(
@@ -527,6 +532,7 @@ function shd_notify_popup()
 		'{subject}' => empty($row['extra']['subject']) ? $txt['no_subject'] : $row['extra']['subject'],
 		'{ticketlink}' => $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $row['id_ticket'] . (empty($row['id_msg']) ? '.0' : '.msg' . $row['id_msg'] . '#msg' . $row['id_msg']),
 		'{body}' => $body,
+		'{poster_name}' => $row['poster_name'],
 	);
 
 	$email_subject = str_replace(array_keys($replacements), array_values($replacements), $txt['template_subject_notify_' . $email_type]);
