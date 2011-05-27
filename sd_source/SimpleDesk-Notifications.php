@@ -335,8 +335,9 @@ function shd_notify_users($notify_data)
 		'{subject}' => $notify_data['subject'],
 		'{ticketlink}' => $notify_data['ticketlink'],
 	);
+
 	if (isset($notify_data['body']))
-		$replacements['{body}'] = strip_tags(shd_format_text($notify_data['body']));
+		$replacements['{body}'] = trim(un_htmlspecialchars(strip_tags(strtr(shd_format_text($notify_data['body'], false), array('<br />' => "\n", '</div>' => "\n", '</li>' => "\n", '&#91;' => '[', '&#93;' => ']')))));
 	$withbody = isset($notify_data['body']) && !empty($modSettings['shd_notify_with_body']) ? 'bodyfull' : 'body';
 
 	// Also note, we may not be coming from the post code... so make sure sendmail() is available
@@ -515,13 +516,17 @@ function shd_notify_popup()
 	$context['help_text'] .= '<hr />';
 
 	// So the general prep is done. Now let's rebuild the email contents.
+	if (empty($row['extra']['withbody']) || empty($row['body']))
+		$body = '';
+	else
+		$body = trim(un_htmlspecialchars(strip_tags(strtr(shd_format_text($row['body'], false), array('<br />' => "\n", '</div>' => "\n", '</li>' => "\n", '&#91;' => '[', '&#93;' => ']')))));
 
 	$replacements = array(
 		"\n" => '<br />',
 		'{ticket_id}' => str_pad($row['id_ticket'], $modSettings['shd_zerofill'], '0', STR_PAD_LEFT),
 		'{subject}' => empty($row['extra']['subject']) ? $txt['no_subject'] : $row['extra']['subject'],
 		'{ticketlink}' => $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $row['id_ticket'] . (empty($row['id_msg']) ? '.0' : '.msg' . $row['id_msg'] . '#msg' . $row['id_msg']),
-		'{body}' => empty($row['extra']['withbody']) || empty($row['body']) ? '' : strip_tags(shd_format_text($row['body'])),
+		'{body}' => $body,
 	);
 
 	$email_subject = str_replace(array_keys($replacements), array_values($replacements), $txt['template_subject_notify_' . $email_type]);
