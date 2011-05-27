@@ -233,6 +233,13 @@ function template_shd_edit_dept()
 
 	echo '
 								</dd>
+								<dt>
+									<strong>', $txt['shd_dept_autoclose_days'], '</strong>
+									<div class="smalltext">', $txt['shd_dept_autoclose_days_note'], '</div>
+								</dt>
+								<dd>
+									<input type="text" name="autoclose_days" id="autoclose_days" value="', $context['shd_dept']['autoclose_days'], '" class="input_text" size="5" /></dd>
+								</dd>
 							</dl>
 						</div>
 					</div>

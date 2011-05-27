@@ -571,7 +571,7 @@ function shd_modify_actionlog_options($return_config)
 		array('check', 'shd_logopt_newposts', 'disabled' => !empty($modSettings['shd_disable_action_log'])),
 		array('check', 'shd_logopt_editposts', 'disabled' => !empty($modSettings['shd_disable_action_log'])),
 		array('check', 'shd_logopt_resolve', 'disabled' => !empty($modSettings['shd_disable_action_log'])),
-		array('check', 'shd_logopt_autoclose', 'disabled' => !empty($modSettings['shd_disable_action_log']) || empty($modSettings['shd_autoclose_tickets']) || empty($modSettings['shd_autoclose_tickets_days'])),
+		array('check', 'shd_logopt_autoclose', 'disabled' => !empty($modSettings['shd_disable_action_log'])),
 		array('checkall', 'shd_logopt_1', array('shd_logopt_newposts', 'shd_logopt_editposts', 'shd_logopt_resolve', 'shd_logopt_autoclose')),
 		'',
 		array('check', 'shd_logopt_assign', 'disabled' => !empty($modSettings['shd_disable_action_log'])),

@@ -21,7 +21,7 @@
  *	This file handles the scheduled tasks that can come along.
  *
  *	@package source
- *	@since 1.0
+ *	@since 2.0
 */
 
 if (!defined('SMF'))
@@ -41,7 +41,7 @@ function shd_scheduled()
 	global $smcFunc, $modSettings;
 
 	shd_scheduled_close_tickets();
-	shd_scheduled_purge_tickets();
+	//shd_scheduled_purge_tickets();
 	return true;
 }
 
@@ -49,21 +49,19 @@ function shd_scheduled_close_tickets()
 {
 	global $modSettings, $smcFunc, $txt;
 
-	if (empty($modSettings['shd_autoclose_tickets']) || empty($modSettings['shd_autoclose_tickets_days']))
-		return;
-
 	@set_time_limit(600); // Ten minutes. Is a big job, possibly.
 
 	// 1. Get the list of tickets.
 	$query = $smcFunc['db_query']('', '
-		SELECT hdt.id_ticket, hdt.subject, hdt.id_member_started, hdt.id_member_updated, hdtr_last.poster_time
-		FROM {db_prefix}helpdesk_tickets AS hdt
-			INNER JOIN {db_prefix}helpdesk_ticket_replies AS hdtr_last ON (hdt.id_last_msg = hdtr_last.id_msg)
-		WHERE hdt.status IN ({array_int:open})
-			AND poster_time <= {int:old_time}',
+		SELECT hdt.id_ticket, hdt.subject, hdt.id_member_started, hdt.id_member_updated
+		FROM {db_prefix}helpdesk_depts AS hdd
+			INNER JOIN {db_prefix}helpdesk_tickets AS hdt ON (hdd.id_dept = hdt.id_dept)
+		WHERE hdd.autoclose_days > 0
+			AND hdt.last_updated <= {int:time} - (86400 * hdd.autoclose_days)
+			AND hdt.status IN ({array_int:open})',
 		array(
 			'open' => array(TICKET_STATUS_NEW, TICKET_STATUS_PENDING_STAFF, TICKET_STATUS_PENDING_USER),
-			'old_time' => time() - 86400 * $modSettings['shd_autoclose_tickets_days'],
+			'time' => time(),
 		)
 	);
 	$tickets = array();
@@ -85,11 +83,13 @@ function shd_scheduled_close_tickets()
 	// 2. Update the tickets.
 	$query = $smcFunc['db_query']('', '
 		UPDATE {db_prefix}helpdesk_tickets
-		SET status = {int:closed}
+		SET status = {int:closed},
+			last_updated = {int:time}
 		WHERE id_ticket IN ({array_int:tickets})',
 		array(
 			'closed' => TICKET_STATUS_CLOSED,
 			'tickets' => $tickets,
+			'time' => time(),
 		)
 	);
 

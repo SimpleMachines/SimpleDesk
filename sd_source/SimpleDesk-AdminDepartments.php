@@ -239,7 +239,7 @@ function shd_admin_edit_dept()
 
 	// Get the current department
 	$query = $smcFunc['db_query']('', '
-		SELECT id_dept, dept_name, description, board_cat, before_after, dept_theme
+		SELECT id_dept, dept_name, description, board_cat, before_after, dept_theme, autoclose_days
 		FROM {db_prefix}helpdesk_depts
 		WHERE id_dept = {int:dept}',
 		array(
@@ -426,6 +426,12 @@ function shd_admin_save_dept()
 	shd_get_dept_theme_list();
 	$_POST['dept_theme'] = isset($_POST['dept_theme']) && isset($context['dept_theme_list'][$_POST['dept_theme']]) ? (int) $_POST['dept_theme'] : 0;
 
+	$_POST['autoclose_days'] = isset($_POST['autoclose_days']) ? (int) $_POST['autoclose_days'] : 0;
+	if ($_POST['autoclose_days'] < 0)
+		$_POST['autoclose_days'] = 0;
+	if ($_POST['autoclose_days'] > 9999)
+		$_POST['autoclose_days'] = 9999;
+
 	// 6. Commit that to DB.
 	$smcFunc['db_query']('', '
 		UPDATE {db_prefix}helpdesk_depts
@@ -433,7 +439,8 @@ function shd_admin_save_dept()
 			description = {string:description},
 			board_cat = {int:board_cat},
 			before_after = {int:before_after},
-			dept_theme = {int:dept_theme}
+			dept_theme = {int:dept_theme},
+			autoclose_days = {int:autoclose_days}
 		WHERE id_dept = {int:id_dept}',
 		array(
 			'id_dept' => $_REQUEST['dept'],
@@ -442,6 +449,7 @@ function shd_admin_save_dept()
 			'board_cat' => $_POST['dept_cat'],
 			'before_after' => $_POST['dept_beforeafter'],
 			'dept_theme' => $_POST['dept_theme'],
+			'autoclose_days' => $_POST['autoclose_days'],
 		)
 	);
 

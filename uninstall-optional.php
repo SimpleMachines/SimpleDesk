@@ -102,8 +102,6 @@ $to_remove = array(
 	'shd_notify_assign_me',
 	'shd_notify_assign_own',
 	// Scheduled tasks
-	'shd_autoclose_tickets',
-	'shd_autoclose_tickets_days',
 	'shd_autopurge_tickets',
 	'shd_autopurge_tickets_days',
 );

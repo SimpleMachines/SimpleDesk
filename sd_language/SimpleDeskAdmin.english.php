@@ -387,6 +387,8 @@ $txt['shd_admin_cannot_move_dept_down'] = 'You cannot move that department down;
 $txt['shd_dept_theme'] = 'Use a specific theme in this department?';
 $txt['shd_dept_theme_note'] = 'You can set a theme for the helpdesk that differs to the main forum theme. This setting lets you override either the helpdesk or forum theme just within this department, for perhaps department specific branding.';
 $txt['shd_dept_theme_use_default'] = 'Use the helpdesk/forum default theme';
+$txt['shd_dept_autoclose_days'] = 'Number of days after which to automatically close a ticket?';
+$txt['shd_dept_autoclose_days_note'] = 'Use 0 to indicate that tickets in this department should never be automatically marked closed, no matter how old they are.';
 //@}
 
 //! Plugins

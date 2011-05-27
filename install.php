@@ -431,6 +431,7 @@ $tables[] = array(
 		db_field('before_after', 'tinyint'),
 		db_field('dept_order', 'smallint'),
 		db_field('dept_theme', 'tinyint'),
+		db_field('autoclose_days', 'smallint'),
 	),
 	'indexes' => array(
 		array(
