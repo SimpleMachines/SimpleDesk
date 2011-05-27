@@ -52,41 +52,37 @@ foreach (parse_bbc(false) AS $tag)
 	$bbc_tags[] = $tag['tag'];
 
 // Here we will update the $modSettings variables.
-$mod_settings = array(
+$mod_settings = array();
+$new_settings = array(
 	'shd_attachments_mode' => 'ticket',
 	'shd_staff_badge' => 'nobadge',
 	'shd_ticketnav_style' => 'sd',
 	'shd_enabled_bbc' => implode(',', $bbc_tags),	// By default, all available tags are enabled.
 	'shd_privacy_display' => 'smart',
+	'shd_allow_wikilinks' => 1,
+	'shd_display_ticket_logs' => 1,
+	'shd_logopt_resolve' => 1,
+	'shd_logopt_autoclose' => 1,
+	'shd_logopt_assign' => 1,
+	'shd_logopt_privacy' => 1,
+	'shd_logopt_urgency' => 1,
+	'shd_logopt_tickettopicmove' => 1,
+	'shd_logopt_cfchanges' => 1,
+	'shd_logopt_delete' => 1,
+	'shd_logopt_restore' => 1,
+	'shd_logopt_permadelete' => 1,
+	'shd_logopt_move_dept' => 1,
+	'shd_logopt_relationships' => 1,
+	'shd_logopt_newposts' => 1,
+	'shd_logopt_editposts' => 1,
+	'shd_thank_you_post' => 1,
+	'shd_zerofill' => 5,
 );
 
-if (empty($modSettings['shd_attachments_mode']))
-{
-	// If this is set, SD has been installed before, so this shouldn't be run; this is only for new installs.
-	$mod_settings += array(
-		'shd_allow_wikilinks' => 1,
-		'shd_display_ticket_logs' => 1,
-		'shd_logopt_resolve' => 1,
-		'shd_logopt_autoclose' => 1,
-		'shd_logopt_assign' => 1,
-		'shd_logopt_privacy' => 1,
-		'shd_logopt_urgency' => 1,
-		'shd_logopt_tickettopicmove' => 1,
-		'shd_logopt_cfchanges' => 1,
-		'shd_logopt_delete' => 1,
-		'shd_logopt_restore' => 1,
-		'shd_logopt_permadelete' => 1,
-		'shd_logopt_move_dept' => 1,
-		'shd_logopt_relationships' => 1,
-		'shd_logopt_newposts' => 1,
-		'shd_logopt_editposts' => 1,
-		'shd_thank_you_post' => 1,
-		'shd_theme' => 0,
-		'shd_hidemenuitem' => 0,
-		'shd_zerofill' => 5,
-	);
-}
-// shd_disable_tickettotopic, shd_maintenance_mode should not be added because it's empty by default!
+foreach ($new_settings as $k => $v)
+	if (!isset($modSettings[$k]))
+		$mod_settings[$k] = $v;
+// Anything that shouldn't be set by default won't be in the list. Note that the check is made to isset not empty, because empty values are pre-existing off values, which are not purged from the DB.
 
 // Hook references to be added.
 $hooks = array();
