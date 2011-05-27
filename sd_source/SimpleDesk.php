@@ -1185,7 +1185,7 @@ function shd_helpdesk_listing()
 			{
 				$prefix_filter = '';
 				$prefix = '';
-				
+
 				foreach ($fields as $field_id => $field)
 				{
 					if (empty($tickets[$ticket_id][$field_id]))

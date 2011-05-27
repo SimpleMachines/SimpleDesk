@@ -266,7 +266,7 @@ function shd_perma_delete()
 				'ticket' => $context['ticket_id'],
 			)
 		);
-		
+
 		// Now deleting the actual ticket.
 		shd_db_query('', '
 			DELETE FROM {db_prefix}helpdesk_tickets

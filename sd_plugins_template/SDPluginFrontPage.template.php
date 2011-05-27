@@ -82,7 +82,7 @@ function template_shd_frontpage_admin()
 							<a id="setting_shdp_frontpage_content"></a> <span><label id="label_shdp_frontpage_content" for="shdp_frontpage_content">Main content</label></span>
 						</dt>
 						<dd style="width: 68%;">';
-							
+
 	$editor_context = &$context['controls']['richedit'][$context['post_box_name']];
 
 	// The postbox

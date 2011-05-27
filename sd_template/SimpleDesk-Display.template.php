@@ -493,7 +493,7 @@ function template_viewnotifications()
 						</h3>
 					</div>
 					<div class="windowbg2">
-						
+
 						<span class="botslice"><span></span></span>
 					</div>
 				</div>
@@ -965,7 +965,7 @@ function template_ticketactionlog()
 		echo '
 				<br />
 				<div class="tborder">
-					<div class="title_bar" id="ticket_log_header">
+					<div class="title_bar grid_header" id="ticket_log_header">
 						<h3 class="titlebg">
 							<span class="floatright shd_ticket_log_expand_container"> <a href="#" onclick="ActionLog.swap(); return false;"><img src="', $settings['images_url'], '/expand.gif" alt="+" id="shd_ticket_log_expand" class="icon" style="display:none;" /></a></span>
 							<img src="', $settings['default_images_url'], '/simpledesk/log.png" class="icon" alt="*" />

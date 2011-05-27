@@ -255,7 +255,7 @@ function shd_buffer_boardindex(&$buffer)
 	// Fix the icon. This is surprisingly complex: we have to find the link that links to this department, then find the image inside it and proceed to rewrite only that link.
 	if (preg_match_all('~<a[^>]+href="[^"]+dept[=,](\d+)/?"[^>]*>\s+<img.+src="([^"]+redirect\.(png|gif|jpg|jpeg))".+>\s+</a>~isU', $buffer, $matches, PREG_SET_ORDER))
 	{
-		// So, $matches is an array of matches, and each item is an array of data: 
+		// So, $matches is an array of matches, and each item is an array of data:
 		// [0] is the entire block of HTML in the source, which is useful in a minute.
 		// [1] is the department number.
 		// [2] is the image URL.

@@ -253,7 +253,7 @@ function shd_movedept2()
 		);
 		list($new_dept, $dept_name) = $smcFunc['db_fetch_row']($query);
 		$smcFunc['db_free_result']($query);
-		
+
 		$log_params = array(
 			'subject' => $subject,
 			'ticket' => $context['ticket_id'],

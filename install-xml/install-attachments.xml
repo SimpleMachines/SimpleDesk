@@ -32,7 +32,7 @@
 
 			// Now check their permission. If they don't have permission to view in this department, bye.
 			shd_is_allowed_to('shd_view_attachment', $dept);
-			
+
 			// Make sure the attachment is on this ticket, note right now we're forcing it to be "approved"
 			$request = shd_db_query('', '
 				SELECT a.id_folder, a.filename, a.file_hash, a.fileext, a.id_attach, a.attachment_type, a.mime_type, 1 AS approved, hdtr.id_member

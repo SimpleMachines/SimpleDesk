@@ -501,7 +501,6 @@ function shd_admin_save_dept()
 				'id_role', 'id_dept',
 			)
 		);
-	
 	}
 
 	// 8. Thank you and good night.

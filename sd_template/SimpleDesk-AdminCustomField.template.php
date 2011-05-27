@@ -182,7 +182,7 @@ function template_shd_custom_field_edit()
 						newHTML += \' style="display:none;"\';
 					newHTML += \' class="input_check" />\' + "\n";
 					newHTML += \'<input type="text" name="select_option[\' + startOptID + \']" value="" class="input_text" /><span id="addopt"></span>\';
-					
+
 					setOuterHTML(document.getElementById("addopt"), newHTML);
 					startOptID++;
 				}

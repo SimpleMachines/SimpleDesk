@@ -33,7 +33,7 @@
 			<search position="after"><![CDATA[	// Build the list of boards they WANT to see.]]></search>
 			<add><![CDATA[	// Are we helping people today? If so, bootstrap SimpleDesk.
 	shd_init();
-	
+
 ]]></add>
 		</operation>
 	</file>
@@ -191,11 +191,11 @@
 
 	<file name="$sourcedir/Who.php"><!-- load the who's online strings... we don't use it much now, but maybe later... -->
 		<operation>
-			<search position="after"><![CDATA[// Actions that require a specific permission level.]]></search>
+			<search position="after"><![CDATA[	// Actions that require a specific permission level.]]></search>
 			<add><![CDATA[	shd_load_language('sd_language/SimpleDeskWho');
 	shd_load_plugin_langfiles('who');
 
-	]]></add>
+]]></add>
 		</operation>
 	</file>
 
