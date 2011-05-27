@@ -90,6 +90,9 @@ $to_remove = array(
 	// Board integration
 	'shd_hidemenuitem',
 	// Email notifications
+	'shd_notify_email',
+	'shd_notify_log',
+	'shd_notify_with_body',
 	'shd_notify_new_ticket',
 	'shd_notify_new_reply_own',
 	'shd_notify_new_reply_assigned',

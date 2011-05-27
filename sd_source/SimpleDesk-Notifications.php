@@ -85,6 +85,7 @@ function shd_notifications_notify_newticket(&$msgOptions, &$ticketOptions, &$pos
 		'ticketlink' => $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $ticketOptions['id'],
 		'subject' => $ticketOptions['subject'],
 		'ticket' => $ticketOptions['id'],
+		'body' => $msgOptions['body'],
 	);
 
 	shd_notify_users($notify_data);
@@ -109,6 +110,7 @@ function shd_notifications_notify_newreply(&$msgOptions, &$ticketOptions, &$post
 		'subject' => $ticketinfo['subject'],
 		'ticket' => $ticketOptions['id'],
 		'msg' => $msgOptions['id'],
+		'body' => $msgOptions['body'],
 	);
 
 	$members = array(); // who should get what type of notification, preferences depending
@@ -329,9 +331,13 @@ function shd_notify_users($notify_data)
 
 	// So, at this point, we have our list of language files to load so we can minimise the amount of actual work going on, and let's get ready
 	$replacements = array(
+		'{ticket_id}' => str_pad($notify_data['ticket'], 5, '0', STR_PAD_LEFT),
 		'{subject}' => $notify_data['subject'],
 		'{ticketlink}' => $notify_data['ticketlink'],
 	);
+	if (isset($notify_data['body']))
+		$replacements['{body}'] = strip_tags(shd_format_text($notify_data['body']));
+	$withbody = isset($notify_data['body']) && !empty($modSettings['shd_notify_with_body']) ? 'bodyfull' : 'body';
 
 	// Also note, we may not be coming from the post code... so make sure sendmail() is available
 	if (!function_exists('sendmail'))
@@ -341,6 +347,7 @@ function shd_notify_users($notify_data)
 		'emails' => array(),
 		'auto' => true,
 		'subject' => $notify_data['subject'],
+		'withbody' => $withbody == 'bodyfull',
 	);
 	foreach ($notify_lang as $this_lang => $lang_members)
 	{
@@ -352,7 +359,7 @@ function shd_notify_users($notify_data)
 
 			$subject = str_replace(array_keys($replacements), array_values($replacements), $txt['template_subject_notify_' . $email_type]);
 
-			$body = $txt['template_body_notify_' . $email_type] . "\n\n" . $txt['regards_team'];
+			$body = $txt['template_' . $withbody . '_notify_' . $email_type] . "\n\n" . $txt['regards_team'];
 			$body = str_replace(array_keys($replacements), array_values($replacements), $body);
 
 			if (!isset($log['emails'][$email_type]))
@@ -417,13 +424,15 @@ function shd_notify_popup()
 		fatal_lang_error('no_access', false);
 
 	$query = $smcFunc['db_query']('', '
-		SELECT id_member, id_ticket, id_msg, extra
-		FROM {db_prefix}helpdesk_log_action
+		SELECT hdla.id_member, hdla.id_ticket, hdla.id_msg, hdla.extra, IFNULL(hdtr.body, {string:empty}) AS body
+		FROM {db_prefix}helpdesk_log_action AS hdla
+			LEFT JOIN {db_prefix}helpdesk_ticket_replies AS hdtr ON (hdla.id_msg = hdtr.id_msg)
 		WHERE id_action = {int:log}
 			AND action = {string:notify}',
 		array(
 			'log' => $_GET['log'],
 			'notify' => 'notify',
+			'empty' => '',
 		)
 	);
 	if ($smcFunc['db_num_rows']($query) == 0)
@@ -470,7 +479,6 @@ function shd_notify_popup()
 	}
 
 	// Now we have all the usernames for this instance, let's go and build this entry.
-
 	$context['help_text'] = $txt['shd_log_notify_to'] . '<br />';
 
 	$new_content = '';
@@ -509,12 +517,15 @@ function shd_notify_popup()
 	// So the general prep is done. Now let's rebuild the email contents.
 
 	$replacements = array(
+		"\n" => '<br />',
+		'{ticket_id}' => str_pad($row['id_ticket'], 5, '0', STR_PAD_LEFT),
 		'{subject}' => empty($row['extra']['subject']) ? $txt['no_subject'] : $row['extra']['subject'],
 		'{ticketlink}' => $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $row['id_ticket'] . (empty($row['id_msg']) ? '.0' : '.msg' . $row['id_msg'] . '#msg' . $row['id_msg']),
+		'{body}' => empty($row['extra']['withbody']) || empty($row['body']) ? '' : strip_tags(shd_format_text($row['body'])),
 	);
 
 	$email_subject = str_replace(array_keys($replacements), array_values($replacements), $txt['template_subject_notify_' . $email_type]);
-	$email_body = str_replace(array_keys($replacements), array_values($replacements), $txt['template_body_notify_' . $email_type]);
+	$email_body = str_replace(array_keys($replacements), array_values($replacements), $txt['template_' . (empty($row['extra']['withbody']) || empty($row['body']) ? 'body' : 'bodyfull') . '_notify_' . $email_type]);
 
 	$context['help_text'] .= '<strong>' . $txt['subject'] . ':</strong> ' . $email_subject . '<br /><br />' . $email_body;
 }

@@ -622,6 +622,9 @@ function shd_modify_actionlog_options($return_config)
  *	Displays notifications options within SD ACP / Options / Notifications
  *
  *	<ul>
+ *	<li>'shd_notify_email' (text) - if specified, an email address to set as the reply-to address on any email notifications</li>
+ *	<li>'shd_notify_log' (checkbox) - if checked, a log will be kept of outgoing notification</li>
+ *	<li>'shd_notify_with_body' (checkbox) - if checked, the outgoing emails will have the email body where appropriate</li>
  *	<li>'shd_notify_new_ticket' (checkbox) - if checked, staff have the option of being notified when a new ticket is posted</li>
  *	<li>'shd_notify_new_reply_own' (checkbox) - if checked, users have the option to have notifications upon reply to any ticket they started</li>
  *	<li>'shd_notify_new_reply_assigned' (checkbox) - if checked, staff have the option to select notifications upon reply to any ticket assigned to them</li>
@@ -644,6 +647,7 @@ function shd_modify_notifications_options($return_config)
 	$config_vars = array(
 		array('text', 'shd_notify_email'),
 		array('check', 'shd_notify_log'),
+		array('check', 'shd_notify_with_body'),
 		array('check', 'shd_notify_new_ticket'),
 		array('check', 'shd_notify_new_reply_own'),
 		array('check', 'shd_notify_new_reply_assigned'),
