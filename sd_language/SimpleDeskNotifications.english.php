@@ -37,22 +37,22 @@ $txt['template_log_notify_new_ticket'] = 'New ticket';
 
 $txt['template_subject_notify_new_reply_own'] = 'Your helpdesk ticket updated: {subject}';
 $txt['template_body_notify_new_reply_own'] = 'Your ticket, "{subject}", has been replied to.' . "\n\n" . 'You can read the reply here:' . "\n" . '{ticketlink}';
-$txt['template_bodyfull_notify_new_reply_own'] = 'Your ticket, "{subject}", has been replied to.' . "\n\n" . 'The added comment was:' . "\n" . '{body}' . "\n\n" . 'You can read the reply here:' . "\n" . '{ticketlink}';
+$txt['template_bodyfull_notify_new_reply_own'] = 'Your ticket, "{subject}", has been replied to.' . "\n\n" . 'The added comment is:' . "\n" . '{body}' . "\n\n" . 'You can read the reply here:' . "\n" . '{ticketlink}';
 $txt['template_log_notify_new_reply_own'] = 'User updated';
 
 $txt['template_subject_notify_new_reply_assigned'] = 'Helpdesk - assigned ticket updated: {subject}';
 $txt['template_body_notify_new_reply_assigned'] = 'A ticket assigned to you, "{subject}", has been replied to.' . "\n\n" . 'You can read the reply here:' . "\n" . '{ticketlink}';
-$txt['template_bodyfull_notify_new_reply_assigned'] = 'A ticket assigned to you, "{subject}", has been replied to.' . "\n\n" . 'The added comment was:' . "\n" . '{body}' . "\n\n" . 'You can read the reply here:' . "\n" . '{ticketlink}';
+$txt['template_bodyfull_notify_new_reply_assigned'] = 'A ticket assigned to you, "{subject}", has been replied to.' . "\n\n" . 'The added comment is:' . "\n" . '{body}' . "\n\n" . 'You can read the reply here:' . "\n" . '{ticketlink}';
 $txt['template_log_notify_new_reply_assigned'] = 'Assigned ticket updated';
 
 $txt['template_subject_notify_new_reply_previous'] = 'Helpdesk ticket updated: {subject}';
 $txt['template_body_notify_new_reply_previous'] = 'A ticket you previously replied to, "{subject}", has been replied to again.' . "\n\n" . 'You can read the reply here:' . "\n" . '{ticketlink}';
-$txt['template_bodyfull_notify_new_reply_previous'] = 'A ticket you previously replied to, "{subject}", has been replied to again.' . "\n\n" . 'The added comment was:' . "\n" . '{body}' . "\n\n" . 'You can read the reply here:' . "\n" . '{ticketlink}';
+$txt['template_bodyfull_notify_new_reply_previous'] = 'A ticket you previously replied to, "{subject}", has been replied to again.' . "\n\n" . 'The added comment is:' . "\n" . '{body}' . "\n\n" . 'You can read the reply here:' . "\n" . '{ticketlink}';
 $txt['template_log_notify_new_reply_previous'] = 'Another reply';
 
 $txt['template_subject_notify_new_reply_any'] = 'Helpdesk ticket - new reply: {subject}';
 $txt['template_body_notify_new_reply_any'] = 'A helpdesk ticket, "{subject}", has been replied to.' . "\n\n" . 'You can read the reply here:' . "\n" . '{ticketlink}';
-$txt['template_bodyfull_notify_new_reply_any'] = 'A helpdesk ticket, "{subject}", has been replied to.' . "\n\n" . 'The added comment was:' . "\n" . '{body}' . "\n\n" . 'You can read the reply here:' . "\n" . '{ticketlink}';
+$txt['template_bodyfull_notify_new_reply_any'] = 'A helpdesk ticket, "{subject}", has been replied to.' . "\n\n" . 'The added comment is:' . "\n" . '{body}' . "\n\n" . 'You can read the reply here:' . "\n" . '{ticketlink}';
 $txt['template_log_notify_new_reply_any'] = 'New reply';
 
 $txt['template_subject_notify_assign_me'] = 'Helpdesk ticket assigned: {subject}';
@@ -60,7 +60,7 @@ $txt['template_body_notify_assign_me'] = 'The helpdesk ticket, "{subject}", has 
 $txt['template_log_notify_assign_me'] = 'Assigned to';
 
 $txt['template_subject_notify_assign_own'] = 'Helpdesk ticket assigned: {subject}';
-$txt['template_body_notify_assign_own'] = 'Your helpdesk ticket, "{subject}", has been assigned to a member of staff to be dealt with.' . "\n\n" . 'You can access your ticket here:' . "\n" . '{ticketlink}';
+$txt['template_body_notify_assign_own'] = 'Your helpdesk ticket, "{subject}", has been assigned to a staff member.' . "\n\n" . 'You can access your ticket here:' . "\n" . '{ticketlink}';
 $txt['template_log_notify_assign_own'] = 'Assigned to staff';
 
 ?>
