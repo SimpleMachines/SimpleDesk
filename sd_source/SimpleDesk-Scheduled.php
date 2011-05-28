@@ -60,7 +60,7 @@ function shd_scheduled_close_tickets()
 			AND hdt.last_updated <= {int:time} - (86400 * hdd.autoclose_days)
 			AND hdt.status IN ({array_int:open})',
 		array(
-			'open' => array(TICKET_STATUS_NEW, TICKET_STATUS_PENDING_STAFF, TICKET_STATUS_PENDING_USER),
+			'open' => array(0, 1, 2), // TICKET_STATUS_NEW, TICKET_STATUS_PENDING_STAFF, TICKET_STATUS_PENDING_USER aren't declared when running scheduled tasks
 			'time' => time(),
 		)
 	);

@@ -1544,7 +1544,7 @@ function scheduled_simpledesk()
 {
 	global $sourcedir, $modSettings;
 
-	if (empty($modSettings['helpdesk_active']))
+	if (empty($modSettings['admin_features']) || !in_array('shd', explode(',', $modSettings['admin_features'])))
 		return;
 
 	require($sourcedir . '/sd_source/SimpleDesk-Scheduled.php');
