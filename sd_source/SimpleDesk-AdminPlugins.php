@@ -295,9 +295,9 @@ function shd_unregister_plugin()
 
 function shd_list_hooks()
 {
+	global $context;
 	// This is our master set of hooks and stuff, so FOR THE LOVE OF DEITIES, GET IT RIGHT.
-	// Anything added here should also be added to the master uninstall-optional.php too
-	return array(
+	$hooks = array(
 		'shd_enabled_plugins', // for the list of plugins generally
 
 		// File loading - sources
@@ -340,5 +340,15 @@ function shd_list_hooks()
 		'shd_hook_hdadminoptssrch', // functions to run when setting up admin panel search for SimpleDesk options submenu structure (probably should include via _include_hdadmin)
 		'shd_hook_hdprofile', // functions to call when going into the helpdesk profile area
 	);
+
+	if (!empty($context['master_action_list']))
+	{
+		foreach ($context['master_action_list'] as $action)
+		{
+			$hooks[] = 'shd_hook_' . $action;
+			$hooks[] = 'shd_include_' . $action;
+			$hooks[] = 'shd_includelang_' . $action;
+		}
+	}
 }
 ?>
