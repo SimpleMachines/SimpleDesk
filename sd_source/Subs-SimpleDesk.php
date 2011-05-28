@@ -1581,9 +1581,6 @@ function shd_init_actions(&$actionArray)
 	if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'helpadmin')
 		shd_load_language('sd_language/SimpleDeskAdmin');
 
-	// Now engage any SD specific hooks.
-	call_integration_hook('shd_hook_actions', array(&$actionArray));
-
 	if (!empty($modSettings['shd_helpdesk_only']))
 	{
 		// Firstly, remove all the standard actions we neither want nor need.
@@ -1608,6 +1605,17 @@ function shd_init_actions(&$actionArray)
 		// Secondly, rewrite the defaults to point to helpdesk, for unknown actions. I'm doing this rather than munging the main code - easier to unbreak stuff
 		if (empty($actionArray[$_GET['action']]))
 			$_GET['action'] = 'helpdesk';
+	}
+
+	// Now engage any SD specific hooks.
+	call_integration_hook('shd_hook_actions', array(&$actionArray));
+
+	// Lastly, any other-action-specific hooks?
+	if (!empty($_GET['action']) && !empty($actionArray[$_GET['action']]))
+	{
+		shd_load_plugin_files('action_' . $_GET['action']);
+		shd_load_plugin_langfiles('action_' . $_GET['action']);
+		call_integration_hook('shd_hook_action' . $_GET['action']);
 	}
 }
 
