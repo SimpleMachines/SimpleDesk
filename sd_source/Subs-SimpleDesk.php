@@ -240,6 +240,7 @@ function shd_init()
 	}
 
 	$context['shd_plugins'] = empty($modSettings['shd_enabled_plugins']) || empty($modSettings['helpdesk_active']) ? array() : explode(',', $modSettings['shd_enabled_plugins']);
+	call_integration_hook('shd_hook_init');
 }
 
 /**

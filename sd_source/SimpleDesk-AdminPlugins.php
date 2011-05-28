@@ -333,6 +333,7 @@ function shd_list_hooks()
 		'shd_hook_adminmenu', // functions to call when specifically modifying the admin menu
 
 		// Area level hooks
+		'shd_hook_init', // functions to run as soon as main SD initialisation has completed (SD permissions are loaded by here)
 		'shd_hook_helpdesk', // functions to run when starting the main helpdesk (before going off to subactions)
 		'shd_hook_hdadmin', // functions to run when starting the main SimpleDesk admin area (probably should include via _include_hdadmin)
 		'shd_hook_hdadminopts', // functions to run when working in the SimpleDesk options submenu structure (probably should include via _include_hdadmin)

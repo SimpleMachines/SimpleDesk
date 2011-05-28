@@ -46,7 +46,7 @@ elseif (!defined('SMF'))
 }
 
 // Unchecking the option in Core Features.
-global $modSettings;
+global $modSettings, $sourcedir;
 $modSettings['helpdesk_active'] = false;
 $features = implode(',', array_diff(explode(',', $modSettings['admin_features']), array('shd')));
 
@@ -109,54 +109,24 @@ $smcFunc['db_query']('', '
 );
 
 // 4. Forcing all SD plugin hooks to be disabled.
-
 $shd_hooks = array(
-	// Plugin related: general
 	'shd_enabled_plugins',
-	// Plugin: source load hooks
-	'shd_include_init',
-	'shd_include_helpdesk',
-	'shd_include_hdadmin',
-	'shd_include_hdprofile',
-	// Plugin: lang load hooks
-	'shd_includelang_init',
-	'shd_includelang_helpdesk',
-	'shd_includelang_hdadmin',
-	'shd_includelang_hdprofile',
-	// Plugin: general hooks
-	'shd_hook_actions',
-	'shd_hook_perms',
-	'shd_hook_permstemplate',
-	'shd_hook_prefs',
-	'shd_hook_newticket',
-	'shd_hook_newreply',
-	'shd_hook_modpost',
-	'shd_hook_assign',
-	'shd_hook_buffer',
-	'shd_hook_after_main',
-	'shd_hook_boardindex_before',
-	'shd_hook_boardindex_after',
-	// Plugin: menu hooks
-	'shd_hook_mainmenu',
-	'shd_hook_profilemenu',
-	'shd_hook_adminmenu',
-	// Plugin: area hooks
-	'shd_hook_helpdesk',
-	'shd_hook_hdadmin',
-	'shd_hook_hdadminopts',
-	'shd_hook_hdadminoptssrch',
-	'shd_hook_hdprofile',
 );
+foreach ($modSettings as $k => $v)
+	if (strpos($k, 'shd_hook') === 0 || strpos($k, 'shd_include') === 0)
+		$shd_hooks[] = $k;
 
 $new_hooks = array();
 foreach ($shd_hooks as $hook)
-{
 	$new_hooks[$hook] = '';
-}
+
+// Reset them locally.
 updateSettings(
 	$new_hooks,
 	true
 );
+
+// Purge them finally.
 $smcFunc['db_query']('', '
 	DELETE FROM {db_prefix}settings
 	WHERE variable IN ({array_string:hooks})',
@@ -164,4 +134,5 @@ $smcFunc['db_query']('', '
 		'hooks' => $shd_hooks,
 	)
 );
+
 ?>
