@@ -1615,7 +1615,7 @@ function shd_init_actions(&$actionArray)
 	{
 		shd_load_plugin_files('action_' . $_GET['action']);
 		shd_load_plugin_langfiles('action_' . $_GET['action']);
-		call_integration_hook('shd_hook_action' . $_GET['action']);
+		call_integration_hook('shd_hook_action' . $_GET['action'], array(&$actionArray));
 	}
 }
 
