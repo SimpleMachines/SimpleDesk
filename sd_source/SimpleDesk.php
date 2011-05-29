@@ -32,7 +32,7 @@ if (!defined('SMF'))
  *	Begins SimpleDesk general processing.
  *
  *	Several things are done here, the results of which are unilaterally assumed by all other SimpleDesk functions.
- *	- load standard constants for ticket status and urgency<
+ *	- work out which departments are applicable, and which department we are currently in (as far as possible)
  *	- set up general navigation
  *	- see if the URL or POST data contains a ticket, if so sanitise and store that value
  *	- see if a msg was specified in the URL, if so identify the relevant ticket
@@ -432,6 +432,17 @@ function shd_main_helpdesk()
 /**
  *	Sets up viewing the list of departments.
  *
+ *	$context['dept_list'] contains the list of departments that the user can see, key/value pair, array is ordered according to the ordering specified in the Departments administration area.
+ *	The key for $context['dept_list'] is the department's id, with the array content being:
+ *	- id_dept - departmental id (numeric)
+ *	- dept_name - department's name
+ *	- tickets - an array containing three elements, open, closed and assigned - containing the counts thereof for each department for the current user.
+ *	- new - boolean whether this department has some new items to be read by the current user
+ *
+ *	The linktree is also modified to inclue the department list.
+ *
+ *	@see shd_get_ticket_counts()
+ *	@see shd_get_unread_departments()
  *	@since 2.0
 */
 function shd_main_dept()
