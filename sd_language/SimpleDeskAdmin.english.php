@@ -339,6 +339,7 @@ $txt['shd_admin_custom_field_required'] = 'Required field';
 $txt['shd_admin_custom_field_required_desc'] = 'If checked, this field must be filled in by the user in order to post the ticket or reply.';
 $txt['shd_admin_custom_field_view'] = 'View';
 $txt['shd_admin_custom_field_edit'] = 'Edit';
+$txt['shd_admin_custom_field_permissions'] = 'Permissions';
 $txt['shd_admin_custom_field_can_see'] = 'Who can see this field';
 $txt['shd_admin_custom_field_can_see_desc'] = 'Select who can see this field in tickets.';
 $txt['shd_admin_custom_field_can_edit'] = 'Who can edit this field';
@@ -370,6 +371,7 @@ $txt['shd_admin_cannedreplies_isactive'] = 'Active?';
 $txt['shd_admin_cannedreplies_visibleto'] = 'Visible To';
 $txt['shd_admin_cannedreplies_emptycat'] = 'There are no canned replies in this category.';
 $txt['shd_admin_cannedreplies_addreply'] = 'Create New Reply';
+$txt['shd_admin_cannedreplies_delete_confirm'] = 'Are you sure you want to delete this category and all the replies in it?';
 
 //! Departments
 //@{

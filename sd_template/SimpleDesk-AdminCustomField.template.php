@@ -35,7 +35,7 @@ function template_shd_custom_field_home()
 							</td>
 							<td>', $txt['shd_admin_custom_fields_active'], '</td>
 							<td>', $txt['shd_admin_custom_fields_visible'], '</td>
-							<td>Permissions</td>
+							<td>', $txt['shd_admin_custom_field_permissions'], '</td>
 							<td colspan="2" width="1%" class="shd_nowrap">', $txt['shd_admin_custom_fields_move'], '</td>
 							<td class="shd_nowrap">', $txt['shd_actions'], '</td>
 						</tr>';
