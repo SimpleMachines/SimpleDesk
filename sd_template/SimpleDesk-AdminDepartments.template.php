@@ -29,7 +29,7 @@ function template_shd_departments_home()
 						', $txt['shd_admin_departments_homedesc'], '
 					</p>
 					<table class="shd_ticketlist" cellspacing="0" width="100%">
-						<tbody><tr class="titlebg">
+						<tr class="titlebg">
 							<td width="1%"></td>
 							<td width="25%" class="shd_nowrap">
 								', $txt['shd_department_name'], '
