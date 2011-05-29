@@ -170,7 +170,7 @@ $tables[] = array(
 			'columns' => array('status', 'withdeleted', 'deleted_replies'),
 		),
 	),
-	'if_exists' => 'update',
+	'if_exists' => 'ignore',
 	'error' => 'fatal',
 	'parameters' => array(),
 );
@@ -201,7 +201,7 @@ $tables[] = array(
 			'type' => 'index',
 		),
 	),
-	'if_exists' => 'update',
+	'if_exists' => 'ignore',
 	'error' => 'fatal',
 	'parameters' => array(),
 );
@@ -227,7 +227,7 @@ $tables[] = array(
 			'type' => 'index',
 		),
 	),
-	'if_exists' => 'update',
+	'if_exists' => 'ignore',
 	'error' => 'fatal',
 	'parameters' => array(),
 );
@@ -244,7 +244,7 @@ $tables[] = array(
 			'type' => 'primary',
 		),
 	),
-	'if_exists' => 'update',
+	'if_exists' => 'ignore',
 	'error' => 'fatal',
 	'parameters' => array(),
 );
@@ -261,7 +261,7 @@ $tables[] = array(
 			'type' => 'primary',
 		),
 	),
-	'if_exists' => 'update',
+	'if_exists' => 'ignore',
 	'error' => 'fatal',
 	'parameters' => array(),
 );
@@ -281,7 +281,7 @@ $tables[] = array(
 			'columns' => array('primary_ticket', 'rel_type'),
 		),
 	),
-	'if_exists' => 'update',
+	'if_exists' => 'ignore',
 	'error' => 'fatal',
 	'parameters' => array(),
 );
@@ -311,7 +311,7 @@ $tables[] = array(
 			'type' => 'primary',
 		),
 	),
-	'if_exists' => 'update',
+	'if_exists' => 'ignore',
 	'error' => 'fatal',
 	'parameters' => array(),
 );
@@ -329,7 +329,7 @@ $tables[] = array(
 			'type' => 'primary',
 		),
 	),
-	'if_exists' => 'update',
+	'if_exists' => 'ignore',
 	'error' => 'fatal',
 	'parameters' => array(),
 );
@@ -346,7 +346,7 @@ $tables[] = array(
 			'type' => 'primary',
 		),
 	),
-	'if_exists' => 'update',
+	'if_exists' => 'ignore',
 	'error' => 'fatal',
 	'parameters' => array(),
 );
@@ -363,7 +363,7 @@ $tables[] = array(
 			'type' => 'primary',
 		),
 	),
-	'if_exists' => 'update',
+	'if_exists' => 'ignore',
 	'error' => 'fatal',
 	'parameters' => array(),
 );
@@ -379,7 +379,7 @@ $tables[] = array(
 			'type' => 'primary',
 		),
 	),
-	'if_exists' => 'update',
+	'if_exists' => 'ignore',
 	'error' => 'fatal',
 	'parameters' => array(),
 );
@@ -396,7 +396,7 @@ $tables[] = array(
 			'type' => 'primary',
 		),
 	),
-	'if_exists' => 'update',
+	'if_exists' => 'ignore',
 	'error' => 'fatal',
 	'parameters' => array(),
 );
@@ -413,7 +413,7 @@ $tables[] = array(
 			'type' => 'primary',
 		),
 	),
-	'if_exists' => 'update',
+	'if_exists' => 'ignore',
 	'error' => 'fatal',
 	'parameters' => array(),
 );
@@ -435,7 +435,7 @@ $tables[] = array(
 			'type' => 'primary',
 		),
 	),
-	'if_exists' => 'update',
+	'if_exists' => 'ignore',
 	'error' => 'fatal',
 	'parameters' => array(),
 );
@@ -451,7 +451,62 @@ $tables[] = array(
 			'type' => 'primary',
 		),
 	),
-	'if_exists' => 'update',
+	'if_exists' => 'ignore',
+	'error' => 'fatal',
+	'parameters' => array(),
+);
+$tables[] = array(
+	'table_name' => '{db_prefix}helpdesk_cannedreplies',
+	'columns' => array(
+		db_field('id_reply', 'smallint', 0, true, true),
+		db_field('id_cat', 'smallint'),
+		db_field('title', 'varchar', 80),
+		db_field('body', 'text'),
+		db_field('vis_user', 'tinyint'),
+		db_field('vis_staff', 'tinyint'),
+		db_field('reply_order', 'smallint'),
+		db_field('active', 'tinyint'),
+	),
+	'indexes' => array(
+		array(
+			'columns' => array('id_reply'),
+			'type' => 'primary',
+		),
+	),
+	'if_exists' => 'ignore',
+	'error' => 'fatal',
+	'parameters' => array(),
+);
+$tables[] = array(
+	'table_name' => '{db_prefix}helpdesk_cannedreplies_cats',
+	'columns' => array(
+		db_field('id_cat', 'smallint', 0, true, true),
+		db_field('cat_name', 'varchar', 80),
+		db_field('cat_order', 'smallint'),
+	),
+	'indexes' => array(
+		array(
+			'columns' => array('id_cat'),
+			'type' => 'primary',
+		),
+	),
+	'if_exists' => 'ignore',
+	'error' => 'fatal',
+	'parameters' => array(),
+);
+$tables[] = array(
+	'table_name' => '{db_prefix}helpdesk_cannedreplies_depts',
+	'columns' => array(
+		db_field('id_dept', 'smallint'),
+		db_field('id_reply', 'smallint'),
+	),
+	'indexes' => array(
+		array(
+			'columns' => array('id_dept', 'id_reply'),
+			'type' => 'primary',
+		),
+	),
+	'if_exists' => 'ignore',
 	'error' => 'fatal',
 	'parameters' => array(),
 );

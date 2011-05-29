@@ -154,7 +154,7 @@ function shd_admin_dept_move()
 		)
 	);
 
-	redirectexit('action=admin;area=helpdesk_depts;' . $context['session_var'] . '=' . $context['session_id']);
+	redirectexit('action=admin;area=helpdesk_depts');
 }
 
 function shd_admin_create_dept()

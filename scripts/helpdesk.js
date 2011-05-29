@@ -278,7 +278,6 @@ QuickReply.prototype.quote = function (iMessageId, sSessionId, sSessionVar, bTem
 		sSessionVar = 'sesc';
 	}
 
-
 	if (this.bCollapsed)
 	{
 		// This is for compatibility.
@@ -331,6 +330,47 @@ QuickReply.prototype.swap = function ()
 	document.getElementById(this.opt.sHeaderId).setAttribute('class', (this.bCollapsed ? 'title_bar grid_header' : 'title_bar'));
 
 	this.bCollapsed = !this.bCollapsed;
+}
+
+function CannedReply(oOptions)
+{
+	this.opt = oOptions;
+	document.getElementById("canned_replies").style.display = "";
+}
+
+CannedReply.prototype.getReply = function ()
+{
+	var iReplyId = document.getElementById('canned_replies_select').value;
+	if (!iReplyId || parseInt(iReplyId, 10) < 1)
+		return false;
+
+	// Doing it the XMLhttp way?
+	if (window.XMLHttpRequest)
+	{
+		ajax_indicator(true);
+		getXMLDocument(smf_prepareScriptUrl(this.opt.sScriptUrl) + 'action=helpdesk;sa=ajax;op=canned;ticket=' + this.opt.iTicketId + ';reply=' + iReplyId + ';' + this.opt.sSessionVar + '=' + this.opt.sSessionId + ';xml' + ';mode=' + (oEditorHandle_shd_message.bRichTextEnabled ? 1 : 0), this.onReplyReceived);
+	}
+
+	// Move the view to the quick reply box.
+	if (navigator.appName == 'Microsoft Internet Explorer')
+		window.location.hash = this.opt.sJumpAnchor;
+	else
+		window.location.hash = '#' + this.opt.sJumpAnchor;
+
+	return false;
+}
+
+// This is the callback function used after the XMLhttp request.
+CannedReply.prototype.onReplyReceived = function (oXMLDoc)
+{
+	var sQuoteText = '';
+
+	for (var i = 0; i < oXMLDoc.getElementsByTagName('quote')[0].childNodes.length; i++)
+		sQuoteText += oXMLDoc.getElementsByTagName('quote')[0].childNodes[i].nodeValue;
+
+	oEditorHandle_shd_message.insertText(sQuoteText, false, true);
+
+	ajax_indicator(false);
 }
 
 // The quick jump function

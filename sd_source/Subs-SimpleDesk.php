@@ -924,7 +924,7 @@ function shd_profile_link($name, $id = 0)
 /**
  *	Generate an image URL given the base filename.
  *
- *	As of 1.1, images can live either in the main Themes/default/images/simpledesk folder, or additionally in Themes/default/images/sd_plugins,
+ *	As of 2.0, images can live either in the main Themes/default/images/simpledesk folder, or additionally in Themes/default/images/sd_plugins,
  *	the latter of which is intended for plugins (the former is removed on SD uninstall, the latter is not)
  *
  *	It should only be used in cases where there is ambiguity over where the image may live, e.g. preferences, permissions UIs. If there is no
@@ -1950,6 +1950,11 @@ function shd_main_menu_admin($helpdesk_admin)
 		'options' => array(
 			'title' => $txt['shd_admin_options'],
 			'href' => $scripturl . '?action=admin;area=helpdesk_options',
+			'show' => true,
+		),
+		'cannedreplies' => array(
+			'title' => $txt['shd_admin_cannedreplies'],
+			'href' => $scripturl . '?action=admin;area=helpdesk_cannedreplies',
 			'show' => true,
 		),
 		'custom_fields' => array(

@@ -662,6 +662,8 @@ function shd_view_ticket()
 	$context['ticket_form']['num_replies'] = $context['ticket']['num_replies'];
 	$context['ticket_form']['disable_smileys'] = empty($modSettings['shd_allow_ticket_smileys']);
 	shd_posting_additional_options();
+	if ($context['can_reply'])
+		shd_load_canned_replies();
 
 	// Set up the fancy editor
 	shd_postbox(

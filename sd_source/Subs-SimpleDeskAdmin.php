@@ -403,6 +403,14 @@ function shd_admin_bootstrap(&$admin_areas)
 						'notifications' => array($txt['shd_admin_options_notifications']),
 					),
 				),
+				'helpdesk_cannedreplies' => array(
+					'label' => $txt['shd_admin_cannedreplies'],
+					'file' => 'sd_source/SimpleDesk-Admin.php',
+					'icon' => 'shd/cannedreplies.png',
+					'function' => 'shd_admin_main',
+					'subsections' => array(
+					),
+				),
 				'helpdesk_customfield' => array(
 					'label' => $txt['shd_admin_custom_fields'],
 					'file' => 'sd_source/SimpleDesk-Admin.php',

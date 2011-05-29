@@ -532,6 +532,47 @@ function template_ticket_postbox()
 
 }
 
+function template_ticket_cannedreplies()
+{
+	global $context, $txt;
+
+	if (empty($context['canned_replies']))
+		return;
+
+	echo '
+					<div id="canned_replies" style="display:none;">
+						<div style="font-weight:bold; padding: 0.5em;">', $txt['canned_replies'], '</div>
+						<select id="canned_replies_select">
+							<option value="0">', $txt['canned_replies_select'], '</option>';
+
+	foreach ($context['canned_replies'] as $cat_id => $cat_details)
+	{
+		echo '
+							<optgroup label="', $cat_details['name'], '">';
+
+		foreach ($cat_details['replies'] as $reply_id => $reply_title)
+			echo '
+								<option value="', $reply_id, '">', $reply_title, '</option>';
+
+		echo '
+							</optgroup>';
+	}
+
+	echo '
+						</select>
+						<input type="button" class="button_submit" value="Go!" onclick="oCannedReplies.getReply();" />
+						<hr />
+					</div>
+					<script type="text/javascript"><!-- // --><![CDATA[
+					var oCannedReplies = new CannedReply({
+						iTicketId: ', $context['ticket_id'], ',
+						sScriptUrl: smf_scripturl,
+						sSessionVar: "', $context['session_var'], '",
+						sSessionId: "', $context['session_id'], '"
+					});					
+					// ]]></script>';
+}
+
 function template_ticket_footer()
 {
 	global $settings, $context, $txt;
@@ -668,7 +709,12 @@ function template_ticket_additional_options()
 
 		echo '
 							</dd>
-						</dl>
+						</dl>';
+
+	// Canned replies
+	template_ticket_cannedreplies();
+
+	echo '
 					</div>
 					<script type="text/javascript"><!-- // --><![CDATA[
 	var oAttach = new shd_attach_select({

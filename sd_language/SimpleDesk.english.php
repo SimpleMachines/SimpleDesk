@@ -32,6 +32,7 @@ $txt['shd_helpdesk'] = 'Helpdesk';
 $txt['shd_helpdesk_maintenance'] = 'The helpdesk is currently in <strong>maintenance mode</strong>. Only forum and helpdesk administrators can see this.';
 $txt['shd_open_ticket'] = 'open ticket';
 $txt['shd_open_tickets'] = 'open tickets';
+$txt['shd_none'] = 'None';
 
 //! @name Admininstration panel strings
 //@{
@@ -170,6 +171,7 @@ $txt['shd_admin_custom_fields'] = 'Custom Fields';
 $txt['shd_admin_departments'] = 'Departments';
 $txt['shd_admin_permissions'] = 'Permissions';
 $txt['shd_admin_plugins'] = 'Plugins';
+$txt['shd_admin_cannedreplies'] = 'Canned Replies';
 $txt['shd_admin_maint'] = 'Maintenance';
 
 $txt['shd_user_greeting'] = 'Here you can file new tickets for the site staff to action, and check on current tickets already underway.';
@@ -333,13 +335,14 @@ $txt['shd_choose_one'] = '[Choose one]';
 $txt['shd_no_value'] = '[no value]';
 $txt['shd_ticket_dept'] = 'Ticket department';
 $txt['shd_select_dept'] = '-- Select a department --';
+$txt['canned_replies'] = 'Insert a pre-defined reply:';
+$txt['canned_replies_select'] = '-- Select a reply --';
 
 // Profile / trackip
 $txt['shd_replies_from_ip'] = 'Helpdesk replies posted from IP (range)';
 $txt['shd_no_replies_from_ip'] = 'No helpdesk replies from the specified IP (range) found';
 $txt['shd_replies_from_ip_desc'] = 'Below is a list of all messages posted to the helpdesk from this IP (range).';
 $txt['shd_is_ticket_opener'] = ' (ticket starter)';
-
 
 // Attachment types
 // Archive formats

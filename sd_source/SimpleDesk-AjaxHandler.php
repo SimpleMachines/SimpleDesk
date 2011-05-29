@@ -63,6 +63,7 @@ function shd_ajax()
 		'quote' => 'shd_ajax_quote',
 		'assign' => 'shd_ajax_assign',
 		'assign2' => 'shd_ajax_assign2',
+		'canned' => 'shd_ajax_canned',
 	);
 
 	$context['ajax_return'] = array();
@@ -354,6 +355,94 @@ function shd_ajax_quote()
 
 			$message .= ' date=' . $row['poster_time'] . ']' . $lb . $row['body'] . $lb . '[/quote]';
 		}
+	}
+
+	$message = strtr($message, array('&nbsp;' => '&#160;', '<' => '&lt;', '>' => '&gt;'));
+
+	$context['ajax_raw'] = '<quote>' . $message . '</quote>';
+}
+
+/**
+ *	Collects a canned reply from the database and serves it via XML for insertion.
+ *
+ *	Operations:
+ *	- Session check; failing in a regular fashion (as opposed to normal return since we're using ;xml in the URL; the SMF handler can deal with that)
+ *	- Checks for a department number in the URL, validates access to that department then queries for the requested template.
+ *	- Call un_preparsecode to remove extraneous sanity encoding.
+ *	- Convert to SMF style BBC-to-HTML if using WYSIWYG
+ *	- Do other XML sanitising
+ *	- Return via $context['ajax_raw'] for {@link shd_ajax()} to output
+*/
+function shd_ajax_canned()
+{
+	global $modSettings, $user_info, $txt, $settings, $context;
+	global $sourcedir, $smcFunc;
+
+	loadLanguage('Post');
+	checkSession('get');
+
+	include_once($sourcedir . '/Subs-Post.php');
+
+	$_REQUEST['reply'] = !empty($_REQUEST['reply']) ? (int) $_REQUEST['reply'] : 0;
+	$message = '';
+	if (!empty($_REQUEST['reply']) && !empty($context['ticket_id']))
+	{
+		$query = shd_db_query('', '
+			SELECT hdt.id_member_started, hdt.id_dept, hdcr.body, hdcr.vis_user, hdcr.vis_staff
+			FROM {db_prefix}helpdesk_tickets AS hdt
+				INNER JOIN {db_prefix}helpdesk_cannedreplies_depts AS hdcrd ON (hdt.id_dept = hdcrd.id_dept)
+				INNER JOIN {db_prefix}helpdesk_cannedreplies AS hdcr ON (hdcrd.id_reply = hdcr.id_reply)
+			WHERE hdt.id_ticket = {int:ticket}
+				AND hdcr.id_reply = {int:reply}
+				AND hdcr.active = 1
+				AND {query_see_ticket}',
+			array(
+				'ticket' => $context['ticket_id'],
+				'reply' => $_REQUEST['reply'],
+			)
+		);
+		if ($smcFunc['db_num_rows']($query) == 0)
+		{
+			$smcFunc['db_free_result']($query);
+			return $context['ajax_raw'] = '<quote>' . $message . '</quote>';
+		}
+
+		$row = $smcFunc['db_fetch_assoc']($query);
+		$smcFunc['db_free_result']($query);
+
+		// Check ability to reply to this ticket. No ability to reply at all, no canned reply.
+		if (!shd_allowed_to('shd_reply_ticket_own', $row['id_dept']) && !shd_allowed_to('shd_reply_ticket_any', $row['id_dept']))
+			return $context['ajax_raw'] = '<quote>' . $message . '</quote>';
+
+		// Now check for can-reply-to-own (reply to any will pass this check correctly anyway)
+		if (!shd_allowed_to('shd_reply_ticket_any', $row['id_dept']) && shd_allowed_to('shd_reply_ticket_own', $row['id_dept']) && $row['id_member_started'] != $user_info['id'])
+			return $context['ajax_raw'] = '<quote>' . $message . '</quote>';
+
+		// Now verify the per-reply visibility. Only applies to non admins anyway...
+		if (!shd_allowed_to('admin_helpdesk', $row['id_dept']) && !$user_info['is_admin'])
+		{
+			if (shd_allowed_to('shd_staff', $row['id_dept']) && empty($row['vis_staff']))
+				return $context['ajax_raw'] = '<quote>' . $message . '</quote>';
+			elseif (!shd_allowed_to('shd_staff', $row['id_dept']) && empty($row['vis_user']))
+				return $context['ajax_raw'] = '<quote>' . $message . '</quote>';
+		}
+
+		$message = un_preparsecode($row['body']);
+
+		// Censor the message!
+		censorText($message);
+		$message = preg_replace('~<br ?/?' . '>~i', "\n", $row['body']);
+
+		// Make the body HTML if need be.
+		if (!empty($_REQUEST['mode']))
+		{
+			require_once($sourcedir . '/Subs-Editor.php');
+			$message = strtr($message, array('&lt;' => '#smlt#', '&gt;' => '#smgt#', '&amp;' => '#smamp#'));
+			$message = bbc_to_html($message);
+			$lb = '<br />';
+		}
+		else
+			$lb = "\n";
 	}
 
 	$message = strtr($message, array('&nbsp;' => '&#160;', '<' => '&lt;', '>' => '&gt;'));

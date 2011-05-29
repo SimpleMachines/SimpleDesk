@@ -366,12 +366,36 @@ $txt['shd_admin_cannedreplies_home'] = 'Helpdesk - Canned Replies';
 $txt['shd_admin_cannedreplies_homedesc'] = 'This section allows you to create template answers, or snippets, or the answers to frequently asked questions, so that they are available from the posting interface.';
 $txt['shd_admin_cannedreplies_nocats'] = 'There are no categories for canned replies, you will need to create one first.';
 $txt['shd_admin_cannedreplies_createcat'] = 'Create New Category';
+$txt['shd_admin_cannedreplies_editcat'] = 'Edit This Category';
+$txt['shd_admin_cannedreplies_deletecat'] = 'Delete This Category';
+$txt['shd_admin_cannedreplies_categoryname'] = 'Category Name';
 $txt['shd_admin_cannedreplies_replyname'] = 'Reply Name';
 $txt['shd_admin_cannedreplies_isactive'] = 'Active?';
 $txt['shd_admin_cannedreplies_visibleto'] = 'Visible To';
 $txt['shd_admin_cannedreplies_emptycat'] = 'There are no canned replies in this category.';
 $txt['shd_admin_cannedreplies_addreply'] = 'Create New Reply';
+$txt['shd_admin_cannedreplies_editreply'] = 'Edit This Reply';
+$txt['shd_admin_cannedreplies_deletereply'] = 'Delete This Reply';
 $txt['shd_admin_cannedreplies_delete_confirm'] = 'Are you sure you want to delete this category and all the replies in it?';
+$txt['shd_admin_cannedreplies_deletereply_confirm'] = 'Are you sure you want to delete this reply?';
+$txt['shd_admin_cannedreplies_move_between_cat'] = 'Move this canned reply to another category';
+$txt['shd_admin_cannedreplies_cannot_move_reply'] = 'This reply cannot be moved.';
+$txt['shd_admin_cannedreplies_cannot_move_reply_up'] = 'This reply cannot be moved up.';
+$txt['shd_admin_cannedreplies_cannot_move_reply_down'] = 'This reply cannot be moved down.';
+$txt['shd_admin_cannedreplies_cannot_move_cat'] = 'This category cannot be moved.';
+$txt['shd_admin_cannedreplies_cannot_move_cat_up'] = 'This category cannot be moved up.';
+$txt['shd_admin_cannedreplies_cannot_move_cat_down'] = 'This category cannot be moved down.';
+$txt['shd_admin_cannedreplies_thecatisalie'] = 'This category does not exist, it cannot be edited.';
+$txt['shd_admin_cannedreplies_thereplyisalie'] = 'This reply does not exist, it cannot be edited.';
+$txt['shd_admin_cannedreplies_nocatname'] = 'No name was given for the category, one must be provided.';
+$txt['shd_admin_cannedreplies_replytitle'] = 'Title of this canned reply';
+$txt['shd_admin_cannedreplies_content'] = 'Content of the canned reply';
+$txt['shd_admin_cannedreplies_active'] = 'Is this canned reply active?';
+$txt['shd_admin_cannedreplies_selectvisible'] = 'Who is this canned reply available to?';
+$txt['shd_admin_cannedreplies_departments'] = 'Departments this canned reply is accessible from';
+$txt['shd_admin_cannedreplies_notitle'] = 'No title was given for this canned reply, one must be provided.';
+$txt['shd_admin_cannedreplies_nobody'] = 'No body content was given for this canned reply, one must be provided.';
+$txt['shd_admin_cannedreplies_notcreated'] = 'The new reply could not be created.';
 
 //! Departments
 //@{

@@ -177,7 +177,22 @@ dl.permsettings dd
 	padding: 0;
 }
 
-dl.permsettings img
+dl.cannedsettings dt
+{
+	width: 30%;
+}
+
+dl.cannedsettings dd
+{
+	width: 68%;
+}
+
+dl.cannedsettings dd img
+{
+	margin: 0;
+}
+
+dl.permsettings img, dl.cannedsettings dd img.icon
 {
 	margin: 0 10px 0 0;
 }

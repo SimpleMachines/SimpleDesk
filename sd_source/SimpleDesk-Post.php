@@ -788,6 +788,7 @@ function shd_post_reply()
 	);
 	$context['can_solve'] = (shd_allowed_to('shd_resolve_ticket_any', $ticketinfo['dept']) || (shd_allowed_to('shd_resolve_ticket_own', $ticketinfo['dept']) && $ticketinfo['starter_id'] == $user_info['id']));
 	shd_posting_additional_options();
+	shd_load_canned_replies();
 
 	// Ticket privacy
 	if (empty($modSettings['shd_privacy_display']) || $modSettings['shd_privacy_display'] == 'smart')
@@ -1015,6 +1016,7 @@ function shd_save_reply()
 	$context['log_action'] = $new_reply ? 'newreply' : 'editreply';
 	$context['log_params']['subject'] = $context['ticket_form']['subject'];
 	shd_posting_additional_options();
+	shd_load_canned_replies();
 
 	// Ticket privacy
 	if (empty($modSettings['shd_privacy_display']) || $modSettings['shd_privacy_display'] == 'smart')
@@ -2025,4 +2027,48 @@ function shd_check_dependencies()
 
 	return '';
 }
+
+/**
+ *	Loads the possible permutations of canned replies.
+ *
+ *	@since 2.0
+*/
+function shd_load_canned_replies()
+{
+	global $context, $smcFunc, $user_info;
+
+	if ($context['user']['is_admin'] || shd_allowed_to('admin_helpdesk', $context['shd_department']))
+		$visible = '';
+	elseif (shd_allowed_to('shd_staff', $context['shd_department']))
+		$visible = '
+			AND hdcr.vis_staff = 1';
+	else
+		$visible = '
+			AND hdcr.vis_user = 1';
+
+	$context['canned_replies'] = array();
+
+	$query = $smcFunc['db_query']('', '
+		SELECT hdcr.id_reply, hdcr.title, hdcrc.id_cat, hdcrc.cat_name
+		FROM {db_prefix}helpdesk_cannedreplies AS hdcr
+			INNER JOIN {db_prefix}helpdesk_cannedreplies_cats AS hdcrc ON (hdcr.id_cat = hdcrc.id_cat)
+			INNER JOIN {db_prefix}helpdesk_cannedreplies_depts AS hdcrd ON (hdcrd.id_reply = hdcr.id_reply)
+		WHERE hdcrd.id_dept = {int:dept}
+			AND hdcr.active = 1' . $visible . '
+		ORDER BY hdcrc.cat_order, hdcr.reply_order',
+		array(
+			'dept' => $context['shd_department'],
+		)
+	);
+	while ($row = $smcFunc['db_fetch_assoc']($query))
+	{
+		if (!isset($context['canned_replies'][$row['id_cat']]))
+			$context['canned_replies'][$row['id_cat']] = array(
+				'name' => $row['cat_name'],
+				'replies' => array(),
+			);
+		$context['canned_replies'][$row['id_cat']]['replies'][$row['id_reply']] = $row['title'];
+	}
+}
+
 ?>

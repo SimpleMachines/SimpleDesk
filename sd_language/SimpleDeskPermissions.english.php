@@ -325,7 +325,6 @@ $txt['shd_permrole_admin'] = 'Helpdesk Administrators';
 $txt['shd_create_role'] = 'Create new role based on this';
 $txt['shd_no_defined_roles'] = 'You have not created any roles yet for your users!';
 $txt['shd_based_on'] = 'Based on \'%1$s\' template';
-$txt['shd_none'] = 'None';
 $txt['shd_edit_role'] = 'Edit this role';
 $txt['shd_create_role'] = 'Create New Role';
 $txt['shd_edit_role'] = 'Edit Role';
