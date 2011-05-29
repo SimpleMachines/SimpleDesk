@@ -345,10 +345,12 @@ function shd_list_hooks()
 	{
 		foreach ($context['master_action_list'] as $action)
 		{
-			$hooks[] = 'shd_hook_' . $action;
-			$hooks[] = 'shd_include_' . $action;
-			$hooks[] = 'shd_includelang_' . $action;
+			$hooks[] = 'shd_hook_action_' . $action;
+			$hooks[] = 'shd_include_action_' . $action;
+			$hooks[] = 'shd_includelang_action_' . $action;
 		}
 	}
+
+	return $hooks;
 }
 ?>
