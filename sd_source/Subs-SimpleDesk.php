@@ -194,7 +194,7 @@ function shd_init()
 				if (!empty($ticket))
 				{
 					$query = shd_db_query('', '
-						SELECT hdt.id_dept, dept_name
+						SELECT hdt.id_dept, dept_name, dept_theme
 						FROM {db_prefix}helpdesk_tickets AS hdt
 							INNER JOIN {db_prefix}helpdesk_depts AS hdd ON (hdt.id_dept = hdd.id_dept)
 						WHERE id_ticket = {int:ticket}
@@ -205,12 +205,12 @@ function shd_init()
 					);
 					if ($row = $smcFunc['db_fetch_row']($query))
 						if (in_array($row[0], $depts))
-							list($this_dept, $context['shd_dept_name']) = $row;
+							list($this_dept, $context['shd_dept_name'], $theme) = $row;
 					$smcFunc['db_free_result']($query);
 				}
 			}
 
-			if (!empty($this_dept))
+			if (!empty($this_dept) && !isset($theme))
 			{
 				$context['queried_dept'] = $this_dept;
 				$query = $smcFunc['db_query']('', '
