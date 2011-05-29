@@ -598,7 +598,7 @@ function shd_admin_canned_savereply()
 	require_once($sourcedir . '/Subs-Post.php');
 
 	// If we're deleting this reply, do it first and get it out the way.
-	if (!empty($_POST['delete']))
+	if (!empty($_REQUEST['delete']))
 	{
 		$_REQUEST['reply'] = isset($_REQUEST['reply']) ? (int) $_REQUEST['reply'] : 0;
 		if ($_REQUEST['reply'] > 0)
@@ -612,7 +612,7 @@ function shd_admin_canned_savereply()
 					'reply' => $_REQUEST['reply'],
 				)
 			);
-			if ($smcFunc['db_num_rows']() == 0)
+			if ($smcFunc['db_num_rows']($query) == 0)
 				redirectexit('action=admin;area=helpdesk_cannedreplies');
 			list($old_pos) = $smcFunc['db_fetch_row']($query);
 			$smcFunc['db_free_result']($query);
