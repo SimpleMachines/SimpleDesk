@@ -122,8 +122,11 @@ function shd_admin_canned_list()
 			$first = $cat_id;
 		$last = $cat_id;
 	}
-	$context['canned_replies'][$first]['move_up'] = false;
-	$context['canned_replies'][$last]['move_down'] = false;
+	if (isset($first))
+	{
+		$context['canned_replies'][$first]['move_up'] = false;
+		$context['canned_replies'][$last]['move_down'] = false;
+	}
 }
 
 /**

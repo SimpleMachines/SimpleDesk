@@ -804,7 +804,7 @@ function template_viewreplies()
 							<br /><br />';
 
 		// Custom fields for replies!
-		if (!empty($context['custom_fields_replies'][$reply['id']))
+		if (!empty($context['custom_fields_replies'][$reply['id']]))
 		{
 			echo '
 							<hr />';
