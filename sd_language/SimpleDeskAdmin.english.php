@@ -337,6 +337,8 @@ $txt['shd_admin_custom_field_display_empty'] = 'Display even if empty';
 $txt['shd_admin_custom_field_display_empty_desc'] = 'If the field is left empty by the user, should it still be displayed when reading the ticket?';
 $txt['shd_admin_custom_field_required'] = 'Required field';
 $txt['shd_admin_custom_field_required_desc'] = 'If checked, this field must be filled in by the user in order to post the ticket or reply.';
+$txt['shd_admin_custom_field_view'] = 'View';
+$txt['shd_admin_custom_field_edit'] = 'Edit';
 $txt['shd_admin_custom_field_can_see'] = 'Who can see this field';
 $txt['shd_admin_custom_field_can_see_desc'] = 'Select who can see this field in tickets.';
 $txt['shd_admin_custom_field_can_edit'] = 'Who can edit this field';
@@ -356,6 +358,18 @@ $txt['shd_admin_custom_field_dept_required'] = 'Required';
 $txt['shd_admin_custom_field_invalid'] = 'Invalid type of field selected.';
 $txt['shd_admin_custom_field_reselect_invalid'] = 'You have tried to change this custom field, but to a type that is incompatible with the data already stored for this field, and to avoid damaging existing data, the change has been prevented.';
 //@}
+
+//! Canned Replies
+//@{
+$txt['shd_admin_cannedreplies_home'] = 'Helpdesk - Canned Replies';
+$txt['shd_admin_cannedreplies_homedesc'] = 'This section allows you to create template answers, or snippets, or the answers to frequently asked questions, so that they are available from the posting interface.';
+$txt['shd_admin_cannedreplies_nocats'] = 'There are no categories for canned replies, you will need to create one first.';
+$txt['shd_admin_cannedreplies_createcat'] = 'Create New Category';
+$txt['shd_admin_cannedreplies_replyname'] = 'Reply Name';
+$txt['shd_admin_cannedreplies_isactive'] = 'Active?';
+$txt['shd_admin_cannedreplies_visibleto'] = 'Visible To';
+$txt['shd_admin_cannedreplies_emptycat'] = 'There are no canned replies in this category.';
+$txt['shd_admin_cannedreplies_addreply'] = 'Create New Reply';
 
 //! Departments
 //@{

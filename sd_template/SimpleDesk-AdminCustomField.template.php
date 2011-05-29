@@ -62,12 +62,12 @@ function template_shd_custom_field_home()
 								', ($field['field_loc'] & CFIELD_REPLY) !== 0 ? ('<img src="' . $settings['default_images_url'] . '/simpledesk/replies.png" alt="' . $txt['shd_admin_custom_fields_inreply'] . '" title="' . $txt['shd_admin_custom_fields_inreply'] . '" />') : '', '
 							</td>
 							<td>
-								<strong>View:</strong>
+								<strong>', $txt['shd_admin_custom_field_view'], ':</strong>
 									', $field['can_see'][0] == 1 ? '<img src="' . $settings['default_images_url'] . '/simpledesk/user.png" class="icon" alt="*" />' : '','
 									', $field['can_see'][1] == 1 ? '<img src="' . $settings['default_images_url'] . '/simpledesk/staff.png" class="icon" alt="*" />' : '','
 									<img src="', $settings['default_images_url'], '/simpledesk/admin.png" class="icon" alt="*" />
 								&nbsp;&nbsp;&nbsp;
-								<strong>Edit:</strong>
+								<strong>', $txt['shd_admin_custom_field_edit'], ':</strong>
 									', $field['can_edit'][0] == 1 ? '<img src="' . $settings['default_images_url'] . '/simpledesk/user.png" class="icon" alt="*" />' : '','
 									', $field['can_edit'][1] == 1 ? '<img src="' . $settings['default_images_url'] . '/simpledesk/staff.png" class="icon" alt="*" />' : '','
 									<img src="', $settings['default_images_url'], '/simpledesk/admin.png" class="icon" alt="*" />
