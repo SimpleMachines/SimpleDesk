@@ -524,6 +524,9 @@ function template_ticket_postbox()
 	// Additional ticket options (attachments, smileys, etc)
 	template_ticket_additional_options();
 
+	// Canned replies
+	template_ticket_cannedreplies();
+
 	echo '
 						<br class="clear" />
 						<span class="smalltext"><br />', $context['browser']['is_firefox'] ? $txt['shortcuts_firefox'] : $txt['shortcuts'], '</span><br />
@@ -561,7 +564,6 @@ function template_ticket_cannedreplies()
 	echo '
 						</select>
 						<input type="button" class="button_submit" value="Go!" onclick="oCannedReplies.getReply();" />
-						<hr />
 					</div>
 					<script type="text/javascript"><!-- // --><![CDATA[
 					var oCannedReplies = new CannedReply({
@@ -709,12 +711,7 @@ function template_ticket_additional_options()
 
 		echo '
 							</dd>
-						</dl>';
-
-	// Canned replies
-	template_ticket_cannedreplies();
-
-	echo '
+						</dl>
 					</div>
 					<script type="text/javascript"><!-- // --><![CDATA[
 	var oAttach = new shd_attach_select({

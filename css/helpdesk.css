@@ -501,6 +501,12 @@ h3.ticketheader img
 {
    margin: 0.75em 0 0.5em 0;
 }
+#canned_replies
+{
+	float: left;
+	width: 66%;
+	margin-top: 1em;
+}
 
 /**********************************
 * General actions				 *
