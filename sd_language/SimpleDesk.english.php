@@ -335,8 +335,9 @@ $txt['shd_choose_one'] = '[Choose one]';
 $txt['shd_no_value'] = '[no value]';
 $txt['shd_ticket_dept'] = 'Ticket department';
 $txt['shd_select_dept'] = '-- Select a department --';
-$txt['canned_replies'] = 'Insert a pre-defined reply:';
+$txt['canned_replies'] = 'Add a pre-defined reply:';
 $txt['canned_replies_select'] = '-- Select a reply --';
+$txt['canned_replies_insert'] = 'Insert';
 
 // Profile / trackip
 $txt['shd_replies_from_ip'] = 'Helpdesk replies posted from IP (range)';

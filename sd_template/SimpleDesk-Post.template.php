@@ -563,7 +563,7 @@ function template_ticket_cannedreplies()
 
 	echo '
 						</select>
-						<input type="button" class="button_submit" value="Go!" onclick="oCannedReplies.getReply();" />
+						<input type="button" class="button_submit" value="', $txt['canned_replies_insert'], '" onclick="oCannedReplies.getReply();" />
 					</div>
 					<script type="text/javascript"><!-- // --><![CDATA[
 					var oCannedReplies = new CannedReply({
