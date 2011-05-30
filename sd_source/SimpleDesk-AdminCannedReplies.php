@@ -504,6 +504,7 @@ function shd_admin_canned_createreply()
 		'preview_type' => 0,
 		'width' => '70%',
 		'disable_smiley_box' => false,
+		'form' => 'cannedreply',
 	);
 	create_control_richedit($editorOptions);
 	$context['post_box_name'] = $editorOptions['id'];

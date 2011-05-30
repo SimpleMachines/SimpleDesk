@@ -87,7 +87,7 @@ function template_ticket_info()
 	global $context, $txt, $scripturl, $settings, $modSettings, $options;
 
 	echo '
-			<form action="', $context['ticket_form']['form_action'], '" method="post" accept-charset="', $context['character_set'], '" name="postmodify" id="postmodify" onsubmit="', 'submitonce(this);smc_saveEntities(\'postmodify\', [\'subject\', \'', $context['post_box_name'], '\'], \'options\');" enctype="multipart/form-data" style="margin: 0;">
+			<form action="', $context['ticket_form']['form_action'], '" method="post" accept-charset="', $context['character_set'], '" name="postmodify" id="postmodify" onsubmit="', 'submitonce(this);smc_saveEntities(\'postmodify\', [\'subject\', \'', $context['post_box_name'], '\'], \'field\');" enctype="multipart/form-data" style="margin: 0;">
 			<div class="cat_bar grid_header">
 				<h3 class="catbg">
 					<img src="', $settings['default_images_url'], '/simpledesk/ticket.png" alt="x" /> ', $context['ticket_form']['form_title'], '

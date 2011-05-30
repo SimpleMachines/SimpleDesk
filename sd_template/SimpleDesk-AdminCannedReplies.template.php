@@ -180,7 +180,7 @@ function template_shd_edit_canned_reply()
 						', $txt['shd_admin_cannedreplies_homedesc'], '
 					</p>
 				</div>
-				<form action="', $scripturl, '?action=admin;area=helpdesk_cannedreplies;sa=savereply" method="post">
+				<form action="', $scripturl, '?action=admin;area=helpdesk_cannedreplies;sa=savereply" method="post" accept-charset="', $context['character_set'], '" name="cannedreply" id="cannedreply" onsubmit="', 'submitonce(this);smc_saveEntities(\'cannedreply\', [\'title\', \'', $context['post_box_name'], '\']);" enctype="multipart/form-data" style="margin: 0;">
 					<div class="cat_bar grid_header">
 						<h3 class="catbg">
 							<img src="', $settings['default_images_url'], '/simpledesk/additional_information.png" alt="*" />
