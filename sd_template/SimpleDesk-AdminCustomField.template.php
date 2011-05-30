@@ -141,7 +141,9 @@ function template_shd_custom_field_edit()
 						}
 					}
 					document.getElementById("radio_0").style.display = disp_radio;
-					document.getElementById("radio_text_0").style.display = disp_radio;';
+					document.getElementById("radio_text_0").style.display = disp_radio;
+					document.getElementById("cf_options_radio_default").style.display = disp_radio;
+					document.getElementById("cf_options_multi_default").style.display = disp_multi;';
 	if (!empty($context['dept_fields']))
 	{
 		echo '
@@ -336,8 +338,12 @@ function template_shd_custom_field_edit()
 									<input type="checkbox" name="bbc" id="cf_bbc"',empty($modSettings['shd_allow_ticket_bbc']) ? ' disabled="disabled"' : (!empty($context['custom_field']['bbc']) ? ' checked="checked"' : ''), ' />
 								</dd>
 								<dt id="options_dt"', in_array($context['field_type_value'], array(CFIELD_TYPE_SELECT, CFIELD_TYPE_RADIO, CFIELD_TYPE_MULTI)) ? '' : ' style="display: none;"','>
-									<strong>', $txt['shd_admin_custom_field_options'], ':</strong><br />
-									<span class="smalltext">', $txt['shd_admin_custom_field_options_desc'], '</span>
+									<strong>', $txt['shd_admin_custom_field_options'], ':</strong>
+									<div class="smalltext">
+										', $txt['shd_admin_custom_field_options_desc'], '
+										<span id="cf_options_radio_default"', $context['field_type_value'] == CFIELD_TYPE_SELECT || $context['field_type_value'] == CFIELD_TYPE_RADIO ? ' style=""' : ' style="display:none;"', '>', $txt['shd_admin_custom_field_options_radio'], '</span>
+										<span id="cf_options_multi_default"', $context['field_type_value'] == CFIELD_TYPE_MULTI ? ' style=""' : ' style="display:none;"', '>', $txt['shd_admin_custom_field_options_multi'], '</span>
+									</div>
 								</dt>
 								<dd id="options_dd"', in_array($context['field_type_value'], array(CFIELD_TYPE_SELECT, CFIELD_TYPE_RADIO, CFIELD_TYPE_MULTI)) ? '' : ' style="display: none;"','>
 									<div>
