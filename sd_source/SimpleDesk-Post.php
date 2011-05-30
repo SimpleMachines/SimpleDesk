@@ -688,6 +688,7 @@ function shd_post_reply()
 	require_once($sourcedir . '/Subs-Editor.php');
 
 	$ticketinfo = shd_load_ticket();
+	$context['shd_department'] = $ticketinfo['dept'];
 	$reply = array();
 
 	// So, at this point, we can see it, but no guarantee we can reply to it.
