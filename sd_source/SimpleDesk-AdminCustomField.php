@@ -315,7 +315,7 @@ function shd_admin_custom_save()
 		$_POST['placement'] = CFIELD_PLACE_DETAILS;
 	if ($_POST['placement'] == CFIELD_PLACE_PREFIXFILTER && !in_array($_POST['field_type'], array(CFIELD_TYPE_SELECT, CFIELD_TYPE_RADIO)))
 		$_POST['placement'] = CFIELD_PLACE_PREFIX;
-	$_POST['field_icon'] = isset($_POST['field_icon']) && preg_match('~^[A-Za-z0-9.-_]+$~', $_POST['field_icon']) ? $_POST['field_icon'] : '';
+	$_POST['field_icon'] = isset($_POST['field_icon']) && preg_match('~^[A-Za-z0-9.\-_]+$~', $_POST['field_icon']) ? $_POST['field_icon'] : '';
 	$options = '';
 
 	$users_see = !empty($_POST['see_users']) ? '1' : '0';
