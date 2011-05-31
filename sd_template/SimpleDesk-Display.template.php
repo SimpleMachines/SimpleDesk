@@ -483,9 +483,10 @@ function template_viewnotifications()
 {
 	global $context, $settings, $txt, $scripturl;
 
-	if (!empty($context['display_notifications']))
-	{
-		echo '
+	if (empty($context['display_notifications']['show']))
+		return;
+
+	echo '
 				<div class="tborder">
 					<div class="title_bar grid_header">
 						<h3 class="titlebg">
@@ -493,12 +494,34 @@ function template_viewnotifications()
 						</h3>
 					</div>
 					<div class="windowbg2">
+						<div class="shd_attachmentbox">';
 
+	if (!empty($context['display_notifications']['preferences']))
+	{
+		echo '
+							', $txt['shd_ticket_notify_because'], '
+							<ul>';
+		foreach ($context['display_notifications']['preferences'] as $pref)
+			echo '
+								<li>', $txt['shd_ticket_notify_because_' . $pref], '</li>';
+
+		echo '
+							</ul>';
+	}
+	else
+		echo '
+							', $txt['shd_ticket_notify_noneprefs'];
+
+	if (!empty($context['display_notifications']['can_change']))
+		echo '
+							<a href="', $scripturl . '?action=profile;area=hd_prefs;u=', $context['user']['id'], '">', $txt['shd_ticket_notify_changeprefs'], '</a>';
+
+	echo '
+						</div>
 						<span class="botslice"><span></span></span>
 					</div>
 				</div>
 				<br />';
-	}
 }
 
 /**
@@ -610,7 +633,7 @@ function template_quickreply()
 			</div>
 			<div class="roundframe" id="quickReplyOptions"', $options['display_quick_reply'] != 2 ? ' style="display: none"' : '', '>
 				<div class="content">
-					<form action="', $scripturl, '?action=helpdesk;sa=savereply" method="post" accept-charset="', $context['character_set'], '" name="postreply" id="postreply" onsubmit="submitonce(this);smc_saveEntities(\'postreply\', [\'shd_reply\'], \'options\');" enctype="multipart/form-data" style="margin: 0;">';
+					<form action="', $scripturl, '?action=helpdesk;sa=savereply" method="post" accept-charset="', $context['character_set'], '" name="postreply" id="postreply" onsubmit="submitonce(this);smc_saveEntities(\'postreply\', [\'shd_reply\'], \'field\');" enctype="multipart/form-data" style="margin: 0;">';
 
 		if ($context['can_go_advanced'])
 		{

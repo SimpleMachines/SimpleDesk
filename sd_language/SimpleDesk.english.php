@@ -415,4 +415,21 @@ $txt['shd_ticket_empty_field_short'] = '-';
 
 // Notifications
 $txt['shd_ticket_notify'] = 'Notifications';
+$txt['shd_ticket_notify_noneprefs'] = 'Your have turned off notifications in your preferences.';
+$txt['shd_ticket_notify_changeprefs'] = 'Change your preferences';
+$txt['shd_ticket_notify_because'] = 'Your preferences say to notify you if there is a reply to this ticket:';
+$txt['shd_ticket_notify_because_yourticket'] = 'as it is your ticket';
+$txt['shd_ticket_notify_because_assignedyou'] = 'as it is assigned to you';
+$txt['shd_ticket_notify_because_priorreply'] = 'as you replied to it before';
+$txt['shd_ticket_notify_because_anyreply'] = 'for any ticket';
+
+$txt['shd_ticket_notify_me_always'] = 'You are monitoring this ticket (and will receive a notification on every reply.';
+$txt['shd_ticket_monitor_on_note'] = 'You can request an email for every reply, regardless of preferences:';
+$txt['shd_ticket_monitor_off_note'] = 'You can turn off the email for every reply, and use your preferences instead:';
+$txt['shd_ticket_monitor_on'] = 'Turn on monitoring';
+$txt['shd_ticket_monitor_off'] = 'Turn off monitoring';
+$txt['shd_ticket_notify_me_never'] = 'You have asked for notifications on this ticket to be turned off.';
+$txt['shd_ticket_notify_me_never_on'] = 'Ignore this ticket';
+$txt['shd_ticket_notify_me_never_off'] = 'Unignore this ticket';
+
 ?>

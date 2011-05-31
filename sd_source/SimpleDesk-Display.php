@@ -763,7 +763,7 @@ function shd_view_ticket()
 		$context['ticket_full_log'] = allowedTo('admin_forum') || shd_allowed_to('admin_helpdesk', 0);
 	}
 
-	// Lastly, what about related tickets?
+	// What about related tickets?
 	$context['create_relationships'] = shd_allowed_to('shd_create_relationships', $context['ticket']['dept']);
 	$context['display_relationships'] = ((shd_allowed_to('shd_view_relationships', $context['ticket']['dept']) || $context['create_relationships']) && empty($modSettings['shd_disable_relationships']));
 	$context['delete_relationships'] = shd_allowed_to('shd_delete_relationships', $context['ticket']['dept']);
@@ -773,6 +773,45 @@ function shd_view_ticket()
 		if ($context['relationships_count'] == 0 && empty($context['create_relationships']))
 			$context['display_relationships'] = false;
 	}
+
+	// And, of course, notifications. If we can see the ticket, we can do something with notifications.
+	$context['display_notifications'] = array(
+		'show' => false,
+		'preferences' => array(),
+		'can_change' => shd_allowed_to('shd_view_profile', 0) && shd_allowed_to('shd_view_preferences', 0), // not department related
+		'can_monitor' => shd_allowed_to('shd_monitor_ticket', $context['ticket']['dept']),
+		'is_monitoring' => false,
+		'can_ignore' => false,
+	);
+	if ($context['ticket']['ticket_opener'] && !empty($context['shd_preferences']['notify_new_reply_own']))
+		$context['display_notifications']['preferences'][] = 'yourticket';
+	if ($context['ticket']['assigned_self'] && !empty($context['shd_preferences']['notify_new_reply_assigned']))
+		$context['display_notifications']['preferences'][] = 'assignedyou';
+	if (!empty($context['shd_preferences']['notify_new_reply_previous']))
+	{
+		// We need to query to see if we've replied here before - but we don't need to check ticket access.
+		$query = $smcFunc['db_query']('', '
+			SELECT COUNT(hdtr.id_msg)
+			FROM {db_prefix}helpdesk_tickets AS hdt
+				INNER JOIN {db_prefix}helpdesk_ticket_replies AS hdtr ON (hdt.id_ticket = hdtr.id_ticket)
+			WHERE hdt.id_ticket = {int:ticket}
+				AND hdtr.id_member = {int:user}
+				AND hdtr.id_msg != hdt.id_first_msg',
+			array(
+				'ticket' => $context['ticket_id'],
+				'user' => $context['user']['id'],
+			)
+		);
+		list($count) = $smcFunc['db_fetch_row']($query);
+		$smcFunc['db_free_result']($query);
+		if (!empty($count))
+			$context['display_notifications']['preferences'][] = 'priorreply';
+	}
+	if (!empty($context['shd_preferences']['notify_new_reply_any']))
+		$context['display_notifications']['preferences'][] = 'anyreply';
+
+	if (!empty($context['display_notifications']['preferences']) || $context['display_notifications']['can_monitor'] || $context['display_notifications']['can_ignore'])
+		$context['display_notifications']['show'] = true;
 }
 
 /**
