@@ -840,6 +840,15 @@ function shd_parse_wikilinks(&$message)
 {
 	global $modSettings, $smcFunc, $scripturl;
 	static $wikilinks = array();
+
+	// We need to check we're not coming from the convert-to-WYSIWYG context. If we are, we must not parse wikilinks.
+	// If we're doing the WYSIWYG thing, bbc_to_html() will be in the backtrace somewhere.
+	$backtrace = debug_backtrace();
+	for ($i = 0, $n = count($backtrace); $i < $n; $i++)
+		if (isset($backtrace[$i]['function']) && $backtrace[$i]['function'] == 'bbc_to_html')
+			return;
+	unset($backtrace); // This might be quite heavy so get rid of it if we're still here.
+
 	if (preg_match_all('~\[\[ticket\:([0-9]+)\]\]~iU', $message, $matches, PREG_SET_ORDER))
 	{
 		// Step through the matches, check if it's one we already had in $wikilinks (where persists through the life of this page)
