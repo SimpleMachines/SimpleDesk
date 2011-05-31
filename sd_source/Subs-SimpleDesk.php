@@ -96,6 +96,11 @@ function shd_init()
 	define('CFIELD_TYPE_RADIO', 7);
 	define('CFIELD_TYPE_MULTI', 8);
 
+	// Ticket notification options
+	define('NOTIFY_PREFS', 0);
+	define('NOTIFY_ALWAYS', 1);
+	define('NOTIFY_NEVER', 2);
+
 	// Roles and permissions
 	define('ROLE_USER', 1);
 	define('ROLE_STAFF', 2);

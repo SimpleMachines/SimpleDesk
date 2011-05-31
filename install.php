@@ -510,6 +510,23 @@ $tables[] = array(
 	'error' => 'fatal',
 	'parameters' => array(),
 );
+$tables[] = array(
+	'table_name' => '{db_prefix}helpdesk_notify_override',
+	'columns' => array(
+		db_field('id_member', 'mediumint'),
+		db_field('id_ticket', 'mediumint'),
+		db_field('notify_state', 'tinyint'),
+	),
+	'indexes' => array(
+		array(
+			'columns' => array('id_member', 'id_ticket'),
+			'type' => 'primary',
+		),
+	),
+	'if_exists' => 'ignore',
+	'error' => 'fatal',
+	'parameters' => array(),
+);
 
 // Oh joy, we've now made it to extra rows...
 $rows = array();

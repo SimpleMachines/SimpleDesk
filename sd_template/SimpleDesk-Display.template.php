@@ -514,7 +514,32 @@ function template_viewnotifications()
 
 	if (!empty($context['display_notifications']['can_change']))
 		echo '
-							<a href="', $scripturl . '?action=profile;area=hd_prefs;u=', $context['user']['id'], '">', $txt['shd_ticket_notify_changeprefs'], '</a>';
+							<div>
+								<a href="', $scripturl, '?action=profile;area=hd_prefs;u=', $context['user']['id'], '">', $txt['shd_ticket_notify_changeprefs'], '</a>
+							</div>';
+
+	if (!empty($context['display_notifications']['can_monitor']))
+	{
+		if (!empty($context['display_notifications']['preferences']) || !empty($context['display_notifications']['can_change']))
+			echo '
+							<br />';
+
+		echo '
+							<form action="', $scripturl, '?action=helpdesk;sa=notify;ticket=', $context['ticket_id'], '">';
+
+		if (!$context['display_notifications']['is_monitoring'])
+			echo '
+								<div>', $txt['shd_ticket_monitor_on_note'], '</div>
+								<input type="submit" value="', $txt['shd_ticket_monitor_on'], '" class="button_submit" />';
+		else
+			echo '
+								<div>', $txt['shd_ticket_monitor_off_note'], '</div>
+								<input type="submit" value="', $txt['shd_ticket_monitor_off'], '" class="button_submit" />';
+		
+		echo '
+								<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
+							</form>';
+	}
 
 	echo '
 						</div>

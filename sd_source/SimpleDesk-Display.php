@@ -782,33 +782,55 @@ function shd_view_ticket()
 		'can_monitor' => shd_allowed_to('shd_monitor_ticket', $context['ticket']['dept']),
 		'is_monitoring' => false,
 		'can_ignore' => false,
+		'is_ignoring' => false,
 	);
-	if ($context['ticket']['ticket_opener'] && !empty($context['shd_preferences']['notify_new_reply_own']))
-		$context['display_notifications']['preferences'][] = 'yourticket';
-	if ($context['ticket']['assigned_self'] && !empty($context['shd_preferences']['notify_new_reply_assigned']))
-		$context['display_notifications']['preferences'][] = 'assignedyou';
-	if (!empty($context['shd_preferences']['notify_new_reply_previous']))
+	$notify_state = NOTIFY_PREFS;
+	$query = $smcFunc['db_query']('', '
+		SELECT notify_state
+		FROM {db_prefix}helpdesk_notify_override
+		WHERE id_member = {int:user}
+			AND id_ticket = {int:ticket}',
+		array(
+			'user' => $context['user']['id'],
+			'ticket' => $context['ticket_id'],
+		)
+	);
+	if ($smcFunc['db_num_rows']($query) != 0)
+		list($notify_state) = $smcFunc['db_fetch_row']($query);
+	$smcFunc['db_free_result']($query);
+
+	$context['display_notifications']['is_monitoring'] = $notify_state == NOTIFY_ALWAYS;
+	$context['display_notifications']['is_ignoring'] = $notify_state == NOTIFY_NEVER;
+
+	if ($notify_state != NOTIFY_NEVER)
 	{
-		// We need to query to see if we've replied here before - but we don't need to check ticket access.
-		$query = $smcFunc['db_query']('', '
-			SELECT COUNT(hdtr.id_msg)
-			FROM {db_prefix}helpdesk_tickets AS hdt
-				INNER JOIN {db_prefix}helpdesk_ticket_replies AS hdtr ON (hdt.id_ticket = hdtr.id_ticket)
-			WHERE hdt.id_ticket = {int:ticket}
-				AND hdtr.id_member = {int:user}
-				AND hdtr.id_msg != hdt.id_first_msg',
-			array(
-				'ticket' => $context['ticket_id'],
-				'user' => $context['user']['id'],
-			)
-		);
-		list($count) = $smcFunc['db_fetch_row']($query);
-		$smcFunc['db_free_result']($query);
-		if (!empty($count))
-			$context['display_notifications']['preferences'][] = 'priorreply';
+		if ($context['ticket']['ticket_opener'] && !empty($context['shd_preferences']['notify_new_reply_own']))
+			$context['display_notifications']['preferences'][] = 'yourticket';
+		if ($context['ticket']['assigned_self'] && !empty($context['shd_preferences']['notify_new_reply_assigned']))
+			$context['display_notifications']['preferences'][] = 'assignedyou';
+		if (!empty($context['shd_preferences']['notify_new_reply_previous']))
+		{
+			// We need to query to see if we've replied here before - but we don't need to check ticket access.
+			$query = $smcFunc['db_query']('', '
+				SELECT COUNT(hdtr.id_msg)
+				FROM {db_prefix}helpdesk_tickets AS hdt
+					INNER JOIN {db_prefix}helpdesk_ticket_replies AS hdtr ON (hdt.id_ticket = hdtr.id_ticket)
+				WHERE hdt.id_ticket = {int:ticket}
+					AND hdtr.id_member = {int:user}
+					AND hdtr.id_msg != hdt.id_first_msg',
+				array(
+					'ticket' => $context['ticket_id'],
+					'user' => $context['user']['id'],
+				)
+			);
+			list($count) = $smcFunc['db_fetch_row']($query);
+			$smcFunc['db_free_result']($query);
+			if (!empty($count))
+				$context['display_notifications']['preferences'][] = 'priorreply';
+		}
+		if (!empty($context['shd_preferences']['notify_new_reply_any']))
+			$context['display_notifications']['preferences'][] = 'anyreply';
 	}
-	if (!empty($context['shd_preferences']['notify_new_reply_any']))
-		$context['display_notifications']['preferences'][] = 'anyreply';
 
 	if (!empty($context['display_notifications']['preferences']) || $context['display_notifications']['can_monitor'] || $context['display_notifications']['can_ignore'])
 		$context['display_notifications']['show'] = true;
