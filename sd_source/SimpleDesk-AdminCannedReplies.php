@@ -812,4 +812,105 @@ function shd_admin_canned_savereply()
 	redirectexit('action=admin;area=helpdesk_cannedreplies');
 }
 
+function shd_admin_canned_movereplycat()
+{
+	global $context, $smcFunc, $txt, $sourcedir, $scripturl;
+
+	// Before we go any further, establish that the user specified a reply to move and that there is at least one category not including the one the reply is in.
+	$_REQUEST['reply'] = isset($_REQUEST['reply']) ? (int) $_REQUEST['reply'] : 0;
+	if (empty($_REQUEST['reply']) || $_REQUEST['reply'] < 0)
+		fatal_lang_error('shd_admin_cannedreplies_thereplyisalie', false);
+
+	$query = $smcFunc['db_query']('', '
+		SELECT id_cat, reply_order
+		FROM {db_prefix}helpdesk_cannedreplies
+		WHERE id_reply = {int:reply}',
+		array(
+			'reply' => $_REQUEST['reply'],
+		)
+	);
+	if ($smcFunc['db_num_rows']($query) == 0)
+		fatal_lang_error('shd_admin_cannedreplies_thereplyisalie', false);
+
+	list($current_cat, $current_reply_pos) = $smcFunc['db_fetch_row']($query);
+	$smcFunc['db_free_result']($query);
+
+	// So, the reply exists. Now to check categories. We need to verify it regardless of calling context here, so might as well get the entire table.
+	$context['cannedreply_cats'] = array();
+	$query = $smcFunc['db_query']('', '
+		SELECT id_cat, cat_name
+		FROM {db_prefix}helpdesk_cannedreplies_cats
+		WHERE id_cat != {int:current_cat}
+		ORDER BY cat_order',
+		array(
+			'current_cat' => $current_cat,
+		)
+	);
+	if ($smcFunc['db_num_rows']($query) == 0)
+		fatal_lang_error('shd_admin_cannedreplies_onlyonecat', false);
+	while ($row = $smcFunc['db_fetch_assoc']($query))
+		$context['cannedreply_cats'][$row['id_cat']] = $row['cat_name'];
+	$smcFunc['db_free_result']($query);
+
+	// So, either we're moving, or we're displaying the form. Either way, it's time to make that decision.
+	if (empty($_GET['part']) || $_GET['part'] != '2')
+	{
+		$context['page_title'] = $txt['shd_admin_cannedreplies_move_between_cat'];
+		$context['sub_template'] = 'shd_move_reply_cat';
+
+		checkSubmitOnce('register');
+	}
+	else
+	{
+		// OK, so they're moving. We know the reply exists, we know the possible list of departments they can move to.
+		// 1. Is the new department valid?
+		$_REQUEST['newcat'] = isset($_REQUEST['newcat']) ? (int) $_REQUEST['newcat'] : 0;
+		if (!isset($context['cannedreply_cats'][$_REQUEST['newcat']]))
+			fatal_lang_error('shd_admin_cannedreplies_destnoexist', false);
+
+		// 1a. Everything is valid, just double check it's not a random double submission.
+		checkSubmitOnce('check');
+
+		// 2. Everything's OK. Figure out where the reply will move to in the new category.
+		$query = $smcFunc['db_query']('', '
+			SELECT MAX(reply_order)
+			FROM {db_prefix}helpdesk_cannedreplies
+			WHERE id_cat = {int:newcat}',
+			array(
+				'newcat' => $_REQUEST['newcat'],
+			)
+		);
+		list($newpos) = $smcFunc['db_fetch_row']($query);
+		$smcFunc['db_free_result']($query);
+
+		// 3. Move the reply.
+		$smcFunc['db_query']('', '
+			UPDATE {db_prefix}helpdesk_cannedreplies
+			SET id_cat = {int:newcat},
+				reply_order = {int:newpos}
+			WHERE id_reply = {int:reply}',
+			array(
+				'newcat' => $_REQUEST['newcat'],
+				'newpos' => (int) $newpos + 1,
+				'reply' => $_REQUEST['reply'],
+			)
+		);
+
+		// 4. Shunt the rest back down.
+		$smcFunc['db_query']('', '
+			UPDATE {db_prefix}helpdesk_cannedreplies
+			SET reply_order = reply_order - 1
+			WHERE id_cat = {int:current_cat}
+				AND reply_order > {int:current_pos}',
+			array(
+				'current_cat' => $current_cat,
+				'current_pos' => $current_reply_pos,
+			)
+		);
+
+		// 5. Scram.
+		redirectexit('action=admin;area=helpdesk_cannedreplies');
+	}
+}
+
 ?>

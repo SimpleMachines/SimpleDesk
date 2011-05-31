@@ -398,6 +398,11 @@ $txt['shd_admin_cannedreplies_departments'] = 'Departments this canned reply is 
 $txt['shd_admin_cannedreplies_notitle'] = 'No title was given for this canned reply, one must be provided.';
 $txt['shd_admin_cannedreplies_nobody'] = 'No body content was given for this canned reply, one must be provided.';
 $txt['shd_admin_cannedreplies_notcreated'] = 'The new reply could not be created.';
+$txt['shd_admin_cannedreplies_onlyonecat'] = 'You cannot move this reply to another category, there is only one category of replies.';
+$txt['shd_admin_cannedreplies_newcategory'] = 'The new category this reply should belong to';
+$txt['shd_admin_cannedreplies_selectcat'] = '-- Select a category --';
+$txt['shd_admin_cannedreplies_movereply'] = 'Move This Reply';
+$txt['shd_admin_cannedreplies_destnoexist'] = 'The category you are trying to move this reply to does not exist.';
 
 //! Departments
 //@{

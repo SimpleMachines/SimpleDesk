@@ -92,7 +92,7 @@ function template_shd_cannedreplies_home()
 							</td>
 							<td>', !empty($reply['move_up']) ? ('<a href="' . $scripturl . '?action=admin;area=helpdesk_cannedreplies;sa=movereply;reply=' . $reply['id_reply'] . ';direction=up;' . $context['session_var'] . '=' . $context['session_id'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/move_up.png" alt="' . $txt['shd_admin_move_up'] . '" title="' . $txt['shd_admin_move_up'] . '" /></a>') : '', '</td>
 							<td>', !empty($reply['move_down']) ? ('<a href="' . $scripturl . '?action=admin;area=helpdesk_cannedreplies;sa=movereply;reply=' . $reply['id_reply'] . ';direction=down;' . $context['session_var'] . '=' . $context['session_id'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/move_down.png" alt="' . $txt['shd_admin_move_down'] . '" title="' . $txt['shd_admin_move_down'] . '" /></a>') : '', '</td>
-							<td>', $context['move_between_cats'] ? ('<a href="' . $scripturl . '?action=admin;area=helpdesk_cannedreplies;reply=' . $reply['id_reply'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/movedept.png" alt="' . $txt['shd_admin_cannedreplies_move_between_cat'] . '" title="' . $txt['shd_admin_cannedreplies_move_between_cat'] . '" /></a>') : '', '</td>
+							<td>', $context['move_between_cats'] ? ('<a href="' . $scripturl . '?action=admin;area=helpdesk_cannedreplies;sa=movereplycat;reply=' . $reply['id_reply'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/movedept.png" alt="' . $txt['shd_admin_cannedreplies_move_between_cat'] . '" title="' . $txt['shd_admin_cannedreplies_move_between_cat'] . '" /></a>') : '', '</td>
 							<td><a href="', $scripturl, '?action=admin;area=helpdesk_cannedreplies;sa=editreply;reply=' . $reply['id_reply'] . ';', $context['session_var'], '=', $context['session_id'], '"><img src="', $settings['default_images_url'], '/simpledesk/edit.png" class="icon" alt="', $txt['shd_ticket_edit'],'" title="', $txt['shd_ticket_edit'], '" /></a></td>
 							<td><a href="', $scripturl, '?action=admin;area=helpdesk_cannedreplies;sa=savereply;reply=' . $reply['id_reply'] . ';delete=yes;', $context['session_var'], '=', $context['session_id'], '" onclick="return confirm(' . JavaScriptEscape($txt['shd_admin_cannedreplies_deletereply_confirm']). ');"><img src="', $settings['default_images_url'], '/simpledesk/delete.png" class="icon" alt="', $txt['shd_ticket_delete'],'" title="', $txt['shd_ticket_delete'], '" /></a></td>
 						</tr>';
@@ -248,4 +248,57 @@ function template_shd_edit_canned_reply()
 				</form>
 				<br />';
 }
+
+function template_shd_move_reply_cat()
+{
+	global $context, $settings, $txt, $modSettings, $scripturl;
+
+	echo '
+				<div class="tborder">
+					<div class="cat_bar">
+						<h3 class="catbg">
+							<img src="', $settings['default_images_url'], '/simpledesk/cannedreplies.png" class="icon" alt="*" />
+							', $txt['shd_admin_cannedreplies_home'], '
+						</h3>
+					</div>
+					<p class="description">
+						', $txt['shd_admin_cannedreplies_homedesc'], '
+					</p>
+				</div>
+				<div class="cat_bar grid_header">
+					<h3 class="catbg">
+						<img src="', $settings['default_images_url'], '/simpledesk/movedept.png" alt="*" />
+						', $context['page_title'], '
+					</h3>
+				</div>
+				<div class="roundframe">
+					<form action="', $scripturl, '?action=admin;area=helpdesk_cannedreplies;sa=movereplycat;part=2" method="post">
+						<div class="content">
+							<dl class="settings">
+								<dt><strong>', $txt['shd_admin_cannedreplies_newcategory'], '</strong></dt>
+								<dd>
+									<select name="newcat">
+										<option value="0">', $txt['shd_admin_cannedreplies_selectcat'], '</option>';
+
+	foreach ($context['cannedreply_cats'] as $cat_id => $cat_name)
+		echo '
+										<option value="', $cat_id, '">', $cat_name, '</option>';
+
+	echo '
+									</select>
+								</dd>
+							</dl>
+						</div>
+						<input type="submit" value="', $txt['shd_admin_cannedreplies_movereply'], '" onclick="return submitThisOnce(this);" class="button_submit" />';
+
+
+	echo '
+						<input type="hidden" name="reply" value="', $_REQUEST['reply'], '" />
+						<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
+						<input type="hidden" name="seqnum" value="', $context['form_sequence_number'], '" />
+					</form>
+				</div>
+				<span class="lowerframe"><span></span></span>';
+}
+
 ?>
