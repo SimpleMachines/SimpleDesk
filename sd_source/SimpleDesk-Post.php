@@ -297,7 +297,7 @@ function shd_save_ticket()
 		// What about specifying one explicitly?
 		else
 		{
-			$newdept = isset($_REQUEST['newdept']) ? (int) $_REQUEST['newdept'] : 0;
+			$newdept = isset($_REQUEST['newdept']) ? (int) $_REQUEST['newdept'] : $dept;
 			shd_is_allowed_to('shd_new_ticket', $newdept); // But if they didn't specify a department, execution won't have ended here if they had the ability in at least one department.
 			if ($newdept == 0)
 				$context['shd_errors'][] = 'no_dept';
