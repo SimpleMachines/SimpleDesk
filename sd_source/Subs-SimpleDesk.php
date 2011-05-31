@@ -383,6 +383,12 @@ function shd_clear_active_tickets($dept = 0)
 		foreach ($members as $member)
 			cache_put_data('shd_ticket_count_dept' . $dept . '_' . $member, null, 120);
 	}
+
+	// If we've updated this count, and the menu's cached, which it will be under the following conditions, update the 'settings'.
+	if (!empty($modSettings['cache_enable']) && $modSettings['cache_enable'] >= 2)
+		updateSettings(
+			array('settings_updated' => time())
+		);
 }
 
 /**
