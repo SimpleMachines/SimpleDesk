@@ -153,6 +153,8 @@ $txt['shd_cannot_move_dept'] = 'You cannot move this ticket, there is nowhere to
 $txt['shd_no_perm_move_dept'] = 'You are not permitted to move this ticket to another department.';
 $txt['cannot_shd_delete_attachment'] = 'You are not permitted to delete attachments.';
 $txt['cannot_shd_move_ticket_topic_hidden_cfs'] = 'You cannot move this ticket to a topic; there are custom fields attached that require an administrator to confirm the move.';
+$txt['cannot_monitor_ticket'] = 'You are not permitted to turn monitoring on for this ticket.';
+$txt['cannot_unmonitor_ticket'] = 'You are not permitted to turn monitoring off for this ticket.';
 
 // The main Helpdesk.
 $txt['shd_home'] = 'Helpdesk'; // separate string in case someone wants to change it independently of the main/admin menu

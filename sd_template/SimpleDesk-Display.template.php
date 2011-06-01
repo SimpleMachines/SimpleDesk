@@ -525,15 +525,17 @@ function template_viewnotifications()
 							<br />';
 
 		echo '
-							<form action="', $scripturl, '?action=helpdesk;sa=notify;ticket=', $context['ticket_id'], '">';
+							<form action="', $scripturl, '?action=helpdesk;sa=notify;ticket=', $context['ticket_id'], '" method="post">';
 
 		if (!$context['display_notifications']['is_monitoring'])
 			echo '
 								<div>', $txt['shd_ticket_monitor_on_note'], '</div>
+								<input type="hidden" name="notifyaction" value="monitor_on" />
 								<input type="submit" value="', $txt['shd_ticket_monitor_on'], '" class="button_submit" />';
 		else
 			echo '
 								<div>', $txt['shd_ticket_monitor_off_note'], '</div>
+								<input type="hidden" name="notifyaction" value="monitor_off" />
 								<input type="submit" value="', $txt['shd_ticket_monitor_off'], '" class="button_submit" />';
 		
 		echo '

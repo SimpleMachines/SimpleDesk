@@ -122,6 +122,7 @@ function shd_main()
 		'restoreticket' => array('SimpleDesk-Delete.php', 'shd_ticket_restore'),
 		'restorereply' => array('SimpleDesk-Delete.php', 'shd_reply_restore'),
 		'emaillog' => array('SimpleDesk-Notifications.php', 'shd_notify_popup'),
+		'notify' => array('SimpleDesk-Notifications.php', 'shd_notify_ticket_options'),
 	);
 
 	// Navigation menu

@@ -541,4 +541,57 @@ function shd_notify_popup()
 	$context['help_text'] .= '<strong>' . $txt['subject'] . ':</strong> ' . $email_subject . '<br /><br />' . $email_body;
 }
 
+function shd_notify_ticket_options()
+{
+	global $context, $txt, $smcFunc;
+
+	$ticketinfo = shd_load_ticket(); // This does permissions to access the ticket too.
+
+	checkSession();
+
+	if (empty($_REQUEST['notifyaction']))
+		$_REQUEST['notifyaction'] = '';
+
+	switch ($_REQUEST['notifyaction'])
+	{
+		case 'monitor_on';
+			if (!shd_allowed_to('shd_monitor_ticket', $ticketinfo['dept']))
+				fatal_lang_error('cannot_monitor_ticket', false);
+
+			$smcFunc['db_insert']('replace',
+				'{db_prefix}helpdesk_notify_override',
+				array(
+					'id_member' => 'int', 'id_ticket' => 'int', 'notify_state' => 'int',
+				),
+				array(
+					$context['user']['id'], $context['ticket_id'], $_REQUEST['notifyaction'] == 'monitor_on' ? NOTIFY_ALWAYS : NOTIFY_PREFS,
+				),
+				array('id_member', 'id_ticket')
+			);
+			redirectexit('action=helpdesk;sa=ticket;ticket=' . $context['ticket_id']);
+			break;
+		case 'monitor_off';
+			if (!shd_allowed_to('shd_monitor_ticket', $ticketinfo['dept']))
+				fatal_lang_error('cannot_unmonitor_ticket', false);
+
+			$smcFunc['db_query']('', '
+				DELETE FROM {db_prefix}helpdesk_notify_override
+				WHERE id_member = {int:member}
+					AND id_ticket = {int:ticket}',
+				array(
+					'member' => $context['user']['id'],
+					'ticket' => $context['ticket_id'],
+				)
+			);
+			redirectexit('action=helpdesk;sa=ticket;ticket=' . $context['ticket_id']);
+			break;
+		case 'ignore_on';
+			break;
+		case 'ignore_off';
+			break;
+		default:
+			break;
+	}
+}
+
 ?>
