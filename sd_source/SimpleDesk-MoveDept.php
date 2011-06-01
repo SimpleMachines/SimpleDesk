@@ -309,6 +309,9 @@ function shd_movedept2()
 			sendpm($recipients, $txt['shd_ticket_moved_subject'], un_htmlspecialchars($message));
 		}
 
+		shd_clear_active_tickets($context['current_dept']);
+		shd_clear_active_tickets($new_dept);
+
 		if (!empty($context['shd_return_to']) && $context['shd_return_to'] == 'home')
 			redirectexit($context['shd_home'] . ';dept=' . $new_dept);
 		else
