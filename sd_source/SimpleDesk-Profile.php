@@ -106,12 +106,20 @@ function shd_profile_main($memID)
 		loadTemplate('sd_template/SimpleDesk');
 		$temp_layers = $context['template_layers'];
 		$context['template_layers'] = array();
+		$added = false;
 		foreach ($temp_layers as $layer)
 		{
 			$context['template_layers'][] = $layer;
 			if ($layer == 'body')
+			{
 				$context['template_layers'][] = 'shd_maintenance';
+				$added = true;
+			}
 		}
+
+		// Well, we tried to add it as near the top as possible, but not all themes use the standard body layer.
+		if (!$added)
+			$context['template_layers'][] = 'shd_maintenance';
 	}
 
 	$context['template_layers'][] = 'shd_profile_navigation';

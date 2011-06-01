@@ -100,12 +100,20 @@ function shd_admin_main()
 		loadTemplate('sd_template/SimpleDesk');
 		$temp_layers = $context['template_layers'];
 		$context['template_layers'] = array();
+		$added = false;
 		foreach ($temp_layers as $layer)
 		{
 			$context['template_layers'][] = $layer;
 			if ($layer == 'body')
+			{
 				$context['template_layers'][] = 'shd_maintenance';
+				$added = true;
+			}
 		}
+
+		// Well, we tried to add it as near the top as possible, but not all themes use the standard body layer.
+		if (!$added)
+			$context['template_layers'][] = 'shd_maintenance';
 	}
 
 	// Also, fix up the link tree while we're here.
