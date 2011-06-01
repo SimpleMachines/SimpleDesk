@@ -351,12 +351,6 @@ CannedReply.prototype.getReply = function ()
 		getXMLDocument(smf_prepareScriptUrl(this.opt.sScriptUrl) + 'action=helpdesk;sa=ajax;op=canned;ticket=' + this.opt.iTicketId + ';reply=' + iReplyId + ';' + this.opt.sSessionVar + '=' + this.opt.sSessionId + ';xml' + ';mode=' + (oEditorHandle_shd_message.bRichTextEnabled ? 1 : 0), this.onReplyReceived);
 	}
 
-	// Move the view to the quick reply box.
-	if (navigator.appName == 'Microsoft Internet Explorer')
-		window.location.hash = this.opt.sJumpAnchor;
-	else
-		window.location.hash = '#' + this.opt.sJumpAnchor;
-
 	return false;
 }
 
