@@ -63,4 +63,9 @@ $txt['template_subject_notify_assign_own'] = 'Helpdesk [{ticket_id}] Ticket assi
 $txt['template_body_notify_assign_own'] = 'Your helpdesk ticket, "[{ticket_id}] {subject}", has been assigned to a staff member.' . "\n\n" . 'You can access your ticket here:' . "\n" . '{ticketlink}';
 $txt['template_log_notify_assign_own'] = 'Assigned to staff';
 
+$txt['template_subject_notify_monitor'] = 'Helpdesk [{ticket_id}] New reply from [{poster_name}] -RE- [{subject}]';
+$txt['template_body_notify_monitor'] = 'A helpdesk ticket you requested to follow, "[{ticket_id}] {subject}", has been replied to, by {poster_name}.' . "\n\n" . 'You can read the reply here:' . "\n" . '{ticketlink}';
+$txt['template_bodyfull_notify_monitor'] = 'A helpdesk ticket you requested to follow, "[{ticket_id}] {subject}", has been replied to, by {poster_name}.' . "\n\n" . '====Begin Comment====' . "\n" . '{body}' . "\n" . '====End Comment====' . "\n\n" . 'You can read the reply here:' . "\n" . '{ticketlink}';
+$txt['template_log_notify_monitor'] = 'Monitoring';
+
 ?>

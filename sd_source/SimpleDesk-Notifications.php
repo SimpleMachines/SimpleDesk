@@ -213,6 +213,17 @@ function shd_notifications_notify_newreply(&$msgOptions, &$ticketOptions, &$post
 			unset($members[$id]);
 	}
 
+	// Lastly, get the list of people who wanted to be notified through their preferences - and anyone who wanted to be excluded.
+	$overrides = shd_query_monitor_list($ticketOptions['id']);
+	foreach ($overrides['always_notify'] as $member_id)
+		if (empty($members[$member_id]))
+			$members[$member_id] = 'monitor';
+
+	// And apply exclusions
+	foreach ($overrides['never_notify'] as $member_id)
+		if (isset($members[$member_id]))
+			unset($members[$member_id]);
+
 	// AAAAAAAAAAAAND WE'RE OFF!
 	$notify_data['members'] = $members;
 	if (!empty($notify_data['members']))
@@ -606,4 +617,33 @@ function shd_notify_ticket_options()
 	}
 }
 
+function shd_query_monitor_list($ticket_id)
+{
+	global $smcFunc;
+
+	$members = array(
+		'always_notify' => array(),
+		'never_notify' => array(),
+	);
+
+	$query = $smcFunc['db_query']('', '
+		SELECT id_member, notify_state
+		FROM {db_prefix}helpdesk_notify_override
+		WHERE id_ticket = {int:ticket}',
+		array(
+			'ticket' => $ticket_id,
+		)
+	);
+
+	while ($row = $smcFunc['db_fetch_assoc']($query))
+	{
+		if ($row['notify_state'] == NOTIFY_ALWAYS)
+			$members['always_notify'][] = $row['id_member'];
+		elseif ($row['notify_state'] == NOTIFY_NEVER)
+			$members['never_notify'][] = $row['id_member'];
+	}
+	$smcFunc['db_free_result']($query);
+
+	return $members;
+}
 ?>
