@@ -430,6 +430,7 @@ $txt['shd_ticket_monitor_on_note'] = 'You can request an email for every reply, 
 $txt['shd_ticket_monitor_off_note'] = 'You can turn off the email for every reply, and use your preferences instead:';
 $txt['shd_ticket_monitor_on'] = 'Turn on monitoring';
 $txt['shd_ticket_monitor_off'] = 'Turn off monitoring';
+$txt['shd_ticket_notify_me_never_note'] = 'You can request that all normal emails are turned off:';
 $txt['shd_ticket_notify_me_never'] = 'You have asked for notifications on this ticket to be turned off.';
 $txt['shd_ticket_notify_me_never_on'] = 'Ignore this ticket';
 $txt['shd_ticket_notify_me_never_off'] = 'Unignore this ticket';

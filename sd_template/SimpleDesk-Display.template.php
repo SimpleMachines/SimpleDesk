@@ -496,48 +496,80 @@ function template_viewnotifications()
 					<div class="windowbg2">
 						<div class="shd_attachmentbox">';
 
-	if (!empty($context['display_notifications']['preferences']))
+	$displayed_something = false;
+
+	if (!$context['display_notifications']['is_ignoring'])
 	{
-		echo '
+		if (!empty($context['display_notifications']['preferences']))
+		{
+			$displayed_something = true;
+			echo '
 							', $txt['shd_ticket_notify_because'], '
 							<ul>';
-		foreach ($context['display_notifications']['preferences'] as $pref)
-			echo '
+			foreach ($context['display_notifications']['preferences'] as $pref)
+				echo '
 								<li>', $txt['shd_ticket_notify_because_' . $pref], '</li>';
 
-		echo '
+			echo '
 							</ul>';
-	}
-	else
-		echo '
+		}
+		else
+			echo '
 							', $txt['shd_ticket_notify_noneprefs'];
 
-	if (!empty($context['display_notifications']['can_change']))
-		echo '
+		if (!empty($context['display_notifications']['can_change']))
+			echo '
 							<div>
 								<a href="', $scripturl, '?action=profile;area=hd_prefs;u=', $context['user']['id'], '">', $txt['shd_ticket_notify_changeprefs'], '</a>
 							</div>';
 
-	if (!empty($context['display_notifications']['can_monitor']))
+		if (!empty($context['display_notifications']['can_monitor']))
+		{
+			if ($displayed_something)
+				echo '
+							<br />';
+
+			echo '
+							<form action="', $scripturl, '?action=helpdesk;sa=notify;ticket=', $context['ticket_id'], '" method="post">';
+
+			if (!$context['display_notifications']['is_monitoring'])
+				echo '
+								<div>', $txt['shd_ticket_monitor_on_note'], '</div>
+								<input type="hidden" name="notifyaction" value="monitor_on" />
+								<input type="submit" value="', $txt['shd_ticket_monitor_on'], '" class="button_submit" />';
+			else
+				echo '
+								<div>', $txt['shd_ticket_monitor_off_note'], '</div>
+								<input type="hidden" name="notifyaction" value="monitor_off" />
+								<input type="submit" value="', $txt['shd_ticket_monitor_off'], '" class="button_submit" />';
+		
+			echo '
+								<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
+							</form>';
+			$displayed_something = true;
+		}
+	}
+
+	if (!empty($context['display_notifications']['can_ignore']))
 	{
-		if (!empty($context['display_notifications']['preferences']) || !empty($context['display_notifications']['can_change']))
+		if ($displayed_something)
 			echo '
 							<br />';
 
 		echo '
 							<form action="', $scripturl, '?action=helpdesk;sa=notify;ticket=', $context['ticket_id'], '" method="post">';
 
-		if (!$context['display_notifications']['is_monitoring'])
+		if (!$context['display_notifications']['is_ignoring'])
 			echo '
-								<div>', $txt['shd_ticket_monitor_on_note'], '</div>
-								<input type="hidden" name="notifyaction" value="monitor_on" />
-								<input type="submit" value="', $txt['shd_ticket_monitor_on'], '" class="button_submit" />';
+								<div>', $txt['shd_ticket_notify_me_never_note'], '</div>
+								<input type="hidden" name="notifyaction" value="ignore_on" />
+								<input type="submit" value="', $txt['shd_ticket_notify_me_never_on'], '" class="button_submit" />';
 		else
 			echo '
-								<div>', $txt['shd_ticket_monitor_off_note'], '</div>
-								<input type="hidden" name="notifyaction" value="monitor_off" />
-								<input type="submit" value="', $txt['shd_ticket_monitor_off'], '" class="button_submit" />';
-		
+								<div>', $txt['shd_ticket_notify_me_never'], '</div>
+								<input type="hidden" name="notifyaction" value="ignore_off" />
+								<input type="submit" value="', $txt['shd_ticket_notify_me_never_off'], '" class="button_submit" />';
+
 		echo '
 								<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 							</form>';

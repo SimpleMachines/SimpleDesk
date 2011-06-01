@@ -563,19 +563,48 @@ function shd_notify_ticket_options()
 	if (empty($_REQUEST['notifyaction']))
 		$_REQUEST['notifyaction'] = '';
 
+	// Get any existing entry.
+	$query = $smcFunc['db_query']('', '
+		SELECT notify_state
+		FROM {db_prefix}helpdesk_notify_override
+		WHERE id_member = {int:user}
+			AND id_ticket = {int:ticket}',
+		array(
+			'user' => $context['user']['id'],
+			'ticket' => $context['ticket_id'],
+		)
+	);
+	if ($smcFunc['db_num_rows']($query) == 0)
+		$old_state = NOTIFY_PREFS;
+	else
+		list($old_state) = $smcFunc['db_fetch_row']($query);
+	$smcFunc['db_free_result']($query);
+
 	switch ($_REQUEST['notifyaction'])
 	{
 		case 'monitor_on';
 			if (!shd_allowed_to('shd_monitor_ticket', $ticketinfo['dept']))
 				fatal_lang_error('cannot_monitor_ticket', false);
 
+			// Unlike turning it off, we might be turning it on from either just off, or ignored, so log that fact.
+			if ($old_state == NOTIFY_ALWAYS)
+				break;
+			elseif ($old_state == NOTIFY_NEVER)
+				// Log turning off ignore list first
+				shd_log_action('unignore',
+					array(
+						'ticket' => $context['ticket_id'],
+						'subject' => $ticketinfo['subject'],
+					)
+				);
+			// Then add the new status.
 			$smcFunc['db_insert']('replace',
 				'{db_prefix}helpdesk_notify_override',
 				array(
 					'id_member' => 'int', 'id_ticket' => 'int', 'notify_state' => 'int',
 				),
 				array(
-					$context['user']['id'], $context['ticket_id'], $_REQUEST['notifyaction'] == 'monitor_on' ? NOTIFY_ALWAYS : NOTIFY_PREFS,
+					$context['user']['id'], $context['ticket_id'], NOTIFY_ALWAYS,
 				),
 				array('id_member', 'id_ticket')
 			);
@@ -585,12 +614,11 @@ function shd_notify_ticket_options()
 					'subject' => $ticketinfo['subject'],
 				)
 			);
-			redirectexit('action=helpdesk;sa=ticket;ticket=' . $context['ticket_id']);
 			break;
 		case 'monitor_off';
 			if (!shd_allowed_to('shd_monitor_ticket', $ticketinfo['dept']))
 				fatal_lang_error('cannot_unmonitor_ticket', false);
-
+			// Just delete the old status.
 			$smcFunc['db_query']('', '
 				DELETE FROM {db_prefix}helpdesk_notify_override
 				WHERE id_member = {int:member}
@@ -606,15 +634,65 @@ function shd_notify_ticket_options()
 					'subject' => $ticketinfo['subject'],
 				)
 			);
-			redirectexit('action=helpdesk;sa=ticket;ticket=' . $context['ticket_id']);
 			break;
 		case 'ignore_on';
+			if (!shd_allowed_to('shd_monitor_ticket', $ticketinfo['dept']))
+				fatal_lang_error('cannot_monitor_ticket', false);
+
+			// Unlike turning it off, we might be turning it on from either just off, or ignored, so log that fact.
+			if ($old_state == NOTIFY_NEVER)
+				break;
+			elseif ($old_state == NOTIFY_ALWAYS)
+				// Log turning off ignore list first
+				shd_log_action('unmonitor',
+					array(
+						'ticket' => $context['ticket_id'],
+						'subject' => $ticketinfo['subject'],
+					)
+				);
+
+			$smcFunc['db_insert']('replace',
+				'{db_prefix}helpdesk_notify_override',
+				array(
+					'id_member' => 'int', 'id_ticket' => 'int', 'notify_state' => 'int',
+				),
+				array(
+					$context['user']['id'], $context['ticket_id'], NOTIFY_NEVER,
+				),
+				array('id_member', 'id_ticket')
+			);
+			shd_log_action('ignore',
+				array(
+					'ticket' => $context['ticket_id'],
+					'subject' => $ticketinfo['subject'],
+				)
+			);
 			break;
 		case 'ignore_off';
+			if (!shd_allowed_to('shd_monitor_ticket', $ticketinfo['dept']))
+				fatal_lang_error('cannot_unmonitor_ticket', false);
+
+			$smcFunc['db_query']('', '
+				DELETE FROM {db_prefix}helpdesk_notify_override
+				WHERE id_member = {int:member}
+					AND id_ticket = {int:ticket}',
+				array(
+					'member' => $context['user']['id'],
+					'ticket' => $context['ticket_id'],
+				)
+			);
+			shd_log_action('unignore',
+				array(
+					'ticket' => $context['ticket_id'],
+					'subject' => $ticketinfo['subject'],
+				)
+			);
 			break;
 		default:
 			break;
 	}
+
+	redirectexit('action=helpdesk;sa=ticket;ticket=' . $context['ticket_id']);
 }
 
 function shd_query_monitor_list($ticket_id)

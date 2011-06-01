@@ -136,5 +136,7 @@ $txt['shd_log_unknown_user_1'] = '1 former user';
 $txt['shd_log_unknown_user_n'] = '%1$d former users';
 $txt['shd_log_monitor'] = 'Added &quot;<a href="{scripturl}?action=helpdesk;sa=ticket;ticket={ticket}">{subject}</a>&quot; to their monitor list.';
 $txt['shd_log_unmonitor'] = 'Removed &quot;<a href="{scripturl}?action=helpdesk;sa=ticket;ticket={ticket}">{subject}</a>&quot; from their monitor list.';
+$txt['shd_log_ignore'] = 'Added &quot;<a href="{scripturl}?action=helpdesk;sa=ticket;ticket={ticket}">{subject}</a>&quot; to their do-not-notify (ignore) list.';
+$txt['shd_log_unignore'] = 'Removed &quot;<a href="{scripturl}?action=helpdesk;sa=ticket;ticket={ticket}">{subject}</a>&quot; from their do-not-notify (ignore) list.';
 //@}
 ?>

@@ -95,11 +95,15 @@ $txt['permissionname_shd_assign_ticket_own'] = 'To themselves';
 $txt['permissionname_shd_assign_ticket_any'] = 'Any staff member';
 //@}
 
-//! @name Ticket modification: monitoring
+//! @name Ticket modification: monitoring/ignoring
 $txt['permissionname_shd_monitor_ticket'] = 'Monitor a ticket';
-$txt['permissionhelp_shd_monitor_ticket'] = 'This permission allows users to monitor tickets, to be notified on any changes to the ticket in addition to any of the usual email notifications. Use for example, to be notified about a ticket without replying to it or turning on the preferences for all tickets.';
+$txt['permissionhelp_shd_monitor_ticket'] = 'This permission allows users to monitor tickets, to be notified on any replies to the ticket in addition to any of the usual email notifications. Use for example, to be notified about a ticket without replying to it or turning on the preferences for all tickets.';
 $txt['permissionname_shd_monitor_ticket_own'] = 'Their own tickets';
 $txt['permissionname_shd_monitor_ticket_any'] = 'Any tickets';
+$txt['permissionname_shd_ignore_ticket'] = 'Monitor a ticket';
+$txt['permissionhelp_shd_ignore_ticket'] = 'This permission allows users to expressly turn off notifications on a ticket. This would allow them to have preferences saying to notify on all replies, but to be able to selectively ignore an individual ticket\'s replies.';
+$txt['permissionname_shd_ignore_ticket_own'] = 'Their own tickets';
+$txt['permissionname_shd_ignore_ticket_any'] = 'Any tickets';
 
 //! @name Ticket modification: resolution
 //@{

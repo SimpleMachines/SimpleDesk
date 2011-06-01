@@ -479,6 +479,8 @@ function shd_log_action($action, $params, $do_last_update = true)
 		'move_dept' => 'shd_logopt_move_dept',
 		'monitor' => 'shd_logopt_monitor',
 		'unmonitor' => 'shd_logopt_monitor',
+		'ignore' => 'shd_logopt_monitor',
+		'unignore' => 'shd_logopt_monitor',
 	);
 
 	if (empty($logopt[$action]) || empty($modSettings[$logopt[$action]]))

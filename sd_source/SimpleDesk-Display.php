@@ -779,9 +779,9 @@ function shd_view_ticket()
 		'show' => false,
 		'preferences' => array(),
 		'can_change' => shd_allowed_to('shd_view_profile', 0) && shd_allowed_to('shd_view_preferences', 0), // not department related
-		'can_monitor' => shd_allowed_to('shd_monitor_ticket', $context['ticket']['dept']),
+		'can_monitor' => shd_allowed_to('shd_monitor_ticket_any', $context['ticket']['dept']) || ($context['ticket']['ticket_opener'] && shd_allowed_to('shd_monitor_ticket_own', $context['ticket']['dept'])),
 		'is_monitoring' => false,
-		'can_ignore' => false,
+		'can_ignore' => shd_allowed_to('shd_ignore_ticket_any', $context['ticket']['dept']) || ($context['ticket']['ticket_opener'] && shd_allowed_to('shd_ignore_ticket_own', $context['ticket']['dept'])),
 		'is_ignoring' => false,
 	);
 	$notify_state = NOTIFY_PREFS;
