@@ -568,6 +568,12 @@ function shd_notify_ticket_options()
 				),
 				array('id_member', 'id_ticket')
 			);
+			shd_log_action('monitor',
+				array(
+					'ticket' => $context['ticket_id'],
+					'subject' => $ticketinfo['subject'],
+				)
+			);
 			redirectexit('action=helpdesk;sa=ticket;ticket=' . $context['ticket_id']);
 			break;
 		case 'monitor_off';
@@ -581,6 +587,12 @@ function shd_notify_ticket_options()
 				array(
 					'member' => $context['user']['id'],
 					'ticket' => $context['ticket_id'],
+				)
+			);
+			shd_log_action('unmonitor',
+				array(
+					'ticket' => $context['ticket_id'],
+					'subject' => $ticketinfo['subject'],
 				)
 			);
 			redirectexit('action=helpdesk;sa=ticket;ticket=' . $context['ticket_id']);
