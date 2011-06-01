@@ -557,6 +557,7 @@ function shd_notify_ticket_options()
 	global $context, $txt, $smcFunc;
 
 	$ticketinfo = shd_load_ticket(); // This does permissions to access the ticket too.
+	$ticket_starter = $ticketinfo['starter_id'] == $context['user']['id'];
 
 	checkSession();
 
@@ -583,7 +584,7 @@ function shd_notify_ticket_options()
 	switch ($_REQUEST['notifyaction'])
 	{
 		case 'monitor_on';
-			if (!shd_allowed_to('shd_monitor_ticket', $ticketinfo['dept']))
+			if (!shd_allowed_to('shd_monitor_ticket_any', $ticketinfo['dept']) && (!$ticket_starter || !shd_allowed_to('shd_monitor_ticket_own', $ticketinfo['dept'])))
 				fatal_lang_error('cannot_monitor_ticket', false);
 
 			// Unlike turning it off, we might be turning it on from either just off, or ignored, so log that fact.
@@ -616,7 +617,7 @@ function shd_notify_ticket_options()
 			);
 			break;
 		case 'monitor_off';
-			if (!shd_allowed_to('shd_monitor_ticket', $ticketinfo['dept']))
+			if (!shd_allowed_to('shd_monitor_ticket_any', $ticketinfo['dept']) && (!$ticket_starter || !shd_allowed_to('shd_monitor_ticket_own', $ticketinfo['dept'])))
 				fatal_lang_error('cannot_unmonitor_ticket', false);
 			// Just delete the old status.
 			$smcFunc['db_query']('', '
@@ -636,7 +637,7 @@ function shd_notify_ticket_options()
 			);
 			break;
 		case 'ignore_on';
-			if (!shd_allowed_to('shd_monitor_ticket', $ticketinfo['dept']))
+			if (!shd_allowed_to('shd_ignore_ticket_any', $ticketinfo['dept']) && (!$ticket_starter || !shd_allowed_to('shd_ignore_ticket_own', $ticketinfo['dept'])))
 				fatal_lang_error('cannot_monitor_ticket', false);
 
 			// Unlike turning it off, we might be turning it on from either just off, or ignored, so log that fact.
@@ -669,7 +670,7 @@ function shd_notify_ticket_options()
 			);
 			break;
 		case 'ignore_off';
-			if (!shd_allowed_to('shd_monitor_ticket', $ticketinfo['dept']))
+			if (!shd_allowed_to('shd_ignore_ticket_any', $ticketinfo['dept']) && (!$ticket_starter || !shd_allowed_to('shd_ignore_ticket_own', $ticketinfo['dept'])))
 				fatal_lang_error('cannot_unmonitor_ticket', false);
 
 			$smcFunc['db_query']('', '
