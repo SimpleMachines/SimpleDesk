@@ -588,7 +588,7 @@ function shd_ajax_assign2()
 */
 function shd_ajax_notify()
 {
-	global $txt, $context, $smcFunc, $user_profile;
+	global $txt, $context, $smcFunc, $user_profile, $modSettings;
 
 	if (!empty($context['ticket_id']))
 	{
@@ -605,7 +605,7 @@ function shd_ajax_notify()
 			$ticket = $smcFunc['db_fetch_assoc']($query);
 		$smcFunc['db_free_result']($query);
 	}
-	if (empty($valid))
+	if (empty($ticket) || !shd_allowed_to('shd_singleton_email', $ticket['id_dept']))
 		return $context['ajax_return'] = array('error' => $txt['shd_no_ticket']);
 
 	// So, we need to start figuring out who's going to be notified, who won't be and who we might be interested in notifying.
@@ -636,7 +636,43 @@ function shd_ajax_notify()
 		$notify_list[$row['notify_state'] == NOTIFY_NEVER ? 'optional_butoff' : 'being_notified'][] = $row['id_member'];
 	}
 
+	// Now we get the list by preferences. This is where it starts to get complicated.
+	$possible_members = array();
+	// People who want replies to their own ticket, without including the ticket starter because they'd know about it...
+	if (!empty($modSettings['shd_notify_new_reply_own']) && $context['user']['id'] != $ticket['id_member_started'])
+		$possible_members[$ticket['id_member_started']][] = 'new_reply_own';
+	// The ticket is assigned to someone and they want to be notified if it changes.
+	if (!empty($modSettings['shd_notify_new_reply_assigned']) && !empty($ticket['id_member_assigned']) && $context['user']['id'] != $ticket['id_member_assigned'])
+		$possible_members[$ticket['id_member_assigned']][] = 'new_reply_assigned';
+	// So, if you're staff, and you've replied to this ticket before, do you want to be notified this time?
+	if (!empty($modSettings['shd_notify_new_reply_previous']))
+	{
+		$query = $smcFunc['db_query']('', '
+			SELECT id_member
+			FROM {db_prefix}helpdesk_ticket_replies
+			WHERE id_ticket = {int:ticket}
+			GROUP BY id_member',
+			array(
+				'ticket' => $ticketOptions['id'],
+			)
+		);
+		$responders = array();
+		while ($row = $smcFunc['db_fetch_row']($query))
+			$responders[] = $row[0]; // this shouldn't be nil, ever, because we're replying, so the topic already exists so there's at least one name in there...
+		$smcFunc['db_free_result']($query);
+
+		$responders = array_intersect($responders, $staff);
+		foreach ($responders as $id)
+			$possible_members[$id][] = 'new_reply_previous';
+	}
+	// If you're staff, did you have 'spam my inbox every single time' selected?
+	if (!empty($modSettings['shd_notify_new_reply_any']))
+		foreach ($staff as $id)
+			$possible_members[$id][] = 'new_reply_any';
+
+	// So we pulled a list of who will be notified already, and who won't normally be notified. Now we just have to figure out who's left.
 	$members = array_unique($members);
+	$notify_list['optional'] = array_diff($members, $notify_list['being_notified'], $notify_list['optional_butoff']);
 
 	// Get everyone's name.
 	$loaded = loadMemberData($members);

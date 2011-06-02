@@ -91,6 +91,7 @@ function shd_load_all_permission_sets()
 
 		'shd_monitor_ticket' => array(true, 'email', 'log_notify.png'),
 		'shd_ignore_ticket' => array(true, 'email', 'perm_deny.png'),
+		'shd_singleton_email' => array(false, 'email', 'live.png'),
 
 		'shd_view_profile' => array(true, 'profile', 'profile.png'),
 		'shd_view_profile_log' => array(true, 'profile', 'log.png'),
@@ -168,6 +169,7 @@ function shd_load_role_templates()
 				'shd_edit_reply_any' => ROLEPERM_ALLOW,
 				'shd_post_proxy' => ROLEPERM_ALLOW,
 				'shd_monitor_ticket_any' => ROLEPERM_ALLOW,
+				'shd_singleton_email' => ROLEPERM_ALLOW,
 				'shd_ignore_ticket_own' => ROLEPERM_ALLOW,
 				'shd_view_attachment' => ROLEPERM_ALLOW,
 				'shd_post_attachment' => ROLEPERM_ALLOW,
@@ -212,6 +214,7 @@ function shd_load_role_templates()
 				'shd_override_cf' => ROLEPERM_ALLOW,
 				'shd_monitor_ticket_any' => ROLEPERM_ALLOW,
 				'shd_ignore_ticket_any' => ROLEPERM_ALLOW,
+				'shd_singleton_email' => ROLEPERM_ALLOW,
 				'shd_view_attachment' => ROLEPERM_ALLOW,
 				'shd_post_attachment' => ROLEPERM_ALLOW,
 				'shd_delete_attachment' => ROLEPERM_ALLOW,
