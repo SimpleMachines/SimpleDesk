@@ -810,9 +810,9 @@ function shd_credits()
 					'desc' => $txt['shd_credits_devs_desc'],
 					'icon' => 'devs.png',
 					'members' => array(
-						array('Peter &quot;Arantor&quot; Spicer',false),
-						array('Jason &quot;JBlaze&quot; Clemons',false),
-						array('Marcus &quot;c&#963;&#963;&#1082;&#953;&#1108; &#1084;&#963;&#951;&#1109;&#1090;&#1108;&#1103;&quot; Forsberg',false),
+						array('Peter &quot;Arantor&quot; Spicer', false),
+						array('Jason &quot;JBlaze&quot; Clemons', true),
+						array('Marcus &quot;c&#963;&#963;&#1082;&#953;&#1108; &#1084;&#963;&#951;&#1109;&#1090;&#1108;&#1103;&quot; Forsberg', true),
 					),
 				),
 				array(
@@ -820,8 +820,8 @@ function shd_credits()
 					'desc' => $txt['shd_credits_projectsupport_desc'],
 					'icon' => 'managers.png',
 					'members' => array(
-						array('Graeme &quot;Trekkie101&quot; Spence',false),
-						array('Jeremy &quot;SleePy&quot; Darwood',false),
+						array('Graeme &quot;Trekkie101&quot; Spence', false),
+						array('Jeremy &quot;SleePy&quot; Darwood', false),
 					),
 				),
 				array(
@@ -829,7 +829,7 @@ function shd_credits()
 					'desc' => $txt['shd_credits_marketing_desc'],
 					'icon' => 'marketers.png',
 					'members' => array(
-						array('Brannon &quot;B&ordf;&quot; Hall',false),
+						array('Brannon &quot;B&ordf;&quot; Hall', false),
 					),
 				),
 				array(
@@ -837,7 +837,7 @@ function shd_credits()
 					'desc' => $txt['shd_credits_globalizer_desc'],
 					'icon' => 'globalizers.png',
 					'members' => array(
-						array('Jerry Osborne',true),
+						array('Jerry Osborne', true),
 					),
 				),
 				array(
@@ -845,9 +845,9 @@ function shd_credits()
 					'desc' => $txt['shd_credits_support_desc'],
 					'icon' => 'support.png',
 					'members' => array(
-						array('Tyrsson',true),
-						array('Ha2',false),
-						array('Aldo &quot;hadesflames&quot; Barreras',false),
+						array('Tyrsson', true),
+						array('Ha2', true),
+						array('Aldo &quot;hadesflames&quot; Barreras', true),
 					),
 				),
 				array(
@@ -855,10 +855,10 @@ function shd_credits()
 					'desc' => $txt['shd_credits_qualityassurance_desc'],
 					'icon' => 'qa.png',
 					'members' => array(
-						array('Sinan &quot;[SiNaN]&quot; &Ccedil;evik',false),
-						array('Alex &quot;Cleo&quot; Tokar',false),
-						array('Paul &quot;tfs&quot; Laufer',false),
-						array('Shomari &quot;spoogs&quot; Scott',false),
+						array('Sinan &quot;[SiNaN]&quot; &Ccedil;evik', false),
+						array('Paul &quot;tfs&quot; Laufer', false),
+						array('Shomari &quot;spoogs&quot; Scott', false),
+						array('Alex &quot;Cleo&quot; Tokar', true),
 					),
 				),
 				array(
@@ -866,20 +866,21 @@ function shd_credits()
 					'desc' => $txt['shd_credits_beta_desc'],
 					'icon' => 'testers.png',
 					'members' => array(
-						array('Chris &quot;ccbtimewiz&quot; Batista',false),
-						array('Wade &quot;&#1109;&#951;&#963;&#969;&quot; Poulsen',false),
-						array('Edwin &quot;Dismal Shadow&quot; Mendez',false),
-						array('Treznax',false),
-						array('Mark &quot;KiLLuMiNaTi&minus;7&minus;&quot; Longworth',false),
-						array('NIBOGO',false),
-						array('Robert &quot;Robbo&quot; Clancy',false),
-						array('Ya&#x11F;izcan Arslan',false),
-						array('MultiformeIngegno',false),
-						array('flapjack',false),
+						array('Chris &quot;ccbtimewiz&quot; Batista', false),
+						array('Wade &quot;&#1109;&#951;&#963;&#969;&quot; Poulsen', false),
+						array('Edwin &quot;Dismal Shadow&quot; Mendez', false),
+						array('Treznax', false),
+						array('Mark &quot;KiLLuMiNaTi&minus;7&minus;&quot; Longworth', false),
+						array('NIBOGO', false),
+						array('Robert &quot;Robbo&quot; Clancy', false),
+						array('Ya&#x11F;izcan Arslan', false),
+						array('MultiformeIngegno', false),
+						array('flapjack', false),
 						array('feline',	false),
-						array('Sordell Media',false),
-						array('[FailSafe]',false),
-						array('chilly',false),
+						array('Sordell Media', false),
+						array('[FailSafe]', false),
+						array('chilly', false),
+						array('Tah Zonemaster', false),
 					),
 				),
 				array(
