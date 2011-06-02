@@ -427,7 +427,7 @@ $txt['shd_ticket_notify_because_anyreply'] = 'for any ticket';
 
 $txt['shd_ticket_notify_me_always'] = 'You are monitoring this ticket (and will receive a notification on every reply.';
 $txt['shd_ticket_monitor_on_note'] = 'You may monitor all replies to this ticket via email regardless of your preferences:';
-$txt['shd_ticket_monitor_off_note'] = 'You can turn off the email for every reply, and use your preferences instead:';
+$txt['shd_ticket_monitor_off_note'] = 'You may turn off monitoring for this ticket and use your preferences instead:';
 $txt['shd_ticket_monitor_on'] = 'Turn on monitoring';
 $txt['shd_ticket_monitor_off'] = 'Turn off monitoring';
 $txt['shd_ticket_notify_me_never_note'] = 'You may ignore email updates for this ticket regardless of your preferences:';

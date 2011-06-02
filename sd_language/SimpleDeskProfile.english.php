@@ -156,10 +156,10 @@ $txt['shd_profile_reply_to_ticket'] = 'Reply to ticket %s';
 // Show monitor/ignore
 $txt['shd_profile_show_monitor_title'] = 'Monitored Tickets';
 $txt['shd_profile_show_monitor_header'] = 'Tickets you are monitoring';
-$txt['shd_profile_show_monitor_description'] = 'This page displays all of the tickets on which you have chosen to disable notifications.';
+$txt['shd_profile_show_monitor_description'] = 'This page displays all of the tickets which you have flagged to monitor via email, regardless of your other email options.';
 $txt['shd_profile_show_ignore_title'] = 'Ignored Tickets';
 $txt['shd_profile_show_ignore_header'] = 'Tickets you have disabled notifications for';
-$txt['shd_profile_show_ignore_description'] = 'This page displays all of the tickets which you have flagged to monitor via email, regardless of your other email options.';
+$txt['shd_profile_show_ignore_description'] = 'This page displays all of the tickets on which you have chosen to disable notifications.';
 
 // When in HD only mode, we need to remove hints of 'forum' from the language strings. These essentially replace the non shd_ prefixed ones in Profile.language.php.
 $txt['shd_current_time'] = 'Current helpdesk time';
