@@ -296,20 +296,22 @@ $txt['shd_admin_permissions_homedesc'] = 'This area allows you to configure the 
 $txt['shd_permgroup_general'] = 'General helpdesk permissions';
 $txt['shd_permgroup_posting'] = 'Ticket/reply posting';
 $txt['shd_permgroup_ticketactions'] = 'Ticket actions';
-$txt['shd_permgroup_attachments'] = 'Attachments to tickets and replies';
-$txt['shd_permgroup_relationships'] = 'Relationships between tickets';
 $txt['shd_permgroup_deletion'] = 'The recycle bin and ticket/reply deletion';
-$txt['shd_permgroup_moderation'] = 'Ticket moderation and management';
+$txt['shd_permgroup_attachments'] = 'Attachments to tickets and replies';
+$txt['shd_permgroup_email'] = 'Email notifications options';
 $txt['shd_permgroup_profile'] = 'User profiles and options';
+$txt['shd_permgroup_relationships'] = 'Relationships between tickets';
+$txt['shd_permgroup_moderation'] = 'Ticket moderation and management';
 
 $txt['shd_permgroup_short_general'] = 'General';
 $txt['shd_permgroup_short_posting'] = 'Posting';
 $txt['shd_permgroup_short_ticketactions'] = 'Actions';
-$txt['shd_permgroup_short_attachments'] = 'Attachments';
-$txt['shd_permgroup_short_relationships'] = 'Relationships';
 $txt['shd_permgroup_short_deletion'] = 'Delete/Restore';
-$txt['shd_permgroup_short_moderation'] = 'Moderation';
+$txt['shd_permgroup_short_attachments'] = 'Attachments';
+$txt['shd_permgroup_short_email'] = 'Emails';
 $txt['shd_permgroup_short_profile'] = 'Profile';
+$txt['shd_permgroup_short_relationships'] = 'Relationships';
+$txt['shd_permgroup_short_moderation'] = 'Moderation';
 
 $txt['shd_permgroup_denied'] = 'Denied';
 //@}

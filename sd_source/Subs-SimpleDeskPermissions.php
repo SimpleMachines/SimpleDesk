@@ -41,12 +41,13 @@ function shd_load_all_permission_sets()
 		array(
 			'general' => 'status.png',
 			'posting' => 'log_newticket.png',
+			'ticketactions' => 'assign.png',
 			'deletion' => 'log_delete.png',
 			'attachments' => 'attachments.png',
 		),
 		array(
+			'email' => 'log_notify.png',
 			'profile' => 'profile.png',
-			'ticketactions' => 'assign.png',
 			'relationships' => 'relationships.png',
 			'moderation' => 'modification.png',
 		),
@@ -76,12 +77,20 @@ function shd_load_all_permission_sets()
 		'shd_alter_urgency_higher' => array(true, 'ticketactions', 'log_urgency_increase.png'),
 		'shd_alter_privacy' => array(true, 'ticketactions', 'log_markprivate.png'),
 		'shd_assign_ticket' => array(true, 'ticketactions', 'log_assign.png'),
-		'shd_monitor_ticket' => array(true, 'ticketactions', 'log_notify.png'),
-		'shd_ignore_ticket' => array(true, 'ticketactions', 'perm_deny.png'),
+
+		'shd_access_recyclebin' => array(false, 'deletion', 'access_recyclebin.png'),
+		'shd_delete_ticket' => array(true, 'deletion', 'log_delete.png'),
+		'shd_delete_reply' => array(true, 'deletion', 'log_delete_reply.png'),
+		'shd_restore_ticket' => array(true, 'deletion', 'log_restore.png'),
+		'shd_restore_reply' => array(true, 'deletion', 'log_restore_reply.png'),
+		'shd_delete_recycling' => array(false, 'deletion', 'log_permadelete.png'),
 
 		'shd_view_attachment' => array(false, 'attachments', 'attachments.png'),
 		'shd_post_attachment' => array(false, 'attachments', 'attachments_add.png'),
 		'shd_delete_attachment' => array(false, 'attachments', 'attachments_delete.png'),
+
+		'shd_monitor_ticket' => array(true, 'email', 'log_notify.png'),
+		'shd_ignore_ticket' => array(true, 'email', 'perm_deny.png'),
 
 		'shd_view_profile' => array(true, 'profile', 'profile.png'),
 		'shd_view_profile_log' => array(true, 'profile', 'log.png'),
@@ -90,13 +99,6 @@ function shd_load_all_permission_sets()
 		'shd_view_relationships' => array(false, 'relationships', 'log_rel_linked.png'),
 		'shd_create_relationships' => array(false, 'relationships', 'new_relationship.png'),
 		'shd_delete_relationships' => array(false, 'relationships', 'log_rel_delete.png'),
-
-		'shd_access_recyclebin' => array(false, 'deletion', 'access_recyclebin.png'),
-		'shd_delete_ticket' => array(true, 'deletion', 'log_delete.png'),
-		'shd_delete_reply' => array(true, 'deletion', 'log_delete_reply.png'),
-		'shd_restore_ticket' => array(true, 'deletion', 'log_restore.png'),
-		'shd_restore_reply' => array(true, 'deletion', 'log_restore_reply.png'),
-		'shd_delete_recycling' => array(false, 'deletion', 'log_permadelete.png'),
 
 		'shd_ticket_to_topic' => array(false, 'moderation', 'log_tickettotopic.png'),
 		'shd_topic_to_ticket' => array(false, 'moderation', 'log_topictoticket.png'),
