@@ -527,7 +527,7 @@ function template_viewnotifications()
 		{
 			if ($displayed_something)
 				echo '
-							<br />';
+							<hr />';
 
 			echo '
 							<form action="', $scripturl, '?action=helpdesk;sa=notify;ticket=', $context['ticket_id'], '" method="post">';
@@ -554,7 +554,7 @@ function template_viewnotifications()
 	{
 		if ($displayed_something)
 			echo '
-							<br />';
+							<hr />';
 
 		echo '
 							<form action="', $scripturl, '?action=helpdesk;sa=notify;ticket=', $context['ticket_id'], '" method="post">';
