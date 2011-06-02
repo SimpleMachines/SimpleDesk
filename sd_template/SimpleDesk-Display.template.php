@@ -390,7 +390,7 @@ function template_ticket_leftcolumn()
 {
 	global $context;
 
-	if (empty($context['ticket_attach']['ticket']) && empty($context['display_relationships']))
+	if (empty($context['ticket_attach']['ticket']) && empty($context['display_relationships']) && empty($context['display_notifications']['show']))
 		return; // nothing to do
 
 	$context['leftcolumndone'] = true; // for the rest of the template later
