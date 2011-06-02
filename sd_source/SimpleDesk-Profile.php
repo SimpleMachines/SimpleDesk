@@ -394,18 +394,29 @@ function shd_profile_show_tickets($memID)
 {
 	global $txt, $user_info, $scripturl, $modSettings, $smcFunc, $board, $user_profile, $context;
 
+	// Navigation
+	$context['show_tickets_navigation'] = array(
+		'tickets' => array('text' => 'shd_profile_show_tickets', 'lang' => true, 'url' => $scripturl . '?action=profile;u=' . $memID . ';area=hd_showtickets;sa=tickets'),
+		'replies' => array('text' => 'shd_profile_show_replies', 'lang' => true, 'url' => $scripturl . '?action=profile;u=' . $memID . ';area=hd_showtickets;sa=replies'),
+	);
+	// We might be adding the monitor/ignore lists, but we're only interested in those if we're actually on our own page.
+	if ($memID == $user_info['id'])
+	{
+		if (shd_allowed_to('shd_monitor_ticket_any') || shd_allowed_to('shd_monitor_ticket_own'))
+			$context['show_tickets_navigation']['monitor'] = array('text' => 'shd_profile_show_monitor', 'lang' => true, 'url' => $scripturl . '?action=profile;u=' . $memID . ';area=hd_showtickets;sa=monitor');
+		if (shd_allowed_to('shd_ignore_ticket_any') || shd_allowed_to('shd_ignore_ticket_own'))
+			$context['show_tickets_navigation']['ignore'] = array('text' => 'shd_profile_show_ignore', 'lang' => true, 'url' => $scripturl . '?action=profile;u=' . $memID . ';area=hd_showtickets;sa=ignore');
+		// We have the monitor and ignore lists in this area but this code can't deal with it, so we need to go somewhere else with it.
+		if (isset($_GET['sa']) && ($_GET['sa'] == 'monitor' || $_GET['sa'] == 'ignore'))
+			return shd_profile_show_notify_override($memID);
+	}
+
 	$context['page_title'] = $txt['shd_profile_show_tickets'] . ' - ' . $user_profile[$memID]['real_name'];
 	$context['sub_template'] = 'shd_profile_show_tickets';
 	$context['start'] = (int) $_REQUEST['start'];
 
 	// The time has come to choose: Tickets, or just replies?
 	$context['can_haz_replies'] = isset($_GET['sa']) && $_GET['sa'] == 'replies' ? true : false;
-
-	// Navigation
-	$context['show_tickets_navigation'] = array(
-		'tickets' => array('text' => 'shd_profile_show_tickets', 'lang' => true, 'url' => $scripturl . '?action=profile;u=' . $memID . ';area=hd_showtickets;sa=tickets'),
-		'replies' => array('text' => 'shd_profile_show_replies', 'lang' => true, 'url' => $scripturl . '?action=profile;u=' . $memID . ';area=hd_showtickets;sa=replies'),
-	);
 
 	// The active button.
 	$context['show_tickets_navigation'][$context['can_haz_replies'] ? 'replies' : 'tickets']['active'] = true;
@@ -515,7 +526,7 @@ function shd_profile_show_tickets($memID)
 	$context['items'] = array();
 	while ($row = $smcFunc['db_fetch_assoc']($request))
 	{
-		// @[£]@€}**@}$€!!!
+		// Censor the content
 		censorText($row['body']);
 		censorText($row['subject']);
 
@@ -542,6 +553,49 @@ function shd_profile_show_tickets($memID)
 	// Head's up, feet's down.
 	if ($reverse)
 		$context['items'] = array_reverse($context['items'], true);
+}
+
+function shd_profile_show_notify_override($memID)
+{
+	global $txt, $user_info, $scripturl, $modSettings, $smcFunc, $board, $user_profile, $context;
+
+	$context['notify_type'] = $_GET['sa']; // We already checked it's monitor or ignore, if we didn't, we wouldn't be here!
+
+	$context['page_title'] = $txt['shd_profile_show_' . $context['notify_type'] . '_title'] . ' - ' . $user_profile[$memID]['real_name'];
+	$context['sub_template'] = 'shd_profile_show_notify_override';
+
+	// The active button.
+	$context['show_tickets_navigation'][$context['notify_type']]['active'] = true;
+
+	// Having got the general stuff out the way, let's do the specifics.
+	
+	// Ticket, Name, Started By, Replies, Status, Urgency, Updated (+ Updated By?)
+	$context['tickets'] = array();
+	$query = shd_db_query('', '
+		SELECT hdt.id_ticket, hdt.subject, IFNULL(mem.id_member, 0) AS starter_id, IFNULL(mem.real_name, hdtr.poster_name) AS starter_name,
+			hdt.num_replies, hdt.status, hdt.urgency, hdt.last_updated
+		FROM {db_prefix}helpdesk_notify_override AS hdno
+			INNER JOIN {db_prefix}helpdesk_tickets AS hdt ON (hdno.id_ticket = hdt.id_ticket)
+			INNER JOIN {db_prefix}helpdesk_ticket_replies AS hdtr ON (hdt.id_first_msg = hdtr.id_msg)
+			LEFT JOIN {db_prefix}members AS mem ON (hdt.id_member_started = mem.id_member)
+		WHERE {query_see_ticket}
+			AND hdno.id_member = {int:user}
+			AND hdno.notify_state = {int:notify}
+		ORDER BY last_updated DESC',
+		array(
+			'user' => $memID,
+			'notify' => $context['notify_type'] == 'monitor' ? NOTIFY_ALWAYS : NOTIFY_NEVER,
+		)
+	);
+	while ($row = $smcFunc['db_fetch_assoc']($query))
+	{
+		$row += array(
+			'id_ticket_display' => str_pad($row['id_ticket'], $modSettings['shd_zerofill'], '0', STR_PAD_LEFT),
+			'updated' => timeformat($row['last_updated']),
+			'ticket_starter' => shd_profile_link($row['starter_name'], $row['starter_id']),
+		);
+		$context['tickets'][] = $row;
+	}
 }
 
 function shd_profile_permissions($memID)

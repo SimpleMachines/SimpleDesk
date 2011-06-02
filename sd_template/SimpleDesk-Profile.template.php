@@ -417,6 +417,69 @@ function template_shd_profile_show_tickets()
 	</div>';
 }
 
+function template_shd_profile_show_notify_override()
+{
+	global $context, $txt, $settings, $scripturl, $options, $modSettings;
+
+	echo '
+				<div class="tborder">
+					<div class="cat_bar">
+						<h3 class="catbg">
+							<img src="', $settings['default_images_url'], '/simpledesk/log_', $context['notify_type'], '.png" class="icon" alt="*" />
+							', $txt['shd_profile_show_' . $context['notify_type'] . '_header'], '
+						</h3>
+					</div>
+					<p class="description">', $txt['shd_profile_show_' . $context['notify_type'] . '_description'], '</p>
+				</div>';
+
+	// The navigation.
+	echo '
+				<div class="shd_profile_show_tickets_nav">', template_button_strip($context['show_tickets_navigation']), '<br class="clear" /></div>';
+
+	echo '
+				<table class="shd_ticketlist" cellspacing="0" width="100%">
+					<tr class="titlebg">
+						<td width="8%" class="shd_nowrap"><img src="', $settings['default_images_url'], '/simpledesk/ticket.png" class="shd_smallicon" alt=""> ', $txt['shd_ticket'], '</td>
+						<td width="15%" class="shd_nowrap">', $txt['shd_ticket_name'], '</td>
+						<td width="12%" class="shd_nowrap"><img src="', $settings['default_images_url'], '/simpledesk/user.png" class="shd_smallicon" alt=""> ', $txt['shd_ticket_started_by'], '</td>
+						<td width="7%" class="shd_nowrap">', $txt['shd_ticket_replies'], '</td>
+						<td width="17%" class="shd_nowrap"><img src="', $settings['default_images_url'], '/simpledesk/status.png" class="shd_smallicon" alt=""> ', $txt['shd_ticket_status'], '</td>
+						<td width="8%" class="shd_nowrap"><img src="', $settings['default_images_url'], '/simpledesk/urgency.png" class="shd_smallicon" alt=""> ', $txt['shd_ticket_urgency'], '</td>
+						<td width="22%" class="shd_nowrap"><img src="', $settings['default_images_url'], '/simpledesk/time.png" class="shd_smallicon" alt=""> ', $txt['shd_ticket_updated'], '</td>
+					</tr>';
+
+	if (empty($context['tickets']))
+	{
+		echo '
+					<tr class="windowbg2">
+						<td colspan="7">', $txt['shd_error_no_tickets'], '</td>
+					</tr>';
+	}
+	else
+	{
+		$use_bg2 = true;
+		foreach ($context['tickets'] as $ticket)
+		{
+			echo '
+						<tr class="windowbg', $use_bg2 ? '2' : '', '">
+							<td width="4%" class="smalltext">', $ticket['id_ticket_display'], '</td>
+							<td class="smalltext"><a href="', $scripturl, '?action=helpdesk;sa=ticket;ticket=', $ticket['id_ticket'], '">', $ticket['subject'], '</a></td>
+							<td class="smalltext">', $ticket['ticket_starter'], '</td>
+							<td class="smalltext">', $ticket['num_replies'], '</td>
+							<td class="smalltext">', $txt['shd_status_' . $ticket['status']], '</td>
+							<td class="smalltext">', $txt['shd_urgency_' . $ticket['urgency']], '</td>
+							<td class="smalltext">', $ticket['updated'], '</td>
+						</tr>';
+
+			$use_bg2 = !$use_bg2;
+		}
+	}
+
+	echo '
+					</table>
+				</div>';
+}
+
 function template_shd_profile_permissions()
 {
 	global $context, $txt, $settings, $scripturl;

@@ -33,6 +33,8 @@ $txt['shd_profile_home'] = 'Profile Home';
 $txt['shd_profile_preferences'] = 'Preferences';
 $txt['shd_profile_show_tickets'] = 'Show Tickets';
 $txt['shd_profile_show_replies'] = 'Show Replies';
+$txt['shd_profile_show_monitor'] = 'Monitored Tickets';
+$txt['shd_profile_show_ignore'] = 'Ignored Tickets';
 $txt['shd_profile_permissions'] = 'Permissions';
 $txt['shd_profile_actionlog'] = 'Action Log';
 $txt['shd_profile_go_to_helpdesk'] = 'Go to the helpdesk';
@@ -150,6 +152,14 @@ $txt['shd_profile_show_tickets_description'] = 'This page displays all the ticke
 $txt['shd_profile_view_full_ticket'] = 'View the full ticket';
 $txt['shd_profile_a_ticket'] = 'Ticket %s';
 $txt['shd_profile_reply_to_ticket'] = 'Reply to ticket %s';
+
+// Show monitor/ignore
+$txt['shd_profile_show_monitor_title'] = 'Monitored Tickets';
+$txt['shd_profile_show_monitor_header'] = 'Tickets you are monitoring';
+$txt['shd_profile_show_monitor_description'] = 'This plage displays all the tickets you have marked as wanting to receive notifications for.';
+$txt['shd_profile_show_ignore_title'] = 'Ignored Tickets';
+$txt['shd_profile_show_ignore_header'] = 'Tickets you have disabled notifications for';
+$txt['shd_profile_show_ignore_description'] = 'This plage displays all the tickets you have marked as wanting to disable notifications for.';
 
 // When in HD only mode, we need to remove hints of 'forum' from the language strings. These essentially replace the non shd_ prefixed ones in Profile.language.php.
 $txt['shd_current_time'] = 'Current helpdesk time';
