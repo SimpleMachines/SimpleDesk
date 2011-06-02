@@ -64,6 +64,7 @@ function shd_ajax()
 		'assign' => 'shd_ajax_assign',
 		'assign2' => 'shd_ajax_assign2',
 		'canned' => 'shd_ajax_canned',
+		'notify' => 'shd_ajax_notify',
 	);
 
 	$context['ajax_return'] = array();
@@ -578,6 +579,74 @@ function shd_ajax_assign2()
 	}
 
 	return $context['ajax_return'] = array('assigned' => $user_name);
+}
+
+/**
+ *	Provide the list of possible notification recipients.
+ *
+ *	@since 2.0
+*/
+function shd_ajax_notify()
+{
+	global $txt, $context, $smcFunc, $user_profile;
+
+	if (!empty($context['ticket_id']))
+	{
+		$query = shd_db_query('', '
+			SELECT hdt.private, hdt.id_member_started, id_member_assigned, id_dept
+			FROM {db_prefix}helpdesk_tickets AS hdt
+			WHERE {query_see_ticket}
+				AND hdt.id_ticket = {int:ticket}',
+			array(
+				'ticket' => $context['ticket_id'],
+			)
+		);
+		if ($smcFunc['db_num_rows']($query) != 0)
+			$ticket = $smcFunc['db_fetch_assoc']($query);
+		$smcFunc['db_free_result']($query);
+	}
+	if (empty($valid))
+		return $context['ajax_return'] = array('error' => $txt['shd_no_ticket']);
+
+	// So, we need to start figuring out who's going to be notified, who won't be and who we might be interested in notifying.
+	$notify_list = array(
+		'being_notified' => array(),
+		'optional' => array(),
+		'optional_butoff' => array(),
+	);
+	$people = array();
+
+	// Let's get all the possible actual people. The possible people who can be notified... well, they're staff. Let's get all their names too.
+	// So we're clear: $staff is staff members, $people is all the data about all possible notified folks, $members is the list of all people being notified (as not just staff can be notified, per se)
+	$staff = shd_members_allowed_to('shd_staff', $ticket['id_dept']);
+	$members = array_merge($staff, $ticket['id_member_started']);
+
+	// Let's start figuring it out then! First, get the big ol' lists.
+	$query = $smcFunc['db_query']('', '
+		SELECT id_member, notify_state
+		FROM {db_prefix}helpdesk_notify_override
+		WHERE id_ticket = {int:ticket}',
+		array(
+			'ticket' => $context['ticket_id'],
+		)
+	);
+	while ($row = $smcFunc['db_fetch_assoc']($query))
+	{
+		$members[] = $row['id_member']; // In case this is someone who is not either staff or the ticket starter, e.g. bug tracker use.
+		$notify_list[$row['notify_state'] == NOTIFY_NEVER ? 'optional_butoff' : 'being_notified'][] = $row['id_member'];
+	}
+
+	$members = array_unique($members);
+
+	// Get everyone's name.
+	$loaded = loadMemberData($members);
+	foreach ($loaded as $user)
+		if (!empty($user_profile[$user]))
+			$people[$user] = array(
+				'id' => $user,
+				'name' => $user_profile[$user]['real_name'],
+				'link' => shd_profile_link($user_profile[$user]['real_name'], $user) . ($user == $ticket['id_member_started'] ? $txt['shd_is_ticket_opener'] : ''),
+			);
 }
 
 ?>
