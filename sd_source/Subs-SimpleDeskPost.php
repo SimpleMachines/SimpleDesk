@@ -808,7 +808,7 @@ function shd_load_custom_fields($is_ticket = true, $ticketContext = 0, $dept = 0
 				'location' => $row['field_loc'],
 				'length' => $row['field_length'],
 				'name' => $row['field_name'],
-				'desc' => $row['field_desc'],
+				'desc' => parse_bbc($row['field_desc'], false),
 				'icon' => $row['icon'],
 				'options' => !empty($row['field_options']) ? unserialize($row['field_options']) : array(),
 				'type' => $row['field_type'],

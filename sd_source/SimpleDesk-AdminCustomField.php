@@ -87,6 +87,7 @@ function shd_admin_custom_main()
 		$row['field_type'] = $context['field_types'][$row['field_type']][1]; // convert the integer in the DB into the string for language + image uses
 		$row['can_see'] = explode(',', $row['can_see']);
 		$row['can_edit'] = explode(',', $row['can_edit']);
+		$row['field_desc'] = parse_bbc($row['field_desc'], false);
 		$context['custom_fields'][] = $row;
 	}
 
@@ -291,11 +292,15 @@ function shd_admin_custom_save()
 	if (isset($_POST['cancel']))
 		redirectexit('action=admin;area=helpdesk_customfield;' . $context['session_var'] . '=' . $context['session_id']);
 
+	// OK, we're going to need this
+	require_once($sourcedir . '/Subs-Post.php');
+
 	// Fix all the input
 	if (trim($_POST['field_name']) == '')
 		fatal_lang_error('shd_admin_no_fieldname', false);
 	$_POST['field_name'] = $smcFunc['htmlspecialchars']($_POST['field_name']);
 	$_POST['description'] = $smcFunc['htmlspecialchars'](isset($_POST['description']) ? $_POST['description'] : '');
+	preparsecode($_POST['description']);
 	$_POST['bbc'] = isset($_POST['bbc']) && in_array($_POST['field_type'], array(CFIELD_TYPE_TEXT, CFIELD_TYPE_LARGETEXT)) ? 1 : 0;
 	$_POST['display_empty'] = isset($_POST['display_empty']) && $_POST['field_type'] != CFIELD_TYPE_CHECKBOX ? 1 : 0;
 
@@ -362,7 +367,6 @@ function shd_admin_custom_save()
 	$defaultOptions = array();
 	if (!empty($_POST['select_option']) && ($_POST['field_type'] == CFIELD_TYPE_SELECT || $_POST['field_type'] == CFIELD_TYPE_RADIO || $_POST['field_type'] == CFIELD_TYPE_MULTI))
 	{
-		require_once($sourcedir . '/Subs-Post.php');
 		foreach ($_POST['select_option'] as $k => $v)
 		{
 			// Clean, clean, clean...

@@ -395,7 +395,7 @@ function shd_view_ticket()
 		$field = array(
 			'id' => $row['id_field'],
 			'name' => $row['field_name'],
-			'desc' => $row['field_desc'],
+			'desc' => parse_bbc($row['field_desc'], false),
 			'icon' => $row['icon'],
 			'type' => $row['field_type'],
 			'default_value' => $row['field_type'] == CFIELD_TYPE_LARGETEXT ? explode(',', $row['default_value']) : $row['default_value'],
