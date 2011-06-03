@@ -155,7 +155,7 @@ function template_ticket_custom_fields()
 		return;
 
 	echo '
-				<div class="information shd_customfields" id="shd_customfields">';
+				<div class="information shd_customfields" id="shd_customfields"', empty($context['ticket_form']['dept']) ? ' style="display:none;"' : '', '>';
 
 		// Loop through each custom field
 		// Loop through each custom field
@@ -166,6 +166,8 @@ function template_ticket_custom_fields()
 				continue;
 
 			$field['hidden'] = (!empty($context['ticket_form']['selecting_dept']) && !in_array($context['ticket_form']['custom_field_dept'], $field['depts']));
+			if (empty($context['ticket_form']['dept']))
+				$field['hidden'] = true;
 
 			if (isset($field['new_value']))
 				$field['value'] = $field['new_value'];
