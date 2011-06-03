@@ -545,7 +545,7 @@ function template_viewnotifications()
 								<input type="submit" value="', $txt['shd_ticket_monitor_on'], '" class="button_submit" />';
 			else
 				echo '
-								<div>', $txt['shd_ticket_monitor_off_note'], '</div>
+								<div><img src="', $settings['default_images_url'], '/simpledesk/cf_active.png" alt="" /> ', $txt['shd_ticket_notify_me_always'], '<br /><br />', $txt['shd_ticket_monitor_off_note'], '</div>
 								<input type="hidden" name="notifyaction" value="monitor_off" />
 								<input type="submit" value="', $txt['shd_ticket_monitor_off'], '" class="button_submit" />';
 		

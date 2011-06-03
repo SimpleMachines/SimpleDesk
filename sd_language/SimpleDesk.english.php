@@ -417,7 +417,7 @@ $txt['shd_ticket_empty_field_short'] = '-';
 
 // Notifications
 $txt['shd_ticket_notify'] = 'Notifications';
-$txt['shd_ticket_notify_noneprefs'] = 'Your have turned off notifications in your preferences.';
+$txt['shd_ticket_notify_noneprefs'] = 'Your user preferences don\'t account for notification of this ticket.';
 $txt['shd_ticket_notify_changeprefs'] = 'Change your preferences';
 $txt['shd_ticket_notify_because'] = 'Your preferences indicate notifying you of replies to this ticket:';
 $txt['shd_ticket_notify_because_yourticket'] = 'as it is your ticket';
@@ -425,7 +425,7 @@ $txt['shd_ticket_notify_because_assignedyou'] = 'as it is assigned to you';
 $txt['shd_ticket_notify_because_priorreply'] = 'as you replied to it before';
 $txt['shd_ticket_notify_because_anyreply'] = 'for any ticket';
 
-$txt['shd_ticket_notify_me_always'] = 'You are monitoring this ticket (and will receive a notification on every reply.';
+$txt['shd_ticket_notify_me_always'] = 'You are monitoring this ticket (and will receive a notification on every reply)';
 $txt['shd_ticket_monitor_on_note'] = 'You may monitor all replies to this ticket via email regardless of your preferences:';
 $txt['shd_ticket_monitor_off_note'] = 'You may turn off monitoring for this ticket and use your preferences instead:';
 $txt['shd_ticket_monitor_on'] = 'Turn on monitoring';
