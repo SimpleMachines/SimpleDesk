@@ -118,17 +118,14 @@ function shd_notifications_notify_newreply(&$msgOptions, &$ticketOptions, &$post
 	$members = array(); // who should get what type of notification, preferences depending
 
 	// Someone replied to MY ticket? And it isn't me? I might want you to tell me about it!
-	if (!empty($modSettings['shd_notify_new_reply_own']))
-	{
-		if ($posterOptions['id'] != $ticketinfo['starter_id'])
-			$members[$ticketinfo['starter_id']] = 'new_reply_own';
-	}
+	if (!empty($modSettings['shd_notify_new_reply_own']) && $posterOptions['id'] != $ticketinfo['starter_id'])
+		$members[$ticketinfo['starter_id']]['new_reply_own'] = true;
 
 	// So this is a ticket I'm supposed to deal with... has someone said something I missed? (And just in case it's our ticket, don't send another)
 	if (!empty($modSettings['shd_notify_new_reply_assigned']))
 	{
 		if (!empty($ticketinfo['assigned_id']) && $posterOptions['id'] != $ticketinfo['assigned_id'] && empty($members[$ticketinfo['assigned_id']]))
-			$members[$ticketinfo['assigned_id']] = 'new_reply_assigned';
+			$members[$ticketinfo['assigned_id']]['new_reply_assigned'] = true;
 	}
 
 	// So, if you're staff, and you've replied to a ticket before, do you want to be notified this time?
@@ -150,21 +147,13 @@ function shd_notifications_notify_newreply(&$msgOptions, &$ticketOptions, &$post
 
 		$responders = array_intersect($responders, $staff);
 		foreach ($responders as $id)
-		{
-			if (empty($members[$id]))
-				$members[$id] = 'new_reply_previous';
-		}
+			$members[$id]['new_reply_previous'] = true;
 	}
 
 	// Do staff just want general notifications about everything? Don't change things if they already had a notice though, this is just for the rabble at the back
 	if (!empty($modSettings['shd_notify_new_reply_any']))
-	{
 		foreach ($staff as $id)
-		{
-			if (empty($members[$id]))
-				$members[$id] = 'new_reply_any';
-		}
-	}
+			$members[$id]['new_reply_any'] = true;
 
 	if (!empty($members[$context['user']['id']]))
 		unset($members[$context['user']['id']]);
@@ -180,10 +169,13 @@ function shd_notifications_notify_newreply(&$msgOptions, &$ticketOptions, &$post
 	// Build a list of users -> default prefs
 	$member_prefs = array();
 	$pref_list = array();
-	foreach ($members as $id => $type)
+	foreach ($members as $id => $type_list)
 	{
-		$member_prefs[$id] = $base_prefs['notify_' . $type]['default'];
-		$pref_list['notify_' . $type] = true;
+		foreach ($type_list as $type => $value)
+		{
+			$member_prefs[$id][$type] = $base_prefs['notify_' . $type]['default'];
+			$pref_list['notify_' . $type] = true;
+		}
 	}
 
 	// Grab pref list from DB for these users and update
@@ -201,31 +193,50 @@ function shd_notifications_notify_newreply(&$msgOptions, &$ticketOptions, &$post
 	while ($row = $smcFunc['db_fetch_assoc']($query))
 	{
 		$row['id_member'] = (int) $row['id_member'];
-		if ($row['variable'] == 'notify_' . $members[$row['id_member']])
-			$member_prefs[$row['id_member']] = $row['value'];
+		$variable = substr($row['variable'], 7);
+		if (isset($member_prefs[$row['id_member']][$variable]))
+			$member_prefs[$row['id_member']][$variable] = $row['value'];
 	}
 	$smcFunc['db_free_result']($query);
 
 	// unset $members where member pref doesn't fit
 	foreach ($member_prefs as $id => $value)
-	{
-		if (empty($value))
-			unset($members[$id]);
-	}
+		foreach ($value as $pref_id => $pref_item)
+			if (empty($pref_item))
+				unset($members[$id][$pref_id]);
 
 	// Lastly, get the list of people who wanted to be notified through their preferences - and anyone who wanted to be excluded.
 	$overrides = shd_query_monitor_list($ticketOptions['id']);
 	foreach ($overrides['always_notify'] as $member_id)
-		if (empty($members[$member_id]))
-			$members[$member_id] = 'monitor';
+		$members[$member_id]['monitor'] = true;
 
 	// And apply exclusions
 	foreach ($overrides['never_notify'] as $member_id)
-		if (isset($members[$member_id]))
-			unset($members[$member_id]);
+		unset($members[$member_id]);
+
+	// So, at this point, $members contains a list of the members and a sequence of the possible messages they could get. We need to make some sense of it.
+	$notify_data['members'] = array();
+	foreach ($members as $member_id => $notify_list)
+	{
+		if (empty($notify_list))
+			continue; // Preferences killed all their possible choices.
+
+		// We want the first non empty value on the list, and that's all.
+		$item = '';
+		foreach ($notify_list as $k => $v)
+		{
+			if (!empty($v))
+			{
+				$item = $k;
+				break;
+			}
+		}
+
+		if (!empty($item))
+			$notify_data['members'][$member_id] = $item; // We want the first one only.
+	}
 
 	// AAAAAAAAAAAAND WE'RE OFF!
-	$notify_data['members'] = $members;
 	if (!empty($notify_data['members']))
 		shd_notify_users($notify_data);
 }
