@@ -122,6 +122,7 @@ function shd_view_ticket()
 	global $context, $txt, $scripturl, $settings, $reply_request, $smcFunc, $modSettings, $memberContext, $sourcedir, $user_info, $options;
 
 	loadTemplate('sd_template/SimpleDesk-Display');
+	$context['template_layers'][] = 'shd_display_nojs';
 
 	$ticketinfo = shd_load_ticket();
 

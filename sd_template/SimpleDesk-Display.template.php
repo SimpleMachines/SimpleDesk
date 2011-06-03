@@ -1119,4 +1119,28 @@ function template_ticketactionlog()
 				// ]' . ']></script>';
 	}
 }
+
+/**
+ *	Displays a header that Javascript should be enabled while in the administration panel area of SimpleDesk.
+ *
+ *	The helpdesk is disabled to non admins while in maintenance mode, but this template is added to the template layers if the user is an admin and it's in maintenance mode.
+ *	@since 2.0
+*/
+function template_shd_display_nojs_above()
+{
+	global $txt, $settings;
+	echo '<noscript><div class="errorbox"><img src="', $settings['default_images_url'], '/simpledesk/warning.png" alt="*" class="shd_icon_minihead" /> &nbsp;', $txt['shd_display_nojs'], '</div></noscript>';
+}
+
+/**
+ *	Displays a footer that Javascript should be enabled while in the administration panel area of SimpleDesk.
+ *
+ *	This template is added to the template layers, because SMF requires a layer have both a layer before and after the main content.
+ *	@since 2.0
+*/
+function template_shd_display_nojs_below()
+{
+
+}
+
 ?>
