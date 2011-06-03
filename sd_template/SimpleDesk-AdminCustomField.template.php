@@ -119,8 +119,6 @@ function template_shd_custom_field_edit()
 
 					document.getElementById("max_length_dt").style.display = ftype == ', CFIELD_TYPE_TEXT, ' || ftype == ', CFIELD_TYPE_LARGETEXT, ' ? "" : "none";
 					document.getElementById("max_length_dd").style.display = ftype == ', CFIELD_TYPE_TEXT, ' || ftype == ', CFIELD_TYPE_LARGETEXT, ' ? "" : "none";
-					document.getElementById("display_empty_dt").style.display = ftype != ', CFIELD_TYPE_CHECKBOX, ' ? "" : "none";
-					document.getElementById("display_empty_dd").style.display = ftype != ', CFIELD_TYPE_CHECKBOX, ' ? "" : "none";
 					document.getElementById("dimension_dt").style.display = ftype == ', CFIELD_TYPE_LARGETEXT, ' ? "" : "none";
 					document.getElementById("dimension_dd").style.display = ftype == ', CFIELD_TYPE_LARGETEXT, ' ? "" : "none";
 					document.getElementById("bbc_dt").style.display = ftype == ', CFIELD_TYPE_TEXT, ' || ftype == ', CFIELD_TYPE_LARGETEXT, ' ? "" : "none";
@@ -151,16 +149,9 @@ function template_shd_custom_field_edit()
 					var cbstyle = ftype != ', CFIELD_TYPE_CHECKBOX, ' ? "" : "none";
 					for (i = 0, n = field_list.length; i < n; i++)
 					{
-						if (ftype != ', CFIELD_TYPE_CHECKBOX, ')
-						{
-							document.getElementById("required_dept" + field_list[i] + "_span").style.display = "";
-							document.getElementById("required_dept" + field_list[i]).style.display = ftype == ', CFIELD_TYPE_MULTI, ' ? "none" : "";
-							document.getElementById("required_dept_multi_" + field_list[i]).style.display = ftype != ', CFIELD_TYPE_MULTI, ' ? "none" : "";
-						}
-						else
-						{
-							document.getElementById("required_dept" + field_list[i] + "_span").style.display = "none";
-						}
+						document.getElementById("required_dept" + field_list[i] + "_span").style.display = "";
+						document.getElementById("required_dept" + field_list[i]).style.display = ftype == ', CFIELD_TYPE_MULTI, ' ? "none" : "";
+						document.getElementById("required_dept_multi_" + field_list[i]).style.display = ftype != ', CFIELD_TYPE_MULTI, ' ? "none" : "";
 					}';
 	}
 	echo '
@@ -190,7 +181,7 @@ function template_shd_custom_field_edit()
 				}
 				function update_default_label(defstate)
 				{
-					if (defstate == "on")
+					if (defstate)
 						document.getElementById("default_label").innerHTML = "', $txt['shd_admin_default_state_on'],'";
 					else
 						document.getElementById("default_label").innerHTML = "', $txt['shd_admin_default_state_off'],'";
@@ -374,12 +365,12 @@ function template_shd_custom_field_edit()
 									<strong>', $txt['shd_admin_custom_field_default_state'], ':</strong>
 								</dt>
 								<dd id="default_dd"', $context['field_type_value'] == CFIELD_TYPE_CHECKBOX ? '' : ' style="display: none;"', '>
-									<input type="checkbox" name="default_check" class="input_check"',($context['custom_field']['default_value'] == 1 ? ' checked="checked"' : ''), 'onchange="javascript:update_default_label(this.value);" />
+									<input type="checkbox" name="default_check" class="input_check"',($context['custom_field']['default_value'] == 1 ? ' checked="checked"' : ''), ' onclick="update_default_label(this.checked);" />
 									<span class="smalltext" id="default_label">', $txt['shd_admin_default_state_' . ($context['custom_field']['default_value'] == 1 ? 'on' : 'off')], '</span>
 								</dd>
-								<dt id="display_empty_dt"', $context['field_type_value'] != CFIELD_TYPE_CHECKBOX ? '' : ' style="display: none;"', '><strong>', $txt['shd_admin_custom_field_display_empty'], ':</strong><br /><span class="smalltext">', $txt['shd_admin_custom_field_display_empty_desc'], '</span></dt>
-								<dd id="display_empty_dd"', $context['field_type_value'] != CFIELD_TYPE_CHECKBOX ? '' : ' style="display: none;"', '>
-									<input type="checkbox"', (!empty($context['custom_field']['display_empty']) && $context['custom_field']['display_empty'] == 1 ? ' checked="checked"' : ''), ' name="display_empty" id="cf_display_empty"', (!empty($context['custom_field']['required']) && $context['custom_field']['required'] == 1 ? ' disabled="disabled"' : ''), '/>
+								<dt id="display_empty_dt"><strong>', $txt['shd_admin_custom_field_display_empty'], ':</strong><br /><span class="smalltext">', $txt['shd_admin_custom_field_display_empty_desc'], '</span></dt>
+								<dd id="display_empty_dd">
+									<input type="checkbox" class="input_check"', (!empty($context['custom_field']['display_empty']) && $context['custom_field']['display_empty'] == 1 ? ' checked="checked"' : ''), ' name="display_empty" id="cf_display_empty"', (!empty($context['custom_field']['required']) && $context['custom_field']['required'] == 1 ? ' disabled="disabled"' : ''), '/>
 								</dd>
 							</dl>
 						</div>

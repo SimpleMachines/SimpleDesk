@@ -302,7 +302,7 @@ function shd_admin_custom_save()
 	$_POST['description'] = $smcFunc['htmlspecialchars'](isset($_POST['description']) ? $_POST['description'] : '');
 	preparsecode($_POST['description']);
 	$_POST['bbc'] = isset($_POST['bbc']) && in_array($_POST['field_type'], array(CFIELD_TYPE_TEXT, CFIELD_TYPE_LARGETEXT)) ? 1 : 0;
-	$_POST['display_empty'] = isset($_POST['display_empty']) && $_POST['field_type'] != CFIELD_TYPE_CHECKBOX ? 1 : 0;
+	$_POST['display_empty'] = isset($_POST['display_empty']) ? 1 : 0;
 
 	$_POST['field_type'] == isset($_POST['field_type']) ? (int) $_POST['field_type'] : 0;
 

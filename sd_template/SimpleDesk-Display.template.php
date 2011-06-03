@@ -229,13 +229,13 @@ function template_viewticket()
 										<dt>', !empty($field['icon']) ? '<img src="' . $settings['default_images_url'] . '/simpledesk/cf/' . $field['icon'] . '" alt="" class="shd_smallicon" />' : '', ' ', $field['name'],':</dt>
 										<dd>';
 
-							if (empty($field['value']) && $field['display_empty'])
+							if ($field['type'] == CFIELD_TYPE_CHECKBOX)
+								echo !empty($field['value']) ? $txt['yes'] : $txt['no'];
+							elseif (empty($field['value']) && $field['display_empty'])
 								echo $txt['shd_ticket_empty_field'];
 							elseif (isset($field['value']))
 							{
-								if ($field['type'] == CFIELD_TYPE_CHECKBOX)
-									echo !empty($field['value']) ? $txt['yes'] : $txt['no'];
-								elseif ($field['type'] == CFIELD_TYPE_SELECT || $field['type'] == CFIELD_TYPE_RADIO)
+								if ($field['type'] == CFIELD_TYPE_SELECT || $field['type'] == CFIELD_TYPE_RADIO)
 									echo $field['options'][$field['value']];
 								elseif ($field['type'] == CFIELD_TYPE_MULTI)
 								{
