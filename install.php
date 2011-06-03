@@ -292,7 +292,7 @@ $tables[] = array(
 		db_field('active', 'tinyint'),
 		db_field('field_order', 'smallint'),
 		db_field('field_name', 'varchar', 40),
-		db_field('field_desc', 'varchar', 255),
+		db_field('field_desc', 'text'),
 		db_field('field_loc', 'tinyint'),
 		db_field('icon', 'varchar', 20),
 		db_field('field_type', 'tinyint'),
