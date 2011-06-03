@@ -500,30 +500,27 @@ function template_viewnotifications()
 
 	if (!$context['display_notifications']['is_ignoring'])
 	{
-		if (!empty($context['display_notifications']['preferences']))
+		if (!$context['display_notifications']['is_monitoring'])
 		{
 			$displayed_something = true;
-			echo '
+			if (!empty($context['display_notifications']['preferences']))
+			{
+				echo '
 							', $txt['shd_ticket_notify_because'], '
 							<ul>';
-			foreach ($context['display_notifications']['preferences'] as $pref)
-				echo '
+				foreach ($context['display_notifications']['preferences'] as $pref)
+					echo '
 								<li>', $txt['shd_ticket_notify_because_' . $pref], '</li>';
 
-			echo '
+				echo '
 							</ul>';
-		}
-		else
-		{
-			$displayed_something = true;
-			echo '
+			}
+			else
+				echo '
 							', $txt['shd_ticket_notify_noneprefs'];
-		}
 
-		if (!empty($context['display_notifications']['can_change']))
-		{
-			$displayed_something = true;
-			echo '
+			if (!empty($context['display_notifications']['can_change']))
+				echo '
 							<div>
 								<a href="', $scripturl, '?action=profile;area=hd_prefs;u=', $context['user']['id'], '">', $txt['shd_ticket_notify_changeprefs'], '</a>
 							</div>';
@@ -556,7 +553,7 @@ function template_viewnotifications()
 		}
 	}
 
-	if (!empty($context['display_notifications']['can_ignore']))
+	if (!empty($context['display_notifications']['can_ignore']) && !$context['display_notifications']['is_monitoring'])
 	{
 		if ($displayed_something)
 			echo '
