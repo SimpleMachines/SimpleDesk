@@ -60,6 +60,8 @@ function shd_post_ticket()
 	require_once($sourcedir . '/Subs-Post.php');
 	require_once($sourcedir . '/Subs-Editor.php');
 
+	$context['template_layers'][] = 'shd_post_nojs';
+
 	$dept = $new_ticket ? $_REQUEST['dept'] : $ticketinfo['dept'];
 
 	$context['ticket_form'] = array( // yes, everything goes in here.
@@ -226,6 +228,8 @@ function shd_save_post()
 	loadTemplate('sd_template/SimpleDesk-Post');
 	loadLanguage('Errors'); // for some of the errors we already have
 	loadLanguage('Post'); // for some of the common post errors
+
+	$context['template_layers'][] = 'shd_post_nojs';
 
 	if (!empty($_REQUEST['shd_message_mode']) && isset($_REQUEST['shd_message']))
 	{
@@ -686,6 +690,8 @@ function shd_post_reply()
 	require_once($sourcedir . '/Subs-Post.php');
 	require_once($sourcedir . '/sd_source/Subs-SimpleDeskPost.php');
 	require_once($sourcedir . '/Subs-Editor.php');
+
+	$context['template_layers'][] = 'shd_post_nojs';
 
 	$ticketinfo = shd_load_ticket();
 	$context['shd_department'] = $ticketinfo['dept'];
