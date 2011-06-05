@@ -69,6 +69,11 @@ $txt['template_bodyfull_notify_monitor'] = 'A helpdesk ticket you requested to f
 $txt['template_log_notify_monitor'] = 'Monitoring';
 
 // For pinging stuff
+$txt['template_subject_notify_ping'] = 'Helpdesk [{ticket_id}] New reply from [{poster_name}] -RE- [{subject}]';
+$txt['template_body_notify_ping'] = 'A helpdesk ticket, "[{ticket_id}] {subject}", has been replied to, by {poster_name}.' . "\n\n" . 'You can read the reply here:' . "\n" . '{ticketlink}';
+$txt['template_bodyfull_notify_ping'] = 'A helpdesk ticket, "[{ticket_id}] {subject}", has been replied to, by {poster_name}.' . "\n\n" . '====Begin Comment====' . "\n" . '{body}' . "\n" . '====End Comment====' . "\n\n" . 'You can read the reply here:' . "\n" . '{ticketlink}';
+$txt['template_log_notify_ping'] = 'One-off update';
+
 $txt['shd_ping_none'] = 'There is no-one available to send a notification to.';
 $txt['shd_ping_already_1'] = 'This person will receive an email on your reply:';
 $txt['shd_ping_already_n'] = 'These people will receive an email on your reply:';
