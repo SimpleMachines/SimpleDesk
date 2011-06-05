@@ -599,7 +599,7 @@ function shd_ajax_notify()
 	if (!empty($context['ticket_id']))
 	{
 		$query = shd_db_query('', '
-			SELECT hdt.private, hdt.id_member_started, id_member_assigned, id_dept
+			SELECT hdt.private, hdt.id_member_started, id_member_assigned, id_dept, status
 			FROM {db_prefix}helpdesk_tickets AS hdt
 			WHERE {query_see_ticket}
 				AND hdt.id_ticket = {int:ticket}',
@@ -611,7 +611,7 @@ function shd_ajax_notify()
 			$ticket = $smcFunc['db_fetch_assoc']($query);
 		$smcFunc['db_free_result']($query);
 	}
-	if (empty($ticket) || !shd_allowed_to('shd_singleton_email', $ticket['id_dept']))
+	if (empty($ticket) || !shd_allowed_to('shd_singleton_email', $ticket['id_dept']) || $ticket['status'] == TICKET_STATUS_CLOSED || $ticket['status'] == TICKET_STATUS_DELETED)
 		return $context['ajax_return'] = array('error' => $txt['shd_no_ticket']);
 
 	// So, we need to start figuring out who's going to be notified, who won't be and who we might be interested in notifying.
@@ -623,6 +623,13 @@ function shd_ajax_notify()
 
 	// Let's get all the possible actual people. The possible people who can be notified... well, they're staff. Let's get all their names too.
 	$staff = shd_members_allowed_to('shd_staff', $ticket['id_dept']);
+
+	// Is the ticket private? If so, let's figure out who on staff can see it.
+	if ($ticket['private'])
+	{
+		$private = array_unique(array_merge(shd_members_allowed_to('shd_view_ticket_private_any', $ticket['id_dept']), shd_members_allowed_to('shd_alter_privacy_any', $ticket['id_dept'])));
+		$staff = array_intersect($staff, $private);
+	}
 
 	// Let's start figuring it out then! First, get the big ol' lists.
 	$query = $smcFunc['db_query']('', '
