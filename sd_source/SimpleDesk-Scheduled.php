@@ -87,7 +87,7 @@ function shd_scheduled_close_tickets()
 			last_updated = {int:time}
 		WHERE id_ticket IN ({array_int:tickets})',
 		array(
-			'closed' => TICKET_STATUS_CLOSED,
+			'closed' => 3, // TICKET_STATUS_CLOSED isn't defined here either.
 			'tickets' => $tickets,
 			'time' => time(),
 		)
