@@ -34,7 +34,7 @@ $txt['shd_open_ticket'] = 'open ticket';
 $txt['shd_open_tickets'] = 'open tickets';
 $txt['shd_none'] = 'None';
 
-$txt['shd_display_nojs'] = 'JavaScript is not enabled in your browser. Some functions may not work properly, or behave in an unexpected manner, without it being enabled.';
+$txt['shd_display_nojs'] = 'JavaScript is not enabled in your browser. Some functions may not work properly, or behave in an unexpected manner.';
 
 //! @name Admininstration panel strings
 //@{
