@@ -68,4 +68,13 @@ $txt['template_body_notify_monitor'] = 'A helpdesk ticket you requested to follo
 $txt['template_bodyfull_notify_monitor'] = 'A helpdesk ticket you requested to follow, "[{ticket_id}] {subject}", has been replied to, by {poster_name}.' . "\n\n" . '====Begin Comment====' . "\n" . '{body}' . "\n" . '====End Comment====' . "\n\n" . 'You can read the reply here:' . "\n" . '{ticketlink}';
 $txt['template_log_notify_monitor'] = 'Monitoring';
 
+// For pinging stuff
+$txt['shd_ping_none'] = 'There is no-one available to send a notification to.';
+$txt['shd_ping_already_1'] = 'This person will receive an email on your reply:';
+$txt['shd_ping_already_n'] = 'These people will receive an email on your reply:';
+$txt['shd_ping_1'] = 'You can send an email to this person on replying:';
+$txt['shd_ping_n'] = 'You can send an email to these people on replying:';
+$txt['shd_ping_none_1'] = 'The following person has notifications turned off for this ticket, though you can send them an email about it if it is important:';
+$txt['shd_ping_none_n'] = 'The following people have notifications turned off for this ticket, though you can send them an email about it if it is important:';
+
 ?>

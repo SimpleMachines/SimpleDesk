@@ -590,6 +590,12 @@ function shd_ajax_notify()
 {
 	global $txt, $context, $smcFunc, $user_profile, $modSettings;
 
+	$session_check = checkSession('get', '', false); // check the session but don't die fatally.
+	if (!empty($session_check))
+		return $context['ajax_return'] = array('error' => $txt[$session_check]);
+
+	shd_load_language('sd_language/SimpleDeskNotifications');
+
 	if (!empty($context['ticket_id']))
 	{
 		$query = shd_db_query('', '
@@ -614,12 +620,9 @@ function shd_ajax_notify()
 		'optional' => array(),
 		'optional_butoff' => array(),
 	);
-	$people = array();
 
 	// Let's get all the possible actual people. The possible people who can be notified... well, they're staff. Let's get all their names too.
-	// So we're clear: $staff is staff members, $people is all the data about all possible notified folks, $members is the list of all people being notified (as not just staff can be notified, per se)
 	$staff = shd_members_allowed_to('shd_staff', $ticket['id_dept']);
-	$members = array_merge($staff, $ticket['id_member_started']);
 
 	// Let's start figuring it out then! First, get the big ol' lists.
 	$query = $smcFunc['db_query']('', '
@@ -631,19 +634,16 @@ function shd_ajax_notify()
 		)
 	);
 	while ($row = $smcFunc['db_fetch_assoc']($query))
-	{
-		$members[] = $row['id_member']; // In case this is someone who is not either staff or the ticket starter, e.g. bug tracker use.
-		$notify_list[$row['notify_state'] == NOTIFY_NEVER ? 'optional_butoff' : 'being_notified'][] = $row['id_member'];
-	}
+		$notify_list[$row['notify_state'] == NOTIFY_NEVER ? 'optional_butoff' : 'being_notified'][$row['id_member']] = true;
 
 	// Now we get the list by preferences. This is where it starts to get complicated.
 	$possible_members = array();
 	// People who want replies to their own ticket, without including the ticket starter because they'd know about it...
 	if (!empty($modSettings['shd_notify_new_reply_own']) && $context['user']['id'] != $ticket['id_member_started'])
-		$possible_members[$ticket['id_member_started']][] = 'new_reply_own';
+		$possible_members[$ticket['id_member_started']]['new_reply_own'] = true;
 	// The ticket is assigned to someone and they want to be notified if it changes.
 	if (!empty($modSettings['shd_notify_new_reply_assigned']) && !empty($ticket['id_member_assigned']) && $context['user']['id'] != $ticket['id_member_assigned'])
-		$possible_members[$ticket['id_member_assigned']][] = 'new_reply_assigned';
+		$possible_members[$ticket['id_member_assigned']]['new_reply_assigned'] = true;
 	// So, if you're staff, and you've replied to this ticket before, do you want to be notified this time?
 	if (!empty($modSettings['shd_notify_new_reply_previous']))
 	{
@@ -653,7 +653,7 @@ function shd_ajax_notify()
 			WHERE id_ticket = {int:ticket}
 			GROUP BY id_member',
 			array(
-				'ticket' => $ticketOptions['id'],
+				'ticket' => $context['ticket_id'],
 			)
 		);
 		$responders = array();
@@ -663,26 +663,154 @@ function shd_ajax_notify()
 
 		$responders = array_intersect($responders, $staff);
 		foreach ($responders as $id)
-			$possible_members[$id][] = 'new_reply_previous';
+			$possible_members[$id]['new_reply_previous'] = true;
 	}
 	// If you're staff, did you have 'spam my inbox every single time' selected?
 	if (!empty($modSettings['shd_notify_new_reply_any']))
 		foreach ($staff as $id)
-			$possible_members[$id][] = 'new_reply_any';
+			$possible_members[$id]['new_reply_any'] = true;
 
-	// So we pulled a list of who will be notified already, and who won't normally be notified. Now we just have to figure out who's left.
-	$members = array_unique($members);
-	$notify_list['optional'] = array_diff($members, $notify_list['being_notified'], $notify_list['optional_butoff']);
+	// Now we have the list of possibles, exclude everyone who is either set to on, or off, since we don't need to query those for preferences.
+	foreach ($possible_members as $id => $type_list)
+		if (isset($notify_list['being_notified'][$id]) || isset($notify_list['optional_butoff'][$id]))
+			unset($possible_members[$id]);
 
-	// Get everyone's name.
-	$loaded = loadMemberData($members);
-	foreach ($loaded as $user)
-		if (!empty($user_profile[$user]))
-			$people[$user] = array(
-				'id' => $user,
-				'name' => $user_profile[$user]['real_name'],
-				'link' => shd_profile_link($user_profile[$user]['real_name'], $user) . ($user == $ticket['id_member_started'] ? $txt['shd_is_ticket_opener'] : ''),
-			);
+	if (!empty($possible_members))
+	{
+		// Get the default preferences
+		$prefs = shd_load_user_prefs(false);
+		$pref_groups = $prefs['groups'];
+		$base_prefs = $prefs['prefs'];
+
+		// Build a list of users -> default prefs. We know this is for the list of possible contenders only.
+		$member_prefs = array();
+		$pref_list = array();
+		foreach ($possible_members as $id => $type_list)
+		{
+			foreach ($type_list as $type => $value)
+			{
+				$member_prefs[$id][$type] = $base_prefs['notify_' . $type]['default'];
+				$pref_list['notify_' . $type] = true;
+			}
+		}
+
+		// Grab pref list from DB for these users and update
+		$query = $smcFunc['db_query']('', '
+			SELECT id_member, variable, value
+			FROM {db_prefix}helpdesk_preferences
+			WHERE id_member IN ({array_int:members})
+				AND variable IN ({array_string:variables})',
+			array(
+				'members' => array_keys($possible_members),
+				'variables' => array_keys($pref_list),
+			)
+		);
+
+		while ($row = $smcFunc['db_fetch_assoc']($query))
+		{
+			$row['id_member'] = (int) $row['id_member'];
+			$variable = substr($row['variable'], 7);
+			if (isset($member_prefs[$row['id_member']][$variable]))
+				$member_prefs[$row['id_member']][$variable] = $row['value'];
+		}
+		$smcFunc['db_free_result']($query);
+
+		// unset $members where member pref doesn't indicate they want it on.
+		foreach ($member_prefs as $id => $value)
+			foreach ($value as $pref_id => $pref_item)
+				if (empty($pref_item))
+					unset($possible_members[$id][$pref_id]);
+
+		// Now the clever bit, we've taken everyone who wasn't on the normal notify list, and figured out what their preferences are.
+		// We now traverse $possible_members by id, if the array is empty, we know none of their preferences accounted for emails - so they're possible.
+		// Otherwise we add them to the list of being notified.
+		foreach ($possible_members as $id => $list)
+			if (empty($list))
+				$notify_list['optional'][$id] = true;
+			else
+				$notify_list['being_notified'][$id] = true;
+	}
+
+	// By now we have three lists that include people who will be notified, people who could be notified, and people who don't really want to be.
+	// Let's translate that into a list of people that we can make use of.
+	$members = array_merge(array_keys($notify_list['being_notified']), array_keys($notify_list['optional']), array_keys($notify_list['optional_butoff']));
+	// We really shouldn't be in this list.
+	unset($members[$context['user']['id']]);
+
+	if (!empty($members))
+	{
+		// Get everyone's name.
+		$loaded = loadMemberData($members);
+		foreach ($loaded as $user)
+			if (!empty($user_profile[$user]))
+				$people[$user] = array(
+					'id' => $user,
+					'name' => $user_profile[$user]['real_name'],
+				);
+
+		// Right, now let's step through and tidy up the three lists
+		foreach ($notify_list as $list_type => $list_members)
+		{
+			foreach ($list_members as $id_member => $data)
+			{
+				if (isset($people[$id_member]))
+					$list_members[$id_member] = $people[$id_member]['name'];
+				else
+					unset($list_members[$id_member]);
+			}
+			if (!empty($list_members))
+			{
+				asort($list_members);
+				array_walk($list_members, 'shd_format_notify_name', $ticket['id_member_started']);
+				$notify_list[$list_type] = $list_members;
+				
+			}
+			else
+				unset($notify_list[$list_type]);
+		}
+	}
+
+	if (empty($notify_list))
+		return $context['ajax_raw'] = '<notify><![C' . 'DATA[' . cleanXml($txt['shd_ping_none']) . ']' . ']></notify>';
+	else
+	{
+		ob_start();
+		echo '<notify><![C', 'DATA[';
+
+		if (!empty($notify_list['being_notified']))
+			echo $txt['shd_ping_already_' . (count($notify_list['being_notified']) == 1 ? '1' : 'n')], '<br />', implode(', ', $notify_list['being_notified']);
+
+		if (!empty($notify_list['optional']))
+		{
+			if (!empty($notify_list['being_notified']))
+				echo '<br /><br />';
+
+			echo $txt['shd_ping_' . (count($notify_list['optional']) == 1 ? '1' : 'n')], '<br />';
+			foreach ($notify_list['optional'] as $id => $member)
+				echo '<div class="shd_ajaxnotify"><input type="checkbox" name="notify[', $id, ']" value="', $id, '" class="input_check" /> ', $member, '</div>';
+		}
+
+		if (!empty($notify_list['optional_butoff']))
+		{
+			if (!empty($notify_list['being_notified']) || !empty($notify_list['optional_butoff']))
+				echo '<br /><br />';
+
+			echo $txt['shd_ping_none_' . (count($notify_list['optional_butoff']) == 1 ? '1' : 'n')], '<br />';
+			foreach ($notify_list['optional_butoff'] as $id => $member)
+				echo '<div class="shd_ajaxnotify"><input type="checkbox" name="notify[', $id, ']" value="', $id, '" class="input_check" /> ', $member, '</div>';
+		}
+
+		echo ']', ']></notify>';
+
+		$content = ob_get_clean();
+		return $context['ajax_raw'] = cleanXml($content);
+	}
+}
+
+function shd_format_notify_name(&$user_name, $user_id, $ticket_starter)
+{
+	global $txt;
+	$user_name = shd_profile_link($user_name, $user_id) . ($user_id == $ticket_starter ? $txt['shd_is_ticket_opener'] : '');
 }
 
 ?>

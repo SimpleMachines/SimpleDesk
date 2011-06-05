@@ -713,7 +713,10 @@ function template_ticket_additional_options()
 
 		echo '
 							</dd>
-						</dl>
+						</dl>';
+		template_singleton_email();
+
+		echo '
 					</div>
 					<script type="text/javascript"><!-- // --><![CDATA[
 	var oAttach = new shd_attach_select({
@@ -736,6 +739,36 @@ function template_ticket_additional_options()
 		echo '
 	});
 					// ]]></script>';
+	}
+}
+
+function template_singleton_email()
+{
+	global $context, $txt;
+
+	if (!empty($context['can_ping']))
+	{
+		echo '
+						<div id="shd_notifications_div" style="display:none;">
+							<a href="#" onclick="getAjaxNotifications(); return false;">', $txt['shd_select_notifications'], '</a>
+						</div>
+						<script type="text/javascript"><!-- // --><![CDATA[
+	document.getElementById("shd_notifications_div").style.display = "";
+
+	function getAjaxNotifications()
+	{
+		ajax_indicator(true);
+		getXMLDocument(smf_prepareScriptUrl(smf_scripturl) + "action=helpdesk;sa=ajax;op=notify;ticket=', $context['ticket_id'], ';', $context['session_var'], '=', $context['session_id'], '", handleAjaxNotifications);
+	}
+
+	function handleAjaxNotifications(XMLDoc)
+	{
+		ajax_indicator(false);
+		var notify = XMLDoc.getElementsByTagName("notify");
+		if (notify.length == 1)
+			document.getElementById("shd_notifications_div").innerHTML = notify[0].firstChild.nodeValue;
+	}
+						// ]]></script>';
 	}
 }
 

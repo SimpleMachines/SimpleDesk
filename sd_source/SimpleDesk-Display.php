@@ -666,6 +666,8 @@ function shd_view_ticket()
 	if ($context['can_reply'])
 		shd_load_canned_replies();
 
+	$context['can_ping'] = $context['can_reply'] && shd_allowed_to('shd_singleton_email', $context['ticket']['dept']);
+
 	// Set up the fancy editor
 	shd_postbox(
 		'shd_message',
