@@ -104,6 +104,13 @@ function shd_notifications_notify_newreply(&$msgOptions, &$ticketOptions, &$post
 	$ticketinfo = shd_load_ticket($ticketOptions['id']);
 	$staff = shd_members_allowed_to('shd_staff', $ticketOptions['dept']);
 
+	// Is the ticket private? If so, let's figure out who on staff can see it.
+	if ($ticketinfo['private'])
+	{
+		$private = array_unique(array_merge(shd_members_allowed_to('shd_view_ticket_private_any', $ticketinfo['dept']), shd_members_allowed_to('shd_alter_privacy_any', $ticketinfo['dept'])));
+		$staff = array_intersect($staff, $private);
+	}
+
 	// Might as well kick this off here.
 	$notify_data = array(
 		'members' => array(),
@@ -213,6 +220,15 @@ function shd_notifications_notify_newreply(&$msgOptions, &$ticketOptions, &$post
 	// And apply exclusions
 	foreach ($overrides['never_notify'] as $member_id)
 		unset($members[$member_id]);
+
+	// And now, finally, receive the list of possible cases from the notification doodad, and verify against a list of possible people.
+	if ($context['can_ping'] && !empty($_POST['notify']) && is_array($_POST['notify']))
+	{
+		$staff[] = $ticketinfo['starter_id']; // Add the ticket starter as a possible candidate.
+		foreach ($_POST['notify'] as $id)
+			if (in_array((int) $id, $staff))
+				$members[$id]['ping'] = true;
+	}
 
 	// So, at this point, $members contains a list of the members and a sequence of the possible messages they could get. We need to make some sense of it.
 	$notify_data['members'] = array();
