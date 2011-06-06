@@ -531,11 +531,11 @@ function template_ticket_block()
 						break;
 					case 'replies':
 						echo '
-							<td class="smalltext">', $ticket['num_replies'], '</td>';
+							<td class="smalltext"><a href="', $ticket['replies_href'], '">', $ticket['num_replies'], '</a></td>';
 						break;
 					case 'allreplies':
 						echo '
-							<td class="smalltext">', $ticket['all_replies'], '</td>';
+							<td class="smalltext"><a href="', $ticket['replies_href'], '">', $ticket['all_replies'], '</a></td>';
 						break;
 					case 'actions':
 						echo '

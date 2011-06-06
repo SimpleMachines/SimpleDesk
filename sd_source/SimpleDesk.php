@@ -977,6 +977,7 @@ function shd_helpdesk_listing()
 					'movedept' => !empty($context['shd_multi_dept']) && (shd_allowed_to('shd_move_dept_any', $context['shd_department']) || ($is_own && shd_allowed_to('shd_move_dept_own', $context['shd_department']))) ? '<a href="' . $scripturl . '?action=helpdesk;sa=movedept;ticket=' . $row['id_ticket'] . ';home;' . $context['session_var'] . '=' . $context['session_id'] . '" title="' . $txt['shd_move_dept'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/movedept.png" alt="' . $txt['shd_move_dept'] . '" /></a>' : '',
 				),
 				'num_replies' => $row['num_replies'],
+				'replies_href' => $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $row['id_ticket'] . '.msg' . $row['id_last_msg'] . '#msg' . $row['id_last_msg'] . ($_REQUEST['sa'] == 'recyclebin' ? ';recycle' : ''),
 				'all_replies' => (int) $row['num_replies'] + (int) $row['deleted_replies'],
 			);
 
