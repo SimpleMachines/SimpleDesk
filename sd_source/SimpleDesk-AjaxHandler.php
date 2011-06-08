@@ -588,13 +588,14 @@ function shd_ajax_assign2()
 */
 function shd_ajax_notify()
 {
-	global $txt, $context, $smcFunc, $user_profile, $modSettings;
+	global $txt, $context, $smcFunc, $user_profile, $modSettings, $sourcedir;
 
 	$session_check = checkSession('get', '', false); // check the session but don't die fatally.
 	if (!empty($session_check))
 		return $context['ajax_return'] = array('error' => $txt[$session_check]);
 
 	shd_load_language('sd_language/SimpleDeskNotifications');
+	require_once($sourcedir . '/sd_source/SimpleDesk-Notifications.php');
 
 	if (!empty($context['ticket_id']))
 	{
@@ -621,15 +622,8 @@ function shd_ajax_notify()
 		'optional_butoff' => array(),
 	);
 
-	// Let's get all the possible actual people. The possible people who can be notified... well, they're staff. Let's get all their names too.
-	$staff = shd_members_allowed_to('shd_staff', $ticket['id_dept']);
-
-	// Is the ticket private? If so, let's figure out who on staff can see it.
-	if ($ticket['private'])
-	{
-		$private = array_unique(array_merge(shd_members_allowed_to('shd_view_ticket_private_any', $ticket['id_dept']), shd_members_allowed_to('shd_alter_privacy_any', $ticket['id_dept'])));
-		$staff = array_intersect($staff, $private);
-	}
+	// Let's get all the possible actual people. The possible people who can be notified... well, they're staff.
+	$staff = shd_get_visible_list($ticket['id_dept'], $ticket['private'], $ticket['id_member_started'], true, false);
 
 	// Let's start figuring it out then! First, get the big ol' lists.
 	$query = $smcFunc['db_query']('', '
@@ -728,6 +722,11 @@ function shd_ajax_notify()
 				if (empty($pref_item))
 					unset($possible_members[$id][$pref_id]);
 
+		// Now, it's possible that we have a ticket that the starter can't see, but that their preferences would indicate they'd like a reply.
+		// What should be done here is to remove them from the automatic list, and make them part of the ping list instead.
+		if (!empty($ticket['id_member_started']) && empty($possible_members[$ticket['id_member_started']]))
+			$possible_members[$ticket['id_member_started']] = array();
+
 		// Now the clever bit, we've taken everyone who wasn't on the normal notify list, and figured out what their preferences are.
 		// We now traverse $possible_members by id, if the array is empty, we know none of their preferences accounted for emails - so they're possible.
 		// Otherwise we add them to the list of being notified.
@@ -741,15 +740,13 @@ function shd_ajax_notify()
 	// By now we have three lists that include people who will be notified, people who could be notified, and people who don't really want to be.
 	// Let's translate that into a list of people that we can make use of.
 	$members = array_merge(array_keys($notify_list['being_notified']), array_keys($notify_list['optional']), array_keys($notify_list['optional_butoff']));
-	// We really shouldn't be in this list.
-	unset($members[$context['user']['id']]);
 
 	if (!empty($members))
 	{
 		// Get everyone's name.
 		$loaded = loadMemberData($members);
 		foreach ($loaded as $user)
-			if (!empty($user_profile[$user]))
+			if (!empty($user_profile[$user]) && $user_profile[$user]['is_activated'] > 0 && $user_profile[$user]['is_activated'] < 10) // active & not banned
 				$people[$user] = array(
 					'id' => $user,
 					'name' => $user_profile[$user]['real_name'],
@@ -760,7 +757,7 @@ function shd_ajax_notify()
 		{
 			foreach ($list_members as $id_member => $data)
 			{
-				if (isset($people[$id_member]))
+				if (isset($people[$id_member]) && $id_member != $context['user']['id']) // We really shouldn't be in this list.
 					$list_members[$id_member] = $people[$id_member]['name'];
 				else
 					unset($list_members[$id_member]);
@@ -777,7 +774,7 @@ function shd_ajax_notify()
 		}
 	}
 
-	if (empty($notify_list))
+	if (empty($notify_list) || empty($members))
 		return $context['ajax_raw'] = '<notify><![C' . 'DATA[' . cleanXml($txt['shd_ping_none']) . ']' . ']></notify>';
 	else
 	{

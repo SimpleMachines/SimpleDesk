@@ -35,12 +35,7 @@ function shd_notifications_notify_newticket(&$msgOptions, &$ticketOptions, &$pos
 		return;
 
 	// So, we're getting the list of people that are being affected by this ticket being posted. Basically, that's a list of staff on new ticket, less people who've set preferences otherwise.
-	$members = shd_members_allowed_to('shd_staff', $ticketOptions['dept']);
-	if (empty($members))
-		return;
-
-	$members = array_diff($members, array($context['user']['id']));
-
+	$members = shd_get_visible_list($ticketOptions['dept'], $ticketOptions['private'], false, true, false);
 	if (empty($members))
 		return;
 
@@ -102,14 +97,8 @@ function shd_notifications_notify_newreply(&$msgOptions, &$ticketOptions, &$post
 
 	// We're doing various things here, so grab some general details, not just what we may have been passed before.
 	$ticketinfo = shd_load_ticket($ticketOptions['id']);
-	$staff = shd_members_allowed_to('shd_staff', $ticketOptions['dept']);
-
-	// Is the ticket private? If so, let's figure out who on staff can see it.
-	if ($ticketinfo['private'])
-	{
-		$private = array_unique(array_merge(shd_members_allowed_to('shd_view_ticket_private_any', $ticketinfo['dept']), shd_members_allowed_to('shd_alter_privacy_any', $ticketinfo['dept'])));
-		$staff = array_intersect($staff, $private);
-	}
+	// $staff is the sum total of staff + ticket starter, subject to visibility of the ticket.
+	$staff = shd_get_visible_list($ticketOptions['dept'], $ticketinfo['private'], $ticketinfo['starter_id'], true, false);
 
 	// Might as well kick this off here.
 	$notify_data = array(
@@ -125,15 +114,13 @@ function shd_notifications_notify_newreply(&$msgOptions, &$ticketOptions, &$post
 	$members = array(); // who should get what type of notification, preferences depending
 
 	// Someone replied to MY ticket? And it isn't me? I might want you to tell me about it!
-	if (!empty($modSettings['shd_notify_new_reply_own']) && $posterOptions['id'] != $ticketinfo['starter_id'])
+	if (!empty($ticketinfo['starter_id']) && !empty($modSettings['shd_notify_new_reply_own']) && $posterOptions['id'] != $ticketinfo['starter_id'] && in_array($ticketinfo['starter_id'], $staff))
 		$members[$ticketinfo['starter_id']]['new_reply_own'] = true;
 
 	// So this is a ticket I'm supposed to deal with... has someone said something I missed? (And just in case it's our ticket, don't send another)
 	if (!empty($modSettings['shd_notify_new_reply_assigned']))
-	{
-		if (!empty($ticketinfo['assigned_id']) && $posterOptions['id'] != $ticketinfo['assigned_id'] && empty($members[$ticketinfo['assigned_id']]))
+		if (!empty($ticketinfo['assigned_id']) && $posterOptions['id'] != $ticketinfo['assigned_id'] && in_array($ticketinfo['assigned_id'], $staff))
 			$members[$ticketinfo['assigned_id']]['new_reply_assigned'] = true;
-	}
 
 	// So, if you're staff, and you've replied to a ticket before, do you want to be notified this time?
 	if (!empty($modSettings['shd_notify_new_reply_previous']))
@@ -752,4 +739,71 @@ function shd_query_monitor_list($ticket_id)
 
 	return $members;
 }
+
+/**
+ *	Returns a list of all the possible people that would want notification, that can see the ticket we're interested in.
+ *
+ *	@param int $dept The department the given ticket is in.
+ *	@param bool $private Whether the given ticket is private or not.
+ *	@param int $ticket_starter User id of the ticket starter.
+ *	@param bool $exclude_admin If true, exclude forum admins from the list of possible candidates.
+ *	@return array An array of user ids of the staff members (and ticket starter) that can see tickets, matching the given criteria of department, privacy and permissions.
+*/
+function shd_get_visible_list($dept, $private, $ticket_starter = 0, $include_admin = true, $include_current_user = false)
+{
+	global $smcFunc, $context;
+
+	// So, the list of possible people will include the staff list and the ticket starter if provided.
+	$people = shd_members_allowed_to('shd_staff', $dept);
+	if (!empty($ticket_starter))
+		$people[] = $ticket_starter;
+
+	// Firstly, figure out who can see tickets that aren't their own. (Or that they can see their own and this is their ticket)
+	$see_tickets = shd_members_allowed_to('shd_view_ticket_any', $dept);
+	if (!empty($ticket_starter) && !in_array($ticket_starter, $see_tickets))
+	{
+		$see_own = shd_members_allowed_to('shd_view_ticket_own', $dept);
+		if (in_array($ticket_starter, $see_own))
+			$see_tickets[] = $ticket_starter;
+	}
+	$people = array_intersect($people, $see_tickets);
+
+	// If the ticket is private, we need to figure out who can see it. This is tricky.
+	if ($private)
+	{
+		$private = array_merge(shd_members_allowed_to('shd_view_ticket_private_any', $dept), shd_members_allowed_to('shd_alter_privacy_any', $dept));
+		// That covers for those who can see any, what about those who can see own (but not any)?
+		if (!empty($ticket_starter) && !in_array($ticket_starter, $private))
+		{
+			$own_private = array_merge(shd_members_allowed_to('shd_view_ticket_private_own', $dept), shd_members_allowed_to('shd_alter_privacy_own', $dept));
+			if (in_array($ticket_starter, $own_private))
+				$private[] = $ticket_starter;
+		}
+		$people = array_intersect($people, $private);
+	}
+
+	if ($include_admin)
+	{
+		$query = $smcFunc['db_query']('', '
+			SELECT id_member
+			FROM {db_prefix}members
+			WHERE id_group = 1
+				OR FIND_IN_SET(1, additional_groups)',
+			array()
+		);
+
+		$admins = array();
+		while ($row = $smcFunc['db_fetch_row']($query))
+			$admins[] = $row[0];
+
+		$smcFunc['db_free_result']($query);
+		$people = array_diff($people, $admins);
+	}
+
+	if (!$include_current_user)
+		$people = array_diff($people, array($context['user']['id']));
+
+	return $people;
+}
+
 ?>
