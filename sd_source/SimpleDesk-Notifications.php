@@ -782,7 +782,7 @@ function shd_get_visible_list($dept, $private, $ticket_starter = 0, $include_adm
 		$people = array_intersect($people, $private);
 	}
 
-	if ($include_admin)
+	if (!$include_admin)
 	{
 		$query = $smcFunc['db_query']('', '
 			SELECT id_member
