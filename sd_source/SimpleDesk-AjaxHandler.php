@@ -724,7 +724,7 @@ function shd_ajax_notify()
 
 		// Now, it's possible that we have a ticket that the starter can't see, but that their preferences would indicate they'd like a reply.
 		// What should be done here is to remove them from the automatic list, and make them part of the ping list instead.
-		if (!empty($ticket['id_member_started']) && empty($possible_members[$ticket['id_member_started']]))
+		if (!empty($ticket['id_member_started']) && !in_array($ticket['id_member_started'], $staff))
 			$possible_members[$ticket['id_member_started']] = array();
 
 		// Now the clever bit, we've taken everyone who wasn't on the normal notify list, and figured out what their preferences are.
