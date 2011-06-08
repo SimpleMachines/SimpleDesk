@@ -76,33 +76,7 @@ function shd_load_action_log_entries($start = 0, $items_per_page = 10, $sort = '
 	$loaded_users = array();
 
 	// We may have to exclude some items from this depending on who the user is or is not. Forum/HD admins can always see everything.
-	$exclude = array();
-	if (!$user_info['is_admin'] && !shd_allowed_to('admin_helpdesk', 0))
-	{
-		// First, custom field changes only available to admins.
-		$exclude = array('cf_tktchange_admin', 'cf_rplchange_admin', 'cf_tktchgdef_admin', 'cf_rplchgdef_admin');
-		// Next, staff only things
-		if (!shd_allowed_to('shd_staff', 0))
-		{
-			$exclude[] = 'cf_tktchange_staffadmin';
-			$exclude[] = 'cf_rplchange_staffadmin';
-			$exclude[] = 'cf_tktchgdef_staffadmin';
-			$exclude[] = 'cf_rplchgdef_staffadmin';
-		}
-		else
-		// Next, user only things (that staff can't see)
-		{
-			$exclude[] = 'cf_tktchange_useradmin';
-			$exclude[] = 'cf_rplchange_useradmin';
-			$exclude[] = 'cf_tktchgdef_useradmin';
-			$exclude[] = 'cf_rplchgdef_useradmin';
-		}
-
-		// Can they see multiple departments? If not, exclude dept move notices too.
-		$dept = shd_allowed_to('access_helpdesk', false);
-		if (count($dept) == 1)
-			$exclude[] = 'move_dept';
-	}
+	$exclude = shd_action_log_exclusions();
 
 	if (!empty($exclude))
 	{
@@ -331,16 +305,26 @@ function shd_count_action_log_entries($clause = '')
 {
 	global $smcFunc;
 
+	$exclude = shd_action_log_exclusions();
+
+	if (!empty($exclude))
+	{
+		if (empty($clause))
+			$clause = 'la.action NOT IN ({array_string:exclude})';
+		else
+			$clause .= ' AND la.action NOT IN ({array_string:exclude})';
+	}
+
 	// Without further screaming and waving, fetch the actions.
 	$request = shd_db_query('','
 		SELECT COUNT(*)
 		FROM {db_prefix}helpdesk_log_action AS la
 		LEFT JOIN {db_prefix}members AS mem ON(mem.id_member = la.id_member)
-		LEFT JOIN {db_prefix}membergroups AS mg ON (mg.id_group = CASE WHEN mem.id_group = {int:reg_group_id} THEN mem.id_post_group ELSE mem.id_group END)
-		{raw:clause}',
+		LEFT JOIN {db_prefix}membergroups AS mg ON (mg.id_group = CASE WHEN mem.id_group = {int:reg_group_id} THEN mem.id_post_group ELSE mem.id_group END)' . (empty($clause) ? '' : '
+		WHERE ' . $clause),
 		array(
 			'reg_group_id' => 0,
-			'clause' => empty($clause) ? '' : 'WHERE ' . $clause,
+			'exclude' => $exclude,
 		)
 	);
 
@@ -348,6 +332,42 @@ function shd_count_action_log_entries($clause = '')
 	$smcFunc['db_free_result']($request);
 
 	return $entry_count;
+}
+
+function shd_action_log_exclusions()
+{
+	global $user_info;
+
+	$exclude = array();
+
+	if (!$user_info['is_admin'] && !shd_allowed_to('admin_helpdesk', 0))
+	{
+		// First, custom field changes only available to admins.
+		$exclude = array('cf_tktchange_admin', 'cf_rplchange_admin', 'cf_tktchgdef_admin', 'cf_rplchgdef_admin');
+		// Next, staff only things
+		if (!shd_allowed_to('shd_staff', 0))
+		{
+			$exclude[] = 'cf_tktchange_staffadmin';
+			$exclude[] = 'cf_rplchange_staffadmin';
+			$exclude[] = 'cf_tktchgdef_staffadmin';
+			$exclude[] = 'cf_rplchgdef_staffadmin';
+		}
+		else
+		// Next, user only things (that staff can't see)
+		{
+			$exclude[] = 'cf_tktchange_useradmin';
+			$exclude[] = 'cf_rplchange_useradmin';
+			$exclude[] = 'cf_tktchgdef_useradmin';
+			$exclude[] = 'cf_rplchgdef_useradmin';
+		}
+
+		// Can they see multiple departments? If not, exclude dept move notices too.
+		$dept = shd_allowed_to('access_helpdesk', false);
+		if (count($dept) == 1)
+			$exclude[] = 'move_dept';
+	}
+
+	return $exclude;
 }
 
 /**
