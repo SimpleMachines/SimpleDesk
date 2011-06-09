@@ -359,14 +359,19 @@ function shd_get_active_tickets()
 function shd_clear_active_tickets($dept = 0)
 {
 	global $modSettings;
+	static $done_all = false;
 
 	// This isn't very nice, unfortunately. But it's the only way to ensure that caches are flushed as necessary and to prevent us having to query so much more on every page.
 	// Firstly, the active ticket count. Needs to be for every person that can see this department.
 	$members = shd_members_allowed_to('access_helpdesk', $dept);
-	foreach ($members as $member)
+	if (!$done_all)
 	{
-		cache_put_data('shd_active_tickets_' . $member, null, 120);
-		cache_put_data('shd_ticket_count_' . $member, null, 120);
+		foreach ($members as $member)
+		{
+			cache_put_data('shd_active_tickets_' . $member, null, 120);
+			cache_put_data('shd_ticket_count_' . $member, null, 120);
+		}
+		$done_all = true;
 	}
 
 	// This is going to hurt.
@@ -1571,7 +1576,8 @@ function scheduled_simpledesk()
 		return;
 
 	require($sourcedir . '/sd_source/SimpleDesk-Scheduled.php');
-	return shd_scheduled();
+	shd_scheduled();
+	return true;
 }
 
 /**

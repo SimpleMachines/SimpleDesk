@@ -53,7 +53,7 @@ function shd_scheduled_close_tickets()
 
 	// 1. Get the list of tickets.
 	$query = $smcFunc['db_query']('', '
-		SELECT hdt.id_ticket, hdt.subject, hdt.id_member_started, hdt.id_member_updated
+		SELECT hdt.id_ticket, hdt.subject, hdt.id_member_started, hdt.id_member_updated, hdt.id_dept
 		FROM {db_prefix}helpdesk_depts AS hdd
 			INNER JOIN {db_prefix}helpdesk_tickets AS hdt ON (hdd.id_dept = hdt.id_dept)
 		WHERE hdd.autoclose_days > 0
@@ -67,66 +67,71 @@ function shd_scheduled_close_tickets()
 	$tickets = array();
 	$subjects = array();
 	$members = array();
+	$depts = array();
 	while ($row = $smcFunc['db_fetch_assoc']($query))
 	{
 		$tickets[$row['id_ticket']] = $row['id_ticket'];
 		$subjects[$row['id_ticket']] = $row['subject'];
 		$members[] = $row['id_member_started'];
 		$members[] = $row['id_member_updated'];
+		$depts[$row['id_dept']] = $row['id_dept'];
 	}
 	$smcFunc['db_free_result']($query);
 
 	// Any to do?
-	if (empty($tickets))
-		return;
-
-	// 2. Update the tickets.
-	$query = $smcFunc['db_query']('', '
-		UPDATE {db_prefix}helpdesk_tickets
-		SET status = {int:closed},
-			last_updated = {int:time}
-		WHERE id_ticket IN ({array_int:tickets})',
-		array(
-			'closed' => 3, // TICKET_STATUS_CLOSED isn't defined here either.
-			'tickets' => $tickets,
-			'time' => time(),
-		)
-	);
-
-	// 3. Update the log if appropriate. Normally we would call shd_log_action(), however here... we might be doing a lot, so instead, we do it manually ourselves.
-	if (empty($modSettings['shd_disable_action_log']) && !empty($modSettings['shd_logopt_autoclose']))
+	if (!empty($tickets))
 	{
-		$rows = array();
 		$time = time();
-		foreach ($tickets as $ticket)
+
+		// 2. Update the tickets.
+		$smcFunc['db_query']('', '
+			UPDATE {db_prefix}helpdesk_tickets
+			SET status = {int:closed},
+				last_updated = {int:time}
+			WHERE id_ticket IN ({array_int:tickets})',
+			array(
+				'closed' => 3, // TICKET_STATUS_CLOSED isn't defined here either.
+				'tickets' => $tickets,
+				'time' => $time,
+			)
+		);
+
+		// 3. Update the log if appropriate. Normally we would call shd_log_action(), however here... we might be doing a lot, so instead, we do it manually ourselves.
+		if (empty($modSettings['shd_disable_action_log']) && !empty($modSettings['shd_logopt_autoclose']))
 		{
-			$rows[] = array(
-				$time, // log_time
-				0, // id_member
-				'', // ip
-				'autoclose', // action
-				$ticket, // id_ticket
-				0, // id_msg
-				serialize(array(
-					'subject' => $subjects[$ticket],
-					'auto' => true, // indicate to the action log that this is the case
-				)),
+			$rows = array();
+			foreach ($tickets as $ticket)
+			{
+				$rows[] = array(
+					$time, // log_time
+					0, // id_member
+					'', // ip
+					'autoclose', // action
+					$ticket, // id_ticket
+					0, // id_msg
+					serialize(array(
+						'subject' => $subjects[$ticket],
+						'auto' => true, // indicate to the action log that this is the case
+					)),
+				);
+			}
+
+			$smcFunc['db_insert']('',
+				'{db_prefix}helpdesk_log_action',
+				array(
+					'log_time' => 'int', 'id_member' => 'int', 'ip' => 'string-16', 'action' => 'string', 'id_ticket' => 'int', 'id_msg' => 'int', 'extra' => 'string-65534',
+				),
+				$rows,
+				array('id_action')
 			);
 		}
 
-		$smcFunc['db_insert']('',
-			'{db_prefix}helpdesk_log_action',
-			array(
-				'log_time' => 'int', 'id_member' => 'int', 'ip' => 'string-16', 'action' => 'string', 'id_ticket' => 'int', 'id_msg' => 'int', 'extra' => 'string-65534',
-			),
-			$rows,
-			array('id_action')
-		);
+		// 4. If caching is enabled, make sure to purge the cache for members so their number of tickets will be recalculated.
+		// No need to dump all SD cache items though, though we have to get all those whose tickets were affected, plus all staff.
+		$depts = array_flip($depts);
+		foreach ($depts as $dept)
+			shd_clear_active_tickets($dept);
 	}
-
-	// 4. If caching is enabled, make sure to purge the cache for members so their number of tickets will be recalculated.
-	// No need to dump all SD cache items though, though we have to get all those whose tickets were affected, plus all staff.
-	shd_clear_active_tickets();
 }
 
 function shd_scheduled_purge_tickets()
