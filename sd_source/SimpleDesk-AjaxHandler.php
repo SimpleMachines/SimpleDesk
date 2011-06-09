@@ -623,7 +623,7 @@ function shd_ajax_notify()
 	);
 
 	// Let's get all the possible actual people. The possible people who can be notified... well, they're staff.
-	$staff = shd_get_visible_list($ticket['id_dept'], $ticket['private'], $ticket['id_member_started'], true, false);
+	$staff = shd_get_visible_list($ticket['id_dept'], $ticket['private'], $ticket['id_member_started'], !empty($modSettings['shd_admins_not_assignable']), false);
 
 	// Let's start figuring it out then! First, get the big ol' lists.
 	$query = $smcFunc['db_query']('', '

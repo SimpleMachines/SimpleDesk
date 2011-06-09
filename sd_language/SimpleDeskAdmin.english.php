@@ -176,7 +176,8 @@ $txt['shd_bbc_desc'] = 'What tags should be enabled for use in the helpdesk?';
 //@{
 $txt['shd_maintenance_mode'] = 'Put the helpdesk into maintenance mode';
 $txt['shd_staff_ticket_self'] = 'For tickets opened by staff, should it be possible to assign them the ticket?';
-$txt['shd_admins_not_assignable'] = 'Should admins be excluded from having tickets assigned to them?';
+$txt['shd_admins_not_assignable'] = 'Should admins be considered separate from staff?';
+$txt['shd_admins_not_assignable_note'] = 'If selected, forums admins will not be able to be assigned tickets and will be excluded from being added sending one-off emails to them to notify of a new reply.';
 $txt['shd_privacy_display'] = 'What method to use for displaying ticket privacy?';
 $txt['shd_privacy_display_smart'] = 'Display a ticket\'s privacy setting when appropriate';
 $txt['shd_privacy_display_always'] = 'Always display the ticket\'s privacy setting';

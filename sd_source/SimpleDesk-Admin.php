@@ -462,7 +462,7 @@ function shd_modify_posting_options($return_config)
  *	<ul>
  *	<li>'shd_maintenance_mode' (checkbox) - if checked, only forum adminstrators (group 1) and helpdesk admins can see the helpdesk</li>
  *	<li>'shd_staff_ticket_self' (checkbox) - if checked, a ticket opened by a staff member can be assigned to them to action.</li>
- *	<li>'shd_admins_not_assignable' (checkbox) - if checked, a ticket cannot be assigned to forum admins, only regular staff. (Since 1.1 only)</li>
+ *	<li>'shd_admins_not_assignable' (checkbox) - if checked, forum admins are not considered part of staff - a ticket cannot be assigned to them and they can't receive one-off notifications (since 2.0 only)</li>
  *	<li>'shd_privacy_display' (dropdown) - whether to display privacy or not:
  *		<ul>
  *			<li>smart (default): Display ticket privacy if it's likely to be relevant (if users can alter ticket privacy, and/or see private tickets AND the ticket is private, show it)</li>
@@ -486,7 +486,7 @@ function shd_modify_admin_options($return_config)
 	$config_vars = array(
 		array('check', 'shd_maintenance_mode'),
 		array('check', 'shd_staff_ticket_self'),
-		array('check', 'shd_admins_not_assignable'),
+		array('check', 'shd_admins_not_assignable', 'subtext' => $txt['shd_admins_not_assignable_note']),
 		array('select', 'shd_privacy_display', array('smart' => $txt['shd_privacy_display_smart'], 'always' => $txt['shd_privacy_display_always']), 'subtext' => $txt['shd_privacy_display_note']),
 		array('check' , 'shd_disable_tickettotopic', 'subtext' => $txt['shd_disable_tickettotopic_note'], 'disabled' => !empty($modSettings['shd_helpdesk_only'])),
 		array('check' , 'shd_disable_relationships', 'subtext' => $txt['shd_disable_relationships_note']),
