@@ -35,7 +35,7 @@ function shd_notifications_notify_newticket(&$msgOptions, &$ticketOptions, &$pos
 		return;
 
 	// So, we're getting the list of people that are being affected by this ticket being posted. Basically, that's a list of staff on new ticket, less people who've set preferences otherwise.
-	$members = shd_get_visible_list($ticketOptions['dept'], $ticketOptions['private'], false, !empty($modSettings['shd_admins_not_assignable']), false);
+	$members = shd_get_visible_list($ticketOptions['dept'], $ticketOptions['private'], false, empty($modSettings['shd_admins_not_assignable']), false);
 	if (empty($members))
 		return;
 
@@ -98,7 +98,7 @@ function shd_notifications_notify_newreply(&$msgOptions, &$ticketOptions, &$post
 	// We're doing various things here, so grab some general details, not just what we may have been passed before.
 	$ticketinfo = shd_load_ticket($ticketOptions['id']);
 	// $staff is the sum total of staff + ticket starter, subject to visibility of the ticket.
-	$staff = shd_get_visible_list($ticketOptions['dept'], $ticketinfo['private'], $ticketinfo['starter_id'], !empty($modSettings['shd_admins_not_assignable']), false);
+	$staff = shd_get_visible_list($ticketOptions['dept'], $ticketinfo['private'], $ticketinfo['starter_id'], empty($modSettings['shd_admins_not_assignable']), false);
 
 	// Might as well kick this off here.
 	$notify_data = array(
@@ -792,12 +792,12 @@ function shd_get_visible_list($dept, $private, $ticket_starter = 0, $include_adm
 			array()
 		);
 
-		$admins = array();
+		$context['list_admin_exclude'] = array();
 		while ($row = $smcFunc['db_fetch_row']($query))
-			$admins[] = $row[0];
+			$context['list_admin_exclude'][] = $row[0];
 
 		$smcFunc['db_free_result']($query);
-		$people = array_diff($people, $admins);
+		$people = array_diff($people, $context['list_admin_exclude']);
 	}
 
 	if (!$include_current_user)

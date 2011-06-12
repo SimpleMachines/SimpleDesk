@@ -623,7 +623,7 @@ function shd_ajax_notify()
 	);
 
 	// Let's get all the possible actual people. The possible people who can be notified... well, they're staff.
-	$staff = shd_get_visible_list($ticket['id_dept'], $ticket['private'], $ticket['id_member_started'], !empty($modSettings['shd_admins_not_assignable']), false);
+	$staff = shd_get_visible_list($ticket['id_dept'], $ticket['private'], $ticket['id_member_started'], empty($modSettings['shd_admins_not_assignable']), false);
 
 	// Let's start figuring it out then! First, get the big ol' lists.
 	$query = $smcFunc['db_query']('', '
@@ -636,6 +636,14 @@ function shd_ajax_notify()
 	);
 	while ($row = $smcFunc['db_fetch_assoc']($query))
 		$notify_list[$row['notify_state'] == NOTIFY_NEVER ? 'optional_butoff' : 'being_notified'][$row['id_member']] = true;
+
+	// Did we exclude admins? If we did, we would have scooped the list of admins. If they're in the 'not being notified but you can...' list, remove them.
+	if (!empty($context['list_admin_exclude']))
+	{
+		foreach ($context['list_admin_exclude'] as $user_id)
+			if (isset($notify_list['optional_butoff'][$user_id]))
+				unset($notify_list['optional_butoff'][$user_id]);
+	}
 
 	// Now we get the list by preferences. This is where it starts to get complicated.
 	$possible_members = array();

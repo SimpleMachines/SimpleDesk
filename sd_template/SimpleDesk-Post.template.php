@@ -518,7 +518,15 @@ function template_ticket_postbox()
 						<div id="shd_bbcbox"', ((empty($modSettings['shd_allow_ticket_bbc']) || !empty($context['shd_display'])) ? ' style="display:none;"' : ''), '></div>
 						<div id="shd_smileybox"', ((empty($modSettings['shd_allow_ticket_smileys']) || !empty($context['shd_display'])) ? ' style="display:none;"' : ''), '></div>';
 
-	echo template_control_richedit($context['post_box_name'], 'shd_smileybox', 'shd_bbcbox');
+	if ($editor_context['width'] == ((int) $editor_context['width']) . '%')
+	{
+		$width = round(((int) $editor_context['width']) / 0.988, 1);
+		echo '
+						<div style="width: ', $width, '%;">', template_control_richedit($context['post_box_name'], 'shd_smileybox', 'shd_bbcbox'), '</div>';
+	}
+	// Editor width isn't proportional, presumably we don't care.
+	else
+		echo template_control_richedit($context['post_box_name'], 'shd_smileybox', 'shd_bbcbox');
 
 	// Custom fields
 	template_ticket_custom_fields();

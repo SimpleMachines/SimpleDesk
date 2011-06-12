@@ -636,6 +636,19 @@ function shd_view_ticket()
 		'text' => 'shd_ticket_move_to_topic',
 	);
 
+	// While we're at it, set up general navigation for this ticket. We'll sort out access to the action log later.
+	$context['navigation']['replies'] = array(
+		'text' => 'shd_go_to_replies',
+		'lang' => true,
+		'url' => '#replies',
+	);
+	$context['navigation']['ticketlog'] = array(
+		'text' => 'shd_go_to_action_log',
+		'test' => 'display_ticket_log',
+		'lang' => true,
+		'url' => '#ticket_log_header',
+	);
+
 	// If we are going SMF style with the navigation, we need to rework the structure a wee bit.
 	// No sense making a new array, mind, just fix up the existing one a touch, and don't do this on the master as we don't always need it.
 	if (empty($modSettings['shd_ticketnav_style']) || !in_array($modSettings['shd_ticketnav_style'], array('sd', 'sdcompact', 'smf')))

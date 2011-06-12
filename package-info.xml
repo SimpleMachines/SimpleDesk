@@ -6,11 +6,11 @@
 	<version>2.0</version>
 	<type>modification</type>
 
-	<install for="1.1.*, 2.0 RC2, 2.0 RC3, 2.0 RC4">
-		<readme lang="english" parsebbc="true" type="inline">This mod is [b]not compatible[/b] with your version of SMF, it requires facilities only in 2.0 RC5 and above.</readme>
+	<install for="1.1.*, 2.0 RC2, 2.0 RC3, 2.0 RC4, 2.0 RC5">
+		<readme lang="english" parsebbc="true" type="inline">This mod is [b]not compatible[/b] with your version of SMF, it requires 2.0 final or later.</readme>
 	</install>
 
-	<install for="2.0 RC5">
+	<install for="2.0">
 		<!-- readme files -->
 		<readme lang="english" parsebbc="true" type="file">language-readme/readme.english.txt</readme>
 
@@ -56,7 +56,7 @@
 		<redirect url="?action=admin;area=corefeatures#js_feature_shd" />
 	</install>
 
-	<uninstall for="2.0 RC5">
+	<uninstall for="2.0">
 		<!-- database changes, undone -->
 		<database>uninstall-optional.php</database>
 		<code type="file">uninstall-required.php</code>

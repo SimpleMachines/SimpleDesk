@@ -218,6 +218,9 @@ $txt['shd_ticket_private'] = 'Private';
 $txt['shd_ticket_change'] = 'Change';
 $txt['shd_ticket_ip'] = 'IP address';
 $txt['shd_back_to_hd'] = 'Back to the helpdesk';
+$txt['shd_go_to_replies'] = 'Go to Replies';
+$txt['shd_go_to_action_log'] = 'Go to Action Log';
+$txt['shd_go_to_replies_start'] = 'Go to the first reply';
 
 $txt['shd_ticket_has_been_deleted'] = 'This ticket is currently in the recycle bin and cannot be altered without being returned to the helpdesk.';
 $txt['shd_ticket_replies_deleted'] = 'This ticket has had replies deleted from it previously.';

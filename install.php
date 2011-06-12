@@ -13,8 +13,8 @@
 # Any questions, please contact SimpleDesk.net            #
 #                                                         #
 ###########################################################
-# SimpleDesk Version: 1.0 Felidae                         #
-# File Info: install.php / 1.0 Felidae                    #
+# SimpleDesk Version: 2.0 Anatidae                        #
+# File Info: install.php / 2.0 Anatidae                   #
 ###########################################################
 
 /**
@@ -77,6 +77,15 @@ $new_settings = array(
 	'shd_logopt_editposts' => 1,
 	'shd_thank_you_post' => 1,
 	'shd_zerofill' => 5,
+	'shd_notify_log' => 1,
+	'shd_notify_with_body' => 1,
+	'shd_notify_new_ticket' => 1,
+	'shd_notify_new_reply_own' => 1,
+	'shd_notify_new_reply_assigned' => 1,
+	'shd_notify_new_reply_previous' => 1,
+	'shd_notify_new_reply_any' => 1,
+	'shd_notify_assign_me' => 1,
+	'shd_notify_assign_own' => 1,
 );
 
 foreach ($new_settings as $k => $v)

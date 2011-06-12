@@ -27,7 +27,7 @@ function template_viewticket()
 	global $context, $txt, $scripturl, $settings, $modSettings, $options;
 
 	// Back to the helpdesk.
-	echo '<div class="floatleft">', template_button_strip(array($context['navigation']['back']), 'bottom'), '</div>', ($modSettings['shd_ticketnav_style'] != 'smf' ? '<br class="clear" /><br />' : ''), '';
+	echo '<div class="floatleft">', template_button_strip(array($context['navigation']['back'], $context['navigation']['replies'], $context['navigation']['ticketlog']), 'bottom'), '</div>', ($modSettings['shd_ticketnav_style'] != 'smf' ? '<br class="clear" /><br />' : ''), '';
 
 	if ($modSettings['shd_ticketnav_style'] == 'smf')
 	{
@@ -884,7 +884,7 @@ function template_viewreplies()
 								</span>
 								<a href="', $reply['link'], '">', sprintf($txt['shd_reply_written'], $reply['time']), '</a>
 							</div>
-							<hr class="clearfix" />
+							<hr />
 							', $reply['body'], '
 							<br /><br />';
 
@@ -950,6 +950,7 @@ function template_viewreplies()
 
 	echo '
 				</div>
+				<span class="floatleft shd_nowrap"><a href="#replies" title="', $txt['shd_go_to_replies_start'], '"><img src="', $settings['default_images_url'], '/simpledesk/move_up.png" alt="" /><img src="', $settings['default_images_url'], '/simpledesk/replies.png" alt="" /></a></span>
 				<span class="floatright smalltext">', $txt['pages'], ': ', $context['page_index'], '</span>
 				<br class="clear" />
 			</div>
@@ -1101,6 +1102,7 @@ function template_ticketactionlog()
 		echo '
 						<tr class="titlebg">
 							<td colspan="3">
+								<span class="floatright shd_nowrap"><a href="#replies" title="', $txt['shd_go_to_replies_start'], '"><img src="', $settings['default_images_url'], '/simpledesk/move_up.png" alt="" /><img src="', $settings['default_images_url'], '/simpledesk/replies.png" alt="" /></a></span>
 								', !empty($context['ticket_full_log']) ? '<span class="smalltext shd_main_log"><img src="' . $settings['default_images_url'] . '/simpledesk/browse.png" alt="" /> <a href="' . $scripturl . '?action=admin;area=helpdesk_info;sa=actionlog">' . $txt['shd_ticket_log_full'] . '</a></span>' : '', '
 							</td>
 						</tr>
