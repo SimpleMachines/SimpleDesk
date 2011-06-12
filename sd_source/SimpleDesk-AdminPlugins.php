@@ -326,6 +326,19 @@ function shd_list_hooks()
 		'shd_hook_after_main', // functions to call after action=helpdesk has been evaluated but before template calls are made
 		'shd_hook_boardindex_before', // functions to call before setting up the injected boardindex
 		'shd_hook_boardindex_after', // functions to call after setting up the injected boardindex
+		'shd_hook_deleteticket', // functions to call just before actually deleting (softly) a ticket
+		'shd_hook_deletereply', // functions to call just before actually deleting (softly) a reply
+		'shd_hook_permadeleteticket', // functions to call just before truly deleting a ticket
+		'shd_hook_permadeletereply', // functions to call just before truly deleting a reply
+		'shd_hook_restoreticket', // functions to call just before restoring a previously deleted ticket
+		'shd_hook_restorereply', // functions to call just before restoring a previously deleted reply
+		'shd_hook_markunread', // functions to call just before marking a ticket unread
+		'shd_hook_markresolve', // functions to call just before marking a ticket resolved
+		'shd_hook_markunresolve', // functions to call just before marking a ticket unresolved
+		'shd_hook_relations', // functions to call just before setting/removing ticket relationships
+		'shd_hook_movedept', // functions to call just before moving a ticket between departments
+		'shd_hook_tickettotopic', // functions to call just before moving a ticket into a forum topic
+		'shd_hook_topictoticket', // functions to call just before moving a forum topic into a ticket
 
 		// Menu hooks - called after the rest of menu configuration is done (meaning menu items may or may not exist depending on permissions)
 		'shd_hook_mainmenu', // functions to call when looking at the main menu

@@ -472,6 +472,9 @@ function shd_tickettotopic2()
 		fatal_lang_error('shd_ticket_move_reqd_nonselected', false);
 	}
 
+	// Just before we do this, make sure we call any hooks. $context has lots of interesting things, as does $_POST.
+	call_integration_hook('shd_hook_tickettotopic');
+
 	// OK, so we have some fields, and we're doing something with them. First we need to attach the fields from the ticket to the opening post.
 	shd_append_custom_fields($body, $context['ticket_id'], CFIELD_TICKET);
 
@@ -1050,6 +1053,9 @@ function shd_topictoticket2()
 	// Are we changing the subject?
 	$old_subject = $subject;
 	$subject = !empty($_POST['change_subject']) && !empty($_POST['subject']) ? $_POST['subject'] : $subject;
+
+	// Just before we do this, make sure we call any hooks. $context and $_POST have lots of interesting things for us.
+	call_integration_hook('shd_hook_topictoticket');
 
 	// All okay, it seems. Let's go create the ticket.
 	$msg_assoc = array();

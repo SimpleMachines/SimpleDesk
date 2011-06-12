@@ -254,6 +254,9 @@ function shd_movedept2()
 		list($new_dept, $dept_name) = $smcFunc['db_fetch_row']($query);
 		$smcFunc['db_free_result']($query);
 
+		// Just before we move, call any interesting hooks. We do normally have a lot of fun staff in $context and $_POST, but the department ID and name aren't in either.
+		call_integration_hook('shd_hook_movedept', array(&$new_dept, &$dept_name));
+
 		$log_params = array(
 			'subject' => $subject,
 			'ticket' => $context['ticket_id'],

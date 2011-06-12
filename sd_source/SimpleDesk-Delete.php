@@ -80,6 +80,9 @@ function shd_ticket_delete()
 
 	$subject = $row['subject'];
 
+	// The ticket ID is in $context['ticket_id']. Nothing else is needed, really.
+	call_integration_hook('shd_hook_deleteticket');
+
 	// Move it to deleted status
 	$query_ticket = shd_db_query('', '
 		UPDATE {db_prefix}helpdesk_tickets AS hdt
@@ -147,6 +150,9 @@ function shd_reply_delete()
 	}
 
 	$subject = $row['subject'];
+
+	// The ticket's id is in $context['ticket_id'], the reply's message id is in $_REQUEST['reply'].
+	call_integration_hook('shd_hook_deletereply');
 
 	// OK, let's clear this one, hasta la vista... ticket.
 	shd_db_query('', '
@@ -230,6 +236,9 @@ function shd_perma_delete()
 		$subject = $row['subject'];
 		// Expire the cache of count(active tickets)
 		shd_clear_active_tickets($row['id_dept']);
+
+		// The ticket ID is in $context['ticket_id']. Nothing else is needed, really.
+		call_integration_hook('shd_hook_permadeleteticket');
 
 		// Start by getting all the messages in this ticket, we'll need those for custom fields values that need purging.
 		$query = shd_db_query('', '
@@ -359,6 +368,9 @@ function shd_perma_delete()
 		$subject = $row['subject'];
 		// Expire the cache of count(active tickets)
 		shd_clear_active_tickets($row['id_dept']);
+
+		// The message ID is in $_REQUEST['reply']. Nothing else is needed, really.
+		call_integration_hook('shd_hook_permadeletereply');
 
 		// Just remove the reply.
 		shd_db_query('', '
@@ -528,6 +540,9 @@ function shd_ticket_restore()
 		fatal_lang_error('shd_no_ticket', false);
 	}
 
+	// The ticket's id is in $context['ticket_id'].
+	call_integration_hook('shd_hook_restoreticket');
+
 	shd_db_query('', '
 		UPDATE {db_prefix}helpdesk_tickets AS hdt
 		SET status = {int:status_new}
@@ -599,6 +614,9 @@ function shd_reply_restore()
 		$smcFunc['db_free_result']($query_ticket);
 		fatal_lang_error('shd_no_ticket', false);
 	}
+
+	// The ticket's id is in $context['ticket_id'], the reply id in $_REQUEST['reply'].
+	call_integration_hook('shd_hook_restorereply');
 
 	// OK, let's clear this one, hasta la vista... ticket.
 	shd_db_query('', '

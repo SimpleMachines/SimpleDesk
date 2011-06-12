@@ -46,6 +46,8 @@ function shd_ticket_unread()
 	checkSession('get');
 
 	if (!empty($context['ticket_id']))
+	{
+		call_integration_hook('shd_hook_markunread');
 		$result = shd_db_query('', '
 			DELETE FROM {db_prefix}helpdesk_log_read
 			WHERE id_ticket = {int:current_ticket}
@@ -55,6 +57,7 @@ function shd_ticket_unread()
 				'user' => $user_info['id'],
 			)
 		);
+	}
 
 	redirectexit($context['shd_home'] . $context['shd_dept_link']);
 }
@@ -98,6 +101,8 @@ function shd_ticket_resolve()
 		$smcFunc['db_free_result']($query);
 
 		$action = ($row['status'] != TICKET_STATUS_CLOSED) ? 'resolve' : 'unresolve';
+
+		call_integration_hook('shd_hook_mark' . $action);
 
 		if (!shd_allowed_to('shd_' . $action . '_ticket_any', $row['id_dept']) && (!shd_allowed_to('shd_' . $action . '_ticket_own', $row['id_dept']) || $row['id_member_started'] != $user_info['id']))
 			fatal_lang_error('shd_cannot_' . $action, false);
@@ -374,6 +379,9 @@ function shd_ticket_relation()
 
 	$logaction_ticket = $log_prefix . $rel_action;
 	$logaction_otherticket = $log_prefix . $log_map[$rel_action];
+
+	// The "from" ticket is $context['ticket_id'], $otherticket is the ticket whose id the user gives, and $rel_action sets the relationship type.
+	call_integration_hook('shd_hook_relations', array(&$rel_action, &$otherticket));
 
 	if ($rel_action == 'delete')
 	{
