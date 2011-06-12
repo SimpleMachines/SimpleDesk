@@ -413,6 +413,17 @@ h3.ticketheader img
 	margin-bottom: 10px;
 }
 
+.shd_ajax_head
+{
+	font-weight: bold;
+}
+.shd_ajaxnotify
+{
+	width: 40%;
+	margin-right: 5%;
+	float: left;
+}
+
 /**********************************
 * Attachment stuff				  *
 ***********************************/

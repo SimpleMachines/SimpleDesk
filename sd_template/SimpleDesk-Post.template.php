@@ -758,7 +758,13 @@ function template_singleton_email()
 	{
 		echo '
 						<div id="shd_notifications_div" style="display:none;">
-							<a href="#" onclick="getAjaxNotifications(); return false;">', $txt['shd_select_notifications'], '</a>
+							<a href="#" onclick="getAjaxNotifications(); return false;">', $txt['shd_select_notifications'], '</a>';
+
+		if (!empty($context['notification_ping_list']))
+			echo '
+							<input type="hidden" name="list" value="', $context['notification_ping_list'], '" />';
+
+		echo '
 						</div>
 						<script type="text/javascript"><!-- // --><![CDATA[
 	document.getElementById("shd_notifications_div").style.display = "";
@@ -766,7 +772,7 @@ function template_singleton_email()
 	function getAjaxNotifications()
 	{
 		ajax_indicator(true);
-		getXMLDocument(smf_prepareScriptUrl(smf_scripturl) + "action=helpdesk;sa=ajax;op=notify;ticket=', $context['ticket_id'], ';', $context['session_var'], '=', $context['session_id'], '", handleAjaxNotifications);
+		getXMLDocument(smf_prepareScriptUrl(smf_scripturl) + "action=helpdesk;sa=ajax;op=notify;ticket=', $context['ticket_id'], ';', $context['session_var'], '=', $context['session_id'], !empty($context['notification_ping_list']) ? ';list=' . $context['notification_ping_list'] : '', '", handleAjaxNotifications);
 	}
 
 	function handleAjaxNotifications(XMLDoc)

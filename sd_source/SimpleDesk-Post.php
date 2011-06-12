@@ -1131,6 +1131,17 @@ function shd_save_reply()
 		$context['page_title'] = $txt['shd_helpdesk'];
 		$context['sub_template'] = 'reply_post';
 
+		// Oh, yeah, we need to look at the existing notifications pinging stuff, if appropriate, and reset that.
+		if ($context['can_ping'] && !empty($_POST['notify']) && is_array($_POST['notify']))
+		{
+			$items = array();
+			foreach ($_POST['notify'] as $item)
+				if (!empty($item) && is_numeric($item))
+					$items[] = $item;
+			if (!empty($items))
+				$context['notification_ping_list'] = implode(',', $items);
+		}
+
 		shd_check_attachments();
 
 		// Set up the fancy editor

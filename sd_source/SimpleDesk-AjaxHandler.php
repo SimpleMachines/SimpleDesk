@@ -789,17 +789,26 @@ function shd_ajax_notify()
 		ob_start();
 		echo '<notify><![C', 'DATA[';
 
+		$selected = array();
+		if (!empty($_GET['list']))
+		{
+			$_GET['list'] = explode(',', $_GET['list']);
+			foreach ($_GET['list'] as $id)
+				if ((int) $id > 0)
+					$selected[] = (int) $id;
+		}
+
 		if (!empty($notify_list['being_notified']))
-			echo $txt['shd_ping_already_' . (count($notify_list['being_notified']) == 1 ? '1' : 'n')], '<br />', implode(', ', $notify_list['being_notified']);
+			echo '<span class="shd_ajax_head">', $txt['shd_ping_already_' . (count($notify_list['being_notified']) == 1 ? '1' : 'n')], '</span><br />', implode(', ', $notify_list['being_notified']);
 
 		if (!empty($notify_list['optional']))
 		{
 			if (!empty($notify_list['being_notified']))
 				echo '<br /><br />';
 
-			echo $txt['shd_ping_' . (count($notify_list['optional']) == 1 ? '1' : 'n')], '<br />';
+			echo '<span class="shd_ajax_head">', $txt['shd_ping_' . (count($notify_list['optional']) == 1 ? '1' : 'n')], '</span><br />';
 			foreach ($notify_list['optional'] as $id => $member)
-				echo '<div class="shd_ajaxnotify"><input type="checkbox" name="notify[', $id, ']" value="', $id, '" class="input_check" /> ', $member, '</div>';
+				echo '<div class="shd_ajaxnotify"><input type="checkbox" name="notify[', $id, ']" value="', $id, '"', in_array($id, $selected) ? ' checked="checked"' : '', ' class="input_check" /> ', $member, '</div>';
 		}
 
 		if (!empty($notify_list['optional_butoff']))
@@ -807,9 +816,9 @@ function shd_ajax_notify()
 			if (!empty($notify_list['being_notified']) || !empty($notify_list['optional_butoff']))
 				echo '<br /><br />';
 
-			echo $txt['shd_ping_none_' . (count($notify_list['optional_butoff']) == 1 ? '1' : 'n')], '<br />';
+			echo '<span class="shd_ajax_head">', $txt['shd_ping_none_' . (count($notify_list['optional_butoff']) == 1 ? '1' : 'n')], '</span><br />';
 			foreach ($notify_list['optional_butoff'] as $id => $member)
-				echo '<div class="shd_ajaxnotify"><input type="checkbox" name="notify[', $id, ']" value="', $id, '" class="input_check" /> ', $member, '</div>';
+				echo '<div class="shd_ajaxnotify"><input type="checkbox" name="notify[', $id, ']" value="', $id, '"', in_array($id, $selected) ? ' checked="checked"' : '', ' class="input_check" /> ', $member, '</div>';
 		}
 
 		echo ']', ']></notify>';

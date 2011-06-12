@@ -209,12 +209,22 @@ function shd_notifications_notify_newreply(&$msgOptions, &$ticketOptions, &$post
 		unset($members[$member_id]);
 
 	// And now, finally, receive the list of possible cases from the notification doodad, and verify against a list of possible people.
-	if ($context['can_ping'] && !empty($_POST['notify']) && is_array($_POST['notify']))
+	if ($context['can_ping'])
 	{
-		$staff[] = $ticketinfo['starter_id']; // Add the ticket starter as a possible candidate.
-		foreach ($_POST['notify'] as $id)
-			if (in_array((int) $id, $staff))
-				$members[$id]['ping'] = true;
+		if (!empty($_POST['notify']) && is_array($_POST['notify']))
+		{
+			$staff[] = $ticketinfo['starter_id']; // Add the ticket starter as a possible candidate.
+			foreach ($_POST['notify'] as $id)
+				if (in_array((int) $id, $staff))
+					$members[$id]['ping'] = true;
+		}
+		elseif (!empty($_REQUEST['list']))
+		{
+			$list = explode(',', $_REQUEST['list']);
+			foreach ($list as $id)
+				if (in_array((int) $id, $staff))
+					$members[$id]['ping'] = true;
+		}
 	}
 
 	// So, at this point, $members contains a list of the members and a sequence of the possible messages they could get. We need to make some sense of it.
