@@ -720,8 +720,8 @@ function shd_profile_permissions($memID)
 	{
 		$query = $smcFunc['db_query']('', '
 			SELECT id_role, permission, add_type
-			FROM {db_prefix}helpdesk_role_permissions' . (empty($role) ? '' : '
-			WHERE id_role IN ({array_int:roles})'),
+			FROM {db_prefix}helpdesk_role_permissions
+			WHERE id_role IN ({array_int:roles})',
 			array(
 				'roles' => array_keys($roles),
 			)
