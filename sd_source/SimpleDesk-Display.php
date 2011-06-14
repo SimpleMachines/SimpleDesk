@@ -292,7 +292,7 @@ function shd_view_ticket()
 		loadMemberData($posters);
 
 		// Are they current team members?
-		$team = array_intersect($posters, shd_members_allowed_to('shd_staff'));
+		$team = array_intersect($posters, shd_members_allowed_to('shd_staff', $context['ticket']['dept']));
 
 		foreach ($team as $member)
 			$context['shd_is_staff'][$member] = true;

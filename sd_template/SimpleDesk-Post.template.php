@@ -826,10 +826,10 @@ function template_ticket_do_replies()
 					echo '
 							', shd_profile_link($reply['member']['avatar']['image'], $reply['member']['id']);
 
-			if ($modSettings['shd_staff_badge'] == (!empty($reply['is_team']) ? 'staffbadge' : 'userbadge') || $modSettings['shd_staff_badge'] == 'bothbadge')
+			if ($modSettings['shd_staff_badge'] == (!empty($reply['is_staff']) ? 'staffbadge' : 'userbadge') || $modSettings['shd_staff_badge'] == 'bothbadge')
 				echo '<br />
 							', $reply['member']['group_stars'];
-			elseif (!empty($reply['is_team']) && $modSettings['shd_staff_badge'] == 'nobadge')
+			elseif (!empty($reply['is_staff']) && $modSettings['shd_staff_badge'] == 'nobadge')
 				echo '<br />
 							<img src="', $settings['default_images_url'] . '/simpledesk/staff.png" class="shd_smallicon" title="', $txt['shd_ticket_staff'], '" alt="', $txt['shd_ticket_staff'], '" />';
 
