@@ -401,22 +401,22 @@ function shd_load_user_perms()
 		$user_info['query_see_ticket'] = '1=0'; // no point going any further if they can't access the helpdesk
 	else
 	{
-		// What departments can we see only our own in?
-		$tickets_any_private = shd_allowed_to('shd_view_ticket_private_any', false);
-		$tickets_any_private = array_intersect($tickets_any_private, $tickets_any_dept);
-		$tickets_own_private = shd_allowed_to('shd_view_ticket_private_own', false);
-		$tickets_own_private = array_intersect($tickets_own_private, $tickets_own_dept);
-
-		$tickets_any_nonprivate = array_diff($tickets_any_dept, $tickets_any_private);
-		$tickets_own_nonprivate = array_diff($tickets_own_dept, $tickets_own_private);
+		// What departments can we see private tickets in?
+		$tickets_private_any_dept = shd_allowed_to('shd_view_ticket_private_any', false);
+		$tickets_private_own_dept = shd_allowed_to('shd_view_ticket_private_own', false);
 
 		$clauses = array();
 		$privacy_clauses = array();
-		// Ticket access is:
-		// WHERE (ticket is in a department where we can see any private ticket) OR
-		//       (ticket is in a department where we can see our own private tickets AND it's our ticket) OR
-		//       (ticket is in a department where we can see any non private ticket AND not private) OR
-		//       (ticket is in a department where we can see our own non private ticket AND it's not private)
+
+		// Departments where we can see anything. Requires the ability to see any ticket, plus any private.
+		$tickets_any_private = array_intersect($tickets_any_dept, $tickets_private_any_dept);
+		// Departments where we can see our own private tickets. Requires the ability to see any/own ticket in that department, plus own private.
+		$tickets_own_private = array_intersect(array_merge($tickets_any_dept, $tickets_own_dept), $tickets_private_own_dept);
+		// Departments where we can see any private tickets. Requires ability to see any ticket, then excludes matching private rule.
+		$tickets_any_nonprivate = array_diff($tickets_any_dept, $tickets_any_private);
+		// Departments where we can see our own non private tickets. Requires ability to see own ticket, excludes matching private rule.
+		$tickets_own_nonprivate = array_diff($tickets_own_dept, $tickets_own_private);
+
 		if (!empty($tickets_any_private)) // Depts where we can see private tickets, thus we don't need to check anything else for this part.
 			$privacy_clauses[] = '(hdt.id_dept IN (' . implode(',', $tickets_any_private) . '))';
 		if (!empty($tickets_own_private)) // Depts where we can see our own private tickets, so need to validate id_dept and id_member_started, but we can discount checking private here.

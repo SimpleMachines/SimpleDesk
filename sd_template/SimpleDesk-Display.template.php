@@ -521,9 +521,11 @@ function template_viewnotifications()
 
 			if (!empty($context['display_notifications']['can_change']))
 				echo '
-							<div>
-								<a href="', $scripturl, '?action=profile;area=hd_prefs;u=', $context['user']['id'], '">', $txt['shd_ticket_notify_changeprefs'], '</a>
-							</div>';
+							<form action="', $scripturl, '?action=profile;area=hd_prefs;u=', $context['user']['id'], '" method="post">
+								<div>
+									<input type="submit" value="', $txt['shd_ticket_notify_changeprefs'], '" class="button_submit" />
+								</div>
+							</form>';
 		}
 
 		if (!empty($context['display_notifications']['can_monitor']))
