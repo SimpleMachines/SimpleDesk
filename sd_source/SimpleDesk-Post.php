@@ -1168,7 +1168,7 @@ function shd_save_reply()
 		if ($new_reply)
 		{
 			// So... what is the new status?
-			$new_status = shd_determine_status('reply', $ticketinfo['starter_id'], $user_info['id']);
+			$new_status = shd_determine_status('reply', $ticketinfo['starter_id'], $user_info['id'], $context['ticket_form']['dept']);
 
 			// Now to add the ticket details
 			$posterOptions = array(

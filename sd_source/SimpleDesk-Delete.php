@@ -182,7 +182,7 @@ function shd_reply_delete()
 		WHERE id_ticket = {int:ticket}',
 		array(
 			'ticket' => $context['ticket_id'],
-			'status' => shd_determine_status('deletereply', $starter, $replier, $num_replies),
+			'status' => shd_determine_status('deletereply', $starter, $replier, $num_replies, $row['id_dept']),
 		)
 	);
 
@@ -434,7 +434,7 @@ function shd_perma_delete()
 			WHERE id_ticket = {int:ticket}',
 			array(
 				'ticket' => $context['ticket_id'],
-				'status' => shd_determine_status('deletereply', $starter, $replier, $num_replies),
+				'status' => shd_determine_status('deletereply', $starter, $replier, $num_replies, $row['id_dept']),
 			)
 		);
 
@@ -550,7 +550,7 @@ function shd_ticket_restore()
 			AND {query_see_ticket}',
 		array(
 			'current_ticket' => $context['ticket_id'],
-			'status_new' => shd_determine_status('restoreticket', $starter, $replier, $num_replies),
+			'status_new' => shd_determine_status('restoreticket', $starter, $replier, $num_replies, $row['id_dept']),
 		)
 	);
 
@@ -646,7 +646,7 @@ function shd_reply_restore()
 		WHERE id_ticket = {int:ticket}',
 		array(
 			'ticket' => $context['ticket_id'],
-			'status' => shd_determine_status('restorereply', $starter, $replier, $num_replies),
+			'status' => shd_determine_status('restorereply', $starter, $replier, $num_replies, $row['id_dept']),
 		)
 	);
 

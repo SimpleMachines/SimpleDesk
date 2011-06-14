@@ -735,7 +735,7 @@ function shd_maint_status()
 	$tickets = array();
 	$tickets_modify = array();
 	$query = $smcFunc['db_query']('', '
-		SELECT id_ticket, num_replies, id_member_started, id_member_updated, status
+		SELECT id_ticket, num_replies, id_member_started, id_member_updated, status, id_dept
 		FROM {db_prefix}helpdesk_tickets
 		WHERE status IN ({array_int:open})
 		ORDER BY id_ticket ASC
@@ -754,7 +754,7 @@ function shd_maint_status()
 	{
 		foreach ($tickets as $ticket)
 		{
-			$new_status = shd_determine_status('reply', $ticket['id_member_started'], $ticket['id_member_updated'], $ticket['num_replies']);
+			$new_status = shd_determine_status('reply', $ticket['id_member_started'], $ticket['id_member_updated'], $ticket['num_replies'], $ticket['dept']);
 			if ($ticket['status'] != $new_status)
 				$tickets_modify[$ticket['id_ticket']] = $new_status;
 		}

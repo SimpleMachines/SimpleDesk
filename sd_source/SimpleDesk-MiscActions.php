@@ -129,7 +129,7 @@ function shd_ticket_resolve()
 				fatal_lang_error('error_shd_cannot_resolve_children', false);
 		}
 
-		$new = shd_determine_status($action, $row['id_member_started'], $row['id_member_updated'], $row['num_replies']);
+		$new = shd_determine_status($action, $row['id_member_started'], $row['id_member_updated'], $row['num_replies'], $row['id_dept']);
 
 		shd_db_query('', '
 			UPDATE {db_prefix}helpdesk_tickets

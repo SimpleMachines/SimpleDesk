@@ -1048,7 +1048,7 @@ function shd_topictoticket2()
 	$smcFunc['db_free_result']($request);
 
 	// Figure out what the status of the ticket should be.
-	$status = shd_determine_status('topictoticket', $owner, $memberupdated, $numreplies);
+	$status = shd_determine_status('topictoticket', $owner, $memberupdated, $numreplies, $_REQUEST['dept']);
 
 	// Are we changing the subject?
 	$old_subject = $subject;

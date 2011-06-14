@@ -986,12 +986,13 @@ function shd_image_url($filename)
  *	@return int Returns an integer value that corresponds to the ticket's status, relating to one of the TICKET_STATUS states.
  *	@since 1.0
 */
-function shd_determine_status($action, $starter_id = 0, $replier_id = 0, $replies = -1)
+function shd_determine_status($action, $starter_id = 0, $replier_id = 0, $replies = -1, $dept = -1)
 {
+	global $context;
 	static $staff = null;
 
-	if ($staff === null)
-		$staff = shd_members_allowed_to('shd_staff');
+	if (!isset($staff[$dept]))
+		$staff[$dept] = shd_members_allowed_to('shd_staff', $dept);
 
 	$known_states = array(
 		'new',
@@ -1026,7 +1027,7 @@ function shd_determine_status($action, $starter_id = 0, $replier_id = 0, $replie
 				return TICKET_STATUS_NEW;
 			else
 			{
-				if (in_array($replier_id, $staff))
+				if (in_array($replier_id, $staff[$dept]))
 					$new_status = $starter_id == $replier_id ? TICKET_STATUS_PENDING_STAFF : TICKET_STATUS_PENDING_USER; // i.e. if they're staff but it's their own ticket they're replying to, it's not with user.
 				else
 					$new_status = TICKET_STATUS_PENDING_STAFF;
