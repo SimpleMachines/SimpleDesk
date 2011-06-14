@@ -149,9 +149,6 @@ function shd_notifications_notify_newreply(&$msgOptions, &$ticketOptions, &$post
 		foreach ($staff as $id)
 			$members[$id]['new_reply_any'] = true;
 
-	if (!empty($members[$context['user']['id']]))
-		unset($members[$context['user']['id']]);
-
 	if (empty($members))
 		return;
 
@@ -226,6 +223,10 @@ function shd_notifications_notify_newreply(&$msgOptions, &$ticketOptions, &$post
 					$members[$id]['ping'] = true;
 		}
 	}
+
+	// Lastly, prevent the reply author getting notified for any reason.
+	if (!empty($members[$context['user']['id']]))
+		unset($members[$context['user']['id']]);
 
 	// So, at this point, $members contains a list of the members and a sequence of the possible messages they could get. We need to make some sense of it.
 	$notify_data['members'] = array();
