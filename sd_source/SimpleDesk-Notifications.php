@@ -74,6 +74,12 @@ function shd_notifications_notify_newticket(&$msgOptions, &$ticketOptions, &$pos
 			unset($members[$member]);
 	}
 
+	if (isset($members[$context['user']['id']]))
+		unset($members[$context['user']['id']]);
+
+	if (empty($members))
+		return;
+
 	// Build the big ol' data set
 	$notify_data = array(
 		'members' => $members,
@@ -293,6 +299,9 @@ function shd_notifications_notify_assign(&$ticket, &$assignment)
 		$members[$assignment] = 'assign_me';
 		$member_prefs[$assignment] = $base_prefs['notify_assign_me']['default'];
 	}
+
+	if (isset($members[$context['user']['id']]))
+		unset($members[$context['user']['id']]);
 
 	if (empty($members))
 		return; // whoops
