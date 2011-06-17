@@ -26,7 +26,7 @@
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
-function shd_notifications_notify_newticket(&$msgOptions, &$ticketOptions, &$posterOptions, $new_ticket = true)
+function shd_notifications_notify_newticket(&$msgOptions, &$ticketOptions, &$posterOptions)
 {
 	global $smcFunc, $context, $modSettings, $scripturl;
 
@@ -34,7 +34,7 @@ function shd_notifications_notify_newticket(&$msgOptions, &$ticketOptions, &$pos
 	if (empty($modSettings['shd_notify_new_ticket']))
 		return;
 
-	// We don't always have this. But it should be available in context because if we're coming from updated ticket, we will have the other...
+	// We don't always have this. But it should be available elsewhere.
 	if (!isset($ticketOptions['private']))
 		$ticketOptions['private'] = $context['ticket_form']['private']['setting'];
 	if (empty($posterOptions['name']))
@@ -74,11 +74,10 @@ function shd_notifications_notify_newticket(&$msgOptions, &$ticketOptions, &$pos
 	$smcFunc['db_free_result']($query);
 
 	// OK, now figure out who we're sending to, and discard any member id's we're not sending to
-	$template = $new_ticket ? 'new_ticket' : 'update_ticket';
 	foreach ($members as $member => $value)
 	{
 		if (!empty($value))
-			$members[$member] = $template;
+			$members[$member] = 'new_ticket';
 		else
 			unset($members[$member]);
 	}

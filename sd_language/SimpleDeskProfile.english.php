@@ -138,7 +138,7 @@ $txt['shd_pref_block_order_lastreply_desc'] = 'Last reply - latest first';
 
 // Preferences: email notifications
 $txt['shd_pref_group_notify'] = 'Notifications By Email';
-$txt['shd_pref_notify_new_ticket'] = 'Email me when a new ticket is posted, or one is updated';
+$txt['shd_pref_notify_new_ticket'] = 'Email me when a new ticket is posted';
 $txt['shd_pref_notify_new_reply_own'] = 'Email me when one of my tickets is replied to';
 $txt['shd_pref_notify_new_reply_assigned'] = 'Email me when a ticket assigned to me is replied to';
 $txt['shd_pref_notify_new_reply_previous'] = 'Email me when a ticket I\'ve replied to before is replied to again';
