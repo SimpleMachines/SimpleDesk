@@ -754,7 +754,7 @@ function shd_maint_status()
 	{
 		foreach ($tickets as $ticket)
 		{
-			$new_status = shd_determine_status('reply', $ticket['id_member_started'], $ticket['id_member_updated'], $ticket['num_replies'], $ticket['dept']);
+			$new_status = shd_determine_status('reply', $ticket['id_member_started'], $ticket['id_member_updated'], $ticket['num_replies'], $ticket['id_dept']);
 			if ($ticket['status'] != $new_status)
 				$tickets_modify[$ticket['id_ticket']] = $new_status;
 		}

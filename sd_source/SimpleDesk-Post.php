@@ -1023,7 +1023,7 @@ function shd_save_reply()
 		'disable_smileys' => !empty($_REQUEST['no_smileys']),
 	);
 	$context['can_solve'] = (shd_allowed_to('shd_resolve_ticket_any', $ticketinfo['dept']) || (shd_allowed_to('shd_resolve_ticket_own', $ticketinfo['dept']) && $ticketinfo['starter_id'] == $user_info['id']));
-	$context['can_silent_update'] = shd_allowed_to('shd_silent_update', $context['ticket']['dept']);
+	$context['can_silent_update'] = shd_allowed_to('shd_silent_update', $ticketinfo['dept']);
 	$context['log_action'] = $new_reply ? 'newreply' : 'editreply';
 	$context['log_params']['subject'] = $context['ticket_form']['subject'];
 	shd_posting_additional_options();

@@ -861,7 +861,6 @@ function template_profile_shd_theme_settings()
 							</li>';
 
 	if (empty($modSettings['disableCustomPerPage']))
-	{
 		echo '
 							<li>
 								<label for="messages_per_page">', $txt['shd_replies_per_page'], '</label>
