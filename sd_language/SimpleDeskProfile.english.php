@@ -171,5 +171,7 @@ $txt['shd_theme_forum_default'] = '(Helpdesk Default)';
 $txt['shd_theme_forum_default_desc'] = 'This is the default theme, which means your theme will change along with the administrator\'s settings.';
 $txt['shd_show_forum_permissions'] = 'Show Forum Permissions';
 $txt['shd_acct_information'] = 'Account Information';
+$txt['shd_replies_per_page'] = 'Replies to display per page';
+$txt['shd_per_page_default'] = 'Helpdesk default';
 
 ?>
