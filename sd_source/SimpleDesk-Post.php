@@ -584,7 +584,7 @@ function shd_save_ticket()
 
 			// Handle notifications
 			require_once($sourcedir . '/sd_source/SimpleDesk-Notifications.php');
-			shd_notifications_notify_newticket($msgOptions, $ticketOptions, $posterOptions);
+			shd_notifications_notify_newticket($msgOptions, $ticketOptions, $posterOptions, true);
 		}
 		else
 		{
@@ -672,6 +672,10 @@ function shd_save_ticket()
 					shd_log_action($action, $field);
 				}
 			}
+
+			// Handle notifications
+			require_once($sourcedir . '/sd_source/SimpleDesk-Notifications.php');
+			shd_notifications_notify_newticket($msgOptions, $ticketOptions, $posterOptions, false);
 		}
 		shd_done_posting();
 	}

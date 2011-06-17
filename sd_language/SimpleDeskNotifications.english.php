@@ -35,6 +35,11 @@ $txt['template_body_notify_new_ticket'] = 'A new helpdesk ticket, "[{ticket_id}]
 $txt['template_bodyfull_notify_new_ticket'] = 'A new helpdesk ticket, "[{ticket_id}] {subject}", has been created, by {poster_name}.' . "\n\n" . '====Begin Comment====' . "\n" . '{body}' . "\n" . '====End Comment====' . "\n\n" . 'You can access it here:' . "\n" . '{ticketlink}';
 $txt['template_log_notify_new_ticket'] = 'New ticket';
 
+$txt['template_subject_notify_update_ticket'] = 'Helpdesk [{ticket_id}] Ticket updated by [{poster_name}] -RE- [{subject}]';
+$txt['template_body_notify_update_ticket'] = 'A helpdesk ticket, "[{ticket_id}] {subject}", has been updated, by {poster_name}.' . "\n\n" . 'You can access it here:' . "\n" . '{ticketlink}';
+$txt['template_bodyfull_notify_update_ticket'] = 'A helpdesk ticket, "[{ticket_id}] {subject}", has been updated, by {poster_name}.' . "\n\n" . 'You can access it here:' . "\n" . '{ticketlink}';
+$txt['template_log_notify_update_ticket'] = 'Ticket updated';
+
 $txt['template_subject_notify_new_reply_own'] = 'Helpdesk [{ticket_id}] New reply from [{poster_name}] -RE- [{subject}]';
 $txt['template_body_notify_new_reply_own'] = 'Your ticket, "[{ticket_id}] {subject}", has been replied to, by {poster_name}.' . "\n\n" . 'You can read the reply here:' . "\n" . '{ticketlink}';
 $txt['template_bodyfull_notify_new_reply_own'] = 'Your ticket, "[{ticket_id}] {subject}", has been replied to, by {poster_name}.' . "\n\n" . '====Begin Comment====' . "\n" . '{body}' . "\n" . '====End Comment====' . "\n\n" . 'You can read the reply here:' . "\n" . '{ticketlink}';

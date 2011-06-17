@@ -28,7 +28,6 @@
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
-
 /**
  *	Creates a new ticket or reply in the database.
  *

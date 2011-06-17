@@ -26,7 +26,7 @@
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
-function shd_notifications_notify_newticket(&$msgOptions, &$ticketOptions, &$posterOptions)
+function shd_notifications_notify_newticket(&$msgOptions, &$ticketOptions, &$posterOptions, $new_ticket = true)
 {
 	global $smcFunc, $context, $modSettings, $scripturl;
 
@@ -66,10 +66,11 @@ function shd_notifications_notify_newticket(&$msgOptions, &$ticketOptions, &$pos
 	$smcFunc['db_free_result']($query);
 
 	// OK, now figure out who we're sending to, and discard any member id's we're not sending to
+	$template = $new_ticket ? 'new_ticket' : 'update_ticket';
 	foreach ($members as $member => $value)
 	{
 		if (!empty($value))
-			$members[$member] = 'new_ticket'; // for the type of message to send
+			$members[$member] = $template;
 		else
 			unset($members[$member]);
 	}
@@ -87,7 +88,7 @@ function shd_notifications_notify_newticket(&$msgOptions, &$ticketOptions, &$pos
 		'subject' => $ticketOptions['subject'],
 		'ticket' => $ticketOptions['id'],
 		'body' => $msgOptions['body'],
-		'poster_name' => $posterOptions['name'],
+		'poster_name' => $new_ticket ? $posterOptions['name'] : $context['user']['name'],
 	);
 
 	shd_notify_users($notify_data);
