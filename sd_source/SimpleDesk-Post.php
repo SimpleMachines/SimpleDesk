@@ -1168,7 +1168,7 @@ function shd_save_reply()
 		if ($new_reply)
 		{
 			// So... what is the new status?
-			$new_status = shd_determine_status('reply', $ticketinfo['starter_id'], $user_info['id'], $context['ticket_form']['dept']);
+			$new_status = shd_determine_status('reply', $ticketinfo['starter_id'], $user_info['id'], -1, $context['ticket_form']['dept']); // We explicitly don't care about how many replies - but it must be non-zero. Default in function spec is -1.
 
 			// Now to add the ticket details
 			$posterOptions = array(
