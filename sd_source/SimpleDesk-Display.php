@@ -541,6 +541,7 @@ function shd_view_ticket()
 	$context['shd_can_move_to_topic'] = empty($modSettings['shd_disable_tickettotopic']) && shd_allowed_to('shd_ticket_to_topic', $context['ticket']['dept']) && empty($modSettings['shd_helpdesk_only']);
 	$context['can_solve'] = !$context['ticket']['closed'] && !$context['ticket']['deleted'] && (shd_allowed_to('shd_resolve_ticket_any', $context['ticket']['dept']) || (shd_allowed_to('shd_resolve_ticket_own', $context['ticket']['dept']) && $context['ticket']['ticket_opener']));
 	$context['can_unsolve'] = $context['ticket']['closed'] && (shd_allowed_to('shd_unresolve_ticket_any', $context['ticket']['dept']) || (shd_allowed_to('shd_unresolve_ticket_own', $context['ticket']['dept']) && $context['ticket']['ticket_opener']));
+	$context['can_silent_update'] = $context['can_reply'] && shd_allowed_to('shd_silent_update', $context['ticket']['dept']);
 
 	// And off we go
 	$context['ticket_navigation'] = array();

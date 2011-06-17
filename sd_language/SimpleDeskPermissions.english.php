@@ -113,6 +113,12 @@ $txt['permissionname_shd_singleton_email'] = 'Send a reply notification';
 $txt['permissionhelp_shd_singleton_email'] = 'This permission allows a user to select extra recipients when replying to a ticket, people who would not normally receive a notification of a reply but can be advised for special situations, or where it would be useful to do so.';
 //@}
 
+//! @name Ticket emails: allowing silent updates
+//@{
+$txt['permissionname_shd_silent_update'] = 'Silent update';
+$txt['permissionhelp_shd_silent_update'] = 'This permission allows a user to reply to a ticket and to suppress any notifications that would otherwise go out, even overriding monitoring.';
+//@}
+
 //! @name Ticket modification: resolution
 //@{
 $txt['permissionname_shd_resolve_ticket'] = 'Mark a ticket resolved';

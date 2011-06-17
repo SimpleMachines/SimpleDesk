@@ -794,6 +794,7 @@ function shd_post_reply()
 		'disable_smileys' => !$new_reply ? !empty($_REQUEST['no_smileys']) : ($ticketinfo['smileys_enabled'] == 0),
 	);
 	$context['can_solve'] = (shd_allowed_to('shd_resolve_ticket_any', $ticketinfo['dept']) || (shd_allowed_to('shd_resolve_ticket_own', $ticketinfo['dept']) && $ticketinfo['starter_id'] == $user_info['id']));
+	$context['can_silent_update'] = shd_allowed_to('shd_silent_update', $ticketinfo['dept']);	
 	shd_posting_additional_options();
 	shd_load_canned_replies();
 
@@ -1022,6 +1023,7 @@ function shd_save_reply()
 		'disable_smileys' => !empty($_REQUEST['no_smileys']),
 	);
 	$context['can_solve'] = (shd_allowed_to('shd_resolve_ticket_any', $ticketinfo['dept']) || (shd_allowed_to('shd_resolve_ticket_own', $ticketinfo['dept']) && $ticketinfo['starter_id'] == $user_info['id']));
+	$context['can_silent_update'] = shd_allowed_to('shd_silent_update', $context['ticket']['dept']);
 	$context['log_action'] = $new_reply ? 'newreply' : 'editreply';
 	$context['log_params']['subject'] = $context['ticket_form']['subject'];
 	shd_posting_additional_options();
@@ -2011,6 +2013,11 @@ function shd_posting_additional_options()
 			'checked' => !empty($_POST['resolve_ticket']),
 			'text' => $txt['shd_resolve_this_ticket'],
 			'show' => !empty($context['can_solve']),
+		),
+		'silent_update' => array(
+			'checked' => !empty($_POST['silent_update']),
+			'text' => $txt['shd_silent_update'],
+			'show' => !empty($context['can_silent_update']),
 		),
 	);
 }

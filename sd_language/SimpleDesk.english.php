@@ -267,6 +267,7 @@ $txt['shd_back_to_ticket'] = 'Return to this ticket after posting';
 $txt['shd_disable_smileys_post'] = 'Turn off smileys in this post';
 $txt['shd_resolve_this_ticket'] = 'Mark this ticket as resolved';
 $txt['shd_override_cf'] = 'Override the custom fields requirements';
+$txt['shd_silent_update'] = 'Silent update (send no notifications)';
 $txt['shd_select_notifications'] = 'Select people to notify about this reply...';
 
 $txt['shd_ticket_assign_ticket'] = 'Assign Ticket';

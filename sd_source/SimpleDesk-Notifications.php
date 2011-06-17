@@ -101,6 +101,10 @@ function shd_notifications_notify_newreply(&$msgOptions, &$ticketOptions, &$post
 	if (empty($msgOptions['body']))
 		return;
 
+	// Alternatively, they might be doing a silent update.
+	if (!empty($_POST['silent_update']) && shd_allowed_to('shd_silent_update', $ticketOptions['dept']))
+		return;
+
 	// We're doing various things here, so grab some general details, not just what we may have been passed before.
 	$ticketinfo = shd_load_ticket($ticketOptions['id']);
 	// $staff is the sum total of staff + ticket starter, subject to visibility of the ticket.
