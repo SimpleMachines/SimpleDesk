@@ -37,6 +37,10 @@ function shd_notifications_notify_newticket(&$msgOptions, &$ticketOptions, &$pos
 	// We don't always have this. But it should be available in context because if we're coming from updated ticket, we will have the other...
 	if (!isset($ticketOptions['private']))
 		$ticketOptions['private'] = $context['ticket_form']['private']['setting'];
+	if (empty($posterOptions['name']))
+		$posterOptions['name'] = $context['user']['name'];
+	if (empty($ticketOptions['subject']))
+		$ticketOptions['subject'] = $context['ticket_form']['subject'];
 
 	// So, we're getting the list of people that are being affected by this ticket being posted. Basically, that's a list of staff on new ticket, less people who've set preferences otherwise.
 	$members = shd_get_visible_list($ticketOptions['dept'], $ticketOptions['private'], false, empty($modSettings['shd_admins_not_assignable']), false);
@@ -89,10 +93,10 @@ function shd_notifications_notify_newticket(&$msgOptions, &$ticketOptions, &$pos
 	$notify_data = array(
 		'members' => $members,
 		'ticketlink' => $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $ticketOptions['id'],
-		'subject' => $new_ticket ? $ticketOptions['subject'] : $context['ticket_form']['subject'],
+		'subject' => $ticketOptions['subject'],
 		'ticket' => $ticketOptions['id'],
 		'body' => $msgOptions['body'],
-		'poster_name' => !empty($posterOptions['name']) ? $posterOptions['name'] : $context['user']['name'],
+		'poster_name' => $posterOptions['name'],
 	);
 
 	shd_notify_users($notify_data);
