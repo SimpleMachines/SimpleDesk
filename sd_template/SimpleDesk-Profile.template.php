@@ -789,7 +789,7 @@ function template_shd_profile_navigation_above()
 
 	echo '
 					</ul>
-					', !empty($options['use_sidebar_menu']) ? '<br />' : '', '
+					', !empty($options['use_sidebar_menu']) ? '<br class="clear" />' : '', '
 				</div>
 				<span class="lowerframe"><span></span></span>
 			</div>
