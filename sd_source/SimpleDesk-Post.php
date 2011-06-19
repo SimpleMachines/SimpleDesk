@@ -798,7 +798,7 @@ function shd_post_reply()
 	shd_posting_additional_options();
 	shd_load_canned_replies();
 
-	$context['can_ping'] = shd_allowed_to('shd_singleton_email', $context['ticket_form']['dept']);
+	$context['can_ping'] = $new_reply && shd_allowed_to('shd_singleton_email', $context['ticket_form']['dept']);
 
 	// Ticket privacy
 	if (empty($modSettings['shd_privacy_display']) || $modSettings['shd_privacy_display'] == 'smart')
@@ -1029,7 +1029,7 @@ function shd_save_reply()
 	shd_posting_additional_options();
 	shd_load_canned_replies();
 
-	$context['can_ping'] = shd_allowed_to('shd_singleton_email', $context['ticket_form']['dept']);
+	$context['can_ping'] = $new_reply && shd_allowed_to('shd_singleton_email', $context['ticket_form']['dept']);
 
 	// Ticket privacy
 	if (empty($modSettings['shd_privacy_display']) || $modSettings['shd_privacy_display'] == 'smart')
