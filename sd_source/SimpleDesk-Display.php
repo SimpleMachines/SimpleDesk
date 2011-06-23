@@ -795,7 +795,7 @@ function shd_view_ticket()
 	$context['display_notifications'] = array(
 		'show' => false,
 		'preferences' => array(),
-		'can_change' => shd_allowed_to('shd_view_profile', 0) && shd_allowed_to('shd_view_preferences', 0), // not department related
+		'can_change' => shd_allowed_to(array('shd_view_profile_own', 'shd_view_profile_any'), 0) && shd_allowed_to(array('shd_view_preferences_own', 'shd_view_preferences_any'), 0), // not department related
 		'can_monitor' => shd_allowed_to('shd_monitor_ticket_any', $context['ticket']['dept']) || ($context['ticket']['ticket_opener'] && shd_allowed_to('shd_monitor_ticket_own', $context['ticket']['dept'])),
 		'is_monitoring' => false,
 		'can_ignore' => shd_allowed_to('shd_ignore_ticket_any', $context['ticket']['dept']) || ($context['ticket']['ticket_opener'] && shd_allowed_to('shd_ignore_ticket_own', $context['ticket']['dept'])),

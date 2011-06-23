@@ -494,8 +494,14 @@ function shd_allowed_to($permission, $dept = 0)
 			return true;
 		elseif (!is_array($permission) && !empty($user_info['shd_permissions'][$permission]))
 			return true;
-		elseif (is_array($permission) && count(array_intersect(array_keys($user_info['shd_permissions']), $permission)) != 0)
-			return true;
+		elseif (is_array($permission))
+		{
+			foreach ($permission as $perm)
+				if (!empty($user_info['shd_permissions'][$perm]))
+					return true;
+
+			return false;
+		}
 		else
 			return false;
 	}
