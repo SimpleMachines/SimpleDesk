@@ -577,7 +577,7 @@ $rows[] = array(
 	),
 	'data' => array(
 		'SimpleDesk Plugins',
-		'http://www.simpledesk.net/downloads/plugins/2.0/', // !!! This should be updated in later releases!
+		'http://www.simpledesk.net/downloads/plugins/2.0', // !!! This should be updated in later releases!
 	),
 	'keys' => array('id_server'),
 );
