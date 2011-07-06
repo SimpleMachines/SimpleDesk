@@ -625,18 +625,21 @@ function shd_modify_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 				$newvalue = !empty($field['new_value']) && ($field['type'] == CFIELD_TYPE_RADIO || $field['type'] == CFIELD_TYPE_SELECT) ? $field['options'][$field['new_value']] : $field['new_value'];
 			}
 
-			$context['custom_fields_updated'][] = array(
-				'ticket' => $ticketOptions['id'],
-				'msg' => $msgOptions['id'],
-				'fieldname' => $field['name'],
-				'oldvalue' => $oldvalue,
-				'newvalue' => $newvalue,
-				'scope' => CFIELD_REPLY,
-				'visible' => $field['visible'],
-				'fieldtype' => $field['type'],
-			);
-			if ($field['new_value'] == $field['default_value'])
-				$context['custom_fields_updated'][count($context['custom_fields_updated'])-1]['default'] = true;
+			if ($oldvalue != $newvalue)
+			{
+				$context['custom_fields_updated'][] = array(
+					'ticket' => $ticketOptions['id'],
+					'msg' => $msgOptions['id'],
+					'fieldname' => $field['name'],
+					'oldvalue' => $oldvalue,
+					'newvalue' => $newvalue,
+					'scope' => CFIELD_REPLY,
+					'visible' => $field['visible'],
+					'fieldtype' => $field['type'],
+				);
+				if ($field['new_value'] == $field['default_value'])
+					$context['custom_fields_updated'][count($context['custom_fields_updated'])-1]['default'] = true;
+			}
 		}
 	}
 	// If there are rows to add or update, commence.
