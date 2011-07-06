@@ -190,7 +190,7 @@ function shd_admin_maint_massdeptmove()
 		$clauses[] = 'AND last_updated < ' . (time() - ($_POST['movelast_more_days'] * 86400));
 
 	// OK, let's start. How many tickets are there to move?
-	if (empty($_SESSION['massdeptmove']))
+	if (empty($_POST['massdeptmove']))
 	{
 		$query = $smcFunc['db_query']('', '
 			SELECT COUNT(*)
@@ -204,7 +204,7 @@ function shd_admin_maint_massdeptmove()
 		$smcFunc['db_free_result']($query);
 
 		if (!empty($count))
-			$_SESSION['massdeptmove'] = $count;
+			$_POST['massdeptmove'] = $count;
 		else
 			$_GET['done'] = true;
 	}
@@ -212,9 +212,8 @@ function shd_admin_maint_massdeptmove()
 	// OK, so we know we're going to be doing some tickets, or do we?
 	$_POST['tickets_done'] = isset($_POST['tickets_done']) ? (int) $_POST['tickets_done'] : 0;
 
-	if (isset($_GET['done']) || $_POST['tickets_done'] >= $_SESSION['massdeptmove'])
+	if (isset($_GET['done']) || $_POST['tickets_done'] >= $_POST['massdeptmove'])
 	{
-		unset($_SESSION['massdeptmove']);
 		$context['sub_template'] = 'shd_admin_maint_massdeptmovedone';
 		return;
 	}
@@ -292,10 +291,11 @@ function shd_admin_maint_massdeptmove()
 	$context['continue_post_data'] = '
 		<input type="hidden" name="id_dept_from" value="' . $_POST['id_dept_from'] . '" />
 		<input type="hidden" name="id_dept_to" value="' . $_POST['id_dept_to'] . '" />
-		<input type="hidden" name="tickets_done" value="' . $_POST['tickets_done'] . '" />';
+		<input type="hidden" name="tickets_done" value="' . $_POST['tickets_done'] . '" />
+		<input type="hidden" name="massdeptmove" value="' . $_POST['massdeptmove'] . '" />';
 	if (!empty($_POST['moveopen']))
 		$context['continue_post_data'] .= '
-		<input type="hidden" name="moveclosed" value="' . $_POST['moveopen'] . '" />';
+		<input type="hidden" name="moveopen" value="' . $_POST['moveopen'] . '" />';
 	if (!empty($_POST['moveclosed']))
 		$context['continue_post_data'] .= '
 		<input type="hidden" name="moveclosed" value="' . $_POST['moveclosed'] . '" />';
@@ -312,7 +312,7 @@ function shd_admin_maint_massdeptmove()
 		<input type="hidden" name="movelast_more_days" value="' . $_POST['movelast_more_days'] . '" />';
 
 	$context['sub_template'] = 'not_done';
-	$context['continue_percent'] = $_POST['tickets_done'] > $_SESSION['massdeptmove'] ? 100 : floor($_POST['tickets_done'] / $_SESSION['massdeptmove'] * 100);
+	$context['continue_percent'] = $_POST['tickets_done'] > $_POST['massdeptmove'] ? 100 : floor($_POST['tickets_done'] / $_POST['massdeptmove'] * 100);
 }
 
 function shd_admin_maint_findrepair()
