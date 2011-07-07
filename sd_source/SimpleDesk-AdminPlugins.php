@@ -340,6 +340,11 @@ function shd_list_hooks()
 		'shd_hook_tickettotopic', // functions to call just before moving a ticket into a forum topic
 		'shd_hook_topictoticket', // functions to call just before moving a forum topic into a ticket
 
+		// Template hooks
+		'shd_hook_tpl_after_tkt_detail', // functions to call after the ticket details (before additional details), in the ticket level left column
+		'shd_hook_tpl_after_add_detail', // functions to call after the ticket details (after additional details), in the ticket level left column
+		'shd_hook_tpl_display_lcol', // functions to call for adding into the reply-level left column in a ticket view (it should modify $context['leftcolumn_templates'] to add entries for template_*() to be called)
+
 		// Menu hooks - called after the rest of menu configuration is done (meaning menu items may or may not exist depending on permissions)
 		'shd_hook_mainmenu', // functions to call when looking at the main menu
 		'shd_hook_profilemenu', // functions to call when specifically modifying the profile menu

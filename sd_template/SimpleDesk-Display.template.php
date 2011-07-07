@@ -197,6 +197,8 @@ function template_viewticket()
 				echo '
 						</div>';
 
+			call_integration_hook('shd_hook_tpl_after_tkt_detail');
+
 			// Custom fields :D
 			if (!empty($context['ticket']['custom_fields']['details']))
 			{
@@ -259,6 +261,8 @@ function template_viewticket()
 					</div>';
 				}
 			}
+
+			call_integration_hook('shd_hook_tpl_after_add_detail');
 
 			echo '
 					</div>
@@ -390,7 +394,17 @@ function template_ticket_leftcolumn()
 {
 	global $context;
 
-	if (empty($context['ticket_attach']['ticket']) && empty($context['display_relationships']) && empty($context['display_notifications']['show']))
+	$context['leftcolumn_templates'] = array();
+	if (!empty($context['display_relationships'])) // Related tickets
+		$context['leftcolumn_templates'][] = 'viewrelationships';
+	if (!empty($context['ticket_attach']['ticket'])) // The attachments column
+		$context['leftcolumn_templates'][] = 'viewticketattach';
+	if (!empty($context['display_notifications']['show'])) // The notifications columns
+		$context['leftcolumn_templates'][] = 'viewnotifications';
+
+	call_integration_hook('shd_hook_tpl_display_lcol');
+
+	if (empty($context['leftcolumn_templates']))
 		return; // nothing to do
 
 	$context['leftcolumndone'] = true; // for the rest of the template later
@@ -399,14 +413,11 @@ function template_ticket_leftcolumn()
 				<div class="shd_ticket_leftcolumn floatleft">
 					<div class="shd_attachmentcolumn">';
 
-	// Related tickets
-	template_viewrelationships();
-
-	// The attachments column
-	template_viewticketattach();
-
-	// The notifications columns
-	template_viewnotifications();
+	foreach ($context['leftcolumn_templates'] as $template)
+	{
+		$var = 'template_' . $template;
+		$var();
+	}
 
 	echo '
 					</div>
