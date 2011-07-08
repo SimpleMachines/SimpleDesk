@@ -445,7 +445,10 @@ function shd_view_ticket()
 				foreach ($context['ticket_messages'] as $msg)
 				{
 					if (!isset($context['custom_fields_replies'][$msg][$row['id_field']]))
+					{
+						$field['value'] = '';
 						$context['custom_fields_replies'][$msg][$row['id_field']] = $field;
+					}
 				}
 			}
 		}
