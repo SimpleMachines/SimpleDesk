@@ -297,7 +297,7 @@ function shd_get_active_tickets()
 	if (empty($txt['shd_helpdesk'])) // provide a last-ditch fallback in the event we can't even find the file; SimpleDesk.{language}.php should be loaded by now (falling back to english if lang-specific doesn't exist)
 		$txt['shd_helpdesk'] = 'Helpdesk';
 
-	if (!$modSettings['helpdesk_active'] || $context['user']['is_guest'] || !empty($context['shd_maintenance_mode']))
+	if (!$modSettings['helpdesk_active'] || $context['user']['is_guest'] || !empty($context['shd_maintenance_mode']) || !empty($modSettings['shd_hidemenuitem']))
 		return $txt['shd_helpdesk'];
 
 	// Have we already run on this page? If so we already have the answer.
