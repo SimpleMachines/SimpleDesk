@@ -777,7 +777,7 @@ function shd_load_ticket($ticket = 0)
 /**
  *	Formats a string for bbcode and/or smileys.
  *
- *	Formatting is done according to the supplied settings and the master administration settings. It also deals with conversion of wiki links to tickets.
+ *	Formatting is done according to the supplied settings and the master administration settings.
  *
  *	@param string $text Raw text with optional bbcode formatting
  *	@param bool $smileys Whether smileys should be used; this is not an override to the master administration setting of
@@ -1946,7 +1946,7 @@ function shd_main_menu(&$menu_buttons)
 			if (!empty($modSettings['shd_disable_pm']))
 			{
 				$context['allow_pm'] = false;
-				unset($menu_buttons['pm']);
+				$menu_buttons['pm']['show'] = false;
 				$context['user']['unread_messages'] = 0; // to disable it trying to add to the menu item
 			}
 
@@ -1954,7 +1954,7 @@ function shd_main_menu(&$menu_buttons)
 			if (!empty($modSettings['shd_disable_mlist']))
 			{
 				$context['allow_memberlist'] = false;
-				unset($menu_buttons['mlist']);
+				$menu_buttons['mlist']['show'] = false;
 			}
 		}
 
