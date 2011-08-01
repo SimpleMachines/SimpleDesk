@@ -340,6 +340,14 @@ function shd_list_hooks()
 		'shd_hook_tickettotopic', // functions to call just before moving a ticket into a forum topic
 		'shd_hook_topictoticket', // functions to call just before moving a forum topic into a ticket
 
+		// Admin hooks
+		'shd_hook_admin_display', // to extend the SD Admin > Options > Display Options
+		'shd_hook_admin_posting', // to extend the SD Admin > Options > Posting Options
+		'shd_hook_admin_admin', // to extend the SD Admin > Options > Admin Options
+		'shd_hook_admin_standalone', // to extend the SD Admin > Options > Standalone Options
+		'shd_hook_admin_actionlog', // to extend the SD Admin > Options > Action Log Options
+		'shd_hook_admin_notify', // to extend the SD Admin > Options > Notifications Options
+
 		// Template hooks
 		'shd_hook_tpl_after_tkt_detail', // functions to call after the ticket details (before additional details), in the ticket level left column
 		'shd_hook_tpl_after_add_detail', // functions to call after the ticket details (after additional details), in the ticket level left column

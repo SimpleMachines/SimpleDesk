@@ -36,7 +36,7 @@ function shd_add_to_boardindex(&$boardIndexOptions, &$categories)
 	if (!empty($board))
 		return;
 
-	call_integration_hook('shd_hook_boardindex_before');
+	call_integration_hook('shd_hook_boardindex_before', array(&$boardIndexOptions, &$categories));
 
 	// OK, so what helpdesks are we displaying?
 	$depts = shd_allowed_to('access_helpdesk', false);
