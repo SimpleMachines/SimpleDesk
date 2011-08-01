@@ -389,7 +389,7 @@ function shd_modify_display_options($return_config)
 	$context['settings_title'] = $txt['shd_admin_options_display'];
 	$context['settings_icon'] = 'details.png';
 
-	call_integration_hook('shd_hook_admin_display', array(&$config_vars, $return_config));
+	call_integration_hook('shd_hook_admin_display', array(&$config_vars, &$return_config));
 	return $config_vars;
 }
 
@@ -454,7 +454,7 @@ function shd_modify_posting_options($return_config)
 			document.getElementById("shd_bbc_dt_dd").style.display = state ? "" : "none";
 		}';
 
-	call_integration_hook('shd_hook_admin_posting', array(&$config_vars, $return_config));
+	call_integration_hook('shd_hook_admin_posting', array(&$config_vars, &$return_config));
 	return $config_vars;
 }
 
@@ -496,7 +496,7 @@ function shd_modify_admin_options($return_config)
 	$context['settings_title'] = $txt['shd_admin_options_admin'];
 	$context['settings_icon'] = 'admin.png';
 
-	call_integration_hook('shd_hook_admin_admin', array(&$config_vars, $return_config));
+	call_integration_hook('shd_hook_admin_admin', array(&$config_vars, &$return_config));
 	return $config_vars;
 }
 
@@ -538,7 +538,7 @@ function shd_modify_standalone_options($return_config)
 			shd_switchable_item("shd_disable_mlist", state);
 		}';
 
-	call_integration_hook('shd_hook_admin_standalone', array(&$config_vars, $return_config));
+	call_integration_hook('shd_hook_admin_standalone', array(&$config_vars, &$return_config));
 	return $config_vars;
 }
 
@@ -632,7 +632,7 @@ function shd_modify_actionlog_options($return_config)
 			shd_switchable_item("shd_logopt_monitor", state);
 		}';
 
-	call_integration_hook('shd_hook_admin_actionlog', array(&$config_vars, $return_config));
+	call_integration_hook('shd_hook_admin_actionlog', array(&$config_vars, &$return_config));
 	return $config_vars;
 }
 
@@ -689,7 +689,7 @@ function shd_modify_notifications_options($return_config)
 	// If we're being called from admin search, just return stuff
 	if ($return_config)
 	{
-		call_integration_hook('shd_hook_admin_notify', array(&$config_vars, $return_config));
+		call_integration_hook('shd_hook_admin_notify', array(&$config_vars, &$return_config));
 		return $config_vars;
 	}
 
@@ -711,7 +711,7 @@ function shd_modify_notifications_options($return_config)
 			$config_vars[$id]['subtext'] = $subtext[$item_id];
 	}
 
-	call_integration_hook('shd_hook_admin_notify', array(&$config_vars, $return_config));
+	call_integration_hook('shd_hook_admin_notify', array(&$config_vars, &$return_config));
 	return $config_vars;
 }
 
