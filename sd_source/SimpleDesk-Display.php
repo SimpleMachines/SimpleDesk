@@ -852,7 +852,7 @@ function shd_view_ticket()
 			$context['display_notifications']['preferences'][] = 'anyreply';
 	}
 
-	if (!empty($context['display_notifications']['preferences']) || $context['display_notifications']['can_monitor'] || $context['display_notifications']['can_ignore'])
+	if (!empty($context['display_notifications']['preferences']) || $context['display_notifications']['can_monitor'] || $context['display_notifications']['can_ignore'] || $context['display_notifications']['can_change'])
 		$context['display_notifications']['show'] = true;
 }
 
