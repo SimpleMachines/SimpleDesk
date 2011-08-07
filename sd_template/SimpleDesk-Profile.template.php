@@ -476,8 +476,7 @@ function template_shd_profile_show_notify_override()
 	}
 
 	echo '
-					</table>
-				</div>';
+					</table>';
 }
 
 function template_shd_profile_permissions()
