@@ -565,7 +565,7 @@ $query = $smcFunc['db_query']('', '
 	DELETE FROM {db_prefix}package_servers
 	WHERE url LIKE {string:plugins}',
 	array(
-		'plugins' => 'http://www.simpledesk.net/downloads/plugins/%',
+		'plugins' => 'http://www.simpledesk.net/download%',
 	)
 );
 $rows[] = array(
@@ -577,7 +577,7 @@ $rows[] = array(
 	),
 	'data' => array(
 		'SimpleDesk Plugins',
-		'http://www.simpledesk.net/downloads/plugins/2.0', // !!! This should be updated in later releases!
+		'http://www.simpledesk.net/download/plugins/2.0', // !!! This should be updated in later releases!
 	),
 	'keys' => array('id_server'),
 );
