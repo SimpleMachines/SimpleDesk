@@ -581,7 +581,7 @@ function template_ticket_cannedreplies()
 						sScriptUrl: smf_scripturl,
 						sSessionVar: "', $context['session_var'], '",
 						sSessionId: "', $context['session_id'], '"
-					});					
+					});
 					// ]]></script>';
 }
 

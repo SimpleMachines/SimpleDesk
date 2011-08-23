@@ -331,9 +331,9 @@ function shd_admin_canned_savecat()
 			);
 			if ($smcFunc['db_num_rows']($query) == 0)
 				redirectexit('action=admin;area=helpdesk_cannedreplies');
-			
+
 			list($old_pos) = $smcFunc['db_fetch_row']($query);
-			
+
 			// 2. Delete the old category.
 			$smcFunc['db_query']('', '
 				DELETE FROM {db_prefix}helpdesk_cannedreplies_cats
@@ -364,7 +364,7 @@ function shd_admin_canned_savecat()
 			while ($row = $smcFunc['db_fetch_row']($query))
 				$replies[] = $row[0];
 			$smcFunc['db_free_result']($query);
-			
+
 			if (!empty($replies))
 			{
 				// 5. Remove the dept/reply relationships. (If we have any.)
@@ -462,7 +462,7 @@ function shd_admin_canned_createreply()
 			'cat' => $_REQUEST['cat'],
 		)
 	);
-	
+
 	if ($smcFunc['db_num_rows']($query) == 0)
 	{
 		$smcFunc['db_free_result']($query);
@@ -529,7 +529,7 @@ function shd_admin_canned_editreply()
 			'reply' => $_REQUEST['reply'],
 		)
 	);
-	
+
 	if ($smcFunc['db_num_rows']($query) == 0)
 	{
 		$smcFunc['db_free_result']($query);

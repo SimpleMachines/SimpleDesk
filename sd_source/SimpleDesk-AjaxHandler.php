@@ -775,7 +775,6 @@ function shd_ajax_notify()
 				asort($list_members);
 				array_walk($list_members, 'shd_format_notify_name', $ticket['id_member_started']);
 				$notify_list[$list_type] = $list_members;
-				
 			}
 			else
 				unset($notify_list[$list_type]);

@@ -568,7 +568,7 @@ function shd_profile_show_notify_override($memID)
 	$context['show_tickets_navigation'][$context['notify_type']]['active'] = true;
 
 	// Having got the general stuff out the way, let's do the specifics.
-	
+
 	// Ticket, Name, Started By, Replies, Status, Urgency, Updated (+ Updated By?)
 	$context['tickets'] = array();
 	$query = shd_db_query('', '
