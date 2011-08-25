@@ -17,20 +17,6 @@ function template_shd_admin_maint_home()
 {
 	global $context, $settings, $txt, $modSettings, $scripturl;
 
-	echo '
-	<div id="admincenter">
-		<div class="tborder">
-			<div class="cat_bar">
-				<h3 class="catbg">
-					<img src="', $settings['default_images_url'], '/simpledesk/maintenance.png" class="icon" alt="*" />
-					', $txt['shd_admin_maint'], '
-				</h3>
-			</div>
-			<p class="description">
-				', $txt['shd_admin_maint_desc'], '
-			</p>
-		</div>';
-
 	// OK, recount all the important figures.
 	echo '
 		<div class="cat_bar grid_header">
@@ -189,29 +175,11 @@ function template_shd_admin_maint_home()
 		</div>
 		<span class="lowerframe"><span></span></span><br />';
 	}
-
-	// And we're done.
-	echo '
-	</div>';
 }
 
 function template_shd_admin_maint_findrepairdone()
 {
 	global $context, $settings, $txt, $scripturl;
-
-	echo '
-	<div id="admincenter">
-		<div class="tborder">
-			<div class="cat_bar">
-				<h3 class="catbg">
-					<img src="', $settings['default_images_url'], '/simpledesk/find_repair.png" class="icon" alt="*" />
-					', $txt['shd_admin_maint_findrepair'], '
-				</h3>
-			</div>
-			<p class="description">
-				', $txt['shd_admin_maint_findrepair_desc'], '
-			</p>
-		</div>';
 
 	if (empty($context['maintenance_result']))
 	{
@@ -268,10 +236,6 @@ function template_shd_admin_maint_findrepairdone()
 			<span class="botslice"><span></span></span>
 		</div>';
 	}
-
-	// And we're done.
-	echo '
-	</div>';
 }
 
 function template_shd_admin_maint_reattributedone()
@@ -279,18 +243,6 @@ function template_shd_admin_maint_reattributedone()
 	global $context, $settings, $txt, $scripturl;
 
 	echo '
-	<div id="admincenter">
-		<div class="tborder">
-			<div class="cat_bar">
-				<h3 class="catbg">
-					<img src="', $settings['default_images_url'], '/simpledesk/user.png" class="icon" alt="*" />
-					', $txt['shd_admin_maint_reattribute'], '
-				</h3>
-			</div>
-			<p class="description">
-				', $txt['shd_admin_maint_reattribute_desc'], '
-			</p>
-		</div>
 		<div class="windowbg">
 			<span class="topslice"><span></span></span>
 			<div class="content">
@@ -300,8 +252,7 @@ function template_shd_admin_maint_reattributedone()
 				</p>
 			</div>
 			<span class="botslice"><span></span></span>
-		</div>
-	</div>';
+		</div>';
 }
 
 function template_shd_admin_maint_massdeptmovedone()
@@ -310,17 +261,6 @@ function template_shd_admin_maint_massdeptmovedone()
 
 	echo '
 	<div id="admincenter">
-		<div class="tborder">
-			<div class="cat_bar">
-				<h3 class="catbg">
-					<img src="', $settings['default_images_url'], '/simpledesk/movedept.png" class="icon" alt="*" />
-					', $txt['shd_admin_maint_massdeptmove'], '
-				</h3>
-			</div>
-			<p class="description">
-				', $txt['shd_admin_maint_massdeptmove_desc'], '
-			</p>
-		</div>
 		<div class="windowbg">
 			<span class="topslice"><span></span></span>
 			<div class="content">
@@ -332,6 +272,79 @@ function template_shd_admin_maint_massdeptmovedone()
 			<span class="botslice"><span></span></span>
 		</div>
 	</div>';
+}
+
+function template_shd_admin_maint_search()
+{
+	global $context, $settings, $txt, $scripturl, $modSettings;
+
+	if (isset($_GET['rebuilddone']))
+		echo '
+		<div class="maintenance_finished">
+			', $txt['shd_search_rebuilt'], '
+		</div>';
+
+	echo '
+		<div class="cat_bar grid_header">
+			<h3 class="catbg">
+				<img src="', $settings['default_images_url'], '/simpledesk/search.png" alt="*">
+				', $txt['shd_maint_rebuild_index'], '
+			</h3>
+		</div>
+		<div class="roundframe">
+			<div class="content">
+				<p>', $txt['shd_maint_rebuild_index_desc'], '</p>
+				<form action="', $scripturl, '?action=admin;area=helpdesk_maint;sa=search" method="post">
+					<input type="submit" name="rebuild" value="', $txt['maintain_run_now'], '" onclick="return submitThisOnce(this);" class="button_submit">
+					<input type="hidden" name="start" value="0" />
+					<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">
+				</form>
+			</div>
+		</div>
+		<span class="lowerframe"><span></span></span><br />
+		<div class="cat_bar grid_header">
+			<h3 class="catbg">
+				<img src="', $settings['default_images_url'], '/simpledesk/search.png" alt="*">
+				', $txt['shd_maint_search_settings'], '
+			</h3>
+		</div>
+		<div class="roundframe">
+			<div class="content">
+				<form action="', $scripturl, '?action=admin;area=helpdesk_maint;sa=search" method="post">
+					<div class="errorbox"><img src="', $settings['default_images_url'], '/simpledesk/warning.png" alt="*" class="shd_icon_minihead" /> &nbsp;', $txt['shd_maint_search_settings_warning'], '</div>
+					<dl class="settings">
+						<dt>
+							', $txt['shd_search_min_size'], '
+						</dt>
+						<dd>
+							<input type="text" class="input_text" name="shd_search_min_size" size="4" value="', $modSettings['shd_search_min_size'], '" />
+						</dd>
+						<dt>
+							', $txt['shd_search_max_size'], '
+						</dt>
+						<dd>
+							<input type="text" class="input_text" name="shd_search_max_size" size="4" value="', $modSettings['shd_search_max_size'], '" />
+						</dd>
+						<dt>
+							<a id="setting_shd_search_prefix_size" href="', $scripturl, '?action=helpadmin;help=shd_search_prefix_size_help" onclick="return reqWin(this.href);" class="help"><img src="', $settings['images_url'], '/helptopics.gif" class="icon" alt="?"></a>
+							<span>', $txt['shd_search_prefix_size'], '</span>
+						</dt>
+						<dd>
+							<input type="text" class="input_text" name="shd_search_prefix_size" size="4" value="', $modSettings['shd_search_prefix_size'], '" />
+						</dd>
+						<dt>
+							', $txt['shd_search_charset'], '
+						</dt>
+						<dd>
+							<textarea name="shd_search_charset" rows="3" cols="35" style="width: 99%;">', htmlspecialchars($modSettings['shd_search_charset']), '</textarea>
+						</dd>
+					</dl>
+					<span><input type="submit" name="save" value="', $txt['save'], '" class="button_submit" /></span>
+					<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">
+				</form>
+			</div>
+		</div>
+		<span class="lowerframe"><span></span></span><br />';
 }
 
 ?>

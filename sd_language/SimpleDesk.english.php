@@ -168,6 +168,7 @@ $txt['shd_welcome'] = 'Welcome, %s!';
 $txt['shd_go'] = 'Go!';
 $txt['shd_go_to_ticket'] = 'Go to ticket';
 $txt['shd_options'] = 'Options';
+$txt['shd_search_menu'] = 'Search';
 // The strings that go into the menu...
 $txt['shd_admin_info'] = 'Information';
 $txt['shd_admin_options'] = 'Options';
@@ -442,4 +443,38 @@ $txt['shd_ticket_notify_me_never'] = 'You have turned off all notifications for 
 $txt['shd_ticket_notify_me_never_on'] = 'Turn off notifications';
 $txt['shd_ticket_notify_me_never_off'] = 'Turn on notifications';
 
+// Searching
+$txt['shd_search_warning_nonadmin'] = 'The search facility may not list all available tickets; it is currently being investigated.';
+$txt['shd_search_warning_admin'] = 'The search facility requires that its index be rebuilt. You can achieve this from the Maintenance option, in the Helpdesk area, in the administration panel.';
+$txt['shd_search'] = 'Search Tickets';
+$txt['shd_search_results'] = 'Search Tickets - Results';
+$txt['shd_search_text'] = 'Words you are looking for:';
+$txt['shd_search_match'] = 'What should be matched?';
+$txt['shd_search_match_all'] = 'Match all words supplied';
+$txt['shd_search_match_any'] = 'Match any words supplied';
+$txt['shd_search_scope'] = 'Include which types of tickets:';
+$txt['shd_search_scope_open'] = 'Open tickets';
+$txt['shd_search_scope_closed'] = 'Closed tickets';
+$txt['shd_search_scope_recycle'] = 'Items in the recycle bin';
+$txt['shd_search_result_ticket'] = 'Ticket %1$s';
+$txt['shd_search_result_reply'] = 'Reply to ticket %1$s';
+$txt['shd_search_last_updated'] = 'Last updated:';
+$txt['shd_search_ticket_opened_by'] = 'Ticket opened by:';
+$txt['shd_search_ticket_replied_by'] = 'Ticket replied to by:';
+$txt['shd_search_dept'] = 'Search in which department(s):';
+
+$txt['shd_search_urgency'] = 'Include which levels of urgency:';
+
+$txt['shd_search_where'] = 'Which items to search:';
+$txt['shd_search_where_tickets'] = 'The bodies of tickets';
+$txt['shd_search_where_replies'] = 'The replies in tickets';
+$txt['shd_search_where_subjects'] = 'Ticket subjects';
+
+$txt['shd_search_ticket_starter'] = 'Tickets started by:';
+$txt['shd_search_ticket_assignee'] = 'Tickets assigned to:';
+$txt['shd_search_ticket_named_person'] = 'Type in the name of the person(s) you are interested in.';
+
+$txt['shd_search_no_results'] = 'No results were found with the given criteria. You may wish to go back and try altering your search criteria.';
+$txt['shd_search_criteria'] = 'Search Criteria:';
+$txt['shd_search_excluded'] = 'If every possible option was selected, it has not been included in the above (e.g. if all possible levels of urgency were ticked, it is not stated above, so you can concentrate on what is specific to your search)';
 ?>

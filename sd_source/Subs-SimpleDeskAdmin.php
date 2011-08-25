@@ -469,6 +469,8 @@ function shd_admin_bootstrap(&$admin_areas)
 					'icon' => 'shd/maintenance.png',
 					'function' => 'shd_admin_main',
 					'subsections' => array(
+						'main' => array($txt['shd_admin_maint']),
+						'search' => array($txt['shd_maint_search_settings']),
 					),
 				),
 			),

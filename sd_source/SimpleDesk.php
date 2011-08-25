@@ -123,6 +123,8 @@ function shd_main()
 		'restorereply' => array('SimpleDesk-Delete.php', 'shd_reply_restore'),
 		'emaillog' => array('SimpleDesk-Notifications.php', 'shd_notify_popup'),
 		'notify' => array('SimpleDesk-Notifications.php', 'shd_notify_ticket_options'),
+		'search' => array('SimpleDesk-Search.php', 'shd_search'),
+		'search2' => array('SimpleDesk-Search.php', 'shd_search2'),
 	);
 
 	// Navigation menu
@@ -161,6 +163,12 @@ function shd_main()
 			'test' => 'can_view_recycle',
 			'lang' => true,
 			'url' => $scripturl . '?action=helpdesk;sa=recyclebin' . $context['shd_dept_link'],
+		),
+		'search' => array(
+			'text' => 'shd_search_menu',
+			'test' => 'can_shd_search',
+			'lang' => true,
+			'url' => $scripturl . '?action=helpdesk;sa=search',
 		),
 		// Only for certain sub areas.
 		'back' => array(
@@ -306,6 +314,7 @@ function shd_main()
 	$context['can_view_closed'] = shd_allowed_to(array('shd_view_closed_own', 'shd_view_closed_any'), $context['shd_department']);
 	$context['can_view_recycle'] = shd_allowed_to('shd_access_recyclebin', $context['shd_department']);
 	$context['display_back_to_hd'] = !in_array($_REQUEST['sa'], array('main', 'viewblock', 'recyclebin', 'closedtickets', 'dept'));
+	$context['can_shd_search'] = shd_allowed_to('shd_search', 0);
 	$context['can_view_options'] = shd_allowed_to(array('shd_view_preferences_own', 'shd_view_preferences_any'), 0);
 
 	// Highlight the correct button.

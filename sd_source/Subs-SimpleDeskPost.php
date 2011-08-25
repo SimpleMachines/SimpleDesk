@@ -78,7 +78,7 @@ if (!defined('SMF'))
  */
 function shd_create_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 {
-	global $user_info, $txt, $modSettings, $smcFunc, $context, $user_profile;
+	global $user_info, $txt, $modSettings, $smcFunc, $context, $user_profile, $sourcedir;
 
 	// Clean them incoming vars up good 'n' proper
 	$msgOptions['smileys_enabled'] = !empty($msgOptions['smileys_enabled']);
@@ -365,6 +365,42 @@ function shd_create_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 		$smcFunc['db_free_result']($query);
 	}
 
+	if (empty($context['shd_no_search']))
+	{
+		// Add words to the tables.
+		require_once($sourcedir . '/sd_source/Subs-SimpleDeskSearch.php');
+		$words = shd_tokeniser($msgOptions['body']);
+		if (!empty($words))
+		{
+			$rows = array();
+			foreach ($words as $word)
+				$rows[] = array($word, $msgOptions['id']);
+			$smcFunc['db_insert']('replace',
+				'{db_prefix}helpdesk_search_ticket_words',
+				array('id_word' => 'string', 'id_msg' => 'int'),
+				$rows,
+				array('id_word', 'id_msg')
+			);
+		}
+
+		if ($new_ticket)
+		{
+			$words = shd_tokeniser($ticketOptions['subject']);
+			if (!empty($words))
+			{
+				$rows = array();
+				foreach ($words as $word)
+					$rows[] = array($word, $ticketOptions['id']);
+				$smcFunc['db_insert']('replace',
+					'{db_prefix}helpdesk_search_subject_words',
+					array('id_word' => 'string', 'id_ticket' => 'int'),
+					$rows,
+					array('id_word', 'id_ticket')
+				);
+			}
+		}
+	}
+
 	if (!empty($ticketOptions['dept']))
 		shd_clear_active_tickets($ticketOptions['dept']);
 
@@ -416,7 +452,7 @@ function shd_create_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 */
 function shd_modify_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 {
-	global $user_info, $txt, $modSettings, $smcFunc, $context;
+	global $user_info, $txt, $modSettings, $smcFunc, $context, $sourcedir;
 
 	$messages_columns = array();
 	$ticket_columns = array();
@@ -651,6 +687,60 @@ function shd_modify_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 			$rows,
 			array('id_post', 'id_field')
 		);
+	}
+
+	if (empty($context['shd_no_search']) && !empty($msgOptions['id']))
+	{
+		// Clear the original entries.
+		$smcFunc['db_query']('', '
+			DELETE FROM {db_prefix}helpdesk_search_ticket_words
+			WHERE id_msg = {int:msg}',
+			array(
+				'msg' => $msgOptions['id'],
+			)
+		);
+		// Add words to the tables.
+		require_once($sourcedir . '/sd_source/Subs-SimpleDeskSearch.php');
+		if (!empty($msgOptions['body']))
+		{
+			$words = shd_tokeniser($msgOptions['body']);
+			if (!empty($words))
+			{
+				$rows = array();
+				foreach ($words as $word)
+					$rows[] = array($word, $msgOptions['id']);
+				$smcFunc['db_insert']('replace',
+					'{db_prefix}helpdesk_search_ticket_words',
+					array('id_word' => 'string', 'id_msg' => 'int'),
+					$rows,
+					array('id_word', 'id_msg')
+				);
+			}
+		}
+
+		if (isset($ticketOptions['subject']))
+		{
+			$smcFunc['db_query']('', '
+				DELETE FROM {db_prefix}helpdesk_search_subject_words
+				WHERE id_ticket = {int:ticket}',
+				array(
+					'ticket' => $ticketOptions['id'],
+				)
+			);
+			$words = shd_tokeniser($ticketOptions['subject']);
+			if (!empty($words))
+			{
+				$rows = array();
+				foreach ($words as $word)
+					$rows[] = array($word, $ticketOptions['id']);
+				$smcFunc['db_insert']('replace',
+					'{db_prefix}helpdesk_search_subject_words',
+					array('id_word' => 'string', 'id_ticket' => 'int'),
+					$rows,
+					array('id_word', 'id_ticket')
+				);
+			}
+		}
 	}
 
 	// Int hook

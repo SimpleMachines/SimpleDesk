@@ -200,6 +200,11 @@ function shd_perma_delete()
 
 	checkSession('get');
 
+	// This is heavy duty stuff.
+	@set_time_limit(0);
+	if (is_callable('apache_reset_timeout'))
+		apache_reset_timeout();
+
 	// We have to have either a ticket or a reply to know what to delete (Or do you want me to drop your whole database? >:D)
 	if (empty($context['ticket_id']) && empty($_REQUEST['reply']))
 		fatal_lang_error('shd_no_ticket', false);
@@ -289,6 +294,23 @@ function shd_perma_delete()
 		shd_db_query('', '
 			DELETE FROM {db_prefix}helpdesk_ticket_replies
 			WHERE id_ticket = {int:current_ticket}',
+			array(
+				'current_ticket' => $context['ticket_id'],
+			)
+		);
+
+		// And search entries.
+		shd_db_query('', '
+			DELETE FROM {db_prefix}helpdesk_search_ticket_words
+			WHERE id_msg = ({array_int:msgs})',
+			array(
+				'msgs' => $msgs,
+			)
+		);
+
+		shd_db_query('', '
+			DELETE FROM {db_prefix}helpdesk_search_subject_words
+			WHERE id_ticket = {int:ticket}',
 			array(
 				'current_ticket' => $context['ticket_id'],
 			)
@@ -389,6 +411,15 @@ function shd_perma_delete()
 			array(
 				'reply' => (int) $_REQUEST['reply'],
 				'type_reply' => CFIELD_REPLY,
+			)
+		);
+
+		// And search entries.
+		shd_db_query('', '
+			DELETE FROM {db_prefix}helpdesk_search_ticket_words
+			WHERE id_msg = {int:reply}',
+			array(
+				'reply' => (int) $_REQUEST['reply'],
 			)
 		);
 

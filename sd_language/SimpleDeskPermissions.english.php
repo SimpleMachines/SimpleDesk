@@ -275,6 +275,12 @@ $txt['permissionname_shd_view_ip_own'] = 'Only their own';
 $txt['permissionname_shd_view_ip_any'] = 'Anyone\'s';
 //@}
 
+//! @name Search
+//@{
+$txt['permissionname_shd_search'] = 'Search tickets';
+$txt['permissionhelp_shd_search'] = 'This permission allows users to search tickets, it will be limited to tickets they can see.';
+//@}
+
 //! @name User profile access
 //@{
 $txt['permissionname_shd_view_profile'] = 'View helpdesk profiles';

@@ -558,6 +558,18 @@ $txt['shd_maint_first_last'] = '%1$d ticket(s) had incorrect messages flagged fo
 $txt['shd_maint_status'] = '%1$d ticket(s) had the wrong status set for them. All have been rectified.';
 $txt['shd_maint_starter_updater'] = '%1$d ticket(s) had the wrong user listed as the person who opened the ticket or the last person to update the ticket. All have been rectified.';
 $txt['shd_maint_invalid_dept'] = '%1$d ticket(s) were listed as being in departments that do not exist, all were moved to a new department entitled "Recovered Tickets".';
+
+$txt['shd_maint_search_settings'] = 'Search Settings';
+$txt['shd_maint_search_settings_desc'] = 'This page allows you to configure how ticket searching may be performed, and if necessary, rebuild the index used to perform searching.';
+$txt['shd_maint_rebuild_index'] = 'Rebuild the Search Index';
+$txt['shd_maint_rebuild_index_desc'] = 'If you have existing tickets that were around prior to the search facility being provided, or you alter the settings below, you will <strong>need</strong> to rebuild the index after. The index is what is physically used to search, and if the physical index setup is different to how searches are made, you will find searching very unrealiable.<br /><strong>Important:</strong> Building the search index is a very intensive task. It will take a while to carry out, during which time please leave this window open.';
+$txt['shd_maint_search_settings_warning'] = 'If you alter these settings, you will need to rebuild the search index.';
+$txt['shd_search_min_size'] = 'Minimum number of letters to be considered a word (3-15)';
+$txt['shd_search_max_size'] = 'Maximum number of letters to be considered a word (3-15)';
+$txt['shd_search_prefix_size'] = 'Minimum number of letters to use for prefix searching<div class="smalltext">(0 = disabled)</div>';
+$txt['shd_search_prefix_size_help'] = 'Prefix searching is where the index is built to allow for partial word matches. For example, searching for &quot;walk&quot; will return results such as &quot;walking&quot; or &quot;walked&quot;. It is disabled by default because it makes the index significantly bigger and searches do get slower as a consequence.';
+$txt['shd_search_charset'] = 'Characters to consider as valid parts of words to search.';
+$txt['shd_search_rebuilt'] = 'The search index has been rebuilt.';
 //@}
 
 /**
