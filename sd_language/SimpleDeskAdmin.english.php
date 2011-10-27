@@ -186,6 +186,8 @@ $txt['shd_disable_tickettotopic'] = 'Disable "ticket to topic" options';
 $txt['shd_disable_tickettotopic_note'] = 'Normally, it is possible to move tickets to topics and back again (except in Standalone mode), this option denies it for all users regardless of any permissions for it.';
 $txt['shd_disable_relationships'] = 'Disable relationships';
 $txt['shd_disable_relationships_note'] = 'Disable tickets from having "relationships" with each other, regardless of any permissions for it.';
+$txt['shd_disable_boardint'] = 'Disable BoardIndex Integration';
+$txt['shd_disable_boardint_note'] = 'Disable helpdesk from loading on the boardIndex completely.';
 //@}
 
 //! @name Configuration items on the Standalone Options page
@@ -577,4 +579,3 @@ $txt['shd_search_rebuilt'] = 'The search index has been rebuilt.';
  *	Warning: He may bite.
 */
 $txt['shd_fluffy'] = 'Guardian of the <span %s>cookies</span>';
-
