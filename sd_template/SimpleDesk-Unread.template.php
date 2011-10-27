@@ -85,4 +85,3 @@ function template_shd_unread_below()
 				</div>';
 }
 
-?>

@@ -303,4 +303,3 @@ function shd_get_unread_departments()
 	}
 }
 
-?>

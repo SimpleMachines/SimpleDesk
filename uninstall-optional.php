@@ -136,4 +136,3 @@ updateSettings(array(
 	'settings_updated' => time(),
 ));
 
-?>

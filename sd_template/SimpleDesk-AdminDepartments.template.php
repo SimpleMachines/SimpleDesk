@@ -296,4 +296,3 @@ function template_shd_edit_dept()
 				<br class="clear" />';
 }
 
-?>

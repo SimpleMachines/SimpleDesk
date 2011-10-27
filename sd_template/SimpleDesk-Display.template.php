@@ -1158,4 +1158,3 @@ function template_shd_display_nojs_below()
 
 }
 
-?>

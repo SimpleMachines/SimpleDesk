@@ -2100,4 +2100,3 @@ function shd_load_canned_replies()
 	}
 }
 
-?>

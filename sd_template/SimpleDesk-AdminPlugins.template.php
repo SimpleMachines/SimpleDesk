@@ -138,4 +138,3 @@ function template_shd_plugin_listing()
 	// ]]></script>';
 }
 
-?>

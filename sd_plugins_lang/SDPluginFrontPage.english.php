@@ -37,4 +37,3 @@ $txt['shdp_frontpage_content'] = 'Main content';
 
 $txt['shdp_tickets'] = 'Tickets';
 
-?>

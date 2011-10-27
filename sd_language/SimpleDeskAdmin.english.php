@@ -578,4 +578,3 @@ $txt['shd_search_rebuilt'] = 'The search index has been rebuilt.';
 */
 $txt['shd_fluffy'] = 'Guardian of the <span %s>cookies</span>';
 
-?>

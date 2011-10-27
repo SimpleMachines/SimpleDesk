@@ -379,4 +379,3 @@ function shd_list_hooks()
 
 	return $hooks;
 }
-?>

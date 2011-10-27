@@ -507,4 +507,3 @@ function shd_get_named_people($field)
 	}
 	return array_unique($members);
 }
-?>

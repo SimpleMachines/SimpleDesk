@@ -1344,4 +1344,3 @@ function shd_load_relationships($ticket = 0)
 	$smcFunc['db_free_result']($query);
 }
 
-?>

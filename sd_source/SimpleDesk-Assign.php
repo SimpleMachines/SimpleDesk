@@ -377,4 +377,3 @@ function shd_get_possible_assignees($private = false, $ticket_owner = 0, $dept =
 	// spit back the list of staff members who can see any ticket (+private if dealt with)
 	return array_intersect($staff, $visible);
 }
-?>

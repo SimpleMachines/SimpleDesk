@@ -378,4 +378,3 @@ $txt['shd_no_role_name'] = 'You did not enter the name of your new role.';
 $txt['shd_could_not_create_role'] = 'There was an error creating the role, please contact SimpleDesk.net for further support.';
 $txt['shd_unknown_role'] = 'That role does not exist.';
 //@}
-?>

@@ -775,4 +775,3 @@ function db_field($name, $type, $size = 0, $unsigned = true, $auto = false)
 
 	return $field;
 }
-?>

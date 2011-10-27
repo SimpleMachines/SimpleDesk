@@ -696,4 +696,3 @@ function shd_groups_allowed_to($permission, $dept = 0)
 
 	return $member_groups;
 }
-?>

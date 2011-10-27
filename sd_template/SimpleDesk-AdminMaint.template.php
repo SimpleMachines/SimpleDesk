@@ -347,4 +347,3 @@ function template_shd_admin_maint_search()
 		<span class="lowerframe"><span></span></span><br />';
 }
 
-?>

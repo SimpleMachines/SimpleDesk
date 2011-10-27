@@ -585,4 +585,4 @@ function template_shd_copy_role()
 				</div>
 				<span class="lowerframe"><span></span></span>';
 }
-?>
+

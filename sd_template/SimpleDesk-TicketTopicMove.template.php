@@ -301,4 +301,3 @@ function template_shd_topictoticket()
 		<span class="lowerframe"><span></span></span>';
 }
 
-?>

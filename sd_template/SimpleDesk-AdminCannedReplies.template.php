@@ -301,4 +301,3 @@ function template_shd_move_reply_cat()
 				<span class="lowerframe"><span></span></span>';
 }
 
-?>

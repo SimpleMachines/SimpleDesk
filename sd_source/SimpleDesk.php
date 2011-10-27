@@ -1398,4 +1398,3 @@ function shd_get_block_columns($block)
 			return array();
 	}
 }
-?>

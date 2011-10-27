@@ -116,4 +116,3 @@ function template_shd_frontpage_admin()
 	// ]]></script>';
 }
 
-?>

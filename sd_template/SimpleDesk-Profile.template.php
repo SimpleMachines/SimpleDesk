@@ -886,4 +886,3 @@ function template_profile_shd_theme_settings()
 							<dd></dd>';
 }
 
-?>

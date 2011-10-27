@@ -78,7 +78,7 @@ if (!defined('SMF'))
  */
 function shd_create_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 {
-	global $user_info, $txt, $modSettings, $smcFunc, $context, $user_profile, $sourcedir;
+	global $user_info, $txt, $modSettings, $smcFunc, $context, $user_profile;
 
 	// Clean them incoming vars up good 'n' proper
 	$msgOptions['smileys_enabled'] = !empty($msgOptions['smileys_enabled']);
@@ -365,42 +365,6 @@ function shd_create_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 		$smcFunc['db_free_result']($query);
 	}
 
-	if (empty($context['shd_no_search']))
-	{
-		// Add words to the tables.
-		require_once($sourcedir . '/sd_source/Subs-SimpleDeskSearch.php');
-		$words = shd_tokeniser($msgOptions['body']);
-		if (!empty($words))
-		{
-			$rows = array();
-			foreach ($words as $word)
-				$rows[] = array($word, $msgOptions['id']);
-			$smcFunc['db_insert']('replace',
-				'{db_prefix}helpdesk_search_ticket_words',
-				array('id_word' => 'string', 'id_msg' => 'int'),
-				$rows,
-				array('id_word', 'id_msg')
-			);
-		}
-
-		if ($new_ticket)
-		{
-			$words = shd_tokeniser($ticketOptions['subject']);
-			if (!empty($words))
-			{
-				$rows = array();
-				foreach ($words as $word)
-					$rows[] = array($word, $ticketOptions['id']);
-				$smcFunc['db_insert']('replace',
-					'{db_prefix}helpdesk_search_subject_words',
-					array('id_word' => 'string', 'id_ticket' => 'int'),
-					$rows,
-					array('id_word', 'id_ticket')
-				);
-			}
-		}
-	}
-
 	if (!empty($ticketOptions['dept']))
 		shd_clear_active_tickets($ticketOptions['dept']);
 
@@ -452,7 +416,7 @@ function shd_create_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 */
 function shd_modify_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 {
-	global $user_info, $txt, $modSettings, $smcFunc, $context, $sourcedir;
+	global $user_info, $txt, $modSettings, $smcFunc, $context;
 
 	$messages_columns = array();
 	$ticket_columns = array();
@@ -689,60 +653,6 @@ function shd_modify_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 		);
 	}
 
-	if (empty($context['shd_no_search']) && !empty($msgOptions['id']))
-	{
-		// Clear the original entries.
-		$smcFunc['db_query']('', '
-			DELETE FROM {db_prefix}helpdesk_search_ticket_words
-			WHERE id_msg = {int:msg}',
-			array(
-				'msg' => $msgOptions['id'],
-			)
-		);
-		// Add words to the tables.
-		require_once($sourcedir . '/sd_source/Subs-SimpleDeskSearch.php');
-		if (!empty($msgOptions['body']))
-		{
-			$words = shd_tokeniser($msgOptions['body']);
-			if (!empty($words))
-			{
-				$rows = array();
-				foreach ($words as $word)
-					$rows[] = array($word, $msgOptions['id']);
-				$smcFunc['db_insert']('replace',
-					'{db_prefix}helpdesk_search_ticket_words',
-					array('id_word' => 'string', 'id_msg' => 'int'),
-					$rows,
-					array('id_word', 'id_msg')
-				);
-			}
-		}
-
-		if (isset($ticketOptions['subject']))
-		{
-			$smcFunc['db_query']('', '
-				DELETE FROM {db_prefix}helpdesk_search_subject_words
-				WHERE id_ticket = {int:ticket}',
-				array(
-					'ticket' => $ticketOptions['id'],
-				)
-			);
-			$words = shd_tokeniser($ticketOptions['subject']);
-			if (!empty($words))
-			{
-				$rows = array();
-				foreach ($words as $word)
-					$rows[] = array($word, $ticketOptions['id']);
-				$smcFunc['db_insert']('replace',
-					'{db_prefix}helpdesk_search_subject_words',
-					array('id_word' => 'string', 'id_ticket' => 'int'),
-					$rows,
-					array('id_word', 'id_ticket')
-				);
-			}
-		}
-	}
-
 	// Int hook
 	call_integration_hook('shd_hook_modpost', array(&$msgOptions, &$ticketOptions, &$posterOptions));
 
@@ -829,7 +739,7 @@ function shd_get_urgency_options($self_ticket = false, $dept = 0)
 */
 function shd_load_custom_fields($is_ticket = true, $ticketContext = 0, $dept = 0)
 {
-	global $context, $smcFunc;
+	global $sourcedir, $context, $smcFunc;
 
 	$field_values = array();
 	if (!empty($ticketContext))
@@ -937,6 +847,15 @@ function shd_load_custom_fields($is_ticket = true, $ticketContext = 0, $dept = 0
 		{
 			if ($context['ticket_form']['custom_fields'][$loc][$row['id_field']]['type'] == CFIELD_TYPE_MULTI)
 				$field_values[$row['id_field']] = explode(',', $field_values[$row['id_field']]);
+
+			// Large text boxes may need fixing.
+			if ($context['ticket_form']['custom_fields'][$loc][$row['id_field']]['type'] == CFIELD_TYPE_LARGETEXT)
+			{
+				require_once($sourcedir . '/Subs-Editor.php');
+
+				$field_values[$row['id_field']] = html_to_bbc($field_values[$row['id_field']]);
+			}
+
 			$context['ticket_form']['custom_fields'][$loc][$row['id_field']]['value'] = $field_values[$row['id_field']];
 		}
 	}
@@ -1081,4 +1000,3 @@ function shd_get_postable_depts()
 		}
 	}
 }
-?>

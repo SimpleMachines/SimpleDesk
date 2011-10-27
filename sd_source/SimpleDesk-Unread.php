@@ -127,4 +127,3 @@ function shd_unread_posts()
 	$context['shd_unread_actions'][$_REQUEST['action']][1]();
 }
 
-?>

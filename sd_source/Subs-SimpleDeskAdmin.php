@@ -577,4 +577,3 @@ function shd_admin_smf_perms(&$permissionGroups, &$permissionList, &$leftPermiss
 
 	$hiddenPermissions = array_merge($hiddenPermissions, $perms_disable);
 }
-?>

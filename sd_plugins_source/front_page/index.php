@@ -81,4 +81,3 @@ function shdplugin_front_page()
 }
 
 
-?>

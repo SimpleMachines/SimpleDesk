@@ -745,4 +745,3 @@ function template_shd_nojs_below()
 {
 
 }
-?>

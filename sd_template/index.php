@@ -13,4 +13,3 @@ if (file_exists(dirname(dirname(dirname(__FILE__))) . '/Settings.php'))
 else
 	exit;
 
-?>

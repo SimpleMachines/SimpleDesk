@@ -354,4 +354,3 @@ function template_search_results()
 				$use_bg2 = !$use_bg2;
 	}
 }
-?>

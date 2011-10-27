@@ -1123,4 +1123,3 @@ function shd_return_exclude_regex($source)
 
 	return $exclude_regex;
 }
-?>

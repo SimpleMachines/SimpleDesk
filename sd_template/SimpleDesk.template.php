@@ -654,4 +654,3 @@ if (!function_exists('template_button_strip'))
 	{
 	}
 }
-?>

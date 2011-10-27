@@ -2015,4 +2015,3 @@ function shd_main_menu_admin($helpdesk_admin)
 	);
 }
 // Cause IE is being mean to meeee again...!
-?>
