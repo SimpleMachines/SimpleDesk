@@ -51,7 +51,7 @@ function shd_admin_plugins()
 	{
 		if (is_dir($plugindir . '/' . $dir_entry) && $dir_entry != '.' && $dir_entry != '..' && file_exists($plugindir . '/' . $dir_entry . '/index.php'))
 		{
-			include($plugindir . '/' . $dir_entry . '/index.php');
+			include_once($plugindir . '/' . $dir_entry . '/index.php');
 			$function = 'shdplugin_' . $dir_entry;
 			if (function_exists($function))
 			{

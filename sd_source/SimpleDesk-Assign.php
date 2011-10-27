@@ -288,7 +288,7 @@ function shd_commit_assignment($ticket, $assignment, $is_ajax = false)
 {
 	global $smcFunc, $sourcedir, $context, $modSettings;
 
-	require($sourcedir . '/sd_source/Subs-SimpleDeskPost.php');
+	require_once($sourcedir . '/sd_source/Subs-SimpleDeskPost.php');
 
 	$msgOptions = array();
 	$posterOptions = array();
