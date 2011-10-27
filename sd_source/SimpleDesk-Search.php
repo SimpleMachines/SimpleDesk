@@ -257,7 +257,7 @@ function shd_search2()
 		{
 			$context['search_params']['start'] = $count - ($count % $number_per_page);
 			$context['pagenum'] = ($context['search_params']['start'] / $number_per_page) + 1;
-			$context['num_results'] = $count);
+			$context['num_results'] = $count;
 		}
 
 		$query = shd_db_query('', '
@@ -416,7 +416,7 @@ function shd_search2()
 		{
 			$context['search_params']['start'] = $count - ($count % $number_per_page);
 			$context['pagenum'] = ($context['search_params']['start'] / $number_per_page) + 1;
-			$context['num_results'] = $count);
+			$context['num_results'] = $count;
 		}
 
 		// Get the results for displaying.

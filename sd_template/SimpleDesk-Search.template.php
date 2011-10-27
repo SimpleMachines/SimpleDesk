@@ -322,7 +322,7 @@ function template_search_results()
 	// Page navigation. It's not your usual page index, and with good reason: we can't use regular links here without risking server hammering.
 	$num_pages = ceil($context['num_results'] / $context['search_params']['limit']);
 	$pages = array();
-	foreach ($page = $context['numpage'] - 2; $page <= $context['numpage'] + 2; $page++)
+	for ($page = $context['numpage'] - 2; $page <= $context['numpage'] + 2; $page++)
 		$pages[] = $page;
 
 	// The rest of it would go here, in a nice form that carried everything through for next time, with a button named page whose value would be the page number for each page (plus prev/next) you wanted to display
