@@ -269,6 +269,8 @@ require_once($sourcedir . '/sd_source/SimpleDesk-SSI.php');]]></add>
 			<add><![CDATA[	// Add SimpleDesk to the list of possible places to look.
 	$themes['shd'] = array('name' => 'SimpleDesk', 'theme_dir' => $settings['default_theme_dir'] . '/languages/sd_language');
 	$lang_dirs['shd'] = $settings['default_theme_dir'] . '/languages/sd_language';
+	$themes['shd_plugins'] = array('name' => 'SimpleDesk Plugins', 'theme_dir' => $settings['default_theme_dir'] . '/languages/sd_plugins_lang');
+	$lang_dirs['shd_plugins'] = $settings['default_theme_dir'] . '/languages/sd_plugins_lang';
 
 ]]></add>
 		</operation>

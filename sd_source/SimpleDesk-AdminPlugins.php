@@ -111,7 +111,7 @@ function shd_admin_plugins()
 		'vietnamese',
 	);
 	$langtemplates = array();
-	$langfilelist = @opendir($settings['default_theme_dir'] . '/languages/');
+	$langfilelist = @opendir($settings['default_theme_dir'] . '/languages/sd_plugins_lang/');
 	while ($langfile_entry = readdir($langfilelist))
 	{
 		if (preg_match('~([a-z0-9]+)\.([a-z\-\_]+)(-utf8)?\.php$~i', $langfile_entry, $matches))
@@ -135,7 +135,7 @@ function shd_admin_plugins()
 			if (!empty($include[0]))
 				$plugins[$id]['languages'] = array_keys($langtemplates[$include[0]]);
 			foreach ($include as $langfile)
-				shd_load_language($langfile);
+				shd_load_language('sd_plugins_lang/' . $langfile);
 		}
 
 		// 3.3 Sort out some strings - now we've loaded the lang file

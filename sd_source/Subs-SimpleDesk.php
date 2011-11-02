@@ -1544,7 +1544,7 @@ function shd_load_plugin_langfiles($hook = '')
 
 	$filelist = explode(',', $modSettings['shd_includelang_' . $hook]);
 	foreach ($filelist as $file)
-		shd_load_language($file);
+		shd_load_language('sd_plugins_lang/' . $file);
 }
 
 /**
