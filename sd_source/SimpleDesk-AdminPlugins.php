@@ -363,6 +363,7 @@ function shd_list_hooks()
 		'shd_hook_helpdesk', // functions to run when starting the main helpdesk (before going off to subactions)
 		'shd_hook_hdadmin', // functions to run when starting the main SimpleDesk admin area (probably should include via _include_hdadmin)
 		'shd_hook_hdadminopts', // functions to run when working in the SimpleDesk options submenu structure (probably should include via _include_hdadmin)
+		'shd_hook_hdadmininfo', // functions to run when working in the SimpleDesk info submenu structure (probably should include via _include_hdadmin)
 		'shd_hook_hdadminoptssrch', // functions to run when setting up admin panel search for SimpleDesk options submenu structure (probably should include via _include_hdadmin)
 		'shd_hook_hdprofile', // functions to call when going into the helpdesk profile area
 	);

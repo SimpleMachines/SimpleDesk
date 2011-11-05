@@ -171,10 +171,8 @@ function shd_admin_info()
 			'title' => $txt['shd_admin_support'],
 		),
 	);
-	$_REQUEST['sa'] = isset($_REQUEST['sa']) && isset($subactions[$_REQUEST['sa']]) ? $_REQUEST['sa'] : 'main';
 
 	$context[$context['admin_menu_name']]['tab_data'] = array(
-		'title' => '<img src="' . $settings['images_url'] . '/admin/shd/' . $subactions[$_REQUEST['sa']]['icon'] . '" class="icon" alt="*" />' . $subactions[$_REQUEST['sa']]['title'],
 		'description' => $txt['shd_admin_options_desc'],
 		'tabs' => array(
 			'main' => array(
@@ -188,6 +186,12 @@ function shd_admin_info()
 			),
 		),
 	);
+
+	call_integration_hook('shd_hook_hdadmininfo', array(&$subactions));
+	$_REQUEST['sa'] = isset($_REQUEST['sa']) && isset($subactions[$_REQUEST['sa']]) ? $_REQUEST['sa'] : 'main';
+
+	// Now that we have validated the subaction.	
+	$context[$context['admin_menu_name']]['tab_data']['title'] = '<img src="' . $settings['images_url'] . '/admin/shd/' . $subactions[$_REQUEST['sa']]['icon'] . '" class="icon" alt="*" />' . $subactions[$_REQUEST['sa']]['title'];
 
 	// Are we doing the main page, or leaving here?
 	if (!empty($subactions[$_REQUEST['sa']]['function']))
