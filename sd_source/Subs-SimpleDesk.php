@@ -1616,7 +1616,7 @@ function shd_init_actions(&$actionArray)
 		// Note we did this to prevent breakage of other mods that may be installed, e.g. gallery or portal or something.
 		$unwanted_actions = array('announce', 'attachapprove', 'buddy', 'calendar', 'clock', 'collapse', 'deletemsg', 'display', 'editpoll', 'editpoll2',
 			'emailuser', 'lock', 'lockvoting', 'markasread', 'mergetopics', 'moderate', 'modifycat', 'modifykarma', 'movetopic', 'movetopic2',
-			'notify', 'notifyboard', 'post', 'post2', 'printpage', 'quotefast', 'quickmod', 'quickmod2', 'recent', 'reminder', 'removepoll', 'removetopic2',
+			'notify', 'notifyboard', 'post', 'post2', 'printpage', 'quotefast', 'quickmod', 'quickmod2', 'recent', 'removepoll', 'removetopic2',
 			'reporttm', 'restoretopic', 'search', 'search2', 'sendtopic', 'smstats', 'splittopics', 'stats', 'sticky', 'about:mozilla', 'about:unknown',
 			'unread', 'unreadreplies', 'vote', 'viewquery', 'who', '.xml', 'xmlhttp');
 
