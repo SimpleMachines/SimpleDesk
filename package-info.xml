@@ -48,7 +48,7 @@
 		<!-- bundled plugins -->
 		<require-dir name="sd_plugins_source" destination="$sourcedir" />
 		<require-dir name="sd_plugins_template" destination="$themes_dir/default" />
-		<require-file name="sd_plugins_lang/SDPluginFrontPage.english.php" destination="$languagedir" />
+		<require-dir name="sd_plugins_lang" destination="$languagedir" />
 
 		<!-- database changes -->
 		<database>install.php</database>
@@ -88,7 +88,7 @@
 		<remove-file name="$themedir/css/helpdesk-ie6.css" />
 
 		<!-- bundled plugins removed (NOTE: done one by one to avoid eating existing plugins on upgrade) -->
-		<remove-file name="$languagedir/SDPluginFrontPage.english.php" />
+		<remove-dir name="$languagedir/sd_plugin_lang" />
 
 		<!-- scripts, removed -->
 		<remove-file name="$themedir/scripts/helpdesk-admin.js" />
