@@ -751,7 +751,7 @@ function shd_profile_actionlog($memID)
 	shd_load_language('sd_language/SimpleDeskProfile');
 
 	require_once($sourcedir . '/sd_source/Subs-SimpleDeskAdmin.php');
-	$context['action_log'] = shd_load_action_log_entries(0, 10, '', '', 'la.id_member = ' . $memID);
+	$context['action_log'] = shd_load_action_log_entries(-1, 10, '', '', 'la.id_member = ' . $memID);
 	$context['action_log_count'] = shd_count_action_log_entries('la.id_member = ' . $memID);
 	$context['action_full_log'] = allowedTo('admin_forum') || shd_allowed_to('admin_helpdesk', 0);
 
