@@ -778,7 +778,7 @@ function shd_view_ticket()
 	if (!empty($context['display_ticket_log']))
 	{
 		require_once($sourcedir . '/sd_source/Subs-SimpleDeskAdmin.php');
-		$context['ticket_log'] = shd_load_action_log_entries(0, 10, '', '', 'la.id_ticket = ' . $context['ticket_id']);
+		$context['ticket_log'] = shd_load_action_log_entries(-1, 10, '', '', 'la.id_ticket = ' . $context['ticket_id']);
 		$context['ticket_log_count'] = shd_count_action_log_entries('la.id_ticket = ' . $context['ticket_id']);
 		$context['ticket_full_log'] = allowedTo('admin_forum') || shd_allowed_to('admin_helpdesk', 0);
 	}
