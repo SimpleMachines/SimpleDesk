@@ -34,7 +34,7 @@ if (!defined('SMF'))
  *	It is subject to given parameters (start, number of items, order/sorting), parses the language strings and adds the
  *	parameter information provided.
  *
- *	@param int $start Number of items into the log to start (for pagination). If nothing is given, fall back to 0, i.e the first log item.
+ *	@param int $start Number of items into the log to start (for pagination). If -1, return everything. If nothing is given, fall back to 0, i.e the first log item.
  *	@param int $items_per_page How many items to load. Default to 10 items.
  *	@param string $sort SQL clause to state which column(s) to order the data by. By default it orders by log_time.
  *	@param string $order SQL clause to state whether the order is ascending or descending. Defaults to descending.
@@ -95,7 +95,7 @@ function shd_load_action_log_entries($start = 0, $items_per_page = 10, $sort = '
 			LEFT JOIN {db_prefix}membergroups AS mg ON (mg.id_group = CASE WHEN mem.id_group = {int:reg_group_id} THEN mem.id_post_group ELSE mem.id_group END)' . (empty($clause) ? '' : '
 		WHERE ' . $clause) . '
 		ORDER BY ' . ($sort != '' ? '{raw:sort} {raw:order}' : 'la.log_time DESC') . '
-		' . ($start != 0 ? 'LIMIT {int:start}, {int:items_per_page}' : ''),
+		' . ($start != -1 ? 'LIMIT {int:start}, {int:items_per_page}' : ''),
 		array(
 			'reg_group_id' => 0,
 			'sort' => $sort,
