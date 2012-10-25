@@ -299,14 +299,14 @@ function template_shd_edit_role()
 						document.getElementById("permheader_" + block).setAttribute("class", "cat_bar grid_header");
 						document.getElementById("permcontent_" + block).style.display = "";
 						document.getElementById("permfooter_" + block).style.display = "";
-						document.getElementById("permexpandicon_" + block).src = ', JavaScriptEscape($settings['images_url'] . '/collapse.gif'), ';
+						document.getElementById("permexpandicon_" + block).src = ', JavaScriptEscape($settings['images_url'] . '/collapse.png'), ';
 					}
 					else
 					{
 						document.getElementById("permheader_" + block).setAttribute("class", "cat_bar");
 						document.getElementById("permcontent_" + block).style.display = "none";
 						document.getElementById("permfooter_" + block).style.display = "none";
-						document.getElementById("permexpandicon_" + block).src = ', JavaScriptEscape($settings['images_url'] . '/expand.gif'), ';
+						document.getElementById("permexpandicon_" + block).src = ', JavaScriptEscape($settings['images_url'] . '/expand.png'), ';
 					}
 					document.getElementById("permexpandicon_" + block).style.display = "";
 				}
@@ -362,7 +362,7 @@ function template_shd_edit_role()
 							<h3 class="catbg">
 								<span class="floatright">
 									<a class="permcollapse" href="#" onclick="shd_toggleblock(\'', $rowitem, '\'); return false;">
-										<img src="', $settings['images_url'], '/expand.gif" id="permexpandicon_', $rowitem, '" style="display:none;" />
+										<img src="', $settings['images_url'], '/expand.png" id="permexpandicon_', $rowitem, '" style="display:none;" />
 									</a>
 								</span>
 								<img src="', $settings['default_images_url'], '/simpledesk/', $rowicon, '" alt="*" />

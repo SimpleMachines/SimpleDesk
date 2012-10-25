@@ -55,7 +55,7 @@
 
 			if ($package['is_installed'] && !$package['is_newer'])
 				echo '
-					<img src="', $settings['images_url'], '/icons/package_', $package['is_current'] ? 'installed' : 'old', '.gif" alt="" align="middle" style="margin-left: 2ex;" />';
+					<img src="', $settings['images_url'], '/icons/package_', $package['is_current'] ? 'installed' : 'old', '.png" alt="" align="middle" style="margin-left: 2ex;" />';
 
 			echo '
 				</td>
