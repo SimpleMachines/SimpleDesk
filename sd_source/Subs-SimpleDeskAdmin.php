@@ -490,6 +490,7 @@ function shd_admin_core_features(&$core_features)
 {
 	$temp = $core_features;
 	$core_features = array();
+	shd_load_language('sd_language/SimpleDeskAdmin');
 
 	foreach ($temp as $k => $v)
 	{

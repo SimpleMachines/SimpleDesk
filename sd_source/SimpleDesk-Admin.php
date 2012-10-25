@@ -323,6 +323,7 @@ function shd_admin_options($return_config)
 		redirectexit('action=admin;area=helpdesk_options;sa=' . $_REQUEST['sa']);
 	}
 
+	createToken('admin-dbsc');
 	prepareDBSettingContext($config_vars);
 }
 

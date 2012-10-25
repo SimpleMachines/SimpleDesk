@@ -47,7 +47,7 @@ function shd_stats_hdadmininfo(&$subactions)
 
 	$subactions['stats'] = array(
 		'function' => 'shd_stats_source',
-		'icon' => '../reports.gif',
+		'icon' => '../reports.png',
 		'title' => $txt['shdp_stats']
 	);
 

@@ -618,7 +618,7 @@ function template_shd_menu_header($header, $string)
 
 	if ($context['ticket_blocks'][$context['current_block']]['sort']['item'] == $header)
 	{
-		$html .= '<img src="' . $settings['images_url']  . '/sort_' . ($context['ticket_blocks'][$context['current_block']]['sort']['direction'] == 'asc' ? 'down' : 'up') . '.gif" alt="" />';
+		$html .= '<img src="' . $settings['images_url']  . '/sort_' . ($context['ticket_blocks'][$context['current_block']]['sort']['direction'] == 'asc' ? 'down' : 'up') . '.png" alt="" />';
 	}
 
 	return $html;

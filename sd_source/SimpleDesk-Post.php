@@ -1425,8 +1425,8 @@ function shd_setup_replies($first_msg)
 				sImagesUrl: "' . $settings['images_url'] . '",
 				sContainerId: "quickReplyOptions",
 				sImageId: "quickReplyExpand",
-				sImageCollapsed: "collapse.gif",
-				sImageExpanded: "expand.gif",
+				sImageCollapsed: "collapse.png",
+				sImageExpanded: "expand.png",
 				sJumpAnchor: "quickreply",
 				sHeaderId: "quickreplyheader",
 				sFooterId: "quickreplyfooter"
