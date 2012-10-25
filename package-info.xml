@@ -11,7 +11,7 @@
 	</install>
 
 	<install for="2.0, 2.0.1-2.0.99">
-		<readme lang="english" parsebbc="true" type="inline">This package is for SMF 2.1+, to install SimpleDesk on your version of SMF use the proper package.</readme>
+		<readme lang="english" parsebbc="true" type="inline">This package is for SMF 2.1, to install SimpleDesk on your version of SMF use the proper package.</readme>
 	</install>
 
 	<install for="2.1 alpha 1">
