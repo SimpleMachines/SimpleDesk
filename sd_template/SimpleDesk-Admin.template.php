@@ -45,7 +45,7 @@ function template_shd_admin()
 					<h3 class="catbg">
 						<img src="', $settings['default_images_url'], '/simpledesk/live.png" alt="*" />
 						', $txt['shd_live_from'], '
-						<span class="righttext"><a href="', $scripturl, '?action=helpadmin;help=shd_admin_help_live" onclick="return reqWin(this.href);"><img src="', $settings['images_url'], '/helptopics.gif" alt="', $txt['help'], '" /></a></span>
+						<span class="righttext"><a href="', $scripturl, '?action=helpadmin;help=shd_admin_help_live" onclick="return reqWin(this.href);"><img src="', $settings['images_url'], '/helptopics.png" alt="', $txt['help'], '" /></a></span>
 					</h3>
 				</div>
 				<div class="windowbg">
@@ -65,7 +65,7 @@ function template_shd_admin()
 					<h3 class="catbg">
 						<img src="', $settings['default_images_url'], '/simpledesk/modification.png" alt="*" />
 						', $txt['shd_mod_information'], '
-						<span class="righttext"><a href="', $scripturl, '?action=helpadmin;help=shd_admin_help_modification" onclick="return reqWin(this.href);"><img src="', $settings['images_url'], '/helptopics.gif" alt="', $txt['help'], '" /></a></span>
+						<span class="righttext"><a href="', $scripturl, '?action=helpadmin;help=shd_admin_help_modification" onclick="return reqWin(this.href);"><img src="', $settings['images_url'], '/helptopics.png" alt="', $txt['help'], '" /></a></span>
 					</h3>
 				</div>
 				<div class="windowbg">
@@ -117,7 +117,7 @@ function template_shd_admin()
 				<h3 class="titlebg sd_no_margin">
 					<img src="', $settings['default_images_url'], '/simpledesk/credits.png" alt="*" />
 					', $txt['shd_credits'], '
-					<span class="righttext"><a href="', $scripturl, '?action=helpadmin;help=shd_admin_help_credits" onclick="return reqWin(this.href);"><img src="', $settings['images_url'], '/helptopics.gif" alt="', $txt['help'], '" /></a></span>
+					<span class="righttext"><a href="', $scripturl, '?action=helpadmin;help=shd_admin_help_credits" onclick="return reqWin(this.href);"><img src="', $settings['images_url'], '/helptopics.png" alt="', $txt['help'], '" /></a></span>
 				</h3>
 			</div>';
 
@@ -229,7 +229,7 @@ function template_shd_admin()
 						<h3 class="catbg">
 							<img src="' . $settings['default_images_url'] . '/simpledesk/update.png" alt="" />
 							%title%
-							<span class="righttext"><a href="' . $scripturl . '?action=helpadmin;help=shd_admin_help_update" onclick="return reqWin(this.href);"><img src="'. $settings['images_url'] . '/helptopics.gif" alt="' . $txt['help'] . '" /></a></span>
+							<span class="righttext"><a href="' . $scripturl . '?action=helpadmin;help=shd_admin_help_update" onclick="return reqWin(this.href);"><img src="'. $settings['images_url'] . '/helptopics.png" alt="' . $txt['help'] . '" /></a></span>
 						</h3>
 					</div>
 					<div class="windowbg" id="update_container">
@@ -350,7 +350,7 @@ function template_shd_show_settings()
 				echo '
 					<div class="cat_bar">
 						<h3 class="', !empty($config_var['class']) ? $config_var['class'] : 'catbg', '"', !empty($config_var['force_div_id']) ? ' id="' . $config_var['force_div_id'] . '"' : '', '>
-							', ($config_var['help'] ? '<a href="' . $scripturl . '?action=helpadmin;help=' . $config_var['help'] . '" onclick="return reqWin(this.href);" class="help"><img src="' . $settings['images_url'] . '/helptopics.gif" alt="' . $txt['help'] . '" /></a>' : ''), '
+							', ($config_var['help'] ? '<a href="' . $scripturl . '?action=helpadmin;help=' . $config_var['help'] . '" onclick="return reqWin(this.href);" class="help"><img src="' . $settings['images_url'] . '/helptopics.png" alt="' . $txt['help'] . '" /></a>' : ''), '
 							', $config_var['label'], '
 						</h3>
 					</div>';
@@ -441,7 +441,7 @@ function template_shd_show_settings()
 				// Show the [?] button.
 				if ($config_var['help'])
 					echo '
-							<a id="setting_', $config_var['name'], '" href="', $scripturl, '?action=helpadmin;help=', $config_var['help'], '" onclick="return reqWin(this.href);" class="help"><img src="', $settings['images_url'], '/helptopics.gif" alt="', $txt['help'], '" border="0" /></a><span', ($config_var['disabled'] ? ' class="disabled"' : ($config_var['invalid'] ? ' class="error"' : '')), '><label id="label_', $config_var['name'], '" for="', $config_var['name'], '">', $config_var['label'], '</label>', $subtext, ($config_var['type'] == 'password' ? '<br /><em>' . $txt['admin_confirm_password'] . '</em>' : ''), '</span>
+							<a id="setting_', $config_var['name'], '" href="', $scripturl, '?action=helpadmin;help=', $config_var['help'], '" onclick="return reqWin(this.href);" class="help"><img src="', $settings['images_url'], '/helptopics.png" alt="', $txt['help'], '" border="0" /></a><span', ($config_var['disabled'] ? ' class="disabled"' : ($config_var['invalid'] ? ' class="error"' : '')), '><label id="label_', $config_var['name'], '" for="', $config_var['name'], '">', $config_var['label'], '</label>', $subtext, ($config_var['type'] == 'password' ? '<br /><em>' . $txt['admin_confirm_password'] . '</em>' : ''), '</span>
 						</dt>';
 				else
 					echo '
@@ -552,6 +552,10 @@ function template_shd_show_settings()
 			</div>
 			</div>';
 
+	if (isset($context['admin-dbsc_token']))
+		echo '
+		<input type="hidden" name="', $context['admin-dbsc_token_var'], '" value="', $context['admin-dbsc_token'], '" />';
+
 	echo '
 		<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 		</form>
@@ -598,35 +602,35 @@ function template_shd_action_log()
 								<a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=actionlog', $context['sort'] == $sort_types['action'] && !isset($_REQUEST['asc']) ? ';sort=action;asc' : ';sort=action', '">
 									', $txt['shd_admin_actionlog_action'], '
 								</a>
-								', ($context['sort'] == $sort_types['action'] ? '<img src="' . $settings['default_images_url'] . '/' . (isset($_REQUEST['asc']) ? 'sort_up.gif' : 'sort_down.gif' ). '" alt="" />' : ''), '
+								', ($context['sort'] == $sort_types['action'] ? '<img src="' . $settings['default_images_url'] . '/' . (isset($_REQUEST['asc']) ? 'sort_up.png' : 'sort_down.png' ). '" alt="" />' : ''), '
 							</td>
 							<td width="20%">
 								<img src="', $settings['default_images_url'], '/simpledesk/time.png" class="shd_smallicon" alt="" />
 								<a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=actionlog', $context['sort'] == $sort_types['time'] && !isset($_REQUEST['asc']) ? ';sort=time;asc' : ';sort=time', '">
 									', $txt['shd_admin_actionlog_date'], '
 								</a>
-								', ($context['sort'] == $sort_types['time'] ? '<img src="' . $settings['default_images_url'] . '/' . (isset($_REQUEST['asc']) ? 'sort_up.gif' : 'sort_down.gif' ). '" alt="" />' : ''), '
+								', ($context['sort'] == $sort_types['time'] ? '<img src="' . $settings['default_images_url'] . '/' . (isset($_REQUEST['asc']) ? 'sort_up.png' : 'sort_down.png' ). '" alt="" />' : ''), '
 							</td>
 							<td width="16%">
 								<img src="', $settings['default_images_url'], '/simpledesk/user.png" class="shd_smallicon" alt="" />
 								<a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=actionlog', $context['sort'] == $sort_types['member'] && !isset($_REQUEST['asc']) ? ';sort=member;asc' : ';sort=member', '">
 									', $txt['shd_admin_actionlog_member'], '
 								</a>
-								', ($context['sort'] == $sort_types['member'] ? '<img src="' . $settings['default_images_url'] . '/' . (isset($_REQUEST['asc']) ? 'sort_up.gif' : 'sort_down.gif' ). '" alt="" />' : ''), '
+								', ($context['sort'] == $sort_types['member'] ? '<img src="' . $settings['default_images_url'] . '/' . (isset($_REQUEST['asc']) ? 'sort_up.png' : 'sort_down.png' ). '" alt="" />' : ''), '
 							</td>
 							<td width="16%">
 								<img src="', $settings['default_images_url'], '/simpledesk/position.png" class="shd_smallicon" alt="" />
 								<a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=actionlog', $context['sort'] == $sort_types['position'] && !isset($_REQUEST['asc']) ? ';sort=position;asc' : ';sort=position', '">
 									', $txt['shd_admin_actionlog_position'], '
 								</a>
-								', ($context['sort'] == $sort_types['position'] ? '<img src="' . $settings['default_images_url'] . '/' . (isset($_REQUEST['asc']) ? 'sort_up.gif' : 'sort_down.gif' ). '" alt="" />' : ''), '
+								', ($context['sort'] == $sort_types['position'] ? '<img src="' . $settings['default_images_url'] . '/' . (isset($_REQUEST['asc']) ? 'sort_up.png' : 'sort_down.png' ). '" alt="" />' : ''), '
 							</td>
 							<td width="10%">
 								<img src="', $settings['default_images_url'], '/simpledesk/ip.png" class="shd_smallicon" alt="" />
 								<a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=actionlog', $context['sort'] == $sort_types['ip'] && !isset($_REQUEST['asc']) ? ';sort=ip;asc' : ';sort=ip', '">
 									', $txt['shd_admin_actionlog_ip'], '
 								</a>
-								', ($context['sort'] == $sort_types['ip'] ? '<img src="' . $settings['default_images_url'] . '/' . (isset($_REQUEST['asc']) ? 'sort_up.gif' : 'sort_down.gif' ). '" alt="" />' : ''), '
+								', ($context['sort'] == $sort_types['ip'] ? '<img src="' . $settings['default_images_url'] . '/' . (isset($_REQUEST['asc']) ? 'sort_up.png' : 'sort_down.png' ). '" alt="" />' : ''), '
 							</td>
 							<td width="2%">&nbsp;</td>
 						</tr>';
@@ -709,7 +713,7 @@ function template_shd_support()
 		<div class="tborder">
 			<div class="title_bar grid_header">
 				<h3 class="titlebg sd_no_margin">
-					<img src="', $settings['images_url'], '/helptopics.gif" alt="?" /> ', $txt['shd_admin_support_what_is_this'], '
+					<img src="', $settings['images_url'], '/helptopics.png" alt="?" /> ', $txt['shd_admin_support_what_is_this'], '
 				</h3>
 			</div>
 			<div class="windowbg2">

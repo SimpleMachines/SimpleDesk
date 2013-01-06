@@ -11,6 +11,10 @@
 	</install>
 
 	<install for="2.0, 2.0.1-2.0.99">
+		<readme lang="english" parsebbc="true" type="inline">This package is for SMF 2.1, to install SimpleDesk on your version of SMF use the proper package.</readme>
+	</install>
+
+	<install for="2.1 alpha 1">
 		<!-- readme files -->
 		<readme lang="english" parsebbc="true" type="file">language-readme/readme.english.txt</readme>
 
@@ -56,7 +60,7 @@
 		<redirect url="?action=admin;area=corefeatures#js_feature_shd" />
 	</install>
 
-	<uninstall for="2.0,2.0.1-2.0.99">
+	<uninstall for="2.1 alpha 1">
 		<!-- database changes, undone -->
 		<database>uninstall-optional.php</database>
 		<code type="file">uninstall-required.php</code>
@@ -94,4 +98,5 @@
 		<remove-file name="$themedir/scripts/helpdesk-admin.js" />
 		<remove-file name="$themedir/scripts/helpdesk.js" />
 	</uninstall>
+
 </package-info>

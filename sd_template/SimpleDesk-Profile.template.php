@@ -196,14 +196,14 @@ function template_shd_profile_preferences()
 						document.getElementById("prefheader_" + block).setAttribute("class", "cat_bar grid_header");
 						document.getElementById("prefgroup_" + block).style.display = "";
 						document.getElementById("preffooter_" + block).style.display = "";
-						document.getElementById("prefexpandicon_" + block).src = ', JavaScriptEscape($settings['images_url'] . '/collapse.gif'), ';
+						document.getElementById("prefexpandicon_" + block).src = ', JavaScriptEscape($settings['images_url'] . '/collapse.png'), ';
 					}
 					else
 					{
 						document.getElementById("prefheader_" + block).setAttribute("class", "cat_bar");
 						document.getElementById("prefgroup_" + block).style.display = "none";
 						document.getElementById("preffooter_" + block).style.display = "none";
-						document.getElementById("prefexpandicon_" + block).src = ', JavaScriptEscape($settings['images_url'] . '/expand.gif'), ';
+						document.getElementById("prefexpandicon_" + block).src = ', JavaScriptEscape($settings['images_url'] . '/expand.png'), ';
 					}
 					document.getElementById("prefexpandicon_" + block).style.display = "";
 				}
@@ -230,7 +230,7 @@ function template_shd_profile_preferences()
 								<h3 class="catbg">
 									<span class="floatright">
 										<a class="permcollapse" href="#" onclick="shd_toggleblock(\'', $group, '\'); return false;">
-											<img src="', $settings['images_url'], '/expand.gif" id="prefexpandicon_', $group, '" style="display:none;" />
+											<img src="', $settings['images_url'], '/expand.png" id="prefexpandicon_', $group, '" style="display:none;" />
 										</a>
 									</span>
 									<img src="', shd_image_url($details['icon']), '" class="icon" alt="*" />
