@@ -364,7 +364,7 @@ function shd_load_user_perms()
 					foreach ($perm_list as $perm => $value)
 					{
 						if ($value == ROLEPERM_ALLOW)
-							$user_info['shd_permissions'][$perm] = $depts[$role];
+							$user_info['shd_permissions'][$perm] = isset($user_info['shd_permissions'][$perm]) ? array_merge($user_info['shd_permissions'][$perm], $depts[$role]) : $depts[$role];
 					}
 				}
 
