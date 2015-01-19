@@ -651,7 +651,11 @@ function template_ticket_additional_options()
 						<hr />';
 
 	if (empty($context['current_attachments']) && empty($context['ticket_form']['do_attach']))
+	{
+		echo '
+					</div>';
 		return;
+	}
 
 	if (!empty($context['current_attachments']))
 	{
