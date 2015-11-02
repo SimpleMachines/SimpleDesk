@@ -133,7 +133,7 @@ function shd_init()
 			$modSettings[$var] = $val;
 	}
 
-	$modSettings['helpdesk_active'] = isset($modSettings['admin_features']) ? in_array('shd', explode(',', $modSettings['admin_features'])) : false;
+	$modSettings['helpdesk_active'] = true;
 
 	if ($modSettings['helpdesk_active'])
 	{
