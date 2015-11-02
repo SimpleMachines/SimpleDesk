@@ -3,6 +3,15 @@
 	width: 64%;
 	font-size: 0.85em;
 }
+#sd_live_news .cat_bar
+{
+	margin-bottom: 0;
+}
+#sd_live_news .windowbg
+{
+	margin-top: 0;
+	height: 23.5em;
+}
 #sd_live_news div.content
 {
 	padding: 0;
@@ -16,6 +25,16 @@
 {
 	width: 34%;
 }
+#sd_supportVersionsTable .cat_bar
+{
+	margin-bottom: 0;
+}
+#sd_supportVersionsTable .windowbg
+{
+	margin-top: 0;
+	height: 20em;
+}
+
 #sd_version_details
 {
 	overflow: auto;
@@ -263,4 +282,17 @@ h3 a.permcollapse img
 #error_log td.half_width
 {
 	vertical-align: top;
+}
+
+/* SMF 2.1 no longer uses description, but we make use of it still! */
+.description
+{
+	background: #F8F8F8;
+    overflow: auto;
+    padding-bottom: .5em;
+    border: 1px solid #ddd;
+    border-top: none;
+    margin: 0 0 10px 0;
+    padding: 12px 9px 8px 9px;
+    box-sizing: border-box;
 }
