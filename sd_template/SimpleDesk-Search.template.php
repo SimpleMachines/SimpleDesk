@@ -29,7 +29,7 @@ function template_search()
 	<div class="errorbox"><img src="', $settings['default_images_url'], '/simpledesk/warning.png" alt="*" class="shd_icon_minihead" /> &nbsp;', shd_allowed_to('admin_helpdesk', 0) ? $txt['shd_search_warning_admin'] : $txt['shd_search_warning_nonadmin'], '</div>';
 
 	echo '
-	<div class="cat_bar grid_header">
+	<div class="cat_bar">
 		<h3 class="catbg">
 			<img src="', $settings['default_images_url'], '/simpledesk/search.png" alt="*" />
 			', $txt['shd_search'], '
@@ -194,7 +194,7 @@ function template_search_no_results()
 		</div><br class="clear" /><br />';
 
 	echo '
-	<div class="cat_bar grid_header">
+	<div class="cat_bar">
 		<h3 class="catbg">
 			<img src="', $settings['default_images_url'], '/simpledesk/search.png" alt="*" />
 			', $txt['shd_search'], '

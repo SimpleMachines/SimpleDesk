@@ -41,7 +41,7 @@ function template_shd_admin()
 	echo '
 			<div id="sd_live_news" class="floatleft">
 				<div class="tborder">
-				<div class="cat_bar grid_header">
+				<div class="cat_bar">
 					<h3 class="catbg">
 						<img src="', $settings['default_images_url'], '/simpledesk/live.png" alt="*" />
 						', $txt['shd_live_from'], '
@@ -61,7 +61,7 @@ function template_shd_admin()
 	echo '
 			<div id="sd_supportVersionsTable" class="floatright">
 				<div class="tborder">
-				<div class="cat_bar grid_header">
+				<div class="cat_bar">
 					<h3 class="catbg">
 						<img src="', $settings['default_images_url'], '/simpledesk/modification.png" alt="*" />
 						', $txt['shd_mod_information'], '
@@ -113,7 +113,7 @@ function template_shd_admin()
 	echo '
 		<div id="sd_credits">
 			<div class="tborder">
-			<div class="title_bar grid_header">
+			<div class="title_bar">
 				<h3 class="titlebg sd_no_margin">
 					<img src="', $settings['default_images_url'], '/simpledesk/credits.png" alt="*" />
 					', $txt['shd_credits'], '
@@ -225,7 +225,7 @@ function template_shd_admin()
 				sUpdateNotificationDefaultTitle: ', JavaScriptEscape($txt['shd_update_available']), ',
 				sUpdateNotificationDefaultMessage: ', JavaScriptEscape($txt['shd_update_message']), ',
 				sUpdateNotificationTemplate: ', JavaScriptEscape('
-					<div class="cat_bar grid_header" id="update_title">
+					<div class="cat_bar" id="update_title">
 						<h3 class="catbg">
 							<img src="' . $settings['default_images_url'] . '/simpledesk/update.png" alt="" />
 							%title%
@@ -313,7 +313,7 @@ function template_shd_show_settings()
 	if (isset($context['settings_title']))
 		echo '
 		<div class="tborder">
-			<div class="cat_bar grid_header">
+			<div class="cat_bar">
 				<h3 class="catbg">
 					<img src="', shd_image_url($context['settings_icon']), '" class="icon" alt="*" /> ', $context['settings_title'], '
 				</h3>
@@ -588,7 +588,7 @@ function template_shd_action_log()
 	// The sort stuff here is huge.
 	echo '
 				<div class="tborder">
-					<div class="cat_bar grid_header">
+					<div class="cat_bar">
 						<h3 class="catbg">
 							<span class="floatright smalltext">', $txt['pages'], ': ', $context['page_index'], '</span>
 							<img src="', $settings['default_images_url'], '/simpledesk/log.png" class="icon" alt="*" />
@@ -688,7 +688,7 @@ function template_shd_support()
 	echo '
 	<div class="shd_admin_leftcolumn floatleft">
 		<div class="tborder">
-			<div class="cat_bar grid_header">
+			<div class="cat_bar">
 				<h3 class="catbg">
 					<img src="', $settings['default_images_url'], '/simpledesk/edit.png" alt="*" /> ', $txt['shd_admin_support_form_title'], '
 				</h3>
@@ -711,7 +711,7 @@ function template_shd_support()
 	</div>
 	<div class="shd_admin_rightcolumn floatleft">
 		<div class="tborder">
-			<div class="title_bar grid_header">
+			<div class="title_bar">
 				<h3 class="titlebg sd_no_margin">
 					<img src="', $settings['images_url'], '/helptopics.png" alt="?" /> ', $txt['shd_admin_support_what_is_this'], '
 				</h3>

@@ -33,7 +33,7 @@ function template_assign()
 		</div><br class="clear" /><br />';
 
 	echo '
-	<div class="cat_bar grid_header">
+	<div class="cat_bar">
 		<h3 class="catbg">
 			<img src="', $settings['default_images_url'], '/simpledesk/assign.png" alt="*" />
 			', $txt['shd_ticket_assign_ticket'], '

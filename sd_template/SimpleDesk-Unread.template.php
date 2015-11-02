@@ -34,8 +34,8 @@ function template_shd_unread_below()
 	echo '
 				<br />
 				<div class="tborder">
-					<div class="cat_bar grid_header">
-						<h3 id="shd_block_assigned" class="catbg grid_header">
+					<div class="cat_bar">
+						<h3 id="shd_block_assigned" class="catbg">
 							<img src="', $settings['default_images_url'], '/simpledesk/ticket.png" alt="*">
 							', $context['block_title'], '
 							<span class="smalltext">(', count($context['shd_unread_info']) == 1 ? '1 ' . $txt['shd_count_ticket_1'] : count($context['shd_unread_info']) . ' ' . $txt['shd_count_tickets'], ')</span>

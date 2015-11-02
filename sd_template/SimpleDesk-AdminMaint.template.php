@@ -19,7 +19,7 @@ function template_shd_admin_maint_home()
 
 	// OK, recount all the important figures.
 	echo '
-		<div class="cat_bar grid_header">
+		<div class="cat_bar">
 			<h3 class="catbg">
 				<img src="', $settings['default_images_url'], '/simpledesk/find_repair.png" alt="*">
 				', $txt['shd_admin_maint_findrepair'], '
@@ -71,7 +71,7 @@ function template_shd_admin_maint_home()
 		}
 		setTimeout("checkAttributeValidity();", 500);
 		// ]]></script>
-		<div class="cat_bar grid_header">
+		<div class="cat_bar">
 			<h3 class="catbg">
 				<img src="', $settings['default_images_url'], '/simpledesk/user.png" alt="*">
 				', $txt['shd_admin_maint_reattribute'], '
@@ -130,7 +130,7 @@ function template_shd_admin_maint_home()
 	if (!empty($context['dept_list']))
 	{
 		echo '
-		<div class="cat_bar grid_header">
+		<div class="cat_bar">
 			<h3 class="catbg">
 				<img src="', $settings['default_images_url'], '/simpledesk/movedept.png" alt="*">
 				', $txt['shd_admin_maint_massdeptmove'], '
@@ -285,7 +285,7 @@ function template_shd_admin_maint_search()
 		</div>';
 
 	echo '
-		<div class="cat_bar grid_header">
+		<div class="cat_bar">
 			<h3 class="catbg">
 				<img src="', $settings['default_images_url'], '/simpledesk/search.png" alt="*">
 				', $txt['shd_maint_rebuild_index'], '
@@ -302,7 +302,7 @@ function template_shd_admin_maint_search()
 			</div>
 		</div>
 		<span class="lowerframe"><span></span></span><br />
-		<div class="cat_bar grid_header">
+		<div class="cat_bar">
 			<h3 class="catbg">
 				<img src="', $settings['default_images_url'], '/simpledesk/search.png" alt="*">
 				', $txt['shd_maint_search_settings'], '

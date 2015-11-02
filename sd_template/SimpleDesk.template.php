@@ -143,8 +143,8 @@ function template_shd_depts()
 					<span class="lowerframe"><span></span></span>
 					<br />
 					<div class="tborder">
-						<div class="cat_bar grid_header">
-							<h3 class="catbg grid_header">
+						<div class="cat_bar">
+							<h3 class="catbg">
 								<img src="', $settings['default_images_url'], '/simpledesk/departments.png" alt="*" />
 								', $txt['shd_departments'], '
 							</h3>
@@ -392,8 +392,8 @@ function template_ticket_block()
 
 	echo '
 					<div class="tborder">
-						<div class="cat_bar grid_header">
-							<h3 id="shd_block_', $context['current_block'], '" class="catbg grid_header">
+						<div class="cat_bar">
+							<h3 id="shd_block_', $context['current_block'], '" class="catbg">
 								', !empty($context['ticket_blocks'][$context['current_block']]['page_index']) ? '<span class="floatright smalltext">'. $txt['pages'] . ': ' . $context['ticket_blocks'][$context['current_block']]['page_index'] . '</span>' : '', '
 								<img src="', $settings['default_images_url'], '/simpledesk/', $context['ticket_blocks'][$context['current_block']]['block_icon'], '" alt="*" />
 								', (empty($context['block_link']) ? '' : '<a href="' . $context['block_link'] . '">'), $context['ticket_blocks'][$context['current_block']]['title'], '

@@ -19,7 +19,7 @@ function template_shd_departments_home()
 
 	echo '
 				<div class="tborder">
-					<div class="cat_bar grid_header">
+					<div class="cat_bar">
 						<h3 class="catbg">
 							<img src="', $settings['default_images_url'], '/simpledesk/departments.png" class="icon" alt="*">
 							', $txt['shd_admin_departments_home'], '
@@ -121,7 +121,7 @@ function template_shd_create_dept()
 						', $txt['shd_admin_departments_homedesc'], '
 					</p>
 				</div>
-				<div class="cat_bar grid_header">
+				<div class="cat_bar">
 					<h3 class="catbg">
 						<img src="', $settings['default_images_url'], '/simpledesk/position.png" alt="*" />
 						', $txt['shd_create_dept'], '
@@ -179,7 +179,7 @@ function template_shd_edit_dept()
 							', $txt['shd_admin_departments_homedesc'], '
 						</p>
 					</div>
-					<div class="cat_bar grid_header">
+					<div class="cat_bar">
 						<h3 class="catbg">
 							<img src="', $settings['default_images_url'], '/simpledesk/position.png" alt="*" />
 							', $txt['shd_edit_dept'], '
@@ -246,7 +246,7 @@ function template_shd_edit_dept()
 					<span class="lowerframe"><span></span></span>
 					<br />
 					<div class="tborder floatleft" style="width: 100%;">
-						<div class="cat_bar grid_header">
+						<div class="cat_bar">
 							<h3 class="catbg sd_no_margin">
 								<img src="', $settings['default_images_url'], '/simpledesk/roles.png" alt="*" />
 								', $txt['shd_roles_in_dept'], '

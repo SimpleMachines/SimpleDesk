@@ -14,7 +14,7 @@ function template_shd_custom_field_home()
 
 	echo '
 				<div class="tborder">
-					<div class="cat_bar grid_header">
+					<div class="cat_bar">
 						<h3 class="catbg">
 							<img src="', $settings['default_images_url'], '/simpledesk/custom_fields.png" class="icon" alt="*" />
 							', $txt['shd_admin_custom_fields_long'], '
@@ -223,7 +223,7 @@ function template_shd_custom_field_edit()
 							', $context['section_desc'],'
 						</p>
 					</div>
-					<div class="cat_bar grid_header">
+					<div class="cat_bar">
 						<h3 class="catbg">
 							<img src="', $settings['default_images_url'], '/simpledesk/name.png" alt="*" />
 							', $txt['shd_admin_custom_fields_general'], '
@@ -289,7 +289,7 @@ function template_shd_custom_field_edit()
 					</div>
 					<span class="lowerframe"><span></span></span>
 					<br />
-					<div class="cat_bar grid_header">
+					<div class="cat_bar">
 						<h3 class="catbg">
 							<img src="', $settings['default_images_url'], '/simpledesk/fieldtype.png" alt="*" />
 							', $txt['shd_admin_custom_fields_fieldtype'], '
@@ -381,7 +381,7 @@ function template_shd_custom_field_edit()
 	if (!empty($context['dept_fields']))
 	{
 		echo '
-					<div class="cat_bar grid_header">
+					<div class="cat_bar">
 						<h3 class="catbg">
 							<img src="', $settings['default_images_url'], '/simpledesk/departments.png" alt="*" />
 							', $txt['shd_admin_custom_field_department'], '

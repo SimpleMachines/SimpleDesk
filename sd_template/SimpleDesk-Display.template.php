@@ -37,7 +37,7 @@ function template_viewticket()
 
 	echo '
 			<div class="tborder">
-			<div class="cat_bar grid_header">
+			<div class="cat_bar">
 				<h3 class="catbg ticketheader">
 					<span class="floatright smalltext shd_ticketlinks" id="ticket">';
 
@@ -440,7 +440,7 @@ function template_viewticketattach()
 	if (!empty($context['ticket_attach']['ticket']))
 	{
 		echo '	<div class="tborder">
-					<div class="title_bar grid_header">
+					<div class="title_bar">
 						<h3 class="titlebg">
 							<img src="', $settings['default_images_url'], '/simpledesk/attachments.png" alt="" />', $txt['shd_ticket_attachments'], ' (', count($context['ticket_attach']['ticket']), ')
 						</h3>
@@ -499,7 +499,7 @@ function template_viewnotifications()
 
 	echo '
 				<div class="tborder">
-					<div class="title_bar grid_header">
+					<div class="title_bar">
 						<h3 class="titlebg">
 							<img src="', $settings['default_images_url'], '/simpledesk/log_notify.png" alt="" />', $txt['shd_ticket_notify'], '
 						</h3>
@@ -628,7 +628,7 @@ function template_additional_fields()
 
 		echo '
 				<div class="tborder">
-					<div class="title_bar grid_header" id="additionalinfoheader">
+					<div class="title_bar" id="additionalinfoheader">
 						<h3 class="titlebg">
 							<span class="floatright"><a href="javascript:oCustomFields.infoswap();"><img src="', $settings['images_url'], '/collapse.png" alt="+" id="shd_custom_fields_swap" class="icon" /></a></span>
 							<img src="', $settings['default_images_url'], '/simpledesk/additional_information.png" alt="x" />
@@ -699,9 +699,9 @@ function template_quickreply()
 		echo '
 		<br />
 		<div class="tborder">
-			<div class="title_bar', $options['display_quick_reply'] == 2 ? ' grid_header' : '', '" id="quickreplyheader">
+			<div class="title_bar" id="quickreplyheader">
 				<h3 class="titlebg">
-					<span class="floatright"><a href="#" onclick="oQuickReply.swap(); return false;"><img src="', $settings['images_url'], '/', $options['display_quick_reply'] == 2 ? 'collapse' : 'expand', '.png" alt="+" id="quickReplyExpand" class="icon" style="display:none;" /></a></span>
+					<span class="floatright"><a href="#" onclick="oQuickReply.swap(); return false;"><img src="', $settings['images_url'], '/', $options['display_quick_reply'] == 2 ? 'selected_open' : 'selected', '.png" alt="+" id="quickReplyExpand" class="icon" style="display:none;" /></a></span>
 					<img src="', $settings['default_images_url'], '/simpledesk/respond.png" alt="x" />
 					<a href="', $scripturl, '?action=helpdesk;sa=reply;ticket=', $context['ticket_id'], ';num_replies=', $context['ticket']['num_replies'], ';', $context['session_var'], '=', $context['session_id'], '" onclick="oQuickReply.swap(); return false;">', $txt['shd_reply_ticket'], '</a>
 				</h3>
@@ -829,7 +829,7 @@ function template_viewreplies()
 
 	echo '
 		<div class="tborder">
-		<div class="title_bar grid_header">
+		<div class="title_bar">
 			<h3 class="titlebg">
 				<span class="floatright smalltext">', $txt['pages'], ': ', $context['page_index'], '</span>
 				<img src="', $settings['default_images_url'], '/simpledesk/replies.png" alt="x" /> ', $txt['shd_ticket_replies'], '
@@ -986,7 +986,7 @@ function template_viewrelationships()
 	{
 		echo '
 				<div class="tborder">
-					<div class="title_bar grid_header">
+					<div class="title_bar">
 						<h3 class="titlebg">
 							<img src="', $settings['default_images_url'], '/simpledesk/relationships.png" alt="" />', $txt['shd_ticket_relationships'], ' (', $context['relationships_count'], ')
 						</h3>
@@ -1064,9 +1064,9 @@ function template_ticketactionlog()
 		echo '
 				<br />
 				<div class="tborder">
-					<div class="title_bar grid_header" id="ticket_log_header">
+					<div class="title_bar" id="ticket_log_header">
 						<h3 class="titlebg">
-							<span class="floatright shd_ticket_log_expand_container"> <a href="#" onclick="ActionLog.swap(); return false;"><img src="', $settings['images_url'], '/expand.png" alt="+" id="shd_ticket_log_expand" class="icon" style="display:none;" /></a></span>
+							<span class="floatright shd_ticket_log_expand_container"> <a href="#" onclick="ActionLog.swap(); return false;"><img src="', $settings['images_url'], '/selected.png" alt="+" id="shd_ticket_log_expand" class="icon" style="display:none;" /></a></span>
 							<img src="', $settings['default_images_url'], '/simpledesk/log.png" class="icon" alt="*" />
 							<a href="#" onclick="ActionLog.swap(); return false;">', $txt['shd_ticket_log'], '</a>
 							<span class="smalltext">(', $context['ticket_log_count'] == 1 ? $txt['shd_ticket_log_count_one'] : sprintf($txt['shd_ticket_log_count_more'], $context['ticket_log_count']), ')</span>
@@ -1126,8 +1126,8 @@ function template_ticketactionlog()
 					sImagesUrl: "' . $settings['images_url'] . '",
 					sContainerId: "ticket_log",
 					sImageId: "shd_ticket_log_expand",
-					sImageCollapsed: "collapse.png",
-					sImageExpanded: "expand.png",
+					sImageCollapsed: "selected_open.png",
+					sImageExpanded: "selected.png",
 					sHeaderId: "ticket_log_header",
 				});
 				ActionLog.swap();
