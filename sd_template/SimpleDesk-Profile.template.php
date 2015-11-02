@@ -190,22 +190,19 @@ function template_shd_profile_preferences()
 				<script type="text/javascript"><!-- // --><![CDATA[
 				function shd_toggleblock(block)
 				{
-					var collapsed = (document.getElementById("prefheader_" + block).getAttribute("class") == "cat_bar");
+					var collapsed = (document.getElementById("prefexpand_" + block).getAttribute("class") == "floatright toggle_down");
 					if (collapsed)
 					{
-						document.getElementById("prefheader_" + block).setAttribute("class", "cat_bar cat_closed");
+						document.getElementById("prefexpand_" + block).setAttribute("class", "floatright toggle_up");
 						document.getElementById("prefgroup_" + block).style.display = "";
 						document.getElementById("preffooter_" + block).style.display = "";
-						document.getElementById("prefexpandicon_" + block).src = ', JavaScriptEscape($settings['images_url'] . '/selected_open.png'), ';
 					}
 					else
 					{
-						document.getElementById("prefheader_" + block).setAttribute("class", "cat_bar");
+						document.getElementById("prefexpand_" + block).setAttribute("class", "floatright toggle_down");
 						document.getElementById("prefgroup_" + block).style.display = "none";
 						document.getElementById("preffooter_" + block).style.display = "none";
-						document.getElementById("prefexpandicon_" + block).src = ', JavaScriptEscape($settings['images_url'] . '/selected.png'), ';
 					}
-					document.getElementById("prefexpandicon_" + block).style.display = "";
 				}
 
 				// ]', ']></script>
@@ -226,12 +223,12 @@ function template_shd_profile_preferences()
 		echo '
 						<br />
 						<div class="tborder">
-							<div class="cat_bar cat_closed" id="prefheader_', $group, '">
+							<div class="cat_bar" id="prefheader_', $group, '">
 								<h3 class="catbg">
-									<span class="floatright">
+									<span id="prefexpand_', $group, '" class="floatright toggle_up" onclick="shd_toggleblock(\'', $group, '\'); return false;">&nbsp;<!--
 										<a class="permcollapse" href="#" onclick="shd_toggleblock(\'', $group, '\'); return false;">
 											<img src="', $settings['images_url'], '/selected_open.png" id="prefexpandicon_', $group, '" style="display:none;" />
-										</a>
+										</a>-->
 									</span>
 									<img src="', shd_image_url($details['icon']), '" class="icon" alt="*" />
 									<a class="prefcollapse" href="#prefheader_', $group, '" onclick="shd_toggleblock(\'', $group, '\'); return false;">', $txt['shd_pref_group_' . $group], '</a>
