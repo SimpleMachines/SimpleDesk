@@ -602,35 +602,35 @@ function template_shd_action_log()
 								<a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=actionlog', $context['sort'] == $sort_types['action'] && !isset($_REQUEST['asc']) ? ';sort=action;asc' : ';sort=action', '">
 									', $txt['shd_admin_actionlog_action'], '
 								</a>
-								', ($context['sort'] == $sort_types['action'] ? '<img src="' . $settings['default_images_url'] . '/' . (isset($_REQUEST['asc']) ? 'sort_up.png' : 'sort_down.png' ). '" alt="" />' : ''), '
+								', ($context['sort'] == $sort_types['action'] ? '<img src="' . $settings['default_images_url'] . '/' . (isset($_REQUEST['asc']) ? 'simpledesk/move_up.png' : 'simpledesk/move_down.png' ). '" alt="" />' : ''), '
 							</td>
 							<td width="20%">
 								<img src="', $settings['default_images_url'], '/simpledesk/time.png" class="shd_smallicon" alt="" />
 								<a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=actionlog', $context['sort'] == $sort_types['time'] && !isset($_REQUEST['asc']) ? ';sort=time;asc' : ';sort=time', '">
 									', $txt['shd_admin_actionlog_date'], '
 								</a>
-								', ($context['sort'] == $sort_types['time'] ? '<img src="' . $settings['default_images_url'] . '/' . (isset($_REQUEST['asc']) ? 'sort_up.png' : 'sort_down.png' ). '" alt="" />' : ''), '
+								', ($context['sort'] == $sort_types['time'] ? '<img src="' . $settings['default_images_url'] . '/' . (isset($_REQUEST['asc']) ? 'simpledesk/move_up.png' : 'simpledesk/move_down.png' ). '" alt="" />' : ''), '
 							</td>
 							<td width="16%">
 								<img src="', $settings['default_images_url'], '/simpledesk/user.png" class="shd_smallicon" alt="" />
 								<a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=actionlog', $context['sort'] == $sort_types['member'] && !isset($_REQUEST['asc']) ? ';sort=member;asc' : ';sort=member', '">
 									', $txt['shd_admin_actionlog_member'], '
 								</a>
-								', ($context['sort'] == $sort_types['member'] ? '<img src="' . $settings['default_images_url'] . '/' . (isset($_REQUEST['asc']) ? 'sort_up.png' : 'sort_down.png' ). '" alt="" />' : ''), '
+								', ($context['sort'] == $sort_types['member'] ? '<img src="' . $settings['default_images_url'] . '/' . (isset($_REQUEST['asc']) ? 'simpledesk/move_up.png' : 'simpledesk/move_down.png' ). '" alt="" />' : ''), '
 							</td>
 							<td width="16%">
 								<img src="', $settings['default_images_url'], '/simpledesk/position.png" class="shd_smallicon" alt="" />
 								<a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=actionlog', $context['sort'] == $sort_types['position'] && !isset($_REQUEST['asc']) ? ';sort=position;asc' : ';sort=position', '">
 									', $txt['shd_admin_actionlog_position'], '
 								</a>
-								', ($context['sort'] == $sort_types['position'] ? '<img src="' . $settings['default_images_url'] . '/' . (isset($_REQUEST['asc']) ? 'sort_up.png' : 'sort_down.png' ). '" alt="" />' : ''), '
+								', ($context['sort'] == $sort_types['position'] ? '<img src="' . $settings['default_images_url'] . '/' . (isset($_REQUEST['asc']) ? 'simpledesk/move_up.png' : 'simpledesk/move_down.png' ). '" alt="" />' : ''), '
 							</td>
 							<td width="10%">
 								<img src="', $settings['default_images_url'], '/simpledesk/ip.png" class="shd_smallicon" alt="" />
 								<a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=actionlog', $context['sort'] == $sort_types['ip'] && !isset($_REQUEST['asc']) ? ';sort=ip;asc' : ';sort=ip', '">
 									', $txt['shd_admin_actionlog_ip'], '
 								</a>
-								', ($context['sort'] == $sort_types['ip'] ? '<img src="' . $settings['default_images_url'] . '/' . (isset($_REQUEST['asc']) ? 'sort_up.png' : 'sort_down.png' ). '" alt="" />' : ''), '
+								', ($context['sort'] == $sort_types['ip'] ? '<img src="' . $settings['default_images_url'] . '/' . (isset($_REQUEST['asc']) ? 'simpledesk/move_up.png' : 'simpledesk/move_down.png' ). '" alt="" />' : ''), '
 							</td>
 							<td width="2%">&nbsp;</td>
 						</tr>';
