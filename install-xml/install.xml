@@ -191,32 +191,6 @@
 		</operation>
 	</file>
 
-	<file name="$boarddir/index.php"><!-- set up the relevant action stuff -->
-		<operation><!-- add a master override if we haven't declared an action -->
-			<search position="after"><![CDATA[		// Action and board are both empty... BoardIndex!]]></search>
-			<add><![CDATA[		// If we're in HD-only mode, let's run with that!
-		if (!empty($modSettings['shd_helpdesk_only']) && $modSettings['helpdesk_active'])
-		{
-			require_once($sourcedir . '/sd_source/SimpleDesk.php');
-			return 'shd_main';
-		}
-]]></add>
-		</operation>
-		<operation><!-- add a catcher in case it's a function we don't have -->
-			<search position="after"><![CDATA[		// Fall through to the board index then...
-		require_once($sourcedir . '/BoardIndex.php');
-		return 'BoardIndex';]]></search>
-			<add><![CDATA[		// If we're in HD-only mode, we can't let them go anywhere useless
-		if (!empty($modSettings['shd_helpdesk_only']) && $modSettings['helpdesk_active'])
-		{
-			require_once($sourcedir . '/sd_source/SimpleDesk.php');
-			return 'shd_main';
-		}
-
-]]></add>
-		</operation>
-	</file>
-
 	<file name="$boarddir/SSI.php"><!-- Load SimpleDesk SSI functions -->
 		<operation>
 			<search position="before"><![CDATA[require_once($sourcedir . '/Security.php');]]></search>

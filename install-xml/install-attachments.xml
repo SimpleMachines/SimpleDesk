@@ -6,11 +6,25 @@
 
 	<file name="$sourcedir/Display.php">
 		<operation><!-- add the option to the download system to ensure it handles SD attachments -->
-			<search position="after"><![CDATA[
-	// This is just a regular attachment...
-	else]]></search>
+			<search position="after"><![CDATA[	// This checks only the current board for $board/$topic's permissions.
+	isAllowedTo('view_attachments');
+
+	// Make sure this attachment is on this board.
+	// @todo: We must verify that $topic is the attachment's topic, or else the permission check above is broken.
+	$request = $smcFunc['db_query']('', '
+		SELECT a.id_folder, a.filename, a.file_hash, a.fileext, a.id_attach, a.attachment_type, a.mime_type, a.approved, m.id_member
+		FROM {db_prefix}attachments AS a
+			INNER JOIN {db_prefix}messages AS m ON (m.id_msg = a.id_msg AND m.id_topic = {int:current_topic})
+			INNER JOIN {db_prefix}boards AS b ON (b.id_board = m.id_board AND {query_see_board})
+		WHERE a.id_attach = {int:attach}
+		LIMIT 1',
+		array(
+			'attach' => $_REQUEST['attach'],
+			'current_topic' => $topic,
+		)
+	);]]></search>
 			<add><![CDATA[
-	elseif (!empty($_REQUEST['ticket']))
+	if (!empty($_REQUEST['ticket']))
 	{
 		$_REQUEST['ticket'] = (int) $_REQUEST['ticket'];
 		// First we check that we can see said ticket and figure out what department we're in.
@@ -49,6 +63,26 @@
 				)
 			);
 		}
+	}
+	else
+	{
+	// This checks only the current board for $board/$topic's permissions.
+	isAllowedTo('view_attachments');
+
+	// Make sure this attachment is on this board.
+	// @todo: We must verify that $topic is the attachment's topic, or else the permission check above is broken.
+	$request = $smcFunc['db_query']('', '
+		SELECT a.id_folder, a.filename, a.file_hash, a.fileext, a.id_attach, a.attachment_type, a.mime_type, a.approved, m.id_member
+		FROM {db_prefix}attachments AS a
+			INNER JOIN {db_prefix}messages AS m ON (m.id_msg = a.id_msg AND m.id_topic = {int:current_topic})
+			INNER JOIN {db_prefix}boards AS b ON (b.id_board = m.id_board AND {query_see_board})
+		WHERE a.id_attach = {int:attach}
+		LIMIT 1',
+		array(
+			'attach' => $_REQUEST['attach'],
+			'current_topic' => $topic,
+		)
+	);
 	}]]></add>
 		</operation>
 	</file>
@@ -88,13 +122,36 @@
 					AND hdtr.id_msg IS NULL]]></add>
 		</operation>
 		<operation><!-- override the master attachments code if it's HD only stuff requested -->
-			<search position="before"><![CDATA[$context['browse_type'] = isset($_REQUEST['avatars']) ? 'avatars' : (isset($_REQUEST['thumbs']) ? 'thumbs' : 'attachments');]]></search>
-			<add><![CDATA[
+			<search position="after"><![CDATA[	// Set the options for the list component.]]></search>
+			<add><![CDATA[	// Add in SimpleDesk's attachment stuff
+	if (!empty($modSettings['helpdesk_active']))
+	{
+		if (isset($_REQUEST['shd_attach']) || isset($_REQUEST['shd_thumb']))
+			$context['browse_type'] = isset($_REQUEST['shd_attach']) ? 'shd_attach' : 'shd_thumb';
 
+		$titles += array(
+			'shd_thumb' => array('?action=admin;area=manageattachments;sa=browse;shd_thumb', $txt['attachment_manager_shd_thumb']),
+			'shd_attach' => array('?action=admin;area=manageattachments;sa=browse;shd_attach', $txt['attachment_manager_shd_attach']),
+		);
+
+		// We rebuild this as its easier to fix.
+		$list_title = '';
+		foreach ($titles as $browse_type => $details)
+		{
+			if ($browse_type != 'attachments')
+				$list_title .= ' | ';
+
+			if ($context['browse_type'] == $browse_type)
+				$list_title .= '<img src="' . $settings['images_url'] . '/selected.png" alt="&gt;"> ';
+
+			$list_title .= '<a href="' . $scripturl . $details[0] . '">' . $details[1] . '</a>';
+		}
+
+	}
 	if (!empty($modSettings['helpdesk_active']) && (isset($_REQUEST['shd_attach']) || isset($_REQUEST['shd_thumb'])))
 	{
 		// We're actually wanting helpdesk only stuff, so do it and bail
-		return shd_admin_browse_attachments();
+		return shd_admin_browse_attachments($list_title);
 	}
 
 ]]></add>
@@ -109,7 +166,7 @@
 			<search position="end" />
 			<add><![CDATA[
 
-function shd_admin_browse_attachments()
+function shd_admin_browse_attachments($list_title = '')
 {
 	global $context, $txt, $scripturl, $options, $modSettings;
 	global $smcFunc, $sourcedir;
@@ -119,7 +176,7 @@ function shd_admin_browse_attachments()
 	// Set the options for the list component.
 	$listOptions = array(
 		'id' => 'file_list',
-		'title' => $txt['attachment_manager_' . $context['browse_type']],
+		'title' => !empty($list_title) ? $list_title : $txt['attachment_manager_' . $context['browse_type']],
 		'items_per_page' => $modSettings['defaultMaxMessages'],
 		'base_href' => $scripturl . '?action=admin;area=manageattachments;sa=browse;' . $context['browse_type'],
 		'default_sort_col' => 'name',
@@ -330,15 +387,6 @@ function shd_list_get_num_files($browse_type)
 }
 
 ]]></add>
-		</operation>
-	</file>
-
-	<file name="$themedir/ManageAttachments.template.php">
-		<operation>
-			<search position="before"><![CDATA[$txt['attachment_manager_thumbs'], ']]></search>
-			<add><![CDATA[', (empty($GLOBALS['modSettings']['helpdesk_active']) ? '' : '</a> |
-				<a href="' . $scripturl . '?action=admin;area=manageattachments;sa=browse;shd_attach">' . ($context['browse_type'] == 'shd_attach' ? '<img src="' . $settings['images_url'] . '/selected.png" alt="&gt;" border="0" /> ' : '') .  $txt['attachment_manager_shd_attach'] . '</a> |
-				<a href="' . $scripturl . '?action=admin;area=manageattachments;sa=browse;shd_thumb">' . ($context['browse_type'] == 'shd_thumb' ? '<img src="' . $settings['images_url'] . '/selected.png" alt="&gt;" border="0" /> ' : '') . $txt['attachment_manager_shd_thumb']), ']]></add>
 		</operation>
 	</file>
 

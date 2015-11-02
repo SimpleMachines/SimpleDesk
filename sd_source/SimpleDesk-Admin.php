@@ -544,8 +544,22 @@ function shd_modify_standalone_options($return_config)
 			shd_switchable_item("shd_disable_mlist", state);
 		}';
 
-	call_integration_hook('shd_hook_admin_standalone', array(&$config_vars, &$return_config));
-	return $config_vars;
+	if ($return_config)
+	{
+		call_integration_hook('shd_hook_admin_standalone', array(&$config_vars, &$return_config));
+		return $config_vars;
+	}
+
+	// We saving?
+	if (isset($_GET['save']))
+	{
+		// SMF 2.1 has a hook for the default action. Lets trigger it.
+		if (isset($_POST['shd_helpdesk_only']))
+		{
+			add_integration_function('integrate_default_action', 'shd_main', true, '$sourcedir/sd_source/SimpleDesk.php');		
+			add_integration_function('integrate_fallback_action', 'shd_main', true, '$sourcedir/sd_source/SimpleDesk.php');		
+		}
+	}
 }
 
 /**

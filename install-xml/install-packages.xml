@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>SimpleDeskTeam:SimpleDesk</id>
+	<version>2.0</version>
+
+	<file name="$sourcedir/Packages.php"><!-- Sorts the SD plugin packages into the relevant container. -->
+		<operation>
+			<search position="after"><![CDATA[				// Other stuff.
+				else
+				{
+					$sort_id['unknown']++;
+					$packages['unknown'][strtolower($packageInfo[$sort])] = md5($package);
+					$context['available_unknown'][md5($package)] = $packageInfo;
+				}]]></search>
+			<add><![CDATA[			// SimpleDesk Plugins
+			elseif ($packageInfo['type'] == 'sdplugin')
+			{
+				if (!isset($sort_id['sdplugin']))
+					$sort_id['sdplugin']++;
+
+				if (empty($context['available_sdplugins']))
+					$context['available_sdplugins'] = array();
+				$context['available_sdplugins'][] = $packageInfo;
+			}
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/PackageGet.php"><!-- Make the install button available after an upload or a download. Code's the same, just gotta run twice. -->
+		<operation>
+			<search position="replace"><![CDATA[	if ($context['package']['type'] == 'modification')
+		$context['package']['install']['link'] = '<a href="' . $scripturl . '?action=admin;area=packages;sa=install;package=' . $context['package']['filename'] . '">[ ' . $txt['install_mod'] . ' ]</a>';
+	elseif ($context['package']['type'] == 'avatar')]]></search>
+			<add><![CDATA[	if ($context['package']['type'] == 'modification')
+		$context['package']['install']['link'] = '<a href="' . $scripturl . '?action=admin;area=packages;sa=install;package=' . $context['package']['filename'] . '">[ ' . $txt['install_mod'] . ' ]</a>';
+	elseif ($context['package']['type'] == 'sdplugin')
+		$context['package']['install']['link'] = '<a href="' . $scripturl . '?action=admin;area=packages;sa=install;package=' . $context['package']['filename'] . '">[ ' . $txt['shd_install_plugin'] . ' ]</a>';
+	elseif ($context['package']['type'] == 'avatar')]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[	if ($context['package']['type'] == 'modification')
+		$context['package']['install']['link'] = '<a href="' . $scripturl . '?action=admin;area=packages;sa=install;package=' . $context['package']['filename'] . '">[ ' . $txt['install_mod'] . ' ]</a>';
+	elseif ($context['package']['type'] == 'avatar')]]></search>
+			<add><![CDATA[	if ($context['package']['type'] == 'modification')
+		$context['package']['install']['link'] = '<a href="' . $scripturl . '?action=admin;area=packages;sa=install;package=' . $context['package']['filename'] . '">[ ' . $txt['install_mod'] . ' ]</a>';
+	elseif ($context['package']['type'] == 'sdplugin')
+		$context['package']['install']['link'] = '<a href="' . $scripturl . '?action=admin;area=packages;sa=install;package=' . $context['package']['filename'] . '">[ ' . $txt['shd_install_plugin'] . ' ]</a>';
+	elseif ($context['package']['type'] == 'avatar')]]></add>
+		</operation>
+	</file>
+</modification>
