@@ -627,11 +627,11 @@ function shd_error_types(&$other_error_types, &$error_type, $error_message, $fil
 	$other_error_types = array_merge($other_error_types, array(
 		'simpledesk',
 		'sdplugin'
-	);
+	));
 
 	// Is this a SimpleDesk error?
 	if (stripos($file, 'sdplugin') !== false || stripos($error_message, 'shdp_') !== false)
-		&$error_type = 'sdplugin';
+		$error_type = 'sdplugin';
 	elseif (stripos($file, 'simpledesk') !== false || stripos($error_message, 'shd_') !== false || stripos($error_message, 'simpledesk') !== false)
-		&$error_type = 'simpledesk';
+		$error_type = 'simpledesk';
 }

@@ -27,7 +27,7 @@
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
-function shd_add_to_boardindex(&$boardIndexOptions, &$categories)
+function shd_add_to_boardindex($boardIndexOptions, &$categories)
 {
 	global $context, $modSettings, $smcFunc, $board, $txt, $scripturl, $settings;
 
@@ -37,7 +37,7 @@ function shd_add_to_boardindex(&$boardIndexOptions, &$categories)
 		return;
 
 	// Is this active?
-	if (empty($modSettings['helpdesk_active'])  !empty($modSettings['shd_disable_boardint']) || !shd_allowed_to('access_helpdesk'))
+	if (empty($modSettings['helpdesk_active']) || !empty($modSettings['shd_disable_boardint']) || !shd_allowed_to('access_helpdesk'))
 		return;
 
 	call_integration_hook('shd_hook_boardindex_before', array(&$boardIndexOptions, &$categories));
