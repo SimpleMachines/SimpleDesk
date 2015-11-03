@@ -155,6 +155,17 @@ $hooks[] = array(
 	'perm' => true,
 	'file' => '$sourcedir/sd_source/Subs-SimpleDeskProfile.php',
 );
+$hooks[] = array(
+	'hook' => 'integrate_error_types',
+	'function' => 'shd_error_types',
+	'perm' => true,
+);
+$hooks[] = array(
+	'hook' => 'integrate_SSI',
+	'function' => false,
+	'file' => '$sourcedir/sd_source/SimpleDesk-SSI.php',
+	'perm' => true,
+);
 
 // Now, we move on to adding new tables to the database.
 $tables = array();

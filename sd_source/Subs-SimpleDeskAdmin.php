@@ -580,15 +580,12 @@ function shd_admin_smf_perms(&$permissionGroups, &$permissionList, &$leftPermiss
 }
 
 /**
- *	Perform any processing on SMF permissions subject to SimpleDesk options (namely removing permissions that make no sense in helpdesk-only mode)
+ *	Intergrates into SMF's admin search.
  *
- *	All of the parameters are the normal variables provided by ManagePermissions.php to its integration hook.
  *	@since 2.0
- *	@param array &$permissionGroups The array of groups of permissions
- *	@param array &$permissionList The master list of permissions themselves
- *	@param array &$leftPermissionGroups The list of permission groups that are displayed on the left hand side of the screen in Classic Mode
- *	@param array &$hiddenPermissions A list of permissions to be hidden in the event of features being disabled
- *	@param array &$relabelPermissions A list of permissions to be renamed depending on features being active
+ *	@param array &$language_files language files to include.
+ *	@param array &$include_files Files to load.
+ *	@param array &$settings_search Settings to search.
 */
 function shd_admin_search(&$language_files, &$include_files, &$settings_search)
 {
@@ -613,4 +610,28 @@ function shd_admin_search(&$language_files, &$include_files, &$settings_search)
 
 	// Our plugins may still use the old SHD hook.
 	call_integration_hook('shd_hook_hdadminoptssrch', array(&$settings_search));
+}
+
+/**
+ *	Detect a SHD error and move it to the proper error type.
+ *
+ *	@since 2.1
+ *	@param array &$other_error_types Additional error types.
+ *  @param string $error_type The type of error
+ *  @param string $error_message The message to log
+ *  @param string $file The name of the file where this error occurred
+ *  @param int $line The line where the error occurred
+*/
+function shd_error_types(&$other_error_types, &$error_type, $error_message, $file, $line)
+{
+	$other_error_types = array_merge($other_error_types, array(
+		'simpledesk',
+		'sdplugin'
+	);
+
+	// Is this a SimpleDesk error?
+	if (stripos($file, 'sdplugin') !== false || stripos($error_message, 'shdp_') !== false)
+		&$error_type = 'sdplugin';
+	elseif (stripos($file, 'simpledesk') !== false || stripos($error_message, 'shd_') !== false || stripos($error_message, 'simpledesk') !== false)
+		&$error_type = 'simpledesk';
 }

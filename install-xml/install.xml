@@ -14,29 +14,6 @@
 		</operation>
 	</file>
 
-	<file name="$sourcedir/Errors.php"><!-- if an error occurs in an SD file, log it appropriately with the SD errortype -->
-		<operation>
-			<search position="after"><![CDATA[	// Make sure the category that was specified is a valid one]]></search>
-			<add><![CDATA[	// Is this a SimpleDesk error?
-	$known_error_types[] = 'simpledesk';
-	$known_error_types[] = 'sdplugin';
-	if (stripos($file, 'sdplugin') !== false || stripos($error_message, 'shdp_') !== false)
-		$error_type = 'sdplugin';
-	elseif (stripos($file, 'simpledesk') !== false || stripos($error_message, 'shd_') !== false || stripos($error_message, 'simpledesk') !== false)
-		$error_type = 'simpledesk';
-
-]]></add>
-		</operation>
-	</file>
-
-	<file name="$boarddir/SSI.php"><!-- Load SimpleDesk SSI functions -->
-		<operation>
-			<search position="before"><![CDATA[require_once($sourcedir . '/Security.php');]]></search>
-			<add><![CDATA[
-require_once($sourcedir . '/sd_source/SimpleDesk-SSI.php');]]></add>
-		</operation>
-	</file>
-
 	<file name="$sourcedir/Subs-BoardIndex.php"><!-- Board integration -->
 		<operation>
 			<search position="before"><![CDATA[$smcFunc['db_free_result']($result_boards);]]></search>
