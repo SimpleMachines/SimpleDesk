@@ -578,3 +578,30 @@ function shd_admin_smf_perms(&$permissionGroups, &$permissionList, &$leftPermiss
 
 	$hiddenPermissions = array_merge($hiddenPermissions, $perms_disable);
 }
+
+/**
+ *	Perform any processing on SMF permissions subject to SimpleDesk options (namely removing permissions that make no sense in helpdesk-only mode)
+ *
+ *	All of the parameters are the normal variables provided by ManagePermissions.php to its integration hook.
+ *	@since 2.0
+ *	@param array &$permissionGroups The array of groups of permissions
+ *	@param array &$permissionList The master list of permissions themselves
+ *	@param array &$leftPermissionGroups The list of permission groups that are displayed on the left hand side of the screen in Classic Mode
+ *	@param array &$hiddenPermissions A list of permissions to be hidden in the event of features being disabled
+ *	@param array &$relabelPermissions A list of permissions to be renamed depending on features being active
+*/
+function shd_admin_search($language_files, $include_files, $settings_search)
+{
+	// Add SimpleDesk functions
+	$settings_search += array(
+		array('shd_modify_display_options', 'area=helpdesk_options;sa=display'),
+		array('shd_modify_posting_options', 'area=helpdesk_options;sa=posting'),
+		array('shd_modify_admin_options', 'area=helpdesk_options;sa=admin'),
+		array('shd_modify_standalone_options', 'area=helpdesk_options;sa=standalone'),
+		array('shd_modify_actionlog_options', 'area=helpdesk_options;sa=actionlog'),
+		array('shd_modify_notifications_options', 'area=helpdesk_options;sa=notifications'),
+	);
+
+	// Our plugins may still use the old SHD hook.
+	call_integration_hook('shd_hook_hdadminoptssrch', array(&$settings_search));
+}

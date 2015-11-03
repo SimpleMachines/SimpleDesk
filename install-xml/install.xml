@@ -4,30 +4,6 @@
 	<id>SimpleDeskTeam:SimpleDesk</id>
 	<version>2.0</version>
 
-	<file name="$sourcedir/Admin.php"><!-- adds the navbar links to the admin panel -->
-		<operation><!-- prepend SimpleDesk's ACP helper functions to the list of places to search -->
-			<search position="replace"><![CDATA[// This is a special array of functions that contain setting data - we query all these to simply pull all setting bits!
-	$settings_search = array(]]></search>
-			<add><![CDATA[// Add SimpleDesk functions
-	$settings_search = array(
-		array('shd_modify_display_options', 'area=helpdesk_options;sa=display'),
-		array('shd_modify_posting_options', 'area=helpdesk_options;sa=posting'),
-		array('shd_modify_admin_options', 'area=helpdesk_options;sa=admin'),
-		array('shd_modify_standalone_options', 'area=helpdesk_options;sa=standalone'),
-		array('shd_modify_actionlog_options', 'area=helpdesk_options;sa=actionlog'),
-		array('shd_modify_notifications_options', 'area=helpdesk_options;sa=notifications'),
-	);
-
-	call_integration_hook('shd_hook_hdadminoptssrch', array(&$settings_search));
-
-	$search_entries = count($settings_search);
-
-	// This is a special array of functions that contain setting data - we query all these to simply pull all setting bits!
-	$settings_search += array(
-		$search_entries =>]]></add>
-		</operation>
-	</file>
-
 	<file name="$sourcedir/Load.php"><!-- globally figure out if Helpdesk is enabled; note this doesn't get pushed into settings table :) -->
 		<operation>
 			<search position="after"><![CDATA[	// Build the list of boards they WANT to see.]]></search>

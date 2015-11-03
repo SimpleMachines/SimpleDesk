@@ -120,8 +120,8 @@ $hooks[] = array(
 	'perm' => true,
 );
 $hooks[] = array(
-	'hook' => 'integrate_core_features',
-	'function' => 'shd_admin_core_features',
+	'hook' => 'integrate_admin_search',
+	'function' => 'shd_admin_search',
 	'perm' => true,
 );
 $hooks[] = array(
