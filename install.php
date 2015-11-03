@@ -149,6 +149,12 @@ $hooks[] = array(
 	'function' => 'shd_admin_smf_perms',
 	'perm' => true,
 );
+$hooks[] = array(
+	'hook' => 'integrate_profile_areas',
+	'function' => 'shd_admin_smf_perms',
+	'perm' => true,
+	'file' => '$sourcedir/sd_source/Subs-SimpleDeskProfile.php',
+);
 
 // Now, we move on to adding new tables to the database.
 $tables = array();
@@ -660,7 +666,7 @@ foreach ($columns as $column)
 
 // Add integration hooks, if any
 foreach ($hooks as $hook)
-	add_integration_function($hook['hook'], $hook['function'], $hook['perm']);
+	add_integration_function($hook['hook'], $hook['function'], $hook['perm'], !isset($hook['file']) ? '' : $hook['file'], !isset($hook['object']) ? false : $hook['object']);
 
 // SimpleDesk specific, after schema changes
 // If this is an upgraded 1.0 installation, we won't have any departments. Make sure we create one, if possible using the right language strings.
