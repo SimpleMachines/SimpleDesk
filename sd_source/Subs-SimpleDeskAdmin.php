@@ -590,17 +590,26 @@ function shd_admin_smf_perms(&$permissionGroups, &$permissionList, &$leftPermiss
  *	@param array &$hiddenPermissions A list of permissions to be hidden in the event of features being disabled
  *	@param array &$relabelPermissions A list of permissions to be renamed depending on features being active
 */
-function shd_admin_search($language_files, $include_files, $settings_search)
+function shd_admin_search(&$language_files, &$include_files, &$settings_search)
 {
+	// Add in language files.
+	$language_files = array_merge($language_files, array(
+		'SimpleDeskAdmin'
+	));
+
+	$include_files = array_merge($include_files, array(
+		'sd_source/SimpleDesk-Admin',
+	));
+
 	// Add SimpleDesk functions
-	$settings_search += array(
+	$settings_search = array_merge($settings_search, array(
 		array('shd_modify_display_options', 'area=helpdesk_options;sa=display'),
 		array('shd_modify_posting_options', 'area=helpdesk_options;sa=posting'),
 		array('shd_modify_admin_options', 'area=helpdesk_options;sa=admin'),
 		array('shd_modify_standalone_options', 'area=helpdesk_options;sa=standalone'),
 		array('shd_modify_actionlog_options', 'area=helpdesk_options;sa=actionlog'),
 		array('shd_modify_notifications_options', 'area=helpdesk_options;sa=notifications'),
-	);
+	));
 
 	// Our plugins may still use the old SHD hook.
 	call_integration_hook('shd_hook_hdadminoptssrch', array(&$settings_search));

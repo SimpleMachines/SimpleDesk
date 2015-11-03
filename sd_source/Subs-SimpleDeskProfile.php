@@ -34,8 +34,10 @@ if (!defined('SMF'))
  *
  *	@since 2.0
 */
-function shd_profile_areas($profile_areas)
+function shd_profile_areas(&$profile_areas)
 {
+	global $modSettings, $context, $txt;
+
 	// SimpleDesk sections. Added here after the initial cleaning is done, so that we can do our own permission checks without arguing with SMF's system (so much)
 	if (!empty($modSettings['helpdesk_active']))
 	{
@@ -50,30 +52,50 @@ function shd_profile_areas($profile_areas)
 					'file' => 'sd_source/SimpleDesk-Profile.php',
 					'function' => 'shd_profile_main',
 					'enabled' => shd_allowed_to('shd_view_profile_any') || ($context['user']['is_owner'] && shd_allowed_to('shd_view_profile_own')),
+					'permission' => array(
+						'own' => array('shd_view_profile_own'),
+						'any' => array('shd_view_profile_any'),
+					),
 				),
 				'hd_prefs' => array(
 					'label' => $txt['shd_profile_preferences'],
 					'file' => 'sd_source/SimpleDesk-Profile.php',
 					'function' => 'shd_profile_main',
 					'enabled' => shd_allowed_to('shd_view_preferences_any') || ($context['user']['is_owner'] && shd_allowed_to('shd_view_preferences_own')),
+					'permission' => array(
+						'own' => array('shd_view_preferences_own'),
+						'any' => array('shd_view_preferences_any'),
+					),
 				),
 				'hd_showtickets' => array(
 					'label' => $txt['shd_profile_show_tickets'],
 					'file' => 'sd_source/SimpleDesk-Profile.php',
 					'function' => 'shd_profile_main',
 					'enabled' => ($context['user']['is_owner'] && shd_allowed_to('shd_view_ticket_own')) || shd_allowed_to('shd_view_ticket_any'),
+					'permission' => array(
+						'own' => array('shd_view_ticket_own'),
+						'any' => array('shd_view_ticket_any'),
+					),
 				),
 				'hd_permissions' => array(
 					'label' => $txt['shd_profile_permissions'],
 					'file' => 'sd_source/SimpleDesk-Profile.php',
 					'function' => 'shd_profile_main',
 					'enabled' => shd_allowed_to('admin_helpdesk'),
+					'permission' => array(
+						'own' => array('admin_helpdesk'),
+						'any' => array('admin_helpdesk'),
+					),
 				),
 				'hd_actionlog' => array(
 					'label' => $txt['shd_profile_actionlog'],
 					'file' => 'sd_source/SimpleDesk-Profile.php',
 					'function' => 'shd_profile_main',
 					'enabled' => empty($modSettings['shd_disable_action_log']) && (shd_allowed_to('shd_view_profile_log_any') || ($context['user']['is_owner'] && shd_allowed_to('shd_view_profile_log_own'))),
+					'permission' => array(
+						'own' => array('shd_view_profile_log_own'),
+						'any' => array('shd_view_profile_log_any'),
+					),
 				),
 			),
 		);

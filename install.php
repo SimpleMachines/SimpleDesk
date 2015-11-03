@@ -151,7 +151,7 @@ $hooks[] = array(
 );
 $hooks[] = array(
 	'hook' => 'integrate_profile_areas',
-	'function' => 'shd_admin_smf_perms',
+	'function' => 'shd_profile_areas',
 	'perm' => true,
 	'file' => '$sourcedir/sd_source/Subs-SimpleDeskProfile.php',
 );
