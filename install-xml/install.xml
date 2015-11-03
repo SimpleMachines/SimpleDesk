@@ -14,21 +14,6 @@
 		</operation>
 	</file>
 
-	<file name="$sourcedir/Subs-BoardIndex.php"><!-- Board integration -->
-		<operation>
-			<search position="before"><![CDATA[$smcFunc['db_free_result']($result_boards);]]></search>
-			<add><![CDATA[
-
-	// Are we adding any SimpleDesk boards in?
-	if (!empty($modSettings['helpdesk_active']) && empty($modSettings['shd_disable_boardint']) && shd_allowed_to('access_helpdesk'))
-	{
-		global $sourcedir;
-		require_once($sourcedir . '/sd_source/Subs-SimpleDeskBoardIndex.php');
-		shd_add_to_boardindex($boardIndexOptions, $categories);
-	}]]></add>
-		</operation>
-	</file>
-
 	<file name="$sourcedir/ManageMaintenance.php"><!-- at the same time we modify the post settings, make sure we check and update SD's if necessary -->
 		<operation>
 			<search position="replace"><![CDATA[

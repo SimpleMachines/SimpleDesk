@@ -36,6 +36,10 @@ function shd_add_to_boardindex(&$boardIndexOptions, &$categories)
 	if (!empty($board))
 		return;
 
+	// Is this active?
+	if (empty($modSettings['helpdesk_active'])  !empty($modSettings['shd_disable_boardint']) || !shd_allowed_to('access_helpdesk'))
+		return;
+
 	call_integration_hook('shd_hook_boardindex_before', array(&$boardIndexOptions, &$categories));
 
 	// OK, so what helpdesks are we displaying?

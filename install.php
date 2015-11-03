@@ -166,6 +166,12 @@ $hooks[] = array(
 	'file' => '$sourcedir/sd_source/SimpleDesk-SSI.php',
 	'perm' => true,
 );
+$hooks[] = array(
+	'hook' => 'integrate_getboardtree',
+	'function' => 'shd_add_to_boardindex',
+	'perm' => true,
+	'file' => '$sourcedir/sd_source/Subs-SimpleDeskBoardIndex.php',
+);
 
 // Now, we move on to adding new tables to the database.
 $tables = array();
