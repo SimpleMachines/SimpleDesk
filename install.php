@@ -110,6 +110,11 @@ $hooks[] = array(
 	'perm' => true,
 );
 $hooks[] = array(
+	'hook' => 'integrate_user_info',
+	'function' => 'shd_init',
+	'perm' => true,
+);
+$hooks[] = array(
 	'hook' => 'integrate_admin_include',
 	'function' => '$sourcedir/sd_source/Subs-SimpleDeskAdmin.php',
 	'perm' => true,
