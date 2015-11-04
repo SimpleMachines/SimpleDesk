@@ -2,7 +2,7 @@
 ###############################################################
 #         Simple Desk Project - www.simpledesk.net            #
 ###############################################################
-#       An advanced help desk modifcation built on SMF        #
+#       An advanced help desk modification built on SMF       #
 ###############################################################
 #                                                             #
 #         * Copyright 2010 - SimpleDesk.net                   #
