@@ -89,7 +89,7 @@ function ssi_staffAssignedTickets($assignee = 0, $limit = 10, $output_method = '
 		'assigned' => $assignee,
 	);
 
-	return ssi_getSDTickets($query_where, $query_where_params, '', 'hdt.id_ticket ASC', $output_method);
+	return ssi_getSDTickets($query_where, $query_where_params, $limit, 'hdt.id_ticket ASC', $output_method);
 }
 
 /**
@@ -109,7 +109,7 @@ function ssi_staffTicketsUrgency($urgency, $limit = 10, $output_method = 'echo')
 		'urgency' => $urgency,
 	);
 
-	return ssi_getSDTickets($query_where, $query_where_params, '', 'hdt.id_ticket ASC', $output_method);
+	return ssi_getSDTickets($query_where, $query_where_params, $limit, 'hdt.id_ticket ASC', $output_method);
 }
 
 /**
@@ -141,7 +141,7 @@ function ssi_staffTicketsUrgency($urgency, $limit = 10, $output_method = 'echo')
  *			<li>link: link to the profile of the last person to reply to the ticket</li>
  *		</ul>
  *	</li>
- *	<li>opener: array of details about the person who the ticket is assigned to:
+ *	<li>assigned: array of details about the person who the ticket is assigned to:
  *		<ul>
  *			<li>id: user id of the person who the ticket is assigned to</li>
  *			<li>name: username of the person who the ticket is assigned to or 'Unassigned' otherwise</li>
@@ -155,7 +155,7 @@ function ssi_staffTicketsUrgency($urgency, $limit = 10, $output_method = 'echo')
  *	<li>last_timestamp: Raw timestamp (adjusted for timezones) of ticket's last reply</li>
  *	<li>private: Whether the ticket is private or not</li>
  *	<li>urgency_id: Number representing ticket urgency</li>
- *	<li>urgency_text: String representing ticket urgency</li>
+ *	<li>urgency_string: String representing ticket urgency</li>
  *	<li>status_id: Number representing ticket status</li>
  *	<li>status_text: String representing ticket status</li>
  *	</ul>
