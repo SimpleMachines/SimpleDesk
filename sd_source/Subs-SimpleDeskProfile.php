@@ -37,6 +37,12 @@ if (!defined('SMF'))
 function shd_profile_areas(&$profile_areas)
 {
 	global $modSettings, $context, $txt;
+	static $called = false;
+
+	if ($called)
+		return;
+	if (empty($called))
+		$called = true;
 
 	// SimpleDesk sections. Added here after the initial cleaning is done, so that we can do our own permission checks without arguing with SMF's system (so much)
 	if (!empty($modSettings['helpdesk_active']))
@@ -53,8 +59,8 @@ function shd_profile_areas(&$profile_areas)
 					'function' => 'shd_profile_main',
 					'enabled' => shd_allowed_to('shd_view_profile_any') || ($context['user']['is_owner'] && shd_allowed_to('shd_view_profile_own')),
 					'permission' => array(
-						'own' => array('shd_view_profile_own'),
-						'any' => array('shd_view_profile_any'),
+						'own' => array('is_not_guest'),
+						'any' => array('is_not_guest'),
 					),
 				),
 				'hd_prefs' => array(

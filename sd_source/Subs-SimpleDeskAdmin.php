@@ -590,9 +590,7 @@ function shd_admin_smf_perms(&$permissionGroups, &$permissionList, &$leftPermiss
 function shd_admin_search(&$language_files, &$include_files, &$settings_search)
 {
 	// Add in language files.
-	$language_files = array_merge($language_files, array(
-		'SimpleDeskAdmin'
-	));
+	shd_load_language('sd_language/SimpleDeskAdmin');
 
 	$include_files = array_merge($include_files, array(
 		'sd_source/SimpleDesk-Admin',

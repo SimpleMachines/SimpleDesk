@@ -308,7 +308,7 @@ function template_viewticket()
 							<div id="shd_ticket_text">
 								', $context['ticket']['body'];
 
-			if ($settings['show_modify'] && !empty($context['ticket']['modified']))
+			if (!empty($modSettings['show_modify']) && !empty($context['ticket']['modified']))
 			{
 				echo '
 							<div class="smalltext shd_modified">
