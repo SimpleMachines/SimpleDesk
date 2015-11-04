@@ -2,7 +2,7 @@
 <!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
 <modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
 	<id>SimpleDeskTeam:SimpleDesk</id>
-	<version>2.0</version>
+	<version>2.1</version>
 
 	<file name="$sourcedir/Packages.php"><!-- Sorts the SD plugin packages into the relevant container. -->
 		<operation>

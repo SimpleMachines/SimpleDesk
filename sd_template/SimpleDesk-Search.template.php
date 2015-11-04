@@ -1,5 +1,5 @@
 <?php
-// Version: 2.0 Anatidae; SimpleDesk searches.
+// Version: 2.1; SimpleDesk searches.
 
 /**
  *	Handles searching tickets.

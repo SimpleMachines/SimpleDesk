@@ -1,5 +1,5 @@
 <?php
-// Version: 2.0 Anatidae; SimpleDesk ticket <-> topic template
+// Version: 2.1; SimpleDesk ticket <-> topic template
 
 /**
  *	This file handles gathering user options when moving a ticket to/from the helpdesk, from/to

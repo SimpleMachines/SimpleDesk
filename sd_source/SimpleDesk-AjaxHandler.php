@@ -5,7 +5,7 @@
 #       An advanced help desk modifcation built on SMF        #
 ###############################################################
 #                                                             #
-#         * Copyright 2010 - SimpleDesk.net                   #
+#         * Copyright 2015 - SimpleDesk.net                   #
 #                                                             #
 #   This file and its contents are subject to the license     #
 #   included with this distribution, license.txt, which       #
@@ -13,8 +13,8 @@
 #   Any questions, please contact SimpleDesk.net              #
 #                                                             #
 ###############################################################
-# SimpleDesk Version: 2.0 Anatidae                            #
-# File Info: SimpleDesk-AjaxHandler.php / 2.0 Anatidae        #
+# SimpleDesk Version: 2.1                                     #
+# File Info: SimpleDesk-AjaxHandler.php / 2.1                 #
 ###############################################################
 
 /**
@@ -272,8 +272,8 @@ function shd_ajax_urgency()
 		);
 
 		$array = array(
-			'increase' => '<a id="urglink_increase" href="' . $scripturl . '?action=helpdesk;sa=urgencychange;ticket=' . $context['ticket_id'] . ';change=increase;' . $context['session_var'] . '=' . $context['session_id'] . '" title="' . $txt['shd_urgency_increase'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/move_up.png" width="9px" alt="' . $txt['shd_urgency_increase'] . '" /></a>',
-			'decrease' => '<a id="urglink_decrease" href="' . $scripturl . '?action=helpdesk;sa=urgencychange;ticket=' . $context['ticket_id'] . ';change=decrease;' . $context['session_var'] . '=' . $context['session_id'] . '" title="' . $txt['shd_urgency_decrease'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/move_down.png" width="9px" alt="' . $txt['shd_urgency_decrease'] . '" /></a>',
+			'increase' => '<a id="urglink_increase" href="' . $scripturl . '?action=helpdesk;sa=urgencychange;ticket=' . $context['ticket_id'] . ';change=increase;' . $context['session_var'] . '=' . $context['session_id'] . '" title="' . $txt['shd_urgency_increase'] . '"><img src="' . $settings['images_url'] . '/sort_up.png" width="9px" alt="' . $txt['shd_urgency_increase'] . '" /></a>',
+			'decrease' => '<a id="urglink_decrease" href="' . $scripturl . '?action=helpdesk;sa=urgencychange;ticket=' . $context['ticket_id'] . ';change=decrease;' . $context['session_var'] . '=' . $context['session_id'] . '" title="' . $txt['shd_urgency_decrease'] . '"><img src="' . $settings['images_url'] . '/sort_down.png" width="9px" alt="' . $txt['shd_urgency_decrease'] . '" /></a>',
 		);
 
 		foreach ($new_options as $button => $can)

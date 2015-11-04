@@ -1,5 +1,5 @@
 <?php
-// Version: 2.0 Anatidae; SimpleDesk department moving.
+// Version: 2.1; SimpleDesk department moving.
 
 /**
  *	Handles moving a ticket between departments.

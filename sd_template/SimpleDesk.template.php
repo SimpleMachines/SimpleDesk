@@ -1,5 +1,5 @@
 <?php
-// Version: 2.0 Anatidae; SimpleDesk front page template
+// Version: 2.1; SimpleDesk front page template
 
 /**
  *	This file handles displaying the blocks of tickets for the front page, as well as the slightly

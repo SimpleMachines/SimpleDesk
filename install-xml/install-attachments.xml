@@ -2,7 +2,7 @@
 <!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
 <modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
 	<id>SimpleDeskTeam:SimpleDesk</id>
-	<version>2.0</version>
+	<version>2.1</version>
 
 	<file name="$sourcedir/Display.php">
 		<operation><!-- add the option to the download system to ensure it handles SD attachments -->
@@ -88,20 +88,6 @@
 	</file>
 
 	<file name="$sourcedir/ManageAttachments.php">
-		<operation><!-- extend removeAttachments to cover SD's table items since it's doing the rest of the work anyway -->
-			<search position="after"><![CDATA[	if ($return_affected_messages)]]></search>
-			<add><![CDATA[	// And now lastly to remove SimpleDesk attachments
-	if (!empty($attach))
-		$smcFunc['db_query']('', '
-			DELETE FROM {db_prefix}helpdesk_attachments
-			WHERE id_attach IN ({array_int:attachment_list})',
-			array(
-				'attachment_list' => $attach,
-			)
-		);
-
-]]></add>
-		</operation>
 		<operation><!-- prevent attachment maintenance killing our attachments! unconventionally, this is an atomic query for good reason, it MUST be put in place fully -->
 			<search position="replace"><![CDATA[SELECT a.id_attach, a.id_folder, a.filename, a.file_hash
 				FROM {db_prefix}attachments AS a

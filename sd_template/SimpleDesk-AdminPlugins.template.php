@@ -1,5 +1,5 @@
 <?php
-// Version: 2.0 Anatidae; SimpleDesk's administration/plugins area
+// Version: 2.1; SimpleDesk's administration/plugins area
 
 /**
  *	Displays SimpleDesk's administration for plugins.

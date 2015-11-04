@@ -1,5 +1,5 @@
 <?php
-// Version: 2.0 Anatidae; SimpleDesk unread posts layout
+// Version: 2.1; SimpleDesk unread posts layout
 
 /**
  *	Displays the ticket information in the unread posts page

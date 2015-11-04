@@ -1,5 +1,5 @@
 <?php
-// Version: 2.0 Anatidae; SimpleDesk's administration maintenance
+// Version: 2.1; SimpleDesk's administration maintenance
 
 /**
  *	Displays SimpleDesk's administration maintenance

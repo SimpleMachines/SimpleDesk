@@ -1,5 +1,5 @@
 <?php
-// Version: 2.0 Anatidae; SimpleDesk's administration/canned replies area
+// Version: 2.1; SimpleDesk's administration/canned replies area
 
 /**
  *	Displays SimpleDesk's administration for canned replies, front page, creation and editing.

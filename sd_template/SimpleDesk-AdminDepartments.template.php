@@ -1,5 +1,5 @@
 <?php
-// Version: 2.0 Anatidae; SimpleDesk's administration/departments area
+// Version: 2.1; SimpleDesk's administration/departments area
 
 /**
  *	Displays SimpleDesk's administration for departments - front page, listing the departments, plus the create/edit dialogs.

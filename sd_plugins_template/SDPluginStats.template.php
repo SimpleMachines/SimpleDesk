@@ -1,5 +1,5 @@
 <?php
-// Version: 2.0 Anatidae; SimpleDesk alternate front page template
+// Version: 2.1; SimpleDesk alternate front page template
 
 /**
  *	This file handles the replacement front page.

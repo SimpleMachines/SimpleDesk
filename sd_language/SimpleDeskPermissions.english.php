@@ -5,7 +5,7 @@
 #       An advanced help desk modifcation built on SMF        #
 ###############################################################
 #                                                             #
-#         * Copyright 2010 - SimpleDesk.net                   #
+#         * Copyright 2015 - SimpleDesk.net                   #
 #                                                             #
 #   This file and its contents are subject to the license     #
 #   included with this distribution, license.txt, which       #
@@ -13,10 +13,10 @@
 #   Any questions, please contact SimpleDesk.net              #
 #                                                             #
 ###############################################################
-# SimpleDesk Version: 2.0 Anatidae                            #
-# File Info: SimpleDeskPermissions.english.php / 2.0 Anatidae #
+# SimpleDesk Version: 2.1                                     #
+# File Info: SimpleDeskPermissions.english.php / 2.1          #
 ###############################################################
-// Version: 2.0 Anatidae; SimpleDesk permissions
+// Version: 2.1; SimpleDesk permissions
 
 // Important! Before editing these language files please read the text at the top of index.english.php.
 

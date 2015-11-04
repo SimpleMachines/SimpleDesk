@@ -1,5 +1,5 @@
 <?php
-// Version: 2.0 Anatidae; SimpleDesk posting and replying
+// Version: 2.1; SimpleDesk posting and replying
 
 /**
  *	This file handles everything concerning posting, including displaying the display of ticket facia

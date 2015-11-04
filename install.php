@@ -5,7 +5,7 @@
 #     An advanced help desk modifcation built on SMF      #
 ###########################################################
 #                                                         #
-#       * Copyright 2010 - SimpleDesk.net                 #
+#       * Copyright 2015 - SimpleDesk.net                 #
 #                                                         #
 # This file and its contents are subject to the license   #
 # included with this distribution, license.txt, which     #
@@ -13,8 +13,8 @@
 # Any questions, please contact SimpleDesk.net            #
 #                                                         #
 ###########################################################
-# SimpleDesk Version: 2.0 Anatidae                        #
-# File Info: install.php / 2.0 Anatidae                   #
+# SimpleDesk Version: 2.1                                 #
+# File Info: install.php / 2.1                            #
 ###########################################################
 
 /**
@@ -99,79 +99,93 @@ foreach ($new_settings as $k => $v)
 
 // Hook references to be added.
 $hooks = array();
-$hooks[] = array(
-	'hook' => 'integrate_display_buttons',
-	'function' => 'shd_display_btn_mvtopic',
-	'perm' => true,
-);
-$hooks[] = array(
-	'hook' => 'integrate_pre_include',
-	'function' => '$sourcedir/sd_source/Subs-SimpleDesk.php',
-	'perm' => true,
-);
-$hooks[] = array(
-	'hook' => 'integrate_user_info',
-	'function' => 'shd_init',
-	'perm' => true,
-);
-$hooks[] = array(
-	'hook' => 'integrate_admin_include',
-	'function' => '$sourcedir/sd_source/Subs-SimpleDeskAdmin.php',
-	'perm' => true,
-);
-$hooks[] = array(
-	'hook' => 'integrate_admin_areas',
-	'function' => 'shd_admin_bootstrap',
-	'perm' => true,
-);
-$hooks[] = array(
-	'hook' => 'integrate_admin_search',
-	'function' => 'shd_admin_search',
-	'perm' => true,
-);
-$hooks[] = array(
-	'hook' => 'integrate_actions',
-	'function' => 'shd_init_actions',
-	'perm' => true,
-);
-$hooks[] = array(
-	'hook' => 'integrate_buffer',
-	'function' => 'shd_buffer_replace',
-	'perm' => true,
-);
-$hooks[] = array(
-	'hook' => 'integrate_menu_buttons',
-	'function' => 'shd_main_menu',
-	'perm' => true,
-);
-$hooks[] = array(
-	'hook' => 'integrate_load_permissions',
-	'function' => 'shd_admin_smf_perms',
-	'perm' => true,
-);
-$hooks[] = array(
-	'hook' => 'integrate_profile_areas',
-	'function' => 'shd_profile_areas',
-	'perm' => true,
-	'file' => '$sourcedir/sd_source/Subs-SimpleDeskProfile.php',
-);
-$hooks[] = array(
-	'hook' => 'integrate_error_types',
-	'function' => 'shd_error_types',
-	'perm' => true,
-);
-$hooks[] = array(
-	'hook' => 'integrate_SSI',
-	'function' => false,
-	'file' => '$sourcedir/sd_source/SimpleDesk-SSI.php',
-	'perm' => true,
-);
-$hooks[] = array(
-	'hook' => 'integrate_getboardtree',
-	'function' => 'shd_add_to_boardindex',
-	'perm' => true,
-	'file' => '$sourcedir/sd_source/Subs-SimpleDeskBoardIndex.php',
-);
+// SMF Core stuff
+	$hooks[] = array(
+		'hook' => 'integrate_pre_include',
+		'function' => '$sourcedir/sd_source/Subs-SimpleDesk.php',
+		'perm' => true,
+	);
+	$hooks[] = array(
+		'hook' => 'integrate_user_info',
+		'function' => 'shd_init',
+		'perm' => true,
+	);
+	$hooks[] = array(
+		'hook' => 'integrate_actions',
+		'function' => 'shd_init_actions',
+		'perm' => true,
+	);
+	$hooks[] = array(
+		'hook' => 'integrate_buffer',
+		'function' => 'shd_buffer_replace',
+		'perm' => true,
+	);
+	$hooks[] = array(
+		'hook' => 'integrate_menu_buttons',
+		'function' => 'shd_main_menu',
+		'perm' => true,
+	);
+	$hooks[] = array(
+		'hook' => 'integrate_load_permissions',
+		'function' => 'shd_admin_smf_perms',
+		'perm' => true,
+	);
+	$hooks[] = array(
+		'hook' => 'integrate_error_types',
+		'function' => 'shd_error_types',
+		'perm' => true,
+	);
+// Admin Section Stuff
+	$hooks[] = array(
+		'hook' => 'integrate_admin_include',
+		'function' => '$sourcedir/sd_source/Subs-SimpleDeskAdmin.php',
+		'perm' => true,
+	);
+	$hooks[] = array(
+		'hook' => 'integrate_admin_areas',
+		'function' => 'shd_admin_bootstrap',
+		'perm' => true,
+	);
+	$hooks[] = array(
+		'hook' => 'integrate_admin_search',
+		'function' => 'shd_admin_search',
+		'perm' => true,
+	);
+	$hooks[] = array(
+		'hook' => 'integrate_admin_search',
+		'function' => 'shd_admin_search',
+		'perm' => true,
+	);
+	$hooks[] = array(
+		'hook' => 'integrate_remove_attachments',
+		'function' => 'shd_remove_attachments',
+		'perm' => true,
+	);
+// BoardIndex, Display, Profile, etc
+	$hooks[] = array(
+		'hook' => 'integrate_display_buttons',
+		'function' => 'shd_display_btn_mvtopic',
+		'perm' => true,
+	);
+	$hooks[] = array(
+		'hook' => 'integrate_getboardtree',
+		'function' => 'shd_add_to_boardindex',
+		'perm' => true,
+		'file' => '$sourcedir/sd_source/Subs-SimpleDeskBoardIndex.php',
+	);
+	$hooks[] = array(
+		'hook' => 'integrate_profile_areas',
+		'function' => 'shd_profile_areas',
+		'perm' => true,
+		'file' => '$sourcedir/sd_source/Subs-SimpleDeskProfile.php',
+	);
+// Other
+	$hooks[] = array(
+		'hook' => 'integrate_SSI',
+		'function' => false,
+		'file' => '$sourcedir/sd_source/SimpleDesk-SSI.php',
+		'perm' => true,
+	);
 
 // Now, we move on to adding new tables to the database.
 $tables = array();
