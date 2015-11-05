@@ -40,14 +40,16 @@ if (!defined('SMF'))
  *	Gets a list of the tickets currently open that are a given user's (subject to ticket visibility).
  *
  *	@param int $started_by The user id whose tickets you want to examine, defaults to the current user.
+ *  @param array $departments An array of integers representing the department ids you want to examine, defaults to all departments
  *	@param int $limit The number of tickets to limit to, default 10.
  *	@param string $output_method Set to 'echo' for displaying content, set to 'array' to simply return data.
  *	@return array An array of data, more details under the underlying function {@link ssi_getSDTickets()}
  *	@since 2.0
 */
-function ssi_userTickets($started_by = 0, $limit = 10, $output_method = 'echo')
+function ssi_userTickets($started_by = 0, $departments = array(), $limit = 10, $output_method = 'echo')
 {
 	global $user_info;
+
 	if (empty($started_by))
 		$started_by = $user_info['id'];
 
@@ -57,8 +59,20 @@ function ssi_userTickets($started_by = 0, $limit = 10, $output_method = 'echo')
 
 	$query_where = 'hdt.id_member_started = {int:started}';
 
+	$department_ids = array();
+	if (!empty($departments) && is_array($departments))
+	{
+		foreach ($departments as $id)
+			$department_ids = (int) $id;
+
+		$department_ids = array_unique($department_ids);
+
+		$query_where .= ' AND hdt.id_dept IN {array_int:departments}';
+	}
+
 	$query_where_params = array(
 		'started' => $started_by,
+		'departments' => $department_ids,
 	);
 
 	return ssi_getSDTickets($query_where, $query_where_params, $limit, 'hdt.id_ticket ASC', $output_method);
@@ -68,12 +82,13 @@ function ssi_userTickets($started_by = 0, $limit = 10, $output_method = 'echo')
  *	Gets a list of the tickets currently open that are assigned to the current user (presumably staff, subject to ticket visibility).
  *
  *	@param int $assignee The user id whose tickets whose assigned tickets you want to examine, defaults to the current user.
+ *  @param array $departments An array of integers representing the department ids you want to examine, defaults to all departments
  *	@param int $limit The number of tickets to limit to, default 10.
  *	@param string $output_method Set to 'echo' for displaying content, set to 'array' to simply return data.
  *	@return array An array of data, more details under the underlying function {@link ssi_getSDTickets()}
  *	@since 2.0
 */
-function ssi_staffAssignedTickets($assignee = 0, $limit = 10, $output_method = 'echo')
+function ssi_staffAssignedTickets($assignee = 0, $departments = array(), $limit = 10, $output_method = 'echo')
 {
 	global $user_info;
 	if (empty($assignee))
@@ -85,8 +100,20 @@ function ssi_staffAssignedTickets($assignee = 0, $limit = 10, $output_method = '
 
 	$query_where = 'hdt.id_member_assigned = {int:assigned}';
 
+	$department_ids = array();
+	if (!empty($departments) && is_array($departments))
+	{
+		foreach ($departments as $id)
+			$department_ids = (int) $id;
+
+		$department_ids = array_unique($department_ids);
+
+		$query_where .= ' AND hdt.id_dept IN {array_int:departments}';
+	}
+
 	$query_where_params = array(
 		'assigned' => $assignee,
+		'departments' => $department_ids,
 	);
 
 	return ssi_getSDTickets($query_where, $query_where_params, $limit, 'hdt.id_ticket ASC', $output_method);
@@ -96,17 +123,30 @@ function ssi_staffAssignedTickets($assignee = 0, $limit = 10, $output_method = '
  *	Gets a list of all tickets based on urgency criteria given (subject to ticket visibility)
  *
  *	@param int $urgency The urgency of tickets you want to get.
+ *  @param array $departments An array of integers representing the department ids you want to examine, defaults to all departments
  *	@param int $limit The number of tickets to limit to, default 10.
  *	@param string $output_method Set to 'echo' for displaying content, set to 'array' to simply return data.
  *	@return array An array of data, more details under the underlying function {@link ssi_getSDTickets()}
  *	@since 2.0
 */
-function ssi_staffTicketsUrgency($urgency, $limit = 10, $output_method = 'echo')
+function ssi_staffTicketsUrgency($urgency, $departments, $limit = 10, $output_method = 'echo')
 {
 	$query_where = 'hdt.urgency = {int:urgency}';
 
+	$department_ids = array();
+	if (!empty($departments) && is_array($departments))
+	{
+		foreach ($departments as $id)
+			$department_ids = (int) $id;
+
+		$department_ids = array_unique($department_ids);
+
+		$query_where .= ' AND hdt.id_dept IN {array_int:departments}';
+	}
+
 	$query_where_params = array(
 		'urgency' => $urgency,
+		'departments' => $department_ids,
 	);
 
 	return ssi_getSDTickets($query_where, $query_where_params, $limit, 'hdt.id_ticket ASC', $output_method);
@@ -154,6 +194,7 @@ function ssi_staffTicketsUrgency($urgency, $limit = 10, $output_method = 'echo')
  *	<li>last_time: Formatted string of time the ticket was last replied to</li>
  *	<li>last_timestamp: Raw timestamp (adjusted for timezones) of ticket's last reply</li>
  *	<li>private: Whether the ticket is private or not</li>
+ *  <li>dept_id: The id of the department the ticket is in</li>
  *	<li>urgency_id: Number representing ticket urgency</li>
  *	<li>urgency_string: String representing ticket urgency</li>
  *	<li>status_id: Number representing ticket status</li>
@@ -168,7 +209,7 @@ function ssi_getSDTickets($query_where, $query_where_params = array(), $query_li
 	$query_limit = (int) $query_limit;
 
 	$query = shd_db_query('', '
-		SELECT hdt.id_ticket, hdt.subject, hdt.num_replies, hdt.private, hdt.urgency, hdt.status,
+		SELECT hdt.id_ticket, hdt.subject, hdt.num_replies, hdt.private, hdt.urgency, hdt.status, hdt.id_dept,
 			hdtr_first.poster_time AS start_time, hdt.last_updated AS last_time,
 			IFNULL(mem.real_name, hdtr_first.poster_name) AS starter_name, IFNULL(mem.id_member, 0) AS starter_id,
 			IFNULL(ma.real_name, 0) AS assigned_name, IFNULL(ma.id_member, 0) AS assigned_id,
@@ -218,6 +259,7 @@ function ssi_getSDTickets($query_where, $query_where_params = array(), $query_li
 			'last_timestamp' => forum_time(true, $row['last_time']),
 			'num_replies' => $row['num_replies'],
 			'private' => !empty($row['private']),
+			'dept_id' => $row['id_dept'],
 			'urgency_id' => $row['urgency'],
 			'urgency_string' => $txt['shd_urgency_' . $row['urgency']],
 			'status_id' => $row['status'],
