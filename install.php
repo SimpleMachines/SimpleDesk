@@ -171,18 +171,26 @@ $hooks = array();
 		'function' => 'shd_modifylanguages',
 		'perm' => true,
 	);
-// BoardIndex, Display, Profile, etc
+// Display
 	$hooks[] = array(
 		'hook' => 'integrate_display_buttons',
 		'function' => 'shd_display_btn_mvtopic',
 		'perm' => true,
 	);
 	$hooks[] = array(
+		'hook' => 'integrate_download_request',
+		'function' => 'shd_download_request',
+		'perm' => true,
+		'file' => '$sourcedir/sd_source/Subs-SimpleDeskDisplay.php',
+	);
+// BoardIndex
+	$hooks[] = array(
 		'hook' => 'integrate_getboardtree',
 		'function' => 'shd_add_to_boardindex',
 		'perm' => true,
 		'file' => '$sourcedir/sd_source/Subs-SimpleDeskBoardIndex.php',
 	);
+// Profile
 	$hooks[] = array(
 		'hook' => 'integrate_profile_areas',
 		'function' => 'shd_profile_areas',
