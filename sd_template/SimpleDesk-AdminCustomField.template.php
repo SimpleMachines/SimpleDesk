@@ -298,7 +298,7 @@ function template_shd_custom_field_edit()
 					<div class="roundframe">
 						<div class="content">
 							<dl class="settings">
-								<dt><strong>', $txt['shd_admin_custom_fields_fieldtype'], ':</strong></dt>
+								<dt><strong>', $txt['shd_admin_custom_fields_fieldtype'], ':</strong><br /><span class="smalltext">', $txt['shd_admin_custom_fields_description_desc'], '</span></dt>
 								<dd class="shd_nowrap">
 									<span id="cf_fieldtype_icon" class="cf_ui_', $context['field_types'][$context['field_type_value']][1], '"></span>
 									<select name="field_type" id="cf_fieldtype" onchange="javascript:update_field_type(this.value);">';
