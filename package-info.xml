@@ -19,7 +19,6 @@
 		<readme lang="english" parsebbc="true" type="file">language-readme/readme.english.txt</readme>
 
 		<!-- general edits -->
-		<modification format="xml" type="file">install-xml/install.xml</modification>
 		<modification format="xml" type="file">install-xml/install-attachments.xml</modification>
 		<modification format="xml" type="file">install-xml/install-trackip.xml</modification>
 		<modification format="xml" type="file">install-xml/install-packages.xml</modification>
@@ -66,7 +65,6 @@
 		<code type="file">uninstall-required.php</code>
 
 		<!-- general edits, undone -->
-		<modification format="xml" type="file" reverse="true">install-xml/install.xml</modification>
 		<modification format="xml" type="file" reverse="true">install-xml/install-attachments.xml</modification>
 		<modification format="xml" type="file" reverse="true">install-xml/install-trackip.xml</modification>
 		<modification format="xml" type="file" reverse="true">install-xml/install-packages.xml</modification>

@@ -166,6 +166,11 @@ $hooks = array();
 		'function' => 'shd_convert_msgbody',
 		'perm' => true,
 	);
+	$hooks[] = array(
+		'hook' => 'integrate_modifylanguages',
+		'function' => 'shd_modifylanguages',
+		'perm' => true,
+	);
 // BoardIndex, Display, Profile, etc
 	$hooks[] = array(
 		'hook' => 'integrate_display_buttons',

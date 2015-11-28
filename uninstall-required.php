@@ -59,42 +59,89 @@ updateSettings(
 
 // 2. Removing all the SMF hooks.
 $hooks = array();
-$hooks[] = array(
-	'hook' => 'integrate_display_buttons',
-	'function' => 'shd_display_btn_mvtopic',
-);
-$hooks[] = array(
-	'hook' => 'integrate_pre_include',
-	'function' => '$sourcedir/sd_source/Subs-SimpleDesk.php',
-);
-$hooks[] = array(
-	'hook' => 'integrate_admin_include',
-	'function' => '$sourcedir/sd_source/Subs-SimpleDeskAdmin.php',
-);
-$hooks[] = array(
-	'hook' => 'integrate_admin_areas',
-	'function' => 'shd_admin_bootstrap',
-);
-$hooks[] = array(
-	'hook' => 'integrate_core_features',
-	'function' => 'shd_admin_core_features',
-);
-$hooks[] = array(
-	'hook' => 'integrate_actions',
-	'function' => 'shd_init_actions',
-);
-$hooks[] = array(
-	'hook' => 'integrate_buffer',
-	'function' => 'shd_buffer_replace',
-);
-$hooks[] = array(
-	'hook' => 'integrate_menu_buttons',
-	'function' => 'shd_main_menu',
-);
-$hooks[] = array(
-	'hook' => 'integrate_load_permissions',
-	'function' => 'shd_admin_smf_perms',
-);
+// SMF Core stuff
+	$hooks[] = array(
+		'hook' => 'integrate_pre_include',
+		'function' => '$sourcedir/sd_source/Subs-SimpleDesk.php',
+	);
+	$hooks[] = array(
+		'hook' => 'integrate_user_info',
+		'function' => 'shd_init',
+	);
+	$hooks[] = array(
+		'hook' => 'integrate_actions',
+		'function' => 'shd_init_actions',
+	);
+	$hooks[] = array(
+		'hook' => 'integrate_buffer',
+		'function' => 'shd_buffer_replace',
+	);
+	$hooks[] = array(
+		'hook' => 'integrate_menu_buttons',
+		'function' => 'shd_main_menu',
+	);
+	$hooks[] = array(
+		'hook' => 'integrate_load_permissions',
+		'function' => 'shd_admin_smf_perms',
+	);
+	$hooks[] = array(
+		'hook' => 'integrate_error_types',
+		'function' => 'shd_error_types',
+	);
+// Admin Section Stuff
+	$hooks[] = array(
+		'hook' => 'integrate_admin_include',
+		'function' => '$sourcedir/sd_source/Subs-SimpleDeskAdmin.php',
+	);
+	$hooks[] = array(
+		'hook' => 'integrate_admin_areas',
+		'function' => 'shd_admin_bootstrap',
+	);
+	$hooks[] = array(
+		'hook' => 'integrate_admin_search',
+		'function' => 'shd_admin_search',
+	);
+	$hooks[] = array(
+		'hook' => 'integrate_admin_search',
+		'function' => 'shd_admin_search',
+	);
+	$hooks[] = array(
+		'hook' => 'integrate_remove_attachments',
+		'function' => 'shd_remove_attachments',
+	);
+	$hooks[] = array(
+		'hook' => 'integrate_convert_msgbody',
+		'function' => 'shd_convert_msgbody',
+	);
+	$hooks[] = array(
+		'hook' => 'integrate_modifylanguages',
+		'function' => 'shd_modifylanguages',
+	);
+// BoardIndex, Display, Profile, etc
+	$hooks[] = array(
+		'hook' => 'integrate_display_buttons',
+		'function' => 'shd_display_btn_mvtopic',
+	);
+	$hooks[] = array(
+		'hook' => 'integrate_getboardtree',
+		'function' => 'shd_add_to_boardindex',
+		'file' => '$sourcedir/sd_source/Subs-SimpleDeskBoardIndex.php',
+	);
+	$hooks[] = array(
+		'hook' => 'integrate_profile_areas',
+		'function' => 'shd_profile_areas',
+		'file' => '$sourcedir/sd_source/Subs-SimpleDeskProfile.php',
+	);
+	$hooks[] = array(
+		'hook' => 'integrate_profile_profileSaveGroups',
+		'function' => 'shd_clear_active_tickets',
+	);
+// Other
+	$hooks[] = array(
+		'hook' => 'integrate_SSI',
+		'function' => false,
+		'file' => '$sourcedir/sd_source/SimpleDesk-SSI.php',
+	);
 
 foreach ($hooks as $hook)
 	remove_integration_function($hook['hook'], $hook['function']);
