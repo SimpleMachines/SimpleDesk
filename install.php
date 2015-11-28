@@ -179,6 +179,11 @@ $hooks = array();
 		'perm' => true,
 		'file' => '$sourcedir/sd_source/Subs-SimpleDeskProfile.php',
 	);
+	$hooks[] = array(
+		'hook' => 'integrate_profile_profileSaveGroups',
+		'function' => 'shd_clear_active_tickets',
+		'perm' => true,
+	);
 // Other
 	$hooks[] = array(
 		'hook' => 'integrate_SSI',

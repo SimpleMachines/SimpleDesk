@@ -4,16 +4,6 @@
 	<id>SimpleDeskTeam:SimpleDesk</id>
 	<version>2.1</version>
 
-	<file name="$sourcedir/Profile-Modify.php"><!-- Ensure things get uncached if we change groups (which means permissions) -->
-		<operation>
-			<search position="after"><![CDATA[	// The account page allows the change of your id_group - but not to a protected group!]]></search>
-			<add><![CDATA[	// Ensure we uncache stuff that might change in the helpdesk
-	shd_clear_active_tickets();
-
-]]></add>
-		</operation>
-	</file>
-
 	<file name="$sourcedir/ManageMaintenance.php"><!-- at the same time we modify the post settings, make sure we check and update SD's if necessary -->
 		<operation>
 			<search position="replace"><![CDATA[
