@@ -320,6 +320,7 @@ function shd_admin_options($return_config)
 		}
 
 		saveDBSettings($save_vars);
+		$_SESSION['adm-save'] = true;
 		redirectexit('action=admin;area=helpdesk_options;sa=' . $_REQUEST['sa']);
 	}
 
@@ -560,6 +561,8 @@ function shd_modify_standalone_options($return_config)
 			add_integration_function('integrate_fallback_action', 'shd_main', true, '$sourcedir/sd_source/SimpleDesk.php');		
 		}
 	}
+
+	return $config_vars;
 }
 
 /**
