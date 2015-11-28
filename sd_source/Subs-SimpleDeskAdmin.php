@@ -670,3 +670,18 @@ function shd_convert_msgbody($body_type)
 	else
 		$smcFunc['db_change_column']('{db_prefix}messages', 'body', array('type' => 'text'));
 }
+
+/**
+ *	Adds SimpleDesk language files into our search location.
+ *
+ *	@since 2.1
+ *	@param array &$themes all the themes avaiable.
+ *	@param array &$themes all the language directories avaiable.
+*/
+function shd_modifylanguages(&$themes, &$lang_dirs)
+{
+	$themes['shd'] = array('name' => 'SimpleDesk', 'theme_dir' => $settings['default_theme_dir'] . '/languages/sd_language');
+	$lang_dirs['shd'] = $settings['default_theme_dir'] . '/languages/sd_language';
+	$themes['shd_plugins'] = array('name' => 'SimpleDesk Plugins', 'theme_dir' => $settings['default_theme_dir'] . '/languages/sd_plugins_lang');
+	$lang_dirs['shd_plugins'] = $settings['default_theme_dir'] . '/languages/sd_plugins_lang';
+}

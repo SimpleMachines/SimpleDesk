@@ -102,10 +102,6 @@ $hooks = array();
 		'function' => 'shd_admin_search',
 	);
 	$hooks[] = array(
-		'hook' => 'integrate_admin_search',
-		'function' => 'shd_admin_search',
-	);
-	$hooks[] = array(
 		'hook' => 'integrate_remove_attachments',
 		'function' => 'shd_remove_attachments',
 	);
@@ -116,6 +112,16 @@ $hooks = array();
 	$hooks[] = array(
 		'hook' => 'integrate_modifylanguages',
 		'function' => 'shd_modifylanguages',
+	);
+	$hooks[] = array(
+		'hook' => 'integrate_repair_attachments_nomsg',
+		'function' => 'shd_repair_attachments_nomsg',
+		'file' => '$sourcedir/sd_source/Subs-SimpleDeskManageAttachments.php',
+	);
+	$hooks[] = array(
+		'hook' => 'integrate_attachment_remove',
+		'function' => 'shd_attachment_remove',
+		'file' => '$sourcedir/sd_source/Subs-SimpleDeskManageAttachments.php',
 	);
 // Display
 	$hooks[] = array(
