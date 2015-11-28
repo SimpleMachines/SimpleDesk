@@ -225,6 +225,7 @@ function shd_dept_board($dept)
 			'href' => '',
 			'link' => $txt['not_applicable'],
 		),
+		'board_class' => 'off',
 	);
 }
 

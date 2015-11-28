@@ -133,6 +133,7 @@ $hooks = array();
 	$hooks[] = array(
 		'hook' => 'integrate_error_types',
 		'function' => 'shd_error_types',
+		'file' => '$sourcedir/sd_source/Subs-SimpleDesk.php',
 		'perm' => true,
 	);
 // Admin Section Stuff
@@ -173,8 +174,8 @@ $hooks = array();
 		'perm' => true,
 	);
 	$hooks[] = array(
-		'hook' => 'integrate_repair_attachments_nomsg',
-		'function' => 'shd_repair_attachments_nomsg',
+		'hook' => 'integrate_attachments_browse',
+		'function' => 'shd_attachments_browse',
 		'file' => '$sourcedir/sd_source/Subs-SimpleDeskManageAttachments.php',
 		'perm' => true,
 	);

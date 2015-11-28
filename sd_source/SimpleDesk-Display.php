@@ -1103,7 +1103,7 @@ function shd_attachment_info($attach_info)
 					if (!empty($modSettings['currentAttachmentUploadDir']))
 					{
 						if (!is_array($modSettings['attachmentUploadDir']))
-							$modSettings['attachmentUploadDir'] = @unserialize($modSettings['attachmentUploadDir']);
+							$modSettings['attachmentUploadDir'] = json_decode($modSettings['attachmentUploadDir'], true);
 						$path = $modSettings['attachmentUploadDir'][$modSettings['currentAttachmentUploadDir']];
 						$id_folder_thumb = $modSettings['currentAttachmentUploadDir'];
 					}

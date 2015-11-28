@@ -90,30 +90,32 @@ function shd_attachments_browse(&$listOptions, &$titles, &$list_title)
 	if (empty($modSettings['helpdesk_active']))
 		return;
 
-		if (isset($_REQUEST['shd_attach']) || isset($_REQUEST['shd_thumb']))
-			$context['browse_type'] = isset($_REQUEST['shd_attach']) ? 'shd_attach' : 'shd_thumb';
+	if (isset($_REQUEST['shd_attach']) || isset($_REQUEST['shd_thumb']))
+		$context['browse_type'] = isset($_REQUEST['shd_attach']) ? 'shd_attach' : 'shd_thumb';
 
-		$titles += array(
-			'shd_thumb' => array('?action=admin;area=manageattachments;sa=browse;shd_thumb', $txt['attachment_manager_shd_thumb']),
-			'shd_attach' => array('?action=admin;area=manageattachments;sa=browse;shd_attach', $txt['attachment_manager_shd_attach']),
-		);
+	$titles += array(
+		'shd_attach' => array('?action=admin;area=manageattachments;sa=browse;shd_attach', $txt['attachment_manager_shd_attach']),
+		'shd_thumb' => array('?action=admin;area=manageattachments;sa=browse;shd_thumb', $txt['attachment_manager_shd_thumb']),
+	);
 
-		// We rebuild this as its easier to fix.
-		$list_title = '';
-		foreach ($titles as $browse_type => $details)
-		{
-			if ($browse_type != 'attachments')
-				$list_title .= ' | ';
+	// We rebuild this as its easier to fix.
+	$list_title = '';
+	foreach ($titles as $browse_type => $details)
+	{
+		if ($browse_type != 'attachments')
+			$list_title .= ' | ';
 
-			if ($context['browse_type'] == $browse_type)
-				$list_title .= '<img src="' . $settings['images_url'] . '/selected.png" alt="&gt;"> ';
+		if ($context['browse_type'] == $browse_type)
+			$list_title .= '<img src="' . $settings['images_url'] . '/selected.png" alt="&gt;"> ';
 
-			$list_title .= '<a href="' . $scripturl . $details[0] . '">' . $details[1] . '</a>';
-		}
+		$list_title .= '<a href="' . $scripturl . $details[0] . '">' . $details[1] . '</a>';
+	}
+
+	$listOptions['title'] = $list_title;
 
 	// We're actually wanting helpdesk only stuff, so do it and bail
 	if (isset($_REQUEST['shd_attach']) || isset($_REQUEST['shd_thumb']))
-		return shd_admin_browse_attachments($list_title);
+		$listOptions = shd_admin_browse_attachments($list_title);
 }
 
 function shd_admin_browse_attachments($list_title = '')
@@ -276,9 +278,7 @@ function shd_admin_browse_attachments($list_title = '')
 		),
 	);
 
-	// Create the list.
-	require_once($sourcedir . '/Subs-List.php');
-	createList($listOptions);
+	return $listOptions;
 }
 
 function shd_list_get_files($start, $items_per_page, $sort, $browse_type)

@@ -36,6 +36,8 @@ if (!defined('SMF'))
 */
 function shd_download_request(&$attachRequest)
 {
+	global $smcFunc;
+
 	// Is this already a resource?  Then another hook has claimed the attachment as theirs.
 	if (is_resource($attachRequest))
 		return;

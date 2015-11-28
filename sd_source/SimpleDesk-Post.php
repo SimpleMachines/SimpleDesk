@@ -1597,7 +1597,7 @@ function shd_check_attachments()
 		if (!empty($modSettings['currentAttachmentUploadDir']))
 		{
 			if (!is_array($modSettings['attachmentUploadDir']))
-				$modSettings['attachmentUploadDir'] = unserialize($modSettings['attachmentUploadDir']);
+				$modSettings['attachmentUploadDir'] = json_decode($modSettings['attachmentUploadDir'], true);
 
 			// Just use the current path for temp files.
 			$current_attach_dir = $modSettings['attachmentUploadDir'][$modSettings['currentAttachmentUploadDir']];
@@ -1777,6 +1777,8 @@ function shd_handle_attachments()
 
 	$attachIDs = array();
 
+	require_once($sourcedir . '/Subs-Attachments.php');
+
 	// Check if they are trying to delete any current attachments....
 	if (isset($_POST['attach_del']))
 	{
@@ -1855,7 +1857,7 @@ function shd_handle_attachments()
 		if (!empty($modSettings['currentAttachmentUploadDir']))
 		{
 			if (!is_array($modSettings['attachmentUploadDir']))
-				$modSettings['attachmentUploadDir'] = unserialize($modSettings['attachmentUploadDir']);
+				$modSettings['attachmentUploadDir'] = json_decode($modSettings['attachmentUploadDir'], true);
 
 			// The current directory, of course!
 			$current_attach_dir = $modSettings['attachmentUploadDir'][$modSettings['currentAttachmentUploadDir']];
@@ -1940,6 +1942,7 @@ function shd_handle_attachments()
 				'name' => $uplfile['name'],
 				'tmp_name' => $uplfile['tmp_name'],
 				'size' => $uplfile['size'],
+				'id_folder' => $modSettings['currentAttachmentUploadDir'],
 			);
 
 			if (createAttachment($attachmentOptions))

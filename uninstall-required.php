@@ -87,6 +87,7 @@ $hooks = array();
 	$hooks[] = array(
 		'hook' => 'integrate_error_types',
 		'function' => 'shd_error_types',
+		'file' => '$sourcedir/sd_source/Subs-SimpleDesk.php',
 	);
 // Admin Section Stuff
 	$hooks[] = array(
@@ -116,6 +117,11 @@ $hooks = array();
 	$hooks[] = array(
 		'hook' => 'integrate_repair_attachments_nomsg',
 		'function' => 'shd_repair_attachments_nomsg',
+		'file' => '$sourcedir/sd_source/Subs-SimpleDeskManageAttachments.php',
+	);
+	$hooks[] = array(
+		'hook' => 'integrate_attachments_browse',
+		'function' => 'shd_attachments_browse',
 		'file' => '$sourcedir/sd_source/Subs-SimpleDeskManageAttachments.php',
 	);
 	$hooks[] = array(

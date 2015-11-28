@@ -51,7 +51,7 @@ function shd_init()
 	$context['shd_home'] = 'action=helpdesk;sa=main';
 
 	// What SD version are we on? It's now here!
-	define('SHD_VERSION', 'SimpleDesk 2.0.1');
+	define('SHD_VERSION', 'SimpleDesk 2.1 Beta 1');
 
 	// This isn't the SMF way. But for something like this, it's way way more logical and readable.
 	define('TICKET_STATUS_NEW', 0);
@@ -2015,3 +2015,27 @@ function shd_main_menu_admin($helpdesk_admin)
 	);
 }
 // Cause IE is being mean to meeee again...!
+
+/**
+ *	Detect a SHD error and move it to the proper error type.
+ *
+ *	@since 2.1
+ *	@param array &$other_error_types Additional error types.
+ *  @param string $error_type The type of error
+ *  @param string $error_message The message to log
+ *  @param string $file The name of the file where this error occurred
+ *  @param int $line The line where the error occurred
+*/
+function shd_error_types(&$other_error_types, &$error_type, $error_message, $file, $line)
+{
+	$other_error_types = array_merge($other_error_types, array(
+		'simpledesk',
+		'sdplugin'
+	));
+
+	// Is this a SimpleDesk error?
+	if (stripos($file, 'sdplugin') !== false || stripos($error_message, 'shdp_') !== false)
+		$error_type = 'sdplugin';
+	elseif (stripos($file, 'simpledesk') !== false || stripos($error_message, 'shd_') !== false || stripos($error_message, 'simpledesk') !== false)
+		$error_type = 'simpledesk';
+}

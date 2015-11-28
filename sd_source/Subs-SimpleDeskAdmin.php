@@ -611,30 +611,6 @@ function shd_admin_search(&$language_files, &$include_files, &$settings_search)
 }
 
 /**
- *	Detect a SHD error and move it to the proper error type.
- *
- *	@since 2.1
- *	@param array &$other_error_types Additional error types.
- *  @param string $error_type The type of error
- *  @param string $error_message The message to log
- *  @param string $file The name of the file where this error occurred
- *  @param int $line The line where the error occurred
-*/
-function shd_error_types(&$other_error_types, &$error_type, $error_message, $file, $line)
-{
-	$other_error_types = array_merge($other_error_types, array(
-		'simpledesk',
-		'sdplugin'
-	));
-
-	// Is this a SimpleDesk error?
-	if (stripos($file, 'sdplugin') !== false || stripos($error_message, 'shdp_') !== false)
-		$error_type = 'sdplugin';
-	elseif (stripos($file, 'simpledesk') !== false || stripos($error_message, 'shd_') !== false || stripos($error_message, 'simpledesk') !== false)
-		$error_type = 'simpledesk';
-}
-
-/**
  *	Removes an attachment when removed from SMF.
  *
  *	@since 2.1
@@ -680,6 +656,8 @@ function shd_convert_msgbody($body_type)
 */
 function shd_modifylanguages(&$themes, &$lang_dirs)
 {
+	global $settings;
+
 	$themes['shd'] = array('name' => 'SimpleDesk', 'theme_dir' => $settings['default_theme_dir'] . '/languages/sd_language');
 	$lang_dirs['shd'] = $settings['default_theme_dir'] . '/languages/sd_language';
 	$themes['shd_plugins'] = array('name' => 'SimpleDesk Plugins', 'theme_dir' => $settings['default_theme_dir'] . '/languages/sd_plugins_lang');
