@@ -4,28 +4,6 @@
 	<id>SimpleDeskTeam:SimpleDesk</id>
 	<version>2.1</version>
 
-	<file name="$sourcedir/ManageMaintenance.php"><!-- at the same time we modify the post settings, make sure we check and update SD's if necessary -->
-		<operation>
-			<search position="replace"><![CDATA[
-			$smcFunc['db_change_column']('{db_prefix}messages', 'body', array('type' => 'mediumtext'));]]></search>
-			<add><![CDATA[
-		{
-			$smcFunc['db_change_column']('{db_prefix}messages', 'body', array('type' => 'mediumtext'));
-			$smcFunc['db_change_column']('{db_prefix}helpdesk_ticket_replies', 'body', array('type' => 'mediumtext'));
-		}]]></add>
-		</operation>
-		<operation>
-			<search position="replace"><![CDATA[
-			$smcFunc['db_change_column']('{db_prefix}messages', 'body', array('type' => 'text'));]]></search>
-			<add><![CDATA[
-		{
-			$smcFunc['db_change_column']('{db_prefix}messages', 'body', array('type' => 'text'));
-			$smcFunc['db_change_column']('{db_prefix}helpdesk_ticket_replies', 'body', array('type' => 'text'));
-		}]]></add>
-		</operation>
-		<!-- @todo: add the check for tickets longer than xxx chars -->
-	</file>
-
 	<file name="$sourcedir/ManageLanguages.php"><!-- Language file handling -->
 		<operation>
 			<search position="after"><![CDATA[	// Check we have themes with a path and a name - just in case - and add the path.]]></search>

@@ -654,3 +654,19 @@ function shd_remove_attachments($attach)
 			)
 		);
 }
+
+/**
+ *	Converts helpdesk body length to match SMF's.
+ *
+ *	@since 2.1
+ *	@param array &$body_type Either text or other.
+*/
+function shd_convert_msgbody($body_type)
+{
+	global $smcFunc;
+
+	if ($body_type == 'text')
+		$smcFunc['db_change_column']('{db_prefix}helpdesk_ticket_replies', 'body', array('type' => 'mediumtext'));
+	else
+		$smcFunc['db_change_column']('{db_prefix}messages', 'body', array('type' => 'text'));
+}

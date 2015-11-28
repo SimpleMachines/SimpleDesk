@@ -161,6 +161,11 @@ $hooks = array();
 		'function' => 'shd_remove_attachments',
 		'perm' => true,
 	);
+	$hooks[] = array(
+		'hook' => 'integrate_convert_msgbody',
+		'function' => 'shd_convert_msgbody',
+		'perm' => true,
+	);
 // BoardIndex, Display, Profile, etc
 	$hooks[] = array(
 		'hook' => 'integrate_display_buttons',
