@@ -938,7 +938,7 @@ function template_viewreplies()
 			}
 		}
 
-			if ($settings['show_modify'] && !empty($reply['modified']))
+			if (!empty($settings['show_modify']) && !empty($reply['modified']))
 			{
 				echo '
 							<div class="smalltext shd_modified" style="margin-top:20px;">
