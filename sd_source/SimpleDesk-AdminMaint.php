@@ -156,6 +156,23 @@ function shd_admin_maint_reattribute()
 		$clause = 'poster_name = {string:attribute}';
 		$attribute = $_POST['from_name'];
 	}
+	elseif ($_POST['type'] == 'starter')
+	{
+		if (empty($_POST['from_starter']))
+			fatal_lang_error('shd_reattribute_no_user');
+		$from = findMembers($_POST['from_starter']);
+
+		if (empty($from))
+			fatal_lang_error('shd_reattribute_cannot_find_member_from');
+
+		$fromID = array_shift($from);
+		$attribute = $fromID['id'];
+
+		$clause = 'id_msg in (
+			SELECT id_first_msg
+			FROM {db_prefix}helpdesk_tickets
+			WHERE id_member_started = {int:attribute})';
+	}
 	else
 		fatal_lang_error('shd_reattribute_no_user');
 
@@ -178,25 +195,44 @@ function shd_admin_maint_reattribute()
 	if (empty($members))
 		fatal_lang_error('shd_reattribute_no_messages', false);
 
-	// So we found some old member ids. Are any of them still in use?
-	$temp_members = loadMemberData($members, false, 'minimal');
-	if (empty($temp_members))
-		$temp_members = array();
-	$members = array_diff($members, $temp_members);
+	// Topic starters are a bit easier.
+	if ($_POST['type'] == 'starter')
+	{
+		$smcFunc['db_query']('', '
+			UPDATE {db_prefix}helpdesk_ticket_replies
+			SET id_member = {int:new_id}
+			WHERE id_msg IN (
+				SELECT id_first_msg
+				FROM {db_prefix}helpdesk_tickets
+				WHERE id_member_started = {int:from_id})',
+			array(
+				'new_id' => $memID,
+				'from_id' => $attribute,
+			)
+		);
+	}
+	else
+	{
+		// So we found some old member ids. Are any of them still in use?
+		$temp_members = loadMemberData($members, false, 'minimal');
+		if (empty($temp_members))
+			$temp_members = array();
+		$members = array_diff($members, $temp_members);
 
-	if (empty($members))
-		fatal_lang_error('shd_reattribute_in_use', false);
+		if (empty($members))
+			fatal_lang_error('shd_reattribute_in_use', false);
 
-	// OK, let's go!
-	$smcFunc['db_query']('', '
-		UPDATE {db_prefix}helpdesk_ticket_replies
-		SET id_member = {int:new_id}
-		WHERE id_member IN ({array_int:old_ids})',
-		array(
-			'new_id' => $memID,
-			'old_ids' => $members,
-		)
-	);
+		// OK, let's go!
+		$smcFunc['db_query']('', '
+			UPDATE {db_prefix}helpdesk_ticket_replies
+			SET id_member = {int:new_id}
+			WHERE id_member IN ({array_int:old_ids})',
+			array(
+				'new_id' => $memID,
+				'old_ids' => $members,
+			)
+		);
+	}
 }
 
 function shd_admin_maint_massdeptmove()

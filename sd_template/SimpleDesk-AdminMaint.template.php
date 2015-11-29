@@ -44,6 +44,7 @@ function template_shd_admin_maint_home()
 		function checkAttributeValidity()
 		{
 			origText = \'', $txt['shd_reattribute_confirm'], '\';
+			origTextStarter = \'', $txt['shd_reattribute_confirm_starter'], '\';
 			valid = true;
 
 			// Do all the fields!
@@ -56,6 +57,12 @@ function template_shd_admin_maint_home()
 				if (!document.getElementById(\'from_email\').value)
 					valid = false;
 				warningMessage = warningMessage.replace(/%type%/, \'', addcslashes($txt['shd_reattribute_confirm_email'], "'"), '\').replace(/%find%/, document.getElementById(\'from_email\').value);
+			}
+			else if (document.getElementById(\'type_starter\').checked)
+			{
+				if (!document.getElementById(\'from_starter\').value)
+					valid = false;
+				warningMessage = origTextStarter.replace(/%member_to%/, document.getElementById(\'to\').value).replace(/%find%/, document.getElementById(\'from_starter\').value);			
 			}
 			else
 			{
@@ -85,17 +92,26 @@ function template_shd_admin_maint_home()
 						<dt>
 							<strong>', $txt['shd_admin_maint_reattribute_posts_made'], '</strong>
 						</dt>
+
 						<dt>
 							<label for="type_email"><input type="radio" name="type" id="type_email" value="email" checked="checked" class="input_radio">', $txt['shd_admin_maint_reattribute_posts_email'], '</label>
 						</dt>
 						<dd>
-							<input type="text" name="from_email" id="from_email" value="" onclick="document.getElementById(\'type_email\').checked = \'checked\'; document.getElementById(\'from_name\').value = \'\';">
+							<input type="text" name="from_email" id="from_email" value="" onclick="document.getElementById(\'type_email\').checked = \'checked\'; document.getElementById(\'from_name\').value = \'\'; document.getElementById(\'from_starter\').value = \'\';">
 						</dd>
+
 						<dt>
 							<label for="type_name"><input type="radio" name="type" id="type_name" value="name" class="input_radio">', $txt['shd_admin_maint_reattribute_posts_user'], '</label>
 						</dt>
 						<dd>
-							<input type="text" name="from_name" id="from_name" value="" onclick="document.getElementById(\'type_name\').checked = \'checked\'; document.getElementById(\'from_email\').value = \'\';" class="input_text">
+							<input type="text" name="from_name" id="from_name" value="" onclick="document.getElementById(\'type_name\').checked = \'checked\'; document.getElementById(\'from_email\').value = \'\'; document.getElementById(\'from_starter\').value = \'\';" class="input_text">
+						</dd>
+
+						<dt>
+							<label for="type_name"><input type="radio" name="type" id="type_starter" value="starter" class="input_radio">', $txt['shd_admin_maint_reattribute_posts_starter'], '</label>
+						</dt>
+						<dd>
+							<input type="text" name="from_starter" id="from_starter" value="" onclick="document.getElementById(\'type_starter\').checked = \'checked\'; document.getElementById(\'from_email\').value = \'\'; document.getElementById(\'from_name\').value = \'\';" class="input_text">
 						</dd>
 					</dl>
 					<dl class="settings">
@@ -120,6 +136,16 @@ function template_shd_admin_maint_home()
 				sSessionVar: \'', $context['session_var'], '\',
 				sSuggestId: \'attributeMember\',
 				sControlId: \'to\',
+				sSearchType: \'member\',
+				sTextDeleteItem: \'', $txt['autosuggest_delete_item'], '\',
+				bItemList: false
+			});
+			var oAttributeMemberSuggestStarter = new smc_AutoSuggest({
+				sSelf: \'oAttributeMemberSuggestStarter\',
+				sSessionId: \'', $context['session_id'], '\',
+				sSessionVar: \'', $context['session_var'], '\',
+				sSuggestId: \'attributeStarter\',
+				sControlId: \'from_starter\',
 				sSearchType: \'member\',
 				sTextDeleteItem: \'', $txt['autosuggest_delete_item'], '\',
 				bItemList: false
