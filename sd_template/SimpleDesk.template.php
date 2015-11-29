@@ -80,8 +80,7 @@ function template_main()
 					<br />';
 
 	// Start the ticket listing
-	$blocks = array_keys($context['ticket_blocks']);
-	foreach ($blocks as $block)
+	foreach ($context['ticket_block_order'] as $block)
 	{
 		$context['current_block'] = $block;
 		if (!empty($context['ticket_blocks'][$block]['count']) && $context['ticket_blocks'][$block]['count'] > 10)

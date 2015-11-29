@@ -104,6 +104,11 @@ $to_remove = array(
 	// Scheduled tasks
 	'shd_autopurge_tickets',
 	'shd_autopurge_tickets_days',
+	// Display Options
+	'shd_block_order_1',
+	'shd_block_order_2',
+	'shd_block_order_3',
+	'shd_block_order_4',
 );
 
 global $modSettings;

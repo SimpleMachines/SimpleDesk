@@ -378,7 +378,7 @@ function shd_main()
 */
 function shd_main_helpdesk()
 {
-	global $context, $txt, $smcFunc, $user_profile, $scripturl, $user_info;
+	global $context, $modSettings, $txt, $smcFunc, $user_profile, $scripturl, $user_info;
 
 	$is_staff = shd_allowed_to('shd_staff', 0);
 	// Stuff we need to add to $context, page title etc etc
@@ -429,6 +429,28 @@ function shd_main_helpdesk()
 		),
 		'shd_home_view' => $is_staff ? 'staff' : 'user',
 	);
+
+	// Are we going to reorder these?
+	if (isset($modSettings['shd_block_order_1'], $modSettings['shd_block_order_2'], $modSettings['shd_block_order_3'], $modSettings['shd_block_order_4']))
+	{
+		$context['ticket_block_order'] = array();
+		$unused = array('assigned' => 0, 'new' => 0, 'staff' => 0, 'user' => 0);
+
+		for ($i = 1; $i <= 4; $i++)
+		{
+			// Did we already use this?
+			if (in_array($modSettings['shd_block_order_' . $i], $context['ticket_block_order']))
+				continue;
+
+			$context['ticket_block_order'][$i] = $modSettings['shd_block_order_' . $i];
+			unset($unused[$modSettings['shd_block_order_' . $i]]);
+		}
+
+		foreach ($unused AS $u => $j)
+			$context['ticket_block_order'][] = $u;
+	}
+	else
+		$context['ticket_block_order'] = array(1 => 'assigned', 2 => 'new', 3 => 'staff', 4 => 'user');
 
 	if (!empty($context['shd_dept_name']) && $context['shd_multi_dept'])
 		$context['linktree'][] = array(

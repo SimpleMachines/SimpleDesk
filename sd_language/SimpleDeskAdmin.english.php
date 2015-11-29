@@ -155,6 +155,11 @@ $txt['shd_disable_unread'] = 'Disable integration with Unread Posts/Unread Repli
 $txt['shd_disable_unread_note'] = 'Normally, SimpleDesk adds a list of topics to the unread posts/unread replies page but sometimes (e.g. certain mobile themes) this does not always work so well.';
 $txt['shd_zerofill'] = 'Smallest number of digits to use';
 $txt['shd_zerofill_note'] = 'Ticket numbers are normally expressed like 00001, this would be 5 digits, and ticket 100000 would have no extra digits. You can use 0 to not have any leading zeroes if you like.';
+$txt['shd_block_order_1'] = 'Tickets Block: 1st position';
+$txt['shd_block_order_2'] = 'Tickets Block: 2nd position';
+$txt['shd_block_order_3'] = 'Tickets Block: 3rd position';
+$txt['shd_block_order_4'] = 'Tickets Block: 4th position';
+$txt['shd_block_order_note'] = 'Specify the default order of blocks';
 //@}
 
 //! @name Configuration items on the Posting Options page

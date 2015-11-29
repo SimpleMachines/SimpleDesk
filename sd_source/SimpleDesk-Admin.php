@@ -392,6 +392,12 @@ function shd_modify_display_options($return_config)
 		'',
 		array('check', 'shd_disable_unread', 'subtext' => $txt['shd_disable_unread_note']),
 		array('check' , 'shd_disable_boardint', 'subtext' => $txt['shd_disable_boardint_note']),
+		'',
+		array('select', 'shd_block_order_1', array('assigned' => $txt['shd_status_assigned_heading'], 'new' => $txt['shd_status_' . TICKET_STATUS_NEW . '_heading'], 'staff' => $txt['shd_status_' . TICKET_STATUS_PENDING_STAFF . '_heading'], 'user' => $txt['shd_status_' . TICKET_STATUS_PENDING_USER . '_heading']), 'subtext' => $txt['shd_block_order_note']),
+		array('select', 'shd_block_order_2', array('new' => $txt['shd_status_' . TICKET_STATUS_NEW . '_heading'], 'staff' => $txt['shd_status_' . TICKET_STATUS_PENDING_STAFF . '_heading'], 'user' => $txt['shd_status_' . TICKET_STATUS_PENDING_USER . '_heading'], 'assigned' => $txt['shd_status_assigned_heading']), 'subtext' => $txt['shd_block_order_note']),
+		array('select', 'shd_block_order_3', array('staff' => $txt['shd_status_' . TICKET_STATUS_PENDING_STAFF . '_heading'], 'user' => $txt['shd_status_' . TICKET_STATUS_PENDING_USER . '_heading'], 'assigned' => $txt['shd_status_assigned_heading'], 'new' => $txt['shd_status_' . TICKET_STATUS_NEW . '_heading']), 'subtext' => $txt['shd_block_order_note']),
+		array('select', 'shd_block_order_4', array('user' => $txt['shd_status_' . TICKET_STATUS_PENDING_USER . '_heading'], 'assigned' => $txt['shd_status_assigned_heading'], 'new' => $txt['shd_status_' . TICKET_STATUS_NEW . '_heading'], 'staff' => $txt['shd_status_' . TICKET_STATUS_PENDING_STAFF . '_heading']), 'subtext' => $txt['shd_block_order_note']),
+
 	);
 	$context['settings_title'] = $txt['shd_admin_options_display'];
 	$context['settings_icon'] = 'details.png';
