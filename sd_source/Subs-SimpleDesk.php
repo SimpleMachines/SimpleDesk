@@ -854,7 +854,7 @@ function shd_format_text($text, $smileys = true, $cache = '')
  *	@param string &$message The message to be parsed.
  *	@since 2.0
 */
-function shd_parse_wikilinks(&$message, &$smileys, &$cache_id, &$parse_tags)
+function shd_parse_wikilinks(&$message, &$smileys = array(), &$cache_id = array(), &$parse_tags = array())
 {
 	global $modSettings, $smcFunc, $scripturl;
 	static $wikilinks = array();

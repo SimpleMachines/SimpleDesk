@@ -36,7 +36,6 @@
 		<!-- css -->
 		<require-file name="css/helpdesk.css" destination="$themedir/css" />
 		<require-file name="css/helpdesk_admin.css" destination="$themedir/css" />
-		<require-file name="css/helpdesk_ie6.css" destination="$themedir/css" />
 
 		<!-- scripts -->
 		<require-file name="scripts/helpdesk_admin.js" destination="$themedir/scripts" />
@@ -75,7 +74,6 @@
 		<!-- css, removed -->
 		<remove-file name="$themedir/css/helpdesk.css" />
 		<remove-file name="$themedir/css/helpdesk-admin.css" />
-		<remove-file name="$themedir/css/helpdesk-ie6.css" />
 
 		<!-- bundled plugins removed (NOTE: done one by one to avoid eating existing plugins on upgrade) -->
 		<remove-dir name="$languagedir/sd_plugin_lang" />
