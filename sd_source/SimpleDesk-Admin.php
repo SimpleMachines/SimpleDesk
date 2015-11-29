@@ -388,9 +388,9 @@ function shd_modify_display_options($return_config)
 		array('select', 'shd_theme', $theme_list, 'subtext' => $txt['shd_theme_note']),
 		array('int', 'shd_zerofill', 'subtext' => $txt['shd_zerofill_note']),
 		'',
-		array('check', 'shd_hidemenuitem'),
+		array('check', 'shd_hidemenuitem', 'subtext' => $txt['shd_hidemenuitem_note']),
 		'',
-		array('check', 'shd_disable_unread'),
+		array('check', 'shd_disable_unread', 'subtext' => $txt['shd_disable_unread_note']),
 		array('check' , 'shd_disable_boardint', 'subtext' => $txt['shd_disable_boardint_note']),
 	);
 	$context['settings_title'] = $txt['shd_admin_options_display'];
