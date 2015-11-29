@@ -2039,3 +2039,26 @@ function shd_error_types(&$other_error_types, &$error_type, $error_message, $fil
 	elseif (stripos($file, 'simpledesk') !== false || stripos($error_message, 'shd_') !== false || stripos($error_message, 'simpledesk') !== false)
 		$error_type = 'simpledesk';
 }
+
+/**
+ *	Add our Quote BBC in.
+ *
+ *	@since 2.1
+ *	@param array &$codes Current BBCodes list.
+ *  @param array $no_autolink_tags Tags we should not autolink
+*/
+function shd_bbc_codes(&$codes, &$no_autolink_tags)
+{
+	$codes[] =	array(
+		'tag' => 'quote',
+		'parameters' => array(
+			'author' => array('match' => '([^<>]{1,192}?)'),
+			'link' => array('match' => '(?:board=\d+;)?((?:topic|threadid)=[\dmsg#\./]{1,40}(?:;start=[\dmsg#\./]{1,40})?|action=helpdesk;sa=ticket;ticket=[\dmsg#\./]{1,40}(?:;start=[\dmsg#\./]{1,40})?|msg=\d+?|action=profile;u=\d+)'),
+			'date' => array('match' => '(\d+)', 'validate' => 'timeformat'),
+		),
+		'before' => '<div class="quoteheader"><a href="' . $scripturl . '?{link}">' . $txt['quote_from'] . ': {author} ' . $txt['search_on'] . ' {date}</a></div><blockquote>',
+		'after' => '</blockquote>',
+		'trim' => 'both',
+		'block_level' => true,
+	);
+}

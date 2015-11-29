@@ -5,10 +5,6 @@
 	<version>2.1</version>
 
 	<file name="$sourcedir/Subs.php"><!-- bbcode handler changes -->
-		<operation><!-- expand the quote link= parameter -->
-			<search position="before"><![CDATA[(?:topic|threadid)=[\dmsg#\./]{1,40}(?:;start=[\dmsg#\./]{1,40})?]]></search>
-			<add><![CDATA[|action=helpdesk;sa=ticket;ticket=[\dmsg#\./]{1,40}(?:;start=[\dmsg#\./]{1,40})?]]></add>
-		</operation>
 		<operation><!-- Force the log of disabled tags to be reset if we're calling it in such a condition as it is being re-evaluated anyway -->
 			<search position="before"><![CDATA[		if (!empty($modSettings['disabledBBC']))
 		{]]></search>

@@ -136,6 +136,12 @@ $hooks = array();
 		'file' => '$sourcedir/sd_source/Subs-SimpleDesk.php',
 		'perm' => true,
 	);
+	$hooks[] = array(
+		'hook' => 'integrate_bbc_codes',
+		'function' => 'shd_bbc_codes',
+		'file' => '$sourcedir/sd_source/Subs-SimpleDesk.php',
+		'perm' => true,
+	);
 // Admin Section Stuff
 	$hooks[] = array(
 		'hook' => 'integrate_admin_include',
@@ -214,6 +220,11 @@ $hooks = array();
 	$hooks[] = array(
 		'hook' => 'integrate_profile_profileSaveGroups',
 		'function' => 'shd_clear_active_tickets',
+		'perm' => true,
+	);
+	$hooks[] = array(
+		'hook' => 'integrate_profile_trackip',
+		'function' => 'shd_profile_trackip',
 		'perm' => true,
 	);
 // Other
