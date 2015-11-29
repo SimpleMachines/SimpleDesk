@@ -99,6 +99,11 @@ $hooks = array();
 		'function' => 'shd_packages_sort_id',
 		'file' => '$sourcedir/sd_source/Subs-SimpleDeskPackages.php',
 	);
+	$hooks[] = array(
+		'hook' => 'integrate_post_parsebbc',
+		'function' => 'shd_parse_wikilinks',
+		'file' => '$sourcedir/sd_source/Subs-SimpleDesk.php',
+	);
 // Admin Section Stuff
 	// Core
 	$hooks[] = array(

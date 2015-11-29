@@ -854,10 +854,14 @@ function shd_format_text($text, $smileys = true, $cache = '')
  *	@param string &$message The message to be parsed.
  *	@since 2.0
 */
-function shd_parse_wikilinks(&$message)
+function shd_parse_wikilinks(&$message, &$smileys, &$cache_id, &$parse_tags)
 {
 	global $modSettings, $smcFunc, $scripturl;
 	static $wikilinks = array();
+
+	// Avoid this if we are not active or running wikilinks.
+	if (empty($modSettings['helpdesk_active']) || empty($modSettings['shd_allow_wikilinks']))
+		return;
 
 	// We need to check we're not coming from the convert-to-WYSIWYG context. If we are, we must not parse wikilinks.
 	// If we're doing the WYSIWYG thing, bbc_to_html() will be in the backtrace somewhere.
