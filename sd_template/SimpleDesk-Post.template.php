@@ -449,7 +449,7 @@ function template_ticket_content()
 						<hr /><br />
 							', $context['ticket_form']['message'];
 
-	if ($settings['show_modify'] && !empty($context['ticket']['modified']))
+	if (!empty($settings['show_modify']) && !empty($context['ticket']['modified']))
 	{
 		echo '
 						<div class="smalltext shd_modified" style="margin-top:20px;">
@@ -589,7 +589,7 @@ function template_ticket_footer()
 {
 	global $settings, $context, $txt;
 
-	if ($settings['show_modify'] && !empty($context['ticket_form']['modified']))
+	if (!empty($settings['show_modify']) && !empty($context['ticket_form']['modified']))
 	{
 		echo '
 						<div class="smalltext shd_modified" style="margin-top:20px;">
