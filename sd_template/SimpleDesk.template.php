@@ -597,10 +597,8 @@ function template_shd_menu_header($header, $string)
 	$link = '';
 	// Get the pages of existing items first
 	foreach ($context['ticket_blocks'] as $block_key => $block)
-	{
 		if (isset($_REQUEST['st_' . $block_key]))
 			$link .= ';st_' . $block_key . '=' . $block['start'];
-	}
 
 	$direction = 'down';
 	// Now for sorting direction per block
@@ -617,9 +615,7 @@ function template_shd_menu_header($header, $string)
 	$html = '<a href="' . $scripturl . '?action=helpdesk;sa=' . $_REQUEST['sa'] . ($_REQUEST['sa'] == 'viewblock' ? ';block=' . $_REQUEST['block'] : '') . $link . $context['shd_dept_link'] . '">' . $string . '</a> ';
 
 	if ($context['ticket_blocks'][$context['current_block']]['sort']['item'] == $header)
-	{
-		$html .= '<img src="' . $settings['images_url']  . '/sort_' . ($context['ticket_blocks'][$context['current_block']]['sort']['direction'] == 'asc' ? 'down' : 'up') . '.png" alt="" />';
-	}
+		$html .= '<img src="' . $settings['images_url']  . '/simpledesk/move_' . ($context['ticket_blocks'][$context['current_block']]['sort']['direction'] == 'asc' ? 'down' : 'up') . '.png" alt="" />';
 
 	return $html;
 }
