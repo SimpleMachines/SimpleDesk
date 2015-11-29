@@ -94,7 +94,13 @@ $hooks = array();
 		'function' => 'shd_bbc_codes',
 		'file' => '$sourcedir/sd_source/Subs-SimpleDesk.php',
 	);
+	$hooks[] = array(
+		'hook' => 'integrate_packages_sort_id',
+		'function' => 'shd_packages_sort_id',
+		'file' => '$sourcedir/sd_source/Subs-SimpleDeskPackages.php',
+	);
 // Admin Section Stuff
+	// Core
 	$hooks[] = array(
 		'hook' => 'integrate_admin_include',
 		'function' => '$sourcedir/sd_source/Subs-SimpleDeskAdmin.php',
@@ -107,17 +113,10 @@ $hooks = array();
 		'hook' => 'integrate_admin_search',
 		'function' => 'shd_admin_search',
 	);
+	// Attachments
 	$hooks[] = array(
 		'hook' => 'integrate_remove_attachments',
 		'function' => 'shd_remove_attachments',
-	);
-	$hooks[] = array(
-		'hook' => 'integrate_convert_msgbody',
-		'function' => 'shd_convert_msgbody',
-	);
-	$hooks[] = array(
-		'hook' => 'integrate_modifylanguages',
-		'function' => 'shd_modifylanguages',
 	);
 	$hooks[] = array(
 		'hook' => 'integrate_repair_attachments_nomsg',
@@ -133,6 +132,31 @@ $hooks = array();
 		'hook' => 'integrate_attachment_remove',
 		'function' => 'shd_attachment_remove',
 		'file' => '$sourcedir/sd_source/Subs-SimpleDeskManageAttachments.php',
+	);
+	// Packages
+	$hooks[] = array(
+		'hook' => 'integrate_packages_sort_id',
+		'function' => 'shd_packages_sort_id',
+		'file' => '$sourcedir/sd_source/Subs-SimpleDeskPackages.php',
+	);
+	$hooks[] = array(
+		'hook' => 'integrate_package_download',
+		'function' => 'shd_package_download',
+		'file' => '$sourcedir/sd_source/Subs-SimpleDeskPackages.php',
+	);
+	$hooks[] = array(
+		'hook' => 'integrate_package_upload',
+		'function' => 'shd_package_upload',
+		'file' => '$sourcedir/sd_source/Subs-SimpleDeskPackages.php',
+	);
+	// Other
+	$hooks[] = array(
+		'hook' => 'integrate_convert_msgbody',
+		'function' => 'shd_convert_msgbody',
+	);
+	$hooks[] = array(
+		'hook' => 'integrate_modifylanguages',
+		'function' => 'shd_modifylanguages',
 	);
 // Display
 	$hooks[] = array(

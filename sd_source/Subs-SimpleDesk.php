@@ -2049,6 +2049,8 @@ function shd_error_types(&$other_error_types, &$error_type, $error_message, $fil
 */
 function shd_bbc_codes(&$codes, &$no_autolink_tags)
 {
+	global $scripturl, $txt;
+
 	$codes[] =	array(
 		'tag' => 'quote',
 		'parameters' => array(

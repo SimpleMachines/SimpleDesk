@@ -143,6 +143,7 @@ $hooks = array();
 		'perm' => true,
 	);
 // Admin Section Stuff
+	// Core
 	$hooks[] = array(
 		'hook' => 'integrate_admin_include',
 		'function' => '$sourcedir/sd_source/Subs-SimpleDeskAdmin.php',
@@ -158,19 +159,10 @@ $hooks = array();
 		'function' => 'shd_admin_search',
 		'perm' => true,
 	);
+	// Attachments
 	$hooks[] = array(
 		'hook' => 'integrate_remove_attachments',
 		'function' => 'shd_remove_attachments',
-		'perm' => true,
-	);
-	$hooks[] = array(
-		'hook' => 'integrate_convert_msgbody',
-		'function' => 'shd_convert_msgbody',
-		'perm' => true,
-	);
-	$hooks[] = array(
-		'hook' => 'integrate_modifylanguages',
-		'function' => 'shd_modifylanguages',
 		'perm' => true,
 	);
 	$hooks[] = array(
@@ -189,6 +181,36 @@ $hooks = array();
 		'hook' => 'integrate_attachment_remove',
 		'function' => 'shd_attachment_remove',
 		'file' => '$sourcedir/sd_source/Subs-SimpleDeskManageAttachments.php',
+		'perm' => true,
+	);
+	// Packages
+	$hooks[] = array(
+		'hook' => 'integrate_packages_sort_id',
+		'function' => 'shd_packages_sort_id',
+		'file' => '$sourcedir/sd_source/Subs-SimpleDeskPackages.php',
+		'perm' => true,
+	);
+	$hooks[] = array(
+		'hook' => 'integrate_package_download',
+		'function' => 'shd_package_download',
+		'file' => '$sourcedir/sd_source/Subs-SimpleDeskPackages.php',
+		'perm' => true,
+	);
+	$hooks[] = array(
+		'hook' => 'integrate_package_upload',
+		'function' => 'shd_package_upload',
+		'file' => '$sourcedir/sd_source/Subs-SimpleDeskPackages.php',
+		'perm' => true,
+	);
+	// Other
+	$hooks[] = array(
+		'hook' => 'integrate_convert_msgbody',
+		'function' => 'shd_convert_msgbody',
+		'perm' => true,
+	);
+	$hooks[] = array(
+		'hook' => 'integrate_modifylanguages',
+		'function' => 'shd_modifylanguages',
 		'perm' => true,
 	);
 // Display
