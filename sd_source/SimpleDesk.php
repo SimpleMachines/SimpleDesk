@@ -296,11 +296,13 @@ function shd_main()
 	<link rel="stylesheet" type="text/css" href="' . (file_exists($settings['theme_dir'] . '/css/helpdesk.css') ? $settings['theme_url'] . '/css/helpdesk.css' : $settings['default_theme_url'] . '/css/helpdesk.css') . '" />
 	<script type="text/javascript" src="' . $settings['default_theme_url'] . '/scripts/helpdesk.js?rc2"></script>';
 
-	// Darn IE6. Die, already :(
-	if ($context['browser']['is_ie6'])
+	// A custom css?
+	if (file_exists($settings['default_theme_url'] . '/css/helpdesk_custom.css'))
 		$context['html_headers'] .= '
-		<!-- Fall back, dark force, for we shall thy evil powers not endorse -->
-		<link rel="stylesheet" type="text/css" href="' . $settings['default_theme_url'] . '/css/helpdesk_ie6.css" />';
+	<link rel="stylesheet" type="text/css" href="' . $settings['default_theme_url'] . '/css/helpdesk_custom.css" />';
+	if (file_exists($settings['theme_dir'] . '/css/helpdesk_custom.css'))
+		$context['html_headers'] .= '
+	<link rel="stylesheet" type="text/css" href="' . $settings['theme_url'] . '/css/helpdesk_custom.css" />';
 
 	// Int hooks - after we basically set everything up (so it's manipulatable by the hook, but before we do the last bits of finalisation)
 	call_integration_hook('shd_hook_helpdesk', array(&$subactions));
