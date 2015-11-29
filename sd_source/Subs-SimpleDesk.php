@@ -1701,270 +1701,274 @@ function shd_buffer_replace(&$buffer)
 */
 function shd_main_menu(&$menu_buttons)
 {
-	global $context, $txt, $scripturl, $modSettings;
+	global $context, $txt, $scripturl, $settings, $modSettings;
 
-	if (!empty($modSettings['helpdesk_active']))
+	if (empty($modSettings['helpdesk_active']))
+		return;
+
+    // Load some extra CSS
+    $context['html_headers'] .= '
+    <link rel="stylesheet" type="text/css" href="' . $settings['default_theme_url'] . '/css/helpdesk_icons.css" />';
+
+	// Stuff we'll always do in SD if active
+	$helpdesk_admin = $context['user']['is_admin'] || shd_allowed_to('admin_helpdesk', 0);
+
+	// 1. Add the main menu if we can.
+	if (shd_allowed_to(array('access_helpdesk', 'admin_helpdesk'), 0) && empty($modSettings['shd_hidemenuitem']))
 	{
-		// Stuff we'll always do in SD if active
-		$helpdesk_admin = $context['user']['is_admin'] || shd_allowed_to('admin_helpdesk', 0);
-
-		// 1. Add the main menu if we can.
-		if (shd_allowed_to(array('access_helpdesk', 'admin_helpdesk'), 0) && empty($modSettings['shd_hidemenuitem']))
-		{
-			// Because some items may have been removed at this point, let's try a list of possible places after which we can add the button.
-			$order = array('search', 'profile', 'forum', 'pm', 'help', 'home');
-			$pos = null;
-			foreach ($order as $item)
-				if (isset($menu_buttons[$item]))
-				{
-					$pos = $item;
-					break;
-				}
-
-			if ($pos === null)
-				$menu_buttons['helpdesk'] = array();
-			else
+		// Because some items may have been removed at this point, let's try a list of possible places after which we can add the button.
+		$order = array('search', 'profile', 'forum', 'pm', 'help', 'home');
+		$pos = null;
+		foreach ($order as $item)
+			if (isset($menu_buttons[$item]))
 			{
-				// OK, we're adding it after something.
-				$temp = $menu_buttons;
-				$menu_buttons = array();
-				foreach ($temp as $k => $v)
-				{
-					$menu_buttons[$k] = $v;
-					if ($k == $pos)
-						$menu_buttons['helpdesk'] = array();
-				}
+				$pos = $item;
+				break;
 			}
 
-			$menu_buttons['helpdesk'] += array(
-				'title' => $modSettings['helpdesk_active'] && SMF != 'SSI' ? shd_get_active_tickets() : $txt['shd_helpdesk'],
-				'href' => $scripturl . '?action=helpdesk;sa=main',
+		if ($pos === null)
+			$menu_buttons['helpdesk'] = array();
+		else
+		{
+			// OK, we're adding it after something.
+			$temp = $menu_buttons;
+			$menu_buttons = array();
+			foreach ($temp as $k => $v)
+			{
+				$menu_buttons[$k] = $v;
+				if ($k == $pos)
+					$menu_buttons['helpdesk'] = array();
+			}
+		}
+
+		$menu_buttons['helpdesk'] += array(
+			'title' => $modSettings['helpdesk_active'] && SMF != 'SSI' ? shd_get_active_tickets() : $txt['shd_helpdesk'],
+			'href' => $scripturl . '?action=helpdesk;sa=main',
+			'show' => true,
+			'active_button' => false,
+			'sub_buttons' => array(
+				'newticket' => array(
+					'title' => $txt['shd_new_ticket'],
+					'href' => $scripturl . '?action=helpdesk;sa=newticket',
+					'show' => SMF == 'SSI' ? false : shd_allowed_to('shd_new_ticket', 0),
+				),
+				'newproxyticket' => array(
+					'title' => $txt['shd_new_ticket_proxy'],
+					'href' => $scripturl . '?action=helpdesk;sa=newticket;proxy',
+					'show' => SMF == 'SSI' ? false : shd_allowed_to('shd_new_ticket', 0) && shd_allowed_to('shd_post_proxy', 0),
+				),
+				'closedtickets' => array(
+					'title' => $txt['shd_tickets_closed'],
+					'href' => $scripturl . '?action=helpdesk;sa=closedtickets',
+					'show' => SMF == 'SSI' ? false : shd_allowed_to(array('shd_view_closed_own', 'shd_view_closed_any'), 0),
+				),
+				'recyclebin' => array(
+					'title' => $txt['shd_recycle_bin'],
+					'href' => $scripturl . '?action=helpdesk;sa=recyclebin',
+					'show' => SMF == 'SSI' ? false : shd_allowed_to('shd_access_recyclebin', 0),
+				),
+			),
+		);
+
+		if ($helpdesk_admin)
+			$menu_buttons['helpdesk']['sub_buttons']['admin'] = array(
+				'title' => $txt['admin'],
+				'href' => $scripturl . '?action=admin;area=helpdesk_info',
+				'show' => SMF == 'SSI' ? false : empty($modSettings['shd_hidemenuitem']) && $helpdesk_admin,
+				'sub_buttons' => shd_main_menu_admin($helpdesk_admin),
+			);
+
+		$item = false;
+		foreach ($menu_buttons['helpdesk']['sub_buttons'] as $key => $value)
+			if (!empty($value['show']))
+				$item = $key;
+			else
+				unset($menu_buttons['helpdesk']['sub_buttons'][$key]);
+
+		if (!empty($item))
+			$menu_buttons['helpdesk']['sub_buttons'][$item]['is_last'] = true;
+	}
+
+	// Add the helpdesk admin option to the admin menu, if board integration is disabled.
+	if (!empty($modSettings['shd_hidemenuitem']) && $helpdesk_admin)
+	{
+		// It's possible the admin button got eaten already, so we may have to recreate it.
+		if (empty($menu_buttons['admin']))
+		{
+			$admin_menu = array(
+				'title' => $txt['admin'],
+				'href' => $scripturl . '?action=admin',
 				'show' => true,
 				'active_button' => false,
 				'sub_buttons' => array(
-					'newticket' => array(
-						'title' => $txt['shd_new_ticket'],
-						'href' => $scripturl . '?action=helpdesk;sa=newticket',
-						'show' => SMF == 'SSI' ? false : shd_allowed_to('shd_new_ticket', 0),
-					),
-					'newproxyticket' => array(
-						'title' => $txt['shd_new_ticket_proxy'],
-						'href' => $scripturl . '?action=helpdesk;sa=newticket;proxy',
-						'show' => SMF == 'SSI' ? false : shd_allowed_to('shd_new_ticket', 0) && shd_allowed_to('shd_post_proxy', 0),
-					),
-					'closedtickets' => array(
-						'title' => $txt['shd_tickets_closed'],
-						'href' => $scripturl . '?action=helpdesk;sa=closedtickets',
-						'show' => SMF == 'SSI' ? false : shd_allowed_to(array('shd_view_closed_own', 'shd_view_closed_any'), 0),
-					),
-					'recyclebin' => array(
-						'title' => $txt['shd_recycle_bin'],
-						'href' => $scripturl . '?action=helpdesk;sa=recyclebin',
-						'show' => SMF == 'SSI' ? false : shd_allowed_to('shd_access_recyclebin', 0),
-					),
 				),
 			);
 
-			if ($helpdesk_admin)
-				$menu_buttons['helpdesk']['sub_buttons']['admin'] = array(
-					'title' => $txt['admin'],
-					'href' => $scripturl . '?action=admin;area=helpdesk_info',
-					'show' => SMF == 'SSI' ? false : empty($modSettings['shd_hidemenuitem']) && $helpdesk_admin,
-					'sub_buttons' => shd_main_menu_admin($helpdesk_admin),
-				);
+			// Trouble is, now we've done that, it's in the wrong damn place. So step through and insert our menu into just after the SD menu
+			$old_menu_buttons = $menu_buttons;
+			$menu_buttons = array();
 
-			$item = false;
-			foreach ($menu_buttons['helpdesk']['sub_buttons'] as $key => $value)
-				if (!empty($value['show']))
-					$item = $key;
-				else
-					unset($menu_buttons['helpdesk']['sub_buttons'][$key]);
+			$added = false;
+			foreach ($old_menu_buttons as $area => $detail)
+			{
+				if (!$added && ($area == 'moderate' || $area == 'profile'))
+				{
+					$menu_buttons['admin'] = $admin_menu;
+					$added = true;
+				}
 
-			if (!empty($item))
-				$menu_buttons['helpdesk']['sub_buttons'][$item]['is_last'] = true;
+				$menu_buttons[$area] = $detail;
+			}
 		}
 
-		// Add the helpdesk admin option to the admin menu, if board integration is disabled.
-		if (!empty($modSettings['shd_hidemenuitem']) && $helpdesk_admin)
+		// Make sure the button is visible if you can admin forum
+		$menu_buttons['admin']['show'] = true;
+
+		// Remove the is_last item
+		foreach ($menu_buttons['admin']['sub_buttons'] as $key => $value)
+			if (!empty($value['is_last']))
+				unset($menu_buttons['admin']['sub_buttons'][$key]['is_last']);
+
+		// Add the new button
+		$menu_buttons['admin']['sub_buttons']['helpdesk_admin'] = array(
+			'title' => $txt['shd_helpdesk'],
+			'href' => $scripturl . '?action=admin;area=helpdesk_info',
+			'show' => true,
+			'is_last' => true,
+			'sub_buttons' => shd_main_menu_admin($helpdesk_admin),
+		);
+	}
+
+	if (shd_allowed_to(array('shd_view_profile_own', 'shd_view_profile_any'), 0))
+	{
+		// Hmm, this could be tricky. It's possible the main menu has been eaten by permissions at this point, so just in case, reconstruct what's missing.
+		if (empty($menu_buttons['profile']))
 		{
-			// It's possible the admin button got eaten already, so we may have to recreate it.
-			if (empty($menu_buttons['admin']))
+			$profile_menu = array(
+				'title' => $txt['profile'],
+				'href' => $scripturl . '?action=profile',
+				'active_button' => false,
+				'sub_buttons' => array(
+				),
+			);
+
+			// Trouble is, now we've done that, it's in the wrong damn place. So step through and insert our menu into just after the SD menu
+			$old_menu_buttons = $menu_buttons;
+			$menu_buttons = array();
+
+			$added = false;
+			foreach ($old_menu_buttons as $area => $detail)
 			{
-				$admin_menu = array(
-					'title' => $txt['admin'],
-					'href' => $scripturl . '?action=admin',
-					'show' => true,
-					'active_button' => false,
-					'sub_buttons' => array(
-					),
-				);
+				$menu_buttons[$area] = $detail;
 
-				// Trouble is, now we've done that, it's in the wrong damn place. So step through and insert our menu into just after the SD menu
-				$old_menu_buttons = $menu_buttons;
-				$menu_buttons = array();
-
-				$added = false;
-				foreach ($old_menu_buttons as $area => $detail)
+				if ($area == 'helpdesk')
 				{
-					if (!$added && ($area == 'moderate' || $area == 'profile'))
-					{
-						$menu_buttons['admin'] = $admin_menu;
-						$added = true;
-					}
-
-					$menu_buttons[$area] = $detail;
+					$menu_buttons['profile'] = $profile_menu;
+					$added = true;
 				}
 			}
+			if (!$added)
+				$menu_buttons['profile'] = $profile_menu;
+		}
 
-			// Make sure the button is visible if you can admin forum
-			$menu_buttons['admin']['show'] = true;
+		// Remove the is_last item
+		foreach ($menu_buttons['profile']['sub_buttons'] as $key => $value)
+		{
+			if (!empty($value['is_last']))
+				unset($menu_buttons['profile']['sub_buttons'][$key]['is_last']);
+		}
 
-			// Remove the is_last item
-			foreach ($menu_buttons['admin']['sub_buttons'] as $key => $value)
-				if (!empty($value['is_last']))
-					unset($menu_buttons['admin']['sub_buttons'][$key]['is_last']);
+		// If we're in HD only mode, we definitely don't want the regular forum profile item.
+		if (!empty($modSettings['shd_helpdesk_only']))
+			unset($menu_buttons['profile']['sub_buttons']['profile'], $menu_buttons['profile']['sub_buttons']['summary']);
 
-			// Add the new button
-			$menu_buttons['admin']['sub_buttons']['helpdesk_admin'] = array(
-				'title' => $txt['shd_helpdesk'],
+		// Add the helpdesk profile to the profile menu (either the original or our reconstituted one)
+		$menu_buttons['profile']['show'] = true;
+		$menu_buttons['profile']['sub_buttons']['hd_profile'] = array(
+			'title' => $txt['shd_helpdesk_profile'],
+			'href' => $scripturl . '?action=profile;area=helpdesk',
+			'show' => true,
+			'is_last' => true,
+		);
+	}
+
+	// Stuff we'll only do if in standalone mode
+	if (!empty($modSettings['shd_helpdesk_only']))
+	{
+		$menu_buttons['home'] = array(
+			'title' => $modSettings['helpdesk_active'] && SMF != 'SSI' ? shd_get_active_tickets() : $txt['shd_helpdesk'],
+			'href' => $scripturl . '?action=helpdesk;sa=main',
+			'show' => $modSettings['helpdesk_active'],
+			'sub_buttons' => array(
+				'newticket' => array(
+					'title' => $txt['shd_new_ticket'],
+					'href' => $scripturl . '?action=helpdesk;sa=newticket',
+					'show' => SMF == 'SSI' ? false : shd_allowed_to('shd_new_ticket', 0),
+				),
+				'newproxyticket' => array(
+					'title' => $txt['shd_new_ticket_proxy'],
+					'href' => $scripturl . '?action=helpdesk;sa=newticket;proxy',
+					'show' => SMF == 'SSI' ? false : shd_allowed_to('shd_new_ticket', 0) && shd_allowed_to('shd_post_proxy', 0),
+				),
+				'closedtickets' => array(
+					'title' => $txt['shd_tickets_closed'],
+					'href' => $scripturl . '?action=helpdesk;sa=closedtickets',
+					'show' => SMF == 'SSI' ? false : shd_allowed_to(array('shd_view_closed_own', 'shd_view_closed_any'), 0),
+				),
+				'recyclebin' => array(
+					'title' => $txt['shd_recycle_bin'],
+					'href' => $scripturl . '?action=helpdesk;sa=recyclebin',
+					'show' => SMF == 'SSI' ? false : shd_allowed_to('shd_access_recyclebin', 0),
+				),
+			),
+			'active_button' => false,
+		);
+		if ($helpdesk_admin)
+			$menu_buttons['home']['sub_buttons']['admin'] = array(
+				'title' => $txt['admin'],
 				'href' => $scripturl . '?action=admin;area=helpdesk_info',
-				'show' => true,
+				'show' => SMF == 'SSI' ? false : empty($modSettings['shd_hidemenuitem']) && $helpdesk_admin,
 				'is_last' => true,
 				'sub_buttons' => shd_main_menu_admin($helpdesk_admin),
 			);
-		}
 
-		if (shd_allowed_to(array('shd_view_profile_own', 'shd_view_profile_any'), 0))
+		$item = false;
+		foreach ($menu_buttons['home']['sub_buttons'] as $key => $value)
+			if (!empty($value['show']))
+				$item = $key;
+			else
+				unset($menu_buttons['home']['sub_buttons'][$key]);
+
+		if (!empty($item))
+			$menu_buttons['home']['sub_buttons'][$item]['is_last'] = true;
+
+		unset($menu_buttons['helpdesk']);
+
+		// Disable help, search, calendar, moderation center
+		unset($menu_buttons['help'], $menu_buttons['search'], $menu_buttons['calendar'], $menu_buttons['moderate']);
+
+		$context['allow_search'] = false;
+		$context['allow_calendar'] = false;
+		$context['allow_moderation_center'] = false;
+
+		// Disable PMs
+		if (!empty($modSettings['shd_disable_pm']))
 		{
-			// Hmm, this could be tricky. It's possible the main menu has been eaten by permissions at this point, so just in case, reconstruct what's missing.
-			if (empty($menu_buttons['profile']))
-			{
-				$profile_menu = array(
-					'title' => $txt['profile'],
-					'href' => $scripturl . '?action=profile',
-					'active_button' => false,
-					'sub_buttons' => array(
-					),
-				);
-
-				// Trouble is, now we've done that, it's in the wrong damn place. So step through and insert our menu into just after the SD menu
-				$old_menu_buttons = $menu_buttons;
-				$menu_buttons = array();
-
-				$added = false;
-				foreach ($old_menu_buttons as $area => $detail)
-				{
-					$menu_buttons[$area] = $detail;
-
-					if ($area == 'helpdesk')
-					{
-						$menu_buttons['profile'] = $profile_menu;
-						$added = true;
-					}
-				}
-				if (!$added)
-					$menu_buttons['profile'] = $profile_menu;
-			}
-
-			// Remove the is_last item
-			foreach ($menu_buttons['profile']['sub_buttons'] as $key => $value)
-			{
-				if (!empty($value['is_last']))
-					unset($menu_buttons['profile']['sub_buttons'][$key]['is_last']);
-			}
-
-			// If we're in HD only mode, we definitely don't want the regular forum profile item.
-			if (!empty($modSettings['shd_helpdesk_only']))
-				unset($menu_buttons['profile']['sub_buttons']['profile'], $menu_buttons['profile']['sub_buttons']['summary']);
-
-			// Add the helpdesk profile to the profile menu (either the original or our reconstituted one)
-			$menu_buttons['profile']['show'] = true;
-			$menu_buttons['profile']['sub_buttons']['hd_profile'] = array(
-				'title' => $txt['shd_helpdesk_profile'],
-				'href' => $scripturl . '?action=profile;area=helpdesk',
-				'show' => true,
-				'is_last' => true,
-			);
+			$context['allow_pm'] = false;
+			$menu_buttons['pm']['show'] = false;
+			$context['user']['unread_messages'] = 0; // to disable it trying to add to the menu item
 		}
 
-		// Stuff we'll only do if in standalone mode
-		if (!empty($modSettings['shd_helpdesk_only']))
+		// Disable memberlist
+		if (!empty($modSettings['shd_disable_mlist']))
 		{
-			$menu_buttons['home'] = array(
-				'title' => $modSettings['helpdesk_active'] && SMF != 'SSI' ? shd_get_active_tickets() : $txt['shd_helpdesk'],
-				'href' => $scripturl . '?action=helpdesk;sa=main',
-				'show' => $modSettings['helpdesk_active'],
-				'sub_buttons' => array(
-					'newticket' => array(
-						'title' => $txt['shd_new_ticket'],
-						'href' => $scripturl . '?action=helpdesk;sa=newticket',
-						'show' => SMF == 'SSI' ? false : shd_allowed_to('shd_new_ticket', 0),
-					),
-					'newproxyticket' => array(
-						'title' => $txt['shd_new_ticket_proxy'],
-						'href' => $scripturl . '?action=helpdesk;sa=newticket;proxy',
-						'show' => SMF == 'SSI' ? false : shd_allowed_to('shd_new_ticket', 0) && shd_allowed_to('shd_post_proxy', 0),
-					),
-					'closedtickets' => array(
-						'title' => $txt['shd_tickets_closed'],
-						'href' => $scripturl . '?action=helpdesk;sa=closedtickets',
-						'show' => SMF == 'SSI' ? false : shd_allowed_to(array('shd_view_closed_own', 'shd_view_closed_any'), 0),
-					),
-					'recyclebin' => array(
-						'title' => $txt['shd_recycle_bin'],
-						'href' => $scripturl . '?action=helpdesk;sa=recyclebin',
-						'show' => SMF == 'SSI' ? false : shd_allowed_to('shd_access_recyclebin', 0),
-					),
-				),
-				'active_button' => false,
-			);
-			if ($helpdesk_admin)
-				$menu_buttons['home']['sub_buttons']['admin'] = array(
-					'title' => $txt['admin'],
-					'href' => $scripturl . '?action=admin;area=helpdesk_info',
-					'show' => SMF == 'SSI' ? false : empty($modSettings['shd_hidemenuitem']) && $helpdesk_admin,
-					'is_last' => true,
-					'sub_buttons' => shd_main_menu_admin($helpdesk_admin),
-				);
-
-			$item = false;
-			foreach ($menu_buttons['home']['sub_buttons'] as $key => $value)
-				if (!empty($value['show']))
-					$item = $key;
-				else
-					unset($menu_buttons['home']['sub_buttons'][$key]);
-
-			if (!empty($item))
-				$menu_buttons['home']['sub_buttons'][$item]['is_last'] = true;
-
-			unset($menu_buttons['helpdesk']);
-
-			// Disable help, search, calendar, moderation center
-			unset($menu_buttons['help'], $menu_buttons['search'], $menu_buttons['calendar'], $menu_buttons['moderate']);
-
-			$context['allow_search'] = false;
-			$context['allow_calendar'] = false;
-			$context['allow_moderation_center'] = false;
-
-			// Disable PMs
-			if (!empty($modSettings['shd_disable_pm']))
-			{
-				$context['allow_pm'] = false;
-				$menu_buttons['pm']['show'] = false;
-				$context['user']['unread_messages'] = 0; // to disable it trying to add to the menu item
-			}
-
-			// Disable memberlist
-			if (!empty($modSettings['shd_disable_mlist']))
-			{
-				$context['allow_memberlist'] = false;
-				$menu_buttons['mlist']['show'] = false;
-			}
+			$context['allow_memberlist'] = false;
+			$menu_buttons['mlist']['show'] = false;
 		}
-
-		// Now engage any hooks.
-		call_integration_hook('shd_hook_mainmenu', array(&$menu_buttons));
 	}
+
+	// Now engage any hooks.
+	call_integration_hook('shd_hook_mainmenu', array(&$menu_buttons));
 }
 
 function shd_main_menu_admin($helpdesk_admin)

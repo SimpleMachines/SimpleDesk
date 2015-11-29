@@ -1,0 +1,138 @@
+/* The icons. */
+.large_admin_menu_icon.shd_cannedreplies
+{
+	background: url(../images/simpledesk/icons/shd_admin_icons.png) no-repeat;
+	background-position: -9px -9px ;
+}
+
+.large_admin_menu_icon.shd_custom_fields
+{
+	background: url(../images/simpledesk/icons/shd_admin_icons.png) no-repeat;
+	background-position: -59px -10px ;
+}
+
+.large_admin_menu_icon.shd_departments
+{
+	background: url(../images/simpledesk/icons/shd_admin_icons.png) no-repeat;
+	background-position: -109px -9px ;
+}
+
+.large_admin_menu_icon.shd_log
+{
+	background: url(../images/simpledesk/icons/shd_admin_icons.png) no-repeat;
+	background-position: -161px -10px ;
+}
+
+.large_admin_menu_icon.shd_mail
+{
+	background: url(../images/simpledesk/icons/shd_admin_icons.png) no-repeat;
+	background-position: -9px -60px ;
+}
+
+.large_admin_menu_icon.shd_maintenance
+{
+	background: url(../images/simpledesk/icons/shd_admin_icons.png) no-repeat;
+	background-position: -61px -61px ;
+}
+
+.large_admin_menu_icon.shd_options
+{
+	background: url(../images/simpledesk/icons/shd_admin_icons.png) no-repeat;
+	background-position: -110px -58px ;
+}
+
+.large_admin_menu_icon.shd_permissions
+{
+	background: url(../images/simpledesk/icons/shd_admin_icons.png) no-repeat;
+	background-position: -161px -59px ;
+}
+
+.large_admin_menu_icon.shd_plugins
+{
+	background: url(../images/simpledesk/icons/shd_admin_icons.png) no-repeat;
+	background-position: -9px -106px ;
+}
+
+.large_admin_menu_icon.shd_simpledesk
+{
+	background: url(../images/simpledesk/icons/shd_admin_icons.png) no-repeat;
+	background-position: -56px -106px ;
+}
+
+.large_admin_menu_icon.shd_support
+{
+	background: url(../images/simpledesk/icons/shd_admin_icons.png) no-repeat;
+	background-position: -110px -110px ;
+}
+
+.generic_icons.shd_cannedreplies
+{
+	background: url(../images/simpledesk/icons/shd_generic_icons.png) no-repeat;
+	background-position: -18px -22px ;
+}
+
+.generic_icons.shd_custom_fields
+{
+	background: url(../images/simpledesk/icons/shd_generic_icons.png) no-repeat;
+	background-position: -71px -22px ;
+}
+
+.generic_icons.shd_departments
+{
+	background: url(../images/simpledesk/icons/shd_generic_icons.png) no-repeat;
+	background-position: -124px -22px ;
+}
+
+.generic_icons.shd_log
+{
+	background: url(../images/simpledesk/icons/shd_generic_icons.png) no-repeat;
+	background-position: -167px -22px ;
+}
+
+.generic_icons.shd_mail
+{
+	background: url(../images/simpledesk/icons/shd_generic_icons.png) no-repeat;
+	background-position: -18px -64px ;
+}
+
+.generic_icons.shd_maintenance
+{
+	background: url(../images/simpledesk/icons/shd_generic_icons.png) no-repeat;
+	background-position: -66px -64px ;
+}
+
+.generic_icons.shd_options
+{
+	background: url(../images/simpledesk/icons/shd_generic_icons.png) no-repeat;
+	background-position: -118px -64px ;
+}
+
+.generic_icons.shd_permissions
+{
+	background: url(../images/simpledesk/icons/shd_generic_icons.png) no-repeat;
+	background-position: -166px -65px ;
+}
+
+.generic_icons.shd_plugins
+{
+	background: url(../images/simpledesk/icons/shd_generic_icons.png) no-repeat;
+	background-position: -16px -116px ;
+}
+
+.generic_icons.shd_simpledesk, .generic_icons.helpdesk
+{
+	background: url(../images/simpledesk/icons/shd_generic_icons.png) no-repeat;
+	background-position: -65px -116px ;
+}
+
+.generic_icons.shd_support
+{
+	background: url(../images/simpledesk/icons/shd_generic_icons.png) no-repeat;
+	background-position: -119px -116px ;
+}
+
+.generic_icons.profile
+{
+	background: url(../images/simpledesk/icons/shd_generic_icons.png) no-repeat;
+	background-position: -167px -117px ;
+}

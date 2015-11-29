@@ -387,98 +387,98 @@ function shd_admin_bootstrap(&$admin_areas)
 	shd_load_plugin_langfiles('hdadmin');
 
 	// Now add the main SimpleDesk menu
-	if (!empty($modSettings['helpdesk_active']))
-	{
-		// The helpdesk action log
-		if (empty($modSettings['shd_disable_action_log']))
-			$admin_areas['maintenance']['areas']['logs']['subsections']['helpdesklog'] = array($txt['shd_admin_helpdesklog'], 'admin_forum', 'url' => $scripturl . '?action=admin;area=helpdesk_info;sa=actionlog');
+	if (empty($modSettings['helpdesk_active']))
+		return;
 
-		// The main menu
-		$admin_areas['helpdesk_info'] = array(
-			'title' => $txt['shd_helpdesk'],
-			'enabled' => allowedTo('admin_forum') || shd_allowed_to('admin_helpdesk', 0),
-			'areas' => array(
-				'helpdesk_info' => array(
-					'label' => $txt['shd_admin_info'],
-					'file' => 'sd_source/SimpleDesk-Admin.php',
-					'icon' => 'shd/simpledesk.png',
-					'function' => 'shd_admin_main',
-					'subsections' => array(
-						'main' => array($txt['shd_admin_info']),
-						'actionlog' => array($txt['shd_admin_actionlog'], 'enabled' => empty($modSettings['shd_disable_action_log'])),
-						'support' => array($txt['shd_admin_support']),
-					),
-				),
-				'helpdesk_options' => array(
-					'label' => $txt['shd_admin_options'],
-					'file' => 'sd_source/SimpleDesk-Admin.php',
-					'icon' => 'shd/options.png',
-					'function' => 'shd_admin_main',
-					'subsections' => array(
-						'display' => array($txt['shd_admin_options_display']),
-						'posting' => array($txt['shd_admin_options_posting']),
-						'admin' => array($txt['shd_admin_options_admin']),
-						'standalone' => array($txt['shd_admin_options_standalone']),
-						'actionlog' => array($txt['shd_admin_options_actionlog']),
-						'notifications' => array($txt['shd_admin_options_notifications']),
-					),
-				),
-				'helpdesk_cannedreplies' => array(
-					'label' => $txt['shd_admin_cannedreplies'],
-					'file' => 'sd_source/SimpleDesk-Admin.php',
-					'icon' => 'shd/cannedreplies.png',
-					'function' => 'shd_admin_main',
-					'subsections' => array(
-					),
-				),
-				'helpdesk_customfield' => array(
-					'label' => $txt['shd_admin_custom_fields'],
-					'file' => 'sd_source/SimpleDesk-Admin.php',
-					'icon' => 'shd/custom_fields.png',
-					'function' => 'shd_admin_main',
-					'subsections' => array(
-					),
-				),
-				'helpdesk_depts' => array(
-					'label' => $txt['shd_admin_departments'],
-					'file' => 'sd_source/SimpleDesk-Admin.php',
-					'icon' => 'shd/departments.png',
-					'function' => 'shd_admin_main',
-					'subsections' => array(
-					),
-				),
-				'helpdesk_permissions' => array(
-					'label' => $txt['shd_admin_permissions'],
-					'file' => 'sd_source/SimpleDesk-Admin.php',
-					'icon' => 'shd/permissions.png',
-					'function' => 'shd_admin_main',
-					'subsections' => array(
-					),
-				),
-				'helpdesk_plugins' => array(
-					'label' => $txt['shd_admin_plugins'],
-					'file' => 'sd_source/SimpleDesk-Admin.php',
-					'icon' => 'shd/plugins.png',
-					'function' => 'shd_admin_main',
-					'subsections' => array(
-					),
-				),
-				'helpdesk_maint' => array(
-					'label' => $txt['shd_admin_maint'],
-					'file' => 'sd_source/SimpleDesk-Admin.php',
-					'icon' => 'shd/maintenance.png',
-					'function' => 'shd_admin_main',
-					'subsections' => array(
-						'main' => array($txt['shd_admin_maint']),
-						'search' => array($txt['shd_maint_search_settings']),
-					),
+	// The helpdesk action log
+	if (empty($modSettings['shd_disable_action_log']))
+		$admin_areas['maintenance']['areas']['logs']['subsections']['helpdesklog'] = array($txt['shd_admin_helpdesklog'], 'admin_forum', 'url' => $scripturl . '?action=admin;area=helpdesk_info;sa=actionlog');
+
+	// The main menu
+	$admin_areas['helpdesk_info'] = array(
+		'title' => $txt['shd_helpdesk'],
+		'enabled' => allowedTo('admin_forum') || shd_allowed_to('admin_helpdesk', 0),
+		'areas' => array(
+			'helpdesk_info' => array(
+				'label' => $txt['shd_admin_info'],
+				'file' => 'sd_source/SimpleDesk-Admin.php',
+				'icon' => 'shd_simpledesk',
+				'function' => 'shd_admin_main',
+				'subsections' => array(
+					'main' => array($txt['shd_admin_info']),
+					'actionlog' => array($txt['shd_admin_actionlog'], 'enabled' => empty($modSettings['shd_disable_action_log'])),
+					'support' => array($txt['shd_admin_support']),
 				),
 			),
-		);
+			'helpdesk_options' => array(
+				'label' => $txt['shd_admin_options'],
+				'file' => 'sd_source/SimpleDesk-Admin.php',
+				'icon' => 'shd_options',
+				'function' => 'shd_admin_main',
+				'subsections' => array(
+					'display' => array($txt['shd_admin_options_display']),
+					'posting' => array($txt['shd_admin_options_posting']),
+					'admin' => array($txt['shd_admin_options_admin']),
+					'standalone' => array($txt['shd_admin_options_standalone']),
+					'actionlog' => array($txt['shd_admin_options_actionlog']),
+					'notifications' => array($txt['shd_admin_options_notifications']),
+				),
+			),
+			'helpdesk_cannedreplies' => array(
+				'label' => $txt['shd_admin_cannedreplies'],
+				'file' => 'sd_source/SimpleDesk-Admin.php',
+				'icon' => 'shd_cannedreplies',
+				'function' => 'shd_admin_main',
+				'subsections' => array(
+				),
+			),
+			'helpdesk_customfield' => array(
+				'label' => $txt['shd_admin_custom_fields'],
+				'file' => 'sd_source/SimpleDesk-Admin.php',
+				'icon' => 'shd_custom_fields',
+				'function' => 'shd_admin_main',
+				'subsections' => array(
+				),
+			),
+			'helpdesk_depts' => array(
+				'label' => $txt['shd_admin_departments'],
+				'file' => 'sd_source/SimpleDesk-Admin.php',
+				'icon' => 'shd_departments',
+				'function' => 'shd_admin_main',
+				'subsections' => array(
+				),
+			),
+			'helpdesk_permissions' => array(
+				'label' => $txt['shd_admin_permissions'],
+				'file' => 'sd_source/SimpleDesk-Admin.php',
+				'icon' => 'shd_permissions',
+				'function' => 'shd_admin_main',
+				'subsections' => array(
+				),
+			),
+			'helpdesk_plugins' => array(
+				'label' => $txt['shd_admin_plugins'],
+				'file' => 'sd_source/SimpleDesk-Admin.php',
+				'icon' => 'shd_plugins',
+				'function' => 'shd_admin_main',
+				'subsections' => array(
+				),
+			),
+			'helpdesk_maint' => array(
+				'label' => $txt['shd_admin_maint'],
+				'file' => 'sd_source/SimpleDesk-Admin.php',
+				'icon' => 'shd_maintenance',
+				'function' => 'shd_admin_main',
+				'subsections' => array(
+					'main' => array($txt['shd_admin_maint']),
+					'search' => array($txt['shd_maint_search_settings']),
+				),
+			),
+		),
+	);
 
-		// Now engage any hooks.
-		call_integration_hook('shd_hook_adminmenu', array(&$admin_areas));
-	}
+	// Now engage any hooks.
+	call_integration_hook('shd_hook_adminmenu', array(&$admin_areas));
 }
 
 /**
