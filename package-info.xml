@@ -18,6 +18,11 @@
 		<!-- readme files -->
 		<readme lang="english" parsebbc="true" type="file">language-readme/readme.english.txt</readme>
 
+		<!-- general edits -->
+		<modification format="xml" type="file">install-xml/install-trackip.xml</modification>
+		<modification format="xml" type="file">install-xml/install-packages.xml</modification>
+		<modification format="xml" type="file">install-xml/install-parsebbc.xml</modification>
+
 		<!-- language files -->
 		<require-dir name="sd_language" destination="$themes_dir/default/languages" />
 
@@ -57,6 +62,11 @@
 		<!-- database changes, undone -->
 		<database>uninstall-optional.php</database>
 		<code type="file">uninstall-required.php</code>
+
+		<!-- general edits, undone -->
+		<modification format="xml" type="file" reverse="true">install-xml/install-trackip.xml</modification>
+		<modification format="xml" type="file" reverse="true">install-xml/install-packages.xml</modification>
+		<modification format="xml" type="file" reverse="true">install-xml/install-parsebbc.xml</modification>
 
 		<!-- language files, removed -->
 		<remove-dir name="$themes_dir/default/languages/sd_language" />

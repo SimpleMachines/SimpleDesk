@@ -142,12 +142,6 @@ $hooks = array();
 		'file' => '$sourcedir/sd_source/Subs-SimpleDesk.php',
 		'perm' => true,
 	);
-	$hooks[] = array(
-		'hook' => 'integrate_post_parsebbc',
-		'function' => 'shd_parse_wikilinks',
-		'file' => '$sourcedir/sd_source/Subs-SimpleDesk.php',
-		'perm' => true,
-	);
 // Admin Section Stuff
 	// Core
 	$hooks[] = array(
