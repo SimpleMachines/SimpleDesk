@@ -136,3 +136,33 @@
 	background: url(../images/simpledesk/icons/shd_generic_icons.png) no-repeat;
 	background-position: -167px -117px ;
 }
+
+.generic_icons.hd_profile
+{
+	background: url(../images/simpledesk/icons/shd_generic_icons.png) no-repeat;
+	background-position: -167px -117px ;
+}
+
+.generic_icons.hd_prefs
+{
+	background: url(../images/simpledesk/icons/shd_generic_icons.png) no-repeat;
+	background-position: -218px -25px ;
+}
+
+.generic_icons.hd_showtickets
+{
+	background: url(../images/simpledesk/icons/shd_generic_icons.png) no-repeat;
+	background-position: -217px -68px ;
+}
+
+.generic_icons.hd_permissions
+{
+	background: url(../images/simpledesk/icons/shd_generic_icons.png) no-repeat;
+	background-position: -218px -117px ;
+}
+
+.generic_icons.hd_actionlog
+{
+	background: url(../images/simpledesk/icons/shd_generic_icons.png) no-repeat;
+	background-position: -267px -25px ;
+}

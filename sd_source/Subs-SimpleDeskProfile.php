@@ -54,7 +54,7 @@ function shd_profile_areas(&$profile_areas)
 	$context['helpdesk_menu'] = array(
 		'title' => $txt['shd_profile_area'],
 		'areas' => array(
-			'helpdesk' => array(
+			'hd_profile' => array(
 				'label' => $txt['shd_profile_main'],
 				'file' => 'sd_source/SimpleDesk-Profile.php',
 				'function' => 'shd_profile_main',
