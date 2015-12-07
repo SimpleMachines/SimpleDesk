@@ -45,7 +45,7 @@ function template_shd_plugin_listing()
 						', $txt['shd_admin_plugins'], '
 					</h3>
 				</div>
-				<p class="description">
+				<p class="sd_description">
 					', $txt['shd_admin_plugins_homedesc'], '
 				</p>
 			</div>';

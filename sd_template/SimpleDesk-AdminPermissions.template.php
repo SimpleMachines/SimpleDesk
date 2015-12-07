@@ -25,7 +25,7 @@ function template_shd_permissions_home()
 							', $txt['shd_admin_permissions'], '
 						</h3>
 					</div>
-					<p class="description">
+					<p class="sd_description">
 						', $txt['shd_admin_permissions_homedesc'], '
 					</p>
 				</div>
@@ -36,7 +36,7 @@ function template_shd_permissions_home()
 							', $txt['shd_role_templates'], '
 						</h3>
 					</div>
-					<p class="description shd_actionloginfo">
+					<p class="sd_description shd_actionloginfo">
 						', $txt['shd_role_templates_desc'], '
 					</p>
 					<table class="shd_ticketlist" cellspacing="0" width="100%">
@@ -72,7 +72,7 @@ function template_shd_permissions_home()
 							', $txt['shd_roles'], '
 						</h3>
 					</div>
-					<p class="description shd_actionloginfo">
+					<p class="sd_description shd_actionloginfo">
 						', $txt['shd_roles_desc'], '
 					</p>
 					<table class="shd_ticketlist" cellspacing="0" width="100%">
@@ -213,7 +213,7 @@ function template_shd_create_role()
 							', $txt['shd_admin_permissions'], '
 						</h3>
 					</div>
-					<p class="description">
+					<p class="sd_description">
 						', $txt['shd_admin_permissions_homedesc'], '
 					</p>
 				</div>
@@ -266,7 +266,7 @@ function template_shd_edit_role()
 							', $txt['shd_admin_permissions'], '
 						</h3>
 					</div>
-					<p class="description">
+					<p class="sd_description">
 						', $txt['shd_admin_permissions_homedesc'], '
 					</p>
 				</div>
@@ -456,7 +456,7 @@ function template_shd_edit_role()
 								', $txt['shd_role_membergroups'], '
 							</h3>
 						</div>
-						<p class="description shd_actionloginfo">
+						<p class="sd_description shd_actionloginfo">
 							', $txt['shd_role_membergroups_desc'], '
 						</p>
 						<table class="shd_ticketlist" cellspacing="0" width="100%">
@@ -500,7 +500,7 @@ function template_shd_edit_role()
 								', $txt['shd_role_departments'], '
 							</h3>
 						</div>
-						<p class="description shd_actionloginfo">
+						<p class="sd_description shd_actionloginfo">
 							', $txt['shd_role_departments_desc'], '
 						</p>
 						<table class="shd_ticketlist" cellspacing="0" width="100%">
@@ -552,7 +552,7 @@ function template_shd_copy_role()
 							', $txt['shd_admin_permissions'], '
 						</h3>
 					</div>
-					<p class="description">
+					<p class="sd_description">
 						', $txt['shd_admin_permissions_homedesc'], '
 					</p>
 				</div>

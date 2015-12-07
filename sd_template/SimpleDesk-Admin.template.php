@@ -132,7 +132,7 @@ function template_shd_admin()
 				foreach ($section['groups'] as $group)
 				{
 					echo '
-						<div class="description">';
+						<div class="sd_description">';
 
 					// Pretty icons! :D
 					if (isset($group['icon']))
@@ -366,7 +366,7 @@ function template_shd_show_settings()
 			else
 			{
 				echo '
-					<p class="description">
+					<p class="sd_description">
 						', $config_var['label'], '
 					</p>';
 			}

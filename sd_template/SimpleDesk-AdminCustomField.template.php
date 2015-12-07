@@ -20,7 +20,7 @@ function template_shd_custom_field_home()
 							', $txt['shd_admin_custom_fields_long'], '
 						</h3>
 					</div>
-					<p class="description shd_actionloginfo">
+					<p class="sd_description shd_actionloginfo">
 						', $txt['shd_admin_custom_fields_desc'], '
 					</p>
 					<table class="shd_ticketlist" cellspacing="0" width="100%">
@@ -219,7 +219,7 @@ function template_shd_custom_field_edit()
 								', $context['section_title'], '
 							</h3>
 						</div>
-						<p class="description">
+						<p class="sd_description">
 							', $context['section_desc'],'
 						</p>
 					</div>

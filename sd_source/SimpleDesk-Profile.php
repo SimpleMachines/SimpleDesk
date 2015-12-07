@@ -53,7 +53,7 @@ function shd_profile_main($memID)
 	$context['shd_profile_menu'] = array(
 		array(
 			'image' => 'user.png',
-			'link' => $scripturl . '?action=profile;u=' . $context['member']['id'] . ';area=helpdesk',
+			'link' => $scripturl . '?action=profile;u=' . $context['member']['id'] . ';area=hd_profile',
 			'text' => $txt['shd_profile_home'],
 			'show' => true,
 		),

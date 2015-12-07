@@ -285,7 +285,7 @@ h3 a.permcollapse img
 }
 
 /* SMF 2.1 no longer uses description, but we make use of it still! */
-.description
+.sd_description
 {
 	background: #F8F8F8;
     overflow: auto;
