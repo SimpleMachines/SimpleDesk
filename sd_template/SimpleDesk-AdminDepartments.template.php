@@ -210,7 +210,9 @@ function template_shd_edit_dept()
 										<option value="1"', $context['shd_dept']['before_after'] == 1 ? ' selected="selected"' : '', '>', $txt['shd_boardindex_cat_after'], '</option>
 									</select>
 								</dd>
-								<dt><strong>', $txt['shd_dept_theme'], '</strong></dt>
+								<dt><strong>', $txt['shd_dept_theme'], '</strong>
+									<div class="smalltext">', $txt['shd_dept_theme_note'], '</div>
+								</dt>
 								<dd>';
 
 	if (empty($context['dept_theme_list']) || count($context['dept_theme_list']) == 1)
