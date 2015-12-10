@@ -348,6 +348,20 @@ h3.ticketheader img
 }
 
 /* Show tickets */
+.shd_description
+{
+	border: 1px solid #bbb;
+}
+.shd_windowbg
+{
+	background: #f0f4f7 none repeat scroll 0 0;
+	border: 1px solid #ddd;
+	 box-shadow: 0 -2px 2px rgba(0, 0, 0, 0.1);
+	box-sizing: border-box;
+	margin: 0;
+	overflow: auto;
+	padding: 10px 16px;
+}
 .shd_showtickets
 {
 	height: 15px;
