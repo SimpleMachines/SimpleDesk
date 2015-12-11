@@ -29,7 +29,7 @@ if (!defined('SMF'))
 
 function shd_add_to_boardindex($boardIndexOptions, &$categories)
 {
-	global $context, $modSettings, $smcFunc, $board, $txt, $scripturl, $settings;
+	global $context, $modSettings, $smcFunc, $board, $txt, $scripturl, $settings, $options;
 
 	// Does the category exist? If it has no boards, it actually might not exist, daft as it sounds.
 	// But it's more tricky than that, too! We need to be at the board index, not in a child board.
@@ -95,9 +95,8 @@ function shd_add_to_boardindex($boardIndexOptions, &$categories)
 		// Uh oh, we have to load a category or two.
 		$new_cats = array();
 		$request = $smcFunc['db_query']('', '
-			SELECT c.id_cat, c.name, c.can_collapse, IFNULL(cc.id_member, 0) AS is_collapsed
+			SELECT c.id_cat, c.name, c.can_collapse
 			FROM {db_prefix}categories AS c
-				LEFT JOIN {db_prefix}collapsed_categories AS cc ON (cc.id_cat = c.id_cat AND cc.id_member = {int:current_member})
 			WHERE c.id_cat IN ({array_int:cat})',
 			array(
 				'cat' => $cat_list,
@@ -106,6 +105,8 @@ function shd_add_to_boardindex($boardIndexOptions, &$categories)
 		);
 		while ($this_cat = $smcFunc['db_fetch_assoc']($request))
 		{
+			$this_cat['is_collapsed'] = isset($this_cat['can_collapse']) && $this_cat['can_collapse'] == 1 && !empty($options['collapse_category_' . $this_cat['id_cat']]);
+
 			$new_cats[$this_cat['id_cat']] = array(
 				'id' => $this_cat['id_cat'],
 				'name' => $this_cat['name'],

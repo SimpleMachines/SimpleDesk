@@ -443,7 +443,10 @@ function shd_main_helpdesk()
 			// Did we already use this?
 			if (in_array($modSettings['shd_block_order_' . $i], $context['ticket_block_order']))
 				continue;
-
+			// Can they see this?
+			if (empty($context['ticket_blocks'][$modSettings['shd_block_order_' . $i]]['display']))
+				continue;
+	
 			$context['ticket_block_order'][$i] = $modSettings['shd_block_order_' . $i];
 			unset($unused[$modSettings['shd_block_order_' . $i]]);
 		}

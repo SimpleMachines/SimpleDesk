@@ -474,11 +474,11 @@ function template_shd_edit_role()
 								<td>', $group['link'], '</td>
 								<td>';
 
-		if (!empty($group['stars']))
+		if (!empty($group['icons']))
 		{
-			$stars = explode('#', $group['stars']);
-			if (!empty($stars[0]) && !empty($stars[1]))
-				echo str_repeat('<img src="' . $settings['images_url'] . '/' . $stars[1] . '" alt="" />', $stars[0]);
+			$icons = explode('#', $group['icons']);
+			if (!empty($icons[0]) && !empty($icons[1]))
+				echo str_repeat('<img src="' . $settings['images_url'] . '/membericons/' . $icons[1] . '" alt="" />', $icons[0]);
 		}
 
 		echo '</td>

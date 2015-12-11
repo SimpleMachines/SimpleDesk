@@ -146,11 +146,11 @@ function shd_admin_edit_role()
 		'group_name' => $txt['membergroups_members'],
 		'color' => '',
 		'link' => $txt['membergroups_members'],
-		'stars' => '',
+		'icons' => '',
 	);
 
 	$query = $smcFunc['db_query']('', '
-		SELECT mg.id_group, mg.group_name, mg.online_color, mg.stars
+		SELECT mg.id_group, mg.group_name, mg.online_color, mg.icons
 		FROM {db_prefix}membergroups AS mg
 		WHERE mg.min_posts = -1
 			AND mg.id_group NOT IN (1,3)
@@ -164,7 +164,7 @@ function shd_admin_edit_role()
 			'name' => $row['group_name'],
 			'color' => $row['online_color'],
 			'link' => '<a href="' . $scripturl . '?action=groups;sa=members;group=' . $row['id_group'] . '"' . (empty($row['online_color']) ? '' : ' style="color: ' . $row['online_color'] . ';"') . '>' . $row['group_name'] . '</a>',
-			'stars' => $row['stars'],
+			'icons' => $row['icons'],
 		);
 	}
 
