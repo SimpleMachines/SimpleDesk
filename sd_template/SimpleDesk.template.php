@@ -500,7 +500,7 @@ function template_ticket_block()
 							<td class="smalltext">', $ticket['dept_link'], $ticket['link'];
 
 						if ($ticket['is_unread'] && !empty($ticket['new_href']))
-							echo ' <a href="', $ticket['new_href'], '"><img src="', $context['new_posts_image'], '" class="new_posts" alt="', $txt['new'], '" /></a>';
+							echo ' <a href="', $ticket['new_href'], '"><span class="new_posts shd_new_tickets">', $txt['new'], '</span></a>';
 
 						echo '</td>';
 						break;

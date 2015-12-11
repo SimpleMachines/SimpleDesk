@@ -111,6 +111,14 @@ function shd_init()
 	define('ROLEPERM_ALLOW', 1);
 	define('ROLEPERM_DENY', 2);
 
+	$context['shd_scripts_version'] = 'beta1';
+	$context['shd_css_version'] = 'beta1';
+
+	// Load up developer stuff if we need to.
+	$context['shd_developer_mode'] = isset($modSettings['shd_developer_mode']);
+	if ($context['shd_developer_mode'])
+		$context['shd_scripts_version'] = $context['shd_css_version'] = 'dev' . time();
+
 	// How many digits should we show for ticket numbers? Normally we pad to 5 digits, e.g. 00001 - this is how we set that width.
 	if (empty($modSettings['shd_zerofill']) || $modSettings['shd_zerofill'] < 0)
 		$modSettings['shd_zerofill'] = 0;
@@ -1059,7 +1067,9 @@ function shd_determine_status($action, $starter_id = 0, $replier_id = 0, $replie
 */
 function shd_no_expand_pageindex($base_url, &$start, $max_value, $num_per_page, $flexible_start = false)
 {
-	return preg_replace('~<span([^<]+)~i', '<span style="font-weight: bold;"> ... ', constructPageIndex($base_url, $start, $max_value, $num_per_page, $flexible_start));
+	
+//	return constructPageIndex($base_url, $start, $max_value, $num_per_page, $flexible_start);
+	return preg_replace('~<span class="expand_pages"([^<]+)~i', '<span style="font-weight: bold;"> ... ', constructPageIndex($base_url, $start, $max_value, $num_per_page, $flexible_start));
 }
 
 /**
@@ -1708,7 +1718,7 @@ function shd_main_menu(&$menu_buttons)
 
     // Load some extra CSS
     $context['html_headers'] .= '
-    <link rel="stylesheet" type="text/css" href="' . $settings['default_theme_url'] . '/css/helpdesk_icons.css" />';
+    <link rel="stylesheet" type="text/css" href="' . $settings['default_theme_url'] . '/css/helpdesk_icons.css?' . $context['shd_css_version'] . '" />';
 
 	// Stuff we'll always do in SD if active
 	$helpdesk_admin = $context['user']['is_admin'] || shd_allowed_to('admin_helpdesk', 0);
@@ -1886,7 +1896,7 @@ function shd_main_menu(&$menu_buttons)
 		$menu_buttons['profile']['show'] = true;
 		$menu_buttons['profile']['sub_buttons']['hd_profile'] = array(
 			'title' => $txt['shd_helpdesk_profile'],
-			'href' => $scripturl . '?action=profile;area=helpdesk',
+			'href' => $scripturl . '?action=profile;area=hd_profile',
 			'show' => true,
 			'is_last' => true,
 		);

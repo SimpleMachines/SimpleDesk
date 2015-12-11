@@ -61,8 +61,8 @@ function template_shd_plugin_listing()
 		if (!empty($plugin['installable']))
 			echo '
 					<div class="features_switch" id="js_feature_', $id, '" style="display: none;">
-						<a href="', $scripturl, '?action=admin;area=helpdesk_plugins;save;', $context['session_var'], '=', $context['session_id'], ';toggle=', $id, ';state=', $plugin['enabled'] ? 0 : 1, '" onclick="return toggleItem(\'', $id, '\');">
-							<input type="hidden" name="feature_', $id, '" id="feature_', $id, '" value="', $plugin['enabled'] ? 1 : 0, '" /><img src="', $settings['images_url'], '/admin/switch_', $plugin['enabled'] ? 'on' : 'off', '.png" id="switch_', $id, '" style="margin-top: 1.3em;" alt="', $txt['core_settings_switch_' . ($plugin['enabled'] ? 'off' : 'on')], '" title="', $txt['core_settings_switch_' . ($plugin['enabled'] ? 'off' : 'on')], '" />
+						<a href="', $scripturl, '?action=admin;area=helpdesk_plugins;save;', $context['session_var'], '=', $context['session_id'], ';toggle=', $id, ';state=', $plugin['enabled'] ? 0 : 1, '" onclick="return toggleItem(\'', $id, '\', \'', $settings['images_url'], '\', \'', $txt['shd_admin_plugins_on'], '\',  \'', $txt['shd_admin_plugins_off'], '\');">
+							<input type="hidden" name="feature_', $id, '" id="feature_', $id, '" value="', $plugin['enabled'] ? 1 : 0, '" /><img src="', $settings['images_url'], '/simpledesk/switch_', $plugin['enabled'] ? 'on' : 'off', '.png" id="switch_', $id, '" style="margin-top: 1.3em;" alt="', $txt['shd_admin_plugins_' . ($plugin['enabled'] ? 'off' : 'on')], '" title="', $txt['shd_admin_plugins_' . ($plugin['enabled'] ? 'off' : 'on')], '" />
 						</a>
 					</div>';
 		else

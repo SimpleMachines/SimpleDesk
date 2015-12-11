@@ -456,7 +456,7 @@ $txt['shd_dept_autoclose_days_note'] = 'Use 0 to indicate that tickets in this d
 
 //! Plugins
 //@{
-$txt['shd_admin_plugins_packman'] = 'SimpleDesk Plugins';
+$txt['sdplugin_package'] = 'SimpleDesk Plugins';
 $txt['shd_install_plugin'] = 'Install Plugin';
 $txt['shd_admin_plugins_homedesc'] = 'This area allows you to manage any additional components for SimpleDesk. They are installed through the Package Manager as regular mods, and configured from here.';
 $txt['shd_admin_plugins_none'] = 'No plugins are currently installed.';
@@ -464,6 +464,8 @@ $txt['shd_admin_plugins_writtenby'] = 'Written by';
 $txt['shd_admin_plugins_website'] = 'Website';
 $txt['shd_admin_plugins_wrong_version'] = 'Not supported by this version!';
 $txt['shd_admin_plugins_versions_avail'] = 'Supported by the plugin';
+$txt['shd_admin_plugins_on'] = 'On';
+$txt['shd_admin_plugins_off'] = 'Off';
 $txt['shd_admin_plugins_languages'] = 'Available languages';
 $txt['shd_admin_plugins_lang_albanian'] = 'Albanian';
 $txt['shd_admin_plugins_lang_arabic'] = 'Arabic';

@@ -293,16 +293,16 @@ function shd_main()
 		$context['html_headers'] = '';
 
 	$context['html_headers'] .= '
-	<link rel="stylesheet" type="text/css" href="' . (file_exists($settings['theme_dir'] . '/css/helpdesk.css') ? $settings['theme_url'] . '/css/helpdesk.css' : $settings['default_theme_url'] . '/css/helpdesk.css') . '" />
-	<script type="text/javascript" src="' . $settings['default_theme_url'] . '/scripts/helpdesk.js?rc2"></script>';
+	<link rel="stylesheet" type="text/css" href="' . (file_exists($settings['theme_dir'] . '/css/helpdesk.css') ? $settings['theme_url'] . '/css/helpdesk.css' : $settings['default_theme_url'] . '/css/helpdesk.css') . '?' . $context['shd_css_version'] . '" />
+	<script type="text/javascript" src="' . $settings['default_theme_url'] . '/scripts/helpdesk.js?' .$context['shd_scripts_version'] . '"></script>';
 
 	// A custom css?
 	if (file_exists($settings['default_theme_url'] . '/css/helpdesk_custom.css'))
 		$context['html_headers'] .= '
-	<link rel="stylesheet" type="text/css" href="' . $settings['default_theme_url'] . '/css/helpdesk_custom.css" />';
+	<link rel="stylesheet" type="text/css" href="' . $settings['default_theme_url'] . '/css/helpdesk_custom.css?' . $context['shd_css_version'] . '" />';
 	if (file_exists($settings['theme_dir'] . '/css/helpdesk_custom.css'))
 		$context['html_headers'] .= '
-	<link rel="stylesheet" type="text/css" href="' . $settings['theme_url'] . '/css/helpdesk_custom.css" />';
+	<link rel="stylesheet" type="text/css" href="' . $settings['theme_url'] . '/css/helpdesk_custom.css?' . $context['shd_css_version'] . '" />';
 
 	// Int hooks - after we basically set everything up (so it's manipulatable by the hook, but before we do the last bits of finalisation)
 	call_integration_hook('shd_hook_helpdesk', array(&$subactions));
@@ -739,26 +739,6 @@ function shd_helpdesk_listing()
 
 	if (!empty($context['shd_permission']))
 		shd_is_allowed_to($context['shd_permission']);
-
-	// So, we want the [new] icon. Where is it?
-	$newimgpaths = array(
-		$settings['theme_dir'] . '/images/' . $language => $settings['lang_images_url'],
-		$settings['theme_dir'] . '/images/english' => $settings['images_url'] . '/english',
-		$settings['default_theme_dir'] . '/images/' . $language => $settings['default_images_url'] . '/' . $language,
-	);
-	$files = array('new.gif', 'new.png');
-	$context['new_posts_image'] = $settings['default_images_url'] . '/english/new.gif'; // likely default, but we'll check the theme etc first just in case.
-	foreach ($newimgpaths as $physicalpath => $urlpath)
-	{
-		foreach ($files as $file)
-		{
-			if (file_exists($physicalpath . '/' . $file))
-			{
-				$context['new_posts_image'] = $urlpath . '/' . $file;
-				break 2;
-			}
-		}
-	}
 
 	$block_list = array_keys($context['ticket_blocks']);
 	$primary_url = '?action=helpdesk;sa=' . $_REQUEST['sa'];

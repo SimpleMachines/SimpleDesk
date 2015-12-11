@@ -39,7 +39,7 @@ function shd_packages_sort_id(&$sort_id, &$packages)
 {
 	global $context;
 
-	$sort_id[] = 'sdplugin';
+	$sort_id['sdplugin'] = 1;
 	$packages['sdplugin'] = array();
 	$context['available_sdplugin'] = array();
 }
@@ -68,4 +68,16 @@ function shd_package_upload()
 
 	if ($context['package']['type'] == 'sdplugin')
 		$context['package']['install']['link'] = '<a href="' . $scripturl . '?action=admin;area=packages;sa=install;package=' . $context['package']['filename'] . '">[ ' . $txt['shd_install_plugin'] . ' ]</a>';
+}
+
+/**
+ *	Sets up the browse section for plugins.
+ *
+ *	@since 2.1
+*/
+function shd_modification_types()
+{
+	global $context, $txt;
+
+	$context['modification_types'][] = 'sdplugin';
 }

@@ -856,7 +856,7 @@ function template_ticket_do_replies()
 							', $reply['body'], '
 							<br /><br />';
 
-			if ($settings['show_modify'] && !empty($reply['modified']))
+			if (!empty($settings['show_modify']) && !empty($reply['modified']))
 			{
 				echo '
 							<div class="smalltext shd_modified" style="margin-top:20px;">

@@ -135,6 +135,18 @@ dd#assigned_button
 	padding: 1px 0;
 }
 
+span.shd_new_tickets
+{
+	margin-left: 5px;
+    padding: 1px 5px 3px 4px;
+}
+
+/* The page index color looks ugly with our theme. */
+.shd_main_hd .cat_bar .current_page
+{
+	color: #fff;
+}
+
 /**********************************
 * Stuff used within the actual tickets 	*
 ***********************************/
