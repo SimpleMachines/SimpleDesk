@@ -771,7 +771,7 @@ function template_shd_admin_log()
 					<tr class="titlebg">
 						<td colspan="7">
 							<span class="floatright smalltext">', $context['page_index'], '</span>
-							<span class="smalltext shd_empty_log"><img src="', $settings['default_images_url'], '/simpledesk/delete.png" alt="X" /> <a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=adminlog', $context['url_sort'], $context['url_order'], ';removeall" onclick="return confirm(', JavaScriptEscape(sprintf($txt['shd_admin_actionlog_removeall_confirm'], $context['hoursdisable'])), ');">', $txt['shd_admin_actionlog_removeall'], '</a></span>
+							<span class="smalltext shd_empty_log"><img src="', $settings['default_images_url'], '/simpledesk/delete.png" alt="X" /> <a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=adminlog', $context['url_sort'], $context['url_order'], ';removeall" onclick="return confirm(', JavaScriptEscape(sprintf($txt['shd_admin_actionlog_removeall_confirm'], $context['daysdisable'])), ');">', $txt['shd_admin_actionlog_removeall'], '</a></span>
 						</td>
 					</tr>
 					</table>
