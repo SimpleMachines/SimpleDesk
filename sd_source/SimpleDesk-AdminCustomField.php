@@ -284,6 +284,12 @@ function shd_admin_custom_save()
 			)
 		);
 
+		// Do the needfull.
+		shd_admin_log('admin_customfield', array(
+			'action' => 'delete',
+			'id' => $_REQUEST['field'],
+		));
+
 		// End of the road
 		redirectexit('action=admin;area=helpdesk_customfield;' . $context['session_var'] . '=' . $context['session_id']);
 	}
@@ -461,6 +467,12 @@ function shd_admin_custom_save()
 			)
 		);
 
+		// Log this action.
+		shd_admin_log('admin_customfield', array(
+			'action' => 'add',
+			'id' => $new_field,
+		));
+
 		redirectexit('action=admin;area=helpdesk_customfield;' . $context['session_var'] . '=' . $context['session_id']);
 	}
 	// No? Meh. Update it is then.
@@ -564,6 +576,12 @@ function shd_admin_custom_save()
 			)
 		);
 
+		// Log this action.
+		shd_admin_log('admin_customfield', array(
+			'action' => 'update',
+			'id' => $_REQUEST['field'],
+		));
+
 		redirectexit('action=admin;area=helpdesk_customfield;' . $context['session_var'] . '=' . $context['session_id']);
 	}
 }
@@ -633,6 +651,13 @@ function shd_admin_custom_move()
 			'other_field' => $other_field,
 		)
 	);
+
+	// Log this as well.
+	shd_admin_log('admin_customfield', array(
+		'action' => 'move',
+		'id' => $_REQUEST['field'],
+		'direction' => $_REQUEST['direction']
+	));
 
 	redirectexit('action=admin;area=helpdesk_customfield;' . $context['session_var'] . '=' . $context['session_id']);
 }
@@ -715,4 +740,3 @@ function shd_admin_cf_change_types($from_type)
 			return array();
 	}
 }
-

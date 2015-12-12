@@ -57,6 +57,7 @@ $txt['lang_file_desc_SimpleDeskWho'] = 'Who\'s Online';
 // Admin menu items, the ones that aren't in SimpleDesk.english.php anyway...
 $txt['shd_admin_standalone_options'] = 'Standalone Mode';
 $txt['shd_admin_actionlog'] = 'Action Log';
+$txt['shd_admin_adminlog'] = 'Admin Log';
 $txt['shd_admin_support'] = 'Support';
 $txt['shd_admin_helpdesklog'] = 'Helpdesk Log';
 
@@ -79,6 +80,7 @@ $txt['shd_admin_options_standalone_desc'] = 'This area manages the standalone mo
 $txt['shd_admin_options_actionlog_desc'] = 'This area allows you to configure what items can be logged within the helpdesk action log.';
 $txt['shd_admin_options_notifications_desc'] = 'This area allows you to configure email notifications being sent to users when their tickets change.';
 $txt['shd_admin_actionlog_desc'] = 'This is a list of all actions, such as resolved tickets, edited tickets and more, carried out in the helpdesk.';
+$txt['shd_admin_adminlog_desc'] = 'This is a list of all admin actions, such as changed options, canned replies, department changes.';
 $txt['shd_admin_support_desc'] = 'This area will help you get through to SimpleDesk.net quickly and effectively - the post will include some information helpful for our Support team, about your installation (like SMF version and SimpleDesk version).';
 $txt['shd_admin_help'] = 'This is the administration panel for the helpdesk. Here you can manage settings, get news and updates on this modification, and view helpdesk logs.';
 //@}
@@ -256,6 +258,51 @@ $txt['shd_admin_actionlog_unknown'] = 'Unknown';
 $txt['shd_admin_actionlog_hidden'] = 'Hidden';
 $txt['shd_admin_actionlog_removeall'] = 'Empty out the entire log';
 $txt['shd_admin_actionlog_removeall_confirm'] = 'This will permanently delete all entries in the action log older than %s hours. Are you sure?';
+//@}
+
+//! @name General language strings for the admin log
+//@{
+$txt['shd_admin_adminlog_title'] = 'Helpdesk Admin log';
+$txt['shd_admin_adminlog_action'] = 'Action';
+$txt['shd_admin_adminlog_name'] = 'Name';
+$txt['shd_admin_adminlog_to'] = 'To';
+$txt['shd_admin_adminlog_from'] = 'From';
+$txt['shd_admin_adminlog_setting'] = 'Setting';
+$txt['shd_log_admin_canned'] = 'Canned Replies';
+$txt['shd_log_admin_customfield'] = 'Custom Fields';
+$txt['shd_log_admin_maint'] = 'Maintenance';
+$txt['shd_log_admin_permissions'] = 'Permissions';
+$txt['shd_log_admin_plugins'] = 'Plugins';
+$txt['shd_log_admin_dept'] = 'Departments';
+$txt['shd_log_admin_change_option'] = 'Options';
+$txt['shd_log_admin_canned_cat_move'] = 'Sorted Category';
+$txt['shd_log_admin_canned_cat_delete'] = 'Deleted Category';
+$txt['shd_log_admin_canned_cat_add'] = 'Added Category';
+$txt['shd_log_admin_canned_cat_update'] = 'Updated Category';
+$txt['shd_log_admin_canned_reply_move'] = 'Sorted Reply';
+$txt['shd_log_admin_canned_reply_delete'] = 'Deleted Reply';
+$txt['shd_log_admin_canned_reply_add'] = 'Added Canned Reply';
+$txt['shd_log_admin_canned_reply_update'] = 'Updated Reply';
+$txt['shd_log_admin_dept_move'] = 'Sorted';
+$txt['shd_log_admin_dept_delete'] = 'Deleted';
+$txt['shd_log_admin_dept_add'] = 'Added';
+$txt['shd_log_admin_dept_update'] = 'Update';
+$txt['shd_log_admin_customfield_move'] = 'Sorted';
+$txt['shd_log_admin_customfield_delete'] = 'Deleted';
+$txt['shd_log_admin_customfield_add'] = 'Added';
+$txt['shd_log_admin_customfield_update'] = 'Updated';
+$txt['shd_log_admin_customfield_move'] = 'Sorted';
+$txt['shd_log_admin_maint_reattribute'] = 'Reattributed Tickets';
+$txt['shd_log_admin_maint_move_dept'] = 'Moved Tickets to Department';
+$txt['shd_log_admin_maint_findrepair'] = 'Ran Find and Repair';
+$txt['shd_log_admin_maint_clean_cache'] = 'Ran Clean Cache';
+$txt['shd_log_admin_maint_search_rebuild'] = 'Rebuilt Search';
+$txt['shd_log_admin_permissions_create_role'] = 'Added';
+$txt['shd_log_admin_permissions_delete_role'] = 'Deleted';
+$txt['shd_log_admin_permissions_change_role'] = 'Updated';
+$txt['shd_log_admin_permissions_copy_role'] = 'Duplicated';
+$txt['shd_log_admin_plugins_update'] = 'Updated';
+$txt['shd_log_admin_plugins_remove'] = 'Removed';
 //@}
 
 //! @name Strings for the post-to-SimpleDesk.net support page

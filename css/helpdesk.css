@@ -142,7 +142,7 @@ span.shd_new_tickets
 }
 
 /* The page index color looks ugly with our theme. */
-.shd_main_hd .cat_bar .current_page
+.shd_main_hd .cat_bar .current_page, .shd_pages .current_page
 {
 	color: #fff;
 }

@@ -597,7 +597,7 @@ function template_shd_action_log()
 				<div class="tborder">
 					<div class="cat_bar">
 						<h3 class="catbg">
-							<span class="floatright smalltext">', $txt['pages'], ': ', $context['page_index'], '</span>
+							<span class="floatright smalltext">', $context['page_index'], '</span>
 							<img src="', $settings['default_images_url'], '/simpledesk/log.png" class="icon" alt="*" />
 							', $txt['shd_admin_actionlog_title'], '
 						</h3>
@@ -672,8 +672,106 @@ function template_shd_action_log()
 	echo '
 					<tr class="titlebg">
 						<td colspan="7">
-							<span class="floatright smalltext">', $txt['pages'], ': ', $context['page_index'], '</span>
+							<span class="floatright smalltext">', $context['page_index'], '</span>
 							<span class="smalltext shd_empty_log"><img src="', $settings['default_images_url'], '/simpledesk/delete.png" alt="X" /> <a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=actionlog', $context['url_sort'], $context['url_order'], ';removeall" onclick="return confirm(', JavaScriptEscape(sprintf($txt['shd_admin_actionlog_removeall_confirm'], $context['hoursdisable'])), ');">', $txt['shd_admin_actionlog_removeall'], '</a></span>
+						</td>
+					</tr>
+					</table>
+				</div>';
+}
+
+
+/**
+ *	Display the action log.
+ *
+ *	Little real work is done in this template; mostly is just iterating through the already-processed contents of the action log as done by {@link shd_admin_action_log()}.
+ *
+ *	@see shd_admin_action_log()
+ *	@since 1.0
+*/
+function template_shd_admin_log()
+{
+	global $settings, $txt, $context, $scripturl, $sort_types, $modSettings;
+
+	// The sort stuff here is huge.
+	echo '
+				<div class="tborder">
+					<div class="cat_bar">
+						<h3 class="catbg">
+							<span class="floatright smalltext shd_pages">', $context['page_index'], '</span>
+							<img src="', $settings['default_images_url'], '/simpledesk/log.png" class="icon" alt="*" />
+							', $txt['shd_admin_actionlog_title'], '
+						</h3>
+					</div>
+					<table class="shd_ticketlist" cellspacing="0" width="100%">
+						<tr class="titlebg">
+							<td width="38%">
+								<img src="', $settings['default_images_url'], '/simpledesk/action.png" class="shd_smallicon" alt="" />
+								<a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=adminlog', $context['sort'] == $sort_types['action'] && !isset($_REQUEST['asc']) ? ';sort=action;asc' : ';sort=action', '">
+									', $txt['shd_admin_actionlog_action'], '
+								</a>
+								', ($context['sort'] == $sort_types['action'] ? '<img src="' . $settings['default_images_url'] . '/' . (isset($_REQUEST['asc']) ? 'simpledesk/move_up.png' : 'simpledesk/move_down.png' ). '" alt="" />' : ''), '
+							</td>
+							<td width="20%">
+								<img src="', $settings['default_images_url'], '/simpledesk/time.png" class="shd_smallicon" alt="" />
+								<a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=adminlog', $context['sort'] == $sort_types['time'] && !isset($_REQUEST['asc']) ? ';sort=time;asc' : ';sort=time', '">
+									', $txt['shd_admin_actionlog_date'], '
+								</a>
+								', ($context['sort'] == $sort_types['time'] ? '<img src="' . $settings['default_images_url'] . '/' . (isset($_REQUEST['asc']) ? 'simpledesk/move_up.png' : 'simpledesk/move_down.png' ). '" alt="" />' : ''), '
+							</td>
+							<td width="16%">
+								<img src="', $settings['default_images_url'], '/simpledesk/user.png" class="shd_smallicon" alt="" />
+								<a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=adminlog', $context['sort'] == $sort_types['member'] && !isset($_REQUEST['asc']) ? ';sort=member;asc' : ';sort=member', '">
+									', $txt['shd_admin_actionlog_member'], '
+								</a>
+								', ($context['sort'] == $sort_types['member'] ? '<img src="' . $settings['default_images_url'] . '/' . (isset($_REQUEST['asc']) ? 'simpledesk/move_up.png' : 'simpledesk/move_down.png' ). '" alt="" />' : ''), '
+							</td>
+							<td width="16%">
+								<img src="', $settings['default_images_url'], '/simpledesk/position.png" class="shd_smallicon" alt="" />
+								<a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=adminlog', $context['sort'] == $sort_types['position'] && !isset($_REQUEST['asc']) ? ';sort=position;asc' : ';sort=position', '">
+									', $txt['shd_admin_actionlog_position'], '
+								</a>
+								', ($context['sort'] == $sort_types['position'] ? '<img src="' . $settings['default_images_url'] . '/' . (isset($_REQUEST['asc']) ? 'simpledesk/move_up.png' : 'simpledesk/move_down.png' ). '" alt="" />' : ''), '
+							</td>
+							<td width="10%">
+								<img src="', $settings['default_images_url'], '/simpledesk/ip.png" class="shd_smallicon" alt="" />
+								<a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=adminlog', $context['sort'] == $sort_types['ip'] && !isset($_REQUEST['asc']) ? ';sort=ip;asc' : ';sort=ip', '">
+									', $txt['shd_admin_actionlog_ip'], '
+								</a>
+								', ($context['sort'] == $sort_types['ip'] ? '<img src="' . $settings['default_images_url'] . '/' . (isset($_REQUEST['asc']) ? 'simpledesk/move_up.png' : 'simpledesk/move_down.png' ). '" alt="" />' : ''), '
+							</td>
+							<td width="2%">&nbsp;</td>
+						</tr>';
+
+			if (empty($context['actions']))
+				echo '
+						<tr class="windowbg2">
+							<td colspan="7" class="shd_noticket">', $txt['shd_admin_actionlog_none'], '</td>
+						</tr>';
+			else
+			{
+				$use_bg2 = true; // start with windowbg2 to differentiate between that and windowbg2
+				foreach ($context['actions'] AS $action)
+				{
+					echo '
+						<tr class="', ($use_bg2 ? 'windowbg2' : 'windowbg'), '">
+							<td class="smalltext">', $action['action_text'], '</td>
+							<td>', $action['time'], '</td>
+							<td>', $action['member']['link'], '</td>
+							<td>', $action['member']['group'], '</td>
+							<td>', !empty($action['member']['ip']) ? $action['member']['ip'] : $txt['shd_admin_actionlog_hidden'], '</td>
+							<td>', $action['can_remove'] && $context['can_delete'] ? '<a href="' . $scripturl . '?action=admin;area=helpdesk_info;sa=adminlog;remove='. $action['id'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/delete.png" alt="' . $txt['shd_delete_item'] . '" /></a>' : '', '</td>
+						</tr>';
+
+					$use_bg2 = !$use_bg2;
+				}
+			}
+
+	echo '
+					<tr class="titlebg">
+						<td colspan="7">
+							<span class="floatright smalltext">', $context['page_index'], '</span>
+							<span class="smalltext shd_empty_log"><img src="', $settings['default_images_url'], '/simpledesk/delete.png" alt="X" /> <a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=adminlog', $context['url_sort'], $context['url_order'], ';removeall" onclick="return confirm(', JavaScriptEscape(sprintf($txt['shd_admin_actionlog_removeall_confirm'], $context['hoursdisable'])), ');">', $txt['shd_admin_actionlog_removeall'], '</a></span>
 						</td>
 					</tr>
 					</table>
