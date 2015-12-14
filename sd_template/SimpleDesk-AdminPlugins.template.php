@@ -26,9 +26,9 @@ function template_shd_plugin_listing()
 			itemValueHandle.value = itemValueHandle.value == 1 ? 0 : 1;
 
 			// Change the image, alternative text and the title.
-			document.getElementById("switch_" + itemID).src = \'', $settings['images_url'], '/admin/switch_\' + (itemValueHandle.value == 1 ? \'on\' : \'off\') + \'.png\';
-			document.getElementById("switch_" + itemID).alt = itemValueHandle.value == 1 ? \'', $txt['core_settings_switch_off'], '\' : \'', $txt['core_settings_switch_on'], '\';
-			document.getElementById("switch_" + itemID).title = itemValueHandle.value == 1 ? \'', $txt['core_settings_switch_off'], '\' : \'', $txt['core_settings_switch_on'], '\';
+			document.getElementById("switch_" + itemID).src = \'', $settings['images_url'], '/simpledesk/switch_\' + (itemValueHandle.value == 1 ? \'on\' : \'off\') + \'.png\';
+			document.getElementById("switch_" + itemID).alt = itemValueHandle.value == 1 ? \'', $txt['shd_admin_plugins_off'], '\' : \'', $txt['shd_admin_plugins_on'], '\';
+			document.getElementById("switch_" + itemID).title = itemValueHandle.value == 1 ? \'', $txt['shd_admin_plugins_off'], '\' : \'', $txt['shd_admin_plugins_on'], '\';
 
 			// Don\'t reload.
 			return false;
@@ -104,8 +104,8 @@ function template_shd_plugin_listing()
 		if (!empty($plugin['installable']))
 			echo '
 					<div id="plain_feature_', $id, '">
-						<label for="plain_feature_', $id, '_radio_on"><input type="radio" name="feature_plain_', $id, '" id="plain_feature_', $id, '_radio_on" value="1"', $plugin['enabled'] ? ' checked="checked"' : '', ' class="input_radio" />', $txt['core_settings_enabled'], '</label>
-						<label for="plain_feature_', $id, '_radio_off"><input type="radio" name="feature_plain_', $id, '" id="plain_feature_', $id, '_radio_off" value="0"', !$plugin['enabled'] ? ' checked="checked"' : '', ' class="input_radio" />', $txt['core_settings_disabled'], '</label>
+						<label for="plain_feature_', $id, '_radio_on"><input type="radio" name="feature_plain_', $id, '" id="plain_feature_', $id, '_radio_on" value="1"', $plugin['enabled'] ? ' checked="checked"' : '', ' class="input_radio" />', $txt['shd_admin_plugins_enabled'], '</label>
+						<label for="plain_feature_', $id, '_radio_off"><input type="radio" name="feature_plain_', $id, '" id="plain_feature_', $id, '_radio_off" value="0"', !$plugin['enabled'] ? ' checked="checked"' : '', ' class="input_radio" />', $txt['shd_admin_plugins_disabled'], '</label>
 					</div>';
 
 		echo '

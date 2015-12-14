@@ -53,9 +53,9 @@ function shdplugin_front_page()
 			'description' => 'shdp_frontpage_desc',
 			'author' => 'SimpleDesk Team',
 			'website' => 'http://www.simpledesk.net/',
-			'version' => '1.0',
+			'version' => '1.0.1',
 			'compatibility' => array(
-				'SimpleDesk 2.0 Anatidae', // should tie up with the SHD_VERSION constants
+				'SimpleDesk 2.1 Beta 1', // should tie up with the SHD_VERSION constants
 			),
 			'acp_url' => 'action=admin;area=helpdesk_options;sa=frontpage',
 		),
