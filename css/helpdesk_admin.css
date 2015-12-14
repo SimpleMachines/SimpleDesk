@@ -299,7 +299,7 @@ h3 a.permcollapse img
 
  /* Plugin switch inmage */
 
-features_switch
+.features_switch
 {
 	float: right;
 	margin: 0.2em 1em 1em;
