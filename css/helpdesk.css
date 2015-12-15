@@ -2,19 +2,6 @@
 * General stuff used all around the helpdesk 	*
 ***********************************/
 
-/* Half rounded headers */
-div.grid_header
-{
-	height: 28px;
-	margin-bottom: -1px;
-}
-
-/* You no left float, Core! */
-div.grid_header img
-{
-	float: none;
-}
-
 /* SimpleDesk icons */
 .shd_smallicon
 {
@@ -521,22 +508,22 @@ h3.ticketheader img
 }
 #shd_bbcbox div
 {
-   margin: 0.2em 0;
-   vertical-align: top;
+	margin: 0.2em 0;
+	vertical-align: top;
 }
 #shd_bbcbox div img
 {
-   margin: 0 1px 0 0;
-   vertical-align: top;
+	margin: 0 1px 0 0;
+	vertical-align: top;
 }
 #shd_bbcbox select
 {
-   margin: 0 2px;
+	margin: 0 2px;
 }
 /* The smiley strip */
 #shd_smileybox
 {
-   margin: 0.75em 0 0.5em 0;
+	margin: 0.75em 0 0.5em 0;
 }
 #canned_replies
 {

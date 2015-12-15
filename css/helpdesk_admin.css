@@ -288,11 +288,19 @@ h3 a.permcollapse img
 .sd_description
 {
 	background: #F8F8F8;
-    overflow: auto;
-    padding-bottom: .5em;
-    border: 1px solid #ddd;
-    border-top: none;
-    margin: 0 0 10px 0;
-    padding: 12px 9px 8px 9px;
-    box-sizing: border-box;
+	overflow: auto;
+	 padding-bottom: .5em;
+	border: 1px solid #ddd;
+	border-top: none;
+	margin: 0 0 10px 0;
+	padding: 12px 9px 8px 9px;
+	box-sizing: border-box;
+}
+
+ /* Plugin switch inmage */
+
+.features_switch
+{
+	float: right;
+	margin: 0.2em 1em 1em;
 }
