@@ -92,11 +92,13 @@ function shd_load_action_log_entries($start = 0, $items_per_page = 10, $sort = '
 		IFNULL(mem.id_member, 0) AS id_member, IFNULL(mem.real_name, {string:blank}) AS real_name, IFNULL(mg.group_name, {string:na}) AS group_name
 		FROM {db_prefix}helpdesk_log_action AS la
 			LEFT JOIN {db_prefix}members AS mem ON(mem.id_member = la.id_member)
-			LEFT JOIN {db_prefix}membergroups AS mg ON (mg.id_group = CASE WHEN mem.id_group = {int:reg_group_id} THEN mem.id_post_group ELSE mem.id_group END)' . (empty($clause) ? '' : '
-		WHERE ' . $clause) . '
+			LEFT JOIN {db_prefix}membergroups AS mg ON (mg.id_group = CASE WHEN mem.id_group = {int:reg_group_id} THEN mem.id_post_group ELSE mem.id_group END)
+		WHERE la.id_ticket != {int:no_ticket}' . (empty($clause) ? '' : '
+			AND ' . $clause) . '
 		ORDER BY ' . ($sort != '' ? '{raw:sort} {raw:order}' : 'la.log_time DESC') . '
 		' . ($start != -1 ? 'LIMIT {int:start}, {int:items_per_page}' : ''),
 		array(
+			'no_ticket' => 0,
 			'reg_group_id' => 0,
 			'sort' => $sort,
 			'start' => $start,
@@ -320,9 +322,11 @@ function shd_count_action_log_entries($clause = '')
 		SELECT COUNT(*)
 		FROM {db_prefix}helpdesk_log_action AS la
 		LEFT JOIN {db_prefix}members AS mem ON(mem.id_member = la.id_member)
-		LEFT JOIN {db_prefix}membergroups AS mg ON (mg.id_group = CASE WHEN mem.id_group = {int:reg_group_id} THEN mem.id_post_group ELSE mem.id_group END)' . (empty($clause) ? '' : '
-		WHERE ' . $clause),
+		LEFT JOIN {db_prefix}membergroups AS mg ON (mg.id_group = CASE WHEN mem.id_group = {int:reg_group_id} THEN mem.id_post_group ELSE mem.id_group END)
+		WHERE la.id_ticket != {int:no_ticket}' . (empty($clause) ? '' : '
+			AND ' . $clause),
 		array(
+			'no_ticket' => 0,
 			'reg_group_id' => 0,
 			'exclude' => $exclude,
 		)
@@ -407,6 +411,7 @@ function shd_admin_bootstrap(&$admin_areas)
 				'subsections' => array(
 					'main' => array($txt['shd_admin_info']),
 					'actionlog' => array($txt['shd_admin_actionlog'], 'enabled' => empty($modSettings['shd_disable_action_log'])),
+					'adminlog' => array($txt['shd_admin_adminlog'], 'enabled' => allowedTo('admin_forum')),
 					'support' => array($txt['shd_admin_support']),
 				),
 			),
@@ -662,4 +667,443 @@ function shd_modifylanguages(&$themes, &$lang_dirs)
 	$lang_dirs['shd'] = $settings['default_theme_dir'] . '/languages/sd_language';
 	$themes['shd_plugins'] = array('name' => 'SimpleDesk Plugins', 'theme_dir' => $settings['default_theme_dir'] . '/languages/sd_plugins_lang');
 	$lang_dirs['shd_plugins'] = $settings['default_theme_dir'] . '/languages/sd_plugins_lang';
+}
+
+/**
+ *	Tracks a change to our options/configvars.
+ *
+ *	@since 2.1
+ *	@param array $save_vars Passed before we do the updateDBSettings but after everything else is ready.
+*/
+function shd_admin_log_configvar($save_vars)
+{
+	global $smcFunc, $user_info, $modSettings;
+
+	foreach ($save_vars as $var)
+	{
+		if (!isset($var[1]) || (!isset($_POST[$var[1]]) && $var[0] != 'check' && $var[0] != 'permissions' && ($var[0] != 'bbc' || !isset($_POST[$var[1] . '_enabledTags']))))
+			continue;
+
+		// Fix some data for proper testing.
+		$newValue = isset($_POST[$var[1]]) ? $_POST[$var[1]] : null;
+		// Checks are either on or off.
+		if ($var[0] == 'check')
+			$newValue = !empty($_POST[$var[1]]) ? '1' : '0';
+
+		// Skip it if nothing was changed.
+		if (isset($modSettings[$var[1]]) && $modSettings[$var[1]] == $newValue)
+			continue;
+		// Or if nothing exists.
+		elseif (!isset($modSettings[$var[1]]) && empty($newValue))
+			continue;
+
+		// Log this.
+		shd_admin_log('admin_change_option', array(
+			'action' => 'update',
+			'setting' => $var[1],
+			'type' => $var[0],
+			'from' => $modSettings[$var[1]],
+			'to' => $newValue,
+		));
+	}
+}
+
+/**
+ *	Logs a change in our admin area.
+ *
+ *	@since 2.1
+ *	@param string $section The area this was from.
+ *	@param array $extra An array of extra elements, in the following format.
+ *		@param (required) string $action The action performed.
+ *		@param (optional) string $setting During a setting update, this is the variable we changed.
+ *		@param (optional) string $type The subaction peformed or during a setting update, int/string/etc.
+ *		@param (optional) int $id The ID of the item we performed the action on.
+ *		@param (optional) string $direction During a reorder up/down operation which way we moved.
+ *		@param (optional) int $to The ID of the destination item used during copy/move operation.
+ *		@param (optional) int $from The ID of the source item used during the copy/move operation
+*/
+function shd_admin_log($action, $extra)
+{
+	global $smcFunc, $user_info;
+
+	$smcFunc['db_insert']('',
+		'{db_prefix}helpdesk_log_action',
+		array('log_time' => 'int', 'id_member' => 'int', 'ip' => 'string-16', 'action' => 'string', 'id_ticket' => 'int', 'id_msg' => 'int', 'extra' => 'string-65534',),
+		array(time(), $user_info['id'], $user_info['ip'], $action, 0, 0, json_encode($extra)),
+		array('id_action')
+	);
+}
+
+/**
+ *	Load the items from the helpdesk action log
+ *
+ *	It is subject to given parameters (start, number of items, order/sorting), parses the language strings and adds the
+ *	parameter information provided.
+ *
+ *	@param int $start Number of items into the log to start (for pagination). If -1, return everything. If nothing is given, fall back to 0, i.e the first log item.
+ *	@param int $items_per_page How many items to load. Default to 10 items.
+ *	@param string $sort SQL clause to state which column(s) to order the data by. By default it orders by log_time.
+ *	@param string $order SQL clause to state whether the order is ascending or descending. Defaults to descending.
+ *	@param string $clause An SQL fragment that forms a WHERE clause to limit log items, e.g. to load a specific ticket or specific member's log items.
+ *
+ *	@return array A hash array of the log items, with the auto-incremented id being the key:
+ *	<ul>
+ *	<li>id: Numeric identifier of the log item</li>
+ *	<li>time: Formatted time of the event (as per usual for SMF, formatted for user's timezone)</li>
+ *	<li>member: hash array:
+ *		<ul>
+ *			<li>id: Id of the user that committed the action</li>
+ *			<li>name: Name of the user</li>
+ *			<li>link: Link to the profile of the user that committed the action</li>
+ *			<li>ip: User IP address recorded when the action was carried out</li>
+ *			<li>group: Name of the group of the user (uses primary group, failing that post count group)</li>
+ *		</ul>
+ *	</li>
+ *	<li>action: Raw name of the action (for use with collecting the image later)</li>
+ *	<li>id_ticket: Numeric id of the ticket this action refers to</li>
+ *	<li>id_msg: Numeric id of the individual reply this action refers to</li>
+ *	<li>extra: Array of extra parameters for the log action</li>
+ *	<li>action_text: Formatted text of the log item (parsed with parameters)</li>
+ *	</ul>
+ *
+ *	@see shd_log_action()
+ *	@see shd_count_action_log_entries()
+ *	@since 1.0
+*/
+function shd_load_admin_log_entries($start = 0, $items_per_page = 10, $sort = 'la.log_time', $order = 'DESC', $clause = '')
+{
+	global $smcFunc, $txt, $scripturl, $context, $user_info, $user_profile;
+
+	// Load languages incase they aren't there (Read: ticket-specific logs)
+	shd_load_language('sd_language/SimpleDeskAdmin');
+	shd_load_language('sd_language/SimpleDeskLogAction');
+	shd_load_language('sd_language/SimpleDeskNotifications');
+
+	$loaded_users = array();
+
+	$request = shd_db_query('','
+		SELECT la.id_action, la.log_time, la.ip, la.action, la.extra,
+		IFNULL(mem.id_member, 0) AS id_member, IFNULL(mem.real_name, {string:blank}) AS real_name, IFNULL(mg.group_name, {string:na}) AS group_name
+		FROM {db_prefix}helpdesk_log_action AS la
+			LEFT JOIN {db_prefix}members AS mem ON(mem.id_member = la.id_member)
+			LEFT JOIN {db_prefix}membergroups AS mg ON (mg.id_group = CASE WHEN mem.id_group = {int:reg_group_id} THEN mem.id_post_group ELSE mem.id_group END)
+		WHERE la.id_ticket = {int:no_ticket}
+		ORDER BY ' . ($sort != '' ? '{raw:sort} {raw:order}' : 'la.log_time DESC') . '
+		' . ($start != -1 ? 'LIMIT {int:start}, {int:items_per_page}' : ''),
+		array(
+			'no_ticket' => 0,
+			'reg_group_id' => 0,
+			'sort' => $sort,
+			'start' => $start,
+			'items_per_page' => $items_per_page,
+			'order' => $order,
+			'na' => $txt['not_applicable'],
+			'blank' => '',
+		)
+	);
+
+	$actions = array();
+	$ids = array(
+		'canned_cat' => array(),
+		'depts' => array(),
+		'canned_reply' => array(),
+		'custom_field' => array(),
+		'members' => array(),
+		'permissions' => array(),
+	);
+	while ($row = $smcFunc['db_fetch_assoc']($request))
+	{
+		$row['extra'] = json_decode($row['extra'], true);
+		$row['extra'] = is_array($row['extra']) ? $row['extra'] : array();
+
+		// Uhoh, we don't know who this is! Check it's not automatically by the system. If it is... mark it so.
+		if (empty($row['id_member']))
+		{
+			if (isset($row['extra']['auto']) && $row['extra']['auto'] === true)
+				$row['real_name'] = $txt['shd_helpdesk'];
+			else
+				$row['real_name'] = $txt['shd_admin_actionlog_unknown'];
+		}
+
+		$actions[$row['id_action']] = array(
+			'id' => $row['id_action'],
+			'time' => timeformat($row['log_time']),
+			'member' => array(
+				'id' => $row['id_member'],
+				'name' => $row['real_name'],
+				'link' => shd_profile_link($row['real_name'], $row['id_member']),
+				'group' => $row['group_name'],
+				'ip' => !empty($row['ip']) ? $row['ip'] : $txt['shd_admin_actionlog_unknown'],
+			),
+			'action' => $row['action'],
+			'type' => isset($row['extra']['type']) ? $row['extra']['type'] : '',
+			'extra' => $row['extra'],
+			'action_text' => '',
+			'can_remove' => empty($context['waittime']) ? false : ($row['log_time'] < $context['waittime']),
+		);
+
+		// Load these up so we can find them later, it looks bad, but is actually simple.
+		if ($row['action'] == 'admin_canned' && !empty($row['id']) && in_array($row['type'], array('cat_move', 'cat_delete', 'cat_add', 'cat_update')))
+		{
+			if (!isset($ids['canned_cat'][$row['extra']['id']]))
+				$ids['canned_cat'][$row['extra']['id']] = array();
+			$ids['canned_cat'][$row['extra']['id']][$row['id_action']] = 'id';
+		}
+		elseif ($row['action'] == 'admin_canned' && !empty($row['id']) && in_array($row['type'], array('reply_move', 'reply_delete', 'reply_add', 'reply_update')))
+		{
+			if (!isset($ids['canned_reply'][$row['extra']['id']]))
+				$ids['canned_reply'][$row['extra']['id']] = array();
+			$ids['canned_reply'][$row['extra']['id']][$row['id_action']] = 'id';
+		}
+		elseif ($row['action'] == 'admin_dept')
+		{
+			if (!isset($ids['depts'][$row['extra']['id']]))
+				$ids['depts'][$row['extra']['id']] = array();
+			$ids['depts'][$row['extra']['id']][$row['id_action']] = 'id';
+		}
+		elseif ($row['action'] == 'admin_customfield')
+		{
+			if (!isset($row['extra']['id']))
+				continue;
+
+			if (!isset($ids['custom_field'][$row['extra']['id']]))
+				$ids['custom_field'][$row['extra']['id']] = array();
+			$ids['custom_field'][$row['extra']['id']][$row['id_action']] = 'id';
+		}
+		elseif ($row['action'] == 'admin_maint')
+		{
+			if ($row['extra']['action'] == 'move_dept')
+			{
+				if (!isset($ids['depts'][$row['extra']['to']]))
+					$ids['depts'][$row['extra']['to']] = array();
+				$ids['depts'][$row['extra']['to']][$row['id_action']] = 'to';
+				if (!isset($ids['depts'][$row['extra']['from']]))
+					$ids['depts'][$row['extra']['from']] = array();
+				$ids['depts'][$row['extra']['from']][$row['id_action']] = 'from';
+			}
+			else
+			{
+				if (!empty($row['extra']['to']))
+				{
+					if (!isset($ids['members'][$row['extra']['to']]))
+						$ids['members'][$row['extra']['to']] = array();
+					$ids['members'][$row['extra']['to']][$row['id_action']] = 'to';
+				}
+				if (!empty($row['extra']['from']))
+				{
+					if (!isset($ids['members'][$row['extra']['from']]))
+						$ids['members'][$row['extra']['from']] = array();
+					$ids['members'][$row['extra']['from']][$row['id_action']] = 'from';
+				}
+			}
+		}
+		elseif ($row['action'] == 'admin_permissions')
+		{
+			if (!empty($row['extra']['id']))
+			{
+				if (!isset($ids['permissions'][$row['extra']['id']]))
+					$ids['permissions'][$row['extra']['id']] = array();
+				$ids['permissions'][$row['extra']['id']][$row['id_action']] = 'id';
+			}
+			if (!empty($row['extra']['to']))
+			{
+				if (!isset($ids['permissions'][$row['extra']['to']]))
+					$ids['permissions'][$row['extra']['to']] = array();
+				$ids['permissions'][$row['extra']['to']][$row['id_action']] = 'to';
+			}
+			if (!empty($row['extra']['from']))
+			{
+				if (!isset($ids['permissions'][$row['extra']['from']]))
+					$ids['permissions'][$row['extra']['from']] = array();
+				$ids['permissions'][$row['extra']['from']][$row['id_action']] = 'from';
+			}
+		}
+	}
+	$smcFunc['db_free_result']($request);
+
+	// Now lets try to find stuff.
+	if (!empty($ids['canned_cat']))
+	{
+		$request = shd_db_query('','
+			SELECT id_cat AS id, cat_name AS name
+			FROM {db_prefix}helpdesk_cannedreplies_cats
+			WHERE id_cat IN ({array_int:cats})',
+			array(
+				'cats' => array_keys($ids['canned_cat']),
+			)
+		);
+		while ($row = $smcFunc['db_fetch_assoc']($request))
+		{
+			foreach ($ids['canned_cat'][$row['id']] as $id_action => $type)
+				if ($type == 'id')
+					$actions[$id_action]['id_name'] = $row['name'];
+		}
+		$smcFunc['db_free_result']($request);
+	}
+	if (!empty($ids['canned_reply']))
+	{
+		$request = shd_db_query('','
+			SELECT id_reply AS id, title AS name
+			FROM {db_prefix}helpdesk_cannedreplies
+			WHERE id_reply IN ({array_int:replys})',
+			array(
+				'replys' => array_keys($ids['canned_reply']),
+			)
+		);
+		while ($row = $smcFunc['db_fetch_assoc']($request))
+		{
+			foreach ($ids['canned_reply'][$row['id']] as $id_action => $type)
+				if ($type == 'id')
+					$actions[$id_action]['id_name'] = $row['name'];
+		}
+		$smcFunc['db_free_result']($request);
+	}
+	if (!empty($ids['custom_field']))
+	{
+		// We do this as we just want the name really.
+		$request = shd_db_query('','
+			SELECT id_field AS id, field_name AS name
+			FROM {db_prefix}helpdesk_custom_fields
+			WHERE id_field IN ({array_int:custom_fields})',
+			array(
+				'custom_fields' => array_keys($ids['custom_field']),
+			)
+		);
+		while ($row = $smcFunc['db_fetch_assoc']($request))
+		{
+			foreach ($ids['custom_field'][$row['id']] as $id_action => $type)
+				if ($type == 'id')
+					$actions[$id_action]['id_name'] = $row['name'];
+		}
+		$smcFunc['db_free_result']($request);
+	}
+	if (!empty($ids['depts']))
+	{
+		// We do this as we just want the name really.
+		$request = shd_db_query('','
+			SELECT id_dept AS id, dept_name AS name
+			FROM {db_prefix}helpdesk_depts
+			WHERE id_dept IN ({array_int:depts})',
+			array(
+				'depts' => array_keys($ids['depts']),
+			)
+		);
+		while ($row = $smcFunc['db_fetch_assoc']($request))
+		{
+			foreach ($ids['depts'][$row['id']] as $id_action => $type)
+				$actions[$id_action][$type == 'id' ? 'id_name' : ($type == 'to' ? 'to_name' : 'from_name')] = $row['name'];
+		}
+		$smcFunc['db_free_result']($request);
+	}
+	if (!empty($ids['members']))
+	{
+		$request = shd_db_query('','
+			SELECT id_member AS id, IFNULL(real_name, {string:blank}) AS name
+			FROM {db_prefix}members
+			WHERE id_member IN ({array_int:members})',
+			array(
+				'members' => array_keys($ids['members']),
+				'blank' => '',
+			)
+		);
+		while ($row = $smcFunc['db_fetch_assoc']($request))
+		{
+			foreach ($ids['custom_field'][$row['id']] as $id_action => $type)
+				$actions[$id_action][$type == 'to' ? 'to_name' : 'from_name'] = $row['name'];
+		}
+		$smcFunc['db_free_result']($request);
+	}
+	if (!empty($ids['permissions']))
+	{
+		$request = shd_db_query('','
+			SELECT id_role AS id, role_name AS name
+			FROM {db_prefix}helpdesk_roles 
+			WHERE id_role IN ({array_int:roles})',
+			array(
+				'roles' => array_keys($ids['permissions']),
+				'blank' => '',
+			)
+		);
+		while ($row = $smcFunc['db_fetch_assoc']($request))
+		{
+			foreach ($ids['permissions'][$row['id']] as $id_action => $type)
+				$actions[$id_action][$type == 'id' ? 'id_name' : ($type == 'to' ? 'to_name' : 'from_name')] = $row['name'];
+		}
+		$smcFunc['db_free_result']($request);
+	}
+
+
+	// Do some formatting of the action string.
+	foreach ($actions as $k => $action)
+	{
+		if (empty($actions[$k]['action_text']))
+			$actions[$k]['action_text'] = isset($txt['shd_log_' . $action['action']]) ? $txt['shd_log_' . $action['action']] : $action['action'];
+
+		if (!empty($action['extra']['setting']) && isset($txt[$action['extra']['setting']]))
+			$actions[$k]['action_text'] .= '<br />' . $txt['shd_admin_adminlog_setting'] . ': <span title="' . $action['extra']['setting'] . '">' . $txt[$action['extra']['setting']] . '</span>';
+		elseif (!empty($action['extra']['setting']))
+			$actions[$k]['action_text'] .= '<br />' . $txt['shd_admin_adminlog_setting'] . ': ' . $action['extra']['setting'];
+		elseif (!empty($action['type']) && isset($txt['shd_log_' . $action['action'] . '_' . $action['type']]))
+			$actions[$k]['action_text'] .= '<br />' . $txt['shd_admin_adminlog_action'] . ': ' . $txt['shd_log_' . $action['action'] . '_' . $action['type']];
+		elseif (!empty($action['type']))
+			$actions[$k]['action_text'] .= '<br />' . $txt['shd_admin_adminlog_action'] . ': ' . $action['type'];
+		elseif (!empty($action['extra']['action']) && isset($txt['shd_log_' . $action['action'] . '_' . $action['extra']['action']]))
+			$actions[$k]['action_text'] .= '<br />' . $txt['shd_admin_adminlog_action'] . ': ' . $txt['shd_log_' . $action['action'] . '_' . $action['extra']['action']];
+		elseif (!empty($action['extra']['action']))
+			$actions[$k]['action_text'] .= '<br />' . $txt['shd_admin_adminlog_action'] . ': shd_log_' . $action['action'] . '_' . $action['extra']['action'];
+
+
+		if (isset($action['id_name']))
+			$actions[$k]['action_text'] .= '<br />' . $txt['shd_admin_adminlog_name'] . ': <span title="' . $action['extra']['id'] . '">' . $action['id_name'] . '</span>';
+		elseif (isset($action['extra']['id']))
+			$actions[$k]['action_text'] .= '<br />' . $txt['shd_admin_adminlog_name'] . ': ' . $action['extra']['id'];
+
+		if (isset($action['from_name']))
+			$actions[$k]['action_text'] .= '<br />' . $txt['shd_admin_adminlog_from'] . ': <span title="' . $action['extra']['from'] . '">' . $action['from_name'] . '</span>';
+		elseif (isset($action['extra']['from']) && $action['type'] == 'check')
+			$actions[$k]['action_text'] .= '<br />' . $txt['shd_admin_adminlog_from'] . ': <span title="' . $action['extra']['from'] . '">' . (empty($action['extra']['from']) ? $txt['shd_admin_default_state_off'] : $txt['shd_admin_default_state_on']) . '</span>';
+		elseif (isset($action['extra']['from']))
+			$actions[$k]['action_text'] .= '<br />' . $txt['shd_admin_adminlog_from'] . ': ' . $action['extra']['from'];
+
+		if (isset($action['to_name']))
+			$actions[$k]['action_text'] .= '<br />' . $txt['shd_admin_adminlog_to'] . ': <span title="' . $action['extra']['to'] . '">' . $action['to_name'] . '</span>';
+		elseif (isset($action['extra']['to']) && $action['type'] == 'check')
+			$actions[$k]['action_text'] .= '<br />' . $txt['shd_admin_adminlog_to'] . ': <span title="' . $action['extra']['to'] . '">' . (empty($action['extra']['to']) ? $txt['shd_admin_default_state_off'] : $txt['shd_admin_default_state_on']) . '</span>';
+		elseif (isset($action['extra']['to']))
+			$actions[$k]['action_text'] .= '<br />' . $txt['shd_admin_adminlog_to'] . ': ' . $action['extra']['to'];
+
+		// Debug stuff.
+		$actions[$k]['action_text'] .= '<!--' . print_r($actions[$k], true) . '-->';
+	}
+
+	return $actions;
+}
+
+/**
+ *	Returns the total number of items in the helpdesk admin log.
+ *
+ *	This function gets the total number of items logged in the helpdesk admin log, for the purposes of establishing the 
+ *  number of pages there should be in the page-index.
+ *
+ *	@return int Number of entries in the helpdesk action log table.
+ *	@see shd_load_admin_log_entries()
+ *	@since 2.1
+*/
+function shd_count_admin_log_entries()
+{
+	global $smcFunc;
+
+	$request = shd_db_query('','
+		SELECT COUNT(*)
+		FROM {db_prefix}helpdesk_log_action AS la
+		WHERE id_ticket = {int:no_ticket}',
+		array(
+			'no_ticket' => 0,
+		)
+	);
+
+	list ($entry_count) = $smcFunc['db_fetch_row']($request);
+	$smcFunc['db_free_result']($request);
+
+	return $entry_count;
 }

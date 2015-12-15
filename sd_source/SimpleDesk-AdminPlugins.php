@@ -221,6 +221,11 @@ function shd_admin_plugins()
 				$plugin['save_callback'](!empty($_POST[$post_var_prefix . $id]));
 		}
 
+		// We know we did something.
+		shd_admin_log('admin_plugins', array(
+			'action' => 'update',
+		));
+
 		redirectexit('action=admin;area=helpdesk_plugins;' . $context['session_var'] . '=' . $context['session_id']);
 	}
 }
@@ -289,6 +294,11 @@ function shd_unregister_plugin()
 				break;
 		}
 	}
+
+	// Keep track of this.
+	shd_admin_log('admin_plugins', array(
+		'action' => 'remove',
+	));
 
 	updateSettings($changes, true);
 }

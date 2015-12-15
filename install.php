@@ -208,6 +208,12 @@ $hooks = array();
 		'file' => '$sourcedir/sd_source/Subs-SimpleDeskPackages.php',
 		'perm' => true,
 	);
+	$hooks[] = array(
+		'hook' => 'integrate_modification_types',
+		'function' => 'shd_modification_types',
+		'file' => '$sourcedir/sd_source/Subs-SimpleDeskPackages.php',
+		'perm' => true,
+	);
 	// Other
 	$hooks[] = array(
 		'hook' => 'integrate_convert_msgbody',

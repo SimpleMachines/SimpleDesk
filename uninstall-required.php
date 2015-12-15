@@ -45,18 +45,6 @@ elseif (!defined('SMF'))
 	die('<b>Error:</b> Cannot uninstall - please verify you put this file in the same place as SMF\'s SSI.php.');
 }
 
-// Unchecking the option in Core Features.
-global $modSettings, $sourcedir;
-$modSettings['helpdesk_active'] = false;
-$features = implode(',', array_diff(explode(',', $modSettings['admin_features']), array('shd')));
-
-updateSettings(
-	array(
-		'admin_features' => $features,
-	),
-	true
-);
-
 // 2. Removing all the SMF hooks.
 $hooks = array();
 // SMF Core stuff
@@ -154,6 +142,11 @@ $hooks = array();
 		'function' => 'shd_package_upload',
 		'file' => '$sourcedir/sd_source/Subs-SimpleDeskPackages.php',
 	);
+	$hooks[] = array(
+		'hook' => 'integrate_modification_types',
+		'function' => 'shd_modification_types',
+		'file' => '$sourcedir/sd_source/Subs-SimpleDeskPackages.php',
+	);
 	// Other
 	$hooks[] = array(
 		'hook' => 'integrate_convert_msgbody',
@@ -201,7 +194,7 @@ $hooks = array();
 	);
 
 foreach ($hooks as $hook)
-	remove_integration_function($hook['hook'], $hook['function']);
+	remove_integration_function($hook['hook'], $hook['function'], !isset($hook['perm']) ? true : $hook['perm'], !isset($hook['file']) ? '' : $hook['file'], !isset($hook['object']) ? false : $hook['object']);
 
 // 3. Removing the scheduled task.
 $smcFunc['db_query']('', '

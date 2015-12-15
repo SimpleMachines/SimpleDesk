@@ -48,7 +48,7 @@ function template_shd_frontpage_admin()
 	<div id="admincenter">
 		<form name="adminform" action="', $context['post_url'], '" method="post" accept-charset="', $context['character_set'], '"', !empty($context['force_form_onsubmit']) ? ' onsubmit="' . $context['force_form_onsubmit'] . '"' : '', '>
 		<div class="tborder">
-			<div class="cat_bar grid_header">
+			<div class="cat_bar">
 				<h3 class="catbg">
 					<img src="', shd_image_url('frontpage.png'), '" class="icon" alt="*"/> ', $txt['shdp_frontpage'], '
 				</h3>
@@ -97,15 +97,30 @@ function template_shd_frontpage_admin()
 						</dl>
 						<hr class="hrcolor" />
 						<div class="righttext">
-							<input type="submit" value="', isset($editor_context['labels']['post_button']) ? $editor_context['labels']['post_button'] : $txt['save'], '" tabindex="', $context['tabindex']++, '" accesskey="s" class="button_submit" />
+							<input type="submit" value="', $txt['save'], '"', (!empty($context['save_disabled']) ? ' disabled="disabled"' : ''), (!empty($context['settings_save_onclick']) ? ' onclick="' . $context['settings_save_onclick'] . '"' : ''), ' class="button_submit" />
 						</div>
+
 					</div>
 				<span class="botslice"><span></span></span>
 			</div>
-			</div>
+			</div>';
+	if (isset($context['admin-dbsc_token']))
+		echo '
+		<input type="hidden" name="', $context['admin-dbsc_token_var'], '" value="', $context['admin-dbsc_token'], '" />';
+	echo '
 		<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 		</form>
 	</div>
+	<br class="clear" />';
+	if (!empty($context['settings_post_javascript']))
+		echo '
+	<script type="text/javascript"><!-- // --><![CDATA[
+	', $context['settings_post_javascript'], '
+	// ]]></script>';
+	if (!empty($context['settings_insert_below']))
+		echo $context['settings_insert_below'];
+
+	echo '
 	<script type="text/javascript"><!-- // --><![CDATA[
 	function invertBBC()
 	{
@@ -115,4 +130,3 @@ function template_shd_frontpage_admin()
 	}
 	// ]]></script>';
 }
-

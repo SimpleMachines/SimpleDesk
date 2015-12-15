@@ -233,6 +233,14 @@ function shd_admin_maint_reattribute()
 			)
 		);
 	}
+
+	// Log this.
+	shd_admin_log('admin_maint', array(
+		'action' => 'reattribute',
+		'type' => $_POST['type'],
+		'to' => $memID,
+		'from' => $attribute
+	));
 }
 
 function shd_admin_maint_massdeptmove()
@@ -291,6 +299,13 @@ function shd_admin_maint_massdeptmove()
 
 	if (isset($_GET['done']) || $_POST['tickets_done'] >= $_POST['massdeptmove'])
 	{
+		// Log this.
+		shd_admin_log('admin_maint', array(
+			'action' => 'move_dept',
+			'to' => $_POST['id_dept_to'],
+			'from' => $_POST['id_dept_from']
+		));
+
 		$context['sub_template'] = 'shd_admin_maint_massdeptmovedone';
 		return;
 	}
@@ -433,6 +448,11 @@ function shd_admin_maint_findrepair()
 
 	if (isset($_GET['done']))
 	{
+		// Log this.
+		shd_admin_log('admin_maint', array(
+			'action' => 'findrepair',
+		));
+
 		$context['sub_template'] = 'shd_admin_maint_findrepairdone';
 		$context['maintenance_result'] = !empty($_SESSION['shd_maint']) ? $_SESSION['shd_maint'] : array();
 		unset($_SESSION['shd_maint']);
@@ -936,6 +956,11 @@ function shd_maint_clean_cache()
 	global $context;
 	clean_cache();
 
+	// Log this.
+	shd_admin_log('admin_maint', array(
+		'action' => 'clean_cache',
+	));
+
 	// Normally, we'd update $context['continue_post_data'] to indicate our next port of call. But here, we don't have to.
 	redirectexit('action=admin;area=helpdesk_maint;sa=findrepair;done;' . $context['session_var'] . '=' . $context['session_id']);
 }
@@ -996,6 +1021,12 @@ function shd_admin_maint_search()
 					'shd_new_search_index' => 0,
 				)
 			);
+
+			// You guessed it, log this.
+			shd_admin_log('admin_maint', array(
+				'action' => 'search_rebuild',
+			));
+
 			redirectexit('action=admin;area=helpdesk_maint;sa=search;rebuilddone;' . $context['session_var'] . '=' . $context['session_id']);
 		}
 

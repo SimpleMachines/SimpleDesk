@@ -125,6 +125,12 @@ function shd_admin_create_role()
 		if (empty($newrole))
 			fatal_lang_error('shd_could_not_create_role', false);
 
+		// Always need logs.
+		shd_admin_log('admin_permissions', array(
+			'action' => 'create_role',
+			'id' => $newrole,
+		));
+
 		// Take them to the edit screen!
 		redirectexit('action=admin;area=helpdesk_permissions;sa=editrole;role=' . $newrole);
 	}
@@ -264,6 +270,11 @@ function shd_admin_save_role()
 				'role' => $_REQUEST['role'],
 			)
 		);
+
+		shd_admin_log('admin_permissions', array(
+			'action' => 'delete_role',
+			'id' => $newrole,
+		));
 
 		// Bat out of hell
 		redirectexit('action=admin;area=helpdesk_permissions');
@@ -488,6 +499,12 @@ function shd_admin_save_role()
 		)
 	);
 
+	// 10. Log this.
+	shd_admin_log('admin_permissions', array(
+		'action' => 'change_role',
+		'id' => $_REQUEST['role'],
+	));
+
 	// All done, back to the main screen
 	redirectexit('action=admin;area=helpdesk_permissions');
 }
@@ -635,6 +652,13 @@ function shd_admin_copy_role()
 			}
 		}
 
+		// Can't miss this.
+		shd_admin_log('admin_permissions', array(
+			'action' => 'copy_role',
+			'from' => $_REQUEST['role'],
+			'to' => $newrole,
+		));
+
 		// Take them to the edit screen!
 		redirectexit('action=admin;area=helpdesk_permissions;sa=editrole;role=' . $newrole);
 	}
@@ -732,4 +756,3 @@ function shd_load_role($loadrole = 0)
 
 	$smcFunc['db_free_result']($query);
 }
-

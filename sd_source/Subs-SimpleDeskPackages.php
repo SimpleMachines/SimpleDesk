@@ -51,7 +51,7 @@ function shd_packages_sort_id(&$sort_id, &$packages)
 */
 function shd_package_download()
 {
-	global $context;
+	global $context, $scripturl, $txt;
 
 	if ($context['package']['type'] == 'sdplugin')
 		$context['package']['install']['link'] = '<a href="' . $scripturl . '?action=admin;area=packages;sa=install;package=' . $context['package']['filename'] . '">[ ' . $txt['shd_install_plugin'] . ' ]</a>';
@@ -64,7 +64,7 @@ function shd_package_download()
 */
 function shd_package_upload()
 {
-	global $context;
+	global $context, $scripturl, $txt;
 
 	if ($context['package']['type'] == 'sdplugin')
 		$context['package']['install']['link'] = '<a href="' . $scripturl . '?action=admin;area=packages;sa=install;package=' . $context['package']['filename'] . '">[ ' . $txt['shd_install_plugin'] . ' ]</a>';

@@ -165,12 +165,21 @@ function shd_admin_info()
 			'icon' => 'log.png',
 			'title' => $txt['shd_admin_actionlog_title'],
 		),
+		'adminlog' => array(
+			'function' => 'shd_admin_admin_log',
+			'icon' => 'log.png',
+			'title' => $txt['shd_admin_adminlog_title'],
+		),
 		'support' => array(
 			'function' => 'shd_admin_support',
 			'icon' => 'support.png',
 			'title' => $txt['shd_admin_support'],
 		),
 	);
+
+	// Can't do this?
+	if (!allowedTo('admin_forum'))
+		unset($subactions['adminlog']);
 
 	$context[$context['admin_menu_name']]['tab_data'] = array(
 		'description' => $txt['shd_admin_options_desc'],
@@ -180,6 +189,9 @@ function shd_admin_info()
 			),
 			'actionlog' => array(
 				'description' => $txt['shd_admin_actionlog_desc'] . '<br />' . (!empty($modSettings['shd_disable_action_log']) ? '<span class="smalltext">' . $txt['shd_action_log_disabled'] . '</span>' : ''),
+			),
+			'adminlog' => array(
+				'description' => $txt['shd_admin_adminlog_desc'],
 			),
 			'support' => array(
 				'description' => $txt['shd_admin_support_desc'],
@@ -319,6 +331,7 @@ function shd_admin_options($return_config)
 			$save_vars[] = array('text', 'shd_enabled_bbc');
 		}
 
+		shd_admin_log_configvar($save_vars);
 		saveDBSettings($save_vars);
 		$_SESSION['adm-save'] = true;
 		redirectexit('action=admin;area=helpdesk_options;sa=' . $_REQUEST['sa']);
@@ -809,6 +822,68 @@ function shd_admin_action_log()
 	$context['page_index'] = shd_no_expand_pageindex($scripturl . '?action=admin;area=helpdesk_info;sa=actionlog' . $context['url_sort'] . $context['url_order'], $context['start'], shd_count_action_log_entries(), $context['displaypage']);
 
 	$context['sub_template'] = 'shd_action_log';
+}
+
+/**
+ *	Initialises the helpdesk admin log.
+ *
+ *	@since 2.1
+*/
+function shd_admin_admin_log()
+{
+	global $context, $settings, $scripturl, $txt, $sourcedir, $smcFunc, $sort_types;
+
+	shd_load_language('sd_language/SimpleDeskLogAction');
+
+	// This is for full admins only.
+	isAllowedTo('admin_forum');
+
+	$context['displaypage'] = 30;
+	$context['daysdisable'] = 28;
+	$context['waittime'] = time() - $context['daysdisable'] * 24 * 3600;
+
+	// Handle deletion...
+	if (isset($_REQUEST['removeall']))
+		shd_db_query('', '
+			DELETE FROM {db_prefix}helpdesk_log_action
+			WHERE log_time < {int:twenty_four_hours_wait}',
+			array(
+				'twenty_four_hours_wait' => $context['waittime'],
+			)
+		);
+	elseif (!empty($_REQUEST['remove']) && $context['can_delete'])
+		shd_db_query('', '
+			DELETE FROM {db_prefix}helpdesk_log_action
+			WHERE id_action = {int:gtfo}
+			AND log_time < {int:twenty_four_hours_wait}',
+			array(
+				'twenty_four_hours_wait' => $context['waittime'],
+				'gtfo' => (int) $_REQUEST['remove'],
+			)
+		);
+
+	// Do the column stuff!
+	$sort_types = array(
+		'action' =>'la.action',
+		'time' => 'la.log_time',
+		'member' => 'mem.real_name',
+		'position' => 'mg.group_name',
+		'ip' => 'la.ip',
+	);
+
+	// Setup the direction stuff...
+	$context['sort'] = isset($_REQUEST['sort']) && isset($sort_types[$_REQUEST['sort']]) ? $sort_types[$_REQUEST['sort']] : $sort_types['time'];
+	$context['start'] = isset($_REQUEST['start']) ? $_REQUEST['start'] : 0;
+	$context['order'] = isset($_REQUEST['asc']) ? 'ASC' : 'DESC';
+	$context['url_sort'] = isset($_REQUEST['sort']) ? ';sort=' . $_REQUEST['sort'] : '';
+	$context['url_order'] =  isset($_REQUEST['asc']) ? ';asc' : '';
+
+	// Get all action log entries
+	$context['actions'] = shd_load_admin_log_entries($context['start'], $context['displaypage'], $context['sort'], $context['order']);
+
+	$context['page_index'] = shd_no_expand_pageindex($scripturl . '?action=admin;area=helpdesk_info;sa=adminlog' . $context['url_sort'] . $context['url_order'], $context['start'], shd_count_admin_log_entries(), $context['displaypage']);
+
+	$context['sub_template'] = 'shd_admin_log';
 }
 
 /**

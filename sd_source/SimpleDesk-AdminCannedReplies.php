@@ -193,6 +193,13 @@ function shd_admin_canned_movecat()
 		)
 	);
 
+	// Log this action.
+	shd_admin_log('admin_canned', array(
+		'action' => 'cat_move',
+		'id' => $_REQUEST['cat'],
+		'direction' => $_REQUEST['direction'] == 'up' ? 'up' : 'down',
+	));
+
 	redirectexit('action=admin;area=helpdesk_cannedreplies');
 }
 
@@ -259,6 +266,13 @@ function shd_admin_canned_movereply()
 			'other_reply' => $other_reply,
 		)
 	);
+
+	// Log this action.
+	shd_admin_log('admin_canned', array(
+		'action' => 'reply_move',
+		'id' => $_REQUEST['reply'],
+		'direction' => $_REQUEST['direction'] == 'up' ? 'up' : 'down',
+	));
 
 	redirectexit('action=admin;area=helpdesk_cannedreplies');
 }
@@ -384,6 +398,12 @@ function shd_admin_canned_savecat()
 					)
 				);
 			}
+
+			// Log this action.
+			shd_admin_log('admin_canned', array(
+				'action' => 'cat_delete',
+				'id' => $_REQUEST['cat'],
+			));
 		}
 
 		redirectexit('action=admin;area=helpdesk_cannedreplies');
@@ -421,6 +441,12 @@ function shd_admin_canned_savecat()
 				'id_cat',
 			)
 		);
+
+		// Log this action.
+		shd_admin_log('admin_canned', array(
+			'action' => 'cat_add',
+			'id' => $smcFunc['db_insert_id']('{db_prefix}helpdesk_cannedreplies_cats'),
+		));
 	}
 	else
 	{
@@ -434,8 +460,15 @@ function shd_admin_canned_savecat()
 				'cat' => (int) $_POST['cat'],
 			)
 		);
+
 		if ($smcFunc['db_affected_rows']() == 0)
 			fatal_lang_error('shd_admin_cannedreplies_thecatisalie', false);
+
+		// Log this action.
+		shd_admin_log('admin_canned', array(
+			'action' => 'cat_update',
+			'id' => (int) $_POST['cat'],
+		));
 	}
 
 	redirectexit('action=admin;area=helpdesk_cannedreplies');
@@ -642,6 +675,12 @@ function shd_admin_canned_savereply()
 					'reply' => $_REQUEST['reply'],
 				)
 			);
+
+			// Log this action.
+			shd_admin_log('admin_canned', array(
+					'action' => 'reply_delete',
+					'id' => $_REQUEST['reply'],
+			));
 		}
 		redirectexit('action=admin;area=helpdesk_cannedreplies');
 	}
@@ -749,6 +788,11 @@ function shd_admin_canned_savereply()
 				'id_dept', 'id_reply',
 			)
 		);
+
+		shd_admin_log('admin_canned', array(
+			'action' => 'reply_add',
+			'id' => $reply_id,
+		));
 	}
 	else
 	{
@@ -807,6 +851,11 @@ function shd_admin_canned_savereply()
 				'id_dept', 'id_reply',
 			)
 		);
+
+		shd_admin_log('admin_canned', array(
+			'action' => 'reply_update',
+			'id' => $_REQUEST['reply'],
+		));
 	}
 
 	redirectexit('action=admin;area=helpdesk_cannedreplies');
@@ -908,8 +957,13 @@ function shd_admin_canned_movereplycat()
 			)
 		);
 
-		// 5. Scram.
+		// 5. Log this action.
+		shd_admin_log('admin_canned', array(
+			'action' => 'reply_move',
+			'id' => $_REQUEST['reply'],
+		));
+
+		// 6. Scram.
 		redirectexit('action=admin;area=helpdesk_cannedreplies');
 	}
 }
-

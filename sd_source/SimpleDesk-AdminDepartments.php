@@ -154,6 +154,13 @@ function shd_admin_dept_move()
 		)
 	);
 
+	// Log this.
+	shd_admin_log('admin_dept', array(
+		'action' => 'move',
+		'id' => $_REQUEST['dept'],
+		'direction' => $_REQUEST['direction']
+	));
+
 	redirectexit('action=admin;area=helpdesk_depts');
 }
 
@@ -223,6 +230,12 @@ function shd_admin_create_dept()
 		$newdept = $smcFunc['db_insert_id']('{db_prefix}helpdesk_depts', 'id_dept');
 		if (empty($newdept))
 			fatal_lang_error('shd_could_not_create_dept', false);
+
+		// Log this.
+		shd_admin_log('admin_dept', array(
+			'action' => 'add',
+			'id' => $newdept,
+		));
 
 		// Take them to the edit screen!
 		redirectexit('action=admin;area=helpdesk_depts;sa=editdept;dept=' . $newdept);
@@ -389,6 +402,12 @@ function shd_admin_save_dept()
 			)
 		);
 
+		// Log this.
+		shd_admin_log('admin_dept', array(
+			'action' => 'delete',
+			'id' => $_REQUEST['dept'],
+		));
+
 		// Bat out of hell
 		redirectexit('action=admin;area=helpdesk_depts');
 	}
@@ -503,6 +522,12 @@ function shd_admin_save_dept()
 		);
 	}
 
+	// Log this.
+	shd_admin_log('admin_dept', array(
+		'action' => 'update',
+		'id' => $_REQUEST['dept'],
+	));
+
 	// 8. Thank you and good night.
 	redirectexit('action=admin;area=helpdesk_depts');
 }
@@ -530,4 +555,3 @@ function shd_get_dept_theme_list()
 		$context['dept_theme_list'][$row['id_theme']] = $row['value'];
 	$smcFunc['db_free_result']($request);
 }
-
