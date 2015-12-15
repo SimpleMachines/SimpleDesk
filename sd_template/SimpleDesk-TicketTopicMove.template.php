@@ -26,11 +26,7 @@ function template_shd_tickettotopic()
 {
 	global $txt, $settings, $context, $scripturl, $modSettings;
 
-	// Back to the helpdesk.
-	echo '
-		<div class="floatleft">
-			', template_button_strip(array($context['navigation']['back']), 'bottom'), '
-		</div><br class="clear" /><br />';
+	template_button_strip(array($context['navigation']['back']));
 
 	echo '
 		<div class="cat_bar">
@@ -39,9 +35,8 @@ function template_shd_tickettotopic()
 				', $txt['shd_move_ticket_to_topic'], '
 			</h3>
 		</div>
-		<div class="roundframe">
+		<div class="roundframe noup">
 		<form action="', $scripturl, '?action=helpdesk;sa=tickettotopic2;ticket=', $context['ticket_id'], '" method="post" onsubmit="submitonce(this);">
-			<div class="content">
 				<dl class="settings">
 					<dt>
 						<strong>', $txt['shd_ticket_board'], ':</strong>
@@ -101,7 +96,6 @@ function template_shd_tickettotopic()
 	if (!empty($context['deleted_prompt']))
 	{
 		echo '
-				<br />
 				<fieldset id="deleted_replies">
 					<dl class="settings">
 						<dt>
@@ -121,7 +115,6 @@ function template_shd_tickettotopic()
 	if (!empty($context['custom_fields']))
 	{
 		echo '
-				<br />
 				<fieldset id="custom_fields">
 					<dl class="settings">
 						<dt>
@@ -131,8 +124,7 @@ function template_shd_tickettotopic()
 							<div class="error">', $txt['shd_ticket_move_cfs_warn'], '</div>';
 
 		echo '
-						</dt>
-						<br />';
+					</dt>';
 
 		foreach ($context['custom_fields'] as $field)
 		{
@@ -193,10 +185,8 @@ function template_shd_tickettotopic()
 				<input type="submit" name="cancel" value="', $txt['shd_cancel_ticket'], '" accesskey="c" class="button_submit" />
 				<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 				<input type="hidden" name="seqnum" value="', $context['form_sequence_number'], '" />
-			</div>
 		</form>
-		</div>
-		<span class="lowerframe"><span></span></span>';
+		</div>';
 }
 
 /**
@@ -220,9 +210,8 @@ function template_shd_topictoticket()
 				', $txt['shd_move_topic_to_ticket'], '
 			</h3>
 		</div>
-		<div class="roundframe">
+		<div class="roundframe noup">
 		<form action="', $scripturl, '?action=helpdesk;sa=topictoticket2;topic=', $context['topic_id'], '" method="post" onsubmit="submitonce(this);">
-			<div class="content">
 				<dl class="settings">
 					<dt>
 						<strong>', $txt['shd_change_topic_subject'], ':</strong>
@@ -295,9 +284,7 @@ function template_shd_topictoticket()
 				<input type="submit" name="cancel" value="', $txt['shd_cancel_topic'], '" accesskey="c" class="button_submit" />
 				<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 				<input type="hidden" name="seqnum" value="', $context['form_sequence_number'], '" />
-			</div>
 		</form>
-		</div>
-		<span class="lowerframe"><span></span></span>';
+		</div>';
 }
 

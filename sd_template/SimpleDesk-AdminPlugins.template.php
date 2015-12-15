@@ -45,17 +45,15 @@ function template_shd_plugin_listing()
 						', $txt['shd_admin_plugins'], '
 					</h3>
 				</div>
-				<p class="sd_description">
+				<p class="information">
 					', $txt['shd_admin_plugins_homedesc'], '
 				</p>
 			</div>';
 
-	$use_bg2 = true;
 	foreach ($context['plugins'] as $id => $plugin)
 	{
 		echo '
-			<div class="windowbg', $use_bg2 ? '2' : '', '">
-				<span class="topslice"><span></span></span>
+			<div class="windowbg">
 				<div class="content features">';
 
 		if (!empty($plugin['installable']))
@@ -110,10 +108,7 @@ function template_shd_plugin_listing()
 
 		echo '
 				</div>
-				<span class="botslice clear_right"><span></span></span>
 			</div>';
-
-		$use_bg2 = !$use_bg2;
 	}
 
 	echo '

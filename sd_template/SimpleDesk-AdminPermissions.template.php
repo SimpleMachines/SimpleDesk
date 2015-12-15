@@ -25,31 +25,30 @@ function template_shd_permissions_home()
 							', $txt['shd_admin_permissions'], '
 						</h3>
 					</div>
-					<p class="sd_description">
+					<p class="information">
 						', $txt['shd_admin_permissions_homedesc'], '
 					</p>
 				</div>
 				<div class="tborder">
 					<div class="title_bar">
-						<h3 class="titlebg sd_no_margin">
+						<h3 class="titlebg">
 							<img src="', $settings['default_images_url'], '/simpledesk/position.png" alt="*" />
 							', $txt['shd_role_templates'], '
 						</h3>
 					</div>
-					<p class="sd_description shd_actionloginfo">
+					<p class="information">
 						', $txt['shd_role_templates_desc'], '
 					</p>
-					<table class="shd_ticketlist" cellspacing="0" width="100%">
-						<tr class="titlebg">
+					<table class="table_grid">
+						<tr class="title_bar">
 							<td colspan="2" width="30%">', $txt['shd_role'], '</td>
 							<td colspan="', count($context['shd_permissions']['group_display']), '">', $txt['shd_permissions'], '</td>
 						</tr>';
 
-	$use_bg2 = true;
 	foreach ($context['shd_permissions']['roles'] as $role_id => $role_details)
 	{
 		echo '
-						<tr class="', ($use_bg2 ? 'windowbg2' : 'windowbg'), '">
+						<tr class="windowbg">
 							<td>', !empty($role_details['icon']) ? ('<img src="' . $settings['default_images_url'] . '/simpledesk/' . $role_details['icon'] . '" alt="" />') : '', '</td>
 							<td>
 								', $txt[$role_details['description']], '
@@ -57,8 +56,6 @@ function template_shd_permissions_home()
 							</td>
 							', template_shd_display_permission_list($role_details['permissions']), '
 						</tr>';
-
-		$use_bg2 = !$use_bg2;
 	}
 
 	echo '
@@ -67,16 +64,16 @@ function template_shd_permissions_home()
 				<br /><br />
 				<div class="tborder">
 					<div class="title_bar">
-						<h3 class="titlebg sd_no_margin">
+						<h3 class="titlebg">
 							<img src="', $settings['default_images_url'], '/simpledesk/roles.png" alt="*" />
 							', $txt['shd_roles'], '
 						</h3>
 					</div>
-					<p class="sd_description shd_actionloginfo">
+					<p class="information">
 						', $txt['shd_roles_desc'], '
 					</p>
-					<table class="shd_ticketlist" cellspacing="0" width="100%">
-						<tr class="titlebg">
+					<table class="table_grid">
+						<tr class="title_bar">
 							<td colspan="2" width="20%">', $txt['shd_role'], '</td>
 							<td colspan="', count($context['shd_permissions']['group_display']), '">', $txt['shd_permissions'], '</td>
 							<td width="15%">', $txt['shd_membergroups'], '</td>
@@ -92,11 +89,10 @@ function template_shd_permissions_home()
 	}
 	else
 	{
-		$use_bg2 = true;
 		foreach ($context['shd_permissions']['user_defined_roles'] as $role => $role_details)
 		{
 			echo '
-						<tr class="', ($use_bg2 ? 'windowbg2' : 'windowbg'), '">
+						<tr class="windowbg">
 							<td>', !empty($role_details['template_icon']) ? ('<img src="' . $settings['default_images_url'] . '/simpledesk/' . $role_details['template_icon'] . '" alt="" title="' . sprintf($txt['shd_based_on'], $role_details['template_name']) . '" />') : '', '</td>
 							<td>
 								', $role_details['name'], '
@@ -127,7 +123,6 @@ function template_shd_permissions_home()
 
 			echo '
 						</tr>';
-			$use_bg2 = !$use_bg2;
 		}
 	}
 
@@ -213,7 +208,7 @@ function template_shd_create_role()
 							', $txt['shd_admin_permissions'], '
 						</h3>
 					</div>
-					<p class="sd_description">
+					<p class="information">
 						', $txt['shd_admin_permissions_homedesc'], '
 					</p>
 				</div>
@@ -241,8 +236,7 @@ function template_shd_create_role()
 						<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 						<input type="hidden" name="seqnum" value="', $context['form_sequence_number'], '" />
 					</form>
-				</div>
-				<span class="lowerframe"><span></span></span>';
+				</div>';
 }
 
 /**
@@ -266,7 +260,7 @@ function template_shd_edit_role()
 							', $txt['shd_admin_permissions'], '
 						</h3>
 					</div>
-					<p class="sd_description">
+					<p class="information">
 						', $txt['shd_admin_permissions_homedesc'], '
 					</p>
 				</div>
@@ -331,9 +325,7 @@ function template_shd_edit_role()
 								<dd><input type="text" name="rolename" id="rolename" value="', $role['name'], '" class="input_text" size="30" /></dd>
 							</dl>
 						</div>
-					</div>
-					<span class="lowerframe"><span></span></span>
-					<br />';
+					</div>';
 
 	// Get ready to display the actual permissions
 	$permission_set = array();
@@ -397,7 +389,7 @@ function template_shd_edit_role()
 
 				echo '
 									<dt', (empty($txt['permissionhelp_' . $permission]) ? '' : ' title="' . $txt['permissionhelp_' . $permission] . '"') . '><img src="', shd_image_url($icon), '" alt="*" />', $txt['permissionname_' . $permission], '</dt>
-									<dd class="shd_nowrap">
+									<dd>
 										<span id="perm_', $permission, '_icon" class="', $perm_class, '"></span>
 										<select name="perm_', $permission, '" id="perm_', $permission, '" onchange="javascript:shd_chicon(this);">
 											<option value="disallow"', ($perm_value == 'disallow' ? ' selected="selected"' : ''), '>', (empty($txt['permissionname_' . $permission . '_no']) ? $txt['shd_roleperm_disallow'] : $txt['permissionname_' . $permission . '_no']), '&nbsp;</option>';
@@ -451,26 +443,25 @@ function template_shd_edit_role()
 	echo '
 					<div class="tborder floatleft" style="width: 100%;">
 						<div class="cat_bar">
-							<h3 class="catbg sd_no_margin">
+							<h3 class="catbg">
 								<img src="', $settings['default_images_url'], '/simpledesk/roles.png" alt="*" />
 								', $txt['shd_role_membergroups'], '
 							</h3>
 						</div>
-						<p class="sd_description shd_actionloginfo">
+						<p class="information">
 							', $txt['shd_role_membergroups_desc'], '
 						</p>
-						<table class="shd_ticketlist" cellspacing="0" width="100%">
-							<tr class="titlebg">
+						<table class="table_grid">
+							<tr class="title_bar">
 								<td width="30%">', $txt['shd_role'], '</td>
 								<td width="30%">', $txt['shd_badge_stars'], '</td>
 								<td>', $txt['shd_assign_group'], '</td>
 							</tr>';
 
-	$use_bg2 = true;
 	foreach ($context['membergroups'] as $id_group => $group)
 	{
 		echo '
-							<tr class="', ($use_bg2 ? 'windowbg2' : 'windowbg'), '">
+							<tr class="windowbg">
 								<td>', $group['link'], '</td>
 								<td>';
 
@@ -484,8 +475,6 @@ function template_shd_edit_role()
 		echo '</td>
 								<td><input type="checkbox" class="input_check" name="group', $id_group, '"', (in_array($id_group, $context['role_groups']) ? ' checked="checked"' : ''), ' /></td>
 							</tr>';
-
-		$use_bg2 = !$use_bg2;
 	}
 
 	echo '
@@ -495,29 +484,27 @@ function template_shd_edit_role()
 
 					<div class="tborder floatleft" style="width: 100%;">
 						<div class="cat_bar">
-							<h3 class="catbg sd_no_margin">
+							<h3 class="catbg">
 								<img src="', $settings['default_images_url'], '/simpledesk/departments.png" alt="*" />
 								', $txt['shd_role_departments'], '
 							</h3>
 						</div>
-						<p class="sd_description shd_actionloginfo">
+						<p class="information">
 							', $txt['shd_role_departments_desc'], '
 						</p>
-						<table class="shd_ticketlist" cellspacing="0" width="100%">
-							<tr class="titlebg">
+						<table class="table_grid">
+							<tr class="title_bar">
 								<td width="50%">', $txt['shd_department_name'], '</td>
 								<td width="50%">', $txt['shd_assign_dept'], '</td>
 							</tr>';
 
-	$use_bg2 = true;
 	foreach ($context['role_depts'] as $id_dept => $dept)
 	{
 		echo '
-							<tr class="', ($use_bg2 ? 'windowbg2' : 'windowbg'), '">
+							<tr class="windowbg">
 								<td>', $dept['dept_name'], '</td>
 								<td><input type="checkbox" class="input_check" name="dept', $id_dept, '"', !empty($dept['is_role']) ? ' checked="checked"' : '', ' /></td>
 							</tr>';
-		$use_bg2 = !$use_bg2;
 	}
 
 	echo '
@@ -552,7 +539,7 @@ function template_shd_copy_role()
 							', $txt['shd_admin_permissions'], '
 						</h3>
 					</div>
-					<p class="sd_description">
+					<p class="information">
 						', $txt['shd_admin_permissions_homedesc'], '
 					</p>
 				</div>
@@ -582,7 +569,6 @@ function template_shd_copy_role()
 						<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 						<input type="hidden" name="seqnum" value="', $context['form_sequence_number'], '" />
 					</form>
-				</div>
-				<span class="lowerframe"><span></span></span>';
+				</div>';
 }
 
