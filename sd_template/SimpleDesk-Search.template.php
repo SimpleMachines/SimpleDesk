@@ -19,10 +19,7 @@ function template_search()
 	global $context, $txt, $scripturl, $settings, $modSettings;
 
 	// Back to the helpdesk.
-	echo '
-		<div class="floatleft">
-			', template_button_strip(array($context['navigation']['back']), 'bottom'), '
-		</div><br class="clear" /><br />';
+	template_button_strip(array($context['navigation']['back']));
 
 	if (!empty($modSettings['shd_new_search_index']))
 		echo '
@@ -179,8 +176,7 @@ function template_search()
 				<input type="submit" value="', $txt['shd_search'], '" onclick="return submitThisOnce(this);" accesskey="s" class="button_submit" />
 			</div>
 		</form>
-	</div>
-	<span class="lowerframe"><span></span></span>';
+	</div>';
 }
 
 function template_search_no_results()
@@ -188,10 +184,7 @@ function template_search_no_results()
 	global $context, $txt, $scripturl, $settings, $modSettings;
 
 	// Back to the helpdesk.
-	echo '
-		<div class="floatleft">
-			', template_button_strip(array($context['navigation']['back'], $context['navigation']['search']), 'bottom'), '
-		</div><br class="clear" /><br />';
+	template_button_strip(array($context['navigation']['back'], $context['navigation']['search']));
 
 	echo '
 	<div class="cat_bar">
@@ -205,11 +198,9 @@ function template_search_no_results()
 	template_search_criteria();
 
 	echo '
-	<span class="upperframe"><span></span></span>
 	<div class="roundframe">
 		<div class="content">', $txt['shd_search_no_results'], '</div>
-	</div>
-	<span class="lowerframe"><span></span></span>';
+	</div>';
 }
 
 function template_search_criteria()
@@ -306,10 +297,7 @@ function template_search_results()
 	global $context, $txt, $scripturl, $settings, $modSettings, $smcFunc;
 
 	// Back to the helpdesk.
-	echo '
-		<div class="floatleft">
-			', template_button_strip(array($context['navigation']['back'], $context['navigation']['search']), 'bottom'), '
-		</div><br class="clear" /><br />';
+	template_button_strip(array($context['navigation']['back'], $context['navigation']['search']));
 
 	echo '
 	<div class="cat_bar">
@@ -330,15 +318,11 @@ function template_search_results()
 	// Search criteria
 	template_search_criteria();
 
-	// And finally, the results themselves.
-	$use_bg2 = false;
-
 	foreach ($context['search_results'] as $index => $result)
 	{
 				echo '
 	<div class="search_results_posts">
-		<div class="windowbg', $use_bg2 ? '2' : '', ' core_posts">
-			<span class="topslice"><span></span></span>
+		<div class="windowbg core_posts">
 			<div class="content flow_auto">
 				<div class="topic_details floatleft" style="width: 94%">
 					<div class="counter">', $result['result'], '</div>
@@ -348,9 +332,7 @@ function template_search_results()
 				<br class="clear">
 				<div class="list_posts double_height">', $result['body'], '</div>
 			</div>
-			<span class="botslice"><span></span></span>
 		</div>
 	</div>';
-				$use_bg2 = !$use_bg2;
 	}
 }

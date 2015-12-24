@@ -1,45 +1,3 @@
-#sd_live_news
-{
-	width: 64%;
-	font-size: 0.85em;
-}
-#sd_live_news .cat_bar
-{
-	margin-bottom: 0;
-}
-#sd_live_news .windowbg
-{
-	margin-top: 0;
-	height: 23.5em;
-}
-#sd_live_news div.content
-{
-	padding: 0;
-}
-#sd_live_news div.content dl
-{
-	padding: 0.5em 0 0 0.5em;
-}
-
-#sd_supportVersionsTable
-{
-	width: 34%;
-}
-#sd_supportVersionsTable .cat_bar
-{
-	margin-bottom: 0;
-}
-#sd_supportVersionsTable .windowbg
-{
-	margin-top: 0;
-	height: 20em;
-}
-
-#sd_version_details
-{
-	overflow: auto;
-	height: 16.4em;
-}
 #sdAnnouncements
 {
 	height: 21.6em;
@@ -74,11 +32,6 @@
 	float: right;
 	margin-top: 8px;
 }
-.shd_actionloginfo
-{
-	margin-bottom: 0;
-	border-bottom: 0;
-}
 .shd_admin_leftcolumn
 {
 	width: 74%;
@@ -105,11 +58,6 @@
 {
 	margin-bottom: 0;
 }
-h3.sd_no_margin
-{
-	margin-bottom: 0px;
-	padding-bottom: 3px;
-}
 
 .disabled
 {
@@ -119,12 +67,6 @@ h3.sd_no_margin
 .shd_credits_names
 {
 	margin-left: 57px;
-	margin-bottom: 12px;
-}
-
-.shd_credits_names hr
-{
-	margin: 0;
 }
 
 .shd_valign_top
@@ -284,21 +226,7 @@ h3 a.permcollapse img
 	vertical-align: top;
 }
 
-/* SMF 2.1 no longer uses description, but we make use of it still! */
-.sd_description
-{
-	background: #F8F8F8;
-	overflow: auto;
-	 padding-bottom: .5em;
-	border: 1px solid #ddd;
-	border-top: none;
-	margin: 0 0 10px 0;
-	padding: 12px 9px 8px 9px;
-	box-sizing: border-box;
-}
-
- /* Plugin switch inmage */
-
+/* Plugin switch inmage */
 .features_switch
 {
 	float: right;

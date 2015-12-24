@@ -90,7 +90,6 @@ function template_movedept()
 				<input type="submit" value="', $txt['shd_ticket_move'], '" onclick="return submitThisOnce(this);" accesskey="s" class="button_submit" />
 			</div>
 		</form>
-	</div>
-	<span class="lowerframe"><span></span></span>';
+	</div>';
 }
 

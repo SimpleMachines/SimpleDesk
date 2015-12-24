@@ -33,8 +33,7 @@ function template_shd_admin_maint_home()
 					<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">
 				</form>
 			</div>
-		</div>
-		<span class="lowerframe"><span></span></span><br />';
+		</div>';
 
 	// Reattribute guest posts
 	echo '
@@ -92,14 +91,12 @@ function template_shd_admin_maint_home()
 						<dt>
 							<strong>', $txt['shd_admin_maint_reattribute_posts_made'], '</strong>
 						</dt>
-
 						<dt>
 							<label for="type_email"><input type="radio" name="type" id="type_email" value="email" checked="checked" class="input_radio">', $txt['shd_admin_maint_reattribute_posts_email'], '</label>
 						</dt>
 						<dd>
 							<input type="text" name="from_email" id="from_email" value="" onclick="document.getElementById(\'type_email\').checked = \'checked\'; document.getElementById(\'from_name\').value = \'\'; document.getElementById(\'from_starter\').value = \'\';">
 						</dd>
-
 						<dt>
 							<label for="type_name"><input type="radio" name="type" id="type_name" value="name" class="input_radio">', $txt['shd_admin_maint_reattribute_posts_user'], '</label>
 						</dt>
@@ -127,7 +124,6 @@ function template_shd_admin_maint_home()
 				</form>
 			</div>
 		</div>
-		<span class="lowerframe"><span></span></span><br />
 		<script type="text/javascript" src="', $settings['default_theme_url'], '/scripts/suggest.js?rc5"></script>
 		<script type="text/javascript"><!-- // --><![CDATA[
 			var oAttributeMemberSuggest = new smc_AutoSuggest({
@@ -198,8 +194,7 @@ function template_shd_admin_maint_home()
 					<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">
 				</form>
 			</div>
-		</div>
-		<span class="lowerframe"><span></span></span><br />';
+		</div>';
 	}
 }
 
@@ -212,21 +207,18 @@ function template_shd_admin_maint_findrepairdone()
 		// Yay everything was fine.
 		echo '
 		<div class="windowbg">
-			<span class="topslice"><span></span></span>
 			<div class="content">
 				<p>', $txt['maintain_no_errors'], '</p>
 				<p class="padding">
 					<a href="', $scripturl, '?action=admin;area=helpdesk_maint;', $context['session_var'], '=', $context['session_id'], '">', $txt['shd_admin_maint_back'], '</a>
 				</p>
 			</div>
-			<span class="botslice"><span></span></span>
 		</div>';
 	}
 	else
 	{
 		echo '
 		<div class="windowbg">
-			<span class="topslice"><span></span></span>
 			<div class="content">
 				<p>', $txt['errors_found'], '</p>';
 
@@ -259,7 +251,6 @@ function template_shd_admin_maint_findrepairdone()
 					<a href="', $scripturl, '?action=admin;area=helpdesk_maint;', $context['session_var'], '=', $context['session_id'], '">', $txt['shd_admin_maint_back'], '</a>
 				</p>
 			</div>
-			<span class="botslice"><span></span></span>
 		</div>';
 	}
 }
@@ -270,14 +261,12 @@ function template_shd_admin_maint_reattributedone()
 
 	echo '
 		<div class="windowbg">
-			<span class="topslice"><span></span></span>
 			<div class="content">
 				<p>', $txt['shd_admin_maint_reattribute_success'], '</p>
 				<p class="padding">
 					<a href="', $scripturl, '?action=admin;area=helpdesk_maint;', $context['session_var'], '=', $context['session_id'], '">', $txt['shd_admin_maint_back'], '</a>
 				</p>
 			</div>
-			<span class="botslice"><span></span></span>
 		</div>';
 }
 
@@ -288,14 +277,12 @@ function template_shd_admin_maint_massdeptmovedone()
 	echo '
 	<div id="admincenter">
 		<div class="windowbg">
-			<span class="topslice"><span></span></span>
 			<div class="content">
 				<p>', $txt['shd_admin_maint_massdeptmove_success'], '</p>
 				<p class="padding">
 					<a href="', $scripturl, '?action=admin;area=helpdesk_maint;', $context['session_var'], '=', $context['session_id'], '">', $txt['shd_admin_maint_back'], '</a>
 				</p>
 			</div>
-			<span class="botslice"><span></span></span>
 		</div>
 	</div>';
 }
@@ -327,7 +314,6 @@ function template_shd_admin_maint_search()
 				</form>
 			</div>
 		</div>
-		<span class="lowerframe"><span></span></span><br />
 		<div class="cat_bar">
 			<h3 class="catbg">
 				<img src="', $settings['default_images_url'], '/simpledesk/search.png" alt="*">
@@ -369,7 +355,6 @@ function template_shd_admin_maint_search()
 					<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">
 				</form>
 			</div>
-		</div>
-		<span class="lowerframe"><span></span></span><br />';
+		</div>';
 }
 

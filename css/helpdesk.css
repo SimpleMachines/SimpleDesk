@@ -1,7 +1,6 @@
 /**********************************
 * General stuff used all around the helpdesk 	*
 ***********************************/
-
 /* SimpleDesk icons */
 .shd_smallicon
 {
@@ -19,11 +18,6 @@
 	position: relative;
 	top: 3px;
 }
-.shd_icon_fullhead
-{
-	position: relative;
-	top: 9px;
-}
 .shd_tinyicon
 {
 	width: 9px;
@@ -33,11 +27,6 @@
 .shd_main_hd
 {
 	margin-top: -3px;
-}
-
-.shd_nowrap
-{
-	white-space: nowrap;
 }
 
 .shd_no_margin
@@ -50,24 +39,6 @@
 	border-bottom: 0;
 }
 
-/**********************************
-* The ticket listings 				*
-***********************************/
-.shd_ticketlist
-{
-	width: 100%;
-	border: solid #BBBBBB;
-	border-width: 1px 1px 0;
-}
-.shd_ticketlist td
-{
-	padding: 5px;
-	border-bottom: 1px solid #AFAFAF;
-}
-.shd_noticket
-{
-	text-align: center;
-}
 .shd_staffresources ul
 {
 	list-style-type: none;
@@ -79,12 +50,10 @@
 	margin-bottom: 3px;
 }
 
-.shd_gototicket
-{
+.shd_gototicket {
 	display: block;
 	float: right;
 	margin-left: 1em;
-	white-space: nowrap;
 }
 
 .shd_assignees
@@ -150,12 +119,11 @@ h3.ticketheader img
 .shd_ticket_side_column
 {
 	float: left;
-	width: 235px;
+	width: 20%;
 	margin-right: 20px;
+	padding: 5px;
 }
-.shd_ticketdetails
-{
-	min-height: 280px;
+.shd_ticketdetails {
 	overflow: auto;
 	float: left;
 	width: 100%;
@@ -173,12 +141,7 @@ h3.ticketheader img
 	float: left;
 	width: 100%;
 }
-.shd_ticket_side_column ul
-{
-	list-style-type: none;
-	padding-left: 0;
-	margin: 0;
-}
+
 .shd_ticket_side_column li
 {
 	line-height: 1.8em;
@@ -189,12 +152,8 @@ h3.ticketheader img
 {
 	min-height: 250px;
 }
-.shd_ticket_description
-{
-	padding-top: 9px;
-	padding-bottom: 45px;
+.shd_ticket_description {
 	margin-left: 260px;
-	min-height: 200px;
 }
 
 #shd_ticket_text
@@ -347,20 +306,6 @@ h3.ticketheader img
 }
 
 /* Show tickets */
-.shd_description
-{
-	border: 1px solid #bbb;
-}
-.shd_windowbg
-{
-	background: #f0f4f7 none repeat scroll 0 0;
-	border: 1px solid #ddd;
-	 box-shadow: 0 -2px 2px rgba(0, 0, 0, 0.1);
-	box-sizing: border-box;
-	margin: 0;
-	overflow: auto;
-	padding: 10px 16px;
-}
 .shd_showtickets
 {
 	height: 15px;
@@ -390,11 +335,6 @@ h3.ticketheader img
 /**********************************
 * Ticket replies				 *
 ***********************************/
-.shd_reply
-{
-	padding-bottom: 32px;
-	padding-top: 12px;
-}
 .shd_posterinfo
 {
 	width: 14em;
@@ -482,10 +422,6 @@ h3.ticketheader img
 {
 	margin-left: -8px;
 	margin-right: 3px;
-}
-.shd_attachmentbox
-{
-	padding: 10px;
 }
 .shd_attachmentcolumn
 {
@@ -588,9 +524,35 @@ h3.ticketheader img
 	border-right: none;
 }
 
-ul.shd_profile_nav_list, ul.shd_profile_nav_inline
-{
-	/* Webkit's default stylesheet also, just for giggles, adds margin-before and margin-after to lists. */
-	-webkit-margin-before: 0;
-	-webkit-margin-after: 0;
+/* I'm not sure about the above, I'll rewrite them later */
+.bot_page {
+	border: 1px solid #DDD;
+	border-top: none;
+}
+#ticket_log_header {
+	clear: both;
+}
+
+/* Urgency stuff */
+.generic_icons.urgency_increase {
+	background-position: -161px -5px;
+}
+.generic_icons.urgency_decrease {
+	background-position: -213px -5px;
+}
+
+/* We need some adjustments */
+dl.stats dd span, dl.stats dt span {
+	position: relative;
+}
+
+/* We need something like winfo in helpdesk */
+.noup {
+	border-top-left-radius: 0;
+	border-top-right-radius: 0;
+	margin: 0 !important;
+}
+
+.shd_icon_fullhead {
+	position: relative;
 }
