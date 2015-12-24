@@ -98,9 +98,14 @@ span.shd_new_tickets
 }
 
 /* The page index color looks ugly with our theme. */
-.shd_main_hd .cat_bar .current_page, .shd_pages .current_page
+.shd_cat_bar .current_page, .shd_pages .current_page
 {
 	color: #fff;
+	padding: 0;
+}
+.bot_page .current_page
+{
+	padding: 0;
 }
 
 /**********************************
@@ -121,12 +126,17 @@ h3.ticketheader img
 	float: left;
 	width: 20%;
 	margin-right: 20px;
-	padding: 5px;
+	padding: 0 5px 5px 5px;
 }
-.shd_ticketdetails {
+.shd_ticketdetails
+{
 	overflow: auto;
 	float: left;
 	width: 100%;
+}
+.shd_ticketdetails .shd_smallicon
+{
+	padding-top: 7px;
 }
 .shd_customfields
 {
@@ -141,18 +151,22 @@ h3.ticketheader img
 	float: left;
 	width: 100%;
 }
-
 .shd_ticket_side_column li
 {
 	line-height: 1.8em;
 }
 
 /* The ticket container */
+form#postmodify .shd_ticket_roundframe
+{
+	padding: 12px 16px;
+}
 .shd_ticket
 {
 	min-height: 250px;
 }
-.shd_ticket_description {
+.shd_ticket_description
+{
 	margin-left: 260px;
 }
 
@@ -165,6 +179,7 @@ h3.ticketheader img
 .shd_ticket_leftcolumn
 {
 	width: 25%;
+	padding-top: 5px;
 }
 /* The right column in the ticket display */
 .shd_ticket_rightcolumn
@@ -251,8 +266,6 @@ h3.ticketheader img
 /* The big reply button */
 .shd_replybutton
 {
-	margin-top: 10px;
-	height: 15px;
 	background: url(../images/simpledesk/respond.png) no-repeat left;
 	background-position: 10px;
 	padding: 10px;
@@ -261,6 +274,8 @@ h3.ticketheader img
 	font-weight: bold;
 	font-size: 100%;
 	margin-bottom: 10px;
+	border: 1px solid #ddd;
+	border-radius: 7px;
 }
 /* The big quote button */
 .shd_quotebutton
@@ -525,25 +540,31 @@ h3.ticketheader img
 }
 
 /* I'm not sure about the above, I'll rewrite them later */
-.bot_page {
+.bot_page
+{
 	border: 1px solid #DDD;
 	border-top: none;
 }
-#ticket_log_header {
+#ticket_log_header
+{
 	clear: both;
 }
 
 /* Urgency stuff */
-.generic_icons.urgency_increase {
+.generic_icons.urgency_increase
+{
 	background-position: -161px -5px;
 }
-.generic_icons.urgency_decrease {
+.generic_icons.urgency_decrease
+{
 	background-position: -213px -5px;
 }
 
 /* We need some adjustments */
-dl.stats dd span, dl.stats dt span {
+dl.stats dd span, dl.stats dt span
+{
 	position: relative;
+	padding: 0;
 }
 
 /* We need something like winfo in helpdesk */

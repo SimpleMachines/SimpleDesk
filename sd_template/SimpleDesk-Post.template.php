@@ -88,7 +88,7 @@ function template_ticket_info()
 					<img src="', $settings['default_images_url'], '/simpledesk/ticket.png" alt="x" /> ', $context['ticket_form']['form_title'], '
 				</h3>
 			</div>
-			<div class="roundframe">
+			<div class="roundframe shd_ticket_roundframe">
 				<div class="content shd_ticket">
 					<div class="shd_ticket_side_column">';
 
@@ -150,7 +150,7 @@ function template_ticket_custom_fields()
 		return;
 
 	echo '
-				<div class="information shd_customfields" id="shd_customfields"', empty($context['ticket_form']['dept']) ? ' style="display:none;"' : '', '>';
+				<div class="shd_customfields" id="shd_customfields"', empty($context['ticket_form']['dept']) ? ' style="display:none;"' : '', '>';
 
 		// Loop through each custom field
 		// See also template_ticket_subjectbox() for the department selector which affects these.
@@ -626,7 +626,7 @@ function template_ticket_additional_options()
 	global $context, $options, $txt, $modSettings, $settings;
 
 	echo '
-					<div id="postAdditionalOptionsHeader"', !empty($context['shd_display']) ? ' style="display:none;"' : '', '>
+					<div id="postAdditionalOptionsHeader"', !empty($context['shd_display']) ? ' style="display:none;"' : '', ' class="shd_reply_attachments">
 						<ul class="post_options">';
 
 	foreach ($context['ticket_form']['additional_opts'] as $key => $details)

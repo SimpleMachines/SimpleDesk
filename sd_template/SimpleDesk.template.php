@@ -317,9 +317,9 @@ function template_ticket_block()
 	// $context['current_block'] = the block to display now
 
 	echo '
-		<div class="cat_bar">
+		<div class="cat_bar shd_cat_bar">
 			<h3 id="shd_block_', $context['current_block'], '" class="catbg">
-				', !empty($context['ticket_blocks'][$context['current_block']]['page_index']) ? '<span class="floatright smalltext">'. $txt['pages'] . ': ' . $context['ticket_blocks'][$context['current_block']]['page_index'] . '</span>' : '', '
+				', !empty($context['ticket_blocks'][$context['current_block']]['page_index']) ? '<span class="floatright smalltext">' . $context['ticket_blocks'][$context['current_block']]['page_index'] . '</span>' : '', '
 				<img src="', $settings['default_images_url'], '/simpledesk/', $context['ticket_blocks'][$context['current_block']]['block_icon'], '" alt="*" />
 				', (empty($context['block_link']) ? '' : '<a href="' . $context['block_link'] . '">'), $context['ticket_blocks'][$context['current_block']]['title'], '
 				<span class="smalltext">(', $context['ticket_blocks'][$context['current_block']]['count'], ' ', ($context['ticket_blocks'][$context['current_block']]['count'] == 1 ? $txt['shd_count_ticket_1'] : $txt['shd_count_tickets']), ')</span>', (empty($context['block_link']) ? '' : '</a>'), '
@@ -425,7 +425,7 @@ function template_ticket_block()
 							<td class="smalltext">', $ticket['dept_link'], $ticket['link'];
 
 						if ($ticket['is_unread'] && !empty($ticket['new_href']))
-							echo ' <a href="', $ticket['new_href'], '"><img src="', $context['new_posts_image'], '" class="new_posts" alt="', $txt['new'], '" /></a>';
+							echo ' <a href="', $ticket['new_href'], '"><span class="new_posts shd_new_tickets">', $txt['new'], '</span></a>';
 
 						echo '</td>';
 						break;
@@ -488,7 +488,7 @@ function template_ticket_block()
 	if (!empty($context['ticket_blocks'][$context['current_block']]['page_index']))
 		echo '
 					<tr class="bot_page">
-						<td colspan="', $block_width, '"><span class="floatright smalltext">', $txt['pages'], ': ', $context['ticket_blocks'][$context['current_block']]['page_index'], '</span></td>
+						<td colspan="', $block_width, '"><span class="floatright smalltext">', $context['ticket_blocks'][$context['current_block']]['page_index'], '</span></td>
 					</tr>';
 
 	echo '

@@ -1442,7 +1442,7 @@ function shd_setup_replies($first_msg)
 	}
 }
 
-function shd_postbox($id, $message, $buttons, $width = '70%')
+function shd_postbox($id, $message, $buttons, $width = '90%')
 {
 	global $context, $txt, $modSettings;
 	$editorOptions = array(

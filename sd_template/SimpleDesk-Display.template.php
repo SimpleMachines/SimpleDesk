@@ -75,12 +75,12 @@ function template_viewticket()
 								<dt><span class="generic_icons calendar" alt="', $txt['shd_ticket_date'], '"></span> ', $txt['shd_ticket_date'], ':</dt>
 										<dd>', $context['ticket']['poster_time'], '</dd>
 										<dt><img src="', $settings['default_images_url'], '/simpledesk/urgency.png" alt="" class="shd_smallicon" /> ', $txt['shd_ticket_urgency'], ':</dt>
-								<dd>', $context['ticket']['urgency']['label'], '
-									', (!empty($context['ticket']['urgency']['increase']) ? '<a id="urglink_increase" href="' . $scripturl . '?action=helpdesk;sa=urgencychange;ticket=' . $context['ticket']['id'] . ';change=increase;' . $context['session_var'] . '=' . $context['session_id'] . '" title="' . $txt['shd_urgency_increase'] . '"><span class="generic_icons urgency_increase" title="' . $txt['shd_urgency_increase'] . '"></span></a>' : ''), '
-									', (!empty($context['ticket']['urgency']['decrease']) ? '<a id="urglink_decrease" href="' . $scripturl . '?action=helpdesk;sa=urgencychange;ticket=' . $context['ticket']['id'] . ';change=decrease;' . $context['session_var'] . '=' . $context['session_id'] . '" title="' . $txt['shd_urgency_decrease'] . '"><span class="generic_icons urgency_decrease" title="' . $txt['shd_urgency_decrease'] . '"></span></a>' : ''), '
+								<dd id="item_urgency"><span id="urgency">', $context['ticket']['urgency']['label'], '</span>
+									<span id="urgency_increase">', (!empty($context['ticket']['urgency']['increase']) ? '<a id="urglink_increase" href="' . $scripturl . '?action=helpdesk;sa=urgencychange;ticket=' . $context['ticket']['id'] . ';change=increase;' . $context['session_var'] . '=' . $context['session_id'] . '" title="' . $txt['shd_urgency_increase'] . '"><span class="generic_icons urgency_increase" title="' . $txt['shd_urgency_increase'] . '"></span></a>' : ''), '</span>
+									<span id="urgency_decrease">', (!empty($context['ticket']['urgency']['decrease']) ? '<a id="urglink_decrease" href="' . $scripturl . '?action=helpdesk;sa=urgencychange;ticket=' . $context['ticket']['id'] . ';change=decrease;' . $context['session_var'] . '=' . $context['session_id'] . '" title="' . $txt['shd_urgency_decrease'] . '"><span class="generic_icons urgency_decrease" title="' . $txt['shd_urgency_decrease'] . '"></span></a>' : ''), '</span>
 										</dd>
 										<dt><img src="', $settings['default_images_url'], '/simpledesk/staff.png" alt="" class="shd_smallicon" /> ', $txt['shd_ticket_assignedto'], ':</dt>
-								<dd>', $context['ticket']['assigned']['link'], '<span id="assigned_button"></span></dd>
+								<dd><span id="assigned_to">', $context['ticket']['assigned']['link'], '</span><span id="assigned_button"></span></dd>
 								<dt class="full_width">
 									<ul id="assigned_list" style="display:none;"></ul>
 								</dt>
@@ -92,7 +92,7 @@ function template_viewticket()
 				if (!empty($context['display_private']))
 					echo '
 										<dt><img src="', $settings['default_images_url'], '/simpledesk/private.png" alt="" class="shd_smallicon" /> ', $txt['shd_ticket_privacy'], ':</dt>
-								<dd>', $context['ticket']['privacy']['label'], '', ($context['ticket']['privacy']['can_change'] ? ' (<a id="privlink" href="' . $scripturl . '?action=helpdesk;sa=privacychange;ticket=' . $context['ticket']['id'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '">' . $txt['shd_ticket_change'] . '</a>)' : ''), '</dd>';
+								<dd><span id="privacy">', $context['ticket']['privacy']['label'], '</span>', ($context['ticket']['privacy']['can_change'] ? ' (<a id="privlink" href="' . $scripturl . '?action=helpdesk;sa=privacychange;ticket=' . $context['ticket']['id'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '">' . $txt['shd_ticket_change'] . '</a>)' : ''), '</dd>';
 
 				if (!empty($context['ticket']['ip_address']))
 					echo '
@@ -273,7 +273,7 @@ function template_viewticket()
 			{
 				echo '
 							<div class="smalltext shd_modified">
-								&#171; <em>', $txt['last_edit'], ': ', $context['ticket']['modified']['time'], ' ', $txt['by'], ' ', $context['ticket']['modified']['link'], '</em> &#187;
+								&#171; <em>', sprintf($txt['last_edit_by'], $context['ticket']['modified']['time'], $context['ticket']['modified']['link']), '</em> &#187;
 							</div>';
 			}
 
@@ -994,18 +994,19 @@ function template_viewrelationships()
 function template_ticketactionlog()
 {
 	global $context, $settings, $txt, $scripturl;
+
 	if (!empty($context['display_ticket_log']))
 	{
 		echo '
 				<div class="cat_bar" id="ticket_log_header">
-					<h3 class="catbg">
+					<h3 class="titlebg">
 						<span class="floatright shd_ticket_log_expand_container"> <a href="#" onclick="ActionLog.swap(); return false;"><img src="', $settings['images_url'], '/expand.png" alt="+" id="shd_ticket_log_expand" class="icon" style="display:none;" /></a></span>
 							<img src="', $settings['default_images_url'], '/simpledesk/log.png" class="icon" alt="*" />
 							<a href="#" onclick="ActionLog.swap(); return false;">', $txt['shd_ticket_log'], '</a>
 							<span class="smalltext">(', $context['ticket_log_count'] == 1 ? $txt['shd_ticket_log_count_one'] : sprintf($txt['shd_ticket_log_count_more'], $context['ticket_log_count']), ')</span>
 						</h3>
 					</div>
-				<table class="table_grid">
+				<table class="table_grid" id="ticket_log">
 						<tr class="title_bar">
 							<td width="15%">
 								<img src="', $settings['default_images_url'], '/simpledesk/time.png" class="shd_smallicon" alt="" />
@@ -1053,7 +1054,7 @@ function template_ticketactionlog()
 				</div>
 				<script type="text/javascript"><!-- // --><![CDATA[
 				var ActionLog = new ActionLog({
-					sImagesUrl: "' . $settings['images_url'] . '",
+					sImagesUrl: "', $settings['images_url'], '",
 					sContainerId: "ticket_log",
 					sImageId: "shd_ticket_log_expand",
 					sImageCollapsed: "selected_open.png",
@@ -1061,7 +1062,7 @@ function template_ticketactionlog()
 					sHeaderId: "ticket_log_header",
 				});
 				ActionLog.swap();
-				// ]' . ']></script>';
+				// ]', ']></script>';
 	}
 }
 
