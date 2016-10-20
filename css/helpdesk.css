@@ -577,3 +577,9 @@ dl.stats dd span, dl.stats dt span
 .shd_icon_fullhead {
 	position: relative;
 }
+
+/* Something to keep it look good */
+#replies .windowbg:last-of-type {
+	border-bottom-left-radius: 0;
+	border-bottom-right-radius: 0;
+}

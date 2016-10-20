@@ -358,7 +358,7 @@ function template_shd_profile_show_tickets()
 		<div class="title_bar">
 			<h3 class="titlebg">
 				<img src="', $settings['default_images_url'], '/simpledesk/', $context['can_haz_replies'] ? 'replies' : 'ticket', '.png" class="floatright shd_icon_fullhead" alt=""/>
-				<span class="smalltext">', $txt['pages'], ': ', $context['page_index'], '</span>
+				<span class="smalltext">', $context['page_index'], '</span>
 			</h3>
 		</div>';
 
@@ -394,7 +394,7 @@ function template_shd_profile_show_tickets()
 		<div class="title_bar">
 			<h3 class="titlebg">
 				<img src="', $settings['default_images_url'], '/simpledesk/', $context['can_haz_replies'] ? 'replies' : 'ticket', '.png" class="floatright shd_icon_fullhead" alt=""/>
-				<span class="smalltext">', $txt['pages'], ': ', $context['page_index'], '</span>
+				<span class="smalltext">', $context['page_index'], '</span>
 			</h3>
 		</div>
 	</div>';
