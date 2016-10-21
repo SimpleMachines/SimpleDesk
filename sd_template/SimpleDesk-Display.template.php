@@ -622,7 +622,7 @@ function template_additional_fields()
 		echo '
 			</div>
 		</div>
-		<span class="lowerframe" id="additional_info_footer"><span></span></span>
+		<span id="additional_info_footer"></span>
 		</div>
 		<br />';
 	}
@@ -670,7 +670,7 @@ function template_quickreply()
 					</form>
 				</div>
 			</div>
-			<span id="quickreplyfooter" class="lowerframe"', $options['display_quick_reply'] == 2 ? '' : ' style="display: none"', '><span></span></span>
+			<span id="quickreplyfooter" ', $options['display_quick_reply'] == 2 ? '' : ' style="display: none"', '></span>
 		<script type="text/javascript"><!-- // --><![CDATA[
 		document.getElementById("quickReplyExpand").style.display = "";
 		document.getElementById("shd_goadvancedbutton").style.display = "";
@@ -1009,15 +1009,15 @@ function template_ticketactionlog()
 					</div>
 				<table class="table_grid" id="ticket_log">
 						<tr class="title_bar">
-							<td width="15%">
+							<td class="quarter_table">
 								<img src="', $settings['default_images_url'], '/simpledesk/time.png" class="shd_smallicon" alt="" />
 								', $txt['shd_ticket_log_date'], '
 							</td>
-							<td width="15%">
+							<td class="quarter_table">
 								<img src="', $settings['default_images_url'], '/simpledesk/user.png" class="shd_smallicon" alt="" />
 								', $txt['shd_ticket_log_member'], '
 							</td>
-							<td width="50%">
+							<td class="half_table">
 								<img src="', $settings['default_images_url'], '/simpledesk/action.png" class="shd_smallicon" alt="" />
 								', $txt['shd_ticket_log_action'], '
 							</td>

@@ -415,7 +415,7 @@ function template_shd_edit_role()
 								</dl>
 							</div>
 						</div>
-						<span class="lowerframe" id="permfooter_', $rowitem, '"><span></span></span>
+						<span id="permfooter_', $rowitem, '"></span>
 						<br />';
 		}
 

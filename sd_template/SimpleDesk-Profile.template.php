@@ -24,7 +24,7 @@ function template_shd_profile_main()
 				', sprintf($txt['shd_profile_heading'], $context['member']['name']), '
 			</h3>
 		</div>
-		<div class="windowbg">
+		<div class="windowbg noup">
 			<div class="content">
 			<img src="', $settings['default_images_url'], '/simpledesk/ticket.png" alt="" class="shd_icon_minihead" /> <strong>', $txt['shd_profile_tickets'], '</strong><hr />
 				', $txt['shd_profile_tickets_created'], ': <a href="', $scripturl, '?action=profile;u=', $context['member']['id'], ';area=hd_showtickets">', $context['shd_numtickets'], '</a>';
@@ -161,20 +161,16 @@ function template_shd_profile_preferences()
 
 	if (isset($_GET['save']))
 		echo '
-				<div class="tborder">
-					<div class="windowbg" id="profile_success">
-						', $txt['shd_prefs_updated'], '
-					</div>
+				<div class="windowbg" id="profile_success">
+					', $txt['shd_prefs_updated'], '
 				</div>';
 
 	echo '
-				<div class="tborder">
-					<div class="cat_bar">
-						<h3 class="catbg">
-							<img src="', $settings['default_images_url'], '/simpledesk/preferences.png" class="icon" alt="*" />
-							', sprintf($txt['shd_profile_preferences_header'], $context['member']['name']), '
-						</h3>
-					</div>
+				<div class="cat_bar">
+					<h3 class="catbg">
+						<img src="', $settings['default_images_url'], '/simpledesk/preferences.png" class="icon" alt="*" />
+						', sprintf($txt['shd_profile_preferences_header'], $context['member']['name']), '
+					</h3>
 				</div>
 				<script type="text/javascript"><!-- // --><![CDATA[
 				function shd_toggleblock(block)
@@ -209,78 +205,75 @@ function template_shd_profile_preferences()
 		$display_save = true;
 		$displayed_groups[] = $group;
 
-		echo '
-						<br />
-						<div class="tborder">
-							<div class="cat_bar" id="prefheader_', $group, '">
-								<h3 class="catbg">
-									<span id="prefexpand_', $group, '" class="floatright toggle_up" onclick="shd_toggleblock(\'', $group, '\'); return false;">&nbsp;<!--
-										<a class="permcollapse" href="#" onclick="shd_toggleblock(\'', $group, '\'); return false;">
-											<img src="', $settings['images_url'], '/selected_open.png" id="prefexpandicon_', $group, '" style="display:none;" />
-										</a>-->
-									</span>
-									<img src="', shd_image_url($details['icon']), '" class="icon" alt="*" />
-									<a class="prefcollapse" href="#prefheader_', $group, '" onclick="shd_toggleblock(\'', $group, '\'); return false;">', $txt['shd_pref_group_' . $group], '</a>
-								</h3>
-							</div>
-							<div class="roundframe" id="prefgroup_', $group, '">
-								<div class="content">
-									<dl class="permsettings">';
+		echo '<br>
+						<div class="cat_bar" id="prefheader_', $group, '">
+							<h3 class="catbg">
+								<span id="prefexpand_', $group, '" class="floatright toggle_up" onclick="shd_toggleblock(\'', $group, '\'); return false;">&nbsp;<!--
+									<a class="permcollapse" href="#" onclick="shd_toggleblock(\'', $group, '\'); return false;">
+										<img src="', $settings['images_url'], '/selected_open.png" id="prefexpandicon_', $group, '" style="display:none;" />
+									</a>-->
+								</span>
+								<img src="', shd_image_url($details['icon']), '" class="icon" alt="*" />
+								<a class="prefcollapse" href="#prefheader_', $group, '" onclick="shd_toggleblock(\'', $group, '\'); return false;">', $txt['shd_pref_group_' . $group], '</a>
+							</h3>
+						</div>
+						<div class="roundframe noup" id="prefgroup_', $group, '">
+							<div class="content">
+								<dl class="settings">';
 
 		foreach ($details['groups'] as $pref)
 		{
 			$thispref = $context['shd_preferences_options']['prefs'][$pref];
 			echo '
-										<dt>
-											', empty($thispref['icon']) ? '' : ('<img src="' . shd_image_url($thispref['icon']) . '" class="icon" alt="*" /> '), '
-											', $txt['shd_pref_' . $pref], '
-										</dt>
-										<dd>';
+									<dt>
+										', empty($thispref['icon']) ? '' : ('<img src="' . shd_image_url($thispref['icon']) . '" class="icon" alt="*" /> '), '
+										', $txt['shd_pref_' . $pref], '
+									</dt>
+									<dd>';
 
 			switch ($thispref['type'])
 			{
 				case 'check':
 					echo '
-										<input type="checkbox" value="1" name="', $pref, '"', (empty($context['member']['shd_preferences'][$pref]) ? '' : ' checked="checked"'), ' />';
+									<input type="checkbox" value="1" name="', $pref, '"', (empty($context['member']['shd_preferences'][$pref]) ? '' : ' checked="checked"'), ' />';
 					break;
 				case 'int':
 					echo '
-										<input type="input" size="', isset($thispref['size']) ? $thispref['size'] : '5', '" value="', !isset($context['member']['shd_preferences'][$pref]) ? $thispref['default'] : $context['member']['shd_preferences'][$pref], '" name="', $pref, '" />';
+									<input type="number" size="', isset($thispref['size']) ? $thispref['size'] : '5', '" value="', !isset($context['member']['shd_preferences'][$pref]) ? $thispref['default'] : $context['member']['shd_preferences'][$pref], '" name="', $pref, '" />';
 					break;
 				case 'select':
 					echo '
-										<select name="', $pref, '">';
+									<select name="', $pref, '">';
 					foreach ($thispref['options'] as $opt_value => $opt_desc)
 						echo '
-											<option value="', $opt_value, '"', isset($context['member']['shd_preferences'][$pref]) && $context['member']['shd_preferences'][$pref] == $opt_value ? ' selected="selected"' : '', '>', $txt[$opt_desc], '</option>';
+										<option value="', $opt_value, '"', isset($context['member']['shd_preferences'][$pref]) && $context['member']['shd_preferences'][$pref] == $opt_value ? ' selected="selected"' : '', '>', $txt[$opt_desc], '</option>';
 					echo '
-										</select>';
+									</select>';
 					break;
 			}
 
 			echo '
-										</dd>';
+									</dd>';
 		}
 
 		echo '
-									</dl>';
+								</dl>';
 
 		// Only display if the preference group is set to actually have said option, and if 3+ were actually being displayed, otherwise it looks stupid.
 		if (!empty($details['check_all']) && count($details['groups']) > 2)
 		{
 			echo '
-									<div class="padding" id="checkall_div_', $group, '" style="display:none;">
-										<input type="checkbox" name="all" id="check_all" value="" onclick="invertAll(this, this.form, \'', $group, '\');" class="input_check floatleft">
-										<label for="check_all" class="floatleft">', $txt['check_all'], '</label>
-									</div>';
+								<div id="checkall_div_', $group, '" style="display:none;">
+									<input type="checkbox" name="all" id="check_all" value="" onclick="invertAll(this, this.form, \'', $group, '\');" class="input_check floatleft">
+									<label for="check_all" class="floatleft">', $txt['check_all'], '</label>
+								</div>';
 			$checkall_items[] = $group;
 		}
 
 		echo '
-								</div>
 							</div>
-							<span class="lowerframe" id="preffooter_', $group, '"><span></span></span>
-						</div>';
+						</div>
+						<span id="preffooter_', $group, '"></span>';
 	}
 
 	// And the JS required to hide everything.
@@ -491,7 +484,6 @@ function template_shd_profile_permissions()
 
 	// Now hang on a moment. We need to display the list of departments, and if that's all we have, stop there.
 	echo '
-				<span class="upperframe"><span></span></span>
 				<div class="roundframe">
 					<form action="', $scripturl, '?action=profile;u=', $context['member']['id'], ';area=hd_permissions" method="post">
 						', $txt['shd_profile_showdept'], ':
@@ -692,11 +684,11 @@ function template_shd_profile_actionlog()
 					</div>
 					<table class="table_grid" id="ticket_log">
 						<tr class="title_bar">
-							<td width="15%">
+							<td class="quarter_table">
 								<img src="', $settings['default_images_url'], '/simpledesk/time.png" class="shd_smallicon" alt="" />
 								', $txt['shd_ticket_log_date'], '
 							</td>
-							<td width="50%">
+							<td class="half_table">
 								<img src="', $settings['default_images_url'], '/simpledesk/action.png" class="shd_smallicon" alt="" />
 								', $txt['shd_ticket_log_action'], '
 							</td>
@@ -724,7 +716,7 @@ function template_shd_profile_actionlog()
 
 	echo '
 						<tr class="titlebg">
-							<td colspan="2">
+							<td class="bot_page" colspan="2">
 								', !empty($context['action_full_log']) ? '<span class="smalltext shd_main_log"><img src="' . $settings['default_images_url'] . '/simpledesk/browse.png" alt="" /> <a href="' . $scripturl . '?action=admin;area=helpdesk_info;sa=actionlog">' . $txt['shd_profile_log_full'] . '</a></span>' : '', '
 							</td>
 						</tr>
@@ -739,7 +731,6 @@ function template_shd_profile_navigation_above()
 	echo '
 		<div class="', empty($options['use_sidebar_menu']) ? 'shd_ticket_leftcolumn floatleft' : '', '">
 			<div class="tborder shd_profile_navigation">
-				<span class="upperframe"><span></span></span>
 				<div class="roundframe">
 					<ul class="', !empty($options['use_sidebar_menu']) ? 'shd_profile_nav_inline' : 'shd_profile_nav_list', '">';
 	foreach ($context['shd_profile_menu'] as $menuitem)
