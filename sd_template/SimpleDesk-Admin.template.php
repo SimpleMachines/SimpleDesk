@@ -48,9 +48,7 @@ function template_shd_admin()
 					</h3>
 				</div>
 				<div class="windowbg nopadding">
-					<div class="padding">
-							<div id="sdAnnouncements">', $txt['shd_no_connect'], '</div>
-						</div>
+					<div id="sdAnnouncements">', $txt['shd_no_connect'], '</div>
 				</div>
 			</div>';
 

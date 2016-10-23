@@ -59,7 +59,7 @@ function template_viewticket()
 					<img src="', $settings['default_images_url'], '/simpledesk/ticket.png" alt="x" /> ', $txt['shd_ticket'], ' [', $context['ticket']['display_id'], ']
 				</h3>
 			</div>
-			<div class="windowbg">
+			<div class="windowbg noup">
 					<div class="shd_ticket_side_column">';
 
 			// General ticket details
@@ -68,11 +68,11 @@ function template_viewticket()
 							<strong><img src="', $settings['default_images_url'], '/simpledesk/details.png" alt="" class="shd_smallicon shd_icon_minihead" /> ', $txt['shd_ticket_details'], '</strong>
 							<hr />
 							<dl class="stats nobb">
-								<dt><span class="generic_icons inbox" alt="', $txt['shd_ticket_id'], '"></span> ', $txt['shd_ticket_id'], ':</dt>
+								<dt><span class="generic_icons inbox" title="', $txt['shd_ticket_id'], '"></span> ', $txt['shd_ticket_id'], ':</dt>
 										<dd>', $context['ticket']['display_id'], '</dd>
-								<dt><span class="generic_icons members" alt="', $txt['shd_ticket_user'], '"></span> ', $txt['shd_ticket_user'], ':</dt>
+								<dt><span class="generic_icons members" title="', $txt['shd_ticket_user'], '"></span> ', $txt['shd_ticket_user'], ':</dt>
 										<dd>', $context['ticket']['member']['link'], '</dd>
-								<dt><span class="generic_icons calendar" alt="', $txt['shd_ticket_date'], '"></span> ', $txt['shd_ticket_date'], ':</dt>
+								<dt><span class="generic_icons calendar" title="', $txt['shd_ticket_date'], '"></span> ', $txt['shd_ticket_date'], ':</dt>
 										<dd>', $context['ticket']['poster_time'], '</dd>
 										<dt><img src="', $settings['default_images_url'], '/simpledesk/urgency.png" alt="" class="shd_smallicon" /> ', $txt['shd_ticket_urgency'], ':</dt>
 								<dd id="item_urgency"><span id="urgency">', $context['ticket']['urgency']['label'], '</span>
@@ -313,11 +313,11 @@ function template_viewticket()
 	// Our mighty quick reply box :D
 	template_quickreply();
 
-	// The ticket action log, lastly.
-	template_ticketactionlog();
-
 	echo '
 		</div><br class="clear" />';
+
+	// The ticket action log, lastly.
+	template_ticketactionlog();
 
 	// And lastly, the Javascript for AJAX assignment. Since this is onload stuff, it needs to know the HTML already exists.
 	if (!empty($context['ajax_assign']))
@@ -622,7 +622,7 @@ function template_additional_fields()
 		echo '
 			</div>
 		</div>
-		<span class="lowerframe" id="additional_info_footer"><span></span></span>
+		<span id="additional_info_footer"></span>
 		</div>
 		<br />';
 	}
@@ -670,7 +670,7 @@ function template_quickreply()
 					</form>
 				</div>
 			</div>
-			<span id="quickreplyfooter" class="lowerframe"', $options['display_quick_reply'] == 2 ? '' : ' style="display: none"', '><span></span></span>
+			<span id="quickreplyfooter" ', $options['display_quick_reply'] == 2 ? '' : ' style="display: none"', '></span>
 		<script type="text/javascript"><!-- // --><![CDATA[
 		document.getElementById("quickReplyExpand").style.display = "";
 		document.getElementById("shd_goadvancedbutton").style.display = "";
@@ -774,16 +774,16 @@ function template_viewreplies()
 	echo '
 		<div class="title_bar">
 			<h3 class="titlebg">
-				<span class="floatright smalltext">', $txt['pages'], ': ', $context['page_index'], '</span>
+				<span class="floatright smalltext">', $context['page_index'], '</span>
 				<img src="', $settings['default_images_url'], '/simpledesk/replies.png" alt="x" /> ', $txt['shd_ticket_replies'], '
 			</h3>
 		</div>
-		<div class="roundframe" id="replies">
-			<div class="content">';
+		<div id="replies">';
 
 	if (empty($reply_request))
 	{
-		echo $txt['shd_no_replies'];
+		echo '
+			<div class="roundframe">', $txt['shd_no_replies'],'</div>';
 	}
 	else
 	{
@@ -794,7 +794,7 @@ function template_viewreplies()
 					<a id="new"></a>';
 
 			echo '
-					<div class="windowbg ', (!empty($context['ticket']['display_recycle']) && $reply['message_status'] == MSG_STATUS_DELETED ? ' errorbox' : ''), '" id="msg', $reply['id'], '">
+					<div class="', (!empty($context['ticket']['display_recycle']) && $reply['message_status'] == MSG_STATUS_DELETED ? ' errorbox ' : ''), 'windowbg" id="msg', $reply['id'], '">
 						<span class="floatleft shd_posterinfo">
 							<strong class="shd_postername">
 								', $reply['member']['link'], '
@@ -899,14 +899,15 @@ function template_viewreplies()
 						<span class="floatright"><img src="', $settings['default_images_url'], '/simpledesk/ip.png" alt="" class="shd_smallicon" /> ', $txt['shd_ticket_ip'], ': ', $reply['ip_address'], '</span>';
 
 			echo '
-						<br class="clear" />
+						<br>
 					</div>';
 		}
 	}
 
 	echo '
+		<div class="information">
 			<span class="floatleft"><a href="#replies" title="', $txt['shd_go_to_replies_start'], '"><img src="', $settings['default_images_url'], '/simpledesk/move_up.png" alt="" /><img src="', $settings['default_images_url'], '/simpledesk/replies.png" alt="" /></a></span>
-				<span class="floatright smalltext">', $txt['pages'], ': ', $context['page_index'], '</span>
+			<span class="floatright smalltext">', $context['page_index'], '</span>
 		</div>';
 }
 
@@ -1008,15 +1009,15 @@ function template_ticketactionlog()
 					</div>
 				<table class="table_grid" id="ticket_log">
 						<tr class="title_bar">
-							<td width="15%">
+							<td class="quarter_table">
 								<img src="', $settings['default_images_url'], '/simpledesk/time.png" class="shd_smallicon" alt="" />
 								', $txt['shd_ticket_log_date'], '
 							</td>
-							<td width="15%">
+							<td class="quarter_table">
 								<img src="', $settings['default_images_url'], '/simpledesk/user.png" class="shd_smallicon" alt="" />
 								', $txt['shd_ticket_log_member'], '
 							</td>
-							<td width="50%">
+							<td class="half_table">
 								<img src="', $settings['default_images_url'], '/simpledesk/action.png" class="shd_smallicon" alt="" />
 								', $txt['shd_ticket_log_action'], '
 							</td>

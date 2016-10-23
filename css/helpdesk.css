@@ -179,7 +179,9 @@ form#postmodify .shd_ticket_roundframe
 .shd_ticket_leftcolumn
 {
 	width: 25%;
-	padding-top: 5px;
+}
+.shd_ticket_leftcolumn .roundframe {
+	margin: 0;
 }
 /* The right column in the ticket display */
 .shd_ticket_rightcolumn
@@ -576,4 +578,27 @@ dl.stats dd span, dl.stats dt span
 
 .shd_icon_fullhead {
 	position: relative;
+}
+
+/* Something to keep it look good */
+#replies .windowbg:last-of-type {
+	border-bottom-left-radius: 0;
+	border-bottom-right-radius: 0;
+}
+
+@media (max-width: 480px) {
+	.shd_ticket_rightcolumn, .shd_ticket_leftcolumn {
+		width: 100%;
+		padding: 0;
+	}
+	.shd_ticket_rightcolumn {
+		margin-top: 10px;
+	}
+	.shd_profile_navigation {
+		margin-right: 0;
+	}
+	input[type="checkbox"] {
+		height: 15px;
+		width: 15px;
+	}
 }
