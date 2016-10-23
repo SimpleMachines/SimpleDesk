@@ -37,6 +37,15 @@ if (!defined('SMF'))
 	die('Hacking attempt...');
 
 /**
+ *	Makes SMF hook system happy that it has a function to call for SSI.
+ *	@since 2.1
+*/
+function ssi_shd_called()
+{
+	return true;
+}
+
+/**
  *	Gets a list of the tickets currently open that are a given user's (subject to ticket visibility).
  *
  *	@param int $started_by The user id whose tickets you want to examine, defaults to the current user.

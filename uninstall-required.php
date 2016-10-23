@@ -189,7 +189,7 @@ $hooks = array();
 // Other
 	$hooks[] = array(
 		'hook' => 'integrate_SSI',
-		'function' => false,
+		'function' => 'ssi_shd_called',
 		'file' => '$sourcedir/sd_source/SimpleDesk-SSI.php',
 	);
 
