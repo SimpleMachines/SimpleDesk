@@ -35,7 +35,7 @@ function template_search()
 	<div class="roundframe">
 		<form action="', $scripturl, '?action=helpdesk;sa=search2" method="post">
 			<div class="content">
-				<br />
+				<br>
 				<dl class="settings">
 					<dt>
 						<strong>', $txt['shd_search_text'], '</strong>
@@ -53,15 +53,15 @@ function template_search()
 						</select>
 					</dd>
 				</dl>
-				<br />
+				<br>
 				<dl class="settings">
 					<dt>
 						<strong>', $txt['shd_search_where'], '</strong>
 					</dt>
 					<dd>
-						<input type="checkbox" class="input_check" checked="checked" name="search_subjects" /> ', $txt['shd_search_where_subjects'], '<br />
-						<input type="checkbox" class="input_check" checked="checked" name="search_tickets" /> ', $txt['shd_search_where_tickets'], '<br />
-						<input type="checkbox" class="input_check" checked="checked" name="search_replies" /> ', $txt['shd_search_where_replies'], '<br />
+						<input type="checkbox" class="input_check" checked="checked" name="search_subjects" /> ', $txt['shd_search_where_subjects'], '<br>
+						<input type="checkbox" class="input_check" checked="checked" name="search_tickets" /> ', $txt['shd_search_where_tickets'], '<br>
+						<input type="checkbox" class="input_check" checked="checked" name="search_replies" /> ', $txt['shd_search_where_replies'], '<br>
 					</dd>
 				</dl>';
 
@@ -74,7 +74,7 @@ function template_search()
 	else
 	{
 		echo '
-				<hr />
+				<hr>
 				<dl class="settings">
 					<dt>
 						<strong>', $txt['shd_search_dept'], '</strong>
@@ -83,7 +83,7 @@ function template_search()
 
 		foreach ($context['dept_list'] as $id => $name)
 			echo '
-							<input type="checkbox" class="input_check" checked="checked" name="search_dept[]" value="', $id, '" /> &nbsp;', $name, '<br />';
+							<input type="checkbox" class="input_check" checked="checked" name="search_dept[]" value="', $id, '" /> &nbsp;', $name, '<br>';
 
 		echo '
 					</dd>
@@ -91,18 +91,18 @@ function template_search()
 	}
 
 	echo '
-				<hr />
+				<hr>
 				<dl class="settings">
 					<dt>
 						<strong>', $txt['shd_search_scope'], '</strong>
 					</dt>
 					<dd>
-						<input type="checkbox" class="input_check" checked="checked" name="scope_open" /> &nbsp;', $txt['shd_search_scope_open'], '<br />
-						<input type="checkbox" class="input_check" checked="checked" name="scope_closed" /> &nbsp;', $txt['shd_search_scope_closed'], '<br />
-						<input type="checkbox" class="input_check" checked="checked" name="scope_recycle" /> &nbsp;', $txt['shd_search_scope_recycle'], '<br />
+						<input type="checkbox" class="input_check" checked="checked" name="scope_open" /> &nbsp;', $txt['shd_search_scope_open'], '<br>
+						<input type="checkbox" class="input_check" checked="checked" name="scope_closed" /> &nbsp;', $txt['shd_search_scope_closed'], '<br>
+						<input type="checkbox" class="input_check" checked="checked" name="scope_recycle" /> &nbsp;', $txt['shd_search_scope_recycle'], '<br>
 					</dd>
 				</dl>
-				<hr />
+				<hr>
 				<dl class="settings">
 					<dt>
 						<strong>', $txt['shd_search_urgency'], '</strong>
@@ -112,12 +112,12 @@ function template_search()
 	// All the urgency levels, currently 0-5.
 	for ($i = 0; $i <= 5; $i++)
 		echo '
-						<input type="checkbox" class="input_check" checked="checked" name="urgency[]" value="', $i, '" /> &nbsp;', $txt['shd_urgency_' . $i], '<br />';
+						<input type="checkbox" class="input_check" checked="checked" name="urgency[]" value="', $i, '" /> &nbsp;', $txt['shd_urgency_' . $i], '<br>';
 
 	echo '
 					</dd>
 				</dl>
-				<hr />
+				<hr>
 				<dl class="settings">
 					<dt>
 						<strong>', $txt['shd_search_ticket_starter'], '</strong>
@@ -129,7 +129,7 @@ function template_search()
 						<div id="starter_name_container"></div>
 					</dd>
 				</dl>
-				<br />
+				<br>
 				<dl class="settings">
 					<dt>
 						<strong>', $txt['shd_search_ticket_assignee'], '</strong>
@@ -171,8 +171,8 @@ function template_search()
 						aListItems: []
 					});
 				// ]', ']></script>
-				<hr />
-				<br />
+				<hr>
+				<br>
 				<input type="submit" value="', $txt['shd_search'], '" onclick="return submitThisOnce(this);" accesskey="s" class="button_submit" />
 			</div>
 		</form>

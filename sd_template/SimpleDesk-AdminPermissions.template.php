@@ -61,7 +61,7 @@ function template_shd_permissions_home()
 	echo '
 					</table>
 				</div>
-				<br /><br />
+				<br><br>
 				<div class="tborder">
 					<div class="title_bar">
 						<h3 class="titlebg">
@@ -184,7 +184,7 @@ function template_shd_display_permission_list($permissions)
 		foreach ($rows as $rowitem => $rowicon)
 		{
 			if (!empty($permission_set[$rowitem]))
-				echo $txt['shd_permgroup_short_' . $rowitem], ': ', implode(' ', $permission_set[$rowitem]), '<br />';
+				echo $txt['shd_permgroup_short_' . $rowitem], ': ', implode(' ', $permission_set[$rowitem]), '<br>';
 		}
 
 		echo '</td>';
@@ -416,7 +416,7 @@ function template_shd_edit_role()
 							</div>
 						</div>
 						<span id="permfooter_', $rowitem, '"></span>
-						<br />';
+						<br>';
 		}
 
 		echo '
@@ -479,7 +479,7 @@ function template_shd_edit_role()
 
 	echo '
 						</table>
-						<br />
+						<br>
 					</div>
 
 					<div class="tborder floatleft" style="width: 100%;">
@@ -509,7 +509,7 @@ function template_shd_edit_role()
 
 	echo '
 						</table>
-						<br />
+						<br>
 					</div>
 
 					<div class="floatleft">

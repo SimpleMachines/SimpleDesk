@@ -112,7 +112,7 @@ function template_shd_depts()
 					</form>
 				</div>
 				<div id="welcome">
-							<strong>', sprintf($txt['shd_welcome'], $context['user']['name']), '</strong><br />
+							<strong>', sprintf($txt['shd_welcome'], $context['user']['name']), '</strong><br>
 							', $txt['shd_' . $context['shd_home_view'] . '_greeting'], '
 						</div>
 						<div class="cat_bar">
@@ -136,7 +136,7 @@ function template_shd_depts()
 								<tr class="windowbg2">
 									<td class="icon windowbg"><img src="', $icon, '" alt="*" /></td>
 									<td class="info"><a href="', $scripturl, '?', $context['shd_home'], ';dept=', $dept['id_dept'], '">', $dept['dept_name'], '</a></td>
-									<td class="stats windowbg">', $dept['tickets']['open'], ' open<br />', $dept['tickets']['closed'], ' closed</td>
+									<td class="stats windowbg">', $dept['tickets']['open'], ' open<br>', $dept['tickets']['closed'], ' closed</td>
 									<td class="lastpost"></td>
 								</tr>';
 	}
@@ -179,17 +179,17 @@ function template_closedtickets()
 							</form>
 						</div>
 						<div id="welcome">
-							<strong>', sprintf($txt['shd_welcome'], $context['user']['name']), '</strong><br />
+							<strong>', sprintf($txt['shd_welcome'], $context['user']['name']), '</strong><br>
 							', $txt['shd_closed_' . $context['shd_home_view'] . '_greeting'];
 
 	if (!empty($context['shd_filter_fields']))
 	{
 		echo '
-			<br /><br /><strong>', $txt['shd_category_filter'], ':</strong>';
+			<br><br><strong>', $txt['shd_category_filter'], ':</strong>';
 		foreach ($context['shd_filter_fields'] as $id_field => $field)
 		{
 			echo '
-			<br />', $field['name'], ':';
+			<br>', $field['name'], ':';
 			foreach ($field['options'] as $key => $opt)
 			{
 				if (!empty($context['filter_fragment']) && $_REQUEST['field'] == $id_field && $_REQUEST['filter'] == $key)
@@ -245,17 +245,17 @@ function template_recyclebin()
 							</form>
 						</div>
 						<div id="welcome">
-							<strong>', sprintf($txt['shd_welcome'], $context['user']['name']), '</strong><br />
+							<strong>', sprintf($txt['shd_welcome'], $context['user']['name']), '</strong><br>
 							', $txt['shd_recycle_greeting'];
 
 	if (!empty($context['shd_filter_fields']))
 	{
 		echo '
-			<br /><br /><strong>', $txt['shd_category_filter'], ':</strong>';
+			<br><br><strong>', $txt['shd_category_filter'], ':</strong>';
 		foreach ($context['shd_filter_fields'] as $id_field => $field)
 		{
 			echo '
-			<br />', $field['name'], ':';
+			<br>', $field['name'], ':';
 			foreach ($field['options'] as $key => $opt)
 			{
 				if (!empty($context['filter_fragment']) && $_REQUEST['field'] == $id_field && $_REQUEST['filter'] == $key)

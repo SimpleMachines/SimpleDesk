@@ -26,13 +26,13 @@ function template_shd_profile_main()
 		</div>
 		<div class="windowbg noup">
 			<div class="content">
-			<img src="', $settings['default_images_url'], '/simpledesk/ticket.png" alt="" class="shd_icon_minihead" /> <strong>', $txt['shd_profile_tickets'], '</strong><hr />
+			<img src="', $settings['default_images_url'], '/simpledesk/ticket.png" alt="" class="shd_icon_minihead" /> <strong>', $txt['shd_profile_tickets'], '</strong><hr>
 				', $txt['shd_profile_tickets_created'], ': <a href="', $scripturl, '?action=profile;u=', $context['member']['id'], ';area=hd_showtickets">', $context['shd_numtickets'], '</a>';
 	if (!empty($context['shd_numopentickets']))
 		echo ' <span class="smalltext">(', $context['shd_numopentickets'], ' ', $txt['shd_profile_currently_open'], ')</span>';
 
 	echo '
-				<br />
+				<br>
 				', $txt['shd_profile_tickets_assigned'], ': <a href="', $scripturl, '?action=profile;u=', $context['member']['id'], ';area=hd_showtickets">', $context['shd_numassigned'], '</a>
 				<div class="block floatright">
 					<a href="', $scripturl, '?action=profile;u=', $context['member']['id'], ';area=hd_showtickets" class="button"><span id="shd_showtickets"></span>', $txt['shd_profile_view_tickets'], '</a>';
@@ -54,7 +54,7 @@ function template_shd_profile_main()
 	if (!empty($modSettings['shd_helpdesk_only']))
 	{
 		echo '
-	<br />
+	<br>
 	<div class="tborder shd_profile_navigation" id="tracking">
 		<div class="cat_bar">
 			<h3 class="catbg">
@@ -64,7 +64,7 @@ function template_shd_profile_main()
 		</div>
 		<div class="windowbg">
 			<div class="content">
-			<img src="', $settings['default_images_url'], '/simpledesk/user.png" alt="" class="shd_icon_minihead" /> <strong>', $txt['shd_acct_information'], '</strong><hr />
+			<img src="', $settings['default_images_url'], '/simpledesk/user.png" alt="" class="shd_icon_minihead" /> <strong>', $txt['shd_acct_information'], '</strong><hr>
 				<dl>';
 
 		if ($context['user']['is_owner'] || $context['user']['is_admin'])
@@ -91,7 +91,7 @@ function template_shd_profile_main()
 
 				foreach ($context['member']['bans'] as $ban)
 					echo '
-						<br /><span class="smalltext">', $ban['explanation'], '</span>';
+						<br><span class="smalltext">', $ban['explanation'], '</span>';
 
 				echo '
 					</dt>';
@@ -117,7 +117,7 @@ function template_shd_profile_main()
 
 		echo '
 				</dl>
-				<hr />
+				<hr>
 				<dl>';
 
 		if ($context['member']['show_email'] == 'yes')
@@ -148,7 +148,7 @@ function template_shd_profile_main()
 				</dl>';
 
 		echo '
-				<br />
+				<br>
 			</div>
 		</div>
 	</div>';
@@ -304,12 +304,12 @@ function template_shd_profile_preferences()
 
 	if ($display_save)
 		echo '
-						<br />
+						<br>
 						<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 						<input type="submit" value="', $txt['shd_profile_save_prefs'], '" onclick="return submitThisOnce(this);" accesskey="s" class="button_submit" />';
 	else
 		echo '
-						<br />
+						<br>
 						<div class="tborder">
 							<div class="cat_bar cat_closed">
 								<h3 class="catbg">
@@ -561,7 +561,7 @@ function template_shd_profile_permissions()
 	if (!empty($context['member_permissions']['allowed']))
 	{
 		echo '
-				<br />
+				<br>
 				<div class="tborder">
 					<div class="cat_bar">
 						<h3 class="catbg">
@@ -741,7 +741,7 @@ function template_shd_profile_navigation_above()
 						<li', (!empty($menuitem['is_last']) ? ' class="shd_inline_last"' : ''), '>
 							<img src="', $settings['default_images_url'], '/simpledesk/', $menuitem['image'], '" alt="x" class="floatright" />
 							<a href="', $menuitem['link'], '"><strong>', $menuitem['text'], '</strong></a>
-							', (empty($options['use_sidebar_menu']) && empty($menuitem['is_last'])) ? '<hr />' : '', '
+							', (empty($options['use_sidebar_menu']) && empty($menuitem['is_last'])) ? '<hr>' : '', '
 						</li>';
 		}
 	}
@@ -752,7 +752,7 @@ function template_shd_profile_navigation_above()
 				</div>
 			</div>
 		</div>
-		', !empty($options['use_sidebar_menu']) ? '<br />' : '', '
+		', !empty($options['use_sidebar_menu']) ? '<br>' : '', '
 		<div class="', empty($options['use_sidebar_menu']) ? 'shd_ticket_rightcolumn floatright' : '', '">';
 }
 
