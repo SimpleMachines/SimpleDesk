@@ -1717,8 +1717,7 @@ function shd_main_menu(&$menu_buttons)
 		return;
 
     // Load some extra CSS
-    $context['html_headers'] .= '
-    <link rel="stylesheet" type="text/css" href="' . $settings['default_theme_url'] . '/css/helpdesk_icons.css?' . $context['shd_css_version'] . '" />';
+	loadCSSFile('helpdesk_icons.css', array('minimize' => empty($context['shd_developer_mode']), 'seed' => $context['shd_css_version']), 'helpdesk_icons');
 
 	// Stuff we'll always do in SD if active
 	$helpdesk_admin = $context['user']['is_admin'] || shd_allowed_to('admin_helpdesk', 0);

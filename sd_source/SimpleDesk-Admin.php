@@ -53,10 +53,10 @@ function shd_admin_main()
 	shd_load_plugin_langfiles('hdadmin');
 
 	// Load some extra CSS
-	$context['html_headers'] .= '
-	<link rel="stylesheet" type="text/css" href="' . $settings['default_theme_url'] . '/css/helpdesk_admin.css?' . $context['shd_css_version'] . '" />
-	<link rel="stylesheet" type="text/css" href="' . $settings['default_theme_url'] . '/css/helpdesk.css?' . $context['shd_css_version'] . '" />
-	<script type="text/javascript" src="' . $settings['default_theme_url'] . '/scripts/helpdesk_admin.js?' . $context['shd_scripts_version'] . '"></script>';
+	loadCSSFile('helpdesk_admin.css', array('minimize' => false, 'seed' => $context['shd_css_version']), 'helpdesk_admin');
+	loadCSSFile('helpdesk.css', array('minimize' => false, 'seed' => $context['shd_css_version']), 'helpdesk');
+	loadJavascriptFile('helpdesk_admin.js', array('defer' => false, 'minimize' => false), 'helpdesk_admin');
+
 	$context['page_title'] = $txt['shd_admin_title'];
 
 	// We need this for later

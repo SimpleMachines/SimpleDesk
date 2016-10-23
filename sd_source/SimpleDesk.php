@@ -288,21 +288,14 @@ function shd_main()
 	$context['items_per_page'] = 10;
 	$context['start'] = isset($_REQUEST['start']) ? $_REQUEST['start'] : 0;
 
-	// Load the custom CSS.
-	if (empty($context['html_headers']))
-		$context['html_headers'] = '';
+	loadCSSFile('helpdesk.css', array('minimize' => false, 'seed' => $context['shd_css_version']), 'helpdesk');
+	loadJavascriptFile('helpdesk.js', array('defer' => false, 'minimize' => false), 'helpdesk');
 
-	$context['html_headers'] .= '
-	<link rel="stylesheet" type="text/css" href="' . (file_exists($settings['theme_dir'] . '/css/helpdesk.css') ? $settings['theme_url'] . '/css/helpdesk.css' : $settings['default_theme_url'] . '/css/helpdesk.css') . '?' . $context['shd_css_version'] . '" />
-	<script type="text/javascript" src="' . $settings['default_theme_url'] . '/scripts/helpdesk.js?' .$context['shd_scripts_version'] . '"></script>';
-
-	// A custom css?
+	// Custom settings?
 	if (file_exists($settings['default_theme_url'] . '/css/helpdesk_custom.css'))
-		$context['html_headers'] .= '
-	<link rel="stylesheet" type="text/css" href="' . $settings['default_theme_url'] . '/css/helpdesk_custom.css?' . $context['shd_css_version'] . '" />';
+		loadCSSFile('helpdesk_def_custom.css', array('minimize' => false, 'seed' => $context['shd_css_version'], 'default_theme' => true), 'helpdesk_def_custom');
 	if (file_exists($settings['theme_dir'] . '/css/helpdesk_custom.css'))
-		$context['html_headers'] .= '
-	<link rel="stylesheet" type="text/css" href="' . $settings['theme_url'] . '/css/helpdesk_custom.css?' . $context['shd_css_version'] . '" />';
+		loadCSSFile('helpdesk_custom.css', array('minimize' => false, 'seed' => $context['shd_css_version']), 'helpdesk_custom');
 
 	// Int hooks - after we basically set everything up (so it's manipulatable by the hook, but before we do the last bits of finalisation)
 	call_integration_hook('shd_hook_helpdesk', array(&$subactions));
