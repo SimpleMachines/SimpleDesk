@@ -1,2 +1,8 @@
-patch.diff
-.git
+# SimpleDesk Ignores #
+#####################
+
+# Plugins #
+##########
+sd_plugins_lang/SDPlugin*.php
+sd_plugins_source/*
+css/helpdesk_custom.css

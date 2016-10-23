@@ -461,7 +461,7 @@ function shd_notify_users($notify_data)
 				'log_time' => 'int', 'id_member' => 'int', 'ip' => 'string-16', 'action' => 'string', 'id_ticket' => 'int', 'id_msg' => 'int', 'extra' => 'string-65534',
 			),
 			array(
-				time(), 0, '', 'notify', $notify_data['ticket'], !empty($notify_data['msg']) ? $notify_data['msg'] : 0, serialize($log),
+				time(), 0, '', 'notify', $notify_data['ticket'], !empty($notify_data['msg']) ? $notify_data['msg'] : 0, json_encode($log),
 			),
 			array('id_action')
 		);
@@ -506,7 +506,7 @@ function shd_notify_popup()
 	$row = $smcFunc['db_fetch_assoc']($query);
 	$smcFunc['db_free_result']($query);
 
-	$row['extra'] = unserialize($row['extra']);
+	$row['extra'] = smf_json_decode($row['extra'], true);
 
 	// Just check we did actually log an email of that type.
 	if (empty($row['extra']['emails'][$_GET['template']]))

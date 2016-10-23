@@ -228,11 +228,11 @@ function shd_search2()
 		spamProtection('search');
 	else
 	{
-		list($temp_clauses, $temp_params, $temp_terms) = unserialize($_SESSION['lastsearch']);
+		list($temp_clauses, $temp_params, $temp_terms) = smf_json_decode($_SESSION['lastsearch'], true);
 		if ($temp_clauses != $context['search_clauses'] || $temp_params != $context['search_params'] || $temp_terms != $context['search_terms'])
 			spamProtection('search');
 	}
-	$_SESSION['lastsearch'] = serialize(array($context['search_clauses'], $context['search_params'], $context['search_terms']));
+	$_SESSION['lastsearch'] = json_encode(array($context['search_clauses'], $context['search_params'], $context['search_terms']));
 
 	$context['search_params']['start'] = ($context['pagenum'] - 1) * $number_per_page;
 	$context['search_params']['limit'] = $number_per_page;

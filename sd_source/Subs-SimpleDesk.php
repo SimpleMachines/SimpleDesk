@@ -528,7 +528,7 @@ function shd_log_action($action, $params, $do_last_update = true)
 			'log_time' => 'int', 'id_member' => 'int', 'ip' => 'string-16', 'action' => 'string', 'id_ticket' => 'int', 'id_msg' => 'int', 'extra' => 'string-65534',
 		),
 		array(
-			time(), $user_info['id'], $user_info['ip'], $action, $ticket_id, $msg_id, serialize($params),
+			time(), $user_info['id'], $user_info['ip'], $action, $ticket_id, $msg_id, json_encode($params),
 		),
 		array('id_action')
 	);
@@ -1668,7 +1668,7 @@ function shd_init_actions(&$actionArray)
  *
  *	@since 2.0
 */
-function shd_buffer_replace(&$buffer)
+function shd_buffer_replace($buffer)
 {
 	global $modSettings, $context;
 

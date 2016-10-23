@@ -170,7 +170,7 @@ function shd_admin_custom_edit()
 		$context['section_desc'] = $txt['shd_admin_edit_custom_field_desc'];
 		$context['page_title'] = $txt['shd_admin_edit_custom_field'];
 		$context['sub_template'] = 'shd_custom_field_edit';
-		$context['custom_field']['options'] = !empty($row['field_options']) ? unserialize($row['field_options']) : array(1 => '', '', '');
+		$context['custom_field']['options'] = !empty($row['field_options']) ? smf_json_decode($row['field_options'], true) : array(1 => '', '', '');
 		if (empty($context['custom_field']['options']['inactive']))
 			$context['custom_field']['options']['inactive'] = array();
 
@@ -392,7 +392,7 @@ function shd_admin_custom_save()
 			if (isset($_POST['default_select']) && $_POST['default_select'] == $k)
 				$_POST['default_check'] = $k;
 		}
-		$options = serialize($newOptions);
+		$options = json_encode($newOptions);
 	}
 
 	// Sort out the default selection if it's a multi-select, as well as required amounts
@@ -503,7 +503,7 @@ function shd_admin_custom_save()
 		// Depending on the field type, we may need to be funky about overlaying things, hence grabbing the old options.
 		if (!empty($row['field_options']) && in_array($row['field_type'], array(CFIELD_TYPE_SELECT, CFIELD_TYPE_RADIO, CFIELD_TYPE_MULTI)))
 		{
-			$row['field_options'] = unserialize($row['field_options']);
+			$row['field_options'] = smf_json_decode($row['field_options'], true);
 			ksort($row['field_options']);
 			ksort($newOptions);
 			$inactive = array();
@@ -521,7 +521,7 @@ function shd_admin_custom_save()
 			foreach ($newOptions as $k => $v)
 				$new_fields[$k] = $v;
 			$new_fields['inactive'] = $inactive;
-			$options = serialize($new_fields);
+			$options = json_encode($new_fields);
 		}
 
 		shd_db_query('', '
