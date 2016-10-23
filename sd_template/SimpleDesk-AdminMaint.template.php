@@ -25,14 +25,12 @@ function template_shd_admin_maint_home()
 				', $txt['shd_admin_maint_findrepair'], '
 			</h3>
 		</div>
-		<div class="roundframe">
-			<div class="content">
-				<p>', $txt['shd_admin_maint_findrepair_desc'], '</p>
-				<form action="', $scripturl, '?action=admin;area=helpdesk_maint;sa=findrepair" method="post">
-					<input type="submit" value="', $txt['maintain_run_now'], '" onclick="return submitThisOnce(this);" class="button_submit">
-					<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">
-				</form>
-			</div>
+		<div class="information">
+			<form action="', $scripturl, '?action=admin;area=helpdesk_maint;sa=findrepair" method="post">
+				<p>', $txt['shd_admin_maint_findrepair_desc'], '</p><br>
+				<input type="submit" value="', $txt['maintain_run_now'], '" onclick="return submitThisOnce(this);" class="button_submit">
+				<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">
+			</form>
 		</div>';
 
 	// Reattribute guest posts
@@ -83,46 +81,43 @@ function template_shd_admin_maint_home()
 				', $txt['shd_admin_maint_reattribute'], '
 			</h3>
 		</div>
-		<div class="roundframe">
-			<div class="content">
+		<div class="roundframe noup">
+			<form action="', $scripturl, '?action=admin;area=helpdesk_maint;sa=reattribute" method="post">
 				<p>', $txt['shd_admin_maint_reattribute_desc'], '</p>
-				<form action="', $scripturl, '?action=admin;area=helpdesk_maint;sa=reattribute" method="post">
-					<dl class="settings">
-						<dt>
-							<strong>', $txt['shd_admin_maint_reattribute_posts_made'], '</strong>
-						</dt>
-						<dt>
-							<label for="type_email"><input type="radio" name="type" id="type_email" value="email" checked="checked" class="input_radio">', $txt['shd_admin_maint_reattribute_posts_email'], '</label>
-						</dt>
-						<dd>
-							<input type="text" name="from_email" id="from_email" value="" onclick="document.getElementById(\'type_email\').checked = \'checked\'; document.getElementById(\'from_name\').value = \'\'; document.getElementById(\'from_starter\').value = \'\';">
-						</dd>
-						<dt>
-							<label for="type_name"><input type="radio" name="type" id="type_name" value="name" class="input_radio">', $txt['shd_admin_maint_reattribute_posts_user'], '</label>
-						</dt>
-						<dd>
-							<input type="text" name="from_name" id="from_name" value="" onclick="document.getElementById(\'type_name\').checked = \'checked\'; document.getElementById(\'from_email\').value = \'\'; document.getElementById(\'from_starter\').value = \'\';" class="input_text">
-						</dd>
-
-						<dt>
-							<label for="type_name"><input type="radio" name="type" id="type_starter" value="starter" class="input_radio">', $txt['shd_admin_maint_reattribute_posts_starter'], '</label>
-						</dt>
-						<dd>
-							<input type="text" name="from_starter" id="from_starter" value="" onclick="document.getElementById(\'type_starter\').checked = \'checked\'; document.getElementById(\'from_email\').value = \'\'; document.getElementById(\'from_name\').value = \'\';" class="input_text">
-						</dd>
-					</dl>
-					<dl class="settings">
-						<dt>
-							<label for="to"><strong>', $txt['shd_admin_maint_reattribute_posts_to'], '</strong></label>
-						</dt>
-						<dd>
-							<input type="text" name="to" id="to" value="" class="input_text">
-						</dd>
-					</dl>
-					<span><input type="submit" id="do_attribute" value="', $txt['shd_admin_maint_reattribute_btn'], '" onclick="if (!checkAttributeValidity()) return false; return confirm(warningMessage);" class="button_submit" /></span>
-					<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">
-				</form>
-			</div>
+				<dl class="settings">
+					<dt>
+						<strong>', $txt['shd_admin_maint_reattribute_posts_made'], '</strong>
+					</dt>
+					<dt>
+						<label for="type_email"><input type="radio" name="type" id="type_email" value="email" checked="checked" class="input_radio">', $txt['shd_admin_maint_reattribute_posts_email'], '</label>
+					</dt>
+					<dd>
+						<input type="text" name="from_email" id="from_email" value="" onclick="document.getElementById(\'type_email\').checked = \'checked\'; document.getElementById(\'from_name\').value = \'\'; document.getElementById(\'from_starter\').value = \'\';">
+					</dd>
+					<dt>
+						<label for="type_name"><input type="radio" name="type" id="type_name" value="name" class="input_radio">', $txt['shd_admin_maint_reattribute_posts_user'], '</label>
+					</dt>
+					<dd>
+						<input type="text" name="from_name" id="from_name" value="" onclick="document.getElementById(\'type_name\').checked = \'checked\'; document.getElementById(\'from_email\').value = \'\'; document.getElementById(\'from_starter\').value = \'\';" class="input_text">
+					</dd>
+					<dt>
+						<label for="type_name"><input type="radio" name="type" id="type_starter" value="starter" class="input_radio">', $txt['shd_admin_maint_reattribute_posts_starter'], '</label>
+					</dt>
+					<dd>
+						<input type="text" name="from_starter" id="from_starter" value="" onclick="document.getElementById(\'type_starter\').checked = \'checked\'; document.getElementById(\'from_email\').value = \'\'; document.getElementById(\'from_name\').value = \'\';" class="input_text">
+					</dd>
+				</dl>
+				<dl class="settings">
+					<dt>
+						<label for="to"><strong>', $txt['shd_admin_maint_reattribute_posts_to'], '</strong></label>
+					</dt>
+					<dd>
+						<input type="text" name="to" id="to" value="" class="input_text">
+					</dd>
+				</dl>
+				<input type="submit" id="do_attribute" value="', $txt['shd_admin_maint_reattribute_btn'], '" onclick="if (!checkAttributeValidity()) return false; return confirm(warningMessage);" class="button_submit" />
+				<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">
+			</form>
 		</div>
 		<script type="text/javascript" src="', $settings['default_theme_url'], '/scripts/suggest.js?rc5"></script>
 		<script type="text/javascript"><!-- // --><![CDATA[
@@ -159,41 +154,39 @@ function template_shd_admin_maint_home()
 			</h3>
 		</div>
 		<div class="roundframe">
-			<div class="content">
+			<form action="', $scripturl, '?action=admin;area=helpdesk_maint;sa=massdeptmove" method="post">
 				<p>', $txt['shd_admin_maint_massdeptmove_desc'], '</p>
-				<form action="', $scripturl, '?action=admin;area=helpdesk_maint;sa=massdeptmove" method="post">
-					<p>
-						<label for="id_dept_from">', $txt['shd_admin_maint_massdeptmove_from'], ' </label>
-						<select name="id_dept_from" id="id_dept_from">';
+				<p>
+					<label for="id_dept_from">', $txt['shd_admin_maint_massdeptmove_from'], ' </label>
+					<select name="id_dept_from" id="id_dept_from">';
 		foreach ($context['dept_list'] as $id => $dept)
 			echo '
-							<option value="', $id, '"', $id == 0 ? ' disabled="disabled"' : '', '> =&gt;&nbsp;', $dept, '</option>';
+						<option value="', $id, '"', $id == 0 ? ' disabled="disabled"' : '', '> =&gt;&nbsp;', $dept, '</option>';
 
 		echo '
-						</select>
-						<label for="id_dept_to">', $txt['shd_admin_maint_massdeptmove_to'], '</label>
-						<select name="id_dept_to" id="id_dept_to">';
+					</select>
+					<label for="id_dept_to">', $txt['shd_admin_maint_massdeptmove_to'], '</label>
+					<select name="id_dept_to" id="id_dept_to">';
 		foreach ($context['dept_list'] as $id => $dept)
 			echo '
-							<option value="', $id, '"', $id == 0 ? ' disabled="disabled"' : '', '> =&gt;&nbsp;', $dept, '</option>';
+						<option value="', $id, '"', $id == 0 ? ' disabled="disabled"' : '', '> =&gt;&nbsp;', $dept, '</option>';
 
 		echo '
-						</select>
-					</p>
-					<dl class="settings">
-						<dt><input type="checkbox" checked="checked" id="moveopen" name="moveopen" class="input_check" /> <label for="moveopen">', $txt['shd_admin_maint_massdeptmove_open'], '</label></dt>
-						<dt><input type="checkbox" checked="checked" id="moveclosed" name="moveclosed" class="input_check" /> <label for="moveclosed">', $txt['shd_admin_maint_massdeptmove_closed'], '</label></dt>
-						<dt><input type="checkbox" checked="checked" id="movedeleted" name="movedeleted" class="input_check" /> <label for="movedeleted">', $txt['shd_admin_maint_massdeptmove_deleted'], '</label></dt>
-					</dl>
-					<br>
-					<dl class="settings">
-						<dt><input type="checkbox" id="movelast_less" name="movelast_less" class="input_check" /> ', sprintf($txt['shd_admin_maint_massdeptmove_lastupd_less'], '<input type="text" name="movelast_less_days" value="30" size="3" />'), '</dt>
-						<dt><input type="checkbox" id="movelast_more" name="movelast_more" class="input_check" /> ', sprintf($txt['shd_admin_maint_massdeptmove_lastupd_more'], '<input type="text" name="movelast_more_days" value="30" size="3" />'), '</dt>
-					</dl>
-					<input type="submit" value="', $txt['shd_admin_maint_massdeptmove'], '" onclick="return submitThisOnce(this);" class="button_submit">
-					<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">
-				</form>
-			</div>
+					</select>
+				</p>
+				<dl class="settings">
+					<dt><input type="checkbox" checked="checked" id="moveopen" name="moveopen" class="input_check" /> <label for="moveopen">', $txt['shd_admin_maint_massdeptmove_open'], '</label></dt>
+					<dt><input type="checkbox" checked="checked" id="moveclosed" name="moveclosed" class="input_check" /> <label for="moveclosed">', $txt['shd_admin_maint_massdeptmove_closed'], '</label></dt>
+					<dt><input type="checkbox" checked="checked" id="movedeleted" name="movedeleted" class="input_check" /> <label for="movedeleted">', $txt['shd_admin_maint_massdeptmove_deleted'], '</label></dt>
+				</dl>
+				<br>
+				<dl class="settings">
+					<dt><input type="checkbox" id="movelast_less" name="movelast_less" class="input_check" /> ', sprintf($txt['shd_admin_maint_massdeptmove_lastupd_less'], '<input type="text" name="movelast_less_days" value="30" size="3" />'), '</dt>
+					<dt><input type="checkbox" id="movelast_more" name="movelast_more" class="input_check" /> ', sprintf($txt['shd_admin_maint_massdeptmove_lastupd_more'], '<input type="text" name="movelast_more_days" value="30" size="3" />'), '</dt>
+				</dl>
+				<input type="submit" value="', $txt['shd_admin_maint_massdeptmove'], '" onclick="return submitThisOnce(this);" class="button_submit">
+				<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">
+			</form>
 		</div>';
 	}
 }
@@ -207,12 +200,9 @@ function template_shd_admin_maint_findrepairdone()
 		// Yay everything was fine.
 		echo '
 		<div class="windowbg">
-			<div class="content">
-				<p>', $txt['maintain_no_errors'], '</p>
-				<p class="padding">
-					<a href="', $scripturl, '?action=admin;area=helpdesk_maint;', $context['session_var'], '=', $context['session_id'], '">', $txt['shd_admin_maint_back'], '</a>
-				</p>
-			</div>
+			', $txt['maintain_no_errors'], '
+			<br>
+			<a href="', $scripturl, '?action=admin;area=helpdesk_maint;', $context['session_var'], '=', $context['session_id'], '">', $txt['shd_admin_maint_back'], '</a>
 		</div>';
 	}
 	else
@@ -261,12 +251,9 @@ function template_shd_admin_maint_reattributedone()
 
 	echo '
 		<div class="windowbg">
-			<div class="content">
-				<p>', $txt['shd_admin_maint_reattribute_success'], '</p>
-				<p class="padding">
-					<a href="', $scripturl, '?action=admin;area=helpdesk_maint;', $context['session_var'], '=', $context['session_id'], '">', $txt['shd_admin_maint_back'], '</a>
-				</p>
-			</div>
+			', $txt['shd_admin_maint_reattribute_success'], '
+			<br>
+			<a href="', $scripturl, '?action=admin;area=helpdesk_maint;', $context['session_var'], '=', $context['session_id'], '">', $txt['shd_admin_maint_back'], '</a>
 		</div>';
 }
 
@@ -277,12 +264,9 @@ function template_shd_admin_maint_massdeptmovedone()
 	echo '
 	<div id="admincenter">
 		<div class="windowbg">
-			<div class="content">
-				<p>', $txt['shd_admin_maint_massdeptmove_success'], '</p>
-				<p class="padding">
-					<a href="', $scripturl, '?action=admin;area=helpdesk_maint;', $context['session_var'], '=', $context['session_id'], '">', $txt['shd_admin_maint_back'], '</a>
-				</p>
-			</div>
+			', $txt['shd_admin_maint_massdeptmove_success'], '
+			<br>
+			<a href="', $scripturl, '?action=admin;area=helpdesk_maint;', $context['session_var'], '=', $context['session_id'], '">', $txt['shd_admin_maint_back'], '</a>
 		</div>
 	</div>';
 }
@@ -304,15 +288,13 @@ function template_shd_admin_maint_search()
 				', $txt['shd_maint_rebuild_index'], '
 			</h3>
 		</div>
-		<div class="roundframe">
-			<div class="content">
+		<div class="information">
+			<form action="', $scripturl, '?action=admin;area=helpdesk_maint;sa=search" method="post">
 				<p>', $txt['shd_maint_rebuild_index_desc'], '</p>
-				<form action="', $scripturl, '?action=admin;area=helpdesk_maint;sa=search" method="post">
-					<input type="submit" name="rebuild" value="', $txt['maintain_run_now'], '" onclick="return submitThisOnce(this);" class="button_submit">
-					<input type="hidden" name="start" value="0" />
-					<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">
-				</form>
-			</div>
+				<input type="submit" name="rebuild" value="', $txt['maintain_run_now'], '" onclick="return submitThisOnce(this);" class="button_submit">
+				<input type="hidden" name="start" value="0" />
+				<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">
+			</form>
 		</div>
 		<div class="cat_bar">
 			<h3 class="catbg">
@@ -320,41 +302,38 @@ function template_shd_admin_maint_search()
 				', $txt['shd_maint_search_settings'], '
 			</h3>
 		</div>
-		<div class="roundframe">
-			<div class="content">
-				<form action="', $scripturl, '?action=admin;area=helpdesk_maint;sa=search" method="post">
-					<div class="errorbox"><img src="', $settings['default_images_url'], '/simpledesk/warning.png" alt="*" class="shd_icon_minihead" /> &nbsp;', $txt['shd_maint_search_settings_warning'], '</div>
-					<dl class="settings">
-						<dt>
-							', $txt['shd_search_min_size'], '
-						</dt>
-						<dd>
-							<input type="text" class="input_text" name="shd_search_min_size" size="4" value="', $modSettings['shd_search_min_size'], '" />
-						</dd>
-						<dt>
-							', $txt['shd_search_max_size'], '
-						</dt>
-						<dd>
-							<input type="text" class="input_text" name="shd_search_max_size" size="4" value="', $modSettings['shd_search_max_size'], '" />
-						</dd>
-						<dt>
-							<a id="setting_shd_search_prefix_size" href="', $scripturl, '?action=helpadmin;help=shd_search_prefix_size_help" onclick="return reqWin(this.href);" class="help"><img src="', $settings['images_url'], '/helptopics.png" class="icon" alt="?"></a>
-							<span>', $txt['shd_search_prefix_size'], '</span>
-						</dt>
-						<dd>
-							<input type="text" class="input_text" name="shd_search_prefix_size" size="4" value="', $modSettings['shd_search_prefix_size'], '" />
-						</dd>
-						<dt>
-							', $txt['shd_search_charset'], '
-						</dt>
-						<dd>
-							<textarea name="shd_search_charset" rows="3" cols="35" style="width: 99%;">', htmlspecialchars($modSettings['shd_search_charset']), '</textarea>
-						</dd>
-					</dl>
-					<span><input type="submit" name="save" value="', $txt['save'], '" class="button_submit" /></span>
-					<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">
-				</form>
-			</div>
+		<div class="roundframe noup">
+			<form action="', $scripturl, '?action=admin;area=helpdesk_maint;sa=search" method="post">
+				<div class="errorbox">', $txt['shd_maint_search_settings_warning'], '</div>
+				<dl class="settings">
+					<dt>
+						', $txt['shd_search_min_size'], '
+					</dt>
+					<dd>
+						<input type="text" class="input_text" name="shd_search_min_size" size="4" value="', $modSettings['shd_search_min_size'], '" />
+					</dd>
+					<dt>
+						', $txt['shd_search_max_size'], '
+					</dt>
+					<dd>
+						<input type="text" class="input_text" name="shd_search_max_size" size="4" value="', $modSettings['shd_search_max_size'], '" />
+					</dd>
+					<dt>
+						<a id="setting_shd_search_prefix_size" href="', $scripturl, '?action=helpadmin;help=shd_search_prefix_size_help" onclick="return reqWin(this.href);" class="help"><img src="', $settings['images_url'], '/helptopics.png" class="icon" alt="?"></a>
+						<span>', $txt['shd_search_prefix_size'], '</span>
+					</dt>
+					<dd>
+						<input type="text" class="input_text" name="shd_search_prefix_size" size="4" value="', $modSettings['shd_search_prefix_size'], '" />
+					</dd>
+					<dt>
+						', $txt['shd_search_charset'], '
+					</dt>
+					<dd>
+						<textarea name="shd_search_charset" rows="3" cols="35" style="width: 99%;">', htmlspecialchars($modSettings['shd_search_charset']), '</textarea>
+					</dd>
+				</dl>
+				<input type="submit" name="save" value="', $txt['save'], '" class="button_submit" />
+				<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">
+			</form>
 		</div>';
 }
-
