@@ -388,7 +388,7 @@ function shd_tickettotopic2()
 			'name' => $row['field_name'],
 			'type' => $row['field_type'],
 			'bbc' => !empty($row['bbc']),
-			'options' => !empty($row['field_options']) ? unserialize($row['field_options']) : array(),
+			'options' => !empty($row['field_options']) ? smf_json_decode($row['field_options'], true) : array(),
 			'placement' => $row['placement'],
 			'visible' => array(
 				'user' => $user_see,

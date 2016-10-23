@@ -812,7 +812,7 @@ function shd_load_custom_fields($is_ticket = true, $ticketContext = 0, $dept = 0
 				'name' => $row['field_name'],
 				'desc' => parse_bbc($row['field_desc'], false),
 				'icon' => $row['icon'],
-				'options' => !empty($row['field_options']) ? unserialize($row['field_options']) : array(),
+				'options' => !empty($row['field_options']) ? smf_json_decode($row['field_options'], true) : array(),
 				'type' => $row['field_type'],
 				'default_value' => $row['field_type'] == CFIELD_TYPE_LARGETEXT ? explode(',', $row['default_value']) : $row['default_value'],
 				'display_empty' => !empty($row['required']) ? 1 : $row['display_empty'], // Required and "selection" fields will always be displayed.

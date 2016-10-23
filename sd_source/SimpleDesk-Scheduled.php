@@ -109,7 +109,7 @@ function shd_scheduled_close_tickets()
 					'autoclose', // action
 					$ticket, // id_ticket
 					0, // id_msg
-					serialize(array(
+					json_encode(array(
 						'subject' => $subjects[$ticket],
 						'auto' => true, // indicate to the action log that this is the case
 					)),

@@ -114,7 +114,7 @@ function shd_load_action_log_entries($start = 0, $items_per_page = 10, $sort = '
 	$notify_members = array();
 	while ($row = $smcFunc['db_fetch_assoc']($request))
 	{
-		$row['extra'] = @unserialize($row['extra']);
+		$row['extra'] = smf_json_decode($row['extra'], true);
 		$row['extra'] = is_array($row['extra']) ? $row['extra'] : array();
 
 		// Uhoh, we don't know who this is! Check it's not automatically by the system. If it is... mark it so.
@@ -188,7 +188,7 @@ function shd_load_action_log_entries($start = 0, $items_per_page = 10, $sort = '
 		// Notifications are pretty tricky. So let's take care of all of it at once, and skip the rest if we're doing that.
 		if ($action['action'] == 'notify' && isset($action['extra']['emails']))
 		{
-			// Because this could be a lot of people etc., we compact its storage heavily compared to a conventional serialize().
+			// Because this could be a lot of people etc., we compact its storage heavily compared to a conventional smf_json_decode().
 			// See shd_notify_users in SimpleDesk-Notifications.php for what this is.
 
 			// Now we have all the usernames for this instance, let's go and build this entry.

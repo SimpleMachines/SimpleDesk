@@ -400,7 +400,7 @@ function shd_view_ticket()
 			'icon' => $row['icon'],
 			'type' => $row['field_type'],
 			'default_value' => $row['field_type'] == CFIELD_TYPE_LARGETEXT ? explode(',', $row['default_value']) : $row['default_value'],
-			'options' => !empty($row['field_options']) ? unserialize($row['field_options']) : array(),
+			'options' => !empty($row['field_options']) ? smf_json_decode($row['field_options'], true) : array(),
 			'display_empty' => !empty($row['required']) ? true : !empty($row['display_empty']), // Required and "selection" fields will always be displayed.
 			'bbc' => !empty($row['bbc']) && ($row['field_type'] == CFIELD_TYPE_TEXT || $row['field_type'] == CFIELD_TYPE_LARGETEXT) && $row['placement'] != CFIELD_PLACE_PREFIX,
 			'editable' => !empty($editable),

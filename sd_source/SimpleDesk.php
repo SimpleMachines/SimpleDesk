@@ -1150,7 +1150,7 @@ function shd_helpdesk_listing()
 		{
 			if (!empty($row['field_options']))
 			{
-				$row['field_options'] = unserialize($row['field_options']);
+				$row['field_options'] = smf_json_decode($row['field_options'], true);
 				if (isset($row['field_options']['inactive']))
 					unset($row['field_options']['inactive']);
 				foreach ($row['field_options'] as $k => $v)
