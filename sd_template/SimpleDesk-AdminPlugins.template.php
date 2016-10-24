@@ -78,7 +78,7 @@ function template_shd_plugin_listing()
 		if (!empty($plugin['languages']))
 		{
 			echo '
-					<div class="langblock">', $txt['shd_admin_plugins_languages'], ':<br />';
+					<div class="langblock">', $txt['shd_admin_plugins_languages'], ':<br>';
 			foreach ($plugin['languages'] as $language)
 			{
 				if (!empty($txt['shd_admin_plugins_lang_' . $language]))
@@ -94,7 +94,7 @@ function template_shd_plugin_listing()
 					<p>';
 		if (!empty($plugin['details']['description']))
 			echo '
-						', $plugin['details']['description'], '<br />';
+						', $plugin['details']['description'], '<br>';
 
 		echo '			', $txt['shd_admin_plugins_writtenby'], ': ', (empty($plugin['details']['website']) ? $plugin['details']['author'] : '<a href="' . $plugin['details']['website'] . '" target="_blank" title="' . $txt['shd_admin_plugins_website'] . ' - ' . $plugin['details']['website'] . '">' . $plugin['details']['author'] . '</a>'), '
 					</p>';

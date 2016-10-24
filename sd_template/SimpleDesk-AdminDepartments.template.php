@@ -275,7 +275,7 @@ function template_shd_edit_dept()
 
 	echo '
 						</table>
-						<br />
+						<br>
 					</div>
 
 					<div class="floatleft">

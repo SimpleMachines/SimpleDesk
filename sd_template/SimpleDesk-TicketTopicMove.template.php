@@ -167,7 +167,7 @@ function template_shd_tickettotopic()
 
 		if (!empty($context['custom_fields_warning']))
 			echo '
-					<hr />
+					<hr>
 					<dl class="settings">
 						<dt>
 							<strong>', $txt['shd_ticket_move_accept'], '</strong>

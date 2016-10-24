@@ -66,7 +66,7 @@ function template_viewticket()
 			echo '
 					<div class="shd_ticketdetails">
 							<strong><img src="', $settings['default_images_url'], '/simpledesk/details.png" alt="" class="shd_smallicon shd_icon_minihead" /> ', $txt['shd_ticket_details'], '</strong>
-							<hr />
+							<hr>
 							<dl class="stats nobb">
 								<dt><span class="generic_icons inbox" title="', $txt['shd_ticket_id'], '"></span> ', $txt['shd_ticket_id'], ':</dt>
 										<dd>', $context['ticket']['display_id'], '</dd>
@@ -119,7 +119,7 @@ function template_viewticket()
 				if ($content)
 				{
 					echo '
-							<hr />
+							<hr>
 							<ul>';
 
 					foreach ($context['ticket']['custom_fields']['prefixfilter'] AS $field)
@@ -179,7 +179,7 @@ function template_viewticket()
 					echo '
 						<div class="information shd_additional_details">
 							<strong><img src="', $settings['default_images_url'], '/simpledesk/additional_details.png" alt="" class="shd_smallicon shd_icon_minihead" /> ', $txt['shd_ticket_additional_details'], '</strong>
-							<hr />
+							<hr>
 							<ul>';
 
 					foreach ($context['ticket']['custom_fields']['details'] AS $field)
@@ -265,7 +265,7 @@ function template_viewticket()
 			if (!empty($output))
 				echo '[', trim($output), '] ';
 
-			echo $context['ticket']['subject'], '</strong><hr /><br />
+			echo $context['ticket']['subject'], '</strong><hr><br>
 							<div id="shd_ticket_text">
 								', $context['ticket']['body'];
 
@@ -283,13 +283,13 @@ function template_viewticket()
 			if ($context['can_reply'])
 				echo '
 						<div class="information shd_replybutton floatright" id="shd_replybutton">
-							<a href="', $scripturl, '?action=helpdesk;sa=reply;ticket=', $context['ticket_id'], ';num_replies=', $context['ticket']['num_replies'], ';', $context['session_var'], '=', $context['session_id'], '">', $txt['shd_ticket_reply'], '</a><br />
+							<a href="', $scripturl, '?action=helpdesk;sa=reply;ticket=', $context['ticket_id'], ';num_replies=', $context['ticket']['num_replies'], ';', $context['session_var'], '=', $context['session_id'], '">', $txt['shd_ticket_reply'], '</a><br>
 						</div>';
 
 			if ($context['can_quote'])
 				echo '
 						<div class="information shd_quotebutton floatright" id="shd_quotebutton">
-							<a onclick="return oQuickReply.quote(', $context['ticket']['first_msg'], ', \'', $context['session_id'], '\', \'', $context['session_var'], '\', true);" href="', $scripturl, '?action=helpdesk;sa=reply;ticket=', $context['ticket_id'], ';quote=', $context['ticket']['first_msg'], ';num_replies=', $context['ticket']['num_replies'], ';', $context['session_var'], '=', $context['session_id'], '">', $txt['shd_ticket_quote'], '</a><br />
+							<a onclick="return oQuickReply.quote(', $context['ticket']['first_msg'], ', \'', $context['session_id'], '\', \'', $context['session_var'], '\', true);" href="', $scripturl, '?action=helpdesk;sa=reply;ticket=', $context['ticket_id'], ';quote=', $context['ticket']['first_msg'], ';num_replies=', $context['ticket']['num_replies'], ';', $context['session_var'], '=', $context['session_id'], '">', $txt['shd_ticket_quote'], '</a><br>
 						</div>';
 
 			template_inline_attachments($context['ticket']['first_msg']);
@@ -412,10 +412,10 @@ function template_viewticketattach()
 			{
 				if ($attachment['thumbnail']['has_thumb'])
 					echo '
-										<a href="', $attachment['href'], ';image" id="link_', $attachment['id'], '" onclick="', $attachment['thumbnail']['javascript'], '"><img src="', $attachment['thumbnail']['href'], '" alt="" id="thumb_', $attachment['id'], '" class="shd_thumb" /></a><br />';
+										<a href="', $attachment['href'], ';image" id="link_', $attachment['id'], '" onclick="', $attachment['thumbnail']['javascript'], '"><img src="', $attachment['thumbnail']['href'], '" alt="" id="thumb_', $attachment['id'], '" class="shd_thumb" /></a><br>';
 				else
 					echo '
-										<img src="' . $attachment['href'] . ';image" alt="" width="' . $attachment['width'] . '" height="' . $attachment['height'] . '" class="shd_thumb" /><br />';
+										<img src="' . $attachment['href'] . ';image" alt="" width="' . $attachment['width'] . '" height="' . $attachment['height'] . '" class="shd_thumb" /><br>';
 			}
 
 			echo '
@@ -495,7 +495,7 @@ function template_viewnotifications()
 		{
 			if ($displayed_something)
 				echo '
-							<hr />';
+							<hr>';
 
 			echo '
 							<form action="', $scripturl, '?action=helpdesk;sa=notify;ticket=', $context['ticket_id'], '" method="post">';
@@ -507,7 +507,7 @@ function template_viewnotifications()
 								<input type="submit" value="', $txt['shd_ticket_monitor_on'], '" class="button_submit" />';
 			else
 				echo '
-								<div><img src="', $settings['default_images_url'], '/simpledesk/cf_active.png" alt="" /> ', $txt['shd_ticket_notify_me_always'], '<br /><br />', $txt['shd_ticket_monitor_off_note'], '</div>
+								<div><img src="', $settings['default_images_url'], '/simpledesk/cf_active.png" alt="" /> ', $txt['shd_ticket_notify_me_always'], '<br><br>', $txt['shd_ticket_monitor_off_note'], '</div>
 								<input type="hidden" name="notifyaction" value="monitor_off" />
 								<input type="submit" value="', $txt['shd_ticket_monitor_off'], '" class="button_submit" />';
 
@@ -522,7 +522,7 @@ function template_viewnotifications()
 	{
 		if ($displayed_something)
 			echo '
-							<hr />';
+							<hr>';
 
 		echo '
 							<form action="', $scripturl, '?action=helpdesk;sa=notify;ticket=', $context['ticket_id'], '" method="post">';
@@ -592,7 +592,7 @@ function template_additional_fields()
 					echo '
 							<div class="information">
 							', !empty($field['icon']) ? '<img src="' . $settings['default_images_url'] . '/simpledesk/cf/' . $field['icon'] . '" alt="" class="shd_smallicon" />' : '','
-							<strong>', $field['name'],':</strong><hr />';
+							<strong>', $field['name'],':</strong><hr>';
 
 					if ($field['type'] == CFIELD_TYPE_CHECKBOX)
 						echo !empty($field['value']) ? $txt['yes'] : $txt['no'];
@@ -624,7 +624,7 @@ function template_additional_fields()
 		</div>
 		<span id="additional_info_footer"></span>
 		</div>
-		<br />';
+		<br>';
 	}
 }
 
@@ -659,7 +659,7 @@ function template_quickreply()
 		{
 			echo '
 					<div class="information shd_advancedbutton floatright" id="shd_goadvancedbutton" style="display:none;">
-						<a onclick="goAdvanced(); return false;" href="', $scripturl, '?action=helpdesk;sa=reply;ticket=', $context['ticket_id'], ';', $context['session_var'], '=', $context['session_id'], '">', $txt['shd_go_advanced'], '</a><br />
+						<a onclick="goAdvanced(); return false;" href="', $scripturl, '?action=helpdesk;sa=reply;ticket=', $context['ticket_id'], ';', $context['session_var'], '=', $context['session_id'], '">', $txt['shd_go_advanced'], '</a><br>
 					</div>';
 		}
 
@@ -701,7 +701,7 @@ function template_inline_attachments($msg)
 							<table width="90%">';
 		/*echo '
 							<div class="smalltext">
-								<strong>', $txt['shd_ticket_attachments'], '</strong><br />
+								<strong>', $txt['shd_ticket_attachments'], '</strong><br>
 								<ul class="shd_replyattachments">';*/
 
 		$count = 0;
@@ -725,10 +725,10 @@ function template_inline_attachments($msg)
 			{
 				if ($attachment['thumbnail']['has_thumb'])
 					echo '
-										<a href="', $attachment['href'], ';image" id="link_', $attachment['id'], '" onclick="', $attachment['thumbnail']['javascript'], '"><img src="', $attachment['thumbnail']['href'], '" alt="" id="thumb_', $attachment['id'], '" class="shd_thumb" /></a><br />';
+										<a href="', $attachment['href'], ';image" id="link_', $attachment['id'], '" onclick="', $attachment['thumbnail']['javascript'], '"><img src="', $attachment['thumbnail']['href'], '" alt="" id="thumb_', $attachment['id'], '" class="shd_thumb" /></a><br>';
 				else
 					echo '
-										<img src="' . $attachment['href'] . ';image" alt="" width="' . $attachment['width'] . '" height="' . $attachment['height'] . '" class="shd_thumb" /><br />';
+										<img src="' . $attachment['href'] . ';image" alt="" width="' . $attachment['width'] . '" height="' . $attachment['height'] . '" class="shd_thumb" /><br>';
 			}
 
 			echo '
@@ -799,7 +799,7 @@ function template_viewreplies()
 							<strong class="shd_postername">
 								', $reply['member']['link'], '
 							</strong>
-							<br />
+							<br>
 							', $reply['member']['group'], '<br class="shd_groupmargin" />';
 
 			if (!empty($modSettings['shd_display_avatar']) && empty($options['show_no_avatars']) && !empty($reply['member']['avatar']['image']))
@@ -809,10 +809,10 @@ function template_viewreplies()
 							</span>';
 
 			if ($modSettings['shd_staff_badge'] == (!empty($reply['is_staff']) ? 'staffbadge' : 'userbadge') || $modSettings['shd_staff_badge'] == 'bothbadge')
-				echo '<br />
+				echo '<br>
 							', $reply['member']['group_stars'];
 			elseif (!empty($reply['is_staff']) && $modSettings['shd_staff_badge'] == 'nobadge')
-				echo '<br />
+				echo '<br>
 							<img src="', $settings['default_images_url'] . '/simpledesk/staff.png" class="shd_smallicon" title="', $txt['shd_ticket_staff'], '" alt="', $txt['shd_ticket_staff'], '" />';
 
 			echo '
@@ -840,15 +840,15 @@ function template_viewreplies()
 								</span>
 								<a href="', $reply['link'], '">', sprintf($txt['shd_reply_written'], $reply['time']), '</a>
 							</div>
-							<hr />
+							<hr>
 							', $reply['body'], '
-							<br /><br />';
+							<br><br>';
 
 		// Custom fields for replies!
 		if (!empty($context['custom_fields_replies'][$reply['id']]))
 		{
 			echo '
-							<hr />';
+							<hr>';
 
 			foreach ($context['custom_fields_replies'][$reply['id']] AS $field)
 			{
@@ -859,23 +859,23 @@ function template_viewreplies()
 							<strong>', $field['name'],': </strong>';
 
 					if ($field['type'] == CFIELD_TYPE_CHECKBOX)
-						echo !empty($field['value']) ? $txt['yes'] : $txt['no'], '<br /><br />';
+						echo !empty($field['value']) ? $txt['yes'] : $txt['no'], '<br><br>';
 					elseif (empty($field['value']) && $field['display_empty'])
-						echo $txt['shd_ticket_empty_field'], '<br /><br />';
+						echo $txt['shd_ticket_empty_field'], '<br><br>';
 					else
 					{
 						if ($field['type'] == CFIELD_TYPE_SELECT || $field['type'] == CFIELD_TYPE_RADIO)
-							echo $field['options'][$field['value']], '<br /><br />';
+							echo $field['options'][$field['value']], '<br><br>';
 						elseif ($field['type'] == CFIELD_TYPE_MULTI)
 						{
 							$values = explode(',', $field['value']);
 							$string = '';
 							foreach ($values as $value)
 								$string .= $field['options'][$value] . ' ';
-							echo trim($string), '<br /><br />';
+							echo trim($string), '<br><br>';
 						}
 						else
-							echo $field['value'], '<br /><br />';
+							echo $field['value'], '<br><br>';
 					}
 				}
 			}
@@ -939,7 +939,7 @@ function template_viewrelationships()
 				continue;
 
 			echo '
-							<img src="', $settings['default_images_url'], '/simpledesk/rel_', $rel_type, '.png" alt="" /> <strong>', $txt['shd_ticket_reltype_' . $rel_type], ':</strong><br />';
+							<img src="', $settings['default_images_url'], '/simpledesk/rel_', $rel_type, '.png" alt="" /> <strong>', $txt['shd_ticket_reltype_' . $rel_type], ':</strong><br>';
 
 			foreach ($relationships as $rel)
 			{
@@ -949,7 +949,7 @@ function template_viewrelationships()
 				if (!empty($context['delete_relationships']))
 					echo '<a href="', $scripturl, '?action=helpdesk;sa=relation;ticket=', $context['ticket_id'], ';otherticket=', $rel['id'], ';relation=delete;', $context['session_var'], '=', $context['session_id'], '"><img class="shd_smallicon" src="', $settings['default_images_url'], '/simpledesk/delete.png" alt="', $txt['shd_ticket_delete_relationship'], '" title="', $txt['shd_ticket_delete_relationship'], '" /></a>';
 
-				echo '<span class="smalltext">[', $rel['display_id'], '] <a href="', $scripturl, '?action=helpdesk;sa=ticket;ticket=', $rel['id'], '">', $rel['subject'], '</a> (', $rel['status_txt'], ')</span><br />';
+				echo '<span class="smalltext">[', $rel['display_id'], '] <a href="', $scripturl, '?action=helpdesk;sa=ticket;ticket=', $rel['id'], '">', $rel['subject'], '</a> (', $rel['status_txt'], ')</span><br>';
 			}
 		}
 
@@ -957,7 +957,7 @@ function template_viewrelationships()
 		{
 			if ($context['relationships_count'] > 0)
 				echo '
-						<hr />';
+						<hr>';
 
 			echo '
 						', $txt['shd_ticket_create_relationship'], ':

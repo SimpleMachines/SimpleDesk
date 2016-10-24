@@ -96,7 +96,7 @@ function template_ticket_info()
 	echo '
 					<div class="shd_ticketdetails">
 						<strong><img src="', $settings['default_images_url'], '/simpledesk/details.png" alt="" class="shd_smallicon" /> ', $txt['shd_ticket_details'], '</strong>
-						<hr />
+						<hr>
 						<ul class="reset">';
 
 	if (!empty($context['ticket_form']['display_id']))
@@ -178,12 +178,12 @@ function template_ticket_custom_fields()
 						<dl class="settings">
 							<dt id="field-' . $field['id'] . '" style="width:98%;">
 								', !empty($field['icon']) ? '<img src="' . $settings['default_images_url'] . '/simpledesk/cf/' . $field['icon'] . '" alt="" />' : '', '
-								<strong>' . $field['name'] . ': </strong><br />
-								<span class="smalltext">' . $field['desc'] . '</span><br />
+								<strong>' . $field['name'] . ': </strong><br>
+								<span class="smalltext">' . $field['desc'] . '</span><br>
 								<textarea name="field-', $field['id'], '"', !empty($field['default_value']) ? ' rows="' . $field['default_value'][0] . '" cols="' . $field['default_value'][1] . '" ' : '', ' style="width:auto; height:auto;">', $field['value'], '</textarea>
 							</dt>
 						</dl>
-						<hr class="hrcolor" />
+						<hr>
 					</div>';
 			}
 			else
@@ -193,7 +193,7 @@ function template_ticket_custom_fields()
 						<dl class="settings">
 							<dt id="field-' . $field['id'] . '">
 								', !empty($field['icon']) ? '<img src="' . $settings['default_images_url'] . '/simpledesk/cf/' . $field['icon'] . '" alt="" />' : '', '
-								<strong>' . $field['name'] . ': </strong><br />
+								<strong>' . $field['name'] . ': </strong><br>
 								<span class="smalltext">' . $field['desc'] . '</span>
 							</dt>';
 
@@ -260,7 +260,7 @@ function template_ticket_custom_fields()
 						// If the field is active, display it normally
 						if (!in_array($key, $field['options']['inactive']))
 							echo '
-								<input name="field-', $field['id'], '-', $key, '" type="checkbox" value="', $key, '"', in_array($key, $field['value']) ? ' checked="checked"' : '', ' /> <span>', $option, '</span><br />';
+								<input name="field-', $field['id'], '-', $key, '" type="checkbox" value="', $key, '"', in_array($key, $field['value']) ? ' checked="checked"' : '', ' /> <span>', $option, '</span><br>';
 						// If it's not required and inactive and present, display a hidden form item for it.
 						elseif (empty($field['is_required']) && in_array($key, $field['options']['inactive']) && in_array($key, $field['value']))
 							echo '
@@ -277,7 +277,7 @@ function template_ticket_custom_fields()
 							<dd>';
 					if (empty($field['is_required']))
 						echo '
-								<input name="field-', $field['id'], '" type="radio" value="0"', $field['value'] == 0 ? ' checked="checked"' : '', ' class="input_radio" /> <span>', $txt['shd_no_value'], '</span><br />';
+								<input name="field-', $field['id'], '" type="radio" value="0"', $field['value'] == 0 ? ' checked="checked"' : '', ' class="input_radio" /> <span>', $txt['shd_no_value'], '</span><br>';
 
 					foreach ($field['options'] as $key => $option)
 					{
@@ -285,7 +285,7 @@ function template_ticket_custom_fields()
 							continue;
 
 						echo '
-								<input name="field-', $field['id'], '" type="radio" value="', $key, '"', $field['value'] == $key ? ' checked="checked"' : '', ' /> <span>', $option, '</span><br />';
+								<input name="field-', $field['id'], '" type="radio" value="', $key, '"', $field['value'] == $key ? ' checked="checked"' : '', ' /> <span>', $option, '</span><br>';
 					}
 
 					echo '
@@ -298,7 +298,7 @@ function template_ticket_custom_fields()
 
 				echo '
 						</dl>
-						<hr class="hrcolor" />
+						<hr>
 					</div>';
 			}
 		}
@@ -325,7 +325,7 @@ function template_ticket_posterrors()
 
 	foreach ($context['shd_errors'] as $error)
 		echo '
-									', $txt['error_' . $error], '<br />';
+									', $txt['error_' . $error], '<br>';
 
 	echo '
 								</dt>
@@ -348,7 +348,7 @@ function template_ticket_subjectbox()
 	if (!empty($context['ticket_form']['selecting_dept']) && !empty($context['postable_dept_list']))
 	{
 		echo '
-						<br />
+						<br>
 						<img src="', $settings['default_images_url'], '/simpledesk/departments.png" alt="" class="shd_smallicon" /> <strong>', $txt['shd_ticket_dept'], '</strong>
 						<select name="newdept" onchange="updateDeptCFs(this.value)">
 							<option value="0">', $txt['shd_select_dept'], '</option>';
@@ -397,14 +397,14 @@ function template_ticket_subjectbox()
 	if (!empty($context['can_post_proxy']))
 	{
 		echo '
-						<br />
+						<br>
 						<input type="hidden" name="proxy" value="" />
 						<img src="', $settings['default_images_url'], '/simpledesk/proxy.png" alt="" class="shd_smallicon" /> <strong>', $txt['shd_ticket_proxy'], ':</strong>
 						<input type="text" name="proxy_author" id="proxy_author" size="50" maxlength="100" class="input_text" value="', (empty($context['ticket_form']['proxy']) ? '' : $context['ticket_form']['proxy']), '" tabindex="', $context['tabindex']++, '" />';
 	}
 
 	echo '
-						<hr /><br />';
+						<hr><br>';
 }
 
 function template_ticket_proxy_js()
@@ -439,7 +439,7 @@ function template_ticket_content()
 	template_ticket_posterrors();
 	echo '
 						<img src="', $settings['default_images_url'], '/simpledesk/name.png" alt="" class="shd_smallicon" /> <strong>', $context['ticket_form']['subject'], '</strong>
-						<hr /><br />
+						<hr><br>
 							', $context['ticket_form']['message'];
 
 	if (!empty($settings['show_modify']) && !empty($context['ticket']['modified']))
@@ -497,7 +497,7 @@ function template_ticket_shd_replyarea()
 					</div>
 				</div>
 			</div>
-			<br />';
+			<br>';
 }
 
 function template_ticket_postbox()
@@ -531,7 +531,7 @@ function template_ticket_postbox()
 
 	echo '
 						<br class="clear" />
-						<span class="smalltext"><br />', $context['browser']['is_firefox'] ? $txt['shortcuts_firefox'] : $txt['shortcuts'], '</span><br />
+						<span class="smalltext"><br>', $context['browser']['is_firefox'] ? $txt['shortcuts_firefox'] : $txt['shortcuts'], '</span><br>
 						<input type="submit" value="', isset($editor_context['labels']['post_button']) ? $editor_context['labels']['post_button'] : $txt['post'], '" tabindex="', $context['tabindex']++, '" accesskey="s" class="button_submit" />
 						<input class="button_submit" type="submit" name="preview" value="', $txt['preview'], '" accesskey="p" tabindex="', $context['tabindex']++, '" />';
 
@@ -594,7 +594,7 @@ function template_ticket_footer()
 				</div>
 				<br class="clear" />
 			</div>
-			<br />';
+			<br>';
 }
 
 function template_preview()
@@ -617,7 +617,7 @@ function template_preview()
 				</div>
 			</div>
 			</div>
-			<br />';
+			<br>';
 	}
 }
 
@@ -706,11 +706,11 @@ function template_ticket_additional_options()
 		// Show some useful information such as allowed extensions, maximum size and amount of attachments allowed.
 		if (!empty($modSettings['attachmentCheckExtensions']))
 			echo '
-								', $txt['allowed_types'], ': ', $context['allowed_extensions'], '<br />';
+								', $txt['allowed_types'], ': ', $context['allowed_extensions'], '<br>';
 
 		if (!empty($context['attachment_restrictions']))
 			echo '
-								', $txt['attach_restrictions'], ' ', implode(', ', $context['attachment_restrictions']), '<br />';
+								', $txt['attach_restrictions'], ' ', implode(', ', $context['attachment_restrictions']), '<br>';
 
 		echo '
 							</dd>
@@ -817,10 +817,10 @@ function template_ticket_do_replies()
 							', shd_profile_link($reply['member']['avatar']['image'], $reply['member']['id']);
 
 			if ($modSettings['shd_staff_badge'] == (!empty($reply['is_staff']) ? 'staffbadge' : 'userbadge') || $modSettings['shd_staff_badge'] == 'bothbadge')
-				echo '<br />
+				echo '<br>
 							', $reply['member']['group_stars'];
 			elseif (!empty($reply['is_staff']) && $modSettings['shd_staff_badge'] == 'nobadge')
-				echo '<br />
+				echo '<br>
 							<img src="', $settings['default_images_url'] . '/simpledesk/staff.png" class="shd_smallicon" title="', $txt['shd_ticket_staff'], '" alt="', $txt['shd_ticket_staff'], '" />';
 
 			echo '
@@ -837,9 +837,9 @@ function template_ticket_do_replies()
 								</span>
 								', sprintf($txt['shd_reply_written'], $reply['time']), '
 							</div>
-							<hr class="clearfix" />
+							<hr>
 							', $reply['body'], '
-							<br /><br />';
+							<br><br>';
 
 			if (!empty($settings['show_modify']) && !empty($reply['modified']))
 			{
@@ -853,7 +853,7 @@ function template_ticket_do_replies()
 			{
 				echo '
 							<div class="smalltext">
-								<strong>', $txt['shd_ticket_attachments'], '</strong><br />
+								<strong>', $txt['shd_ticket_attachments'], '</strong><br>
 								<ul class="shd_replyattachments">';
 
 				foreach ($context['ticket_attach']['reply'][$reply['id']] as $attach)

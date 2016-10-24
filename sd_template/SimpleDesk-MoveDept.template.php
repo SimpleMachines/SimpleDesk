@@ -27,7 +27,7 @@ function template_movedept()
 	echo '
 		<div class="floatleft">
 			', template_button_strip(array($context['navigation']['back']), 'bottom'), '
-		</div><br class="clear" /><br />';
+		</div><br class="clear" /><br>';
 
 	echo '
 	<div class="cat_bar">

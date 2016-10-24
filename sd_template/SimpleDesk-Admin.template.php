@@ -64,22 +64,22 @@ function template_shd_admin()
 				</div>
 				<div class="windowbg nopadding">
 					<div class="padding">
-							<img src="', $settings['default_images_url'], '/simpledesk/support.png" alt="*" class="shd_icon_minihead" /> <strong>', $txt['shd_need_support'], '</strong><br />
-							', sprintf($txt['shd_support_start_here'], $scripturl . '?action=admin;area=helpdesk_info;sa=support'), '<br />
-							<img src="', $settings['default_images_url'], '/simpledesk/versions.png" alt="*" class="shd_icon_minihead" /> <strong>', $txt['support_versions'], ':</strong><br />
+							<img src="', $settings['default_images_url'], '/simpledesk/support.png" alt="*" class="shd_icon_minihead" /> <strong>', $txt['shd_need_support'], '</strong><br>
+							', sprintf($txt['shd_support_start_here'], $scripturl . '?action=admin;area=helpdesk_info;sa=support'), '<br>
+							<img src="', $settings['default_images_url'], '/simpledesk/versions.png" alt="*" class="shd_icon_minihead" /> <strong>', $txt['support_versions'], ':</strong><br>
 							', $txt['shd_your_version'], ':
-						<em id="yourVersion">', SHD_VERSION, '</em><br />
+						<em id="yourVersion">', SHD_VERSION, '</em><br>
 							', $txt['shd_current_version'], ':
-						<em id="sdVersion">??</em><br /><br />
-							<img src="', $settings['default_images_url'], '/simpledesk/ticket.png" alt="*" class="shd_icon_minihead" /> <strong>', $txt['shd_ticket_information'], ':</strong><br />
+						<em id="sdVersion">??</em><br><br>
+							<img src="', $settings['default_images_url'], '/simpledesk/ticket.png" alt="*" class="shd_icon_minihead" /> <strong>', $txt['shd_ticket_information'], ':</strong><br>
 							', $txt['shd_total_tickets'], ':
 						<em id="totalTickets">
 								<a href="javascript: shd_ticket_total_information();" >', $context['total_tickets'], '</a>
 						</em>
 						<div id="shd_ticket_total_information" style="display: none;">
-							&nbsp;&nbsp;&nbsp;', $txt['shd_open_tickets'], ': <em>', $context['open_tickets'], '</em><br />
-							&nbsp;&nbsp;&nbsp;', $txt['shd_closed_tickets'], ': <em>', $context['closed_tickets'], '</em><br />
-							&nbsp;&nbsp;&nbsp;', $txt['shd_recycled_tickets'], ': <em>', $context['recycled_tickets'], '</em><br />
+							&nbsp;&nbsp;&nbsp;', $txt['shd_open_tickets'], ': <em>', $context['open_tickets'], '</em><br>
+							&nbsp;&nbsp;&nbsp;', $txt['shd_closed_tickets'], ': <em>', $context['closed_tickets'], '</em><br>
+							&nbsp;&nbsp;&nbsp;', $txt['shd_recycled_tickets'], ': <em>', $context['recycled_tickets'], '</em><br>
 						</div>';
 
 	// Display all the members who can manage the helpdesk.
@@ -112,7 +112,7 @@ function template_shd_admin()
 				<div class="roundframe">
 					<div class="padding">
 						', $section['pretext'], '
-						<hr />';
+						<hr>';
 
 				foreach ($section['groups'] as $group)
 				{
@@ -127,7 +127,7 @@ function template_shd_admin()
 
 					if (isset($group['title']))
 					echo '
-								<strong>', $group['title'], '</strong>', !empty($group['desc']) ? ' - <em class="smalltext">' . $group['desc'] . '</em>' : '', '<hr />';
+								<strong>', $group['title'], '</strong>', !empty($group['desc']) ? ' - <em class="smalltext">' . $group['desc'] . '</em>' : '', '<hr>';
 
 					/*// Try to make this read nicely.
 					if (count($group['members']) <= 2)
@@ -190,7 +190,7 @@ function template_shd_admin()
 				sAnnouncementMessageTemplate: ', JavaScriptEscape('
 					<dt><a href="%href%" target="_blank">%subject%</a> ' . $txt['on'] . ' %time% ' . $txt['by'] . ' %author%</dt>
 					<dd>
-						%message%<br />
+						%message%<br>
 						<a href="%readmore%" class="smalltext" target="_blank">' . $txt['shd_admin_readmore'] . '</a>
 					</dd>
 				'), ',
@@ -366,7 +366,7 @@ function template_shd_show_settings()
 			echo '
 			<div class="windowbg2">
 				<div class="content">
-					<dl class="permsettings">';
+					<dl class="settings">';
 		}
 
 		// Hang about? Are you pulling my leg - a callback?!
@@ -424,16 +424,16 @@ function template_shd_show_settings()
 				// Some quick helpers...
 				$javascript = $config_var['javascript'];
 				$disabled = !empty($config_var['disabled']) ? ' disabled="disabled"' : '';
-				$subtext = !empty($config_var['subtext']) ? '<br /><span class="smalltext"> ' . $config_var['subtext'] . '</span>' : '';
+				$subtext = !empty($config_var['subtext']) ? '<br><span class="smalltext"> ' . $config_var['subtext'] . '</span>' : '';
 
 				// Show the [?] button.
 				if ($config_var['help'])
 					echo '
-							<a id="setting_', $config_var['name'], '" href="', $scripturl, '?action=helpadmin;help=', $config_var['help'], '" onclick="return reqWin(this.href);" class="help"><img src="', $settings['images_url'], '/helptopics.png" alt="', $txt['help'], '" border="0" /></a><span', ($config_var['disabled'] ? ' class="disabled"' : ($config_var['invalid'] ? ' class="error"' : '')), '><label id="label_', $config_var['name'], '" for="', $config_var['name'], '">', $config_var['label'], '</label>', $subtext, ($config_var['type'] == 'password' ? '<br /><em>' . $txt['admin_confirm_password'] . '</em>' : ''), '</span>
+							<a id="setting_', $config_var['name'], '" href="', $scripturl, '?action=helpadmin;help=', $config_var['help'], '" onclick="return reqWin(this.href);" class="help"><img src="', $settings['images_url'], '/helptopics.png" alt="', $txt['help'], '" border="0" /></a><span', ($config_var['disabled'] ? ' class="disabled"' : ($config_var['invalid'] ? ' class="error"' : '')), '><label id="label_', $config_var['name'], '" for="', $config_var['name'], '">', $config_var['label'], '</label>', $subtext, ($config_var['type'] == 'password' ? '<br><em>' . $txt['admin_confirm_password'] . '</em>' : ''), '</span>
 						</dt>';
 				else
 					echo '
-							<a id="setting_', $config_var['name'], '"></a> <span', ($config_var['disabled'] ? ' class="disabled"' : ($config_var['invalid'] ? ' class="error"' : '')), '><label id="label_', $config_var['name'], '" for="', $config_var['name'], '">', $config_var['label'], '</label>', $subtext, ($config_var['type'] == 'password' ? '<br /><em>' . $txt['admin_confirm_password'] . '</em>' : ''), '</span>
+							<a id="setting_', $config_var['name'], '"></a> <span', ($config_var['disabled'] ? ' class="disabled"' : ($config_var['invalid'] ? ' class="error"' : '')), '><label id="label_', $config_var['name'], '" for="', $config_var['name'], '">', $config_var['label'], '</label>', $subtext, ($config_var['type'] == 'password' ? '<br><em>' . $txt['admin_confirm_password'] . '</em>' : ''), '</span>
 						</dt>';
 
 				echo '
@@ -447,7 +447,7 @@ function template_shd_show_settings()
 				// Escape (via htmlspecialchars.) the text box.
 				elseif ($config_var['type'] == 'password')
 					echo '
-							<input type="password"', $disabled, $javascript, ' name="', $config_var['name'], '[0]"', ($config_var['size'] ? ' size="' . $config_var['size'] . '"' : ''), ' value="*#fakepass#*" onfocus="this.value = \'\'; this.form.', $config_var['name'], '.disabled = false;" class="input_password" /><br />
+							<input type="password"', $disabled, $javascript, ' name="', $config_var['name'], '[0]"', ($config_var['size'] ? ' size="' . $config_var['size'] . '"' : ''), ' value="*#fakepass#*" onfocus="this.value = \'\'; this.form.', $config_var['name'], '.disabled = false;" class="input_password" /><br>
 							<input type="password" disabled="disabled" id="', $config_var['name'], '" name="', $config_var['name'], '[1]"', ($config_var['size'] ? ' size="' . $config_var['size'] . '"' : ''), ' class="input_password" />';
 				// Show a selection box.
 				elseif ($config_var['type'] == 'select')
@@ -512,8 +512,8 @@ function template_shd_show_settings()
 			if ($config_var == '')
 				echo '
 					</dl>
-					<hr class="hrcolor" />
-					<dl class="permsettings">';
+					<hr>
+					<dl class="settings">';
 			else
 				echo '
 						<dd>
@@ -528,7 +528,7 @@ function template_shd_show_settings()
 
 	if (empty($context['settings_save_dont_show']))
 		echo '
-						<hr class="hrcolor" />
+						<hr>
 						<div class="righttext">
 							<input type="submit" value="', $txt['save'], '"', (!empty($context['save_disabled']) ? ' disabled="disabled"' : ''), (!empty($context['settings_save_onclick']) ? ' onclick="' . $context['settings_save_onclick'] . '"' : ''), ' class="button_submit" />
 						</div>';
@@ -633,9 +633,7 @@ function template_shd_action_log()
 				{
 					echo '
 						<tr class="windowbg">
-							<td width="1%">
-								<img src="', shd_image_url($action['action_icon']), '" alt="" class="shd_smallicon" />
-							</td>
+							<td width="1%"><img src="', shd_image_url($action['action_icon']), '" alt="" class="shd_smallicon" /></td>
 							<td class="smalltext">', $action['action_text'], '</td>
 							<td>', $action['time'], '</td>
 							<td>', $action['member']['link'], '</td>
@@ -647,12 +645,12 @@ function template_shd_action_log()
 			}
 
 	echo '
-					<tr class="titlebg">
-						<td colspan="7">
-							<span class="floatright smalltext">', $context['page_index'], '</span>
-							<span class="smalltext shd_empty_log"><img src="', $settings['default_images_url'], '/simpledesk/delete.png" alt="X" /> <a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=actionlog', $context['url_sort'], $context['url_order'], ';removeall" onclick="return confirm(', JavaScriptEscape(sprintf($txt['shd_admin_actionlog_removeall_confirm'], $context['hoursdisable'])), ');">', $txt['shd_admin_actionlog_removeall'], '</a></span>
-						</td>
-					</tr>
+						<tr class="titlebg">
+							<td colspan="7">
+								<span class="floatright smalltext">', $context['page_index'], '</span>
+								<span class="smalltext shd_empty_log"><img src="', $settings['default_images_url'], '/simpledesk/delete.png" alt="X" /> <a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=actionlog', $context['url_sort'], $context['url_order'], ';removeall" onclick="return confirm(', JavaScriptEscape(sprintf($txt['shd_admin_actionlog_removeall_confirm'], $context['hoursdisable'])), ');">', $txt['shd_admin_actionlog_removeall'], '</a></span>
+							</td>
+						</tr>
 					</table>
 				</div>';
 }
@@ -680,8 +678,8 @@ function template_shd_admin_log()
 							', $txt['shd_admin_actionlog_title'], '
 						</h3>
 					</div>
-					<table class="shd_ticketlist" cellspacing="0" width="100%">
-						<tr class="titlebg">
+					<table class="table_grid">
+						<tr class="title_bar">
 							<td width="38%">
 								<img src="', $settings['default_images_url'], '/simpledesk/action.png" class="shd_smallicon" alt="" />
 								<a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=adminlog', $context['sort'] == $sort_types['action'] && !isset($_REQUEST['asc']) ? ';sort=action;asc' : ';sort=action', '">
@@ -722,16 +720,15 @@ function template_shd_admin_log()
 
 			if (empty($context['actions']))
 				echo '
-						<tr class="windowbg2">
+						<tr class="windowbg">
 							<td colspan="7" class="shd_noticket">', $txt['shd_admin_actionlog_none'], '</td>
 						</tr>';
 			else
 			{
-				$use_bg2 = true; // start with windowbg2 to differentiate between that and windowbg2
 				foreach ($context['actions'] AS $action)
 				{
 					echo '
-						<tr class="', ($use_bg2 ? 'windowbg2' : 'windowbg'), '">
+						<tr class="windowbg">
 							<td class="smalltext">', $action['action_text'], '</td>
 							<td>', $action['time'], '</td>
 							<td>', $action['member']['link'], '</td>
@@ -739,18 +736,16 @@ function template_shd_admin_log()
 							<td>', !empty($action['member']['ip']) ? $action['member']['ip'] : $txt['shd_admin_actionlog_hidden'], '</td>
 							<td>', $action['can_remove'] && $context['can_delete'] ? '<a href="' . $scripturl . '?action=admin;area=helpdesk_info;sa=adminlog;remove='. $action['id'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/delete.png" alt="' . $txt['shd_delete_item'] . '" /></a>' : '', '</td>
 						</tr>';
-
-					$use_bg2 = !$use_bg2;
 				}
 			}
 
 	echo '
-					<tr class="titlebg">
-						<td colspan="7">
-							<span class="floatright smalltext">', $context['page_index'], '</span>
-							<span class="smalltext shd_empty_log"><img src="', $settings['default_images_url'], '/simpledesk/delete.png" alt="X" /> <a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=adminlog', $context['url_sort'], $context['url_order'], ';removeall" onclick="return confirm(', JavaScriptEscape(sprintf($txt['shd_admin_actionlog_removeall_confirm'], $context['daysdisable'])), ');">', $txt['shd_admin_actionlog_removeall'], '</a></span>
-						</td>
-					</tr>
+						<tr class="titlebg">
+							<td colspan="7">
+								<span class="floatright smalltext">', $context['page_index'], '</span>
+								<span class="smalltext shd_empty_log"><img src="', $settings['default_images_url'], '/simpledesk/delete.png" alt="X" /> <a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=adminlog', $context['url_sort'], $context['url_order'], ';removeall" onclick="return confirm(', JavaScriptEscape(sprintf($txt['shd_admin_actionlog_removeall_confirm'], $context['daysdisable'])), ');">', $txt['shd_admin_actionlog_removeall'], '</a></span>
+							</td>
+						</tr>
 					</table>
 				</div>';
 }
@@ -769,25 +764,23 @@ function template_shd_support()
 
 	echo '
 	<div class="shd_admin_leftcolumn floatleft">
-		<div class="tborder">
-			<div class="cat_bar">
-				<h3 class="catbg">
-					<img src="', $settings['default_images_url'], '/simpledesk/edit.png" alt="*" /> ', $txt['shd_admin_support_form_title'], '
-				</h3>
-			</div>
-				<div class="roundframe">
-					<form action="', $context['shd_support_url'], '" method="post" class="content">
-						<dl id="post_header">
-							<dt><span id="caption_subject">', $txt['subject'], '</span></dt>
-							<dd><input type="text" name="subject" tabindex="1" size="80" maxlength="80" class="input_text" /></dd>
-						</dl>
-						<textarea class="editor" name="message" rows="12" cols="60" tabindex="2" style="width: 90%; height: 150px;"></textarea>
-						<br /><br />
-						<input type="hidden" value="', $forum_version, '" name="smf_version" />
-						<input type="hidden" value="', SHD_VERSION, '" name="shd_version" />
-						<input type="submit" value="', $txt['shd_admin_support_send'], '" tabindex="3" accesskey="s" class="button_submit" />
-					</form>
-				</div>
+		<div class="cat_bar">
+			<h3 class="catbg">
+				<img src="', $settings['default_images_url'], '/simpledesk/edit.png" alt="*" /> ', $txt['shd_admin_support_form_title'], '
+			</h3>
+		</div>
+		<div class="roundframe noup">
+			<form action="', $context['shd_support_url'], '" method="post" class="content">
+				<dl id="post_header">
+					<dt><span id="caption_subject">', $txt['subject'], '</span></dt>
+					<dd><input type="text" name="subject" tabindex="1" size="80" maxlength="80" class="input_text" /></dd>
+				</dl>
+				<textarea class="editor" name="message" rows="12" cols="60" tabindex="2" style="width: 90%; height: 150px;"></textarea>
+				<br><br>
+				<input type="hidden" value="', $forum_version, '" name="smf_version" />
+				<input type="hidden" value="', SHD_VERSION, '" name="shd_version" />
+				<input type="submit" value="', $txt['shd_admin_support_send'], '" tabindex="3" accesskey="s" class="button_submit" />
+			</form>
 		</div>
 	</div>
 	<div class="shd_admin_rightcolumn floatleft">
