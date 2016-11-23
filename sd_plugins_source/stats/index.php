@@ -5,7 +5,7 @@
 #     An advanced help desk modifcation built on SMF      #
 ###########################################################
 #                                                         #
-#       * Copyright 2010 - SimpleDesk.net                 #
+#       * Copyright 2016 - SimpleDesk.net                 #
 #                                                         #
 # This file and its contents are subject to the license   #
 # included with this distribution, license.txt, which     #

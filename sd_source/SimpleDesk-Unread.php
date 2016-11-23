@@ -5,7 +5,7 @@
 #       An advanced help desk modification built on SMF       #
 ###############################################################
 #                                                             #
-#         * Copyright 2015 - SimpleDesk.net                   #
+#         * Copyright 2016 - SimpleDesk.net                   #
 #                                                             #
 #   This file and its contents are subject to the license     #
 #   included with this distribution, license.txt, which       #
@@ -105,12 +105,12 @@ function shd_unread_posts()
 			foreach ($context['shd_unread_info'] as $key => $ticket)
 			{
 				if (!empty($user_profile[$ticket['id_member_started']]))
-					$context['shd_unread_info'][$key]['ticket_starter'] = shd_profile_link($user_profile[$ticket['id_member_started']]['member_name'], $ticket['id_member_started']);
+					$context['shd_unread_info'][$key]['ticket_starter'] = shd_profile_link($user_profile[$ticket['id_member_started']]['real_name'], $ticket['id_member_started']);
 				else
 					$context['shd_unread_info'][$key]['ticket_starter'] = $ticket['poster_name'];
 
 				if (!empty($user_profile[$ticket['id_member_assigned']]))
-					$context['shd_unread_info'][$key]['ticket_assigned'] = shd_profile_link($user_profile[$ticket['id_member_assigned']]['member_name'], $ticket['id_member_assigned']);
+					$context['shd_unread_info'][$key]['ticket_assigned'] = shd_profile_link($user_profile[$ticket['id_member_assigned']]['real_name'], $ticket['id_member_assigned']);
 				else
 					$context['shd_unread_info'][$key]['ticket_assigned'] = '<span class="error">' . $txt['shd_unassigned'] . '</span>';
 			}
