@@ -586,6 +586,31 @@ dl.stats dd span, dl.stats dt span
 	border-bottom-right-radius: 0;
 }
 
+/* Helpdesk table-width*/
+.shd_5 {
+	width: 5%;
+}
+.shd_10 {
+	width: 10%;
+}
+.shd_20 {
+	width: 20%;
+}
+.shd_25 {
+	width: 25%;
+}
+.shd_33 {
+	width: 33%;
+}
+.shd_50 {
+	width: 50%;
+}
+.shd_75 {
+	width: 75%;
+}
+
+/* Start of responsiveness */
+/* This will be moved to its file once it gets more work on it */
 @media (max-width: 480px) {
 	.shd_ticket_rightcolumn, .shd_ticket_leftcolumn {
 		width: 100%;

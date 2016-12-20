@@ -70,7 +70,7 @@ function template_shd_admin()
 							', $txt['shd_your_version'], ':
 						<em id="yourVersion">', SHD_VERSION, '</em><br>
 							', $txt['shd_current_version'], ':
-						<em id="sdVersion">??</em><br><br>
+						<em id="sdVersion">??</em><br>
 							<img src="', $settings['default_images_url'], '/simpledesk/ticket.png" alt="*" class="shd_icon_minihead" /> <strong>', $txt['shd_ticket_information'], ':</strong><br>
 							', $txt['shd_total_tickets'], ':
 						<em id="totalTickets">
@@ -86,8 +86,10 @@ function template_shd_admin()
 	// NOTE: This is currently (15/1/10) uncapped, meaning it's just the full list direct from SimpleDesk-Admin.php.
 	// That gets the data. Up to here how it should be displayed.
 	echo '
-						<img src="', $settings['default_images_url'], '/simpledesk/staff.png" alt="*" class="shd_icon_minihead" /> <strong>', $txt['shd_staff_list'], ':</strong>
-						', implode(', ', $context['staff']);
+						<div class="block">
+							<img src="', $settings['default_images_url'], '/simpledesk/staff.png" alt="*" class="shd_icon_minihead" /> <strong>', $txt['shd_staff_list'], ':</strong>
+							', implode(', ', $context['staff']),'
+						</div>';
 
 	echo '
 						</div>
@@ -109,10 +111,9 @@ function template_shd_admin()
 		foreach ($context['shd_credits'] as $section)
 		{
 			echo '
-				<div class="roundframe">
-					<div class="padding">
-						', $section['pretext'], '
-						<hr>';
+				<div class="roundframe noup">
+					', $section['pretext'], '
+					<hr>';
 
 				foreach ($section['groups'] as $group)
 				{
@@ -159,14 +160,12 @@ function template_shd_admin()
 
 					echo '
 						<span class="smalltext">&nbsp;<img src="', $settings['default_images_url'], '/simpledesk/update.png" alt="*" class="shd_tinyicon" /> ', $txt['shd_former_contributors'], '</span>
-					</div>
 				</div>
 			</div>';
 		}
 
 	echo '
-		</div>
-	<br class="clear" />';
+		</div>';
 
 	// The below functions include all the scripts needed from the simpledesk.net site. The language and format are passed for internationalization.
 	if (empty($modSettings['disable_smf_js']))
@@ -347,9 +346,9 @@ function template_shd_show_settings()
 			else
 			{
 				echo '
-					<p class="information">
+					<div class="information">
 						', $config_var['label'], '
-					</p>';
+					</div>';
 			}
 
 			continue;
@@ -360,13 +359,9 @@ function template_shd_show_settings()
 		{
 			$is_open = true;
 
-			if (!isset($context['settings_title']))
-				echo '<div class="tborder">';
-
 			echo '
 			<div class="windowbg2">
-				<div class="content">
-					<dl class="settings">';
+				<dl class="settings">';
 		}
 
 		// Hang about? Are you pulling my leg - a callback?!
@@ -511,9 +506,9 @@ function template_shd_show_settings()
 			// Just show a separator.
 			if ($config_var == '')
 				echo '
-					</dl>
-					<hr>
-					<dl class="settings">';
+				</dl>
+				<hr>
+				<dl class="settings">';
 			else
 				echo '
 						<dd>
@@ -524,7 +519,7 @@ function template_shd_show_settings()
 
 	if ($is_open)
 		echo '
-						</dl>';
+				</dl>';
 
 	if (empty($context['settings_save_dont_show']))
 		echo '
@@ -536,7 +531,6 @@ function template_shd_show_settings()
 	if ($is_open)
 		echo '
 					</div>
-			</div>
 			</div>';
 
 	if (isset($context['admin-dbsc_token']))
@@ -546,8 +540,7 @@ function template_shd_show_settings()
 	echo '
 		<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 		</form>
-	</div>
-	<br class="clear" />';
+	</div>';
 
 	if (!empty($context['settings_post_javascript']))
 		echo '
@@ -574,85 +567,83 @@ function template_shd_action_log()
 
 	// The sort stuff here is huge.
 	echo '
-				<div class="tborder">
-					<div class="cat_bar">
-						<h3 class="catbg">
-							<span class="floatright smalltext">', $context['page_index'], '</span>
-							<img src="', $settings['default_images_url'], '/simpledesk/log.png" class="icon" alt="*" />
-							', $txt['shd_admin_actionlog_title'], '
-						</h3>
-					</div>
-					<table class="table_grid">
-						<tr class="title_bar">
-							<td width="38%" colspan="2">
-								<img src="', $settings['default_images_url'], '/simpledesk/action.png" class="shd_smallicon" alt="" />
-								<a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=actionlog', $context['sort'] == $sort_types['action'] && !isset($_REQUEST['asc']) ? ';sort=action;asc' : ';sort=action', '">
-									', $txt['shd_admin_actionlog_action'], '
-								</a>
-								', ($context['sort'] == $sort_types['action'] ? '<img src="' . $settings['default_images_url'] . '/' . (isset($_REQUEST['asc']) ? 'simpledesk/move_up.png' : 'simpledesk/move_down.png' ). '" alt="" />' : ''), '
-							</td>
-							<td width="20%">
-								<img src="', $settings['default_images_url'], '/simpledesk/time.png" class="shd_smallicon" alt="" />
-								<a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=actionlog', $context['sort'] == $sort_types['time'] && !isset($_REQUEST['asc']) ? ';sort=time;asc' : ';sort=time', '">
-									', $txt['shd_admin_actionlog_date'], '
-								</a>
-								', ($context['sort'] == $sort_types['time'] ? '<img src="' . $settings['default_images_url'] . '/' . (isset($_REQUEST['asc']) ? 'simpledesk/move_up.png' : 'simpledesk/move_down.png' ). '" alt="" />' : ''), '
-							</td>
-							<td width="16%">
-								<img src="', $settings['default_images_url'], '/simpledesk/user.png" class="shd_smallicon" alt="" />
-								<a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=actionlog', $context['sort'] == $sort_types['member'] && !isset($_REQUEST['asc']) ? ';sort=member;asc' : ';sort=member', '">
-									', $txt['shd_admin_actionlog_member'], '
-								</a>
-								', ($context['sort'] == $sort_types['member'] ? '<img src="' . $settings['default_images_url'] . '/' . (isset($_REQUEST['asc']) ? 'simpledesk/move_up.png' : 'simpledesk/move_down.png' ). '" alt="" />' : ''), '
-							</td>
-							<td width="16%">
-								<img src="', $settings['default_images_url'], '/simpledesk/position.png" class="shd_smallicon" alt="" />
-								<a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=actionlog', $context['sort'] == $sort_types['position'] && !isset($_REQUEST['asc']) ? ';sort=position;asc' : ';sort=position', '">
-									', $txt['shd_admin_actionlog_position'], '
-								</a>
-								', ($context['sort'] == $sort_types['position'] ? '<img src="' . $settings['default_images_url'] . '/' . (isset($_REQUEST['asc']) ? 'simpledesk/move_up.png' : 'simpledesk/move_down.png' ). '" alt="" />' : ''), '
-							</td>
-							<td width="10%">
-								<img src="', $settings['default_images_url'], '/simpledesk/ip.png" class="shd_smallicon" alt="" />
-								<a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=actionlog', $context['sort'] == $sort_types['ip'] && !isset($_REQUEST['asc']) ? ';sort=ip;asc' : ';sort=ip', '">
-									', $txt['shd_admin_actionlog_ip'], '
-								</a>
-								', ($context['sort'] == $sort_types['ip'] ? '<img src="' . $settings['default_images_url'] . '/' . (isset($_REQUEST['asc']) ? 'simpledesk/move_up.png' : 'simpledesk/move_down.png' ). '" alt="" />' : ''), '
-							</td>
-							<td width="2%">&nbsp;</td>
-						</tr>';
+				<div class="cat_bar">
+					<h3 class="catbg">
+						<span class="floatright smalltext">', $context['page_index'], '</span>
+						<img src="', $settings['default_images_url'], '/simpledesk/log.png" class="icon" alt="*" />
+						', $txt['shd_admin_actionlog_title'], '
+					</h3>
+				</div>
+				<table class="table_grid">
+					<tr class="title_bar">
+						<td width="38%" colspan="2">
+							<img src="', $settings['default_images_url'], '/simpledesk/action.png" class="shd_smallicon" alt="" />
+							<a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=actionlog', $context['sort'] == $sort_types['action'] && !isset($_REQUEST['asc']) ? ';sort=action;asc' : ';sort=action', '">
+								', $txt['shd_admin_actionlog_action'], '
+							</a>
+							', ($context['sort'] == $sort_types['action'] ? '<img src="' . $settings['default_images_url'] . '/' . (isset($_REQUEST['asc']) ? 'simpledesk/move_up.png' : 'simpledesk/move_down.png' ). '" alt="" />' : ''), '
+						</td>
+						<td width="20%">
+							<img src="', $settings['default_images_url'], '/simpledesk/time.png" class="shd_smallicon" alt="" />
+							<a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=actionlog', $context['sort'] == $sort_types['time'] && !isset($_REQUEST['asc']) ? ';sort=time;asc' : ';sort=time', '">
+								', $txt['shd_admin_actionlog_date'], '
+							</a>
+							', ($context['sort'] == $sort_types['time'] ? '<img src="' . $settings['default_images_url'] . '/' . (isset($_REQUEST['asc']) ? 'simpledesk/move_up.png' : 'simpledesk/move_down.png' ). '" alt="" />' : ''), '
+						</td>
+						<td width="16%">
+							<img src="', $settings['default_images_url'], '/simpledesk/user.png" class="shd_smallicon" alt="" />
+							<a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=actionlog', $context['sort'] == $sort_types['member'] && !isset($_REQUEST['asc']) ? ';sort=member;asc' : ';sort=member', '">
+								', $txt['shd_admin_actionlog_member'], '
+							</a>
+							', ($context['sort'] == $sort_types['member'] ? '<img src="' . $settings['default_images_url'] . '/' . (isset($_REQUEST['asc']) ? 'simpledesk/move_up.png' : 'simpledesk/move_down.png' ). '" alt="" />' : ''), '
+						</td>
+						<td width="16%">
+							<img src="', $settings['default_images_url'], '/simpledesk/position.png" class="shd_smallicon" alt="" />
+							<a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=actionlog', $context['sort'] == $sort_types['position'] && !isset($_REQUEST['asc']) ? ';sort=position;asc' : ';sort=position', '">
+								', $txt['shd_admin_actionlog_position'], '
+							</a>
+							', ($context['sort'] == $sort_types['position'] ? '<img src="' . $settings['default_images_url'] . '/' . (isset($_REQUEST['asc']) ? 'simpledesk/move_up.png' : 'simpledesk/move_down.png' ). '" alt="" />' : ''), '
+						</td>
+						<td width="10%">
+							<img src="', $settings['default_images_url'], '/simpledesk/ip.png" class="shd_smallicon" alt="" />
+							<a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=actionlog', $context['sort'] == $sort_types['ip'] && !isset($_REQUEST['asc']) ? ';sort=ip;asc' : ';sort=ip', '">
+								', $txt['shd_admin_actionlog_ip'], '
+							</a>
+							', ($context['sort'] == $sort_types['ip'] ? '<img src="' . $settings['default_images_url'] . '/' . (isset($_REQUEST['asc']) ? 'simpledesk/move_up.png' : 'simpledesk/move_down.png' ). '" alt="" />' : ''), '
+						</td>
+						<td width="2%">&nbsp;</td>
+					</tr>';
 
 			if (empty($context['actions']))
 				echo '
-						<tr class="windowbg2">
-							<td colspan="7" class="shd_noticket">', $txt['shd_admin_actionlog_none'], '</td>
-						</tr>';
+					<tr class="windowbg2">
+						<td colspan="7" class="shd_noticket">', $txt['shd_admin_actionlog_none'], '</td>
+					</tr>';
 			else
 			{
 				foreach ($context['actions'] AS $action)
 				{
 					echo '
-						<tr class="windowbg">
-							<td width="1%"><img src="', shd_image_url($action['action_icon']), '" alt="" class="shd_smallicon" /></td>
-							<td class="smalltext">', $action['action_text'], '</td>
-							<td>', $action['time'], '</td>
-							<td>', $action['member']['link'], '</td>
-							<td>', $action['member']['group'], '</td>
-							<td>', !empty($action['member']['ip']) ? $action['member']['ip'] : $txt['shd_admin_actionlog_hidden'], '</td>
-							<td>', $action['can_remove'] && $context['can_delete'] ? '<a href="' . $scripturl . '?action=admin;area=helpdesk_info;sa=actionlog;remove='. $action['id'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/delete.png" alt="' . $txt['shd_delete_item'] . '" /></a>' : '', '</td>
-						</tr>';
+					<tr class="windowbg">
+						<td width="1%"><img src="', shd_image_url($action['action_icon']), '" alt="" class="shd_smallicon" /></td>
+						<td class="smalltext">', $action['action_text'], '</td>
+						<td>', $action['time'], '</td>
+						<td>', $action['member']['link'], '</td>
+						<td>', $action['member']['group'], '</td>
+						<td>', !empty($action['member']['ip']) ? $action['member']['ip'] : $txt['shd_admin_actionlog_hidden'], '</td>
+						<td>', $action['can_remove'] && $context['can_delete'] ? '<a href="' . $scripturl . '?action=admin;area=helpdesk_info;sa=actionlog;remove='. $action['id'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/delete.png" alt="' . $txt['shd_delete_item'] . '" /></a>' : '', '</td>
+					</tr>';
 				}
 			}
 
 	echo '
-						<tr class="titlebg">
-							<td colspan="7">
-								<span class="floatright smalltext">', $context['page_index'], '</span>
-								<span class="smalltext shd_empty_log"><img src="', $settings['default_images_url'], '/simpledesk/delete.png" alt="X" /> <a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=actionlog', $context['url_sort'], $context['url_order'], ';removeall" onclick="return confirm(', JavaScriptEscape(sprintf($txt['shd_admin_actionlog_removeall_confirm'], $context['hoursdisable'])), ');">', $txt['shd_admin_actionlog_removeall'], '</a></span>
-							</td>
-						</tr>
-					</table>
-				</div>';
+					<tr class="titlebg">
+						<td colspan="7">
+							<span class="floatright smalltext">', $context['page_index'], '</span>
+							<span class="smalltext shd_empty_log"><img src="', $settings['default_images_url'], '/simpledesk/delete.png" alt="X" /> <a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=actionlog', $context['url_sort'], $context['url_order'], ';removeall" onclick="return confirm(', JavaScriptEscape(sprintf($txt['shd_admin_actionlog_removeall_confirm'], $context['hoursdisable'])), ');">', $txt['shd_admin_actionlog_removeall'], '</a></span>
+						</td>
+					</tr>
+				</table>';
 }
 
 
@@ -680,48 +671,48 @@ function template_shd_admin_log()
 					</div>
 					<table class="table_grid">
 						<tr class="title_bar">
-							<td width="38%">
+							<td class="shd_33">
 								<img src="', $settings['default_images_url'], '/simpledesk/action.png" class="shd_smallicon" alt="" />
 								<a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=adminlog', $context['sort'] == $sort_types['action'] && !isset($_REQUEST['asc']) ? ';sort=action;asc' : ';sort=action', '">
 									', $txt['shd_admin_actionlog_action'], '
 								</a>
 								', ($context['sort'] == $sort_types['action'] ? '<img src="' . $settings['default_images_url'] . '/' . (isset($_REQUEST['asc']) ? 'simpledesk/move_up.png' : 'simpledesk/move_down.png' ). '" alt="" />' : ''), '
 							</td>
-							<td width="20%">
+							<td class="shd_20">
 								<img src="', $settings['default_images_url'], '/simpledesk/time.png" class="shd_smallicon" alt="" />
 								<a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=adminlog', $context['sort'] == $sort_types['time'] && !isset($_REQUEST['asc']) ? ';sort=time;asc' : ';sort=time', '">
 									', $txt['shd_admin_actionlog_date'], '
 								</a>
 								', ($context['sort'] == $sort_types['time'] ? '<img src="' . $settings['default_images_url'] . '/' . (isset($_REQUEST['asc']) ? 'simpledesk/move_up.png' : 'simpledesk/move_down.png' ). '" alt="" />' : ''), '
 							</td>
-							<td width="16%">
+							<td class="shd_20">
 								<img src="', $settings['default_images_url'], '/simpledesk/user.png" class="shd_smallicon" alt="" />
 								<a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=adminlog', $context['sort'] == $sort_types['member'] && !isset($_REQUEST['asc']) ? ';sort=member;asc' : ';sort=member', '">
 									', $txt['shd_admin_actionlog_member'], '
 								</a>
 								', ($context['sort'] == $sort_types['member'] ? '<img src="' . $settings['default_images_url'] . '/' . (isset($_REQUEST['asc']) ? 'simpledesk/move_up.png' : 'simpledesk/move_down.png' ). '" alt="" />' : ''), '
 							</td>
-							<td width="16%">
+							<td class="shd_10">
 								<img src="', $settings['default_images_url'], '/simpledesk/position.png" class="shd_smallicon" alt="" />
 								<a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=adminlog', $context['sort'] == $sort_types['position'] && !isset($_REQUEST['asc']) ? ';sort=position;asc' : ';sort=position', '">
 									', $txt['shd_admin_actionlog_position'], '
 								</a>
 								', ($context['sort'] == $sort_types['position'] ? '<img src="' . $settings['default_images_url'] . '/' . (isset($_REQUEST['asc']) ? 'simpledesk/move_up.png' : 'simpledesk/move_down.png' ). '" alt="" />' : ''), '
 							</td>
-							<td width="10%">
+							<td class="shd_10" ', $action['can_remove'] && $context['can_delete'] ? 'colspan="2"' : '','>
 								<img src="', $settings['default_images_url'], '/simpledesk/ip.png" class="shd_smallicon" alt="" />
 								<a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=adminlog', $context['sort'] == $sort_types['ip'] && !isset($_REQUEST['asc']) ? ';sort=ip;asc' : ';sort=ip', '">
 									', $txt['shd_admin_actionlog_ip'], '
 								</a>
 								', ($context['sort'] == $sort_types['ip'] ? '<img src="' . $settings['default_images_url'] . '/' . (isset($_REQUEST['asc']) ? 'simpledesk/move_up.png' : 'simpledesk/move_down.png' ). '" alt="" />' : ''), '
 							</td>
-							<td width="2%">&nbsp;</td>
+							', $action['can_remove'] && $context['can_delete'] ? '<td class="shd_5">&nbsp;</td>' : '','
 						</tr>';
 
 			if (empty($context['actions']))
 				echo '
 						<tr class="windowbg">
-							<td colspan="7" class="shd_noticket">', $txt['shd_admin_actionlog_none'], '</td>
+							<td ', $action['can_remove'] && $context['can_delete'] ? 'colspan="6"' : 'colspan="5"',' class="shd_noticket">', $txt['shd_admin_actionlog_none'], '</td>
 						</tr>';
 			else
 			{
@@ -733,15 +724,15 @@ function template_shd_admin_log()
 							<td>', $action['time'], '</td>
 							<td>', $action['member']['link'], '</td>
 							<td>', $action['member']['group'], '</td>
-							<td>', !empty($action['member']['ip']) ? $action['member']['ip'] : $txt['shd_admin_actionlog_hidden'], '</td>
-							<td>', $action['can_remove'] && $context['can_delete'] ? '<a href="' . $scripturl . '?action=admin;area=helpdesk_info;sa=adminlog;remove='. $action['id'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/delete.png" alt="' . $txt['shd_delete_item'] . '" /></a>' : '', '</td>
+							<td ', $action['can_remove'] && $context['can_delete'] ? 'colspan="2"' : '','>', !empty($action['member']['ip']) ? $action['member']['ip'] : $txt['shd_admin_actionlog_hidden'], '</td>
+							', $action['can_remove'] && $context['can_delete'] ? '<td><a href="' . $scripturl . '?action=admin;area=helpdesk_info;sa=adminlog;remove='. $action['id'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/delete.png" alt="' . $txt['shd_delete_item'] . '" /></a></td>' : '', '
 						</tr>';
 				}
 			}
 
 	echo '
-						<tr class="titlebg">
-							<td colspan="7">
+						<tr class="windowbg">
+							<td ', $action['can_remove'] && $context['can_delete'] ? 'colspan="6"' : 'colspan="5"','>
 								<span class="floatright smalltext">', $context['page_index'], '</span>
 								<span class="smalltext shd_empty_log"><img src="', $settings['default_images_url'], '/simpledesk/delete.png" alt="X" /> <a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=adminlog', $context['url_sort'], $context['url_order'], ';removeall" onclick="return confirm(', JavaScriptEscape(sprintf($txt['shd_admin_actionlog_removeall_confirm'], $context['daysdisable'])), ');">', $txt['shd_admin_actionlog_removeall'], '</a></span>
 							</td>
@@ -769,8 +760,8 @@ function template_shd_support()
 				<img src="', $settings['default_images_url'], '/simpledesk/edit.png" alt="*" /> ', $txt['shd_admin_support_form_title'], '
 			</h3>
 		</div>
-		<div class="roundframe noup">
-			<form action="', $context['shd_support_url'], '" method="post" class="content">
+		<div class="windowbg2 noup">
+			<form action="', $context['shd_support_url'], '" method="post">
 				<dl id="post_header">
 					<dt><span id="caption_subject">', $txt['subject'], '</span></dt>
 					<dd><input type="text" name="subject" tabindex="1" size="80" maxlength="80" class="input_text" /></dd>
@@ -786,12 +777,12 @@ function template_shd_support()
 	<div class="shd_admin_rightcolumn floatleft">
 		<div class="cat_bar">
 			<h3 class="catbg">
-					<img src="', $settings['images_url'], '/helptopics.png" alt="?" /> ', $txt['shd_admin_support_what_is_this'], '
-				</h3>
-			</div>
+				<img src="', $settings['images_url'], '/helptopics.png" alt="?" /> ', $txt['shd_admin_support_what_is_this'], '
+			</h3>
+		</div>
 		<div class="information smalltext">
-					', $txt['shd_admin_support_explanation'], '
-				</div>
+			', $txt['shd_admin_support_explanation'], '
+		</div>
 	</div>';
 }
 
