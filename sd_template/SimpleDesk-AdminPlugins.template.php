@@ -38,23 +38,21 @@ function template_shd_plugin_listing()
 	echo '
 	<div id="admincenter">
 		<form action="', $scripturl, '?action=admin;area=helpdesk_plugins;save;" method="post" accept-charset="', $context['character_set'], '">
-			<div class="tborder">
-				<div class="cat_bar">
-					<h3 class="catbg">
-						<img src="', $settings['default_images_url'], '/simpledesk/plugins.png" class="icon" alt="*" />
-						', $txt['shd_admin_plugins'], '
-					</h3>
-				</div>
-				<p class="information">
+			<div class="cat_bar">
+				<h3 class="catbg">
+					<img src="', $settings['default_images_url'], '/simpledesk/plugins.png" class="icon" alt="*" />
+					', $txt['shd_admin_plugins'], '
+				</h3>
+			</div>
+			<div class="information">
 					', $txt['shd_admin_plugins_homedesc'], '
-				</p>
 			</div>';
 
 	foreach ($context['plugins'] as $id => $plugin)
 	{
 		echo '
 			<div class="windowbg">
-				<div class="content features">';
+				<div class="features">';
 
 		if (!empty($plugin['installable']))
 			echo '
@@ -112,14 +110,11 @@ function template_shd_plugin_listing()
 	}
 
 	echo '
-			<div class="righttext">
-				<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
-				<input type="hidden" value="0" name="js_worked" id="js_worked" />
-				<input type="submit" value="', $txt['save'], '" name="save" class="button_submit" />
-			</div>
+			<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
+			<input type="hidden" value="0" name="js_worked" id="js_worked" />
+			<input type="submit" value="', $txt['save'], '" name="save" class="button_submit" />
 		</form>
 	</div>
-	<br class="clear" />
 	<script type="text/javascript"><!-- // --><![CDATA[
 		document.getElementById(\'js_worked\').value = "1";';
 		foreach ($context['plugins'] as $id => $plugin)
@@ -132,4 +127,3 @@ function template_shd_plugin_listing()
 	echo '
 	// ]]></script>';
 }
-
