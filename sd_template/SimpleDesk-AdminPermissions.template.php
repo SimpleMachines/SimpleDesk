@@ -18,117 +18,111 @@ function template_shd_permissions_home()
 	global $context, $settings, $txt, $modSettings, $scripturl;
 
 	echo '
-				<div class="tborder">
-					<div class="cat_bar">
-						<h3 class="catbg">
-							<img src="', $settings['default_images_url'], '/simpledesk/permissions.png" class="icon" alt="*" />
-							', $txt['shd_admin_permissions'], '
-						</h3>
-					</div>
-					<p class="information">
-						', $txt['shd_admin_permissions_homedesc'], '
-					</p>
-				</div>
-				<div class="tborder">
-					<div class="title_bar">
-						<h3 class="titlebg">
-							<img src="', $settings['default_images_url'], '/simpledesk/position.png" alt="*" />
-							', $txt['shd_role_templates'], '
-						</h3>
-					</div>
-					<p class="information">
-						', $txt['shd_role_templates_desc'], '
-					</p>
-					<table class="table_grid">
-						<tr class="title_bar">
-							<td colspan="2" width="30%">', $txt['shd_role'], '</td>
-							<td colspan="', count($context['shd_permissions']['group_display']), '">', $txt['shd_permissions'], '</td>
-						</tr>';
+		<div class="cat_bar">
+			<h3 class="catbg">
+				<img src="', $settings['default_images_url'], '/simpledesk/permissions.png" class="icon" alt="*" />
+				', $txt['shd_admin_permissions'], '
+			</h3>
+		</div>
+		<div class="information">
+			', $txt['shd_admin_permissions_homedesc'], '
+		</div>
+		<div class="title_bar">
+			<h3 class="titlebg">
+				<img src="', $settings['default_images_url'], '/simpledesk/position.png" alt="*" />
+				', $txt['shd_role_templates'], '
+			</h3>
+		</div>
+		<div class="information">
+			', $txt['shd_role_templates_desc'], '
+		</div>
+		<table class="table_grid">
+			<tr class="title_bar">
+				<td colspan="2" width="30%">', $txt['shd_role'], '</td>
+				<td colspan="', count($context['shd_permissions']['group_display']), '">', $txt['shd_permissions'], '</td>
+			</tr>';
 
 	foreach ($context['shd_permissions']['roles'] as $role_id => $role_details)
 	{
 		echo '
-						<tr class="windowbg">
-							<td>', !empty($role_details['icon']) ? ('<img src="' . $settings['default_images_url'] . '/simpledesk/' . $role_details['icon'] . '" alt="" />') : '', '</td>
-							<td>
-								', $txt[$role_details['description']], '
-								<div class="smalltext">[<a href="', $scripturl, '?action=admin;area=helpdesk_permissions;sa=createrole;template=', $role_id, '">', $txt['shd_create_role'], '</a>]</div>
-							</td>
-							', template_shd_display_permission_list($role_details['permissions']), '
-						</tr>';
+			<tr class="windowbg">
+				<td>', !empty($role_details['icon']) ? ('<img src="' . $settings['default_images_url'] . '/simpledesk/' . $role_details['icon'] . '" alt="" />') : '', '</td>
+				<td>
+					', $txt[$role_details['description']], '
+					<div class="smalltext">[<a href="', $scripturl, '?action=admin;area=helpdesk_permissions;sa=createrole;template=', $role_id, '">', $txt['shd_create_role'], '</a>]</div>
+				</td>
+				', template_shd_display_permission_list($role_details['permissions']), '
+			</tr>';
 	}
 
 	echo '
-					</table>
-				</div>
-				<br><br>
-				<div class="tborder">
-					<div class="title_bar">
-						<h3 class="titlebg">
-							<img src="', $settings['default_images_url'], '/simpledesk/roles.png" alt="*" />
-							', $txt['shd_roles'], '
-						</h3>
-					</div>
-					<p class="information">
-						', $txt['shd_roles_desc'], '
-					</p>
-					<table class="table_grid">
-						<tr class="title_bar">
-							<td colspan="2" width="20%">', $txt['shd_role'], '</td>
-							<td colspan="', count($context['shd_permissions']['group_display']), '">', $txt['shd_permissions'], '</td>
-							<td width="15%">', $txt['shd_membergroups'], '</td>
-							<td width="15%">', $txt['shd_departments'], '</td>
-						</tr>';
+		</table>
+		<div class="title_bar">
+			<h3 class="titlebg">
+				<img src="', $settings['default_images_url'], '/simpledesk/roles.png" alt="*" />
+				', $txt['shd_roles'], '
+			</h3>
+		</div>
+		<div class="information">
+			', $txt['shd_roles_desc'], '
+		</div>
+		<table class="table_grid">
+			<tr class="title_bar">
+				<td colspan="2" width="20%">', $txt['shd_role'], '</td>
+				<td colspan="', count($context['shd_permissions']['group_display']), '">', $txt['shd_permissions'], '</td>
+				<td width="15%">', $txt['shd_membergroups'], '</td>
+				<td width="15%">', $txt['shd_departments'], '</td>
+			</tr>';
 
 	if (empty($context['shd_permissions']['user_defined_roles']))
 	{
 		echo '
-						<tr class="windowbg">
-							<td colspan="', count($context['shd_permissions']['group_display']) + 4, '" class="centertext">', $txt['shd_no_defined_roles'], '</td>
-						</tr>';
+			<tr class="windowbg">
+				<td colspan="', count($context['shd_permissions']['group_display']) + 4, '" class="centertext">', $txt['shd_no_defined_roles'], '</td>
+			</tr>';
 	}
 	else
 	{
 		foreach ($context['shd_permissions']['user_defined_roles'] as $role => $role_details)
 		{
 			echo '
-						<tr class="windowbg">
-							<td>', !empty($role_details['template_icon']) ? ('<img src="' . $settings['default_images_url'] . '/simpledesk/' . $role_details['template_icon'] . '" alt="" title="' . sprintf($txt['shd_based_on'], $role_details['template_name']) . '" />') : '', '</td>
-							<td>
-								', $role_details['name'], '
-								<div class="smalltext">
-									[<a href="', $scripturl, '?action=admin;area=helpdesk_permissions;sa=editrole;role=', $role, '">', $txt['shd_edit_role'], '</a>]
-									[<a href="', $scripturl, '?action=admin;area=helpdesk_permissions;sa=copyrole;role=', $role, '">', $txt['shd_copy_role'], '</a>]
-								</div>
-							</td>
-							', template_shd_display_permission_list($role_details['permissions']);
+			<tr class="windowbg">
+				<td>', !empty($role_details['template_icon']) ? ('<img src="' . $settings['default_images_url'] . '/simpledesk/' . $role_details['template_icon'] . '" alt="" title="' . sprintf($txt['shd_based_on'], $role_details['template_name']) . '" />') : '', '</td>
+				<td>
+					', $role_details['name'], '
+					<div class="smalltext">
+						[<a href="', $scripturl, '?action=admin;area=helpdesk_permissions;sa=editrole;role=', $role, '">', $txt['shd_edit_role'], '</a>]
+						[<a href="', $scripturl, '?action=admin;area=helpdesk_permissions;sa=copyrole;role=', $role, '">', $txt['shd_copy_role'], '</a>]
+					</div>
+				</td>
+				', template_shd_display_permission_list($role_details['permissions']);
+
 			if (empty($role_details['groups']))
 				echo '
-							<td>', $txt['shd_none'], '</td>';
+				<td>', $txt['shd_none'], '</td>';
 			else
 			{
 				$array = array();
 				foreach ($role_details['groups'] as $group => $group_details)
 					$array[] = $group_details['link'];
 				echo '
-							<td>', implode(', ', $array), '</td>';
+				<td>', implode(', ', $array), '</td>';
 			}
 
 			if (!empty($context['role_depts'][$role]))
 				echo '
-							<td>', implode(', ', $context['role_depts'][$role]), '</td>';
+				<td>', implode(', ', $context['role_depts'][$role]), '</td>';
 			else
 				echo '
-							<td>', $txt['shd_none'], '</td>';
+				<td>', $txt['shd_none'], '</td>';
 
 			echo '
-						</tr>';
+			</tr>';
 		}
 	}
 
 	echo '
-					</table>
-				</div>';
+		</table>';
 }
 
 /**
@@ -201,42 +195,38 @@ function template_shd_create_role()
 	global $context, $settings, $txt, $modSettings, $scripturl;
 
 	echo '
-				<div class="tborder">
-					<div class="cat_bar">
-						<h3 class="catbg">
-							<img src="', $settings['default_images_url'], '/simpledesk/permissions.png" class="icon" alt="*" />
-							', $txt['shd_admin_permissions'], '
-						</h3>
-					</div>
-					<p class="information">
-						', $txt['shd_admin_permissions_homedesc'], '
-					</p>
-				</div>
-				<div class="cat_bar">
-					<h3 class="catbg">
-						<img src="', $settings['default_images_url'], '/simpledesk/position.png" alt="*" />
-						', $txt['shd_create_role'], '
-					</h3>
-				</div>
-				<div class="roundframe">
-					<form action="', $scripturl, '?action=admin;area=helpdesk_permissions;sa=createrole;part=2" method="post">
-						<div class="content">
-							<dl class="settings">
-								<dt><strong>', $txt['shd_create_based_on'], ':</strong></dt>
-								<dd>
-									<img alt="*" src="', $settings['default_images_url'], '/simpledesk/', $context['shd_permissions']['roles'][$_REQUEST['template']]['icon'], '" />
-									', $txt[$context['shd_permissions']['roles'][$_REQUEST['template']]['description']], '
-								</dd>
-								<dt><strong>', $txt['shd_create_name'], '</strong></dt>
-								<dd><input type="text" name="rolename" id="rolename" value="" class="input_text" size="30" /></dd>
-							</dl>
-						</div>
-						<input type="submit" value="', $txt['shd_create_role'], '" onclick="return submitThisOnce(this);" accesskey="s" class="button_submit" />
-						<input type="hidden" name="template" value="', $_REQUEST['template'], '" />
-						<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
-						<input type="hidden" name="seqnum" value="', $context['form_sequence_number'], '" />
-					</form>
-				</div>';
+		<div class="cat_bar">
+			<h3 class="catbg">
+				<img src="', $settings['default_images_url'], '/simpledesk/permissions.png" class="icon" alt="*" />
+				', $txt['shd_admin_permissions'], '
+			</h3>
+		</div>
+		<div class="information">
+			', $txt['shd_admin_permissions_homedesc'], '
+		</div>
+		<div class="cat_bar">
+			<h3 class="catbg">
+				<img src="', $settings['default_images_url'], '/simpledesk/position.png" alt="*" />
+				', $txt['shd_create_role'], '
+			</h3>
+		</div>
+		<div class="roundframe">
+			<form action="', $scripturl, '?action=admin;area=helpdesk_permissions;sa=createrole;part=2" method="post">
+				<dl class="settings">
+					<dt><strong>', $txt['shd_create_based_on'], ':</strong></dt>
+					<dd>
+						<img alt="*" src="', $settings['default_images_url'], '/simpledesk/', $context['shd_permissions']['roles'][$_REQUEST['template']]['icon'], '" />
+						', $txt[$context['shd_permissions']['roles'][$_REQUEST['template']]['description']], '
+					</dd>
+					<dt><strong>', $txt['shd_create_name'], '</strong></dt>
+					<dd><input type="text" name="rolename" id="rolename" value="" class="input_text" size="30" /></dd>
+				</dl>
+				<input type="submit" value="', $txt['shd_create_role'], '" onclick="return submitThisOnce(this);" accesskey="s" class="button_submit" />
+				<input type="hidden" name="template" value="', $_REQUEST['template'], '" />
+				<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
+				<input type="hidden" name="seqnum" value="', $context['form_sequence_number'], '" />
+			</form>
+		</div>';
 }
 
 /**
@@ -253,79 +243,75 @@ function template_shd_edit_role()
 
 	// Start the page off, including the rename-role bit.
 	echo '
-				<div class="tborder">
-					<div class="cat_bar">
-						<h3 class="catbg">
-							<img src="', $settings['default_images_url'], '/simpledesk/permissions.png" class="icon" alt="*" />
-							', $txt['shd_admin_permissions'], '
-						</h3>
-					</div>
-					<p class="information">
-						', $txt['shd_admin_permissions_homedesc'], '
-					</p>
-				</div>
-				<script type="text/javascript"><!-- // --><![CDATA[
-				function shd_chicon(obj)
-				{
-					var sSelect = document.getElementById(obj.id).value;
-					var newClass = "";
-					switch(sSelect)
-					{
-						case "disallow":
-							newClass = "shd_no"; break;
-						case "allow":
-							newClass = "shd_yes"; break;
-						case "allow_own":
-							newClass = "shd_own"; break;
-						case "allow_any":
-							newClass = "shd_any"; break;
-						default:
-							newClass = ""; break;
-					}
-					document.getElementById(obj.id + "_icon").setAttribute("class", newClass);
-				}
+		<div class="cat_bar">
+			<h3 class="catbg">
+				<img src="', $settings['default_images_url'], '/simpledesk/permissions.png" class="icon" alt="*" />
+				', $txt['shd_admin_permissions'], '
+			</h3>
+		</div>
+		<div class="information">
+			', $txt['shd_admin_permissions_homedesc'], '
+		</div>
+		<script type="text/javascript"><!-- // --><![CDATA[
+		function shd_chicon(obj)
+		{
+			var sSelect = document.getElementById(obj.id).value;
+			var newClass = "";
+			switch(sSelect)
+			{
+				case "disallow":
+					newClass = "shd_no"; break;
+				case "allow":
+					newClass = "shd_yes"; break;
+				case "allow_own":
+					newClass = "shd_own"; break;
+				case "allow_any":
+					newClass = "shd_any"; break;
+				default:
+					newClass = ""; break;
+			}
+			document.getElementById(obj.id + "_icon").setAttribute("class", newClass);
+		}
 
-				function shd_toggleblock(block)
-				{
-					var collapsed = (document.getElementById("permheader_" + block).getAttribute("class") == "cat_bar");
-					if (collapsed)
-					{
-						document.getElementById("permheader_" + block).setAttribute("class", "cat_bar cat_collapsed");
-						document.getElementById("permcontent_" + block).style.display = "";
-						document.getElementById("permfooter_" + block).style.display = "";
-						document.getElementById("permexpandicon_" + block).src = ', JavaScriptEscape($settings['images_url'] . '/selected_open.png'), ';
-					}
-					else
-					{
-						document.getElementById("permheader_" + block).setAttribute("class", "cat_bar");
-						document.getElementById("permcontent_" + block).style.display = "none";
-						document.getElementById("permfooter_" + block).style.display = "none";
-						document.getElementById("permexpandicon_" + block).src = ', JavaScriptEscape($settings['images_url'] . '/selected.png'), ';
-					}
-					document.getElementById("permexpandicon_" + block).style.display = "";
-				}
+		function shd_toggleblock(block)
+		{
+			var collapsed = (document.getElementById("permheader_" + block).getAttribute("class") == "cat_bar");
+			if (collapsed)
+			{
+				document.getElementById("permheader_" + block).setAttribute("class", "cat_bar cat_collapsed");
+				document.getElementById("permcontent_" + block).style.display = "";
+				document.getElementById("permfooter_" + block).style.display = "";
+				document.getElementById("permexpandicon_" + block).src = ', JavaScriptEscape($settings['images_url'] . '/selected_open.png'), ';
+			}
+			else
+			{
+				document.getElementById("permheader_" + block).setAttribute("class", "cat_bar");
+				document.getElementById("permcontent_" + block).style.display = "none";
+				document.getElementById("permfooter_" + block).style.display = "none";
+				document.getElementById("permexpandicon_" + block).src = ', JavaScriptEscape($settings['images_url'] . '/selected.png'), ';
+			}
+			document.getElementById("permexpandicon_" + block).style.display = "";
+		}
 
-				// ]', ']></script>
-				<form action="', $scripturl, '?action=admin;area=helpdesk_permissions;sa=saverole" method="post">
-					<div class="cat_bar cat_collapsed">
-						<h3 class="catbg">
-							<img src="', $settings['default_images_url'], '/simpledesk/position.png" alt="*" />
-							', $txt['shd_edit_role'], '
-						</h3>
-					</div>
-					<div class="roundframe">
-						<div class="content">
-							<dl class="settings">
-								<dt><strong>', $txt['shd_is_based_on'], ':</strong></dt>
-								<dd>
-									<img alt="*" src="', $settings['default_images_url'], '/simpledesk/', $role['template_icon'], '" />
-									', $role['template_name'], '
-								</dd>
-								<dt><strong>', $txt['shd_role_name'], ':</strong></dt>
-								<dd><input type="text" name="rolename" id="rolename" value="', $role['name'], '" class="input_text" size="30" /></dd>
-							</dl>
-						</div>
-					</div>';
+		// ]', ']></script>
+		<form action="', $scripturl, '?action=admin;area=helpdesk_permissions;sa=saverole" method="post">
+			<div class="cat_bar cat_collapsed">
+				<h3 class="catbg">
+					<img src="', $settings['default_images_url'], '/simpledesk/position.png" alt="*" />
+					', $txt['shd_edit_role'], '
+				</h3>
+			</div>
+			<div class="roundframe">
+				<dl class="settings">
+					<dt><strong>', $txt['shd_is_based_on'], ':</strong></dt>
+					<dd>
+						<img alt="*" src="', $settings['default_images_url'], '/simpledesk/', $role['template_icon'], '" />
+						', $role['template_name'], '
+					</dd>
+					<dt><strong>', $txt['shd_role_name'], ':</strong></dt>
+					<dd><input type="text" name="rolename" id="rolename" value="', $role['name'], '" class="input_text" size="30" /></dd>
+				</dl>
+			</div>';
 
 	// Get ready to display the actual permissions
 	$permission_set = array();
@@ -340,7 +326,7 @@ function template_shd_edit_role()
 	foreach ($context['shd_permissions']['group_display'] as $cell => $rows)
 	{
 		echo '
-					<div class="', ($cell == 0 ? 'floatleft' : 'floatright'), '" style="width: 49%">';
+			<div class="', ($cell == 0 ? 'floatleft' : 'floatright'), '" style="width: 49%">';
 
 		foreach ($rows as $rowitem => $rowicon)
 		{
@@ -350,20 +336,19 @@ function template_shd_edit_role()
 			$displayed_sets[] = $rowitem;
 
 			echo '
-						<div class="cat_bar" id="permheader_', $rowitem, '">
-							<h3 class="catbg">
-								<span class="floatright">
-									<a class="permcollapse" href="#" onclick="shd_toggleblock(\'', $rowitem, '\'); return false;">
-										<img src="', $settings['images_url'], '/selected_open.png" id="permexpandicon_', $rowitem, '" style="display:none;" />
-									</a>
-								</span>
-								<img src="', $settings['default_images_url'], '/simpledesk/', $rowicon, '" alt="*" />
-								<a href="#" onclick="shd_toggleblock(\'', $rowitem, '\'); return false;">', $txt['shd_permgroup_' . $rowitem], '</a>
-							</h3>
-						</div>
-						<div class="roundframe" id="permcontent_', $rowitem, '">
-							<div class="content">
-								<dl class="permsettings">';
+				<div class="cat_bar" id="permheader_', $rowitem, '">
+					<h3 class="catbg">
+						<span class="floatright">
+							<a class="permcollapse" href="#" onclick="shd_toggleblock(\'', $rowitem, '\'); return false;">
+								<img src="', $settings['images_url'], '/selected_open.png" id="permexpandicon_', $rowitem, '" style="display:none;" />
+							</a>
+						</span>
+						<img src="', $settings['default_images_url'], '/simpledesk/', $rowicon, '" alt="*" />
+						<a href="#" onclick="shd_toggleblock(\'', $rowitem, '\'); return false;">', $txt['shd_permgroup_' . $rowitem], '</a>
+					</h3>
+				</div>
+				<div class="roundframe" id="permcontent_', $rowitem, '">
+					<dl class="permsettings">';
 
 			foreach ($permission_set[$rowitem] as $permission)
 			{
@@ -388,82 +373,81 @@ function template_shd_edit_role()
 				}
 
 				echo '
-									<dt', (empty($txt['permissionhelp_' . $permission]) ? '' : ' title="' . $txt['permissionhelp_' . $permission] . '"') . '><img src="', shd_image_url($icon), '" alt="*" />', $txt['permissionname_' . $permission], '</dt>
-									<dd>
-										<span id="perm_', $permission, '_icon" class="', $perm_class, '"></span>
-										<select name="perm_', $permission, '" id="perm_', $permission, '" onchange="javascript:shd_chicon(this);">
-											<option value="disallow"', ($perm_value == 'disallow' ? ' selected="selected"' : ''), '>', (empty($txt['permissionname_' . $permission . '_no']) ? $txt['shd_roleperm_disallow'] : $txt['permissionname_' . $permission . '_no']), '&nbsp;</option>';
+						<dt', (empty($txt['permissionhelp_' . $permission]) ? '' : ' title="' . $txt['permissionhelp_' . $permission] . '"') . '><img src="', shd_image_url($icon), '" alt="*" />', $txt['permissionname_' . $permission], '</dt>
+						<dd>
+							<span id="perm_', $permission, '_icon" class="', $perm_class, '"></span>
+							<select name="perm_', $permission, '" id="perm_', $permission, '" onchange="javascript:shd_chicon(this);">
+								<option value="disallow"', ($perm_value == 'disallow' ? ' selected="selected"' : ''), '>', (empty($txt['permissionname_' . $permission . '_no']) ? $txt['shd_roleperm_disallow'] : $txt['permissionname_' . $permission . '_no']), '&nbsp;</option>';
 
 				if ($ownany)
 				{
 					echo '
-											<option value="allow_own"', ($perm_value == 'allow_own' ? ' selected="selected"' : ''), '>', $txt['permissionname_' . $permission . '_own'], '&nbsp;</option>
-											<option value="allow_any"', ($perm_value == 'allow_any' ? ' selected="selected"' : ''), '>', $txt['permissionname_' . $permission . '_any'], '&nbsp;</option>';
+								<option value="allow_own"', ($perm_value == 'allow_own' ? ' selected="selected"' : ''), '>', $txt['permissionname_' . $permission . '_own'], '&nbsp;</option>
+								<option value="allow_any"', ($perm_value == 'allow_any' ? ' selected="selected"' : ''), '>', $txt['permissionname_' . $permission . '_any'], '&nbsp;</option>';
 				}
 				else
 				{
 					echo '
-											<option value="allow"', ($perm_value == 'allow' ? ' selected="selected"' : ''), '>', (empty($txt['permissionname_' . $permission . '_yes']) ? $txt['shd_roleperm_allow'] : $txt['permissionname_' . $permission . '_yes']), '&nbsp;</option>';
+								<option value="allow"', ($perm_value == 'allow' ? ' selected="selected"' : ''), '>', (empty($txt['permissionname_' . $permission . '_yes']) ? $txt['shd_roleperm_allow'] : $txt['permissionname_' . $permission . '_yes']), '&nbsp;</option>';
 				}
 
 				echo '
-										</select>
-									</dd>';
+							</select>
+						</dd>';
 			}
 
 			echo '
-								</dl>
-							</div>
-						</div>
-						<span id="permfooter_', $rowitem, '"></span>
-						<br>';
+					</dl>
+				</div>
+				<span id="permfooter_', $rowitem, '"></span>
+				<br>';
 		}
 
 		echo '
-					</div>';
+			</div>';
 	}
 
 	if (!empty($displayed_sets))
 	{
 		echo '
-						<script type="text/javascript"><!-- // --><![CDATA[';
+				<script type="text/javascript"><!-- // --><![CDATA[';
 
 		if (!empty($displayed_sets))
 			echo '
-						var hidden_blocks = ["', implode('","', $displayed_sets), '"];
-						for (i in hidden_blocks)
-						{
-							shd_toggleblock(hidden_blocks[i]);
-						}';
+				var hidden_blocks = ["', implode('","', $displayed_sets), '"];
+				for (i in hidden_blocks)
+				{
+					shd_toggleblock(hidden_blocks[i]);
+				}';
 
 		echo '
-						// ]', ']></script>';
+				// ]', ']></script>';
 	}
 
 	echo '
-					<div class="tborder floatleft" style="width: 100%;">
-						<div class="cat_bar">
-							<h3 class="catbg">
-								<img src="', $settings['default_images_url'], '/simpledesk/roles.png" alt="*" />
-								', $txt['shd_role_membergroups'], '
-							</h3>
-						</div>
-						<p class="information">
-							', $txt['shd_role_membergroups_desc'], '
-						</p>
-						<table class="table_grid">
-							<tr class="title_bar">
-								<td width="30%">', $txt['shd_role'], '</td>
-								<td width="30%">', $txt['shd_badge_stars'], '</td>
-								<td>', $txt['shd_assign_group'], '</td>
-							</tr>';
+		<div class="floatleft" style="width: 100%;">
+			<div class="cat_bar">
+				<h3 class="catbg">
+					<img src="', $settings['default_images_url'], '/simpledesk/roles.png" alt="*" />
+					', $txt['shd_role_membergroups'], '
+				</h3>
+			</div>
+			<div class="information">
+				', $txt['shd_role_membergroups_desc'], '
+			</div>
+			<table class="table_grid">
+				<tr class="title_bar">
+					<td class="shd_33">', $txt['shd_role'], '</td>
+					<td class="shd_33">', $txt['shd_badge_stars'], '</td>
+					<td class="shd_33">', $txt['shd_assign_group'], '</td>
+				</tr>';
 
 	foreach ($context['membergroups'] as $id_group => $group)
 	{
 		echo '
-							<tr class="windowbg">
-								<td>', $group['link'], '</td>
-								<td>';
+				<tr class="windowbg">
+					<td>', $group['link'], '</td>
+					<td>';
 
 		if (!empty($group['icons']))
 		{
@@ -472,54 +456,48 @@ function template_shd_edit_role()
 				echo str_repeat('<img src="' . $settings['images_url'] . '/membericons/' . $icons[1] . '" alt="" />', $icons[0]);
 		}
 
-		echo '</td>
-								<td><input type="checkbox" class="input_check" name="group', $id_group, '"', (in_array($id_group, $context['role_groups']) ? ' checked="checked"' : ''), ' /></td>
-							</tr>';
+		echo '
+					</td>
+					<td><input type="checkbox" class="input_check" name="group', $id_group, '"', (in_array($id_group, $context['role_groups']) ? ' checked="checked"' : ''), ' /></td>
+				</tr>
+			</div>';
 	}
 
 	echo '
-						</table>
-						<br>
-					</div>
-
-					<div class="tborder floatleft" style="width: 100%;">
-						<div class="cat_bar">
-							<h3 class="catbg">
-								<img src="', $settings['default_images_url'], '/simpledesk/departments.png" alt="*" />
-								', $txt['shd_role_departments'], '
-							</h3>
-						</div>
-						<p class="information">
-							', $txt['shd_role_departments_desc'], '
-						</p>
-						<table class="table_grid">
-							<tr class="title_bar">
-								<td width="50%">', $txt['shd_department_name'], '</td>
-								<td width="50%">', $txt['shd_assign_dept'], '</td>
-							</tr>';
+			</table>
+			<div class="floatleft" style="width: 100%;">
+				<div class="cat_bar">
+					<h3 class="catbg">
+						<img src="', $settings['default_images_url'], '/simpledesk/departments.png" alt="*" />
+						', $txt['shd_role_departments'], '
+					</h3>
+				</div>
+				<div class="information">
+					', $txt['shd_role_departments_desc'], '
+				</div>
+				<table class="table_grid">
+					<tr class="title_bar">
+						<td class="shd_50">', $txt['shd_department_name'], '</td>
+						<td class="shd_50">', $txt['shd_assign_dept'], '</td>
+					</tr>';
 
 	foreach ($context['role_depts'] as $id_dept => $dept)
 	{
 		echo '
-							<tr class="windowbg">
-								<td>', $dept['dept_name'], '</td>
-								<td><input type="checkbox" class="input_check" name="dept', $id_dept, '"', !empty($dept['is_role']) ? ' checked="checked"' : '', ' /></td>
-							</tr>';
+					<tr class="windowbg">
+						<td>', $dept['dept_name'], '</td>
+						<td><input type="checkbox" class="input_check" name="dept', $id_dept, '"', !empty($dept['is_role']) ? ' checked="checked"' : '', ' /></td>
+					</tr>';
 	}
 
 	echo '
-						</table>
-						<br>
-					</div>
-
-					<div class="floatleft">
-						<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
-						<input type="hidden" name="role" value="', $_REQUEST['role'], '" />
-						<input type="submit" value="', $txt['shd_edit_role'], '" onclick="return submitThisOnce(this);" accesskey="s" class="button_submit" />
-						<input type="submit" value="', $txt['shd_delete_role'], '" onclick="return confirm(' . JavaScriptEscape($txt['shd_delete_role_confirm']) . ');" name="delete" class="button_submit" />
-					</div>
-				</form>
-				<br class="clear" />';
+				</table>
+			</div>
+			<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
+			<input type="hidden" name="role" value="', $_REQUEST['role'], '" />
+			<input type="submit" value="', $txt['shd_edit_role'], '" onclick="return submitThisOnce(this);" accesskey="s" class="button_submit" />
+			<input type="submit" value="', $txt['shd_delete_role'], '" onclick="return confirm(' . JavaScriptEscape($txt['shd_delete_role_confirm']) . ');" name="delete" class="button_submit" />
+		</form>';
 }
 
 /**
@@ -532,43 +510,38 @@ function template_shd_copy_role()
 	global $context, $settings, $txt, $modSettings, $scripturl;
 
 	echo '
-				<div class="tborder">
-					<div class="cat_bar">
-						<h3 class="catbg">
-							<img src="', $settings['default_images_url'], '/simpledesk/permissions.png" class="icon" alt="*" />
-							', $txt['shd_admin_permissions'], '
-						</h3>
-					</div>
-					<p class="information">
-						', $txt['shd_admin_permissions_homedesc'], '
-					</p>
-				</div>
-				<div class="cat_bar">
-					<h3 class="catbg">
-						<img src="', $settings['default_images_url'], '/simpledesk/position.png" alt="*" />
-						', $txt['shd_copy_role'], '
-					</h3>
-				</div>
-				<div class="roundframe">
-					<form action="', $scripturl, '?action=admin;area=helpdesk_permissions;sa=copyrole;part=2" method="post">
-						<div class="content">
-							<dl class="settings">
-								<dt><strong>', $txt['shd_create_based_on'], ':</strong></dt>
-								<dd>
-									<img alt="*" src="', $settings['default_images_url'], '/simpledesk/', $context['shd_permissions']['user_defined_roles'][$_REQUEST['role']]['template_icon'], '" />
-									', $context['shd_permissions']['user_defined_roles'][$_REQUEST['role']]['name'], '
-								</dd>
-								<dt><strong>', $txt['shd_create_name'], '</strong></dt>
-								<dd><input type="text" name="rolename" id="rolename" value="" class="input_text" size="30" /></dd>
-								<dt><strong>', $txt['shd_copy_role_groups'], '</strong></dt>
-								<dd><input type="checkbox" name="copygroups" id="copygroups" value="1" class="input_check" /></dd>
-							</dl>
-						</div>
-						<input type="submit" value="', $txt['shd_copy_role'], '" onclick="return submitThisOnce(this);" accesskey="s" class="button_submit" />
-						<input type="hidden" name="role" value="', $_REQUEST['role'], '" />
-						<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
-						<input type="hidden" name="seqnum" value="', $context['form_sequence_number'], '" />
-					</form>
-				</div>';
+		<div class="cat_bar">
+			<h3 class="catbg">
+				<img src="', $settings['default_images_url'], '/simpledesk/permissions.png" class="icon" alt="*" />
+				', $txt['shd_admin_permissions'], '
+			</h3>
+		</div>
+		<div class="information">
+			', $txt['shd_admin_permissions_homedesc'], '
+		</div>
+		<div class="cat_bar">
+			<h3 class="catbg">
+				<img src="', $settings['default_images_url'], '/simpledesk/position.png" alt="*" />
+				', $txt['shd_copy_role'], '
+			</h3>
+		</div>
+		<div class="roundframe">
+			<form action="', $scripturl, '?action=admin;area=helpdesk_permissions;sa=copyrole;part=2" method="post">
+				<dl class="settings">
+					<dt><strong>', $txt['shd_create_based_on'], ':</strong></dt>
+					<dd>
+						<img alt="*" src="', $settings['default_images_url'], '/simpledesk/', $context['shd_permissions']['user_defined_roles'][$_REQUEST['role']]['template_icon'], '" />
+						', $context['shd_permissions']['user_defined_roles'][$_REQUEST['role']]['name'], '
+					</dd>
+					<dt><strong>', $txt['shd_create_name'], '</strong></dt>
+					<dd><input type="text" name="rolename" id="rolename" value="" class="input_text" size="30" /></dd>
+					<dt><strong>', $txt['shd_copy_role_groups'], '</strong></dt>
+					<dd><input type="checkbox" name="copygroups" id="copygroups" value="1" class="input_check" /></dd>
+				</dl>
+				<input type="submit" value="', $txt['shd_copy_role'], '" onclick="return submitThisOnce(this);" accesskey="s" class="button_submit" />
+				<input type="hidden" name="role" value="', $_REQUEST['role'], '" />
+				<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
+				<input type="hidden" name="seqnum" value="', $context['form_sequence_number'], '" />
+			</form>
+		</div>';
 }
-
