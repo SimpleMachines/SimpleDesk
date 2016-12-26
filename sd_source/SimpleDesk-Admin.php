@@ -837,6 +837,7 @@ function shd_admin_admin_log()
 
 	// This is for full admins only.
 	isAllowedTo('admin_forum');
+	$context['can_delete'] = true;
 
 	$context['displaypage'] = 30;
 	$context['daysdisable'] = 28;
