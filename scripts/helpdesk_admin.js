@@ -49,7 +49,6 @@ sd_AdminIndex.prototype.showCurrentVersion = function ()
 
 	var oSdVersionContainer = document.getElementById(this.opt.sSdVersionContainerId);
 	var oYourVersionContainer = document.getElementById(this.opt.sYourVersionContainerId);
-	var bdDeveloperMode = this.opt.bDeveloperMode;
 
 	// Handle a developer version cleaner.
 	if (this.opt.bDeveloperMode && 'sdDevVersion' in window)
