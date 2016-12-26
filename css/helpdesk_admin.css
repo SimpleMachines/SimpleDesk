@@ -1,21 +1,24 @@
-#sdAnnouncements
-{
-	height: 21.6em;
-	overflow: auto;
+#sdAnnouncements dt {
+	padding: 4px 6px 2px 6px;
+	border-top: 1px solid #bf6900;
 }
-#sdAnnouncements dt
-{
-	border-bottom: 1px dashed #000;
+#sdAnnouncements dt a {
+	color: #bf6900;
+	font-weight: bold;
+	display: block;
 }
-#sdAnnouncements dd
-{
-	padding: 0;
-	margin: 0 0 1em 1.5em;
+#sdAnnouncements dd {
+	margin: 0;
+	padding: 6px 12px;
+	border-top: double #ddd;
 }
 #sd_update_section
 {
 	margin-top: 10px;
 	margin-bottom: 10px;
+}
+#admin_main_section .windowbg {
+	height: 15em;
 }
 #sd_credits
 {
