@@ -928,7 +928,7 @@ function shd_prepare_ticket_context()
 		$memberContext[$message['id_member']]['email'] = $message['poster_email'];
 		$memberContext[$message['id_member']]['show_email'] = showEmailAddress(true, 0);
 		$memberContext[$message['id_member']]['is_guest'] = true;
-		$memberContext[$message['id_member']]['group_stars'] = '';
+		$memberContext[$message['id_member']]['group_icons'] = '';
 	}
 	$memberContext[$message['id_member']]['ip'] = $message['poster_ip'];
 

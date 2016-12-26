@@ -343,7 +343,7 @@ function shd_get_possible_assignees($private = false, $ticket_owner = 0, $dept =
 	$staff = shd_members_allowed_to('shd_staff', $dept);
 
 	// is it private, if so, remove that list
-	if ((bool) $private == true)
+	if ((bool) $private === true)
 	{
 		$private = shd_members_allowed_to('shd_view_ticket_private_any', $dept);
 		$staff = array_intersect($staff, $private);
