@@ -68,6 +68,9 @@ shd_urgencyControl.prototype.init = function ()
 {
 	for (var i in shd_urgencyControl.prototype.opts.aButtonOps)
 	{
+		if (!shd_urgencyControl.prototype.opts.aButtonOps.hasOwnProperty(i))
+			continue;
+
 		var oDiv = document.getElementById('urglink_' + shd_urgencyControl.prototype.opts.aButtonOps[i]);
 		if (oDiv != null && i == 'up')
 			oDiv.onclick = shd_urgencyControl.prototype.actionUp;

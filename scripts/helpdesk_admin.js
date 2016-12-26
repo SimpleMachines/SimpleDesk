@@ -49,11 +49,16 @@ sd_AdminIndex.prototype.showCurrentVersion = function ()
 
 	var oSdVersionContainer = document.getElementById(this.opt.sSdVersionContainerId);
 	var oYourVersionContainer = document.getElementById(this.opt.sYourVersionContainerId);
+	var bdDeveloperMode = this.opt.bDeveloperMode;
 
-	setInnerHTML(oSdVersionContainer, window.sdVersion);
+	// Handle a developer version cleaner.
+	if (this.opt.bDeveloperMode && 'sdDevVersion' in window)
+		setInnerHTML(oSdVersionContainer, window.sdDevVersion);
+	else
+		setInnerHTML(oSdVersionContainer, window.sdVersion);
 
 	var sCurrentVersion = getInnerHTML(oYourVersionContainer);
-	if (sCurrentVersion != window.sdVersion)
+	if (sCurrentVersion != window.sdVersion && !this.opt.bDeveloperMode)
 		setInnerHTML(oYourVersionContainer, this.opt.sVersionOutdatedTemplate.replace('%currentVersion%', sCurrentVersion));
 }
 
@@ -61,6 +66,8 @@ sd_AdminIndex.prototype.checkUpdateAvailable = function ()
 {
 	if (!('sdUpdatePackage' in window))
 		return;
+
+	// We don't handle developer mode stuff here, best to get any developer edition to a supported edition.
 
 	var oContainer = document.getElementById(this.opt.sUpdateNotificationContainerId);
 
