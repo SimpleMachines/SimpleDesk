@@ -84,7 +84,7 @@ function shd_ticket_delete()
 	call_integration_hook('shd_hook_deleteticket');
 
 	// Move it to deleted status
-	$query_ticket = shd_db_query('', '
+	shd_db_query('', '
 		UPDATE {db_prefix}helpdesk_tickets AS hdt
 		SET status = {int:status_deleted},
 		id_member_assigned = 0
@@ -176,7 +176,7 @@ function shd_reply_delete()
 
 	// OK, last but definitely not least, update num_replies and id_last_msg on the old ticket, and fix the old ticket's status
 	list($starter, $replier, $num_replies) = shd_recalc_ids($context['ticket_id']);
-	$query_reply = shd_db_query('', '
+	shd_db_query('', '
 		UPDATE {db_prefix}helpdesk_tickets
 		SET status = {int:status}
 		WHERE id_ticket = {int:ticket}',
@@ -460,7 +460,7 @@ function shd_perma_delete()
 		);
 
 		list($starter, $replier, $num_replies) = shd_recalc_ids($context['ticket_id']);
-		$query_reply = shd_db_query('', '
+		shd_db_query('', '
 			UPDATE {db_prefix}helpdesk_tickets
 			SET status = {int:status}
 			WHERE id_ticket = {int:ticket}',
@@ -672,7 +672,7 @@ function shd_reply_restore()
 
 	// Fix the topic data
 	list($starter, $replier, $num_replies) = shd_recalc_ids($context['ticket_id']);
-	$query_reply = shd_db_query('', '
+	shd_db_query('', '
 		UPDATE {db_prefix}helpdesk_tickets
 		SET status = {int:status}
 		WHERE id_ticket = {int:ticket}',

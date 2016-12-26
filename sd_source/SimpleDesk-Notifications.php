@@ -49,7 +49,6 @@ function shd_notifications_notify_newticket(&$msgOptions, &$ticketOptions, &$pos
 
 	// Get the default preferences
 	$prefs = shd_load_user_prefs(false);
-	$pref_groups = $prefs['groups'];
 	$base_prefs = $prefs['prefs'];
 
 	// Apply the default preference
@@ -172,7 +171,6 @@ function shd_notifications_notify_newreply(&$msgOptions, &$ticketOptions, &$post
 
 	// Get the default preferences
 	$prefs = shd_load_user_prefs(false);
-	$pref_groups = $prefs['groups'];
 	$base_prefs = $prefs['prefs'];
 
 	// Build a list of users -> default prefs
@@ -293,7 +291,6 @@ function shd_notifications_notify_assign(&$ticket, &$assignment)
 
 	// Get the default preferences
 	$prefs = shd_load_user_prefs(false);
-	$pref_groups = $prefs['groups'];
 	$base_prefs = $prefs['prefs'];
 
 	$members = array();
@@ -779,7 +776,8 @@ function shd_query_monitor_list($ticket_id)
  *	@param int $dept The department the given ticket is in.
  *	@param bool $private Whether the given ticket is private or not.
  *	@param int $ticket_starter User id of the ticket starter.
- *	@param bool $exclude_admin If true, exclude forum admins from the list of possible candidates.
+ *	@param bool $include_admin If false, exclude forum admins from the list of possible candidates.
+ *	@param bool $include_current_user If true, exclude the current user from the list of possible candidates.
  *	@return array An array of user ids of the staff members (and ticket starter) that can see tickets, matching the given criteria of department, privacy and permissions.
 */
 function shd_get_visible_list($dept, $private, $ticket_starter = 0, $include_admin = true, $include_current_user = false)

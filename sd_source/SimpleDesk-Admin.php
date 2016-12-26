@@ -152,7 +152,7 @@ function shd_admin_main()
 */
 function shd_admin_info()
 {
-	global $context, $settings, $scripturl, $txt, $sourcedir, $smcFunc;
+	global $context, $settings, $scripturl, $txt, $sourcedir, $smcFunc, $modSettings;
 
 	$subactions = array(
 		'main' => array(

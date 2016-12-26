@@ -80,7 +80,7 @@ function shd_ajax()
 	{
 		echo '<response>';
 
-		if (!empty($context['ajax_return']))
+		if (!empty($context['ajax_return']) && is_array($context['ajax_return']))
 		{
 			foreach ($context['ajax_return'] as $key => $value)
 			{
@@ -440,10 +440,7 @@ function shd_ajax_canned()
 			require_once($sourcedir . '/Subs-Editor.php');
 			$message = strtr($message, array('&lt;' => '#smlt#', '&gt;' => '#smgt#', '&amp;' => '#smamp#'));
 			$message = bbc_to_html($message);
-			$lb = '<br />';
 		}
-		else
-			$lb = "\n";
 	}
 
 	$message = strtr($message, array('&nbsp;' => '&#160;', '<' => '&lt;', '>' => '&gt;'));
@@ -688,7 +685,6 @@ function shd_ajax_notify()
 	{
 		// Get the default preferences
 		$prefs = shd_load_user_prefs(false);
-		$pref_groups = $prefs['groups'];
 		$base_prefs = $prefs['prefs'];
 
 		// Build a list of users -> default prefs. We know this is for the list of possible contenders only.
@@ -753,6 +749,7 @@ function shd_ajax_notify()
 	{
 		// Get everyone's name.
 		$loaded = loadMemberData($members);
+		$people = array();
 		foreach ($loaded as $user)
 			if (!empty($user_profile[$user]) && $user_profile[$user]['is_activated'] > 0 && $user_profile[$user]['is_activated'] < 10) // active & not banned
 				$people[$user] = array(

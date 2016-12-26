@@ -446,20 +446,6 @@ function shd_profile_show_tickets($memID)
 	list ($item_count) = $smcFunc['db_fetch_row']($request);
 	$smcFunc['db_free_result']($request);
 
-	// Max? Max? Where are you?
-	$request = shd_db_query('', '
-		SELECT MIN(hdtr.id_msg), MAX(hdtr.id_msg)
-		FROM {db_prefix}helpdesk_ticket_replies AS hdtr
-			LEFT JOIN {db_prefix}helpdesk_tickets AS hdt ON(hdtr.id_ticket = hdt.id_ticket)
-		WHERE hdtr.id_member = {int:user}
-			AND {query_see_ticket}',
-		array(
-			'user' => $memID,
-		)
-	);
-	list ($min_msg_member, $max_msg_member) = $smcFunc['db_fetch_row']($request);
-	$smcFunc['db_free_result']($request);
-
 	$reverse = false;
 	$max_index = (int) $modSettings['defaultMaxMessages'];
 

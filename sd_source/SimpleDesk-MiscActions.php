@@ -48,7 +48,7 @@ function shd_ticket_unread()
 	if (!empty($context['ticket_id']))
 	{
 		call_integration_hook('shd_hook_markunread');
-		$result = shd_db_query('', '
+		shd_db_query('', '
 			DELETE FROM {db_prefix}helpdesk_log_read
 			WHERE id_ticket = {int:current_ticket}
 				AND id_member = {int:user}',
@@ -76,7 +76,7 @@ function shd_ticket_unread()
 */
 function shd_ticket_resolve()
 {
-	global $smcFunc, $user_info, $context, $sourcedir;
+	global $smcFunc, $user_info, $context, $sourcedir, $modSettings;
 
 	checkSession('get');
 
@@ -197,7 +197,6 @@ function shd_privacy_change_noajax()
 
 		$smcFunc['db_free_result']($query);
 
-		$new = empty($row['private']) ? 1 : 0;
 		$action = empty($row['private']) ? 'markprivate' : 'marknotprivate';
 
 		require_once($sourcedir . '/sd_source/Subs-SimpleDeskPost.php');

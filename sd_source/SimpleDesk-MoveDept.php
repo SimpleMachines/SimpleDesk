@@ -37,7 +37,7 @@ if (!defined('SMF'))
 */
 function shd_movedept()
 {
-	global $smcFunc, $context, $user_info, $sourcedir, $txt, $scripturl;
+	global $smcFunc, $context, $user_info, $sourcedir, $txt, $scripturl, $modSettings;
 
 	checkSession('get');
 
@@ -62,7 +62,6 @@ function shd_movedept()
 		)
 	);
 
-	$log_params = array();
 	if ($row = $smcFunc['db_fetch_row']($query))
 		list($ticket_starter, $subject, $context['current_dept'], $context['current_dept_name']) = $row;
 	else
@@ -191,7 +190,7 @@ function shd_movedept()
 */
 function shd_movedept2()
 {
-	global $context, $smcFunc, $user_info, $sourcedir, $txt, $scripturl;
+	global $context, $smcFunc, $user_info, $sourcedir, $txt, $scripturl, $modSettings;
 
 	checkSession();
 	checkSubmitOnce('check');
@@ -226,7 +225,6 @@ function shd_movedept2()
 		)
 	);
 
-	$log_params = array();
 	if ($row = $smcFunc['db_fetch_row']($query))
 		list($ticket_starter, $subject, $context['current_dept'], $context['current_dept_name']) = $row;
 	else
@@ -283,7 +281,7 @@ function shd_movedept2()
 			require_once($sourcedir . '/Subs-Post.php');
 
 			$request = shd_db_query('pm_find_username', '
-				SELECT id_member, real_name
+				SELECT real_name
 				FROM {db_prefix}members
 				WHERE id_member = {int:user}
 				LIMIT 1',
@@ -291,7 +289,7 @@ function shd_movedept2()
 					'user' => $ticket_starter,
 				)
 			);
-			list ($userid, $username) = $smcFunc['db_fetch_row']($request);
+			list ($username) = $smcFunc['db_fetch_row']($request);
 			$smcFunc['db_free_result']($request);
 
 			// Fix the content

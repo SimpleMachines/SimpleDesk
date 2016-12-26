@@ -479,7 +479,6 @@ function shd_view_ticket()
 
 	// Template stuff
 	$context['sub_template'] = 'viewticket';
-	$ticketname = '';
 	if (!empty($context['ticket']['custom_fields']['prefix']))
 	{
 		$ticketname = '[' . $context['ticket']['display_id'] . '] ';
@@ -1101,17 +1100,9 @@ function shd_attachment_info($attach_info)
 				{
 					// So what folder are we putting this image in?
 					if (!empty($modSettings['currentAttachmentUploadDir']))
-					{
-						if (!is_array($modSettings['attachmentUploadDir']))
-							$modSettings['attachmentUploadDir'] = json_decode($modSettings['attachmentUploadDir'], true);
-						$path = $modSettings['attachmentUploadDir'][$modSettings['currentAttachmentUploadDir']];
 						$id_folder_thumb = $modSettings['currentAttachmentUploadDir'];
-					}
 					else
-					{
-						$path = $modSettings['attachmentUploadDir'];
 						$id_folder_thumb = 1;
-					}
 
 					// Calculate the size of the created thumbnail.
 					$size = @getimagesize($filename . '_thumb');
