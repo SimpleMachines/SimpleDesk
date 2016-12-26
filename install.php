@@ -109,8 +109,9 @@ function sd_initialize_install()
 	if (SMF == 'SSI')
 		db_extend('packages');
 
-	// We have a lot to do. Make sure as best we can that we have the time to do so.
-	@set_time_limit(600);
+	// We have a lot to do. Make sure as best we can that we have the time to do so. But only if the function wasn't disabled.
+	if (function_exists('set_time_limit'))
+		set_time_limit(600);
 }
 
 /*
@@ -604,14 +605,14 @@ function sd_get_install_tables()
 			db_field('field_loc', 'tinyint'),
 			db_field('icon', 'varchar', 20),
 			db_field('field_type', 'tinyint'),
-			db_field('field_length', 'smallint', 5, 255),
+			db_field('field_length', 'smallint', 5, true),
 			db_field('field_options', 'text'),
 			db_field('bbc', 'tinyint'),
 			db_field('default_value', 'varchar', 255),
-			db_field('can_see', 'varchar', 3, '0,0'),
-			db_field('can_edit', 'varchar', 3, '0,0'),
+			db_field('can_see', 'varchar', 3),
+			db_field('can_edit', 'varchar', 3),
 			db_field('display_empty', 'tinyint'),
-			db_field('placement', 'tinyint', 0, 1),
+			db_field('placement', 'tinyint', 0, true),
 		),
 		'indexes' => array(
 			array(

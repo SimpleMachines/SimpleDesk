@@ -151,27 +151,26 @@ function shd_admin_browse_attachments($list_title = '')
 					'value' => $txt['attachment_name'],
 				),
 				'data' => array(
-					'function' => create_function('$rowData', '
+					'function' => function($rowData)
+					{
 						global $modSettings, $context, $scripturl;
 
-						$link = \'<a href="\';
-
-						$link .= sprintf(\'%1$s?action=dlattach;ticket=%2$d.0;id=%3$d\', $scripturl, $rowData[\'id_ticket\'], $rowData[\'id_attach\']);
-
-						$link .= \'"\';
+						$link = '<a href="';
+						$link .= sprintf('%1$s?action=dlattach;ticket=%2$d.0;id=%3$d', $scripturl, $rowData['id_ticket'], $rowData['id_attach']);
+						$link .= '"';
 
 						// Show a popup on click if it\'s a picture and we know its dimensions.
-						if (!empty($rowData[\'width\']) && !empty($rowData[\'height\']))
-							$link .= sprintf(\' onclick="return reqWin(this.href + \\\';image\\\', %1$d, %2$d, true);"\', $rowData[\'width\'] + 20, $rowData[\'height\'] + 20);
+						if (!empty($rowData['width']) && !empty($rowData['height']))
+							$link .= sprintf(' onclick="return reqWin(this.href + \';image\', %1$d, %2$d, true);"', $rowData['width'] + 20, $rowData['height'] + 20);
 
-						$link .= sprintf(\'>%1$s</a>\', preg_replace(\'~&amp;#(\\\\d{1,7}|x[0-9a-fA-F]{1,6});~\', \'&#\\\\1;\', htmlspecialchars($rowData[\'filename\'])));
+						$link .= sprintf('>%1$s</a>', preg_replace('~&amp;#(\d{1,7}|x[0-9a-fA-F]{1,6});~', '&#\1;', htmlspecialchars($rowData['filename'])));
 
 						// Show the dimensions.
-						if (!empty($rowData[\'width\']) && !empty($rowData[\'height\']))
-							$link .= sprintf(\' <span class="smalltext">%1$dx%2$d</span>\', $rowData[\'width\'], $rowData[\'height\']);
+						if (!empty($rowData['width']) && !empty($rowData['height']))
+							$link .= sprintf(' <span class="smalltext">%1$dx%2$d</span>', $rowData['width'], $rowData['height']);
 
 						return $link;
-					'),
+					},
 				),
 				'sort' => array(
 					'default' => 'a.filename',
@@ -183,11 +182,12 @@ function shd_admin_browse_attachments($list_title = '')
 					'value' => $txt['attachment_file_size'],
 				),
 				'data' => array(
-					'function' => create_function('$rowData','
+					'function' => function($rowData)
+					{
 						global $txt;
 
-						return sprintf(\'%1$s%2$s\', round($rowData[\'size\'] / 1024, 2), $txt[\'kilobyte\']);
-					'),
+						return sprintf('%1$s%2$s', round($rowData['size'] / 1024, 2), $txt['kilobyte']);
+					},
 					'class' => 'windowbg',
 				),
 				'sort' => array(
@@ -200,11 +200,10 @@ function shd_admin_browse_attachments($list_title = '')
 					'value' => $txt['posted_by'],
 				),
 				'data' => array(
-					'function' => create_function('$rowData', '
-						global $scripturl;
-
-						return htmlspecialchars($rowData[\'poster_name\']);
-					'),
+					'function' => function($rowData)
+					{
+						return htmlspecialchars($rowData['poster_name']);
+					},
 				),
 				'sort' => array(
 					'default' => 'mem.real_name',
@@ -216,11 +215,12 @@ function shd_admin_browse_attachments($list_title = '')
 					'value' => $txt['date'],
 				),
 				'data' => array(
-					'function' => create_function('$rowData', '
-						global $txt, $context, $scripturl;
+					'function' => function($rowData)
+					{
+						global $txt;
 
-						return empty($rowData[\'poster_time\']) ? $txt[\'never\'] : timeformat($rowData[\'poster_time\']);
-						'),
+						return empty($rowData['poster_time']) ? $txt['never'] : timeformat($rowData['poster_time']);
+					},
 					'class' => 'windowbg',
 				),
 				'sort' => array(
@@ -233,11 +233,10 @@ function shd_admin_browse_attachments($list_title = '')
 					'value' => $txt['downloads'],
 				),
 				'data' => array(
-					'function' => create_function('$rowData','
-						global $txt;
-
-						return comma_format($rowData[\'downloads\']);
-					'),
+					'function' => function($rowData)
+					{
+						return comma_format($rowData['downloads']);
+					},
 					'class' => 'windowbg',
 				),
 				'sort' => array(
