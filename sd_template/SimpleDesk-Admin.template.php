@@ -198,6 +198,7 @@ function template_shd_admin()
 				bLoadVersions: true,
 				sSdVersionContainerId: \'sdVersion\',
 				sYourVersionContainerId: \'yourVersion\',
+				bDeveloperMode: ', !empty($modSettings['sdDeveloperMode']) ? 'true' : 'false', ',
 				sVersionOutdatedTemplate: ', JavaScriptEscape('
 					<span class="alert">%currentVersion%</span>
 				'), ',
@@ -695,14 +696,14 @@ function template_shd_admin_log()
 					</a>
 					', ($context['sort'] == $sort_types['position'] ? '<img src="' . $settings['default_images_url'] . '/' . (isset($_REQUEST['asc']) ? 'simpledesk/move_up.png' : 'simpledesk/move_down.png' ). '" alt="" />' : ''), '
 				</td>
-				<td class="shd_10" ', $action['can_remove'] && $context['can_delete'] ? 'colspan="2"' : '','>
+				<td class="shd_10" ', $context['can_delete'] ? 'colspan="2"' : '','>
 					<img src="', $settings['default_images_url'], '/simpledesk/ip.png" class="shd_smallicon" alt="" />
 					<a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=adminlog', $context['sort'] == $sort_types['ip'] && !isset($_REQUEST['asc']) ? ';sort=ip;asc' : ';sort=ip', '">
 						', $txt['shd_admin_actionlog_ip'], '
 					</a>
 					', ($context['sort'] == $sort_types['ip'] ? '<img src="' . $settings['default_images_url'] . '/' . (isset($_REQUEST['asc']) ? 'simpledesk/move_up.png' : 'simpledesk/move_down.png' ). '" alt="" />' : ''), '
 				</td>
-				', $action['can_remove'] && $context['can_delete'] ? '<td class="shd_5">&nbsp;</td>' : '','
+				', $context['can_delete'] ? '<td class="shd_5">&nbsp;</td>' : '','
 			</tr>';
 
 	if (empty($context['actions']))
