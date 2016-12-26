@@ -66,14 +66,15 @@ function shd_repair_attachments_nomsg(&$ignore_ids, $min_substep, $max_substep)
  *	If we are deleting an attachment, check if we should handle this.
  *
  *	@since 2.1
- *	@param array &$listOptions The listOptions of attachments page.
- *	@param array &$titles All the sections we have.
- *	@param array &$list_title List title.
+ *	@param array &$filesRemoved The files we removed.
+ *	@param array &$attachments Attachments we should check to see if we can remove them.
 */
 function shd_attachment_remove(&$filesRemoved, $attachments)
 {
 	if (in_array($_REQUEST['type'], array('shd_attach', 'shd_thumb')) && !empty($attachments))
-		$messages = removeAttachments(array('id_attach' => $attachments), '', true);
+		$idsRemoved = removeAttachments(array('id_attach' => $attachments), '', true);
+
+	$filesRemoved = array_merge($filesRemoved, $idsRemoved);
 }
 
 /**
