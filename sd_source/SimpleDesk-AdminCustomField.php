@@ -613,6 +613,7 @@ function shd_admin_custom_move()
 	}
 
 	$fields = array();
+	$fields_map = array();
 	while ($row = $smcFunc['db_fetch_assoc']($query))
 	{
 		$fields[$row['field_order']] = $row['id_field'];
@@ -621,7 +622,7 @@ function shd_admin_custom_move()
 
 	ksort($fields);
 
-	if (empty($fields_map[$_REQUEST['field']]))
+	if (!isset($fields_map[$_REQUEST['field']]))
 		fatal_lang_error('shd_admin_cannot_move_custom_field', false);
 
 	$current_pos = $fields_map[$_REQUEST['field']];

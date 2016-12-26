@@ -179,7 +179,7 @@ $txt['closed_tickets'] = 'Closed Tickets';
 		foreach ($context['shd_stats']['history'] as $year_id => $year)
 		{
 			echo '
-				<tr class="windowbg2" valign="middle" align="center" id="year_', $id, '">
+				<tr class="windowbg2" valign="middle" align="center" id="year_', $year_id, '">
 					<th class="lefttext" width="25%">', $year_id, '</th>
 					<th width="15%">', $year['open'], '</th>
 					<th width="15%">', $year['assigned'], '</th>

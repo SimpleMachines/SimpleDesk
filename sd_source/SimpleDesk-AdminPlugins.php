@@ -46,20 +46,22 @@ function shd_admin_plugins()
 	// 1. Look at the plugin directory and figure out whether or not there are some plugins.
 	$plugins = array();
 	$plugindir = $sourcedir . '/sd_plugins_source';
-	$handle = @opendir($plugindir);
-	while ($dir_entry = readdir($handle))
+
+	if (is_dir($plugindir))
 	{
-		if (is_dir($plugindir . '/' . $dir_entry) && $dir_entry != '.' && $dir_entry != '..' && file_exists($plugindir . '/' . $dir_entry . '/index.php'))
+		$handle = opendir($plugindir);
+		while ($dir_entry = readdir($handle))
 		{
-			include_once($plugindir . '/' . $dir_entry . '/index.php');
-			$function = 'shdplugin_' . $dir_entry;
-			if (function_exists($function))
+			if (is_dir($plugindir . '/' . $dir_entry) && $dir_entry != '.' && $dir_entry != '..' && file_exists($plugindir . '/' . $dir_entry . '/index.php'))
 			{
-				$plugins[$dir_entry] = $function();
+				include_once($plugindir . '/' . $dir_entry . '/index.php');
+				$function = 'shdplugin_' . $dir_entry;
+				if (function_exists($function))
+					$plugins[$dir_entry] = $function();
 			}
 		}
+		closedir($handle);
 	}
-	@closedir($handle);
 
 	// 2. Figure out what language stuff is going on
 	$master_langlist = array(

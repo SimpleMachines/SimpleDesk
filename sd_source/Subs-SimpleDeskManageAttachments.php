@@ -46,7 +46,7 @@ function shd_repair_attachments_nomsg(&$ignore_ids, $min_substep, $max_substep)
 		FROM {db_prefix}attachments AS a
 			LEFT JOIN {db_prefix}helpdesk_attachments AS hda ON (hda.id_attach = a.id_attach)
 			LEFT JOIN {db_prefix}helpdesk_ticket_replies AS hdtr ON (hdtr.id_msg = hda.id_msg)
-		WHERE a.id_attach BETWEEN {int:substep} AND {int:substep} + 499
+		WHERE a.id_attach BETWEEN {int:substep} AND {int:max_substep} + 499
 			AND a.id_member = {int:no_member}
 			AND a.id_msg != {int:no_msg}
 			AND hdtr.id_msg IS NOT NULL',
@@ -54,6 +54,7 @@ function shd_repair_attachments_nomsg(&$ignore_ids, $min_substep, $max_substep)
 			'no_member' => 0,
 			'no_msg' => 0,
 			'substep' => $min_substep,
+			'max_substep' => $min_substep >= $max_substep ? $min_substep + 499 : $max_substep
 			'ignore_ids' => $ignore_ids,
 		)
 	);
@@ -65,14 +66,15 @@ function shd_repair_attachments_nomsg(&$ignore_ids, $min_substep, $max_substep)
  *	If we are deleting an attachment, check if we should handle this.
  *
  *	@since 2.1
- *	@param array &$listOptions The listOptions of attachments page.
- *	@param array &$titles All the sections we have.
- *	@param array &$list_title List title.
+ *	@param array &$filesRemoved The files we removed.
+ *	@param array &$attachments Attachments we should check to see if we can remove them.
 */
 function shd_attachment_remove(&$filesRemoved, $attachments)
 {
 	if (in_array($_REQUEST['type'], array('shd_attach', 'shd_thumb')) && !empty($attachments))
-		$messages = removeAttachments(array('id_attach' => $attachments), '', true);
+		$idsRemoved = removeAttachments(array('id_attach' => $attachments), '', true);
+
+	$filesRemoved = array_merge($filesRemoved, $idsRemoved);
 }
 
 /**

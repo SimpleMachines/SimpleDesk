@@ -182,7 +182,7 @@ function shd_search2()
 	}
 
 	// Ticket assigned to
-	$assignees = shd_get_named_people('assignee');
+	$assignees = shd_get_named_people('assigned');
 	if (!empty($assignees))
 	{
 		$context['search_clauses'][] = 'hdt.id_member_assigned IN ({array_int:member_assigned})';
@@ -246,19 +246,21 @@ function shd_search2()
 			WHERE ' . implode(' AND ', $context['search_clauses']) . ' LIMIT 1000',
 			$context['search_params']
 		);
-		list($count) = $smcFunc['db_fetch_row']($query);
-		if ($count == 0)
+		list($context['num_results']) = $smcFunc['db_fetch_row']($query);
+		if ($context['num_results'] == 0)
 		{
 			$smcFunc['db_free_result']($query);
 			return $context['sub_template'] = 'search_no_results';
 		}
+
 		// OK, at least one result, awesome. Are we off the end of the list?
-		if ($context['search_params']['start'] > $count)
+		if ($context['search_params']['start'] > $context['num_results'])
 		{
-			$context['search_params']['start'] = $count - ($count % $number_per_page);
+			$context['search_params']['start'] = $context['num_results'] - ($context['num_results'] % $number_per_page);
 			$context['pagenum'] = ($context['search_params']['start'] / $number_per_page) + 1;
-			$context['num_results'] = $count;
 		}
+		else
+			$context['pagenum'] = 1;
 
 		$query = shd_db_query('', '
 			SELECT hdt.id_ticket, hdt.id_dept, hdd.dept_name, hdt.subject, hdt.urgency, hdt.private, hdt.last_updated, hdtr.body,
@@ -405,19 +407,21 @@ function shd_search2()
 			WHERE ' . implode(' AND ', $context['search_clauses']) . ' LIMIT 1000',
 			$context['search_params']
 		);
-		list($count) = $smcFunc['db_fetch_row']($query);
-		if ($count == 0)
+		list($context['num_results']) = $smcFunc['db_fetch_row']($query);
+		if ($context['num_results'] == 0)
 		{
 			$smcFunc['db_free_result']($query);
 			return $context['sub_template'] = 'search_no_results';
 		}
+
 		// OK, at least one result, awesome. Are we off the end of the list?
-		if ($context['search_params']['start'] > $count)
+		if ($context['search_params']['start'] > $context['num_results'])
 		{
-			$context['search_params']['start'] = $count - ($count % $number_per_page);
+			$context['search_params']['start'] = $context['num_results'] - ($context['num_results'] % $number_per_page);
 			$context['pagenum'] = ($context['search_params']['start'] / $number_per_page) + 1;
-			$context['num_results'] = $count;
 		}
+		else
+			$context['pagenum'] = 1;
 
 		// Get the results for displaying.
 		$query = shd_db_query('', '
@@ -452,7 +456,7 @@ function shd_search2()
 
 function shd_get_named_people($field)
 {
-	global $smcFunc, $sourcedir, $context;
+	global $smcFunc, $sourcedir, $context, $user_profile;
 
 	if (!isset($context['named_people']))
 		$context['named_people'] = array();
@@ -461,10 +465,16 @@ function shd_get_named_people($field)
 
 	$members = array();
 	// First look for the autosuggest values.
-	if (!empty($_POST[$field . '_name_from']) && is_array($_POST[$field . '_name_from']))
-		foreach ($_POST['starter_name_from'] as $member)
+	if (!empty($_POST[$field . '_name_form']) && is_array($_POST[$field . '_name_form']))
+	{
+		foreach ($_POST[$field . '_name_form'] as $member)
 			if ((int) $member > 0)
 				$members[] = (int) $member;
+
+		foreach(loadMemberData($members, false, 'minimal') as $id_member)
+			if (!isset($context['named_people'][$id_member]))
+				$context['named_people'][$id_member] = $user_profile[$id_member]['real_name'];
+	}
 
 	// Failing that, let's look at the name itself for those without JS.
 	if (!empty($_POST[$field . '_name']))
@@ -485,23 +495,12 @@ function shd_get_named_people($field)
 		{
 			$foundMembers = findMembers($namedlist);
 
-			// Assume all are not found, until proven otherwise.
-			$namesNotFound[$recipientType] = $namedlist;
-
 			foreach ($foundMembers as $member)
 			{
-				$testNames = array(
-					$smcFunc['strtolower']($member['username']),
-					$smcFunc['strtolower']($member['name']),
-					$smcFunc['strtolower']($member['email']),
-				);
+				$members[] = $member['id'];
 
-				if (count(array_intersect($testNames, $namedRecipientList[$recipientType])) !== 0)
-				{
-					$members[] = $member['id'];
-
-					$context['named_people'][$member['id']] = $member['real_name'];
-				}
+				if (!isset($context['named_people'][$member['id']]))
+					$context['named_people'][$member['id']] = $member['name'];
 			}
 		}
 	}

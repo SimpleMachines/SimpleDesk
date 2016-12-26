@@ -1515,7 +1515,7 @@ function shd_prepare_reply_context()
 		$memberContext[$message['id_member']]['email'] = $message['poster_email'];
 		$memberContext[$message['id_member']]['show_email'] = showEmailAddress(true, 0);
 		$memberContext[$message['id_member']]['is_guest'] = true;
-		$memberContext[$message['id_member']]['group_stars'] = '';
+		$memberContext[$message['id_member']]['group_icons'] = '';
 	}
 	$memberContext[$message['id_member']]['ip'] = $message['poster_ip'];
 
@@ -1646,7 +1646,9 @@ function shd_check_attachments()
 				{
 					$deleted_attachments = true;
 					unset($_SESSION['temp_attachments'][$attachID]);
-					@unlink($current_attach_dir . '/' . $attachID);
+
+					if (file_exists($current_attach_dir . '/' . $attachID) && is_writable($current_attach_dir . '/' . $attachID))
+						unlink($current_attach_dir . '/' . $attachID);
 					continue;
 				}
 
@@ -1731,7 +1733,8 @@ function shd_check_attachments()
 						{
 							// Temp file is more than 5 hours old!
 							if (filemtime($current_attach_dir . '/' . $file) < time() - 18000)
-								@unlink($current_attach_dir . '/' . $file);
+								if (file_exists($current_attach_dir . '/' . $file) && is_writable($current_attach_dir . '/' . $file))
+									unlink($current_attach_dir . '/' . $file);
 							continue;
 						}
 
@@ -1898,7 +1901,9 @@ function shd_handle_attachments()
 				if (!empty($_POST['attach_del']) && !in_array($attachID, $_POST['attach_del']))
 				{
 					unset($_SESSION['temp_attachments'][$attachID]);
-					@unlink($current_attach_dir . '/' . $attachID);
+
+					if (file_exists($current_attach_dir . '/' . $attachID) && is_writable($current_attach_dir . '/' . $attachID))
+						unlink($current_attach_dir . '/' . $attachID);
 					continue;
 				}
 
