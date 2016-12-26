@@ -262,6 +262,20 @@ function shd_stats_totals()
 {
 	global $smcFunc;
 
+	// Count Admins separately for now.!
+	$admins = array();
+	$request = $smcFunc['db_query']('', '
+		SELECT id_member
+		FROM {db_prefix}members
+		WHERE id_group = {int:admin} OR FIND_IN_SET({int:admin}, additional_groups)',
+		array(
+			'admin' => 1
+	));
+
+	while ($row = $smcFunc['db_fetch_assoc']($request))
+		$admins[] = $row['id_member'];
+	$smcFunc['db_free_result']($request);
+
 	// @TODO: This most likely will filesort and be slow on large helpdesks.
 	$request = $smcFunc['db_query']('', '
 		SELECT COUNT(mem.id_member) AS count, hdr.template
@@ -285,25 +299,9 @@ function shd_stats_totals()
 		$totals[$row['template']] = $row['count'];
 	$smcFunc['db_free_result']($request);
 
-	// Count Admins separately for now.!
-	$admins = array();
+	// Add in the admins.
 	if (empty($totals[ROLE_ADMIN]))
-	{
-		$request = $smcFunc['db_query']('', '
-			SELECT id_member
-			FROM {db_prefix}members
-			WHERE id_group = {int:admin} OR FIND_IN_SET({int:admin}, additional_groups)',
-			array(
-				'admin' => 1
-		));
-
-		while ($row = $smcFunc['db_fetch_assoc']($request))
-			$admins[] = $row['id_member'];
-		$smcFunc['db_free_result']($request);
-
-		// Add in the admins.
 		$totals[ROLE_ADMIN] += count($admins);
-	}
 
 	return $totals;
 }
