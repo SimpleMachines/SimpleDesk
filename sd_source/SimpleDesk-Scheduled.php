@@ -49,7 +49,9 @@ function shd_scheduled_close_tickets()
 {
 	global $modSettings, $smcFunc, $txt;
 
-	@set_time_limit(600); // Ten minutes. Is a big job, possibly.
+	// Ten minutes. Is a big job, possibly.
+	if (function_exists('set_time_limit'))
+		set_time_limit(600);
 
 	// 1. Get the list of tickets.
 	$query = $smcFunc['db_query']('', '
@@ -141,7 +143,9 @@ function shd_scheduled_purge_tickets()
 	if (empty($modSettings['shd_autopurge_tickets']) || empty($modSettings['shd_autopurge_tickets_days']))
 		return;
 
-	@set_time_limit(600); // Ten minutes. Is a big job, possibly.
+	// Ten minutes. Is a big job, possibly.
+	if (function_exists('set_time_limit'))
+		set_time_limit(600);
 
 	// 1. Get the list of deleted tickets.
 	$query = $smcFunc['db_query']('', '

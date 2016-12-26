@@ -201,7 +201,8 @@ function shd_perma_delete()
 	checkSession('get');
 
 	// This is heavy duty stuff.
-	@set_time_limit(0);
+	if (function_exists('set_time_limit'))
+		set_time_limit(0);
 	if (is_callable('apache_reset_timeout'))
 		apache_reset_timeout();
 

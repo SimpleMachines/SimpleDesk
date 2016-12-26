@@ -313,7 +313,8 @@ function shd_tickettotopic2()
 	$msg_assoc = array();
 
 	// This is complex, very complex. Hopefully 5 minutes will be enough...
-	@set_time_limit(300);
+	if (function_exists('set_time_limit'))
+		set_time_limit(300);
 
 	// Make sure they can see the board they are trying to move to (and get whether posts count in the target board).
 	$request = shd_db_query('', '
