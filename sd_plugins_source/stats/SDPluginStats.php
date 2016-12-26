@@ -237,6 +237,7 @@ function shd_stats_average()
 	);
 
 	foreach ($actions as $action)
+	{
 		$request = $smcFunc['db_query']('', '
 			SELECT AVG(la.id_ticket) AS count, t.status
 			FROM {db_prefix}helpdesk_log_action AS la
@@ -248,9 +249,10 @@ function shd_stats_average()
 				'24hrs' => 86400,
 		));
 
-	while ($row = $smcFunc['db_fetch_assoc']($request))
-		$average[$row['status']] = $row['count'];
-	$smcFunc['db_free_result']($request);
+		while ($row = $smcFunc['db_fetch_assoc']($request))
+			$average[$row['status']] = $row['count'];
+		$smcFunc['db_free_result']($request);
+	}
 
 	return $average;
 }
@@ -259,24 +261,6 @@ function shd_stats_average()
 function shd_stats_totals()
 {
 	global $smcFunc;
-
-	// Count Admins separately for now.!
-	$admins = array();
-	if (empty($totals[ROLE_ADMIN]))
-	{
-		$request = $smcFunc['db_query']('', '
-			SELECT id_member
-			FROM {db_prefix}members
-			WHERE id_group = {int:admin} OR FIND_IN_SET({int:admin}, additional_groups)',
-			array(
-				'admin' => 1
-		));
-
-		while ($row = $smcFunc['db_fetch_assoc']($request))
-			$admins[] = $row['id_member'];
-
-		$smcFunc['db_free_result']($request);
-	}
 
 	// @TODO: This most likely will filesort and be slow on large helpdesks.
 	$request = $smcFunc['db_query']('', '
@@ -301,8 +285,25 @@ function shd_stats_totals()
 		$totals[$row['template']] = $row['count'];
 	$smcFunc['db_free_result']($request);
 
-	// Add in the admins.
-	$totals[ROLE_ADMIN] += count($admins);
+	// Count Admins separately for now.!
+	$admins = array();
+	if (empty($totals[ROLE_ADMIN]))
+	{
+		$request = $smcFunc['db_query']('', '
+			SELECT id_member
+			FROM {db_prefix}members
+			WHERE id_group = {int:admin} OR FIND_IN_SET({int:admin}, additional_groups)',
+			array(
+				'admin' => 1
+		));
+
+		while ($row = $smcFunc['db_fetch_assoc']($request))
+			$admins[] = $row['id_member'];
+		$smcFunc['db_free_result']($request);
+
+		// Add in the admins.
+		$totals[ROLE_ADMIN] += count($admins);
+	}
 
 	return $totals;
 }

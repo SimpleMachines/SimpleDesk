@@ -497,13 +497,6 @@ function shd_get_named_people($field)
 
 			foreach ($foundMembers as $member)
 			{
-				$testNames = array(
-					$smcFunc['strtolower']($member['username']),
-					$smcFunc['strtolower']($member['name']),
-					$smcFunc['strtolower']($member['email']),
-				);
-
-				
 				$members[] = $member['id'];
 
 				if (!isset($context['named_people'][$member['id']]))
