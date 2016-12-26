@@ -377,6 +377,7 @@ function shd_notify_users($notify_data)
 		)
 	);
 
+	$emails = array();
 	while ($row = $smcFunc['db_fetch_assoc']($query))
 	{
 		$needed_language = empty($row['lngfile']) || empty($modSettings['userLanguage']) ? $language : $row['lngfile'];

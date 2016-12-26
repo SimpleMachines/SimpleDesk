@@ -405,19 +405,21 @@ function shd_search2()
 			WHERE ' . implode(' AND ', $context['search_clauses']) . ' LIMIT 1000',
 			$context['search_params']
 		);
-		list($count) = $smcFunc['db_fetch_row']($query);
-		if ($count == 0)
+		list($context['num_results']) = $smcFunc['db_fetch_row']($query);
+		if ($context['num_results'] == 0)
 		{
 			$smcFunc['db_free_result']($query);
 			return $context['sub_template'] = 'search_no_results';
 		}
+
 		// OK, at least one result, awesome. Are we off the end of the list?
-		if ($context['search_params']['start'] > $count)
+		if ($context['search_params']['start'] > $context['num_results'])
 		{
-			$context['search_params']['start'] = $count - ($count % $number_per_page);
+			$context['search_params']['start'] = $context['num_results'] - ($context['num_results'] % $number_per_page);
 			$context['pagenum'] = ($context['search_params']['start'] / $number_per_page) + 1;
-			$context['num_results'] = $count;
 		}
+		else
+			$context['pagenum'] = 1;
 
 		// Get the results for displaying.
 		$query = shd_db_query('', '
@@ -484,9 +486,6 @@ function shd_get_named_people($field)
 		if (!empty($namedlist))
 		{
 			$foundMembers = findMembers($namedlist);
-
-			// Assume all are not found, until proven otherwise.
-			$namesNotFound[$recipientType] = $namedlist;
 
 			foreach ($foundMembers as $member)
 			{
