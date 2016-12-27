@@ -1493,7 +1493,7 @@ function shd_postbox($id, $message, $buttons, $width = '90%')
 function shd_prepare_reply_context()
 {
 	global $settings, $txt, $modSettings, $scripturl, $options, $user_info, $smcFunc;
-	global $memberContext, $context, $reply_request;
+	global $memberContext, $context, $reply_request, $user_profile;
 
 	if (empty($reply_request))
 		return false;
@@ -1723,7 +1723,11 @@ function shd_check_attachments()
 				{
 					// Make sure the directory isn't full.
 					$dirSize = 0;
-					$dir = @opendir($current_attach_dir) or fatal_lang_error('cant_access_upload_path', 'critical');
+
+					if (!is_dir($current_attach_dir))
+						fatal_lang_error('cant_access_upload_path', 'critical');
+
+					$dir = opendir($current_attach_dir) or fatal_lang_error('cant_access_upload_path', 'critical');
 					while ($file = readdir($dir))
 					{
 						if ($file == '.' || $file == '..')
@@ -1762,7 +1766,9 @@ function shd_check_attachments()
 
 				if (!move_uploaded_file($uplfile['tmp_name'], $destName))
 					fatal_lang_error('attach_timeout', 'critical');
-				@chmod($destName, 0644);
+
+				if (file_exists($destName) && is_writable($destName))
+					chmod($destName, 0644);
 			}
 		}
 	}
@@ -2038,7 +2044,7 @@ function shd_posting_additional_options()
 */
 function shd_check_dependencies()
 {
-	global $context, $smcFunc;
+	global $context, $smcFunc, $modSettings;
 
 	if (!empty($modSettings['shd_disable_relationships']))
 		return '';

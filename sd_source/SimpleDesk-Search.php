@@ -387,6 +387,7 @@ function shd_search2()
 						unset($matches['messages'][$ticket]);
 
 			// Now, we just have a list of tickets to play with. Let's put that together in a master list.
+			// !!! TODO: This doesn't make sense.
 			foreach ($matches['messages'] as $msg => $ticket_words)
 				$matches['id_msg'][$ticket] = true;
 			unset($matches['messages']);

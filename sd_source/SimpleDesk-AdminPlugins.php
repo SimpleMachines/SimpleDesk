@@ -64,62 +64,16 @@ function shd_admin_plugins()
 	}
 
 	// 2. Figure out what language stuff is going on
-	$master_langlist = array(
-		'albanian',
-		'arabic',
-		'bangla',
-		'bulgarian',
-		'catalan',
-		'chinese_simplified',
-		'chinese_traditional',
-		'croatian',
-		'czech',
-		'danish',
-		'dutch',
-		'english',
-		'english_british',
-		'finnish',
-		'french',
-		'galician',
-		'german',
-		'hebrew',
-		'hindi',
-		'hungarian',
-		'indonesian',
-		'italian',
-		'japanese',
-		'kurdish_kurmanji',
-		'kurdish_sorani',
-		'macedonian',
-		'malay',
-		'norwegian',
-		'persian',
-		'polish',
-		'portuguese_brazilian',
-		'portuguese_pt',
-		'romanian',
-		'russian',
-		'serbian_cyrillic',
-		'serbian_latin',
-		'slovak',
-		'spanish_es',
-		'spanish_latin',
-		'swedish',
-		'thai',
-		'turkish',
-		'ukrainian',
-		'urdu',
-		'uzbek_latin',
-		'vietnamese',
-	);
 	$langtemplates = array();
-	$langfilelist = @opendir($settings['default_theme_dir'] . '/languages/sd_plugins_lang/');
-	while ($langfile_entry = readdir($langfilelist))
+
+	if (is_dir($settings['default_theme_dir'] . '/languages/sd_plugins_lang/'))
 	{
-		if (preg_match('~([a-z0-9]+)\.([a-z\-\_]+)(-utf8)?\.php$~i', $langfile_entry, $matches))
-			$langtemplates[$matches[1]][$matches[2]] = true;
+		$langfilelist = opendir($settings['default_theme_dir'] . '/languages/sd_plugins_lang/');
+		while ($langfile_entry = readdir($langfilelist))
+			if (preg_match('~([a-z0-9]+)\.([a-z\-\_]+)(-utf8)?\.php$~i', $langfile_entry, $matches))
+				$langtemplates[$matches[1]][$matches[2]] = true;
+		closedir($langfilelist);
 	}
-	@closedir($langfilelist);
 
 	// 3. Figure out what shape the plugins are in
 	foreach ($plugins as $id => $plugin)

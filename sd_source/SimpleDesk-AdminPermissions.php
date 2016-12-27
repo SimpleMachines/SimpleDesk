@@ -273,7 +273,7 @@ function shd_admin_save_role()
 
 		shd_admin_log('admin_permissions', array(
 			'action' => 'delete_role',
-			'id' => $newrole,
+			'id' => $role,
 		));
 
 		// Bat out of hell

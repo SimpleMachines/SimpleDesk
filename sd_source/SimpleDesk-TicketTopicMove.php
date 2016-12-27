@@ -49,7 +49,7 @@ function shd_tickettotopic()
 
 	// Get ticket details - and kick it out if they shouldn't be able to see it.
 	$query = shd_db_query('', '
-		SELECT id_member_started, id_member_assigned, private, subject, deleted_replies, hdt.id_dept, hdd.dept_name
+		SELECT subject, deleted_replies, hdt.id_dept, hdd.dept_name
 		FROM {db_prefix}helpdesk_tickets AS hdt
 			INNER JOIN {db_prefix}helpdesk_depts AS hdd ON (hdt.id_dept = hdd.id_dept)
 		WHERE {query_see_ticket} AND id_ticket = {int:ticket}',
@@ -60,7 +60,7 @@ function shd_tickettotopic()
 
 	if ($row = $smcFunc['db_fetch_row']($query))
 	{
-		list($ticket_starter, $ticket_owner, $private, $subject, $deleted_replies, $dept, $dept_name) = $row;
+		list($subject, $deleted_replies, $dept, $dept_name) = $row;
 		$smcFunc['db_free_result']($query);
 	}
 	else
@@ -597,7 +597,7 @@ function shd_tickettotopic2()
 		if (isset($_POST['send_pm']))
 		{
 			$request = shd_db_query('pm_find_username', '
-				SELECT id_member, real_name
+				SELECT real_name
 				FROM {db_prefix}members
 				WHERE id_member = {int:user}
 				LIMIT 1',
@@ -605,7 +605,7 @@ function shd_tickettotopic2()
 					'user' => $owner,
 				)
 			);
-			list ($userid, $username) = $smcFunc['db_fetch_row']($request);
+			list ($username) = $smcFunc['db_fetch_row']($request);
 			$smcFunc['db_free_result']($request);
 
 			// Fix the content
@@ -1137,7 +1137,7 @@ function shd_topictoticket2()
 			require_once($sourcedir . '/Subs-Post.php');
 
 			$request = shd_db_query('pm_find_username', '
-				SELECT id_member, real_name
+				SELECT real_name
 				FROM {db_prefix}members
 				WHERE id_member = {int:user}
 				LIMIT 1',
@@ -1145,7 +1145,7 @@ function shd_topictoticket2()
 					'user' => $owner,
 				)
 			);
-			list ($userid, $username) = $smcFunc['db_fetch_row']($request);
+			list ($username) = $smcFunc['db_fetch_row']($request);
 			$smcFunc['db_free_result']($request);
 
 			// Fix the content
