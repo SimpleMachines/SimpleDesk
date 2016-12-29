@@ -39,7 +39,7 @@ function shd_unread_posts()
 	global $smcFunc, $context, $user_info, $sourcedir, $txt, $scripturl, $user_profile, $modSettings;
 
 	// Are we using Dragooon's very swish mobile theme, or other wireless? If so, disable this.
-	if (WIRELESS || (isset($_REQUEST['thememode']) && $_REQUEST['thememode'] == 'mobile') || (isset($_COOKIE['smf4m_cookie']) && $_COOKIE['smf4m_cookie'] == 'mobile'))
+	if ((isset($_REQUEST['thememode']) && $_REQUEST['thememode'] == 'mobile') || (isset($_COOKIE['smf4m_cookie']) && $_COOKIE['smf4m_cookie'] == 'mobile'))
 		$modSettings['shd_disable_unread'] = true;
 
 	// We're only displaying this to staff. We didn't do this check on bootstrapping, no sense doing it every page load.

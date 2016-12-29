@@ -1067,8 +1067,6 @@ function shd_determine_status($action, $starter_id = 0, $replier_id = 0, $replie
 */
 function shd_no_expand_pageindex($base_url, &$start, $max_value, $num_per_page, $flexible_start = false)
 {
-	
-//	return constructPageIndex($base_url, $start, $max_value, $num_per_page, $flexible_start);
 	return preg_replace('~<span class="expand_pages"([^<]+)~i', '<span style="font-weight: bold;"> ... ', constructPageIndex($base_url, $start, $max_value, $num_per_page, $flexible_start));
 }
 

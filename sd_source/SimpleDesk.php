@@ -1096,7 +1096,6 @@ function shd_helpdesk_listing()
 	{
 		foreach ($context['ticket_blocks'] as $block_id => $block)
 		{
-			$num_per_page = !empty($context['shd_preferences']['blocks_' . $block_key . '_count']) ? $context['shd_preferences']['blocks_' . $block_key . '_count'] : $context['items_per_page'];
 			$url_fragment = $base_url;
 
 			foreach ($block_list as $block_item)

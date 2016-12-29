@@ -1857,7 +1857,7 @@ function shd_handle_attachments()
 	// ...or attach a new file...
 	if (!empty($_FILES) || !empty($_SESSION['temp_attachments']))
 	{
-		if (!empty($FILES))
+		if (!empty($_FILES))
 			$_FILES = array_reverse($_FILES);
 
 		shd_is_allowed_to('shd_post_attachment');

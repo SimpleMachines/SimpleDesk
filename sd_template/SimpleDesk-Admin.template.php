@@ -130,15 +130,6 @@ function template_shd_admin()
 					echo '
 								<strong>', $group['title'], '</strong>', !empty($group['desc']) ? ' - <em class="smalltext">' . $group['desc'] . '</em>' : '', '<hr>';
 
-					/*// Try to make this read nicely.
-					if (count($group['members']) <= 2)
-						echo implode(' ' . $txt['shd_credits_and'] . ' ', $group['members']);
-					else
-					{
-						$last_peep = array_pop($group['members']);
-						echo implode(', ', $group['members']), ', ', $txt['shd_credits_and'], ' ', $last_peep;
-					}*/
-
 					$cur_member = 1;
 					foreach ($group['members'] AS $member)
 					{
@@ -709,7 +700,7 @@ function template_shd_admin_log()
 	if (empty($context['actions']))
 		echo '
 			<tr class="windowbg">
-				<td ', $action['can_remove'] && $context['can_delete'] ? 'colspan="6"' : 'colspan="5"',' class="shd_noticket">', $txt['shd_admin_actionlog_none'], '</td>
+				<td ', $context['can_delete'] ? 'colspan="6"' : 'colspan="5"',' class="shd_noticket">', $txt['shd_admin_actionlog_none'], '</td>
 			</tr>';
 	else
 	{
@@ -729,7 +720,7 @@ function template_shd_admin_log()
 
 	echo '
 			<tr class="windowbg">
-				<td ', $action['can_remove'] && $context['can_delete'] ? 'colspan="6"' : 'colspan="5"','>
+				<td ', $context['can_delete'] ? 'colspan="6"' : 'colspan="5"','>
 					<span class="floatright smalltext">', $context['page_index'], '</span>
 					<span class="smalltext shd_empty_log"><img src="', $settings['default_images_url'], '/simpledesk/delete.png" alt="X" /> <a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=adminlog', $context['url_sort'], $context['url_order'], ';removeall" onclick="return confirm(', JavaScriptEscape(sprintf($txt['shd_admin_actionlog_removeall_confirm'], $context['daysdisable'])), ');">', $txt['shd_admin_actionlog_removeall'], '</a></span>
 				</td>

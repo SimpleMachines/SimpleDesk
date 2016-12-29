@@ -446,7 +446,6 @@ function shd_profile_show_tickets($memID)
 	list ($item_count) = $smcFunc['db_fetch_row']($request);
 	$smcFunc['db_free_result']($request);
 
-	$reverse = false;
 	$max_index = (int) $modSettings['defaultMaxMessages'];
 
 	// A little page index to help us along the way!

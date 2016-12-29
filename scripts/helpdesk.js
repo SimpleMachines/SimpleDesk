@@ -253,7 +253,7 @@ shd_attach_select.prototype.checkActive = function()
 {
 	var elements = document.getElementsByTagName('input');
 	var session_attach = 0;
-	for (i in elements)
+	for (var i in elements)
 	{
 		if (elements[i] && elements[i].type == 'checkbox' && elements[i].name == 'attach_del[]' && elements[i].checked == true)
 			session_attach++;
