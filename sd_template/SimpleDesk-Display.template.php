@@ -695,10 +695,6 @@ function template_inline_attachments($msg)
 	{
 		echo '
 							<table width="90%">';
-		/*echo '
-							<div class="smalltext">
-								<strong>', $txt['shd_ticket_attachments'], '</strong><br>
-								<ul class="shd_replyattachments">';*/
 
 		$count = 0;
 		$firstrow = true;
@@ -745,9 +741,6 @@ function template_inline_attachments($msg)
 			$firstrow = false;
 		}
 
-		/*echo '
-								</ul>
-							</div>';*/
 		echo '
 							</table>';
 	}

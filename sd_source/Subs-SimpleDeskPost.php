@@ -135,7 +135,6 @@ function shd_create_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 		$msgOptions['modified']['id'] = empty($msgOptions['modified']['id']) ? 0 : (int) $msgOptions['modified']['id'];
 		$msgOptions['modified']['name'] = empty($msgOptions['modified']['name']) ? '' : $msgOptions['modified']['name'];
 
-		$cancel = false;
 		if (empty($msgOptions['modified']['time']) || (empty($msgOptions['modified']['name']) && empty($msgOptions['modified']['id'])))
 			$modified = false;
 

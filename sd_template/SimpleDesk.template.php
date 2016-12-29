@@ -519,7 +519,6 @@ function template_shd_menu_header($header, $string)
 		if (isset($_REQUEST['st_' . $block_key]))
 			$link .= ';st_' . $block_key . '=' . $block['start'];
 
-	$direction = 'down';
 	// Now for sorting direction per block
 	foreach ($context['ticket_blocks'] as $block_key => $block)
 	{
@@ -568,7 +567,7 @@ function template_shd_maintenance_below()
 // Provide a placeholder in the event template_button_strip isn't defined (like in the mobile templates)
 if (!function_exists('template_button_strip'))
 {
-	function template_button_strip($navigation, $direction)
+	function template_button_strip($navigation, $direction = '', $strip_options = array())
 	{
 	}
 }

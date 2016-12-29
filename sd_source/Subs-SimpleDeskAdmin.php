@@ -73,8 +73,6 @@ function shd_load_action_log_entries($start = 0, $items_per_page = 10, $sort = '
 	shd_load_language('sd_language/SimpleDeskLogAction');
 	shd_load_language('sd_language/SimpleDeskNotifications');
 
-	$loaded_users = array();
-
 	// We may have to exclude some items from this depending on who the user is or is not. Forum/HD admins can always see everything.
 	$exclude = shd_action_log_exclusions();
 
@@ -714,13 +712,13 @@ function shd_admin_log_configvar($save_vars)
  *	@since 2.1
  *	@param string $section The area this was from.
  *	@param array $extra An array of extra elements, in the following format.
- *		@param (required) string $action The action performed.
- *		@param (optional) string $setting During a setting update, this is the variable we changed.
- *		@param (optional) string $type The subaction peformed or during a setting update, int/string/etc.
- *		@param (optional) int $id The ID of the item we performed the action on.
- *		@param (optional) string $direction During a reorder up/down operation which way we moved.
- *		@param (optional) int $to The ID of the destination item used during copy/move operation.
- *		@param (optional) int $from The ID of the source item used during the copy/move operation
+ *		(required) string $action The action performed.
+ *		(optional) string $setting During a setting update, this is the variable we changed.
+ *		(optional) string $type The subaction peformed or during a setting update, int/string/etc.
+ *		(optional) int $id The ID of the item we performed the action on.
+ *		(optional) string $direction During a reorder up/down operation which way we moved.
+ *		(optional) int $to The ID of the destination item used during copy/move operation.
+ *		(optional) int $from The ID of the source item used during the copy/move operation
 */
 function shd_admin_log($action, $extra)
 {
@@ -778,8 +776,6 @@ function shd_load_admin_log_entries($start = 0, $items_per_page = 10, $sort = 'l
 	shd_load_language('sd_language/SimpleDeskAdmin');
 	shd_load_language('sd_language/SimpleDeskLogAction');
 	shd_load_language('sd_language/SimpleDeskNotifications');
-
-	$loaded_users = array();
 
 	$request = shd_db_query('','
 		SELECT la.id_action, la.log_time, la.ip, la.action, la.extra,

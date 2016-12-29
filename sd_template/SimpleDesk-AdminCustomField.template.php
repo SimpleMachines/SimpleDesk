@@ -238,7 +238,6 @@ function template_shd_custom_field_edit()
 	foreach ($context['field_icons'] as $icon)
 	{
 		list($file, $desc) = $icon;
-		$path = $settings['default_theme_dir'] . '/images/simpledesk/' . $file;
 		echo '
 									<option value="', $file, '"', $context['field_icon_value'] == $file ? ' selected="selected"' : '','>', $desc, '</option>';
 	}
@@ -293,7 +292,7 @@ function template_shd_custom_field_edit()
 
 	foreach ($context['field_types'] as $field => $details)
 	{
-		list($field_desc, $class) = $details;
+		list($field_desc,) = $details;
 		echo '
 									<option value="', $field, '"', ($context['field_type_value'] == $field ? ' selected="selected"' : ''), '>', $field_desc, '</option>';
 	}
