@@ -127,7 +127,7 @@ function shd_view_ticket()
 	$ticketinfo = shd_load_ticket();
 
 	// How much are we sticking on each page?
-	$context['messages_per_page'] = empty($modSettings['disableCustomPerPage']) && !empty($options['messages_per_page']) && !WIRELESS ? $options['messages_per_page'] : $modSettings['defaultMaxMessages'];
+	$context['messages_per_page'] = empty($modSettings['disableCustomPerPage']) && !empty($options['messages_per_page']) ? $options['messages_per_page'] : $modSettings['defaultMaxMessages'];
 
 	censorText($ticketinfo['subject']);
 	censorText($ticketinfo['body']);
