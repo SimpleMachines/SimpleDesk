@@ -335,4 +335,79 @@ function template_search_results()
 		</div>
 	</div>';
 	}
+
+	// Some buttons.
+	echo '
+	<div class="search_results_posts">
+		<div class="windowbg">';
+
+	template_search_navigation('prev');
+	template_search_navigation('next');
+
+	echo '
+		</div>
+	</div>';
+}
+
+function template_search_navigation($direction = 'next')
+{
+	global $scripturl, $context, $txt, $smcFunc;
+
+	if ($direction == 'prev' && empty($context['prev_page']))
+		return;
+
+	echo '
+	<form method="post" action="', $scripturl, '?action=helpdesk;sa=search2">';
+
+	// Departments.
+	if (count($context['dept_list']) == 1)
+	{
+		$array = array_keys($context['dept_list']);
+		echo '
+		<input type="hidden" name="search_dept[]" value="', $array[0], '" />';
+	}
+	elseif (isset($context['search_params']['visible_depts']))
+		foreach ($context['search_params']['visible_depts'] as $dept)
+		echo '
+		<input type="hidden" name="search_dept[]" value="', $dept, '">';
+
+	// Some search areas.
+	if (isset($context['search_params']['areas']))
+		foreach ($context['search_params']['areas'] as $area => $dummy)
+		echo '
+		<input type="hidden" name="search_', $area, '" value="1">';
+
+	// Standard search params arrays.
+	foreach (array('urgency', 'starter_name_form', 'assigned_name_form') as $param)
+		if (isset($context['search_params'][$param]))
+			foreach ($context['search_params'][$param] as $value)
+				echo '
+		<input type="hidden" name="', $param, '[]" value="', $value, '">';
+	
+	// Standard search params bools.
+	foreach (array('scope_open', 'scope_closed', 'scope_recycle') as $param)
+		if (!empty($context['search_params'][$param]))
+			echo '
+		<input type="hidden" name="', $param, '" value="1">';
+
+	// Standard search params strings.
+	foreach (array('searchtype') as $param)
+		if (!empty($context['search_params'][$param]))
+			echo '
+		<input type="hidden" name="', $param, '" value="', $context['search_params'][$param], '">';
+
+	// Search terms.
+	echo '
+		<input type="hidden" name="search" value="', $smcFunc['htmlspecialchars']($context['search_terms']), '">';
+
+	if ($direction == 'prev')
+		echo '
+		<input type="hidden" name="page" value="', $context['prev_page'], '" />
+		<input type="submit" value="Previous" onclick="return submitThisOnce(this);" accesskey="s" class="button_submit floatleft" />';
+	else
+		echo '
+		<input type="hidden" name="page" value="', $context['next_page'], '" />
+		<input type="submit" value="Next" onclick="return submitThisOnce(this);" accesskey="s" class="button_submit" />';
+
+	echo '</form>';
 }

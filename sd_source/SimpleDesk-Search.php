@@ -129,6 +129,23 @@ function shd_search2()
 			$smcFunc['db_free_result']($query);
 		}
 	}
+	else
+	{
+		$visible_depts = shd_allowed_to('access_helpdesk', false);
+		$context['dept_list'] = array();
+		$query = $smcFunc['db_query']('', '
+			SELECT id_dept, dept_name
+			FROM {db_prefix}helpdesk_depts
+			WHERE id_dept IN ({array_int:depts})
+			ORDER BY dept_order',
+			array(
+				'depts' => $visible_depts,
+			)
+		);
+		while ($row = $smcFunc['db_fetch_assoc']($query))
+			$context['dept_list'][$row['id_dept']] = $row['dept_name'];
+		$smcFunc['db_free_result']($query);
+	}
 
 	// Ticket urgency
 	$using_urgency = array();
@@ -161,11 +178,20 @@ function shd_search2()
 	{
 		$status = array();
 		if (!empty($_POST['scope_open']))
+		{
 			$status = array_merge($status, array(TICKET_STATUS_NEW, TICKET_STATUS_PENDING_STAFF, TICKET_STATUS_PENDING_USER, TICKET_STATUS_WITH_SUPERVISOR, TICKET_STATUS_ESCALATED));
+			$context['search_params']['scope_open'] = true;
+		}
 		if (!empty($_POST['scope_closed']))
+		{
 			$status = array_merge($status, array(TICKET_STATUS_CLOSED));
+			$context['search_params']['scope_closed'] = true;
+		}
 		if (!empty($_POST['scope_recycle']))
+		{
 			$status = array_merge($status, array(TICKET_STATUS_DELETED));
+			$context['search_params']['scope_recycle'] = true;
+		}
 
 		$context['search_clauses'][] = 'hdt.status IN ({array_int:status})';
 		$context['search_params']['status'] = $status;
@@ -195,6 +221,10 @@ function shd_search2()
 	if (empty($context['pagenum']) || $context['pagenum'] < 1)
 		$context['pagenum'] = 1;
 
+	// Pages.
+	$context['next_page'] = $context['pagenum'] + 1;
+	$context['prev_page'] = $context['pagenum'] < 2 ? 0 :  $context['pagenum'] - 1;
+
 	$number_per_page = 20;
 
 	// OK, so are there any words? If not, execute this sucker the quick way and get out to the template quick.
@@ -222,6 +252,9 @@ function shd_search2()
 			unset($context['search_params']['areas']);
 		}
 	}
+
+	// Search type.
+	$context['search_params']['searchtype'] = in_array($_POST['searchtype'], array('any', 'all')) ? $_POST['searchtype'] : 'all';
 
 	// Spam me not!
 	if (empty($_SESSION['lastsearch']))
@@ -387,9 +420,8 @@ function shd_search2()
 						unset($matches['messages'][$ticket]);
 
 			// Now, we just have a list of tickets to play with. Let's put that together in a master list.
-			// !!! TODO: This doesn't make sense.
 			foreach ($matches['messages'] as $msg => $ticket_words)
-				$matches['id_msg'][$ticket] = true;
+				$matches['id_msg'][$msg] = true;
 			unset($matches['messages']);
 		}
 
