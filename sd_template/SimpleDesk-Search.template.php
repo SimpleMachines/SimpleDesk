@@ -307,11 +307,6 @@ function template_search_results()
 		</h3>
 	</div>';
 
-	// Page navigation. It's not your usual page index, and with good reason: we can't use regular links here without risking server hammering.
-	$num_pages = ceil($context['num_results'] / $context['search_params']['limit']);
-	$pages = array();
-	for ($page = $context['pagenum'] - 2; $page <= $context['pagenum'] + 2; $page++)
-		$pages[] = $page;
 
 	// The rest of it would go here, in a nice form that carried everything through for next time, with a button named page whose value would be the page number for each page (plus prev/next) you wanted to display
 
@@ -342,6 +337,15 @@ function template_search_results()
 		<div class="windowbg">';
 
 	template_search_navigation('prev');
+
+	echo '<div style="width: 50%; margin: 0 auto;">';
+
+	// Page navigation. It's not your usual page index, and with good reason: we can't use regular links here without risking server hammering.
+	for ($page = $context['current_page'] - 2; $page <= $context['current_page'] + 2; $page++)
+		template_search_navigation($page);
+
+	echo '</div>';
+
 	template_search_navigation('next');
 
 	echo '
@@ -349,11 +353,16 @@ function template_search_results()
 	</div>';
 }
 
-function template_search_navigation($direction = 'next')
+function template_search_navigation($page = 'next')
 {
 	global $scripturl, $context, $txt, $smcFunc;
 
-	if ($direction == 'prev' && empty($context['prev_page']))
+	// Handle the page check.
+	if ($page == 'prev' && empty($context['prev_page']))
+		return;
+	elseif  ($page == 'next' && $context['current_page'] >= $context['num_pages'])
+		return;
+	elseif  (is_int($page) && ($page < 1 || $page >= $context['num_pages']))
 		return;
 
 	echo '
@@ -400,14 +409,18 @@ function template_search_navigation($direction = 'next')
 	echo '
 		<input type="hidden" name="search" value="', $smcFunc['htmlspecialchars']($context['search_terms']), '">';
 
-	if ($direction == 'prev')
+	if ($page === 'prev')
 		echo '
 		<input type="hidden" name="page" value="', $context['prev_page'], '" />
-		<input type="submit" value="Previous" onclick="return submitThisOnce(this);" accesskey="s" class="button_submit floatleft" />';
+		<input type="submit" value="Previous" onclick="return submitThisOnce(this);" class="button_submit floatleft" />';
+	elseif (is_int($page) && $page > 0)
+		echo '
+		<input type="hidden" name="page" value="', $page, '" />
+		<input type="submit" value="Page ', $page, '" onclick="return submitThisOnce(this);" class="button_submit floatleft', $context['current_page'] == $page ? ' active' : '', '" />';
 	else
 		echo '
 		<input type="hidden" name="page" value="', $context['next_page'], '" />
-		<input type="submit" value="Next" onclick="return submitThisOnce(this);" accesskey="s" class="button_submit" />';
+		<input type="submit" value="Next" onclick="return submitThisOnce(this);" class="button_submit" />';
 
 	echo '</form>';
 }

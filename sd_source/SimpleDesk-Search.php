@@ -222,10 +222,12 @@ function shd_search2()
 		$context['pagenum'] = 1;
 
 	// Pages.
+	$context['current_page'] = $context['pagenum'];
 	$context['next_page'] = $context['pagenum'] + 1;
 	$context['prev_page'] = $context['pagenum'] < 2 ? 0 :  $context['pagenum'] - 1;
 
 	$number_per_page = 20;
+	$context['num_pages'] = 1;
 
 	// OK, so are there any words? If not, execute this sucker the quick way and get out to the template quick.
 	$context['search_terms'] = !empty($_POST['search']) ? trim($_POST['search']) : '';
@@ -294,6 +296,8 @@ function shd_search2()
 		}
 		else
 			$context['pagenum'] = 1;
+
+		$context['num_pages'] = ceil($context['num_results'] / $number_per_page);
 
 		$query = shd_db_query('', '
 			SELECT hdt.id_ticket, hdt.id_dept, hdd.dept_name, hdt.subject, hdt.urgency, hdt.private, hdt.last_updated, hdtr.body,
@@ -455,6 +459,8 @@ function shd_search2()
 		}
 		else
 			$context['pagenum'] = 1;
+
+		$context['num_pages'] = ceil($context['num_results'] / $number_per_page);
 
 		// Get the results for displaying.
 		$query = shd_db_query('', '
