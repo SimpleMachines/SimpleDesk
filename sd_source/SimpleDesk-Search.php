@@ -27,6 +27,11 @@
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
+/**
+ *	The main search handling for tickets, just sets up stuff.
+ *
+ *	@since 1.0
+*/
 function shd_search()
 {
 	global $context, $smcFunc, $txt, $modSettings, $scripturl;
@@ -62,6 +67,11 @@ function shd_search()
 	);
 }
 
+/**
+ *	All the heavy lifting for search is handled here.
+ *
+ *	@since 1.0
+*/
 function shd_search2()
 {
 	global $context, $smcFunc, $txt, $modSettings, $scripturl, $sourcedir;
@@ -224,7 +234,7 @@ function shd_search2()
 	// Pages.
 	$context['current_page'] = $context['pagenum'];
 	$context['next_page'] = $context['pagenum'] + 1;
-	$context['prev_page'] = $context['pagenum'] < 2 ? 0 :  $context['pagenum'] - 1;
+	$context['prev_page'] = $context['pagenum'] < 2 ? 0 : $context['pagenum'] - 1;
 
 	$number_per_page = 20;
 	$context['num_pages'] = 1;
@@ -493,6 +503,12 @@ function shd_search2()
 	}
 }
 
+/**
+ *	Finds all members specified in a input field and returns their id_member.
+ *
+ *	@since 1.0
+ *	@param array $field The input field containing the names from a SMF autocomplete member box
+*/
 function shd_get_named_people($field)
 {
 	global $smcFunc, $sourcedir, $context, $user_profile;
@@ -510,7 +526,7 @@ function shd_get_named_people($field)
 			if ((int) $member > 0)
 				$members[] = (int) $member;
 
-		foreach(loadMemberData($members, false, 'minimal') as $id_member)
+		foreach (loadMemberData($members, false, 'minimal') as $id_member)
 			if (!isset($context['named_people'][$id_member]))
 				$context['named_people'][$id_member] = $user_profile[$id_member]['real_name'];
 	}

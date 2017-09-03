@@ -501,7 +501,7 @@ function shd_ajax_assign()
 	$context['ajax_raw'] = '<response>';
 	foreach ($assignees as $assignee)
 		$context['ajax_raw'] .= '
-<member uid="' . $assignee . '"' . (!empty($assignee) ? (in_array($assignee, $admins) ? ' admin="yes"' : ' admin="no"') : '') . ($ticket_assigned == $assignee ? ' assigned="yes"' : '') . '><![CD' . 'ATA[' .(empty($assignee) ? '<span class="error">' . $txt['shd_unassigned'] . '</span>' : $user_profile[$assignee]['member_name']) . ']' . ']></member>';
+<member uid="' . $assignee . '"' . (!empty($assignee) ? (in_array($assignee, $admins) ? ' admin="yes"' : ' admin="no"') : '') . ($ticket_assigned == $assignee ? ' assigned="yes"' : '') . '><![CD' . 'ATA[' . (empty($assignee) ? '<span class="error">' . $txt['shd_unassigned'] . '</span>' : $user_profile[$assignee]['member_name']) . ']' . ']></member>';
 
 	$context['ajax_raw'] .= '
 </response>';

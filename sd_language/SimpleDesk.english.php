@@ -205,7 +205,7 @@ $txt['shd_category_filter'] = 'Category filtering';
 //! @name Messages
 //@{
 $txt['shd_ticket_posted_header'] = 'Your ticket has been created!';
-$txt['shd_ticket_posted_body'] = 'Thank you for posting your ticket, {membername}!' . "\n\n" . 'The helpdesk staff will review it and get back to you as soon as possible.' . "\n\n" . 'In the meantime, you can view your ticket, &quot;[iurl={ticketurl}]{subject}[/iurl]&quot; at the following URL:' . "\n" . '[iurl={ticketurl}]{ticketurl}[/iurl]' . "\n\n" .'[iurl={newticketlink}]Open another ticket[/iurl] | [iurl={helpdesklink}]Back to the main helpdesk[/iurl] | [iurl={forumlink}]Back to the forum[/iurl]';
+$txt['shd_ticket_posted_body'] = 'Thank you for posting your ticket, {membername}!' . "\n\n" . 'The helpdesk staff will review it and get back to you as soon as possible.' . "\n\n" . 'In the meantime, you can view your ticket, &quot;[iurl={ticketurl}]{subject}[/iurl]&quot; at the following URL:' . "\n" . '[iurl={ticketurl}]{ticketurl}[/iurl]' . "\n\n" . '[iurl={newticketlink}]Open another ticket[/iurl] | [iurl={helpdesklink}]Back to the main helpdesk[/iurl] | [iurl={forumlink}]Back to the forum[/iurl]';
 $txt['shd_ticket_posted_prefs'] = "\n\n" . 'You can turn on email notifications about changes to your ticket, in the [iurl={prefslink}]Helpdesk Preferences[/iurl] area.';
 $txt['shd_ticket_posted_footer'] = "\n\n" . 'Regards,' . "\n" . 'The {forum_name} Team.';
 //@}

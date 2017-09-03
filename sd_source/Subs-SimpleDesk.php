@@ -860,6 +860,9 @@ function shd_format_text($text, $smileys = true, $cache = '')
  *	Processes the incoming message for wiki-links.
  *
  *	@param string &$message The message to be parsed.
+ *	@param string &$smileys The Smileys sets.
+ *	@param array $cache_id Cache ids used by messages, currently not used.
+ *	@param array $parse_tags Tags to parse, currently not used.
  *	@since 2.0
 */
 function shd_parse_wikilinks(&$message, &$smileys = array(), &$cache_id = array(), &$parse_tags = array())
@@ -1714,7 +1717,7 @@ function shd_main_menu(&$menu_buttons)
 	if (empty($modSettings['helpdesk_active']))
 		return;
 
-    // Load some extra CSS
+	// Load some extra CSS
 	loadCSSFile('helpdesk_icons.css', array('minimize' => empty($context['shd_developer_mode']), 'seed' => $context['shd_css_version']), 'helpdesk_icons');
 
 	// Stuff we'll always do in SD if active
@@ -1978,6 +1981,12 @@ function shd_main_menu(&$menu_buttons)
 	call_integration_hook('shd_hook_mainmenu', array(&$menu_buttons));
 }
 
+/**
+ *	Adds to the Admin Center menu the helpdesk section buttons.
+ *
+ *	@since 2.1
+ *  @param bool $helpdesk_admin If they are a helpdesk admin or not.
+*/
 function shd_main_menu_admin($helpdesk_admin)
 {
 	global $txt, $scripturl;

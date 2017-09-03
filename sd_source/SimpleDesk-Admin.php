@@ -404,7 +404,7 @@ function shd_modify_display_options($return_config)
 		array('check', 'shd_hidemenuitem', 'subtext' => $txt['shd_hidemenuitem_note']),
 		'',
 		array('check', 'shd_disable_unread', 'subtext' => $txt['shd_disable_unread_note']),
-		array('check' , 'shd_disable_boardint', 'subtext' => $txt['shd_disable_boardint_note']),
+		array('check', 'shd_disable_boardint', 'subtext' => $txt['shd_disable_boardint_note']),
 		'',
 		array('select', 'shd_block_order_1', array('assigned' => $txt['shd_status_assigned_heading'], 'new' => $txt['shd_status_' . TICKET_STATUS_NEW . '_heading'], 'staff' => $txt['shd_status_' . TICKET_STATUS_PENDING_STAFF . '_heading'], 'user' => $txt['shd_status_' . TICKET_STATUS_PENDING_USER . '_heading']), 'subtext' => $txt['shd_block_order_note']),
 		array('select', 'shd_block_order_2', array('new' => $txt['shd_status_' . TICKET_STATUS_NEW . '_heading'], 'staff' => $txt['shd_status_' . TICKET_STATUS_PENDING_STAFF . '_heading'], 'user' => $txt['shd_status_' . TICKET_STATUS_PENDING_USER . '_heading'], 'assigned' => $txt['shd_status_assigned_heading']), 'subtext' => $txt['shd_block_order_note']),
@@ -516,8 +516,8 @@ function shd_modify_admin_options($return_config)
 		array('check', 'shd_staff_ticket_self'),
 		array('check', 'shd_admins_not_assignable', 'subtext' => $txt['shd_admins_not_assignable_note']),
 		array('select', 'shd_privacy_display', array('smart' => $txt['shd_privacy_display_smart'], 'always' => $txt['shd_privacy_display_always']), 'subtext' => $txt['shd_privacy_display_note']),
-		array('check' , 'shd_disable_tickettotopic', 'subtext' => $txt['shd_disable_tickettotopic_note'], 'disabled' => !empty($modSettings['shd_helpdesk_only'])),
-		array('check' , 'shd_disable_relationships', 'subtext' => $txt['shd_disable_relationships_note']),
+		array('check', 'shd_disable_tickettotopic', 'subtext' => $txt['shd_disable_tickettotopic_note'], 'disabled' => !empty($modSettings['shd_helpdesk_only'])),
+		array('check', 'shd_disable_relationships', 'subtext' => $txt['shd_disable_relationships_note']),
 	);
 	$context['settings_title'] = $txt['shd_admin_options_admin'];
 	$context['settings_icon'] = 'admin.png';
@@ -814,7 +814,7 @@ function shd_admin_action_log()
 	$context['start'] = isset($_REQUEST['start']) ? $_REQUEST['start'] : 0;
 	$context['order'] = isset($_REQUEST['asc']) ? 'ASC' : 'DESC';
 	$context['url_sort'] = isset($_REQUEST['sort']) ? ';sort=' . $_REQUEST['sort'] : '';
-	$context['url_order'] =  isset($_REQUEST['asc']) ? ';asc' : '';
+	$context['url_order'] = isset($_REQUEST['asc']) ? ';asc' : '';
 
 	// Get all action log entries
 	$context['actions'] = shd_load_action_log_entries($context['start'], $context['displaypage'], $context['sort'], $context['order']);
@@ -990,7 +990,7 @@ function shd_credits()
 						array('Ya&#x11F;izcan Arslan', false),
 						array('MultiformeIngegno', false),
 						array('flapjack', false),
-						array('feline',	false),
+						array('feline', false),
 						array('Sordell Media', false),
 						array('[FailSafe]', false),
 						array('chilly', false),
@@ -1002,10 +1002,10 @@ function shd_credits()
 					'desc' => '', // This group has its description included in the title.
 					'icon' => 'others.png',
 					'members' => array(
-						array('Fluffy - ' . sprintf($txt['shd_fluffy'],'onclick="window.location.href=\'' . $scripturl . '?action=admin;area=helpdesk_info;cookies\'"'),false),
-						array('<br>' . $txt['shd_credits_translators'],false),
-						array('<br>' . sprintf($txt['shd_credits_icons'], 'http://p.yusukekamiyamane.com/', 'http://wefunction.com/2008/07/function-free-icon-set/', 'http://www.famfamfam.com/lab/icons/flags/', 'http://www.everaldo.com/crystal/'),false),
-						array('<br>' . $txt['shd_credits_user'],false),
+						array('Fluffy - ' . sprintf($txt['shd_fluffy'], 'onclick="window.location.href=\'' . $scripturl . '?action=admin;area=helpdesk_info;cookies\'"'), false),
+						array('<br>' . $txt['shd_credits_translators'], false),
+						array('<br>' . sprintf($txt['shd_credits_icons'], 'http://p.yusukekamiyamane.com/', 'http://wefunction.com/2008/07/function-free-icon-set/', 'http://www.famfamfam.com/lab/icons/flags/', 'http://www.everaldo.com/crystal/'), false),
+						array('<br>' . $txt['shd_credits_user'], false),
 					),
 				),
 			),

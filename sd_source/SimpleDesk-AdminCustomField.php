@@ -705,7 +705,7 @@ function shd_admin_cf_icons()
 		if (strcasecmp($extension, 'gif') != 0 && strcasecmp($extension, 'jpg') != 0 && strcasecmp($extension, 'jpeg') != 0 && strcasecmp($extension, 'png') != 0 && strcasecmp($extension, 'bmp') != 0)
 			continue;
 
-		$iconlist[] = array(htmlspecialchars($filename. '.' .$extension),htmlspecialchars(str_replace('_', ' ', $filename)));
+		$iconlist[] = array(htmlspecialchars($filename . '.' . $extension), htmlspecialchars(str_replace('_', ' ', $filename)));
 	}
 
 	return $iconlist;
