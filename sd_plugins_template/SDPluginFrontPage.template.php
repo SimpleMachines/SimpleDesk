@@ -67,7 +67,7 @@ function template_shd_frontpage_admin()
 							</select>
 							</dd>
 					</dl>
-					<hr class="hrcolor" />
+					<hr>
 					<dl class="permsettings">
 						<dt style="width: 30%;">
 							<a id="setting_shdp_frontpage_type"></a> <span><label id="label_shdp_frontpage_type" for="shdp_frontpage_type">', $txt['shdp_frontpage_type'], '</label></span>
@@ -95,9 +95,9 @@ function template_shd_frontpage_admin()
 	echo '
 							</dd>
 						</dl>
-						<hr class="hrcolor" />
+						<hr>
 						<div class="righttext">
-							<input type="submit" value="', $txt['save'], '"', (!empty($context['save_disabled']) ? ' disabled="disabled"' : ''), (!empty($context['settings_save_onclick']) ? ' onclick="' . $context['settings_save_onclick'] . '"' : ''), ' class="button_submit" />
+							<input type="submit" value="', $txt['save'], '"', (!empty($context['save_disabled']) ? ' disabled="disabled"' : ''), (!empty($context['settings_save_onclick']) ? ' onclick="' . $context['settings_save_onclick'] . '"' : ''), ' class="button">
 						</div>
 
 					</div>
@@ -106,12 +106,12 @@ function template_shd_frontpage_admin()
 			</div>';
 	if (isset($context['admin-dbsc_token']))
 		echo '
-		<input type="hidden" name="', $context['admin-dbsc_token_var'], '" value="', $context['admin-dbsc_token'], '" />';
+		<input type="hidden" name="', $context['admin-dbsc_token_var'], '" value="', $context['admin-dbsc_token'], '">';
 	echo '
-		<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
+		<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">
 		</form>
 	</div>
-	<br class="clear" />';
+	<br>';
 	if (!empty($context['settings_post_javascript']))
 		echo '
 	<script type="text/javascript"><!-- // --><![CDATA[

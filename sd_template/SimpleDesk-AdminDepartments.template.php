@@ -84,9 +84,9 @@ function template_shd_departments_home()
 
 		echo '
 				</td>
-				<td>', empty($department['is_first']) ? ('<a href="' . $scripturl . '?action=admin;area=helpdesk_depts;sa=move;dept=' . $department['id_dept'] . ';direction=up;' . $context['session_var'] . '=' . $context['session_id'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/move_up.png" alt="' . $txt['shd_admin_move_up'] . '" title="' . $txt['shd_admin_move_up'] . '" /></a>') : '', '</td>
-				<td>', empty($department['is_last']) ? ('<a href="' . $scripturl . '?action=admin;area=helpdesk_depts;sa=move;dept=' . $department['id_dept'] . ';direction=down;' . $context['session_var'] . '=' . $context['session_id'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/move_down.png" alt="' . $txt['shd_admin_move_down'] . '" title="' . $txt['shd_admin_move_down'] . '" /></a>') : '', '</td>
-				<td><a href="', $scripturl, '?action=admin;area=helpdesk_depts;sa=editdept;dept=', $department['id_dept'], '"><img src="', $settings['default_images_url'], '/simpledesk/edit.png" class="icon" alt="', $txt['shd_edit_dept'],'" title="', $txt['shd_edit_dept'], '" /></a></td>';
+				<td>', empty($department['is_first']) ? ('<a href="' . $scripturl . '?action=admin;area=helpdesk_depts;sa=move;dept=' . $department['id_dept'] . ';direction=up;' . $context['session_var'] . '=' . $context['session_id'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/move_up.png" alt="' . $txt['shd_admin_move_up'] . '" title="' . $txt['shd_admin_move_up'] . '"></a>') : '', '</td>
+				<td>', empty($department['is_last']) ? ('<a href="' . $scripturl . '?action=admin;area=helpdesk_depts;sa=move;dept=' . $department['id_dept'] . ';direction=down;' . $context['session_var'] . '=' . $context['session_id'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/move_down.png" alt="' . $txt['shd_admin_move_down'] . '" title="' . $txt['shd_admin_move_down'] . '"></a>') : '', '</td>
+				<td><a href="', $scripturl, '?action=admin;area=helpdesk_depts;sa=editdept;dept=', $department['id_dept'], '"><img src="', $settings['default_images_url'], '/simpledesk/edit.png" class="icon" alt="', $txt['shd_edit_dept'],'" title="', $txt['shd_edit_dept'], '"></a></td>';
 
 		echo '
 			</tr>';
@@ -108,7 +108,7 @@ function template_shd_create_dept()
 	echo '
 		<div class="cat_bar">
 			<h3 class="catbg">
-				<img src="', $settings['default_images_url'], '/simpledesk/departments.png" class="icon" alt="*" />
+				<img src="', $settings['default_images_url'], '/simpledesk/departments.png" class="icon" alt="*">
 				', $txt['shd_admin_departments_home'], '
 			</h3>
 		</div>
@@ -117,7 +117,7 @@ function template_shd_create_dept()
 		</div>
 		<div class="cat_bar">
 			<h3 class="catbg">
-				<img src="', $settings['default_images_url'], '/simpledesk/position.png" alt="*" />
+				<img src="', $settings['default_images_url'], '/simpledesk/position.png" alt="*">
 				', $txt['shd_create_dept'], '
 			</h3>
 		</div>
@@ -125,7 +125,7 @@ function template_shd_create_dept()
 			<form action="', $scripturl, '?action=admin;area=helpdesk_depts;sa=createdept;part=2" method="post">
 				<dl class="settings">
 					<dt><strong>', $txt['shd_new_dept_name'], '</strong></dt>
-					<dd><input type="text" name="dept_name" id="dept_name" value="" class="input_text" size="30" /></dd>
+					<dd><input type="text" name="dept_name" id="dept_name" value=""  size="30"></dd>
 					<dt><strong>', $txt['shd_dept_description'], '</strong></dt>
 					<dd><textarea name="dept_desc" rows="3" cols="35" style="width: 99%"></textarea></dd>
 					<dt><strong>', $txt['shd_dept_boardindex_cat'], '</strong></dt>
@@ -147,9 +147,9 @@ function template_shd_create_dept()
 						</select>
 					</dd>
 				</dl>
-				<input type="submit" value="', $txt['shd_create_dept'], '" onclick="return submitThisOnce(this);" accesskey="s" class="button_submit" />
-				<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
-				<input type="hidden" name="seqnum" value="', $context['form_sequence_number'], '" />
+				<input type="submit" value="', $txt['shd_create_dept'], '" onclick="return submitThisOnce(this);" accesskey="s" class="button">
+				<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">
+				<input type="hidden" name="seqnum" value="', $context['form_sequence_number'], '">
 			</form>
 		</div>';
 }
@@ -162,7 +162,7 @@ function template_shd_edit_dept()
 		<form action="', $scripturl, '?action=admin;area=helpdesk_depts;sa=savedept" method="post">
 			<div class="cat_bar">
 				<h3 class="catbg">
-					<img src="', $settings['default_images_url'], '/simpledesk/departments.png" class="icon" alt="*" />
+					<img src="', $settings['default_images_url'], '/simpledesk/departments.png" class="icon" alt="*">
 					', $txt['shd_admin_departments_home'], '
 				</h3>
 			</div>
@@ -171,14 +171,14 @@ function template_shd_edit_dept()
 			</div>
 			<div class="cat_bar">
 				<h3 class="catbg">
-					<img src="', $settings['default_images_url'], '/simpledesk/position.png" alt="*" />
+					<img src="', $settings['default_images_url'], '/simpledesk/position.png" alt="*">
 					', $txt['shd_edit_dept'], '
 				</h3>
 			</div>
 			<div class="roundframe">
 				<dl class="settings">
 					<dt><strong>', $txt['shd_department_name'], '</strong></dt>
-					<dd><input type="text" name="dept_name" id="dept_name" value="', $context['shd_dept']['dept_name'], '" class="input_text" size="30" /></dd>
+					<dd><input type="text" name="dept_name" id="dept_name" value="', $context['shd_dept']['dept_name'], '"  size="30"></dd>
 					<dt><strong>', $txt['shd_dept_description'], '</strong></dt>
 					<dd><textarea name="dept_desc" rows="3" cols="35" style="width: 99%">', $context['shd_dept']['description'], '</textarea></dd>
 					<dt><strong>', $txt['shd_dept_boardindex_cat'], '</strong></dt>
@@ -205,7 +205,7 @@ function template_shd_edit_dept()
 	if (empty($context['dept_theme_list']) || count($context['dept_theme_list']) == 1)
 	{
 		echo '
-						<input type="hidden" name="dept_theme" value="0" />', $txt['shd_dept_theme_use_default'];
+						<input type="hidden" name="dept_theme" value="0">', $txt['shd_dept_theme_use_default'];
 	}
 	else
 	{
@@ -227,14 +227,14 @@ function template_shd_edit_dept()
 						<div class="smalltext">', $txt['shd_dept_autoclose_days_note'], '</div>
 					</dt>
 					<dd>
-						<input type="text" name="autoclose_days" id="autoclose_days" value="', $context['shd_dept']['autoclose_days'], '" class="input_text" size="5" /></dd>
+						<input type="text" name="autoclose_days" id="autoclose_days" value="', $context['shd_dept']['autoclose_days'], '"  size="5"></dd>
 					</dd>
 				</dl>
 			</div>
 			<div class="floatleft" style="width: 100%;">
 				<div class="cat_bar">
 					<h3 class="catbg">
-						<img src="', $settings['default_images_url'], '/simpledesk/roles.png" alt="*" />
+						<img src="', $settings['default_images_url'], '/simpledesk/roles.png" alt="*">
 						', $txt['shd_roles_in_dept'], '
 					</h3>
 				</div>
@@ -254,7 +254,7 @@ function template_shd_edit_dept()
 			echo '
 					<tr class="windowbg">
 						<td><img src="', $settings['default_images_url'], '/simpledesk/', $context['shd_permissions']['roles'][$role['template']]['icon'], '"> <a href="', $scripturl, '?action=admin;area=helpdesk_permissions;sa=editrole;role=', $role['id_role'], '">', $role['role_name'], '</a></td>
-						<td><input type="checkbox" class="input_check" name="role', $id_role, '"', !empty($role['in_dept']) ? ' checked="checked"' : '', ' /></td>
+						<td><input type="checkbox"  name="role', $id_role, '"', !empty($role['in_dept']) ? ' checked="checked"' : '', '></td>
 					</tr>';
 		}
 	}
@@ -269,10 +269,10 @@ function template_shd_edit_dept()
 				<br>
 			</div>
 			<div class="floatleft">
-				<input type="submit" value="', $txt['shd_edit_dept'], '" onclick="return submitThisOnce(this);" accesskey="s" class="button_submit" />
-				<input type="submit" value="', $txt['shd_delete_dept'], '" onclick="return confirm(' . JavaScriptEscape($txt['shd_delete_dept_confirm']) . ');" name="delete" class="button_submit" />
-				<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
-				<input type="hidden" name="dept" value="', $context['shd_dept']['id_dept'], '" />
+				<input type="submit" value="', $txt['shd_edit_dept'], '" onclick="return submitThisOnce(this);" accesskey="s" class="button">
+				<input type="submit" value="', $txt['shd_delete_dept'], '" onclick="return confirm(' . JavaScriptEscape($txt['shd_delete_dept_confirm']) . ');" name="delete" class="button">
+				<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">
+				<input type="hidden" name="dept" value="', $context['shd_dept']['id_dept'], '">
 			</div>
 		</form>';
 }

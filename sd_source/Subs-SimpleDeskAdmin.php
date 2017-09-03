@@ -193,7 +193,7 @@ function shd_load_action_log_entries($start = 0, $items_per_page = 10, $sort = '
 			$content = '';
 			foreach ($action['extra']['emails'] as $email_type => $recipients)
 			{
-				$this_content = '<br /><a href="' . $scripturl . '?action=helpdesk;sa=emaillog;log=' . $action['id'] . ';template=' . $email_type . '" onclick="return reqWin(this.href);">' . $txt['template_log_notify_' . $email_type] . '</a> - ';
+				$this_content = '<br><a href="' . $scripturl . '?action=helpdesk;sa=emaillog;log=' . $action['id'] . ';template=' . $email_type . '" onclick="return reqWin(this.href);">' . $txt['template_log_notify_' . $email_type] . '</a> - ';
 
 				$new_content = '';
 				if (!empty($recipients['u']))
@@ -1036,37 +1036,37 @@ function shd_load_admin_log_entries($start = 0, $items_per_page = 10, $sort = 'l
 			$actions[$k]['action_text'] = isset($txt['shd_log_' . $action['action']]) ? $txt['shd_log_' . $action['action']] : $action['action'];
 
 		if (!empty($action['extra']['setting']) && isset($txt[$action['extra']['setting']]))
-			$actions[$k]['action_text'] .= '<br />' . $txt['shd_admin_adminlog_setting'] . ': <span title="' . $action['extra']['setting'] . '">' . $txt[$action['extra']['setting']] . '</span>';
+			$actions[$k]['action_text'] .= '<br>' . $txt['shd_admin_adminlog_setting'] . ': <span title="' . $action['extra']['setting'] . '">' . $txt[$action['extra']['setting']] . '</span>';
 		elseif (!empty($action['extra']['setting']))
-			$actions[$k]['action_text'] .= '<br />' . $txt['shd_admin_adminlog_setting'] . ': ' . $action['extra']['setting'];
+			$actions[$k]['action_text'] .= '<br>' . $txt['shd_admin_adminlog_setting'] . ': ' . $action['extra']['setting'];
 		elseif (!empty($action['type']) && isset($txt['shd_log_' . $action['action'] . '_' . $action['type']]))
-			$actions[$k]['action_text'] .= '<br />' . $txt['shd_admin_adminlog_action'] . ': ' . $txt['shd_log_' . $action['action'] . '_' . $action['type']];
+			$actions[$k]['action_text'] .= '<br>' . $txt['shd_admin_adminlog_action'] . ': ' . $txt['shd_log_' . $action['action'] . '_' . $action['type']];
 		elseif (!empty($action['type']))
-			$actions[$k]['action_text'] .= '<br />' . $txt['shd_admin_adminlog_action'] . ': ' . $action['type'];
+			$actions[$k]['action_text'] .= '<br>' . $txt['shd_admin_adminlog_action'] . ': ' . $action['type'];
 		elseif (!empty($action['extra']['action']) && isset($txt['shd_log_' . $action['action'] . '_' . $action['extra']['action']]))
-			$actions[$k]['action_text'] .= '<br />' . $txt['shd_admin_adminlog_action'] . ': ' . $txt['shd_log_' . $action['action'] . '_' . $action['extra']['action']];
+			$actions[$k]['action_text'] .= '<br>' . $txt['shd_admin_adminlog_action'] . ': ' . $txt['shd_log_' . $action['action'] . '_' . $action['extra']['action']];
 		elseif (!empty($action['extra']['action']))
-			$actions[$k]['action_text'] .= '<br />' . $txt['shd_admin_adminlog_action'] . ': shd_log_' . $action['action'] . '_' . $action['extra']['action'];
+			$actions[$k]['action_text'] .= '<br>' . $txt['shd_admin_adminlog_action'] . ': shd_log_' . $action['action'] . '_' . $action['extra']['action'];
 
 
 		if (isset($action['id_name']))
-			$actions[$k]['action_text'] .= '<br />' . $txt['shd_admin_adminlog_name'] . ': <span title="' . $action['extra']['id'] . '">' . $action['id_name'] . '</span>';
+			$actions[$k]['action_text'] .= '<br>' . $txt['shd_admin_adminlog_name'] . ': <span title="' . $action['extra']['id'] . '">' . $action['id_name'] . '</span>';
 		elseif (isset($action['extra']['id']))
-			$actions[$k]['action_text'] .= '<br />' . $txt['shd_admin_adminlog_name'] . ': ' . $action['extra']['id'];
+			$actions[$k]['action_text'] .= '<br>' . $txt['shd_admin_adminlog_name'] . ': ' . $action['extra']['id'];
 
 		if (isset($action['from_name']))
-			$actions[$k]['action_text'] .= '<br />' . $txt['shd_admin_adminlog_from'] . ': <span title="' . $action['extra']['from'] . '">' . $action['from_name'] . '</span>';
+			$actions[$k]['action_text'] .= '<br>' . $txt['shd_admin_adminlog_from'] . ': <span title="' . $action['extra']['from'] . '">' . $action['from_name'] . '</span>';
 		elseif (isset($action['extra']['from']) && $action['type'] == 'check')
-			$actions[$k]['action_text'] .= '<br />' . $txt['shd_admin_adminlog_from'] . ': <span title="' . $action['extra']['from'] . '">' . (empty($action['extra']['from']) ? $txt['shd_admin_default_state_off'] : $txt['shd_admin_default_state_on']) . '</span>';
+			$actions[$k]['action_text'] .= '<br>' . $txt['shd_admin_adminlog_from'] . ': <span title="' . $action['extra']['from'] . '">' . (empty($action['extra']['from']) ? $txt['shd_admin_default_state_off'] : $txt['shd_admin_default_state_on']) . '</span>';
 		elseif (isset($action['extra']['from']))
-			$actions[$k]['action_text'] .= '<br />' . $txt['shd_admin_adminlog_from'] . ': ' . $action['extra']['from'];
+			$actions[$k]['action_text'] .= '<br>' . $txt['shd_admin_adminlog_from'] . ': ' . $action['extra']['from'];
 
 		if (isset($action['to_name']))
-			$actions[$k]['action_text'] .= '<br />' . $txt['shd_admin_adminlog_to'] . ': <span title="' . $action['extra']['to'] . '">' . $action['to_name'] . '</span>';
+			$actions[$k]['action_text'] .= '<br>' . $txt['shd_admin_adminlog_to'] . ': <span title="' . $action['extra']['to'] . '">' . $action['to_name'] . '</span>';
 		elseif (isset($action['extra']['to']) && $action['type'] == 'check')
-			$actions[$k]['action_text'] .= '<br />' . $txt['shd_admin_adminlog_to'] . ': <span title="' . $action['extra']['to'] . '">' . (empty($action['extra']['to']) ? $txt['shd_admin_default_state_off'] : $txt['shd_admin_default_state_on']) . '</span>';
+			$actions[$k]['action_text'] .= '<br>' . $txt['shd_admin_adminlog_to'] . ': <span title="' . $action['extra']['to'] . '">' . (empty($action['extra']['to']) ? $txt['shd_admin_default_state_off'] : $txt['shd_admin_default_state_on']) . '</span>';
 		elseif (isset($action['extra']['to']))
-			$actions[$k]['action_text'] .= '<br />' . $txt['shd_admin_adminlog_to'] . ': ' . $action['extra']['to'];
+			$actions[$k]['action_text'] .= '<br>' . $txt['shd_admin_adminlog_to'] . ': ' . $action['extra']['to'];
 
 		// Debug stuff.
 		$actions[$k]['action_text'] .= '<!--' . print_r($actions[$k], true) . '-->';

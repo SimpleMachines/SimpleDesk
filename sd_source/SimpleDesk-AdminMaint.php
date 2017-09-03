@@ -78,7 +78,7 @@ function shd_admin_maint()
 	$_REQUEST['sa'] = isset($_REQUEST['sa']) && isset($subactions[$_REQUEST['sa']]) ? $_REQUEST['sa'] : 'main';
 
 	$context[$context['admin_menu_name']]['tab_data'] = array(
-		'title' => '<img src="' . $settings['default_theme_url'] . '/images/simpledesk/' . $subactions[$_REQUEST['sa']]['icon'] . '" class="icon" alt="*" />' . $subactions[$_REQUEST['sa']]['title'],
+		'title' => '<img src="' . $settings['default_theme_url'] . '/images/simpledesk/' . $subactions[$_REQUEST['sa']]['icon'] . '" class="icon" alt="*">' . $subactions[$_REQUEST['sa']]['title'],
 		'description' => $txt['shd_admin_options_desc'],
 		'tabs' => array(
 			'main' => array(
@@ -381,27 +381,27 @@ function shd_admin_maint_massdeptmove()
 	$context['continue_countdown'] = 3;
 	$context['continue_get_data'] = '?action=admin;area=helpdesk_maint;sa=massdeptmove;' . $context['session_var'] . '=' . $context['session_id'];
 	$context['continue_post_data'] = '
-		<input type="hidden" name="id_dept_from" value="' . $_POST['id_dept_from'] . '" />
-		<input type="hidden" name="id_dept_to" value="' . $_POST['id_dept_to'] . '" />
-		<input type="hidden" name="tickets_done" value="' . $_POST['tickets_done'] . '" />
-		<input type="hidden" name="massdeptmove" value="' . $_POST['massdeptmove'] . '" />';
+		<input type="hidden" name="id_dept_from" value="' . $_POST['id_dept_from'] . '">
+		<input type="hidden" name="id_dept_to" value="' . $_POST['id_dept_to'] . '">
+		<input type="hidden" name="tickets_done" value="' . $_POST['tickets_done'] . '">
+		<input type="hidden" name="massdeptmove" value="' . $_POST['massdeptmove'] . '">';
 	if (!empty($_POST['moveopen']))
 		$context['continue_post_data'] .= '
-		<input type="hidden" name="moveopen" value="' . $_POST['moveopen'] . '" />';
+		<input type="hidden" name="moveopen" value="' . $_POST['moveopen'] . '">';
 	if (!empty($_POST['moveclosed']))
 		$context['continue_post_data'] .= '
-		<input type="hidden" name="moveclosed" value="' . $_POST['moveclosed'] . '" />';
+		<input type="hidden" name="moveclosed" value="' . $_POST['moveclosed'] . '">';
 	if (!empty($_POST['movedeleted']))
 		$context['continue_post_data'] .= '
-		<input type="hidden" name="movedeleted" value="' . $_POST['movedeleted'] . '" />';
+		<input type="hidden" name="movedeleted" value="' . $_POST['movedeleted'] . '">';
 	if ($_POST['movelast_less_days'] > 0)
 		$context['continue_post_data'] .= '
-		<input type="hidden" name="movelast_less" value="1" />
-		<input type="hidden" name="movelast_less_days" value="' . $_POST['movelast_less_days'] . '" />';
+		<input type="hidden" name="movelast_less" value="1">
+		<input type="hidden" name="movelast_less_days" value="' . $_POST['movelast_less_days'] . '">';
 	if ($_POST['movelast_more_days'] > 0)
 		$context['continue_post_data'] .= '
-		<input type="hidden" name="movelast_more" value="1" />
-		<input type="hidden" name="movelast_more_days" value="' . $_POST['movelast_more_days'] . '" />';
+		<input type="hidden" name="movelast_more" value="1">
+		<input type="hidden" name="movelast_more_days" value="' . $_POST['movelast_more_days'] . '">';
 
 	$context['sub_template'] = 'not_done';
 	$context['continue_percent'] = $_POST['tickets_done'] > $_POST['massdeptmove'] ? 100 : floor($_POST['tickets_done'] / $_POST['massdeptmove'] * 100);
@@ -512,7 +512,7 @@ function shd_maint_zero_entries()
 	}
 
 	// This is a short operation, no suboperation, so just tell it to go onto the next step.
-	$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . ($context['step'] + 1) . '" />';
+	$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . ($context['step'] + 1) . '">';
 }
 
 // Ensure that the count of number of replies/deleted replies/whether ticket contains deleted replies are all correct.
@@ -612,13 +612,13 @@ function shd_maint_deleted()
 	if ($_REQUEST['start'] > $ticket_count)
 	{
 		// All done
-		$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . ($context['step'] + 1) . '" />';
+		$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . ($context['step'] + 1) . '">';
 	}
 	else
 	{
 		// More to do, call back - and provide the subtitle
-		$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . $context['step'] . '" />
-		<input type="hidden" name="start" value="' . $_REQUEST['start'] . '" />';
+		$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . $context['step'] . '">
+		<input type="hidden" name="start" value="' . $_REQUEST['start'] . '">';
 		$context['substep_enabled'] = true;
 		$context['substep_title'] = $txt['shd_admin_maint_findrepair_status'];
 		$context['substep_continue_percent'] = round(100 * $_REQUEST['start'] / $ticket_count);
@@ -703,13 +703,13 @@ function shd_maint_first_last()
 	if ($_REQUEST['start'] > $ticket_count)
 	{
 		// All done
-		$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . ($context['step'] + 1) . '" />';
+		$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . ($context['step'] + 1) . '">';
 	}
 	else
 	{
 		// More to do, call back - and provide the subtitle
-		$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . $context['step'] . '" />
-		<input type="hidden" name="start" value="' . $_REQUEST['start'] . '" />';
+		$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . $context['step'] . '">
+		<input type="hidden" name="start" value="' . $_REQUEST['start'] . '">';
 		$context['substep_enabled'] = true;
 		$context['substep_title'] = $txt['shd_admin_maint_findrepair_firstlast'];
 		$context['substep_continue_percent'] = round(100 * $_REQUEST['start'] / $ticket_count);
@@ -794,13 +794,13 @@ function shd_maint_starter_updater()
 	if ($_REQUEST['start'] > $ticket_count)
 	{
 		// All done
-		$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . ($context['step'] + 1) . '" />';
+		$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . ($context['step'] + 1) . '">';
 	}
 	else
 	{
 		// More to do, call back - and provide the subtitle
-		$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . $context['step'] . '" />
-		<input type="hidden" name="start" value="' . $_REQUEST['start'] . '" />';
+		$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . $context['step'] . '">
+		<input type="hidden" name="start" value="' . $_REQUEST['start'] . '">';
 		$context['substep_enabled'] = true;
 		$context['substep_title'] = $txt['shd_admin_maint_findrepair_starterupdater'];
 		$context['substep_continue_percent'] = round(100 * $_REQUEST['start'] / $ticket_count);
@@ -881,13 +881,13 @@ function shd_maint_status()
 	if ($_REQUEST['start'] > $ticket_count)
 	{
 		// All done
-		$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . ($context['step'] + 1) . '" />';
+		$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . ($context['step'] + 1) . '">';
 	}
 	else
 	{
 		// More to do, call back - and provide the subtitle
-		$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . $context['step'] . '" />
-		<input type="hidden" name="start" value="' . $_REQUEST['start'] . '" />';
+		$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . $context['step'] . '">
+		<input type="hidden" name="start" value="' . $_REQUEST['start'] . '">';
 		$context['substep_enabled'] = true;
 		$context['substep_title'] = $txt['shd_admin_maint_findrepair_firstlast'];
 		$context['substep_continue_percent'] = round(100 * $_REQUEST['start'] / $ticket_count);
@@ -947,7 +947,7 @@ function shd_maint_invalid_dept()
 	}
 
 	// This is a simple operation, no suboperation, so just tell it to go onto the next step.
-	$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . ($context['step'] + 1) . '" />';
+	$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . ($context['step'] + 1) . '">';
 }
 
 // Make sure all SimpleDesk cache items are forcibly flushed.
@@ -1109,8 +1109,8 @@ function shd_admin_maint_search()
 		$context['sub_template'] = 'not_done';
 		$context['continue_percent'] = $pc_done;
 		$context['continue_get_data'] = '?action=admin;area=helpdesk_maint;sa=search;' . $context['session_var'] . '=' . $context['session_id'];
-		$context['continue_post_data'] = '<input type="hidden" name="start" value="' . $start . '" />
-		<input type="hidden" name="rebuild" value="1" />';
+		$context['continue_post_data'] = '<input type="hidden" name="start" value="' . $start . '">
+		<input type="hidden" name="rebuild" value="1">';
 
 		// Make SURE we never mess with the other settings.
 		unset($_REQUEST['save']);

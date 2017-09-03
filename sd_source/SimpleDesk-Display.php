@@ -1264,9 +1264,9 @@ function shd_attach_icon($filename)
 	$extension = ($filename != '') ? strtolower(substr(strrchr($filename, '.'), 1)) : '';
 
 	if (isset($extension_map[$extension]))
-		$image = '<img src="' . $settings['default_images_url'] . '/simpledesk/attach/' . $extension_map[$extension] . '"' . (!empty($txt['shd_attachtype_' . $extension]) ? ' alt="' . $txt['shd_attachtype_' . $extension] . '" title="' . $txt['shd_attachtype_' . $extension] . '"' : ' alt=""') . ' />';
+		$image = '<img src="' . $settings['default_images_url'] . '/simpledesk/attach/' . $extension_map[$extension] . '"' . (!empty($txt['shd_attachtype_' . $extension]) ? ' alt="' . $txt['shd_attachtype_' . $extension] . '" title="' . $txt['shd_attachtype_' . $extension] . '"' : ' alt=""') . '>';
 	else
-		$image = '<img src="' . $settings['default_images_url'] . '/simpledesk/attach/blank.png" alt="" />';
+		$image = '<img src="' . $settings['default_images_url'] . '/simpledesk/attach/blank.png" alt="">';
 
 	return $image;
 }
