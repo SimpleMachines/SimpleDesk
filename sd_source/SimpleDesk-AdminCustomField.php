@@ -421,7 +421,7 @@ function shd_admin_custom_save()
 
 		$row = $smcFunc['db_fetch_assoc']($count_query);
 
-		$smcFunc['db_insert']('insert',
+		$new_field = $smcFunc['db_insert']('insert',
 			'{db_prefix}helpdesk_custom_fields',
 			array(
 				'active' => 'int', 'field_order' => 'int', 'field_name' => 'string', 'field_desc' => 'string',
@@ -437,10 +437,10 @@ function shd_admin_custom_save()
 			),
 			array(
 				'id_field',
-			)
+			),
+			1
 		);
 
-		$new_field = $smcFunc['db_insert_id']('{db_prefix}helpdesk_custom_fields', 'id_field');
 		if (empty($new_field))
 			fatal_lang_error('shd_admin_could_not_create_field', false);
 

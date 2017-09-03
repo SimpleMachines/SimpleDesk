@@ -429,7 +429,7 @@ function shd_admin_canned_savecat()
 		$smcFunc['db_free_result']($query);
 
 		// Insert the category.
-		$smcFunc['db_insert']('insert',
+		$id_cat = $smcFunc['db_insert']('insert',
 			'{db_prefix}helpdesk_cannedreplies_cats',
 			array(
 				'cat_name' => 'string', 'cat_order' => 'int',
@@ -439,13 +439,14 @@ function shd_admin_canned_savecat()
 			),
 			array(
 				'id_cat',
-			)
+			),
+			1
 		);
 
 		// Log this action.
 		shd_admin_log('admin_canned', array(
 			'action' => 'cat_add',
-			'id' => $smcFunc['db_insert_id']('{db_prefix}helpdesk_cannedreplies_cats'),
+			'id' => $id_cat,
 		));
 	}
 	else
@@ -754,7 +755,7 @@ function shd_admin_canned_savereply()
 		$smcFunc['db_free_result']($query);
 
 		// 2. Insert the row.
-		$smcFunc['db_insert']('insert',
+		$reply_id = $smcFunc['db_insert']('insert',
 			'{db_prefix}helpdesk_cannedreplies',
 			array(
 				'id_cat' => 'int', 'title' => 'string', 'body' => 'string',
@@ -766,11 +767,11 @@ function shd_admin_canned_savereply()
 			),
 			array(
 				'id_cat',
-			)
+			),
+			1
 		);
 
 		// 3. Insert the departments.
-		$reply_id = $smcFunc['db_insert_id']('{db_prefix}helpdesk_cannedreplies', 'id_reply');
 		if (empty($reply_id))
 			fatal_lang_error('shd_admin_cannedreplies_notcreated', false);
 

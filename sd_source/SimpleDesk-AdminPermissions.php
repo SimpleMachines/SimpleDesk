@@ -108,7 +108,7 @@ function shd_admin_create_role()
 			$_POST['rolename'] = strtr($smcFunc['htmlspecialchars']($_POST['rolename']), array("\r" => '', "\n" => '', "\t" => ''));
 
 		// So here we are, template id is valid, we're good little admins and specified a name, so let's create the new role in the DB.
-		$smcFunc['db_insert']('insert',
+		$newrole = $smcFunc['db_insert']('insert',
 			'{db_prefix}helpdesk_roles',
 			array(
 				'template' => 'int', 'role_name' => 'string',
@@ -118,10 +118,10 @@ function shd_admin_create_role()
 			),
 			array(
 				'id_role',
-			)
+			),
+			1
 		);
 
-		$newrole = $smcFunc['db_insert_id']('{db_prefix}helpdesk_roles', 'id_role');
 		if (empty($newrole))
 			fatal_lang_error('shd_could_not_create_role', false);
 
@@ -543,7 +543,7 @@ function shd_admin_copy_role()
 			$_POST['rolename'] = strtr($smcFunc['htmlspecialchars']($_POST['rolename']), array("\r" => '', "\n" => '', "\t" => ''));
 
 		// So here we are, source role is valid, we're good little admins and specified a name, so let's create the new role in the DB.
-		$smcFunc['db_insert']('insert',
+		$newrole = $smcFunc['db_insert']('insert',
 			'{db_prefix}helpdesk_roles',
 			array(
 				'template' => 'int', 'role_name' => 'string',
@@ -553,10 +553,10 @@ function shd_admin_copy_role()
 			),
 			array(
 				'id_role',
-			)
+			),
+			1
 		);
 
-		$newrole = $smcFunc['db_insert_id']('{db_prefix}helpdesk_roles', 'id_role');
 		if (empty($newrole))
 			fatal_lang_error('shd_could_not_create_role', false);
 

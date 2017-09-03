@@ -166,7 +166,7 @@ function shd_create_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 	$new_ticket = empty($ticketOptions['id']);
 
 	// OK, so let's add the reply. Even if it's a new ticket and stuff, let's still add the msg first so we have our friendly msg id
-	$smcFunc['db_insert']('',
+	$msgOptions['id'] = $smcFunc['db_insert']('',
 		'{db_prefix}helpdesk_ticket_replies',
 		array(
 			'id_ticket' => 'int', 'id_member' => 'int', 'body' => 'string-65534',
@@ -178,9 +178,9 @@ function shd_create_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 			$posterOptions['name'], $posterOptions['email'], $msgOptions['time'], $posterOptions['ip'],
 			$msgOptions['smileys_enabled'] ? 1 : 0, $msgOptions['modified']['id'], $msgOptions['modified']['name'], $msgOptions['modified']['time'],
 		),
-		array('id_msg')
+		array('id_msg'),
+		1
 	);
-	$msgOptions['id'] = $smcFunc['db_insert_id']('{db_prefix}messages', 'id_msg');
 
 	// Something went wrong creating the message...
 	if (empty($msgOptions['id']))
@@ -189,7 +189,7 @@ function shd_create_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 	// Insert a new ticket (if the ID was left empty)
 	if ($new_ticket)
 	{
-		$smcFunc['db_insert']('',
+		$ticketOptions['id'] = $smcFunc['db_insert']('',
 			'{db_prefix}helpdesk_tickets',
 			array(
 				'id_dept' => 'int', 'id_first_msg' => 'int', 'id_member_started' => 'int', 'id_last_msg' => 'int',
@@ -201,9 +201,9 @@ function shd_create_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 				$ticketOptions['assigned'], $ticketOptions['subject'], $ticketOptions['urgency'], $ticketOptions['status'],
 				$ticketOptions['private'] ? 1 : 0,
 			),
-			array('id_ticket')
+			array('id_ticket'),
+			1
 		);
-		$ticketOptions['id'] = $smcFunc['db_insert_id']('{db_prefix}helpdesk_tickets', 'id_ticket');
 
 		// The ticket couldn't be created for some reason.
 		if (empty($ticketOptions['id']))

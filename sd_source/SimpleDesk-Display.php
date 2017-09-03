@@ -1124,15 +1124,15 @@ function shd_attachment_info($attach_info)
 					$thumb_filename = $attach_info['filename'] . '_thumb';
 					$thumb_hash = getAttachmentFilename($thumb_filename, false, null, true);
 
+					$old_id_thumb = $attach_info['id_thumb'];
 					// Add this beauty to the database.
-					$smcFunc['db_insert']('',
+					$attach_info['id_thumb'] = $smcFunc['db_insert']('',
 						'{db_prefix}attachments',
 						array('id_folder' => 'int', 'id_msg' => 'int', 'attachment_type' => 'int', 'filename' => 'string', 'file_hash' => 'string', 'size' => 'int', 'width' => 'int', 'height' => 'int', 'fileext' => 'string', 'mime_type' => 'string'),
 						array($id_folder_thumb, 0, 3, $thumb_filename, $thumb_hash, (int) $thumb_size, (int) $attach_info['thumb_width'], (int) $attach_info['thumb_height'], $thumb_ext, $thumb_mime),
-						array('id_attach')
+						array('id_attach'),
+						1
 					);
-					$old_id_thumb = $attach_info['id_thumb'];
-					$attach_info['id_thumb'] = $smcFunc['db_insert_id']('{db_prefix}attachments', 'id_attach');
 					if (!empty($attach_info['id_thumb']))
 					{
 						// Update the tables to notify that we has us a thumbnail
