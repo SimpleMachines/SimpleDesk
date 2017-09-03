@@ -360,9 +360,9 @@ function template_search_navigation($page = 'next')
 	// Handle the page check.
 	if ($page == 'prev' && empty($context['prev_page']))
 		return;
-	elseif  ($page == 'next' && $context['current_page'] >= $context['num_pages'])
+	elseif ($page == 'next' && $context['current_page'] >= $context['num_pages'])
 		return;
-	elseif  (is_int($page) && ($page < 1 || $page >= $context['num_pages']))
+	elseif (is_int($page) && ($page < 1 || $page >= $context['num_pages']))
 		return;
 
 	echo '

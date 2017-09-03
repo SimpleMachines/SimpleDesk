@@ -1,6 +1,6 @@
 <?php
 ###############################################################
-#         Simple Desk Project - www.simpledesk.net            #
+#          Simple Desk Project - www.simpledesk.net           #
 ###############################################################
 #       An advanced help desk modification built on SMF       #
 ###############################################################
@@ -13,8 +13,8 @@
 #   Any questions, please contact SimpleDesk.net              #
 #                                                             #
 ###############################################################
-# SimpleDesk Version: 2.1                                     #
-# File Info: SimpleDesk-Profile.php / 2.1                     #
+# SimpleDesk Version: 2.1 Beta 1                              #
+# File Info: SimpleDesk-Profile.php                           #
 ###############################################################
 
 /**
@@ -780,4 +780,3 @@ function shd_profile_theme_wrapper($memID)
 
 	$context['profile_fields']['theme_settings']['callback_func'] = 'shd_theme_settings';
 }
-

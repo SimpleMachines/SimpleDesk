@@ -1,23 +1,22 @@
 <?php
-###################################################################
-#           Simple Desk Project - www.simpledesk.net              #
-#                  Email Notifications Plugin                     #
-###################################################################
-#         An advanced help desk modifcation built on SMF          #
-###################################################################
-#                                                                 #
-#           * Copyright 2017 - SimpleDesk.net                     #
-#                                                                 #
-#     This file and its contents are subject to the license       #
-#     included with this distribution, license.txt, which         #
-#     states that this software is New BSD Licensed.              #
-#     Any questions, please contact SimpleDesk.net                #
-#                                                                 #
-###################################################################
-# SimpleDesk Version: 2.1                                         #
-# File Info: SimpleDeskNotifications.english.php / 2.1            #
-###################################################################
-// Version: 2.1; SimpleDesk main language file
+###############################################################
+#          Simple Desk Project - www.simpledesk.net           #
+###############################################################
+#       An advanced help desk modification built on SMF       #
+###############################################################
+#                                                             #
+#         * Copyright 2017 - SimpleDesk.net                   #
+#                                                             #
+#   This file and its contents are subject to the license     #
+#   included with this distribution, license.txt, which       #
+#   states that this software is New BSD Licensed.            #
+#   Any questions, please contact SimpleDesk.net              #
+#                                                             #
+###############################################################
+# SimpleDesk Version: 2.1 Beta 1                              #
+# File Info: SimpleDeskNotifications.english.php              #
+###############################################################
+// Version: 2.1; SimpleDesk Notifications language file
 
 // Important! Before editing these language files please read the text at the top of index.english.php.
 
@@ -29,7 +28,8 @@
  *	@since 2.0
 */
 
-// Email subject and body contents
+//! @name Email subject and body contents
+//@{
 $txt['template_subject_notify_new_ticket'] = 'Helpdesk [{ticket_id}] New ticket from [{poster_name}] -RE- [{subject}]';
 $txt['template_body_notify_new_ticket'] = 'A new helpdesk ticket, "[{ticket_id}] {subject}", has been created, by {poster_name}.' . "\n\n" . 'You can access it here:' . "\n" . '{ticketlink}';
 $txt['template_bodyfull_notify_new_ticket'] = 'A new helpdesk ticket, "[{ticket_id}] {subject}", has been created, by {poster_name}.' . "\n\n" . '====Begin Comment====' . "\n" . '{body}' . "\n" . '====End Comment====' . "\n\n" . 'You can access it here:' . "\n" . '{ticketlink}';
@@ -67,8 +67,10 @@ $txt['template_subject_notify_monitor'] = 'Helpdesk [{ticket_id}] New reply from
 $txt['template_body_notify_monitor'] = 'A helpdesk ticket you requested to follow, "[{ticket_id}] {subject}", has been replied to, by {poster_name}.' . "\n\n" . 'You can read the reply here:' . "\n" . '{ticketlink}';
 $txt['template_bodyfull_notify_monitor'] = 'A helpdesk ticket you requested to follow, "[{ticket_id}] {subject}", has been replied to, by {poster_name}.' . "\n\n" . '====Begin Comment====' . "\n" . '{body}' . "\n" . '====End Comment====' . "\n\n" . 'You can read the reply here:' . "\n" . '{ticketlink}';
 $txt['template_log_notify_monitor'] = 'Monitoring';
+//@}
 
-// For pinging stuff
+//! @name For pinging stuff
+//@{
 $txt['template_subject_notify_ping'] = 'Helpdesk [{ticket_id}] New reply from [{poster_name}] -RE- [{subject}]';
 $txt['template_body_notify_ping'] = 'A helpdesk ticket, "[{ticket_id}] {subject}", has been replied to, by {poster_name}.' . "\n\n" . 'You can read the reply here:' . "\n" . '{ticketlink}';
 $txt['template_bodyfull_notify_ping'] = 'A helpdesk ticket, "[{ticket_id}] {subject}", has been replied to, by {poster_name}.' . "\n\n" . '====Begin Comment====' . "\n" . '{body}' . "\n" . '====End Comment====' . "\n\n" . 'You can read the reply here:' . "\n" . '{ticketlink}';
@@ -81,4 +83,4 @@ $txt['shd_ping_1'] = 'You can send an email to this person on replying:';
 $txt['shd_ping_n'] = 'You can send an email to these people on replying:';
 $txt['shd_ping_none_1'] = 'The following person has notifications turned off for this ticket, though you can send them an email about it if it is important:';
 $txt['shd_ping_none_n'] = 'The following people have notifications turned off for this ticket, though you can send them an email about it if it is important:';
-
+//@}

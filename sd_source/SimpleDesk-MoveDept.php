@@ -1,6 +1,6 @@
 <?php
 ###############################################################
-#         Simple Desk Project - www.simpledesk.net            #
+#          Simple Desk Project - www.simpledesk.net           #
 ###############################################################
 #       An advanced help desk modification built on SMF       #
 ###############################################################
@@ -13,8 +13,8 @@
 #   Any questions, please contact SimpleDesk.net              #
 #                                                             #
 ###############################################################
-# SimpleDesk Version: 2.1                                     #
-# File Info: SimpleDesk-MoveDept.php / 2.1                    #
+# SimpleDesk Version: 2.1 Beta 1                              #
+# File Info: SimpleDesk-MoveDept.php                          #
 ###############################################################
 
 /**
@@ -321,4 +321,3 @@ function shd_movedept2()
 	else
 		fatal_lang_error('shd_no_perm_move_dept', false);
 }
-

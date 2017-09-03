@@ -1,6 +1,6 @@
 <?php
 ###############################################################
-#         Simple Desk Project - www.simpledesk.net            #
+#          Simple Desk Project - www.simpledesk.net           #
 ###############################################################
 #       An advanced help desk modification built on SMF       #
 ###############################################################
@@ -13,8 +13,8 @@
 #   Any questions, please contact SimpleDesk.net              #
 #                                                             #
 ###############################################################
-# SimpleDesk Version: 2.1                                     #
-# File Info: SimpleDesk-Post.php / 2.1                        #
+# SimpleDesk Version: 2.1 Beta 1                              #
+# File Info: SimpleDesk-Post.php                              #
 ###############################################################
 
 /**
@@ -31,6 +31,8 @@ if (!defined('SMF'))
 
 /**
  *	Create a new ticket
+ *
+ *	@since 1.0
 */
 function shd_post_ticket()
 {
@@ -210,7 +212,11 @@ function shd_post_ticket()
 	checkSubmitOnce('register');
 }
 
-// All the magically common posting stuff goes in here
+/**
+ *	All the magically common posting stuff goes in here
+ *
+ *	@since 1.0
+*/
 function shd_save_post()
 {
 	global $txt, $modSettings, $sourcedir, $context, $scripturl;
@@ -278,6 +284,11 @@ function shd_save_post()
 		$actions[$_REQUEST['sa']]();
 }
 
+/**
+ *	Saves the main ticket data.
+ *
+ *	@since 1.0
+*/
 function shd_save_ticket()
 {
 	global $txt, $modSettings, $sourcedir, $context, $scripturl;
@@ -677,6 +688,12 @@ function shd_save_ticket()
 	}
 }
 
+
+/**
+ *	Loads the Post a reply area
+ *
+ *	@since 1.0
+*/
 function shd_post_reply()
 {
 	global $context, $user_info, $sourcedir, $txt, $scripturl, $smcFunc, $reply_request, $modSettings, $settings, $options, $memberContext;
@@ -924,6 +941,11 @@ function shd_post_reply()
 	checkSubmitOnce('register');
 }
 
+/**
+ *	Saves the reply
+ *
+ *	@since 1.0
+*/
 function shd_save_reply()
 {
 	global $txt, $modSettings, $sourcedir, $context, $scripturl;
@@ -1337,6 +1359,12 @@ function shd_done_posting()
 	}
 }
 
+/**
+ *	Sets up the replies section data
+ *
+ *	@since 1.0
+ *	@param array $first_msg The first message for the ricket
+*/
 function shd_setup_replies($first_msg)
 {
 	global $reply_request, $context, $smcFunc, $sourcedir, $modSettings, $settings;
@@ -1442,6 +1470,15 @@ function shd_setup_replies($first_msg)
 	}
 }
 
+/**
+ *	Sets up the post box for tuckets
+ *
+ *	@since 1.0
+ *	@param array $id The id of the post box
+ *	@param array $message The message for the post box
+ *	@param array $buttons Buttons on the post box
+ *	@param array $width (optional) The width of the post box
+*/
 function shd_postbox($id, $message, $buttons, $width = '90%')
 {
 	global $context, $txt, $modSettings;
@@ -1490,6 +1527,11 @@ function shd_postbox($id, $message, $buttons, $width = '90%')
 		$context['attachment_restrictions'][] = sprintf($txt['attach_restrict_attachmentSizeLimit'], $modSettings['attachmentSizeLimit']);
 }
 
+/**
+ *	Prepares a reply section
+ *
+ *	@since 1.0
+*/
 function shd_prepare_reply_context()
 {
 	global $settings, $txt, $modSettings, $scripturl, $options, $user_info, $smcFunc;
@@ -1547,6 +1589,11 @@ function shd_prepare_reply_context()
 	return $output;
 }
 
+/**
+ *	Load up any and all attachments related to this ticket.
+ *
+ *	@since 1.0
+*/
 function shd_load_attachments()
 {
 	global $smcFunc, $context, $modSettings;
@@ -1582,6 +1629,11 @@ function shd_load_attachments()
 	$smcFunc['db_free_result']($query);
 }
 
+/**
+ *	Checks attachments are valid and allowed.
+ *
+ *	@since 1.0
+*/
 function shd_check_attachments()
 {
 	global $modSettings, $smcFunc, $context, $user_info, $txt;
@@ -1777,6 +1829,11 @@ function shd_check_attachments()
 	$context['ticket_form']['num_allowed_attachments'] = empty($modSettings['attachmentNumPerPostLimit']) || $modSettings['shd_attachments_mode'] == 'ticket' ? -1 : $modSettings['attachmentNumPerPostLimit'];
 }
 
+/**
+ *	Handles attachment actions such as adding or removing.
+ *
+ *	@since 1.0
+*/
 function shd_handle_attachments()
 {
 	global $modSettings, $smcFunc, $context, $user_info, $sourcedir, $txt;
@@ -2113,4 +2170,3 @@ function shd_load_canned_replies()
 		$context['canned_replies'][$row['id_cat']]['replies'][$row['id_reply']] = $row['title'];
 	}
 }
-

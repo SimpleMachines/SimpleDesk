@@ -1,6 +1,6 @@
 <?php
 ###############################################################
-#         Simple Desk Project - www.simpledesk.net            #
+#          Simple Desk Project - www.simpledesk.net           #
 ###############################################################
 #       An advanced help desk modification built on SMF       #
 ###############################################################
@@ -13,8 +13,8 @@
 #   Any questions, please contact SimpleDesk.net              #
 #                                                             #
 ###############################################################
-# SimpleDesk Version: 2.1                                     #
-# File Info: SimpleDesk-AjaxHandler.php / 2.1                 #
+# SimpleDesk Version: 2.1 Beta 1                              #
+# File Info: SimpleDesk-AjaxHandler.php                       #
 ###############################################################
 
 /**
@@ -501,7 +501,7 @@ function shd_ajax_assign()
 	$context['ajax_raw'] = '<response>';
 	foreach ($assignees as $assignee)
 		$context['ajax_raw'] .= '
-<member uid="' . $assignee . '"' . (!empty($assignee) ? (in_array($assignee, $admins) ? ' admin="yes"' : ' admin="no"') : '') . ($ticket_assigned == $assignee ? ' assigned="yes"' : '') . '><![CD' . 'ATA[' .(empty($assignee) ? '<span class="error">' . $txt['shd_unassigned'] . '</span>' : $user_profile[$assignee]['member_name']) . ']' . ']></member>';
+<member uid="' . $assignee . '"' . (!empty($assignee) ? (in_array($assignee, $admins) ? ' admin="yes"' : ' admin="no"') : '') . ($ticket_assigned == $assignee ? ' assigned="yes"' : '') . '><![CD' . 'ATA[' . (empty($assignee) ? '<span class="error">' . $txt['shd_unassigned'] . '</span>' : $user_profile[$assignee]['member_name']) . ']' . ']></member>';
 
 	$context['ajax_raw'] .= '
 </response>';
@@ -829,4 +829,3 @@ function shd_format_notify_name(&$user_name, $user_id, $ticket_starter)
 	global $txt;
 	$user_name = shd_profile_link($user_name, $user_id) . ($user_id == $ticket_starter ? $txt['shd_is_ticket_opener'] : '');
 }
-

@@ -1,6 +1,6 @@
 <?php
 ###############################################################
-#         Simple Desk Project - www.simpledesk.net            #
+#          Simple Desk Project - www.simpledesk.net           #
 ###############################################################
 #       An advanced help desk modification built on SMF       #
 ###############################################################
@@ -13,8 +13,8 @@
 #   Any questions, please contact SimpleDesk.net              #
 #                                                             #
 ###############################################################
-# SimpleDesk Version: 2.1                                     #
-# File Info: SimpleDeskWho.english.php / 2.1                  #
+# SimpleDesk Version: 2.1 Beta 1                              #
+# File Info: SimpleDeskWho.english.php                        #
 ###############################################################
 // Version: 2.1; SimpleDesk who's online
 
@@ -78,4 +78,3 @@ $txt['whoall_helpdesk_tickettotopic2'] = 'Moving a helpdesk ticket to a forum to
 $txt['whoall_helpdesk_topictoticket'] = 'Moving a forum topic to a helpdesk ticket.';
 $txt['whoall_helpdesk_topictoticket2'] = 'Moving a forum topic to a helpdesk ticket.';
 //@}
-

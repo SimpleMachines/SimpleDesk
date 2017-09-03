@@ -679,7 +679,7 @@ function template_shd_profile_actionlog()
 						<h3 class="catbg" id="ticket_log_header">
 							<img src="', $settings['default_images_url'], '/simpledesk/log.png" class="icon" alt="*">
 							', sprintf($txt['shd_profile_log'], $context['member']['name']), '
-							<span class="smalltext">(', $context['action_log_count'] == 1 ? $txt['shd_profile_log_count_one'] : sprintf($txt['shd_profile_log_count_more'], $context['action_log_count']) , ')</span>
+							<span class="smalltext">(', $context['action_log_count'] == 1 ? $txt['shd_profile_log_count_one'] : sprintf($txt['shd_profile_log_count_more'], $context['action_log_count']), ')</span>
 						</h3>
 					</div>
 					<table class="table_grid" id="ticket_log">

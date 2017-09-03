@@ -1,6 +1,6 @@
 <?php
 ###############################################################
-#         Simple Desk Project - www.simpledesk.net            #
+#          Simple Desk Project - www.simpledesk.net           #
 ###############################################################
 #       An advanced help desk modification built on SMF       #
 ###############################################################
@@ -13,8 +13,8 @@
 #   Any questions, please contact SimpleDesk.net              #
 #                                                             #
 ###############################################################
-# SimpleDesk Version: 2.1                                     #
-# File Info: SimpleDesk.english.php / 2.1                     #
+# SimpleDesk Version: 2.1 Beta 1                              #
+# File Info: SimpleDesk.english.php                           #
 ###############################################################
 // Version: 2.1; SimpleDesk main language file
 
@@ -28,6 +28,8 @@
  *	@since 1.0
  */
 
+//! @name General Strings
+//@{
 $txt['shd_helpdesk'] = 'Helpdesk';
 $txt['shd_helpdesk_maintenance'] = 'The helpdesk is currently in <strong>maintenance mode</strong>. Only forum and helpdesk administrators can see this.';
 $txt['shd_open_ticket'] = 'open ticket';
@@ -35,6 +37,7 @@ $txt['shd_open_tickets'] = 'open tickets';
 $txt['shd_none'] = 'None';
 
 $txt['shd_display_nojs'] = 'JavaScript is not enabled in your browser. Some functions may not work properly (or at all), or behave in an unexpected manner.';
+//@}
 
 //! @name Admininstration panel strings
 //@{
@@ -81,6 +84,8 @@ $txt['shd_status_assigned_heading'] = 'Assigned to Me';
 $txt['shd_status_withdeleted_heading'] = 'Tickets with Deleted Replies';
 //@}
 
+//! @name Ticket Types, statues, etc
+//@{
 $txt['shd_tickets_open'] = 'Open Tickets';
 $txt['shd_tickets_closed'] = 'Closed Tickets';
 $txt['shd_tickets_recycled'] = 'Recycled Tickets';
@@ -96,8 +101,10 @@ $txt['shd_owned'] = 'Owned Ticket'; // aka Assigned to Me
 
 $txt['shd_count_ticket_1'] = 'ticket';
 $txt['shd_count_tickets'] = 'tickets';
+//@}
 
-// Errors
+//! @name Errors
+//@{
 $txt['cannot_access_helpdesk'] = 'You are not permitted to access the helpdesk.';
 $txt['shd_no_ticket'] = 'The ticket you have requested does not appear to exist.';
 $txt['shd_no_reply'] = 'The ticket reply you have request does not appear to exist, or is not part of this ticket.';
@@ -157,8 +164,10 @@ $txt['cannot_shd_delete_attachment'] = 'You are not permitted to delete attachme
 $txt['cannot_shd_move_ticket_topic_hidden_cfs'] = 'You cannot move this ticket to a topic; there are custom fields attached that require an administrator to confirm the move.';
 $txt['cannot_monitor_ticket'] = 'You are not permitted to turn monitoring on for this ticket.';
 $txt['cannot_unmonitor_ticket'] = 'You are not permitted to turn monitoring off for this ticket.';
+//@}
 
-// The main Helpdesk.
+//! @name The main Helpdesk
+//@{
 $txt['shd_home'] = 'Helpdesk'; // separate string in case someone wants to change it independently of the main/admin menu
 $txt['shd_departments'] = 'Departments'; // ditto
 $txt['shd_new_ticket'] = 'Post New Ticket';
@@ -169,7 +178,10 @@ $txt['shd_go'] = 'Go!';
 $txt['shd_go_to_ticket'] = 'Go to ticket';
 $txt['shd_options'] = 'Options';
 $txt['shd_search_menu'] = 'Search';
-// The strings that go into the menu...
+//@}
+
+//! @name Admin center menu buttons
+//@{
 $txt['shd_admin_info'] = 'Information';
 $txt['shd_admin_options'] = 'Options';
 $txt['shd_admin_custom_fields'] = 'Custom Fields';
@@ -178,20 +190,28 @@ $txt['shd_admin_permissions'] = 'Permissions';
 $txt['shd_admin_plugins'] = 'Plugins';
 $txt['shd_admin_cannedreplies'] = 'Canned Replies';
 $txt['shd_admin_maint'] = 'Maintenance';
+//@}
 
+//! @name Greetings
+//@{
 $txt['shd_user_greeting'] = 'Here you can file new tickets for the site staff to action, and check on current tickets already underway.';
 $txt['shd_staff_greeting'] = 'Here are all the tickets that require attention.';
 $txt['shd_shd_greeting'] = 'This is the Helpdesk. Here you waste your time to help newbies. Enjoy! ;D';
 $txt['shd_closed_user_greeting'] = 'These are all the closed/resolved tickets you have posted to the helpdesk.';
 $txt['shd_closed_staff_greeting'] = 'These are all closed/resolved tickets submitted to the helpdesk.';
 $txt['shd_category_filter'] = 'Category filtering';
+//@}
 
+//! @name Messages
+//@{
 $txt['shd_ticket_posted_header'] = 'Your ticket has been created!';
-$txt['shd_ticket_posted_body'] = 'Thank you for posting your ticket, {membername}!' . "\n\n" . 'The helpdesk staff will review it and get back to you as soon as possible.' . "\n\n" . 'In the meantime, you can view your ticket, &quot;[iurl={ticketurl}]{subject}[/iurl]&quot; at the following URL:' . "\n" . '[iurl={ticketurl}]{ticketurl}[/iurl]' . "\n\n" .'[iurl={newticketlink}]Open another ticket[/iurl] | [iurl={helpdesklink}]Back to the main helpdesk[/iurl] | [iurl={forumlink}]Back to the forum[/iurl]';
+$txt['shd_ticket_posted_body'] = 'Thank you for posting your ticket, {membername}!' . "\n\n" . 'The helpdesk staff will review it and get back to you as soon as possible.' . "\n\n" . 'In the meantime, you can view your ticket, &quot;[iurl={ticketurl}]{subject}[/iurl]&quot; at the following URL:' . "\n" . '[iurl={ticketurl}]{ticketurl}[/iurl]' . "\n\n" . '[iurl={newticketlink}]Open another ticket[/iurl] | [iurl={helpdesklink}]Back to the main helpdesk[/iurl] | [iurl={forumlink}]Back to the forum[/iurl]';
 $txt['shd_ticket_posted_prefs'] = "\n\n" . 'You can turn on email notifications about changes to your ticket, in the [iurl={prefslink}]Helpdesk Preferences[/iurl] area.';
 $txt['shd_ticket_posted_footer'] = "\n\n" . 'Regards,' . "\n" . 'The {forum_name} Team.';
+//@}
 
-// The main ticket view.
+//! @name The main ticket view
+//@{
 $txt['shd_ticket_details'] = 'Ticket details';
 $txt['shd_ticket_updated'] = 'Updated';
 $txt['shd_ticket_id'] = 'Id';
@@ -237,8 +257,10 @@ $txt['shd_linktree_move_topic'] = 'Move topic to helpdesk';
 $txt['shd_cancel_ticket'] = 'Cancel and return to the ticket';
 $txt['shd_cancel_home'] = 'Cancel and return to the helpdesk home';
 $txt['shd_cancel_topic'] = 'Cancel and return to the topic';
+//@}
 
-// Actions
+//! @name Actions
+//@{
 $txt['shd_ticket_reply'] = 'Reply to ticket';
 $txt['shd_ticket_quote'] = 'Reply with quote';
 $txt['shd_go_advanced'] = 'Go advanced!';
@@ -279,8 +301,10 @@ $txt['shd_ticket_move_to'] = 'Move to';
 $txt['shd_current_dept'] = 'Currently in department';
 $txt['shd_ticket_move'] = 'Move Ticket';
 $txt['shd_unknown_dept'] = 'The specified department does not exist.';
+//@}
 
-// Ticket to topic and back
+//! @name Ticket to topic and back
+//@{
 $txt['shd_new_subject'] = 'New subject';
 $txt['shd_move_ticket_to_topic'] = 'Move ticket to topic';
 $txt['shd_move_ticket'] = 'Move ticket';
@@ -324,12 +348,16 @@ $txt['shd_ticket_move_accept'] = 'I accept that some of the fields being manipul
 $txt['shd_ticket_move_reqd'] = 'This option must be selected in order for you to move this ticket to the forum.';
 $txt['shd_ticket_move_ok'] = 'This field is safe to move, all the users who can see the ticket can see this field, there is no information hidden from users or staff.';
 $txt['shd_ticket_move_reqd_nonselected'] = 'This ticket has fields that users or staff may not be able to see, as such you specifically need to confirm you are aware of this - please go back to the previous page, the checkbox for confirming your awareness of this is at the bottom of the form.';
+//@}
 
-// Recycling
+//! @name Recycling
+//@{
 $txt['shd_recycle_bin'] = 'Recycle Bin';
 $txt['shd_recycle_greeting'] = 'This is the recycling bin. All deleted tickets go here, but staff members with special permissions can remove tickets permanently from here.';
+//@}
 
-// Posting
+//! @name Posting
+//@{
 $txt['shd_create_ticket'] = 'Create ticket';
 $txt['shd_edit_ticket'] = 'Edit ticket';
 $txt['shd_edit_ticket_linktree'] = 'Edit ticket (%s)';
@@ -348,14 +376,18 @@ $txt['shd_select_dept'] = '-- Select a department --';
 $txt['canned_replies'] = 'Add a pre-defined reply:';
 $txt['canned_replies_select'] = '-- Select a reply --';
 $txt['canned_replies_insert'] = 'Insert';
+//@}
 
-// Profile / trackip
+//! @name Profile / trackip
+//@{
 $txt['shd_replies_from_ip'] = 'Helpdesk replies posted from IP (range)';
 $txt['shd_no_replies_from_ip'] = 'No helpdesk replies from the specified IP (range) found';
 $txt['shd_replies_from_ip_desc'] = 'Below is a list of all messages posted to the helpdesk from this IP (range).';
 $txt['shd_is_ticket_opener'] = ' (ticket starter)';
+//@}
 
-// Attachment types
+//! @name Attachment types
+//@{
 // Archive formats
 $txt['shd_attachtype_bz2'] = 'BZip2 archive';
 $txt['shd_attachtype_gz'] = 'GZip archive';
@@ -395,8 +427,10 @@ $txt['shd_attachtype_htm'] = 'Hypertext Markup Document (HTML)';
 $txt['shd_attachtype_html'] = 'Hypertext Markup Document (HTML)';
 $txt['shd_attachtype_rtf'] = 'Rich Text Format (RTF)';
 $txt['shd_attachtype_txt'] = 'Plain text';
+//@}
 
-// Ticket logs.
+//! @name Ticket logs
+//@{
 $txt['shd_ticket_log'] = 'Ticket action log';
 $txt['shd_ticket_log_count_one'] = '1 entry';
 $txt['shd_ticket_log_count_more'] = '%s entries';
@@ -406,8 +440,10 @@ $txt['shd_ticket_log_ip'] = 'Member IP:';
 $txt['shd_ticket_log_date'] = 'Date';
 $txt['shd_ticket_log_action'] = 'Action';
 $txt['shd_ticket_log_full'] = 'Go to the full action log (All tickets)';
+//@}
 
-// Ticket relationships
+//! @name Ticket relationships
+//@{
 $txt['shd_ticket_relationships'] = 'Related Tickets';
 $txt['shd_ticket_create_relationship'] = 'Create relationship';
 $txt['shd_ticket_delete_relationship'] = 'Delete relationship';
@@ -416,14 +452,18 @@ $txt['shd_ticket_reltype_linked'] = 'Linked to';
 $txt['shd_ticket_reltype_duplicated'] = 'Duplicate of';
 $txt['shd_ticket_reltype_parent'] = 'Parent of';
 $txt['shd_ticket_reltype_child'] = 'Child of';
+//@}
 
-// Custom fields in ticket
+//! @name Custom fields in ticket
+//@{
 $txt['shd_ticket_additional_information'] = 'Additional information';
 $txt['shd_ticket_additional_details'] = 'Additional details';
 $txt['shd_ticket_empty_field'] = 'This field is empty.';
 $txt['shd_ticket_empty_field_short'] = '-';
+//@}
 
-// Notifications
+//! @name Notifications
+//@{
 $txt['shd_ticket_notify'] = 'Notifications';
 $txt['shd_ticket_notify_noneprefs'] = 'Your user preferences don\'t account for notification of this ticket.';
 $txt['shd_ticket_notify_changeprefs'] = 'Change your preferences';
@@ -442,8 +482,10 @@ $txt['shd_ticket_notify_me_never_note'] = 'You may ignore email updates for this
 $txt['shd_ticket_notify_me_never'] = 'You have turned off all notifications for this ticket.';
 $txt['shd_ticket_notify_me_never_on'] = 'Turn off notifications';
 $txt['shd_ticket_notify_me_never_off'] = 'Turn on notifications';
+//@}
 
-// Searching
+//! @name Searching
+//@{
 $txt['shd_search_warning_nonadmin'] = 'The search facility may not list all available tickets; it is currently being investigated.';
 $txt['shd_search_warning_admin'] = 'The search facility requires that its index be rebuilt. You can achieve this from the Maintenance option, in the Helpdesk area, in the administration panel.';
 $txt['shd_search'] = 'Search Tickets';
@@ -477,3 +519,4 @@ $txt['shd_search_ticket_named_person'] = 'Type in the name of the person(s) you 
 $txt['shd_search_no_results'] = 'No results were found with the given criteria. You may wish to go back and try altering your search criteria.';
 $txt['shd_search_criteria'] = 'Search Criteria:';
 $txt['shd_search_excluded'] = 'If every possible option was selected, it has not been included in the above (e.g. if all possible levels of urgency were ticked, it is not stated above, so you can concentrate on what is specific to your search)';
+//@}

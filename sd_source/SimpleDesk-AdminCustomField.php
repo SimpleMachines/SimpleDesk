@@ -1,6 +1,6 @@
 <?php
 ###############################################################
-#         Simple Desk Project - www.simpledesk.net            #
+#          Simple Desk Project - www.simpledesk.net           #
 ###############################################################
 #       An advanced help desk modification built on SMF       #
 ###############################################################
@@ -13,8 +13,8 @@
 #   Any questions, please contact SimpleDesk.net              #
 #                                                             #
 ###############################################################
-# SimpleDesk Version: 2.1                                     #
-# File Info: SimpleDesk-AdminCustomField.php / 2.1            #
+# SimpleDesk Version: 2.1 Beta 1                              #
+# File Info: SimpleDesk-AdminCustomField.php                  #
 ###############################################################
 
 /**
@@ -705,7 +705,7 @@ function shd_admin_cf_icons()
 		if (strcasecmp($extension, 'gif') != 0 && strcasecmp($extension, 'jpg') != 0 && strcasecmp($extension, 'jpeg') != 0 && strcasecmp($extension, 'png') != 0 && strcasecmp($extension, 'bmp') != 0)
 			continue;
 
-		$iconlist[] = array(htmlspecialchars($filename. '.' .$extension),htmlspecialchars(str_replace('_', ' ', $filename)));
+		$iconlist[] = array(htmlspecialchars($filename . '.' . $extension), htmlspecialchars(str_replace('_', ' ', $filename)));
 	}
 
 	return $iconlist;

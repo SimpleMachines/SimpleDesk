@@ -1,6 +1,6 @@
 <?php
 ###############################################################
-#         Simple Desk Project - www.simpledesk.net            #
+#          Simple Desk Project - www.simpledesk.net           #
 ###############################################################
 #       An advanced help desk modification built on SMF       #
 ###############################################################
@@ -13,8 +13,8 @@
 #   Any questions, please contact SimpleDesk.net              #
 #                                                             #
 ###############################################################
-# SimpleDesk Version: 2.1                                     #
-# File Info: Subs-SimpleDeskAdmin.php / 2.1                   #
+# SimpleDesk Version: 2.1 Beta 1                              #
+# File Info: Subs-SimpleDeskAdmin.php                         #
 ###############################################################
 
 /**
@@ -710,7 +710,7 @@ function shd_admin_log_configvar($save_vars)
  *	Logs a change in our admin area.
  *
  *	@since 2.1
- *	@param string $section The area this was from.
+ *	@param string $action The area this was from.
  *	@param array $extra An array of extra elements, in the following format.
  *		(required) string $action The action performed.
  *		(optional) string $setting During a setting update, this is the variable we changed.

@@ -1,6 +1,6 @@
 <?php
 ###############################################################
-#         Simple Desk Project - www.simpledesk.net            #
+#          Simple Desk Project - www.simpledesk.net           #
 ###############################################################
 #       An advanced help desk modification built on SMF       #
 ###############################################################
@@ -13,8 +13,8 @@
 #   Any questions, please contact SimpleDesk.net              #
 #                                                             #
 ###############################################################
-# SimpleDesk Version: 2.1                                     #
-# File Info: Subs-SimpleDeskBoardIndex.php / 2.1              #
+# SimpleDesk Version: 2.1 Beta 1                              #
+# File Info: Subs-SimpleDeskBoardIndex.php                    #
 ###############################################################
 
 /**
@@ -308,4 +308,3 @@ function shd_get_unread_departments()
 			$context['dept_list'][$row['id_dept']]['new'] = true;
 	}
 }
-

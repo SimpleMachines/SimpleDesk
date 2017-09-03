@@ -1,6 +1,6 @@
 <?php
 ###############################################################
-#         Simple Desk Project - www.simpledesk.net            #
+#          Simple Desk Project - www.simpledesk.net           #
 ###############################################################
 #       An advanced help desk modification built on SMF       #
 ###############################################################
@@ -13,8 +13,8 @@
 #   Any questions, please contact SimpleDesk.net              #
 #                                                             #
 ###############################################################
-# SimpleDesk Version: 2.1                                     #
-# File Info: SimpleDesk-Display.php / 2.1                     #
+# SimpleDesk Version: 2.1 Beta 1                              #
+# File Info: SimpleDesk-Display.php                           #
 ###############################################################
 
 /**
@@ -335,7 +335,7 @@ function shd_view_ticket()
 		)
 	);
 	$field_values = array();
-	while($row = $smcFunc['db_fetch_assoc']($query))
+	while ($row = $smcFunc['db_fetch_assoc']($query))
 		$field_values[$row['post_type'] == CFIELD_TICKET ? 'ticket' : $row['id_post']][$row['id_field']] = $row;
 	$smcFunc['db_free_result']($query);
 
@@ -424,7 +424,7 @@ function shd_view_ticket()
 			if (isset($field_values['ticket'][$row['id_field']]))
 				$field['value'] = $field['bbc'] ? shd_format_text($field_values['ticket'][$row['id_field']]['value']) : $field_values['ticket'][$row['id_field']]['value'];
 
-			$context['ticket']['custom_fields'][$pos][$row['id_field']]	= $field;
+			$context['ticket']['custom_fields'][$pos][$row['id_field']] = $field;
 		}
 
 		if ($row['field_loc'] & CFIELD_REPLY)
@@ -724,7 +724,7 @@ function shd_view_ticket()
 	if (!empty($options['display_quick_reply']))
 		$context['html_headers'] .= '
 	var oQuickReply = new QuickReply({
-		bDefaultCollapsed: ' . (!empty($options['display_quick_reply']) && $options['display_quick_reply'] == 2 ? 'false' : 'true') .  ',
+		bDefaultCollapsed: ' . (!empty($options['display_quick_reply']) && $options['display_quick_reply'] == 2 ? 'false' : 'true') . ',
 		iTicketId: ' . $context['ticket_id'] . ',
 		iStart: ' . $context['start'] . ',
 		sScriptUrl: smf_scripturl,
@@ -1334,4 +1334,3 @@ function shd_load_relationships($ticket = 0)
 
 	$smcFunc['db_free_result']($query);
 }
-

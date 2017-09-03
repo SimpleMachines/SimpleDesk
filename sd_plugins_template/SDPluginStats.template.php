@@ -128,7 +128,7 @@ $txt['closed_tickets'] = 'Closed Tickets';
 
 	foreach ($context['shd_stats']['urgency']['open'] as $type => $count)
 		echo '
-							<dt>', $txt['urgency_type_' . $type ], ' (', $txt['urgency_open'], ')</dt>
+							<dt>', $txt['urgency_type_' . $type], ' (', $txt['urgency_open'], ')</dt>
 							<dd>', $count, '</dd>';
 
 	echo '
@@ -146,7 +146,7 @@ $txt['closed_tickets'] = 'Closed Tickets';
 
 	foreach ($context['shd_stats']['urgency']['closed'] as $type => $count)
 		echo '
-							<dt>', $txt['urgency_type_' . $type ], ' (', $txt['urgency_closed'], ')</dt>
+							<dt>', $txt['urgency_type_' . $type], ' (', $txt['urgency_closed'], ')</dt>
 							<dd>', $count, '</dd>';
 
 	echo '

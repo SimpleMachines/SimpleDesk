@@ -31,7 +31,7 @@ function template_shd_tickettotopic()
 	echo '
 		<div class="cat_bar">
 			<h3 class="catbg">
-				<img src="', $settings['default_images_url'] , '/simpledesk/tickettotopic.png" alt="*">
+				<img src="', $settings['default_images_url'], '/simpledesk/tickettotopic.png" alt="*">
 				', $txt['shd_move_ticket_to_topic'], '
 			</h3>
 		</div>
@@ -51,7 +51,7 @@ function template_shd_tickettotopic()
 
 		foreach ($category['boards'] as $board)
 			echo '
-								<option value="', $board['id'], '">', $board['child_level'] > 0 ? str_repeat('==', $board['child_level']-1) . '=&gt; ' : '', $board['name'], '</option>';
+								<option value="', $board['id'], '">', $board['child_level'] > 0 ? str_repeat('==', $board['child_level'] - 1) . '=&gt; ' : '', $board['name'], '</option>';
 		echo '
 							</optgroup>';
 	}
@@ -206,7 +206,7 @@ function template_shd_topictoticket()
 	echo '
 		<div class="cat_bar">
 			<h3 class="catbg">
-				<img src="', $settings['default_images_url'] , '/simpledesk/topictoticket.png" alt="*">
+				<img src="', $settings['default_images_url'], '/simpledesk/topictoticket.png" alt="*">
 				', $txt['shd_move_topic_to_ticket'], '
 			</h3>
 		</div>
@@ -287,4 +287,3 @@ function template_shd_topictoticket()
 		</form>
 		</div>';
 }
-

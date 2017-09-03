@@ -1,6 +1,6 @@
 <?php
 ###############################################################
-#         Simple Desk Project - www.simpledesk.net            #
+#          Simple Desk Project - www.simpledesk.net           #
 ###############################################################
 #       An advanced help desk modification built on SMF       #
 ###############################################################
@@ -13,8 +13,8 @@
 #   Any questions, please contact SimpleDesk.net              #
 #                                                             #
 ###############################################################
-# SimpleDesk Version: 2.1                                     #
-# File Info: SDPluginFrontPage.english.php / 2.1              #
+# SimpleDesk Version: 2.1 Beta 1                              #
+# File Info: SDPluginFrontPage.english.php                    #
 ###############################################################
 // Version: 2.1; SimpleDesk main language file
 
@@ -36,4 +36,3 @@ $txt['shdp_frontpage_appear_firstdefault'] = 'At the first time of login (with t
 $txt['shdp_frontpage_content'] = 'Main content';
 
 $txt['shdp_tickets'] = 'Tickets';
-

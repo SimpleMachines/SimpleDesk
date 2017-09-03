@@ -1,22 +1,21 @@
 <?php
-###################################################################
-#           Simple Desk Project - www.simpledesk.net              #
-#                  Email Notifications Plugin                     #
-###################################################################
-#         An advanced help desk modifcation built on SMF          #
-###################################################################
-#                                                                 #
-#           * Copyright 2017 - SimpleDesk.net                     #
-#                                                                 #
-#     This file and its contents are subject to the license       #
-#     included with this distribution, license.txt, which         #
-#     states that this software is New BSD Licensed.              #
-#     Any questions, please contact SimpleDesk.net                #
-#                                                                 #
-###################################################################
-# SimpleDesk Version: 2.1                                         #
-# File Info: SimpleDesk-Notifications.php / 2.1                   #
-###################################################################
+###############################################################
+#          Simple Desk Project - www.simpledesk.net           #
+###############################################################
+#       An advanced help desk modification built on SMF       #
+###############################################################
+#                                                             #
+#         * Copyright 2017 - SimpleDesk.net                   #
+#                                                             #
+#   This file and its contents are subject to the license     #
+#   included with this distribution, license.txt, which       #
+#   states that this software is New BSD Licensed.            #
+#   Any questions, please contact SimpleDesk.net              #
+#                                                             #
+###############################################################
+# SimpleDesk Version: 2.1 Beta 1                              #
+# File Info: SimpleDesk-Notifications.php                     #
+###############################################################
 
 /**
  *	@package source
@@ -26,6 +25,14 @@
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
+/**
+ *	Notification for new tickets
+ *
+ *	@since 2.0
+ *	@param int &$msgOptions The message options, similar to the createPost in Subs-Post.php
+ *	@param int &$ticketOptions The ticket options, similar to the createPost topicOptions in Subs-Post.php
+ *	@param int &$posterOptions The poster options, similar to the createPost in Subs-Post.php
+*/
 function shd_notifications_notify_newticket(&$msgOptions, &$ticketOptions, &$posterOptions)
 {
 	global $smcFunc, $context, $modSettings, $scripturl;
@@ -100,6 +107,14 @@ function shd_notifications_notify_newticket(&$msgOptions, &$ticketOptions, &$pos
 	shd_notify_users($notify_data);
 }
 
+/**
+ *	Notifications for new replies
+ *
+ *	@since 2.0
+ *	@param int &$msgOptions The message options, similar to the createPost in Subs-Post.php
+ *	@param int &$ticketOptions The ticket options, similar to the createPost topicOptions in Subs-Post.php
+ *	@param int &$posterOptions The poster options, similar to the createPost in Subs-Post.php
+*/
 function shd_notifications_notify_newreply(&$msgOptions, &$ticketOptions, &$posterOptions)
 {
 	global $smcFunc, $context, $modSettings, $scripturl;
@@ -271,6 +286,13 @@ function shd_notifications_notify_newreply(&$msgOptions, &$ticketOptions, &$post
 		shd_notify_users($notify_data);
 }
 
+/**
+ *	Notificaiton for assignments
+ *
+ *	@since 2.0
+ *	@param int &$ticket The ticket id
+ *	@param int &$assignment Who the ticket is being assigned to.
+*/
 function shd_notifications_notify_assign(&$ticket, &$assignment)
 {
 	global $smcFunc, $context, $modSettings, $scripturl;
@@ -354,7 +376,7 @@ function shd_notifications_notify_assign(&$ticket, &$assignment)
  *	Handle email notifications
  *
  *	@todo Finish documenting
- *	@since 2.0
+ *	@param mixed $notify_data Array of data containing notification informationt o be sent out.
 */
 function shd_notify_users($notify_data)
 {
@@ -596,6 +618,12 @@ function shd_notify_popup()
 	$context['help_text'] .= '<strong>' . $txt['subject'] . ':</strong> ' . $email_subject . '<br><br>' . $email_body;
 }
 
+/**
+ *	Notification ticket options..
+ *
+ *	@todo Finish documenting
+ *	@since 2.0
+*/
 function shd_notify_ticket_options()
 {
 	global $context, $txt, $smcFunc;
@@ -740,6 +768,12 @@ function shd_notify_ticket_options()
 	redirectexit('action=helpdesk;sa=ticket;ticket=' . $context['ticket_id']);
 }
 
+/**
+ *	Builds a list of who should be notified or not.
+ *
+ *	@todo Finish documenting
+ *	@since 2.0
+*/
 function shd_query_monitor_list($ticket_id)
 {
 	global $smcFunc;
@@ -836,4 +870,3 @@ function shd_get_visible_list($dept, $private, $ticket_starter = 0, $include_adm
 
 	return $people;
 }
-
