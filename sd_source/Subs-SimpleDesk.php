@@ -631,8 +631,7 @@ function shd_count_helpdesk_tickets($status = '', $is_staff = false)
 				FROM {db_prefix}helpdesk_tickets AS hdt
 				WHERE {query_see_ticket}' . (!empty($context['shd_department']) ? '
 					AND id_dept = ' . $context['shd_department'] : '') . '
-				GROUP BY status
-				ORDER BY null',
+				GROUP BY status',
 				array()
 			);
 
@@ -650,8 +649,7 @@ function shd_count_helpdesk_tickets($status = '', $is_staff = false)
 					WHERE {query_see_ticket}
 						AND id_member_assigned = {int:user}' . (!empty($context['shd_department']) ? '
 						AND id_dept = ' . $context['shd_department'] : '') . '
-					GROUP BY status
-					ORDER BY null',
+					GROUP BY status',
 					array(
 						'user' => $context['user']['id'],
 					)

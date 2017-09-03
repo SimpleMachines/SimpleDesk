@@ -243,8 +243,7 @@ function shd_get_ticket_counts()
 		WHERE {query_see_ticket}
 			AND id_dept IN ({array_int:depts})
 			AND status != {int:deleted}
-		GROUP BY id_dept, status
-		ORDER BY null',
+		GROUP BY id_dept, status',
 		array(
 			'depts' => array_keys($context['dept_list']),
 			'deleted' => TICKET_STATUS_DELETED,
