@@ -943,6 +943,9 @@ function sd_upgrade_fix_last_updated()
 {
 	global $smcFunc;
 
+	if ($smcFunc['db_title'] == 'PostgreSQL')
+		return;
+
 	$smcFunc['db_query']('', '
 	UPDATE {db_prefix}helpdesk_tickets AS hdt, {db_prefix}helpdesk_ticket_replies AS hdtr
 	SET hdt.last_updated = hdtr.poster_time
