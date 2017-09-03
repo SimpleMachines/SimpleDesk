@@ -2113,4 +2113,3 @@ function shd_load_canned_replies()
 		$context['canned_replies'][$row['id_cat']]['replies'][$row['id_reply']] = $row['title'];
 	}
 }
-

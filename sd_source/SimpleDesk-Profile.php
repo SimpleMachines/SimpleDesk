@@ -780,4 +780,3 @@ function shd_profile_theme_wrapper($memID)
 
 	$context['profile_fields']['theme_settings']['callback_func'] = 'shd_theme_settings';
 }
-

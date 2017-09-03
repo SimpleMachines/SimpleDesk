@@ -126,4 +126,3 @@ function shd_unread_posts()
 	require_once($sourcedir . '/' . $context['shd_unread_actions'][$_REQUEST['action']][0]);
 	$context['shd_unread_actions'][$_REQUEST['action']][1]();
 }
-

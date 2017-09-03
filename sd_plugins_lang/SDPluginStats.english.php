@@ -1,6 +1,6 @@
 <?php
 ###############################################################
-#         Simple Desk Project - www.simpledesk.net            #
+#          Simple Desk Project - www.simpledesk.net           #
 ###############################################################
 #       An advanced help desk modification built on SMF       #
 ###############################################################
@@ -13,8 +13,8 @@
 #   Any questions, please contact SimpleDesk.net              #
 #                                                             #
 ###############################################################
-# SimpleDesk Version: 2.1                                     #
-# File Info: SDPluginFrontPage.english.php / 2.1              #
+# SimpleDesk Version: 2.1 Beta 1                              #
+# File Info: SDPluginFrontPage.english.php                    #
 ###############################################################
 // Version: 2.1; SimpleDesk main language file
 
@@ -26,5 +26,5 @@ $txt['shdp_stats_desc'] = 'This plugin allows you to view statistics of your hel
 $txt['shdp_enable_stats'] = 'Enable stats';
 
 
-$txt['shdp_stats_main'] ='j';
-$txt['shdp_stats_main_desc'] ='Stats';
+$txt['shdp_stats_main'] = 'j';
+$txt['shdp_stats_main_desc'] = 'Stats';

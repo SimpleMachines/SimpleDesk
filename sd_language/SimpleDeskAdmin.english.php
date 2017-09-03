@@ -1,6 +1,6 @@
 <?php
 ###############################################################
-#         Simple Desk Project - www.simpledesk.net            #
+#          Simple Desk Project - www.simpledesk.net           #
 ###############################################################
 #       An advanced help desk modification built on SMF       #
 ###############################################################
@@ -13,8 +13,8 @@
 #   Any questions, please contact SimpleDesk.net              #
 #                                                             #
 ###############################################################
-# SimpleDesk Version: 2.1                                     #
-# File Info: SimpleDeskAdmin.english.php / 2.1                #
+# SimpleDesk Version: 2.1 Beta 1                              #
+# File Info: SimpleDeskAdmin.english.php                      #
 ###############################################################
 // Version: 2.1; SimpleDesk administration options
 
@@ -637,4 +637,7 @@ $txt['shd_search_rebuilt'] = 'The search index has been rebuilt.';
  *	@ignore
  *	Warning: He may bite.
 */
+//! Ignore
+//@{
 $txt['shd_fluffy'] = 'Guardian of the <span %s>cookies</span>';
+//@}

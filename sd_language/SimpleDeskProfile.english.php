@@ -1,6 +1,6 @@
 <?php
 ###############################################################
-#         Simple Desk Project - www.simpledesk.net            #
+#          Simple Desk Project - www.simpledesk.net           #
 ###############################################################
 #       An advanced help desk modification built on SMF       #
 ###############################################################
@@ -13,8 +13,8 @@
 #   Any questions, please contact SimpleDesk.net              #
 #                                                             #
 ###############################################################
-# SimpleDesk Version: 2.1                                     #
-# File Info: SimpleDeskProfile.english.php / 2.1              #
+# SimpleDesk Version: 2.1 Beta 1                              #
+# File Info: SimpleDeskProfile.english.php                    #
 ###############################################################
 // Version: 2.1; SimpleDesk Profile language file
 
@@ -27,6 +27,8 @@
  *	@since 2.0
  */
 
+//! @name Profile Menu Buttons
+//@{
 $txt['shd_profile_area'] = 'Helpdesk';
 $txt['shd_profile_main'] = 'Profile';
 $txt['shd_profile_home'] = 'Profile Home';
@@ -38,7 +40,10 @@ $txt['shd_profile_show_ignore'] = 'Ignored Tickets';
 $txt['shd_profile_permissions'] = 'Permissions';
 $txt['shd_profile_actionlog'] = 'Action Log';
 $txt['shd_profile_go_to_helpdesk'] = 'Go to the helpdesk';
+//@}
 
+//! @name Profile General Strings
+//@{
 $txt['shd_profile_heading'] = 'Helpdesk Profile - %s';
 $txt['shd_profile_edit_settings'] = 'Edit my settings';
 $txt['shd_profile_view_tickets'] = 'View my tickets';
@@ -49,8 +54,10 @@ $txt['shd_profile_tickets_created'] = 'Tickets created by this user';
 $txt['shd_profile_tickets_assigned'] = 'Tickets assigned to this user';
 
 $txt['shd_profile_currently_open'] = 'currently open';
+//@}
 
-// Permissions
+//! @name Profile Permissions
+//@{
 $txt['membergroups_members'] = 'Regular Members';
 $txt['shd_profile_permissions_header'] = 'Helpdesk Permissions - %s';
 $txt['shd_profile_permissions_description'] = 'This area displays all the permissions within the helpdesk for this user.';
@@ -65,8 +72,10 @@ $txt['shd_profile_granted_desc'] = 'These are all the permissions this member ha
 $txt['shd_profile_denied_desc'] = 'These are permissions denied to this member through one or more of the roles they have, and what role is preventing it.';
 $txt['shd_profile_showdept'] = 'Show all the permissions that apply in which department';
 $txt['shd_profile_selectdept'] = '[Select department]';
+//@}
 
-// Profile logs
+//! @name Profile logs
+//@{
 $txt['shd_profile_log'] = 'Profile action log - %s';
 $txt['shd_profile_log_count_one'] = '1 entry';
 $txt['shd_profile_log_count_more'] = '%s entries';
@@ -76,16 +85,20 @@ $txt['shd_profile_log_ip'] = 'Member IP:';
 $txt['shd_profile_log_date'] = 'Date';
 $txt['shd_profile_log_action'] = 'Action';
 $txt['shd_profile_log_full'] = 'Go to the full action log (All members)';
+//@}
 
-// Preferences
+//! @name Profile Preferences
+//@{
 $txt['shd_profile_preferences_header'] = 'Preferences - %s';
 $txt['shd_profile_preferences_none_header'] = 'No Preferences';
 $txt['shd_profile_preferences_none_desc'] = 'There are no available preferences that can be selected in this profile.';
 
 $txt['shd_profile_save_prefs'] = 'Save Preferences';
 $txt['shd_prefs_updated'] = 'Preferences have been updated.';
+//@}
 
-// Preferences: display
+//! @name Profile Preferences: display
+//@{
 $txt['shd_pref_group_display'] = 'Look and Layout Preferences';
 $txt['shd_pref_display_unread_type'] = 'When looking at Unread Posts, display:';
 $txt['shd_pref_display_unread_none'] = 'Don\'t show me any tickets';
@@ -94,8 +107,10 @@ $txt['shd_pref_display_unread_outstanding'] = 'All outstanding tickets in the he
 $txt['shd_pref_display_order'] = 'Show ticket replies in what order?';
 $txt['shd_pref_display_order_asc'] = 'Oldest reply first';
 $txt['shd_pref_display_order_desc'] = 'Newest reply first';
+//@}
 
-// Preferences: block numbers
+//! @name Profile Preferences: block numbers
+//@{
 $txt['shd_pref_group_blocks'] = 'Blocks display';
 $txt['shd_pref_blocks_assigned_count'] = 'Number of tickets per page in the "Assigned to Me" block';
 $txt['shd_pref_blocks_new_count'] = 'Number of tickets per page in the "New Tickets" block';
@@ -104,8 +119,10 @@ $txt['shd_pref_blocks_user_count'] = 'Number of tickets per page in the "Tickets
 $txt['shd_pref_blocks_closed_count'] = 'Number of tickets per page in the "Closed Tickets" block';
 $txt['shd_pref_blocks_recycle_count'] = 'Number of tickets per page in the "Recycled Tickets" block';
 $txt['shd_pref_blocks_withdeleted_count'] = 'Number of tickets per page in the "Tickets with Deleted Replies" block';
+//@}
 
-// Preferences: block ordering
+//! @name Profile Preferences: block ordering
+//@{
 $txt['shd_pref_group_block_order'] = 'Ordering tickets within blocks';
 $txt['shd_pref_block_order_assigned_block'] = 'Normal ordering in the "Assigned to Me" block';
 $txt['shd_pref_block_order_new_block'] = 'Normal ordering of tickets in the "New Tickets" block';
@@ -135,8 +152,10 @@ $txt['shd_pref_block_order_starter_asc'] = 'Ticket starter - alphabetic A-Z';
 $txt['shd_pref_block_order_starter_desc'] = 'Ticket starter - alphabetic Z-A';
 $txt['shd_pref_block_order_lastreply_asc'] = 'Last reply - earliest first';
 $txt['shd_pref_block_order_lastreply_desc'] = 'Last reply - latest first';
+//@}
 
-// Preferences: email notifications
+//! @name Profile Preferences: email notifications
+//@{
 $txt['shd_pref_group_notify'] = 'Notifications By Email';
 $txt['shd_pref_notify_new_ticket'] = 'Email me when a new ticket is posted';
 $txt['shd_pref_notify_new_reply_own'] = 'Email me when one of my tickets is replied to';
@@ -145,22 +164,29 @@ $txt['shd_pref_notify_new_reply_previous'] = 'Email me when a ticket I\'ve repli
 $txt['shd_pref_notify_new_reply_any'] = 'Email me when any ticket is replied to';
 $txt['shd_pref_notify_assign_me'] = 'Email me when a ticket is assigned to me';
 $txt['shd_pref_notify_assign_own'] = 'Email me when one of my tickets is assigned to staff';
+//@}
 
-// Show tickets
+//! @name Profile Show tickets
+//@{
 $txt['shd_profile_show_tickets_header'] = 'Tickets and replies posted by %s';
 $txt['shd_profile_show_tickets_description'] = 'This page displays all the tickets started by this user as well as all replies the user has posted to tickets.';
 $txt['shd_profile_view_full_ticket'] = 'View the full ticket';
 $txt['shd_profile_a_ticket'] = 'Ticket %s';
 $txt['shd_profile_reply_to_ticket'] = 'Reply to ticket %s';
+//@}
 
-// Show monitor/ignore
+//! @name Profile Show monitor/ignore
+//@{
 $txt['shd_profile_show_monitor_title'] = 'Monitored Tickets';
 $txt['shd_profile_show_monitor_header'] = 'Tickets you are monitoring';
 $txt['shd_profile_show_monitor_description'] = 'This page displays all of the tickets which you have flagged to monitor via email, regardless of your other email options.';
 $txt['shd_profile_show_ignore_title'] = 'Ignored Tickets';
 $txt['shd_profile_show_ignore_header'] = 'Tickets you have disabled notifications for';
 $txt['shd_profile_show_ignore_description'] = 'This page displays all of the tickets on which you have chosen to disable notifications.';
+//@}
 
+//! @name Profile HD only mode
+//@{
 // When in HD only mode, we need to remove hints of 'forum' from the language strings. These essentially replace the non shd_ prefixed ones in Profile.language.php.
 $txt['shd_current_time'] = 'Current helpdesk time';
 $txt['shd_theme_info'] = 'This section allows you to customize the more general look and layout options of the helpdesk.';
@@ -173,4 +199,4 @@ $txt['shd_show_forum_permissions'] = 'Show Forum Permissions';
 $txt['shd_acct_information'] = 'Account Information';
 $txt['shd_replies_per_page'] = 'Replies to display per page';
 $txt['shd_per_page_default'] = 'Helpdesk default';
-
+//@}

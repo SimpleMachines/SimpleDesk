@@ -136,4 +136,3 @@ function shd_hash($string)
 {
 	return sprintf('%0.0f', hexdec(substr(sha1($string), -13)));
 }
-

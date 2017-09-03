@@ -1287,4 +1287,3 @@ function shd_topictoticket2()
 	// Send them to the ticket.
 	redirectexit('action=helpdesk;sa=ticket;ticket=' . $ticket);
 }
-

@@ -835,4 +835,3 @@ function shd_get_visible_list($dept, $private, $ticket_starter = 0, $include_adm
 
 	return $people;
 }
-

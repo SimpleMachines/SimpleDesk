@@ -308,4 +308,3 @@ function shd_get_unread_departments()
 			$context['dept_list'][$row['id_dept']]['new'] = true;
 	}
 }
-

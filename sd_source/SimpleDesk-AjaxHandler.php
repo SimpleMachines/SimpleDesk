@@ -829,4 +829,3 @@ function shd_format_notify_name(&$user_name, $user_id, $ticket_starter)
 	global $txt;
 	$user_name = shd_profile_link($user_name, $user_id) . ($user_id == $ticket_starter ? $txt['shd_is_ticket_opener'] : '');
 }
-

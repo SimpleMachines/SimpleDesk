@@ -433,4 +433,3 @@ function shd_ticket_relation()
 	// See yah
 	redirectexit('action=helpdesk;sa=ticket;ticket=' . $context['ticket_id']);
 }
-

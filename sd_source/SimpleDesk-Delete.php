@@ -687,4 +687,3 @@ function shd_reply_restore()
 
 	redirectexit('action=helpdesk;sa=ticket;ticket=' . $context['ticket_id']);
 }
-

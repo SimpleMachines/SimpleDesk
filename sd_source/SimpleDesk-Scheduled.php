@@ -239,4 +239,3 @@ function shd_scheduled_purge_tickets()
 	);
 	// 4.6. Log everything.
 }
-

@@ -78,4 +78,3 @@ function template_shd_unread_below()
 	echo '
 				</table>';
 }
-

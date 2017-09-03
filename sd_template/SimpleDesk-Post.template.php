@@ -946,4 +946,3 @@ function template_shd_post_nojs_below()
 {
 
 }
-

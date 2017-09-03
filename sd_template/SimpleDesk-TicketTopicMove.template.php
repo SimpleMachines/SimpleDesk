@@ -287,4 +287,3 @@ function template_shd_topictoticket()
 		</form>
 		</div>';
 }
-
