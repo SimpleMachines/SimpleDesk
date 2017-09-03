@@ -889,7 +889,7 @@ function sd_upgrade_create_depts()
 	$smcFunc['db_free_result']($query);
 	if (empty($count))
 	{
-		$smcFunc['db_insert']('replace',
+		$smcFunc['db_insert']('insert',
 			'{db_prefix}helpdesk_depts',
 			array(
 				'dept_name' => 'string', 'board_cat' => 'int', 'description' => 'string', 'before_after' => 'int', 'dept_order' => 'int', 'dept_theme' => 'int',
