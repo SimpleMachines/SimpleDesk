@@ -196,7 +196,7 @@ function shd_admin_edit_role()
 	// Now for departments. But we're going to be clever and get the list of departments and whether this role is present in them - at the same time.
 	$context['role_depts'] = array();
 	$query = $smcFunc['db_query']('', '
-		SELECT hdd.id_dept, dept_name, IFNULL(hddr.id_role, 0) AS is_role
+		SELECT hdd.id_dept, dept_name, COALESCE(hddr.id_role, 0) AS is_role
 		FROM {db_prefix}helpdesk_depts AS hdd
 			LEFT JOIN {db_prefix}helpdesk_dept_roles AS hddr ON (hddr.id_dept = hdd.id_dept AND hddr.id_role = {int:role})
 		ORDER BY hdd.dept_order',

@@ -297,7 +297,7 @@ function shd_list_get_ip_messages($start, $items_per_page, $sort, $where, $where
 	global $smcFunc, $txt, $scripturl;
 	$query = shd_db_query('', '
 		SELECT
-			hdtr.id_msg, hdtr.poster_ip, IFNULL(mem.real_name, hdtr.poster_name) AS display_name, mem.id_member,
+			hdtr.id_msg, hdtr.poster_ip, COALESCE(mem.real_name, hdtr.poster_name) AS display_name, mem.id_member,
 			hdt.subject, hdtr.poster_time, hdt.id_ticket, hdt.id_first_msg
 		FROM {db_prefix}helpdesk_ticket_replies AS hdtr
 			INNER JOIN {db_prefix}helpdesk_tickets AS hdt ON (hdtr.id_ticket = hdt.id_ticket)

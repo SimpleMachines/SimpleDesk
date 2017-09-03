@@ -72,7 +72,7 @@ function shd_unread_posts()
 			$context['block_title'] = $txt['shd_unread_tickets'];
 			$request = shd_db_query('', '
 				SELECT hdt.id_ticket, hdt.subject, hdt.id_ticket, hdt.num_replies, hdt.last_updated,
-					hdtr_first.poster_name, hdt.urgency, hdt.status, hdt.id_member_started, hdt.id_member_assigned, IFNULL(hdlr.id_msg, 0) AS log_read
+					hdtr_first.poster_name, hdt.urgency, hdt.status, hdt.id_member_started, hdt.id_member_assigned, COALESCE(hdlr.id_msg, 0) AS log_read
 				FROM {db_prefix}helpdesk_tickets AS hdt
 					INNER JOIN {db_prefix}helpdesk_ticket_replies AS hdtr_first ON (hdt.id_first_msg = hdtr_first.id_msg)
 					INNER JOIN {db_prefix}helpdesk_ticket_replies AS hdtr_last ON (hdt.id_last_msg = hdtr_last.id_msg)

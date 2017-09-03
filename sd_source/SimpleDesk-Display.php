@@ -999,9 +999,9 @@ function shd_display_load_attachments()
 	if ($modSettings['shd_attachments_mode'] == 'ticket')
 	{
 		$query = shd_db_query('', '
-			SELECT hda.id_attach, hda.id_msg, hda.id_ticket, a.filename, a.id_folder, a.file_hash, IFNULL(a.size, 0) AS filesize,
+			SELECT hda.id_attach, hda.id_msg, hda.id_ticket, a.filename, a.id_folder, a.file_hash, COALESCE(a.size, 0) AS filesize,
 				a.width, a.height' . (empty($modSettings['attachmentShowImages']) || empty($modSettings['attachmentThumbnails']) ? '' : ',
-				IFNULL(thumb.id_attach, 0) AS id_thumb, thumb.width AS thumb_width, thumb.height AS thumb_height') . '
+				COALESCE(thumb.id_attach, 0) AS id_thumb, thumb.width AS thumb_width, thumb.height AS thumb_height') . '
 			FROM {db_prefix}helpdesk_attachments AS hda
 				INNER JOIN {db_prefix}attachments AS a ON (hda.id_attach = a.id_attach)' . (empty($modSettings['attachmentShowImages']) || empty($modSettings['attachmentThumbnails']) ? '' : '
 				LEFT JOIN {db_prefix}attachments AS thumb ON (thumb.id_attach = a.id_thumb)') . '
@@ -1029,9 +1029,9 @@ function shd_display_load_attachments()
 			return;
 
 		$query = shd_db_query('', '
-			SELECT hda.id_attach, hda.id_msg, hda.id_ticket, a.filename, a.id_folder, a.file_hash, IFNULL(a.size, 0) AS filesize,
+			SELECT hda.id_attach, hda.id_msg, hda.id_ticket, a.filename, a.id_folder, a.file_hash, COALESCE(a.size, 0) AS filesize,
 				a.width, a.height' . (empty($modSettings['attachmentShowImages']) || empty($modSettings['attachmentThumbnails']) ? '' : ',
-				IFNULL(thumb.id_attach, 0) AS id_thumb, thumb.width AS thumb_width, thumb.height AS thumb_height') . '
+				COALESCE(thumb.id_attach, 0) AS id_thumb, thumb.width AS thumb_width, thumb.height AS thumb_height') . '
 			FROM {db_prefix}helpdesk_attachments AS hda
 				INNER JOIN {db_prefix}attachments AS a ON (hda.id_attach = a.id_attach)' . (empty($modSettings['attachmentShowImages']) || empty($modSettings['attachmentThumbnails']) ? '' : '
 				LEFT JOIN {db_prefix}attachments AS thumb ON (thumb.id_attach = a.id_thumb)') . '

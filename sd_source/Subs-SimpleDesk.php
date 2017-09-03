@@ -750,9 +750,9 @@ function shd_load_ticket($ticket = 0)
 		SELECT hdt.id_first_msg, hdt.id_last_msg, hdt.id_member_started, hdt.subject, hdt.urgency, hdt.status,
 			hdt.num_replies, hdt.deleted_replies, hdt.private, hdtr.body, hdtr.id_member, hdtr.poster_time,
 			hdtr.modified_time, hdtr.smileys_enabled, hdt.id_dept AS dept, hdd.dept_name,
-			IFNULL(mem.real_name, hdtr.poster_name) AS starter_name, IFNULL(mem.id_member, 0) AS starter_id, hdtr.poster_ip AS starter_ip,
-			IFNULL(ma.real_name, 0) AS assigned_name, IFNULL(ma.id_member, 0) AS assigned_id,
-			IFNULL(mm.real_name, hdtr.modified_name) AS modified_name, IFNULL(mm.id_member, 0) AS modified_id
+			COALESCE(mem.real_name, hdtr.poster_name) AS starter_name, COALESCE(mem.id_member, 0) AS starter_id, hdtr.poster_ip AS starter_ip,
+			COALESCE(ma.real_name, 0) AS assigned_name, COALESCE(ma.id_member, 0) AS assigned_id,
+			COALESCE(mm.real_name, hdtr.modified_name) AS modified_name, COALESCE(mm.id_member, 0) AS modified_id
 		FROM {db_prefix}helpdesk_tickets AS hdt
 			INNER JOIN {db_prefix}helpdesk_ticket_replies AS hdtr ON (hdt.id_first_msg = hdtr.id_msg)
 			INNER JOIN {db_prefix}helpdesk_depts AS hdd ON (hdt.id_dept = hdd.id_dept)

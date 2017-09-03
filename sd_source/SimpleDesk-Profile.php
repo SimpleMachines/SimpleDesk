@@ -557,7 +557,7 @@ function shd_profile_show_notify_override($memID)
 	// Ticket, Name, Started By, Replies, Status, Urgency, Updated (+ Updated By?)
 	$context['tickets'] = array();
 	$query = shd_db_query('', '
-		SELECT hdt.id_ticket, hdt.subject, IFNULL(mem.id_member, 0) AS starter_id, IFNULL(mem.real_name, hdtr.poster_name) AS starter_name,
+		SELECT hdt.id_ticket, hdt.subject, COALESCE(mem.id_member, 0) AS starter_id, COALESCE(mem.real_name, hdtr.poster_name) AS starter_name,
 			hdt.num_replies, hdt.status, hdt.urgency, hdt.last_updated
 		FROM {db_prefix}helpdesk_notify_override AS hdno
 			INNER JOIN {db_prefix}helpdesk_tickets AS hdt ON (hdno.id_ticket = hdt.id_ticket)

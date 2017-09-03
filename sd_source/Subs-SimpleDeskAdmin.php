@@ -87,7 +87,7 @@ function shd_load_action_log_entries($start = 0, $items_per_page = 10, $sort = '
 	// Without further screaming and waving, fetch the actions.
 	$request = shd_db_query('','
 		SELECT la.id_action, la.log_time, la.ip, la.action, la.id_ticket, la.id_msg, la.extra,
-		IFNULL(mem.id_member, 0) AS id_member, IFNULL(mem.real_name, {string:blank}) AS real_name, IFNULL(mg.group_name, {string:na}) AS group_name
+		COALESCE(mem.id_member, 0) AS id_member, COALESCE(mem.real_name, {string:blank}) AS real_name, COALESCE(mg.group_name, {string:na}) AS group_name
 		FROM {db_prefix}helpdesk_log_action AS la
 			LEFT JOIN {db_prefix}members AS mem ON(mem.id_member = la.id_member)
 			LEFT JOIN {db_prefix}membergroups AS mg ON (mg.id_group = CASE WHEN mem.id_group = {int:reg_group_id} THEN mem.id_post_group ELSE mem.id_group END)
@@ -779,7 +779,7 @@ function shd_load_admin_log_entries($start = 0, $items_per_page = 10, $sort = 'l
 
 	$request = shd_db_query('','
 		SELECT la.id_action, la.log_time, la.ip, la.action, la.extra,
-		IFNULL(mem.id_member, 0) AS id_member, IFNULL(mem.real_name, {string:blank}) AS real_name, IFNULL(mg.group_name, {string:na}) AS group_name
+		COALESCE(mem.id_member, 0) AS id_member, COALESCE(mem.real_name, {string:blank}) AS real_name, COALESCE(mg.group_name, {string:na}) AS group_name
 		FROM {db_prefix}helpdesk_log_action AS la
 			LEFT JOIN {db_prefix}members AS mem ON(mem.id_member = la.id_member)
 			LEFT JOIN {db_prefix}membergroups AS mg ON (mg.id_group = CASE WHEN mem.id_group = {int:reg_group_id} THEN mem.id_post_group ELSE mem.id_group END)

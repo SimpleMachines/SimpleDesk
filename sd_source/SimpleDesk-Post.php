@@ -876,7 +876,7 @@ function shd_post_reply()
 	if (!empty($_REQUEST['quote']))
 	{
 		$query = shd_db_query('', '
-			SELECT hdtr.body, IFNULL(mem.real_name, hdtr.poster_name) AS poster_name, hdtr.poster_time
+			SELECT hdtr.body, COALESCE(mem.real_name, hdtr.poster_name) AS poster_name, hdtr.poster_time
 			FROM {db_prefix}helpdesk_ticket_replies AS hdtr
 				LEFT JOIN {db_prefix}members AS mem ON (hdtr.id_member = mem.id_member)
 			WHERE id_msg = {int:msg}
