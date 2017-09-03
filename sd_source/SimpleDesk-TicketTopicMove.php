@@ -826,7 +826,7 @@ function shd_append_custom_fields(&$body, $id_msg, $type)
 	}
 
 	if (!empty($content))
-		$body .= '[hr]<br />' . implode('<br />', $content);
+		$body .= '[hr]<br>' . implode('<br>', $content);
 }
 
 /**

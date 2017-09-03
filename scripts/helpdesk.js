@@ -231,7 +231,7 @@ shd_attach_select.prototype.addListRow = function (element)
 	var new_row_button = document.createElement('input');
 	new_row_button.type = 'button';
 	new_row_button.value = this.opts.message_txt_delete;
-	new_row_button.className = 'button_submit';
+	new_row_button.className = 'button';
 	new_row.element = element;
 
 	new_row_button.onclick = function ()
@@ -421,7 +421,7 @@ function AjaxAssign(oOptions)
 	this.bCollapsed = true;
 
 	// Insert the expand/collapse button
-	document.getElementById(this.opt.sId).innerHTML = '<img src="' + this.opt.sImagesUrl + "/" + this.opt.sImageCollapsed + '" id="assign_' + this.opt.sSelf + '" class="shd_assign_button" onclick="' + this.opt.sSelf + '.click();" />';
+	document.getElementById(this.opt.sId).innerHTML = '<img src="' + this.opt.sImagesUrl + "/" + this.opt.sImageCollapsed + '" id="assign_' + this.opt.sSelf + '" class="shd_assign_button" onclick="' + this.opt.sSelf + '.click();">';
 }
 
 AjaxAssign.prototype.click = function ()
@@ -467,7 +467,7 @@ AjaxAssign.prototype.expand_callback = function (XMLDoc)
 		{
 			newhtml += '<li class="shd_assignees" onclick="' + this.opt.sSelf + '.assign(' + elements[i].getAttribute('uid') + ');">';
 			if (elements[i].getAttribute('admin'))
-				newhtml += '<img src="' + smf_default_theme_url + '/images/simpledesk/' + (elements[i].getAttribute('admin') == 'yes' ? 'admin' : 'staff') + '.png" alt="" class="shd_smallicon" /> ';
+				newhtml += '<img src="' + smf_default_theme_url + '/images/simpledesk/' + (elements[i].getAttribute('admin') == 'yes' ? 'admin' : 'staff') + '.png" alt="" class="shd_smallicon"> ';
 			newhtml += elements[i].childNodes[0].nodeValue + '</li>';
 		}
 

@@ -889,7 +889,7 @@ function shd_post_reply()
 				require_once($sourcedir . '/Subs-Editor.php');
 				$row['body'] = strtr($row['body'], array('&lt;' => '#smlt#', '&gt;' => '#smgt#', '&amp;' => '#smamp#'));
 				$row['body'] = bbc_to_html($row['body']);
-				$lb = '<br />';
+				$lb = '<br>';
 			}
 			else
 				$lb = "\n";
@@ -1715,7 +1715,7 @@ function shd_check_attachments()
 					if (!in_array(strtolower(substr(strrchr($uplfile['name'], '.'), 1)), explode(',', strtolower($modSettings['attachmentExtensions']))))
 					{
 						checkSubmitOnce('free');
-						fatal_error($uplfile['name'] . '.<br />' . $txt['cant_upload_type'] . ' ' . $modSettings['attachmentExtensions'] . '.', false);
+						fatal_error($uplfile['name'] . '.<br>' . $txt['cant_upload_type'] . ' ' . $modSettings['attachmentExtensions'] . '.', false);
 					}
 				}
 
@@ -1979,7 +1979,7 @@ function shd_handle_attachments()
 				if (in_array('bad_extension', $attachmentOptions['errors']))
 				{
 					checkSubmitOnce('free');
-					fatal_error($attachmentOptions['name'] . '.<br />' . $txt['cant_upload_type'] . ' ' . strtr($modSettings['attachmentExtensions'], array(',' => ', ')) . '.', false);
+					fatal_error($attachmentOptions['name'] . '.<br>' . $txt['cant_upload_type'] . ' ' . strtr($modSettings['attachmentExtensions'], array(',' => ', ')) . '.', false);
 				}
 				if (in_array('directory_full', $attachmentOptions['errors']))
 				{
@@ -1989,7 +1989,7 @@ function shd_handle_attachments()
 				if (in_array('bad_filename', $attachmentOptions['errors']))
 				{
 					checkSubmitOnce('free');
-					fatal_error(basename($attachmentOptions['name']) . '.<br />' . $txt['restricted_filename'] . '.', 'critical');
+					fatal_error(basename($attachmentOptions['name']) . '.<br>' . $txt['restricted_filename'] . '.', 'critical');
 				}
 				if (in_array('taken_filename', $attachmentOptions['errors']))
 				{

@@ -15,7 +15,7 @@ function template_shd_custom_field_home()
 	echo '
 		<div class="cat_bar">
 			<h3 class="catbg">
-				<img src="', $settings['default_images_url'], '/simpledesk/custom_fields.png" class="icon" alt="*" />
+				<img src="', $settings['default_images_url'], '/simpledesk/custom_fields.png" class="icon" alt="*">
 				', $txt['shd_admin_custom_fields_long'], '
 			</h3>
 		</div>
@@ -25,11 +25,11 @@ function template_shd_custom_field_home()
 		<table class="table_grid">
 			<tr class="title_bar">
 				<td width="30%" colspan="2">
-					<img src="', $settings['default_images_url'], '/simpledesk/name.png" class="icon" alt="*" />
+					<img src="', $settings['default_images_url'], '/simpledesk/name.png" class="icon" alt="*">
 					', $txt['shd_admin_custom_fields_fieldname'], '
 				</td>
 				<td colspan="2">
-					<img src="', $settings['default_images_url'], '/simpledesk/fieldtype.png" class="icon" alt="*" />
+					<img src="', $settings['default_images_url'], '/simpledesk/fieldtype.png" class="icon" alt="*">
 					', $txt['shd_admin_custom_fields_fieldtype'], '
 				</td>
 				<td>', $txt['shd_admin_custom_fields_active'], '</td>
@@ -50,31 +50,31 @@ function template_shd_custom_field_home()
 		{
 			echo '
 			<tr class="windowbg">
-				<td width="2%">', empty($field['icon']) ? '' : '<img src="' . $settings['default_images_url'] . '/simpledesk/cf/' . $field['icon'] . '" class="icon" alt="*" />', '</td>
+				<td width="2%">', empty($field['icon']) ? '' : '<img src="' . $settings['default_images_url'] . '/simpledesk/cf/' . $field['icon'] . '" class="icon" alt="*">', '</td>
 				<td>', $field['field_name'], '<br><span class="smalltext">', $field['field_desc'], '</span></td>
-				<td width="2%"><img src="' . $settings['default_images_url'] . '/simpledesk/cf_ui_' . $field['field_type'] . '.png" class="icon" alt="', $txt['shd_admin_custom_fields_ui_' . $field['field_type']], '" /></td>
+				<td width="2%"><img src="' . $settings['default_images_url'] . '/simpledesk/cf_ui_' . $field['field_type'] . '.png" class="icon" alt="', $txt['shd_admin_custom_fields_ui_' . $field['field_type']], '"></td>
 				<td>', $txt['shd_admin_custom_fields_ui_' . $field['field_type']], '</td>
-				<td><img src="', $settings['default_images_url'], '/simpledesk/cf_', $field['active_string'], '.png" alt="', $txt['shd_admin_custom_fields_' . $field['active_string']], '" title="', $txt['shd_admin_custom_fields_' . $field['active_string']], '" /></td>
+				<td><img src="', $settings['default_images_url'], '/simpledesk/cf_', $field['active_string'], '.png" alt="', $txt['shd_admin_custom_fields_' . $field['active_string']], '" title="', $txt['shd_admin_custom_fields_' . $field['active_string']], '"></td>
 				<td>
-					', ($field['field_loc'] & CFIELD_TICKET) !== 0 ? ('<img src="' . $settings['default_images_url'] . '/simpledesk/ticket.png" alt="' . $txt['shd_admin_custom_fields_inticket'] . '" title="' . $txt['shd_admin_custom_fields_inticket'] . '" />') : '', '
-					', ($field['field_loc'] & CFIELD_REPLY) !== 0 ? ('<img src="' . $settings['default_images_url'] . '/simpledesk/replies.png" alt="' . $txt['shd_admin_custom_fields_inreply'] . '" title="' . $txt['shd_admin_custom_fields_inreply'] . '" />') : '', '
+					', ($field['field_loc'] & CFIELD_TICKET) !== 0 ? ('<img src="' . $settings['default_images_url'] . '/simpledesk/ticket.png" alt="' . $txt['shd_admin_custom_fields_inticket'] . '" title="' . $txt['shd_admin_custom_fields_inticket'] . '">') : '', '
+					', ($field['field_loc'] & CFIELD_REPLY) !== 0 ? ('<img src="' . $settings['default_images_url'] . '/simpledesk/replies.png" alt="' . $txt['shd_admin_custom_fields_inreply'] . '" title="' . $txt['shd_admin_custom_fields_inreply'] . '">') : '', '
 				</td>
 				<td>
 					<strong>', $txt['shd_admin_custom_field_view'], ':</strong>
-						', $field['can_see'][0] == 1 ? '<img src="' . $settings['default_images_url'] . '/simpledesk/user.png" class="icon" alt="*" />' : '','
-						', $field['can_see'][1] == 1 ? '<img src="' . $settings['default_images_url'] . '/simpledesk/staff.png" class="icon" alt="*" />' : '','
-						<img src="', $settings['default_images_url'], '/simpledesk/admin.png" class="icon" alt="*" />
+						', $field['can_see'][0] == 1 ? '<img src="' . $settings['default_images_url'] . '/simpledesk/user.png" class="icon" alt="*">' : '','
+						', $field['can_see'][1] == 1 ? '<img src="' . $settings['default_images_url'] . '/simpledesk/staff.png" class="icon" alt="*">' : '','
+						<img src="', $settings['default_images_url'], '/simpledesk/admin.png" class="icon" alt="*">
 					&nbsp;&nbsp;&nbsp;
 					<strong>', $txt['shd_admin_custom_field_edit'], ':</strong>
-						', $field['can_edit'][0] == 1 ? '<img src="' . $settings['default_images_url'] . '/simpledesk/user.png" class="icon" alt="*" />' : '','
-						', $field['can_edit'][1] == 1 ? '<img src="' . $settings['default_images_url'] . '/simpledesk/staff.png" class="icon" alt="*" />' : '','
-						<img src="', $settings['default_images_url'], '/simpledesk/admin.png" class="icon" alt="*" />
+						', $field['can_edit'][0] == 1 ? '<img src="' . $settings['default_images_url'] . '/simpledesk/user.png" class="icon" alt="*">' : '','
+						', $field['can_edit'][1] == 1 ? '<img src="' . $settings['default_images_url'] . '/simpledesk/staff.png" class="icon" alt="*">' : '','
+						<img src="', $settings['default_images_url'], '/simpledesk/admin.png" class="icon" alt="*">
 				</td>
-				<td>', empty($field['is_first']) ? ('<a href="' . $scripturl . '?action=admin;area=helpdesk_customfield;sa=move;field=' . $field['id_field'] . ';direction=up;' . $context['session_var'] . '=' . $context['session_id'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/move_up.png" alt="' . $txt['shd_admin_move_up'] . '" title="' . $txt['shd_admin_move_up'] . '" /></a>') : '', '</td>
-				<td>', empty($field['is_last']) ? ('<a href="' . $scripturl . '?action=admin;area=helpdesk_customfield;sa=move;field=' . $field['id_field'] . ';direction=down;' . $context['session_var'] . '=' . $context['session_id'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/move_down.png" alt="' . $txt['shd_admin_move_down'] . '" title="' . $txt['shd_admin_move_down'] . '" /></a>') : '', '</td>
+				<td>', empty($field['is_first']) ? ('<a href="' . $scripturl . '?action=admin;area=helpdesk_customfield;sa=move;field=' . $field['id_field'] . ';direction=up;' . $context['session_var'] . '=' . $context['session_id'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/move_up.png" alt="' . $txt['shd_admin_move_up'] . '" title="' . $txt['shd_admin_move_up'] . '"></a>') : '', '</td>
+				<td>', empty($field['is_last']) ? ('<a href="' . $scripturl . '?action=admin;area=helpdesk_customfield;sa=move;field=' . $field['id_field'] . ';direction=down;' . $context['session_var'] . '=' . $context['session_id'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/move_down.png" alt="' . $txt['shd_admin_move_down'] . '" title="' . $txt['shd_admin_move_down'] . '"></a>') : '', '</td>
 				<td>
-					<a href="', $scripturl, '?action=admin;area=helpdesk_customfield;sa=edit;field=', $field['id_field'], ';', $context['session_var'], '=', $context['session_id'], '"><img src="', $settings['default_images_url'], '/simpledesk/edit.png" class="icon" alt="', $txt['shd_ticket_edit'],'" title="', $txt['shd_ticket_edit'], '" /></a>
-					<a href="', $scripturl, '?action=admin;area=helpdesk_customfield;sa=save;field=', $field['id_field'], ';delete;', $context['session_var'], '=', $context['session_id'], '" onclick="return confirm(' . JavaScriptEscape($txt['shd_admin_delete_custom_field_confirm']). ');"><img src="', $settings['default_images_url'], '/simpledesk/delete.png" class="icon" alt="', $txt['shd_ticket_delete'],'" title="', $txt['shd_ticket_delete'], '" /></a>
+					<a href="', $scripturl, '?action=admin;area=helpdesk_customfield;sa=edit;field=', $field['id_field'], ';', $context['session_var'], '=', $context['session_id'], '"><img src="', $settings['default_images_url'], '/simpledesk/edit.png" class="icon" alt="', $txt['shd_ticket_edit'],'" title="', $txt['shd_ticket_edit'], '"></a>
+					<a href="', $scripturl, '?action=admin;area=helpdesk_customfield;sa=save;field=', $field['id_field'], ';delete;', $context['session_var'], '=', $context['session_id'], '" onclick="return confirm(' . JavaScriptEscape($txt['shd_admin_delete_custom_field_confirm']). ');"><img src="', $settings['default_images_url'], '/simpledesk/delete.png" class="icon" alt="', $txt['shd_ticket_delete'],'" title="', $txt['shd_ticket_delete'], '"></a>
 				</td>
 			</tr>';
 		}
@@ -164,12 +164,12 @@ function template_shd_custom_field_edit()
 					var newHTML = \'<br><input type="radio" id="radio_\' + startOptID + \'" name="default_select" value="\' + startOptID + \'" id="\' + startOptID + \'"\';
 					if (ftype == ', CFIELD_TYPE_MULTI, ')
 						newHTML += \' style="display:none;"\';
-					newHTML += \' class="input_radio" />\' + "\n";
+					newHTML += \' >\' + "\n";
 					newHTML += \'<input type="checkbox" id="multi_\' + startOptID + \'" name="default_select_multi[\' + startOptID + \']" value="\' + startOptID + \'"\';
 					if (ftype != ', CFIELD_TYPE_MULTI, ')
 						newHTML += \' style="display:none;"\';
-					newHTML += \' class="input_check" />\' + "\n";
-					newHTML += \'<input type="text" name="select_option[\' + startOptID + \']" value="" class="input_text" /><span id="addopt"></span>\';
+					newHTML += \' >\' + "\n";
+					newHTML += \'<input type="text" name="select_option[\' + startOptID + \']" value="" ><span id="addopt"></span>\';
 
 					setOuterHTML(document.getElementById("addopt"), newHTML);
 					startOptID++;
@@ -209,7 +209,7 @@ function template_shd_custom_field_edit()
 				<form action="', $scripturl, '?action=admin;area=helpdesk_customfield;sa=save', !empty($context['new_field']) ? ';new' : '', '" method="post">
 					<div class="cat_bar">
 						<h3 class="catbg">
-							<img src="', $settings['default_images_url'], '/simpledesk/custom_fields.png" class="icon" alt="*" />
+							<img src="', $settings['default_images_url'], '/simpledesk/custom_fields.png" class="icon" alt="*">
 							', $context['section_title'], '
 						</h3>
 					</div>
@@ -218,18 +218,18 @@ function template_shd_custom_field_edit()
 					</div>
 					<div class="cat_bar">
 						<h3 class="catbg">
-							<img src="', $settings['default_images_url'], '/simpledesk/name.png" alt="*" />
+							<img src="', $settings['default_images_url'], '/simpledesk/name.png" alt="*">
 							', $txt['shd_admin_custom_fields_general'], '
 						</h3>
 					</div>
 					<div class="roundframe">
 						<dl class="settings">
 							<dt><strong>', $txt['shd_admin_custom_fields_fieldname'], ':</strong><br><span class="smalltext">', $txt['shd_admin_custom_fields_fieldname_desc'], '</span></dt>
-							<dd><input type="text" name="field_name" id="cf_fieldname"', !empty($context['custom_field']['field_name']) ? ' value="' . $context['custom_field']['field_name'] . '"' : '', ' class="input_text" size="30" /></dd>
+							<dd><input type="text" name="field_name" id="cf_fieldname"', !empty($context['custom_field']['field_name']) ? ' value="' . $context['custom_field']['field_name'] . '"' : '', '  size="30"></dd>
 							<dt><strong>', $txt['shd_admin_custom_fields_description'], ':</strong><br><span class="smalltext">', $txt['shd_admin_custom_fields_description_desc'], '</span></dt>
 							<dd><textarea name="description" id="cf_description" cols="40" rows="4">', !empty($context['custom_field']['field_desc']) ? $context['custom_field']['field_desc'] : '', '</textarea></dd>
 							<dt><strong>', $txt['shd_admin_custom_fields_active'], ':</strong><br><span class="smalltext">', $txt['shd_admin_custom_fields_active_desc'], '</span></dt>
-							<dd><input type="checkbox" name="active" id="cf_active"', $context['field_active'],'class="input_check" /></dd>
+							<dd><input type="checkbox" name="active" id="cf_active"', $context['field_active'],'></dd>
 							<dt><strong>', $txt['shd_admin_custom_fields_icon'], ':</strong><br><span class="smalltext">', $txt['shd_admin_custom_fields_icon_desc'], '</span></dt>
 							<dd class="nowrap">
 								<span id="cf_fieldicon_icon"', $context['field_icon_value'] != '' ? ' style="background: url(' . $settings['images_url'] . '/simpledesk/cf/' . $context['field_icon_value'] . ') no-repeat left;"' : '','></span>
@@ -265,21 +265,21 @@ function template_shd_custom_field_edit()
 							</dd>
 							<dt><strong>', $txt['shd_admin_custom_field_can_see'], ':</strong><br><span class="smalltext">', $txt['shd_admin_custom_field_can_see_desc'], '</span></dt>
 							<dd>
-								<input type="checkbox" name="see_users" class="input_check" ', !empty($context['custom_field']['can_see'][0]) && $context['custom_field']['can_see'][0] == 1 ? 'checked="checked"' : '' ,' onchange="javascript:update_permissions(this.value,\'users\');"/> <img src="', $settings['default_images_url'], '/simpledesk/user.png" class="icon" alt="', $txt['shd_admin_custom_field_users'], '" title="', $txt['shd_admin_custom_field_users'], '"/>
-								<input type="checkbox" name="see_staff" class="input_check" ', !empty($context['custom_field']['can_see'][1]) && $context['custom_field']['can_see'][1] == 1 ? 'checked="checked"' : '' ,' onchange="javascript:update_permissions(this.value,\'staff\');"/> <img src="', $settings['default_images_url'], '/simpledesk/staff.png" class="icon" alt="', $txt['shd_admin_custom_field_staff'], '" title="', $txt['shd_admin_custom_field_staff'], '"/>
-								<input type="checkbox" name="see_admin" class="input_check" checked="checked" disabled="disabled" /> <img src="', $settings['default_images_url'], '/simpledesk/admin.png" class="icon" alt="', $txt['shd_admin_custom_field_admins'], '" title="', $txt['shd_admin_custom_field_admins'], '" />
+								<input type="checkbox" name="see_users"  ', !empty($context['custom_field']['can_see'][0]) && $context['custom_field']['can_see'][0] == 1 ? 'checked="checked"' : '' ,' onchange="javascript:update_permissions(this.value,\'users\');"/> <img src="', $settings['default_images_url'], '/simpledesk/user.png" class="icon" alt="', $txt['shd_admin_custom_field_users'], '" title="', $txt['shd_admin_custom_field_users'], '"/>
+								<input type="checkbox" name="see_staff"  ', !empty($context['custom_field']['can_see'][1]) && $context['custom_field']['can_see'][1] == 1 ? 'checked="checked"' : '' ,' onchange="javascript:update_permissions(this.value,\'staff\');"/> <img src="', $settings['default_images_url'], '/simpledesk/staff.png" class="icon" alt="', $txt['shd_admin_custom_field_staff'], '" title="', $txt['shd_admin_custom_field_staff'], '"/>
+								<input type="checkbox" name="see_admin"  checked="checked" disabled="disabled"> <img src="', $settings['default_images_url'], '/simpledesk/admin.png" class="icon" alt="', $txt['shd_admin_custom_field_admins'], '" title="', $txt['shd_admin_custom_field_admins'], '">
 							</dd>
 							<dt><strong>', $txt['shd_admin_custom_field_can_edit'], ':</strong><br><span class="smalltext">', $txt['shd_admin_custom_field_can_edit_desc'], '</span></dt>
 							<dd>
-								<input type="checkbox" name="edit_users" id="edit_users" class="input_check" ', !empty($context['custom_field']['can_edit'][0]) && $context['custom_field']['can_edit'][0] == 1 ? 'checked="checked"' : '', ' ', !empty($context['custom_field']['can_see'][0]) && $context['custom_field']['can_see'][0] == 1 ? '"' : 'disabled="disabled"', '/> <img src="', $settings['default_images_url'], '/simpledesk/user.png" class="icon" alt="', $txt['shd_admin_custom_field_users'], '" title="', $txt['shd_admin_custom_field_users'], '"/>
-								<input type="checkbox" name="edit_staff" id="edit_staff" class="input_check" ', !empty($context['custom_field']['can_edit'][1]) && $context['custom_field']['can_edit'][1] == 1 ? 'checked="checked"' : '', ' ', !empty($context['custom_field']['can_see'][1]) && $context['custom_field']['can_see'][1] == 1 ? '"' : 'disabled="disabled"', '/> <img src="', $settings['default_images_url'], '/simpledesk/staff.png" class="icon" alt="', $txt['shd_admin_custom_field_staff'], '" title="', $txt['shd_admin_custom_field_staff'], '"/>
-								<input type="checkbox" name="edit_admin" class="input_check" checked="checked" disabled="disabled" /> <img src="', $settings['default_images_url'], '/simpledesk/admin.png" class="icon" alt="', $txt['shd_admin_custom_field_admins'], '" title="', $txt['shd_admin_custom_field_admins'], '"/>
+								<input type="checkbox" name="edit_users" id="edit_users"  ', !empty($context['custom_field']['can_edit'][0]) && $context['custom_field']['can_edit'][0] == 1 ? 'checked="checked"' : '', ' ', !empty($context['custom_field']['can_see'][0]) && $context['custom_field']['can_see'][0] == 1 ? '"' : 'disabled="disabled"', '/> <img src="', $settings['default_images_url'], '/simpledesk/user.png" class="icon" alt="', $txt['shd_admin_custom_field_users'], '" title="', $txt['shd_admin_custom_field_users'], '"/>
+								<input type="checkbox" name="edit_staff" id="edit_staff"  ', !empty($context['custom_field']['can_edit'][1]) && $context['custom_field']['can_edit'][1] == 1 ? 'checked="checked"' : '', ' ', !empty($context['custom_field']['can_see'][1]) && $context['custom_field']['can_see'][1] == 1 ? '"' : 'disabled="disabled"', '/> <img src="', $settings['default_images_url'], '/simpledesk/staff.png" class="icon" alt="', $txt['shd_admin_custom_field_staff'], '" title="', $txt['shd_admin_custom_field_staff'], '"/>
+								<input type="checkbox" name="edit_admin"  checked="checked" disabled="disabled"> <img src="', $settings['default_images_url'], '/simpledesk/admin.png" class="icon" alt="', $txt['shd_admin_custom_field_admins'], '" title="', $txt['shd_admin_custom_field_admins'], '"/>
 							</dd>
 						</dl>
 					</div>
 					<div class="cat_bar">
 						<h3 class="catbg">
-							<img src="', $settings['default_images_url'], '/simpledesk/fieldtype.png" alt="*" />
+							<img src="', $settings['default_images_url'], '/simpledesk/fieldtype.png" alt="*">
 							', $txt['shd_admin_custom_fields_fieldtype'], '
 						</h3>
 					</div>
@@ -302,18 +302,18 @@ function template_shd_custom_field_edit()
 							</dd>
 							<dt id="max_length_dt"', in_array($context['field_type_value'], array(CFIELD_TYPE_TEXT, CFIELD_TYPE_LARGETEXT)) ? '' : ' style="display: none;"','><strong>', $txt['shd_admin_custom_field_maxlength'], ':</strong><br><span class="smalltext">', $txt['shd_admin_custom_field_maxlength_desc'], '</span></dt>
 							<dd id="max_length_dd"', in_array($context['field_type_value'], array(CFIELD_TYPE_TEXT, CFIELD_TYPE_LARGETEXT)) ? '' : ' style="display: none;"','>
-								<input type="text" value="', isset($context['custom_field']['field_length']) ? $context['custom_field']['field_length'] : 255, '" size="7" maxlength="6" name="field_length" id="cf_field_length" />
+								<input type="text" value="', isset($context['custom_field']['field_length']) ? $context['custom_field']['field_length'] : 255, '" size="7" maxlength="6" name="field_length" id="cf_field_length">
 							</dd>
 							<dt id="dimension_dt"', $context['field_type_value'] == CFIELD_TYPE_LARGETEXT ? '' : ' style="display: none;"','>
 								<strong>', $txt['shd_admin_custom_field_dimensions'], ':</strong>
 							</dt>
 							<dd id="dimension_dd"', $context['field_type_value'] == CFIELD_TYPE_LARGETEXT ? '' : ' style="display: none;"','>
-								<strong>', $txt['shd_admin_custom_field_dimensions_rows'], ':</strong> <input type="text" name="rows" value="', !empty($context['custom_field']['dimensions'][0]) ? $context['custom_field']['dimensions'][0] : 4, '" size="5" maxlength="3" class="input_text" />
-								<strong>', $txt['shd_admin_custom_field_dimensions_columns'], ':</strong> <input type="text" name="cols" value="', !empty($context['custom_field']['dimensions'][1]) ? $context['custom_field']['dimensions'][1] : 30, '" size="5" maxlength="3" class="input_text" />
+								<strong>', $txt['shd_admin_custom_field_dimensions_rows'], ':</strong> <input type="text" name="rows" value="', !empty($context['custom_field']['dimensions'][0]) ? $context['custom_field']['dimensions'][0] : 4, '" size="5" maxlength="3" >
+								<strong>', $txt['shd_admin_custom_field_dimensions_columns'], ':</strong> <input type="text" name="cols" value="', !empty($context['custom_field']['dimensions'][1]) ? $context['custom_field']['dimensions'][1] : 30, '" size="5" maxlength="3" >
 							</dd>
 							<dt id="bbc_dt"', $context['field_type_value'] == CFIELD_TYPE_TEXT || $context['field_type_value'] == CFIELD_TYPE_LARGETEXT ? '' : ' style="display: none;"','><strong',empty($modSettings['shd_allow_ticket_bbc']) ? ' class="disabled"' : '', '>', $txt['shd_admin_custom_field_bbc'], ':</strong><br><span class="smalltext">', $txt['shd_admin_custom_field_bbc_note'], '</span><br>', empty($modSettings['shd_allow_ticket_bbc']) ? '<span class="smalltext error">' . sprintf($txt['shd_admin_custom_field_bbc_off'], $scripturl . '?action=admin;area=helpdesk_options;sa=posting'). '</span>' : '', '</dt>
 							<dd id="bbc_dd"', $context['field_type_value'] == CFIELD_TYPE_TEXT || $context['field_type_value'] == CFIELD_TYPE_LARGETEXT ? '' : ' style="display: none;"','>
-								<input type="checkbox" name="bbc" id="cf_bbc"',empty($modSettings['shd_allow_ticket_bbc']) ? ' disabled="disabled"' : (!empty($context['custom_field']['bbc']) ? ' checked="checked"' : ''), ' />
+								<input type="checkbox" name="bbc" id="cf_bbc"',empty($modSettings['shd_allow_ticket_bbc']) ? ' disabled="disabled"' : (!empty($context['custom_field']['bbc']) ? ' checked="checked"' : ''), '>
 							</dd>
 							<dt id="options_dt"', in_array($context['field_type_value'], array(CFIELD_TYPE_SELECT, CFIELD_TYPE_RADIO, CFIELD_TYPE_MULTI)) ? '' : ' style="display: none;"','>
 								<strong>', $txt['shd_admin_custom_field_options'], ':</strong>
@@ -324,7 +324,7 @@ function template_shd_custom_field_edit()
 								</div>
 							</dt>
 							<dd id="options_dd"', in_array($context['field_type_value'], array(CFIELD_TYPE_SELECT, CFIELD_TYPE_RADIO, CFIELD_TYPE_MULTI)) ? '' : ' style="display: none;"','>
-								<input type="radio" id="radio_0" name="default_select" value="0"', $context['custom_field']['default_value'] == 0 ? ' checked="checked"' : '', $context['field_type_value'] != CFIELD_TYPE_MULTI ? '' : ' style="display:none;"', ' class="input_radio" /> <span id="radio_text_0"', $context['field_type_value'] != CFIELD_TYPE_MULTI ? '' : ' style="display:none;"', '>', $txt['shd_admin_custom_field_no_selected_default'], '</span>';
+								<input type="radio" id="radio_0" name="default_select" value="0"', $context['custom_field']['default_value'] == 0 ? ' checked="checked"' : '', $context['field_type_value'] != CFIELD_TYPE_MULTI ? '' : ' style="display:none;"', ' > <span id="radio_text_0"', $context['field_type_value'] != CFIELD_TYPE_MULTI ? '' : ' style="display:none;"', '>', $txt['shd_admin_custom_field_no_selected_default'], '</span>';
 
 	// Convert it to an array for displaying the main doodah
 	if ($context['field_type_value'] == CFIELD_TYPE_MULTI)
@@ -337,9 +337,9 @@ function template_shd_custom_field_edit()
 
 		echo '
 								<br>
-								<input type="radio" id="radio_', $k, '" name="default_select" value="', $k, '"', $context['field_type_value'] != CFIELD_TYPE_MULTI && $context['custom_field']['default_value'] == $k ? ' checked="checked"' : '', $context['field_type_value'] != CFIELD_TYPE_MULTI ? '' : ' style="display:none;"', ' class="input_radio" />
-								<input type="checkbox" id="multi_', $k, '" name="default_select_multi[', $k, ']" value="', $k, '"', $context['field_type_value'] == CFIELD_TYPE_MULTI && in_array($k, $context['custom_field']['default_value']) ? ' checked="checked"' : '', $context['field_type_value'] == CFIELD_TYPE_MULTI ? '' : ' style="display:none;"', ' class="input_check" />
-								<input type="text" name="select_option[', $k, ']" value="', $option, '" class="input_text" />';
+								<input type="radio" id="radio_', $k, '" name="default_select" value="', $k, '"', $context['field_type_value'] != CFIELD_TYPE_MULTI && $context['custom_field']['default_value'] == $k ? ' checked="checked"' : '', $context['field_type_value'] != CFIELD_TYPE_MULTI ? '' : ' style="display:none;"', ' >
+								<input type="checkbox" id="multi_', $k, '" name="default_select_multi[', $k, ']" value="', $k, '"', $context['field_type_value'] == CFIELD_TYPE_MULTI && in_array($k, $context['custom_field']['default_value']) ? ' checked="checked"' : '', $context['field_type_value'] == CFIELD_TYPE_MULTI ? '' : ' style="display:none;"', ' >
+								<input type="text" name="select_option[', $k, ']" value="', $option, '" >';
 	}
 
 	echo '
@@ -350,12 +350,12 @@ function template_shd_custom_field_edit()
 								<strong>', $txt['shd_admin_custom_field_default_state'], ':</strong>
 							</dt>
 							<dd id="default_dd"', $context['field_type_value'] == CFIELD_TYPE_CHECKBOX ? '' : ' style="display: none;"', '>
-								<input type="checkbox" name="default_check" class="input_check"',($context['custom_field']['default_value'] == 1 ? ' checked="checked"' : ''), ' onclick="update_default_label(this.checked);" />
+								<input type="checkbox" name="default_check" ',($context['custom_field']['default_value'] == 1 ? ' checked="checked"' : ''), ' onclick="update_default_label(this.checked);">
 								<span class="smalltext" id="default_label">', $txt['shd_admin_default_state_' . ($context['custom_field']['default_value'] == 1 ? 'on' : 'off')], '</span>
 							</dd>
 							<dt id="display_empty_dt"><strong>', $txt['shd_admin_custom_field_display_empty'], ':</strong><br><span class="smalltext">', $txt['shd_admin_custom_field_display_empty_desc'], '</span></dt>
 							<dd id="display_empty_dd">
-								<input type="checkbox" class="input_check"', (!empty($context['custom_field']['display_empty']) && $context['custom_field']['display_empty'] == 1 ? ' checked="checked"' : ''), ' name="display_empty" id="cf_display_empty"', (!empty($context['custom_field']['required']) && $context['custom_field']['required'] == 1 ? ' disabled="disabled"' : ''), '/>
+								<input type="checkbox" ', (!empty($context['custom_field']['display_empty']) && $context['custom_field']['display_empty'] == 1 ? ' checked="checked"' : ''), ' name="display_empty" id="cf_display_empty"', (!empty($context['custom_field']['required']) && $context['custom_field']['required'] == 1 ? ' disabled="disabled"' : ''), '/>
 							</dd>
 						</dl>
 					</div>';
@@ -365,7 +365,7 @@ function template_shd_custom_field_edit()
 		echo '
 					<div class="cat_bar">
 						<h3 class="catbg">
-							<img src="', $settings['default_images_url'], '/simpledesk/departments.png" alt="*" />
+							<img src="', $settings['default_images_url'], '/simpledesk/departments.png" alt="*">
 							', $txt['shd_admin_custom_field_department'], '
 						</h3>
 					</div>
@@ -375,10 +375,10 @@ function template_shd_custom_field_edit()
 			echo '
 							<dt id="required_dt', $id, '"><strong>', $row['dept_name'], '</strong></dt>
 							<dd id="required_dd', $id, '">
-								<span id="present_dept', $id, '_span">', $txt['shd_admin_custom_field_dept_applies'], ': <input type="checkbox" name="present_dept', $id, '" id="present_dept', $id, '" class="input_check"', !empty($row['present']) ? ' checked="checked"' : '', ' onclick="updateDeptHidden(', $id, ');" /></span>
+								<span id="present_dept', $id, '_span">', $txt['shd_admin_custom_field_dept_applies'], ': <input type="checkbox" name="present_dept', $id, '" id="present_dept', $id, '" ', !empty($row['present']) ? ' checked="checked"' : '', ' onclick="updateDeptHidden(', $id, ');"></span>
 								<span id="required_dept', $id, '_span">', $txt['shd_admin_custom_field_dept_required'], ':
-									<input type="checkbox" name="required_dept', $id, '" id="required_dept', $id, '" class="input_check"', !empty($row['required']) ? ' checked="checked"' : '', empty($row['present']) ? ' disabled="disabled"' : '', $context['field_type_value'] != CFIELD_TYPE_MULTI ? '' : ' style="display: none;"', ' />
-									<input type="text" name="required_dept_multi_', $id, '" id="required_dept_multi_', $id, '" class="input_text" size="3" maxlength="3" value="', $row['required'], '"', empty($row['present']) ? ' disabled="disabled"' : '', $context['field_type_value'] == CFIELD_TYPE_MULTI ? '' : ' style="display: none;"', ' />
+									<input type="checkbox" name="required_dept', $id, '" id="required_dept', $id, '" ', !empty($row['required']) ? ' checked="checked"' : '', empty($row['present']) ? ' disabled="disabled"' : '', $context['field_type_value'] != CFIELD_TYPE_MULTI ? '' : ' style="display: none;"', '>
+									<input type="text" name="required_dept_multi_', $id, '" id="required_dept_multi_', $id, '"  size="3" maxlength="3" value="', $row['required'], '"', empty($row['present']) ? ' disabled="disabled"' : '', $context['field_type_value'] == CFIELD_TYPE_MULTI ? '' : ' style="display: none;"', '>
 								</span>
 							</dd>';
 
@@ -389,10 +389,10 @@ function template_shd_custom_field_edit()
 
 	echo '
 					<br>
-					<input type="submit" value="', $txt['shd_admin_save_custom_field'], '" accesskey="s" class="button_submit" />
-					', !empty($context['new_field']) ? '' : '<input type="submit" value="' .$txt['shd_admin_delete_custom_field'] . '" onclick="return confirm(' . JavaScriptEscape($txt['shd_admin_delete_custom_field_confirm']). ');" name="delete" class="button_submit" />', '
-					<input type="submit" value="', $txt['shd_admin_cancel_custom_field'], '" name="cancel" class="button_submit" />
-					<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
-					<input type="hidden" name="field" value="', empty($context['custom_field']['id_field']) ? 0 : $context['custom_field']['id_field'], '" />
+					<input type="submit" value="', $txt['shd_admin_save_custom_field'], '" accesskey="s" class="button">
+					', !empty($context['new_field']) ? '' : '<input type="submit" value="' .$txt['shd_admin_delete_custom_field'] . '" onclick="return confirm(' . JavaScriptEscape($txt['shd_admin_delete_custom_field_confirm']). ');" name="delete" class="button">', '
+					<input type="submit" value="', $txt['shd_admin_cancel_custom_field'], '" name="cancel" class="button">
+					<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">
+					<input type="hidden" name="field" value="', empty($context['custom_field']['id_field']) ? 0 : $context['custom_field']['id_field'], '">
 				</form>';
 }

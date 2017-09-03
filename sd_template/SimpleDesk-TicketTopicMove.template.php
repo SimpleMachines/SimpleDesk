@@ -31,7 +31,7 @@ function template_shd_tickettotopic()
 	echo '
 		<div class="cat_bar">
 			<h3 class="catbg">
-				<img src="', $settings['default_images_url'] , '/simpledesk/tickettotopic.png" alt="*" />
+				<img src="', $settings['default_images_url'] , '/simpledesk/tickettotopic.png" alt="*">
 				', $txt['shd_move_ticket_to_topic'], '
 			</h3>
 		</div>
@@ -63,7 +63,7 @@ function template_shd_tickettotopic()
 						<strong>', $txt['shd_change_ticket_subject'], ':</strong>
 					</dt>
 					<dd>
-						<input type="checkbox" name="change_subject" id="change_subject" onclick="document.getElementById(\'new_subject\').style.display = this.checked ? \'block\' : \'none\';" class="input_check" />
+						<input type="checkbox" name="change_subject" id="change_subject" onclick="document.getElementById(\'new_subject\').style.display = this.checked ? \'block\' : \'none\';" >
 					</dd>
 				</dl>
 				<dl class="settings" style="display: none;" id="new_subject">
@@ -71,7 +71,7 @@ function template_shd_tickettotopic()
 						<strong>', $txt['shd_new_subject'], ':</strong>
 					</dt>
 					<dd>
-						<input type="text" name="subject" id="subject" value="', $context['ticket_subject'], '" />
+						<input type="text" name="subject" id="subject" value="', $context['ticket_subject'], '">
 					</dd>
 				</dl>
 				<dl class="settings">
@@ -79,7 +79,7 @@ function template_shd_tickettotopic()
 						<strong>', $txt['shd_move_send_pm'], ':</strong>
 					</dt>
 					<dd>
-						<input type="checkbox" name="send_pm" id="send_pm" checked="checked" onclick="document.getElementById(\'pm_message\').style.display = this.checked ? \'block\' : \'none\';" class="input_check" />
+						<input type="checkbox" name="send_pm" id="send_pm" checked="checked" onclick="document.getElementById(\'pm_message\').style.display = this.checked ? \'block\' : \'none\';" >
 					</dd>
 				</dl>
 				<fieldset id="pm_message">
@@ -133,13 +133,13 @@ function template_shd_tickettotopic()
 
 			if (!empty($field['visible_warn']))
 				echo '
-							<img src="' . $settings['default_images_url'] . '/simpledesk/warning.png" alt="', $txt['shd_ticket_move_cfs_warn_user'], '" title="', $txt['shd_ticket_move_cfs_warn_user'], '" />';
+							<img src="' . $settings['default_images_url'] . '/simpledesk/warning.png" alt="', $txt['shd_ticket_move_cfs_warn_user'], '" title="', $txt['shd_ticket_move_cfs_warn_user'], '">';
 			else
 				echo '
-							<img src="' . $settings['default_images_url'] . '/simpledesk/perm_yes.png" alt="', $txt['shd_ticket_move_ok'], '" title="', $txt['shd_ticket_move_ok'], '" />';
+							<img src="' . $settings['default_images_url'] . '/simpledesk/perm_yes.png" alt="', $txt['shd_ticket_move_ok'], '" title="', $txt['shd_ticket_move_ok'], '">';
 
 			echo '
-							<img src="', $settings['default_images_url'], '/simpledesk/cf_ui_', $context['field_types'][$field['type']][1], '.png" class="icon" alt="', $context['field_types'][$field['type']][0], '" title="', $context['field_types'][$field['type']][0], '" />', $field['name'];
+							<img src="', $settings['default_images_url'], '/simpledesk/cf_ui_', $context['field_types'][$field['type']][1], '.png" class="icon" alt="', $context['field_types'][$field['type']][0], '" title="', $context['field_types'][$field['type']][0], '">', $field['name'];
 
 			foreach ($field['visible'] as $group => $visible)
 			{
@@ -147,7 +147,7 @@ function template_shd_tickettotopic()
 					continue;
 
 				echo '
-							<img src="' . $settings['default_images_url'] . '/simpledesk/', $group, '.png" alt="', $txt['shd_ticket_move_cfs_' . $group], '" title="', $txt['shd_ticket_move_cfs_' . $group], '" style="margin-right:0px;" />';
+							<img src="' . $settings['default_images_url'] . '/simpledesk/', $group, '.png" alt="', $txt['shd_ticket_move_cfs_' . $group], '" title="', $txt['shd_ticket_move_cfs_' . $group], '" style="margin-right:0px;">';
 
 			}
 
@@ -173,7 +173,7 @@ function template_shd_tickettotopic()
 							<strong>', $txt['shd_ticket_move_accept'], '</strong>
 							<div class="error">', $txt['shd_ticket_move_reqd'], '</div>
 						</dt>
-						<dd><input type="checkbox" name="accept_move" class="input_check" /></dd>
+						<dd><input type="checkbox" name="accept_move" ></dd>
 					</dl>';
 
 		echo '
@@ -181,10 +181,10 @@ function template_shd_tickettotopic()
 	}
 
 	echo '
-				<input type="submit" value="', $txt['shd_move_ticket'], '" onclick="return submitThisOnce(this);" accesskey="s" class="button_submit" />
-				<input type="submit" name="cancel" value="', $txt['shd_cancel_ticket'], '" accesskey="c" class="button_submit" />
-				<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
-				<input type="hidden" name="seqnum" value="', $context['form_sequence_number'], '" />
+				<input type="submit" value="', $txt['shd_move_ticket'], '" onclick="return submitThisOnce(this);" accesskey="s" class="button">
+				<input type="submit" name="cancel" value="', $txt['shd_cancel_ticket'], '" accesskey="c" class="button">
+				<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">
+				<input type="hidden" name="seqnum" value="', $context['form_sequence_number'], '">
 		</form>
 		</div>';
 }
@@ -206,7 +206,7 @@ function template_shd_topictoticket()
 	echo '
 		<div class="cat_bar">
 			<h3 class="catbg">
-				<img src="', $settings['default_images_url'] , '/simpledesk/topictoticket.png" alt="*" />
+				<img src="', $settings['default_images_url'] , '/simpledesk/topictoticket.png" alt="*">
 				', $txt['shd_move_topic_to_ticket'], '
 			</h3>
 		</div>
@@ -217,7 +217,7 @@ function template_shd_topictoticket()
 						<strong>', $txt['shd_change_topic_subject'], ':</strong>
 					</dt>
 					<dd>
-						<input type="checkbox" name="change_subject" id="change_subject" onclick="document.getElementById(\'new_subject\').style.display = this.checked ? \'block\' : \'none\';" class="input_check" />
+						<input type="checkbox" name="change_subject" id="change_subject" onclick="document.getElementById(\'new_subject\').style.display = this.checked ? \'block\' : \'none\';" >
 					</dd>
 				</dl>
 				<dl class="settings" style="display: none;" id="new_subject">
@@ -225,7 +225,7 @@ function template_shd_topictoticket()
 						<strong>', $txt['shd_new_subject'], ':</strong>
 					</dt>
 					<dd>
-						<input type="text" name="subject" id="subject" value="', $context['topic_subject'], '" />
+						<input type="text" name="subject" id="subject" value="', $context['topic_subject'], '">
 					</dd>
 				</dl>
 				<dl class="settings">
@@ -233,7 +233,7 @@ function template_shd_topictoticket()
 						<strong>', $txt['shd_move_send_pm_topic'], ':</strong>
 					</dt>
 					<dd>
-						<input type="checkbox" name="send_pm" id="send_pm" checked="checked" onclick="document.getElementById(\'pm_message\').style.display = this.checked ? \'block\' : \'none\';" class="input_check" />
+						<input type="checkbox" name="send_pm" id="send_pm" checked="checked" onclick="document.getElementById(\'pm_message\').style.display = this.checked ? \'block\' : \'none\';" >
 					</dd>
 				</dl>
 				<fieldset id="pm_message">
@@ -254,7 +254,7 @@ function template_shd_topictoticket()
 		echo '
 				<dl class="settings">
 					<dt>', $context['ttm_move_dept'], '</dt>
-					<input type="hidden" name="dept" value="', $dept[0], '" />
+					<input type="hidden" name="dept" value="', $dept[0], '">
 				</dl>';
 	}
 	else
@@ -280,10 +280,10 @@ function template_shd_topictoticket()
 	}
 
 	echo '
-				<input type="submit" value="', $txt['shd_move_topic'], '" onclick="return submitThisOnce(this);" accesskey="s" class="button_submit" />
-				<input type="submit" name="cancel" value="', $txt['shd_cancel_topic'], '" accesskey="c" class="button_submit" />
-				<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
-				<input type="hidden" name="seqnum" value="', $context['form_sequence_number'], '" />
+				<input type="submit" value="', $txt['shd_move_topic'], '" onclick="return submitThisOnce(this);" accesskey="s" class="button">
+				<input type="submit" name="cancel" value="', $txt['shd_cancel_topic'], '" accesskey="c" class="button">
+				<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">
+				<input type="hidden" name="seqnum" value="', $context['form_sequence_number'], '">
 		</form>
 		</div>';
 }

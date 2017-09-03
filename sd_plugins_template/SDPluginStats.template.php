@@ -55,7 +55,7 @@ $txt['closed_tickets'] = 'Closed Tickets';
 		<div class="title_bar">
 			<h4 class="titlebg">
 				<span class="ie6_header floatleft">
-					<img src="', $settings['images_url'], '/stats_info.png" class="icon" alt="" /> ', $txt['general_stats'], '
+					<img src="', $settings['images_url'], '/stats_info.png" class="icon" alt=""> ', $txt['general_stats'], '
 				</span>
 			</h4>
 		</div>
@@ -115,7 +115,7 @@ $txt['closed_tickets'] = 'Closed Tickets';
 		<div class="title_bar">
 			<h4 class="titlebg">
 				<span class="ie6_header floatleft">
-					<img src="', $settings['images_url'], '/stats_posters.png" class="icon" alt="" /> ', $txt['urgency_stats'], '
+					<img src="', $settings['images_url'], '/stats_posters.png" class="icon" alt=""> ', $txt['urgency_stats'], '
 				</span>
 			</h4>
 		</div>
@@ -160,7 +160,7 @@ $txt['closed_tickets'] = 'Closed Tickets';
 		<div class="cat_bar">
 			<h3 class="catbg">
 				<span class="ie6_header floatleft">
-					<img src="', $settings['images_url'], '/stats_history.png" class="icon" alt="" /> ', $txt['ticket_history'], '
+					<img src="', $settings['images_url'], '/stats_history.png" class="icon" alt=""> ', $txt['ticket_history'], '
 				</span>
 			</h3>
 		</div>

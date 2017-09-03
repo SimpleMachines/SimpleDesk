@@ -378,8 +378,8 @@ function ssi_staffMembers($honour_admin_setting = true, $output_method = 'echo')
 			<tr>
 				<td align="right" valign="top" nowrap="nowrap">
 					', $query_members[$member]['link'], '
-					<br />', $query_members[$member]['blurb'], '
-					<br />', $query_members[$member]['avatar']['image'], '
+					<br>', $query_members[$member]['blurb'], '
+					<br>', $query_members[$member]['avatar']['image'], '
 				</td>
 			</tr>';
 	}

@@ -185,10 +185,10 @@ function shd_admin_info()
 		'description' => $txt['shd_admin_options_desc'],
 		'tabs' => array(
 			'main' => array(
-				'description' => '<strong>' . $txt['hello_guest'] . ' ' . $context['user']['name'] . '!</strong><br />' . $txt['shd_admin_info_desc'],
+				'description' => '<strong>' . $txt['hello_guest'] . ' ' . $context['user']['name'] . '!</strong><br>' . $txt['shd_admin_info_desc'],
 			),
 			'actionlog' => array(
-				'description' => $txt['shd_admin_actionlog_desc'] . '<br />' . (!empty($modSettings['shd_disable_action_log']) ? '<span class="smalltext">' . $txt['shd_action_log_disabled'] . '</span>' : ''),
+				'description' => $txt['shd_admin_actionlog_desc'] . '<br>' . (!empty($modSettings['shd_disable_action_log']) ? '<span class="smalltext">' . $txt['shd_action_log_disabled'] . '</span>' : ''),
 			),
 			'adminlog' => array(
 				'description' => $txt['shd_admin_adminlog_desc'],
@@ -203,7 +203,7 @@ function shd_admin_info()
 	$_REQUEST['sa'] = isset($_REQUEST['sa']) && isset($subactions[$_REQUEST['sa']]) ? $_REQUEST['sa'] : 'main';
 
 	// Now that we have validated the subaction.	
-	$context[$context['admin_menu_name']]['tab_data']['title'] = '<img src="' . $settings['images_url'] . '/admin/shd/' . $subactions[$_REQUEST['sa']]['icon'] . '" class="icon" alt="*" />' . $subactions[$_REQUEST['sa']]['title'];
+	$context[$context['admin_menu_name']]['tab_data']['title'] = '<img src="' . $settings['images_url'] . '/admin/shd/' . $subactions[$_REQUEST['sa']]['icon'] . '" class="icon" alt="*">' . $subactions[$_REQUEST['sa']]['title'];
 
 	// Are we doing the main page, or leaving here?
 	if (!empty($subactions[$_REQUEST['sa']]['function']))
@@ -264,7 +264,7 @@ function shd_admin_options($return_config)
 	';
 
 	$context[$context['admin_menu_name']]['tab_data'] = array(
-		'title' => '<img src="' . $settings['default_images_url'] . '/simpledesk/status.png" class="icon" alt="*" />' . $txt['shd_admin_options'],
+		'title' => '<img src="' . $settings['default_images_url'] . '/simpledesk/status.png" class="icon" alt="*">' . $txt['shd_admin_options'],
 		'description' => $txt['shd_admin_options_desc'],
 		'tabs' => array(
 			'display' => array(
@@ -1003,9 +1003,9 @@ function shd_credits()
 					'icon' => 'others.png',
 					'members' => array(
 						array('Fluffy - ' . sprintf($txt['shd_fluffy'],'onclick="window.location.href=\'' . $scripturl . '?action=admin;area=helpdesk_info;cookies\'"'),false),
-						array('<br />' . $txt['shd_credits_translators'],false),
-						array('<br />' . sprintf($txt['shd_credits_icons'], 'http://p.yusukekamiyamane.com/', 'http://wefunction.com/2008/07/function-free-icon-set/', 'http://www.famfamfam.com/lab/icons/flags/', 'http://www.everaldo.com/crystal/'),false),
-						array('<br />' . $txt['shd_credits_user'],false),
+						array('<br>' . $txt['shd_credits_translators'],false),
+						array('<br>' . sprintf($txt['shd_credits_icons'], 'http://p.yusukekamiyamane.com/', 'http://wefunction.com/2008/07/function-free-icon-set/', 'http://www.famfamfam.com/lab/icons/flags/', 'http://www.everaldo.com/crystal/'),false),
+						array('<br>' . $txt['shd_credits_user'],false),
 					),
 				),
 			),

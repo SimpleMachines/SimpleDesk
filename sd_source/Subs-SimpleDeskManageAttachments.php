@@ -248,11 +248,11 @@ function shd_admin_browse_attachments($list_title = '')
 			),
 			'check' => array(
 				'header' => array(
-					'value' => '<input type="checkbox" onclick="invertAll(this, this.form);" class="input_check" />',
+					'value' => '<input type="checkbox" onclick="invertAll(this, this.form);" >',
 				),
 				'data' => array(
 					'sprintf' => array(
-						'format' => '<input type="checkbox" name="remove[%1$d]" class="input_check" />',
+						'format' => '<input type="checkbox" name="remove[%1$d]" >',
 						'params' => array(
 							'id_attach' => false,
 						),
@@ -272,7 +272,7 @@ function shd_admin_browse_attachments($list_title = '')
 		'additional_rows' => array(
 			array(
 				'position' => 'below_table_data',
-				'value' => '<input type="submit" name="remove_submit" class="button_submit" value="' . $txt['quickmod_delete_selected'] . '" onclick="return confirm(\'' . $txt['confirm_delete_attachments'] . '\');" />',
+				'value' => '<input type="submit" name="remove_submit" class="button" value="' . $txt['quickmod_delete_selected'] . '" onclick="return confirm(\'' . $txt['confirm_delete_attachments'] . '\');">',
 				'class' => 'titlebg',
 				'style' => 'text-align: right;',
 			),

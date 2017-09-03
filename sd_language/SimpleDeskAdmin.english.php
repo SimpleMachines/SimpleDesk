@@ -309,7 +309,7 @@ $txt['shd_log_admin_plugins_remove'] = 'Removed';
 //@{
 $txt['shd_admin_support_form_title'] = 'Support form';
 $txt['shd_admin_support_what_is_this'] = 'What is this?';
-$txt['shd_admin_support_explanation'] = 'This simple form will allow you to send a support request directly to the SimpleDesk website so that the support team there can help you solve any issue you run in to.<br /><br />Please note that you will need an account on our website in order to post as well as replying to your topic in the future. This form will simply speed up the posting process.';
+$txt['shd_admin_support_explanation'] = 'This simple form will allow you to send a support request directly to the SimpleDesk website so that the support team there can help you solve any issue you run in to.<br><br>Please note that you will need an account on our website in order to post as well as replying to your topic in the future. This form will simply speed up the posting process.';
 $txt['shd_admin_support_send'] = 'Send support request';
 //@}
 
@@ -623,7 +623,7 @@ $txt['shd_maint_invalid_dept'] = '%1$d ticket(s) were listed as being in departm
 $txt['shd_maint_search_settings'] = 'Search Settings';
 $txt['shd_maint_search_settings_desc'] = 'This page allows you to configure how ticket searching may be performed, and if necessary, rebuild the index used to perform searching.';
 $txt['shd_maint_rebuild_index'] = 'Rebuild the Search Index';
-$txt['shd_maint_rebuild_index_desc'] = 'If you have existing tickets that were around prior to the search facility being provided, or you alter the settings below, you will <strong>need</strong> to rebuild the index after. The index is what is physically used to search, and if the physical index setup is different to how searches are made, you will find searching very unrealiable.<br /><strong>Important:</strong> Building the search index is a very intensive task. It will take a while to carry out, during which time please leave this window open.';
+$txt['shd_maint_rebuild_index_desc'] = 'If you have existing tickets that were around prior to the search facility being provided, or you alter the settings below, you will <strong>need</strong> to rebuild the index after. The index is what is physically used to search, and if the physical index setup is different to how searches are made, you will find searching very unrealiable.<br><strong>Important:</strong> Building the search index is a very intensive task. It will take a while to carry out, during which time please leave this window open.';
 $txt['shd_maint_search_settings_warning'] = 'If you alter these settings, you will need to rebuild the search index.';
 $txt['shd_search_min_size'] = 'Minimum number of letters to be considered a word (3-15)';
 $txt['shd_search_max_size'] = 'Maximum number of letters to be considered a word (3-15)';
