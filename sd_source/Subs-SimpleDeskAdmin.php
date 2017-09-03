@@ -710,7 +710,7 @@ function shd_admin_log_configvar($save_vars)
  *	Logs a change in our admin area.
  *
  *	@since 2.1
- *	@param string $section The area this was from.
+ *	@param string $action The area this was from.
  *	@param array $extra An array of extra elements, in the following format.
  *		(required) string $action The action performed.
  *		(optional) string $setting During a setting update, this is the variable we changed.
