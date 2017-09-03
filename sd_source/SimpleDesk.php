@@ -1130,7 +1130,6 @@ function shd_helpdesk_listing()
 			AND field_loc IN ({array_int:locations})
 			AND hdcfd.id_dept IN ({array_int:dept_list})
 			AND active = {int:active}
-		GROUP BY hdcf.id_field
 		ORDER BY field_order',
 		array(
 			'locations' => array(CFIELD_TICKET, CFIELD_TICKET | CFIELD_REPLY),
