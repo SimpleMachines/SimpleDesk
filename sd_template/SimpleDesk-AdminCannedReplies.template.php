@@ -47,9 +47,9 @@ function template_shd_cannedreplies_home()
 			<div class="cat_bar">
 				<h3 class="catbg">
 					', $cat['name'], '
-					', !empty($cat['move_up']) ? ('<a href="' . $scripturl . '?action=admin;area=helpdesk_cannedreplies;sa=movecat;cat=' . $cat_id . ';direction=up;' . $context['session_var'] . '=' . $context['session_id'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/move_up.png" alt="' . $txt['shd_admin_move_up'] . '" title="' . $txt['shd_admin_move_up'] . '" /></a>') : '', '
-					', !empty($cat['move_down']) ? ('<a href="' . $scripturl . '?action=admin;area=helpdesk_cannedreplies;sa=movecat;cat=' . $cat_id . ';direction=down;' . $context['session_var'] . '=' . $context['session_id'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/move_down.png" alt="' . $txt['shd_admin_move_down'] . '" title="' . $txt['shd_admin_move_down'] . '" /></a>') : '', '
-					<a href="', $scripturl, '?action=admin;area=helpdesk_cannedreplies;sa=editcat;cat=' . $cat_id . ';', $context['session_var'], '=', $context['session_id'], '"><img src="', $settings['default_images_url'], '/simpledesk/edit.png" class="icon" alt="', $txt['shd_ticket_edit'],'" title="', $txt['shd_ticket_edit'], '" /></a>
+					', !empty($cat['move_up']) ? ('<a href="' . $scripturl . '?action=admin;area=helpdesk_cannedreplies;sa=movecat;cat=' . $cat_id . ';direction=up;' . $context['session_var'] . '=' . $context['session_id'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/move_up.png" alt="' . $txt['shd_admin_move_up'] . '" title="' . $txt['shd_admin_move_up'] . '"></a>') : '', '
+					', !empty($cat['move_down']) ? ('<a href="' . $scripturl . '?action=admin;area=helpdesk_cannedreplies;sa=movecat;cat=' . $cat_id . ';direction=down;' . $context['session_var'] . '=' . $context['session_id'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/move_down.png" alt="' . $txt['shd_admin_move_down'] . '" title="' . $txt['shd_admin_move_down'] . '"></a>') : '', '
+					<a href="', $scripturl, '?action=admin;area=helpdesk_cannedreplies;sa=editcat;cat=' . $cat_id . ';', $context['session_var'], '=', $context['session_id'], '"><img src="', $settings['default_images_url'], '/simpledesk/edit.png" class="icon" alt="', $txt['shd_ticket_edit'],'" title="', $txt['shd_ticket_edit'], '"></a>
 				</h3>
 			</div>
 			<table class="table_grid">
@@ -77,17 +77,17 @@ function template_shd_cannedreplies_home()
 						<tr class="windowbg">
 							<td>', $reply['title'], '</td>
 							<td>', $reply['depts'], '</td>
-							<td><img src="', $settings['default_images_url'], '/simpledesk/cf_', $reply['active_string'], '.png" alt="', $txt['shd_admin_custom_fields_' . $reply['active_string']], '" title="', $txt['shd_admin_custom_fields_' . $reply['active_string']], '" /></td>
+							<td><img src="', $settings['default_images_url'], '/simpledesk/cf_', $reply['active_string'], '.png" alt="', $txt['shd_admin_custom_fields_' . $reply['active_string']], '" title="', $txt['shd_admin_custom_fields_' . $reply['active_string']], '"></td>
 							<td>
-								', !empty($reply['vis_user']) ? '<img src="' . $settings['default_images_url'] . '/simpledesk/user.png" class="icon" alt="*" />' : '', '
-								', !empty($reply['vis_staff']) ? '<img src="' . $settings['default_images_url'] . '/simpledesk/staff.png" class="icon" alt="*" />' : '', '
-								<img src="', $settings['default_images_url'], '/simpledesk/admin.png" class="icon" alt="" />
+								', !empty($reply['vis_user']) ? '<img src="' . $settings['default_images_url'] . '/simpledesk/user.png" class="icon" alt="*">' : '', '
+								', !empty($reply['vis_staff']) ? '<img src="' . $settings['default_images_url'] . '/simpledesk/staff.png" class="icon" alt="*">' : '', '
+								<img src="', $settings['default_images_url'], '/simpledesk/admin.png" class="icon" alt="">
 							</td>
-							<td>', !empty($reply['move_up']) ? ('<a href="' . $scripturl . '?action=admin;area=helpdesk_cannedreplies;sa=movereply;reply=' . $reply['id_reply'] . ';direction=up;' . $context['session_var'] . '=' . $context['session_id'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/move_up.png" alt="' . $txt['shd_admin_move_up'] . '" title="' . $txt['shd_admin_move_up'] . '" /></a>') : '', '</td>
-							<td>', !empty($reply['move_down']) ? ('<a href="' . $scripturl . '?action=admin;area=helpdesk_cannedreplies;sa=movereply;reply=' . $reply['id_reply'] . ';direction=down;' . $context['session_var'] . '=' . $context['session_id'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/move_down.png" alt="' . $txt['shd_admin_move_down'] . '" title="' . $txt['shd_admin_move_down'] . '" /></a>') : '', '</td>
-							<td>', $context['move_between_cats'] ? ('<a href="' . $scripturl . '?action=admin;area=helpdesk_cannedreplies;sa=movereplycat;reply=' . $reply['id_reply'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/movedept.png" alt="' . $txt['shd_admin_cannedreplies_move_between_cat'] . '" title="' . $txt['shd_admin_cannedreplies_move_between_cat'] . '" /></a>') : '', '</td>
-							<td><a href="', $scripturl, '?action=admin;area=helpdesk_cannedreplies;sa=editreply;reply=' . $reply['id_reply'] . ';', $context['session_var'], '=', $context['session_id'], '"><img src="', $settings['default_images_url'], '/simpledesk/edit.png" class="icon" alt="', $txt['shd_ticket_edit'],'" title="', $txt['shd_ticket_edit'], '" /></a></td>
-							<td><a href="', $scripturl, '?action=admin;area=helpdesk_cannedreplies;sa=savereply;reply=' . $reply['id_reply'] . ';delete=yes;', $context['session_var'], '=', $context['session_id'], '" onclick="return confirm(' . JavaScriptEscape($txt['shd_admin_cannedreplies_deletereply_confirm']). ');"><img src="', $settings['default_images_url'], '/simpledesk/delete.png" class="icon" alt="', $txt['shd_ticket_delete'],'" title="', $txt['shd_ticket_delete'], '" /></a></td>
+							<td>', !empty($reply['move_up']) ? ('<a href="' . $scripturl . '?action=admin;area=helpdesk_cannedreplies;sa=movereply;reply=' . $reply['id_reply'] . ';direction=up;' . $context['session_var'] . '=' . $context['session_id'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/move_up.png" alt="' . $txt['shd_admin_move_up'] . '" title="' . $txt['shd_admin_move_up'] . '"></a>') : '', '</td>
+							<td>', !empty($reply['move_down']) ? ('<a href="' . $scripturl . '?action=admin;area=helpdesk_cannedreplies;sa=movereply;reply=' . $reply['id_reply'] . ';direction=down;' . $context['session_var'] . '=' . $context['session_id'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/move_down.png" alt="' . $txt['shd_admin_move_down'] . '" title="' . $txt['shd_admin_move_down'] . '"></a>') : '', '</td>
+							<td>', $context['move_between_cats'] ? ('<a href="' . $scripturl . '?action=admin;area=helpdesk_cannedreplies;sa=movereplycat;reply=' . $reply['id_reply'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/movedept.png" alt="' . $txt['shd_admin_cannedreplies_move_between_cat'] . '" title="' . $txt['shd_admin_cannedreplies_move_between_cat'] . '"></a>') : '', '</td>
+							<td><a href="', $scripturl, '?action=admin;area=helpdesk_cannedreplies;sa=editreply;reply=' . $reply['id_reply'] . ';', $context['session_var'], '=', $context['session_id'], '"><img src="', $settings['default_images_url'], '/simpledesk/edit.png" class="icon" alt="', $txt['shd_ticket_edit'],'" title="', $txt['shd_ticket_edit'], '"></a></td>
+							<td><a href="', $scripturl, '?action=admin;area=helpdesk_cannedreplies;sa=savereply;reply=' . $reply['id_reply'] . ';delete=yes;', $context['session_var'], '=', $context['session_id'], '" onclick="return confirm(' . JavaScriptEscape($txt['shd_admin_cannedreplies_deletereply_confirm']). ');"><img src="', $settings['default_images_url'], '/simpledesk/delete.png" class="icon" alt="', $txt['shd_ticket_delete'],'" title="', $txt['shd_ticket_delete'], '"></a></td>
 						</tr>';
 				}
 			}
@@ -115,7 +115,7 @@ function template_shd_edit_canned_category()
 	echo '
 		<div class="cat_bar">
 			<h3 class="catbg">
-				<img src="', $settings['default_images_url'], '/simpledesk/cannedreplies.png" class="icon" alt="*" />
+				<img src="', $settings['default_images_url'], '/simpledesk/cannedreplies.png" class="icon" alt="*">
 				', $txt['shd_admin_cannedreplies_home'], '
 			</h3>
 		</div>
@@ -124,7 +124,7 @@ function template_shd_edit_canned_category()
 		</div>
 		<div class="cat_bar">
 			<h3 class="catbg">
-				<img src="', $settings['default_images_url'], '/simpledesk/additional_information.png" alt="*" />
+				<img src="', $settings['default_images_url'], '/simpledesk/additional_information.png" alt="*">
 				', $context['page_title'], '
 			</h3>
 		</div>
@@ -132,18 +132,18 @@ function template_shd_edit_canned_category()
 			<form action="', $scripturl, '?action=admin;area=helpdesk_cannedreplies;sa=savecat" method="post">
 				<dl class="settings">
 					<dt><strong>', $txt['shd_admin_cannedreplies_categoryname'], '</strong></dt>
-					<dd><input type="text" name="catname" id="catname" class="input_text" size="30" value="', $context['category_name'], '" /></dd>
+					<dd><input type="text" name="catname" id="catname"  size="30" value="', $context['category_name'], '"></dd>
 				</dl>
-				<input type="submit" value="', $context['page_title'], '" onclick="return submitThisOnce(this);" accesskey="s" class="button_submit" />';
+				<input type="submit" value="', $context['page_title'], '" onclick="return submitThisOnce(this);" accesskey="s" class="button">';
 
 	if ($_REQUEST['cat'] != 'new')
 		echo '
-				<input type="submit" name="delete" value="', $txt['shd_admin_cannedreplies_deletecat'], '" onclick="return confirm(', JavaScriptEscape($txt['shd_admin_cannedreplies_delete_confirm']), ') && submitThisOnce(this);" class="button_submit" />';
+				<input type="submit" name="delete" value="', $txt['shd_admin_cannedreplies_deletecat'], '" onclick="return confirm(', JavaScriptEscape($txt['shd_admin_cannedreplies_delete_confirm']), ') && submitThisOnce(this);" class="button">';
 
 	echo '
-				<input type="hidden" name="cat" value="', $_REQUEST['cat'], '" />
-				<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
-				<input type="hidden" name="seqnum" value="', $context['form_sequence_number'], '" />
+				<input type="hidden" name="cat" value="', $_REQUEST['cat'], '">
+				<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">
+				<input type="hidden" name="seqnum" value="', $context['form_sequence_number'], '">
 			</form>
 		</div>';
 }
@@ -157,7 +157,7 @@ function template_shd_edit_canned_reply()
 	echo '
 		<div class="cat_bar">
 			<h3 class="catbg">
-				<img src="', $settings['default_images_url'], '/simpledesk/cannedreplies.png" class="icon" alt="*" />
+				<img src="', $settings['default_images_url'], '/simpledesk/cannedreplies.png" class="icon" alt="*">
 				', $txt['shd_admin_cannedreplies_home'], '
 			</h3>
 		</div>
@@ -167,14 +167,14 @@ function template_shd_edit_canned_reply()
 		<form action="', $scripturl, '?action=admin;area=helpdesk_cannedreplies;sa=savereply" method="post" accept-charset="', $context['character_set'], '" name="cannedreply" id="cannedreply" onsubmit="', 'submitonce(this);smc_saveEntities(\'cannedreply\', [\'title\', \'', $context['post_box_name'], '\']);" enctype="multipart/form-data" style="margin: 0;">
 			<div class="cat_bar">
 				<h3 class="catbg">
-					<img src="', $settings['default_images_url'], '/simpledesk/additional_information.png" alt="*" />
+					<img src="', $settings['default_images_url'], '/simpledesk/additional_information.png" alt="*">
 					', $context['page_title'], '
 				</h3>
 			</div>
 			<div class="roundframe noup">
 				<dl class="settings">
 					<dt><strong>', $txt['shd_admin_cannedreplies_replytitle'], '</strong></dt>
-					<dd><input type="text" class="input_text" value="', $context['canned_reply']['title'], '" name="title" size="80" /></dd>
+					<dd><input type="text"  value="', $context['canned_reply']['title'], '" name="title" size="80"></dd>
 				</dl>
 				<p><strong>', $txt['shd_admin_cannedreplies_content'], '</strong></p>
 				<div class="block">
@@ -184,19 +184,19 @@ function template_shd_edit_canned_reply()
 				</div>
 				<dl class="settings">
 					<dt><strong>', $txt['shd_admin_cannedreplies_active'], '</strong></dt>
-					<dd><input type="checkbox" name="active" class="input_check"', !empty($context['canned_reply']['active']) ? ' checked="checked"' : '', ' />
+					<dd><input type="checkbox" name="active" ', !empty($context['canned_reply']['active']) ? ' checked="checked"' : '', '>
 					<dt><strong>', $txt['shd_admin_cannedreplies_selectvisible'], '</strong></dt>
 					<dd>
-						<input type="checkbox" name="vis_user" class="input_check"', !empty($context['canned_reply']['vis_user']) ? ' checked="checked"' : '', ' /> <img src="', $settings['default_images_url'], '/simpledesk/user.png" class="icon" alt="', $txt['shd_admin_custom_field_users'], '" title="', $txt['shd_admin_custom_field_users'], '">
-						<input type="checkbox" name="vis_staff" class="input_check"', !empty($context['canned_reply']['vis_staff']) ? ' checked="checked"' : '', ' /> <img src="', $settings['default_images_url'], '/simpledesk/staff.png" class="icon" alt="', $txt['shd_admin_custom_field_staff'], '" title="', $txt['shd_admin_custom_field_staff'], '">
-						<input type="checkbox" name="vis_admin" class="input_check" checked="checked" disabled="disabled"> <img src="', $settings['default_images_url'], '/simpledesk/admin.png" class="icon" alt="', $txt['shd_admin_custom_field_admins'], '" title="', $txt['shd_admin_custom_field_admins'], '">
+						<input type="checkbox" name="vis_user" ', !empty($context['canned_reply']['vis_user']) ? ' checked="checked"' : '', '> <img src="', $settings['default_images_url'], '/simpledesk/user.png" class="icon" alt="', $txt['shd_admin_custom_field_users'], '" title="', $txt['shd_admin_custom_field_users'], '">
+						<input type="checkbox" name="vis_staff" ', !empty($context['canned_reply']['vis_staff']) ? ' checked="checked"' : '', '> <img src="', $settings['default_images_url'], '/simpledesk/staff.png" class="icon" alt="', $txt['shd_admin_custom_field_staff'], '" title="', $txt['shd_admin_custom_field_staff'], '">
+						<input type="checkbox" name="vis_admin"  checked="checked" disabled="disabled"> <img src="', $settings['default_images_url'], '/simpledesk/admin.png" class="icon" alt="', $txt['shd_admin_custom_field_admins'], '" title="', $txt['shd_admin_custom_field_admins'], '">
 					</dd>
 				</dl>
 			</div>
 			<br>
 			<div class="cat_bar">
 				<h3 class="catbg">
-					<img src="', $settings['default_images_url'], '/simpledesk/departments.png" alt="*" />
+					<img src="', $settings['default_images_url'], '/simpledesk/departments.png" alt="*">
 					', $txt['shd_admin_cannedreplies_departments'], '
 				</h3>
 			</div>
@@ -207,24 +207,24 @@ function template_shd_edit_canned_reply()
 	{
 		echo '
 					<dt><strong>', $dept_name, '</strong></dt>
-					<dd><input type="checkbox" name="dept_', $dept_id, '"', in_array($dept_id, $context['canned_reply']['depts_selected']) ? ' checked="checked"' : '', ' class="input_check" /></dd>';
+					<dd><input type="checkbox" name="dept_', $dept_id, '"', in_array($dept_id, $context['canned_reply']['depts_selected']) ? ' checked="checked"' : '', ' ></dd>';
 	}
 
 	echo '
 				</dl>
 			</div>
 			<br>
-			<input type="submit" value="', isset($editor_context['labels']['post_button']) ? $editor_context['labels']['post_button'] : $txt['save'], '" tabindex="', $context['tabindex']++, '" accesskey="s" class="button_submit" />';
+			<input type="submit" value="', isset($editor_context['labels']['post_button']) ? $editor_context['labels']['post_button'] : $txt['save'], '" tabindex="', $context['tabindex']++, '" accesskey="s" class="button">';
 
 	if ($context['canned_reply']['id'] != 'new')
 		echo '
-			<input type="submit" name="delete" value="', $txt['shd_admin_cannedreplies_deletereply'], '" onclick="return confirm(', JavaScriptEscape($txt['shd_admin_cannedreplies_deletereply_confirm']), ') && submitThisOnce(this);" class="button_submit" />';
+			<input type="submit" name="delete" value="', $txt['shd_admin_cannedreplies_deletereply'], '" onclick="return confirm(', JavaScriptEscape($txt['shd_admin_cannedreplies_deletereply_confirm']), ') && submitThisOnce(this);" class="button">';
 
 	echo '
-			<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
-			<input type="hidden" name="seqnum" value="', $context['form_sequence_number'], '" />
-			<input type="hidden" name="reply" value="', $context['canned_reply']['id'], '" />
-			<input type="hidden" name="cat" value="', $context['canned_reply']['cat'], '" />
+			<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">
+			<input type="hidden" name="seqnum" value="', $context['form_sequence_number'], '">
+			<input type="hidden" name="reply" value="', $context['canned_reply']['id'], '">
+			<input type="hidden" name="cat" value="', $context['canned_reply']['cat'], '">
 		</form>';
 }
 
@@ -235,7 +235,7 @@ function template_shd_move_reply_cat()
 	echo '
 		<div class="cat_bar">
 			<h3 class="catbg">
-				<img src="', $settings['default_images_url'], '/simpledesk/cannedreplies.png" class="icon" alt="*" />
+				<img src="', $settings['default_images_url'], '/simpledesk/cannedreplies.png" class="icon" alt="*">
 				', $txt['shd_admin_cannedreplies_home'], '
 			</h3>
 		</div>
@@ -244,7 +244,7 @@ function template_shd_move_reply_cat()
 		</div>
 		<div class="cat_bar">
 			<h3 class="catbg">
-				<img src="', $settings['default_images_url'], '/simpledesk/movedept.png" alt="*" />
+				<img src="', $settings['default_images_url'], '/simpledesk/movedept.png" alt="*">
 				', $context['page_title'], '
 			</h3>
 		</div>
@@ -264,10 +264,10 @@ function template_shd_move_reply_cat()
 						</select>
 					</dd>
 				</dl>
-				<input type="submit" value="', $txt['shd_admin_cannedreplies_movereply'], '" onclick="return submitThisOnce(this);" class="button_submit" />
-				<input type="hidden" name="reply" value="', $_REQUEST['reply'], '" />
-				<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
-				<input type="hidden" name="seqnum" value="', $context['form_sequence_number'], '" />
+				<input type="submit" value="', $txt['shd_admin_cannedreplies_movereply'], '" onclick="return submitThisOnce(this);" class="button">
+				<input type="hidden" name="reply" value="', $_REQUEST['reply'], '">
+				<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">
+				<input type="hidden" name="seqnum" value="', $context['form_sequence_number'], '">
 			</form>
 		</div>';
 }

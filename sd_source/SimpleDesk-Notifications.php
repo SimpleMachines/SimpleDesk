@@ -396,7 +396,7 @@ function shd_notify_users($notify_data)
 	if (isset($notify_data['poster_name']))
 		$replacements['{poster_name}'] = $notify_data['poster_name'];
 	if (isset($notify_data['body']))
-		$replacements['{body}'] = trim(un_htmlspecialchars(strip_tags(strtr(shd_format_text($notify_data['body'], false), array('<br />' => "\n", '</div>' => "\n", '</li>' => "\n", '&#91;' => '[', '&#93;' => ']')))));
+		$replacements['{body}'] = trim(un_htmlspecialchars(strip_tags(strtr(shd_format_text($notify_data['body'], false), array('<br>' => "\n", '</div>' => "\n", '</li>' => "\n", '&#91;' => '[', '&#93;' => ']')))));
 	$withbody = isset($notify_data['body']) && !empty($modSettings['shd_notify_with_body']) ? 'bodyfull' : 'body';
 
 	// Also note, we may not be coming from the post code... so make sure sendmail() is available
@@ -540,7 +540,7 @@ function shd_notify_popup()
 	}
 
 	// Now we have all the usernames for this instance, let's go and build this entry.
-	$context['help_text'] = $txt['shd_log_notify_to'] . '<br />';
+	$context['help_text'] = $txt['shd_log_notify_to'] . '<br>';
 
 	$new_content = '';
 	if (!empty($users))
@@ -551,7 +551,7 @@ function shd_notify_popup()
 			if (empty($user_profile[$user]))
 				continue;
 
-			$new_content .= ($first ? '<img src="' . shd_image_url('user.png') . '" alt="" /> ' : ', ') . shd_profile_link($user_profile[$user]['real_name'], $user);
+			$new_content .= ($first ? '<img src="' . shd_image_url('user.png') . '" alt=""> ' : ', ') . shd_profile_link($user_profile[$user]['real_name'], $user);
 			$first = false;
 		}
 	}
@@ -564,25 +564,25 @@ function shd_notify_popup()
 		{
 			foreach ($emails as $key => $value)
 				$emails[$key] = '<a href="mailto:' . $value . '">' . $value . '</a>';
-			$new_content .= '<img src="' . shd_image_url('log_notify.png') . '" alt="" /> ' . implode(', ', $emails);
+			$new_content .= '<img src="' . shd_image_url('log_notify.png') . '" alt=""> ' . implode(', ', $emails);
 		}
 		// No-one else can at the moment.
 		else
-			$new_content .= '<img src="' . shd_image_url('log_notify.png') . '" alt="" /> ' . (count($emails) == 1 ? $txt['shd_log_notify_hiddenemail_1'] : sprintf($txt['shd_log_notify_hiddenemail'], count($emails)));
+			$new_content .= '<img src="' . shd_image_url('log_notify.png') . '" alt=""> ' . (count($emails) == 1 ? $txt['shd_log_notify_hiddenemail_1'] : sprintf($txt['shd_log_notify_hiddenemail'], count($emails)));
 	}
 	if (!empty($new_content))
 		$context['help_text'] .= $new_content;
 
-	$context['help_text'] .= '<hr />';
+	$context['help_text'] .= '<hr>';
 
 	// So the general prep is done. Now let's rebuild the email contents.
 	if (empty($row['extra']['withbody']) || empty($row['body']))
 		$body = '';
 	else
-		$body = trim(un_htmlspecialchars(strip_tags(strtr(shd_format_text($row['body'], false), array('<br />' => "\n", '</div>' => "\n", '</li>' => "\n", '&#91;' => '[', '&#93;' => ']')))));
+		$body = trim(un_htmlspecialchars(strip_tags(strtr(shd_format_text($row['body'], false), array('<br>' => "\n", '</div>' => "\n", '</li>' => "\n", '&#91;' => '[', '&#93;' => ']')))));
 
 	$replacements = array(
-		"\n" => '<br />',
+		"\n" => '<br>',
 		'{ticket_id}' => str_pad($row['id_ticket'], $modSettings['shd_zerofill'], '0', STR_PAD_LEFT),
 		'{subject}' => empty($row['extra']['subject']) ? $txt['no_subject'] : $row['extra']['subject'],
 		'{ticketlink}' => $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $row['id_ticket'] . (empty($row['id_msg']) ? '.0' : '.msg' . $row['id_msg'] . '#msg' . $row['id_msg']),
@@ -593,7 +593,7 @@ function shd_notify_popup()
 	$email_subject = str_replace(array_keys($replacements), array_values($replacements), $txt['template_subject_notify_' . $email_type]);
 	$email_body = str_replace(array_keys($replacements), array_values($replacements), $txt['template_' . (empty($row['extra']['withbody']) || empty($row['body']) ? 'body' : 'bodyfull') . '_notify_' . $email_type]);
 
-	$context['help_text'] .= '<strong>' . $txt['subject'] . ':</strong> ' . $email_subject . '<br /><br />' . $email_body;
+	$context['help_text'] .= '<strong>' . $txt['subject'] . ':</strong> ' . $email_subject . '<br><br>' . $email_body;
 }
 
 function shd_notify_ticket_options()

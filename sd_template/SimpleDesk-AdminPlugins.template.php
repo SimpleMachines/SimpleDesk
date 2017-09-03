@@ -40,7 +40,7 @@ function template_shd_plugin_listing()
 		<form action="', $scripturl, '?action=admin;area=helpdesk_plugins;save;" method="post" accept-charset="', $context['character_set'], '">
 			<div class="cat_bar">
 				<h3 class="catbg">
-					<img src="', $settings['default_images_url'], '/simpledesk/plugins.png" class="icon" alt="*" />
+					<img src="', $settings['default_images_url'], '/simpledesk/plugins.png" class="icon" alt="*">
 					', $txt['shd_admin_plugins'], '
 				</h3>
 			</div>
@@ -58,7 +58,7 @@ function template_shd_plugin_listing()
 			echo '
 					<div class="features_switch" id="js_feature_', $id, '" style="display: none;">
 						<a href="', $scripturl, '?action=admin;area=helpdesk_plugins;save;', $context['session_var'], '=', $context['session_id'], ';toggle=', $id, ';state=', $plugin['enabled'] ? 0 : 1, '" onclick="return toggleItem(\'', $id, '\', \'', $settings['images_url'], '\', \'', $txt['shd_admin_plugins_on'], '\',  \'', $txt['shd_admin_plugins_off'], '\');">
-							<input type="hidden" name="feature_', $id, '" id="feature_', $id, '" value="', $plugin['enabled'] ? 1 : 0, '" /><img src="', $settings['images_url'], '/simpledesk/switch_', $plugin['enabled'] ? 'on' : 'off', '.png" id="switch_', $id, '" style="margin-top: 1.3em;" alt="', $txt['shd_admin_plugins_' . ($plugin['enabled'] ? 'off' : 'on')], '" title="', $txt['shd_admin_plugins_' . ($plugin['enabled'] ? 'off' : 'on')], '" />
+							<input type="hidden" name="feature_', $id, '" id="feature_', $id, '" value="', $plugin['enabled'] ? 1 : 0, '"><img src="', $settings['images_url'], '/simpledesk/switch_', $plugin['enabled'] ? 'on' : 'off', '.png" id="switch_', $id, '" style="margin-top: 1.3em;" alt="', $txt['shd_admin_plugins_' . ($plugin['enabled'] ? 'off' : 'on')], '" title="', $txt['shd_admin_plugins_' . ($plugin['enabled'] ? 'off' : 'on')], '">
 						</a>
 					</div>';
 		else
@@ -81,7 +81,7 @@ function template_shd_plugin_listing()
 			{
 				if (!empty($txt['shd_admin_plugins_lang_' . $language]))
 					echo '
-						<img src="', $settings['default_images_url'], '/simpledesk/flags/', $language, '.png" alt="', $txt['shd_admin_plugins_lang_' . $language], '" title="', $txt['shd_admin_plugins_lang_' . $language], '" />';
+						<img src="', $settings['default_images_url'], '/simpledesk/flags/', $language, '.png" alt="', $txt['shd_admin_plugins_lang_' . $language], '" title="', $txt['shd_admin_plugins_lang_' . $language], '">';
 			}
 			echo '
 					</div>';
@@ -100,8 +100,8 @@ function template_shd_plugin_listing()
 		if (!empty($plugin['installable']))
 			echo '
 					<div id="plain_feature_', $id, '">
-						<label for="plain_feature_', $id, '_radio_on"><input type="radio" name="feature_plain_', $id, '" id="plain_feature_', $id, '_radio_on" value="1"', $plugin['enabled'] ? ' checked="checked"' : '', ' class="input_radio" />', $txt['shd_admin_plugins_enabled'], '</label>
-						<label for="plain_feature_', $id, '_radio_off"><input type="radio" name="feature_plain_', $id, '" id="plain_feature_', $id, '_radio_off" value="0"', !$plugin['enabled'] ? ' checked="checked"' : '', ' class="input_radio" />', $txt['shd_admin_plugins_disabled'], '</label>
+						<label for="plain_feature_', $id, '_radio_on"><input type="radio" name="feature_plain_', $id, '" id="plain_feature_', $id, '_radio_on" value="1"', $plugin['enabled'] ? ' checked="checked"' : '', ' >', $txt['shd_admin_plugins_enabled'], '</label>
+						<label for="plain_feature_', $id, '_radio_off"><input type="radio" name="feature_plain_', $id, '" id="plain_feature_', $id, '_radio_off" value="0"', !$plugin['enabled'] ? ' checked="checked"' : '', ' >', $txt['shd_admin_plugins_disabled'], '</label>
 					</div>';
 
 		echo '
@@ -110,9 +110,9 @@ function template_shd_plugin_listing()
 	}
 
 	echo '
-			<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
-			<input type="hidden" value="0" name="js_worked" id="js_worked" />
-			<input type="submit" value="', $txt['save'], '" name="save" class="button_submit" />
+			<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">
+			<input type="hidden" value="0" name="js_worked" id="js_worked">
+			<input type="submit" value="', $txt['save'], '" name="save" class="button">
 		</form>
 	</div>
 	<script type="text/javascript"><!-- // --><![CDATA[

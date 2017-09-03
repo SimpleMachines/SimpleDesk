@@ -23,12 +23,12 @@ function template_search()
 
 	if (!empty($modSettings['shd_new_search_index']))
 		echo '
-	<div class="errorbox"><img src="', $settings['default_images_url'], '/simpledesk/warning.png" alt="*" class="shd_icon_minihead" /> &nbsp;', shd_allowed_to('admin_helpdesk', 0) ? $txt['shd_search_warning_admin'] : $txt['shd_search_warning_nonadmin'], '</div>';
+	<div class="errorbox"><img src="', $settings['default_images_url'], '/simpledesk/warning.png" alt="*" class="shd_icon_minihead"> &nbsp;', shd_allowed_to('admin_helpdesk', 0) ? $txt['shd_search_warning_admin'] : $txt['shd_search_warning_nonadmin'], '</div>';
 
 	echo '
 	<div class="cat_bar">
 		<h3 class="catbg">
-			<img src="', $settings['default_images_url'], '/simpledesk/search.png" alt="*" />
+			<img src="', $settings['default_images_url'], '/simpledesk/search.png" alt="*">
 			', $txt['shd_search'], '
 		</h3>
 	</div>
@@ -41,7 +41,7 @@ function template_search()
 						<strong>', $txt['shd_search_text'], '</strong>
 					</dt>
 					<dd>
-						<input type="text" name="search" value="" size="40" maxlength="100" class="input_text" />
+						<input type="text" name="search" value="" size="40" maxlength="100" >
 					</dd>
 					<dt>
 						<strong>', $txt['shd_search_match'], '</strong>
@@ -59,9 +59,9 @@ function template_search()
 						<strong>', $txt['shd_search_where'], '</strong>
 					</dt>
 					<dd>
-						<input type="checkbox" class="input_check" checked="checked" name="search_subjects" /> ', $txt['shd_search_where_subjects'], '<br>
-						<input type="checkbox" class="input_check" checked="checked" name="search_tickets" /> ', $txt['shd_search_where_tickets'], '<br>
-						<input type="checkbox" class="input_check" checked="checked" name="search_replies" /> ', $txt['shd_search_where_replies'], '<br>
+						<input type="checkbox"  checked="checked" name="search_subjects"> ', $txt['shd_search_where_subjects'], '<br>
+						<input type="checkbox"  checked="checked" name="search_tickets"> ', $txt['shd_search_where_tickets'], '<br>
+						<input type="checkbox"  checked="checked" name="search_replies"> ', $txt['shd_search_where_replies'], '<br>
 					</dd>
 				</dl>';
 
@@ -69,7 +69,7 @@ function template_search()
 	{
 		$array = array_keys($context['dept_list']);
 		echo '
-					<input type="hidden" name="search_dept[]" value="', $array[0], '" />';
+					<input type="hidden" name="search_dept[]" value="', $array[0], '">';
 	}
 	else
 	{
@@ -83,7 +83,7 @@ function template_search()
 
 		foreach ($context['dept_list'] as $id => $name)
 			echo '
-							<input type="checkbox" class="input_check" checked="checked" name="search_dept[]" value="', $id, '" /> &nbsp;', $name, '<br>';
+							<input type="checkbox"  checked="checked" name="search_dept[]" value="', $id, '"> &nbsp;', $name, '<br>';
 
 		echo '
 					</dd>
@@ -97,9 +97,9 @@ function template_search()
 						<strong>', $txt['shd_search_scope'], '</strong>
 					</dt>
 					<dd>
-						<input type="checkbox" class="input_check" checked="checked" name="scope_open" /> &nbsp;', $txt['shd_search_scope_open'], '<br>
-						<input type="checkbox" class="input_check" checked="checked" name="scope_closed" /> &nbsp;', $txt['shd_search_scope_closed'], '<br>
-						<input type="checkbox" class="input_check" checked="checked" name="scope_recycle" /> &nbsp;', $txt['shd_search_scope_recycle'], '<br>
+						<input type="checkbox"  checked="checked" name="scope_open"> &nbsp;', $txt['shd_search_scope_open'], '<br>
+						<input type="checkbox"  checked="checked" name="scope_closed"> &nbsp;', $txt['shd_search_scope_closed'], '<br>
+						<input type="checkbox"  checked="checked" name="scope_recycle"> &nbsp;', $txt['shd_search_scope_recycle'], '<br>
 					</dd>
 				</dl>
 				<hr>
@@ -112,7 +112,7 @@ function template_search()
 	// All the urgency levels, currently 0-5.
 	for ($i = 0; $i <= 5; $i++)
 		echo '
-						<input type="checkbox" class="input_check" checked="checked" name="urgency[]" value="', $i, '" /> &nbsp;', $txt['shd_urgency_' . $i], '<br>';
+						<input type="checkbox"  checked="checked" name="urgency[]" value="', $i, '"> &nbsp;', $txt['shd_urgency_' . $i], '<br>';
 
 	echo '
 					</dd>
@@ -124,8 +124,8 @@ function template_search()
 						<div class="smalltext">', $txt['shd_search_ticket_named_person'], '</div>
 					</dt>
 					<dd>
-						<input type="hidden" name="starter" value="" />
-						<input type="text" name="starter_name" id="starter_name" size="40" maxlength="100" class="input_text" value="" />
+						<input type="hidden" name="starter" value="">
+						<input type="text" name="starter_name" id="starter_name" size="40" maxlength="100"  value="">
 						<div id="starter_name_container"></div>
 					</dd>
 				</dl>
@@ -136,8 +136,8 @@ function template_search()
 						<div class="smalltext">', $txt['shd_search_ticket_named_person'], '</div>
 					</dt>
 					<dd>
-						<input type="hidden" name="assignee" value="" />
-						<input type="text" name="assignee_name" id="assignee_name" size="40" maxlength="100" class="input_text" value="" />
+						<input type="hidden" name="assignee" value="">
+						<input type="text" name="assignee_name" id="assignee_name" size="40" maxlength="100"  value="">
 						<div id="assignee_name_container"></div>
 					</dd>
 				</dl>
@@ -173,7 +173,7 @@ function template_search()
 				// ]', ']></script>
 				<hr>
 				<br>
-				<input type="submit" value="', $txt['shd_search'], '" onclick="return submitThisOnce(this);" accesskey="s" class="button_submit" />
+				<input type="submit" value="', $txt['shd_search'], '" onclick="return submitThisOnce(this);" accesskey="s" class="button">
 			</div>
 		</form>
 	</div>';
@@ -189,7 +189,7 @@ function template_search_no_results()
 	echo '
 	<div class="cat_bar">
 		<h3 class="catbg">
-			<img src="', $settings['default_images_url'], '/simpledesk/search.png" alt="*" />
+			<img src="', $settings['default_images_url'], '/simpledesk/search.png" alt="*">
 			', $txt['shd_search'], '
 		</h3>
 	</div>';
@@ -302,7 +302,7 @@ function template_search_results()
 	echo '
 	<div class="cat_bar">
 		<h3 class="catbg">
-			<img src="', $settings['default_images_url'], '/simpledesk/search.png" alt="*" />
+			<img src="', $settings['default_images_url'], '/simpledesk/search.png" alt="*">
 			', $txt['shd_search_results'], '
 		</h3>
 	</div>';
@@ -324,7 +324,7 @@ function template_search_results()
 					<h5>', $result['dept_link'], '<a href="', $scripturl, '?action=helpdesk;sa=ticket;ticket=', $result['id_ticket'], '">', sprintf($result['is_ticket'] ? $txt['shd_search_result_ticket'] : $txt['shd_search_result_reply'], $result['display_id']), '</a> - ', $result['subject'], ' (', $txt['shd_search_last_updated'], ' ', timeformat($result['last_updated']), ')</h5>
 					<span class="smalltext">&#171;&nbsp;<strong>', $result['is_ticket'] ? $txt['shd_search_ticket_opened_by'] : $txt['shd_search_ticket_replied_by'], ' ', shd_profile_link($result['poster_name'], $result['id_member']), '</strong>&nbsp;', $txt['on'], '&nbsp;<em>', timeformat($result['poster_time']), '</em>&nbsp;&#187;</span>
 				</div>
-				<br class="clear">
+				<br>
 				<div class="list_posts double_height">', $result['body'], '</div>
 			</div>
 		</div>
@@ -373,7 +373,7 @@ function template_search_navigation($page = 'next')
 	{
 		$array = array_keys($context['dept_list']);
 		echo '
-		<input type="hidden" name="search_dept[]" value="', $array[0], '" />';
+		<input type="hidden" name="search_dept[]" value="', $array[0], '">';
 	}
 	elseif (isset($context['search_params']['visible_depts']))
 		foreach ($context['search_params']['visible_depts'] as $dept)
@@ -411,16 +411,16 @@ function template_search_navigation($page = 'next')
 
 	if ($page === 'prev')
 		echo '
-		<input type="hidden" name="page" value="', $context['prev_page'], '" />
-		<input type="submit" value="Previous" onclick="return submitThisOnce(this);" class="button_submit floatleft" />';
+		<input type="hidden" name="page" value="', $context['prev_page'], '">
+		<input type="submit" value="Previous" onclick="return submitThisOnce(this);" class="button floatleft">';
 	elseif (is_int($page) && $page > 0)
 		echo '
-		<input type="hidden" name="page" value="', $page, '" />
-		<input type="submit" value="Page ', $page, '" onclick="return submitThisOnce(this);" class="button_submit floatleft', $context['current_page'] == $page ? ' active' : '', '" />';
+		<input type="hidden" name="page" value="', $page, '">
+		<input type="submit" value="Page ', $page, '" onclick="return submitThisOnce(this);" class="button floatleft', $context['current_page'] == $page ? ' active' : '', '">';
 	else
 		echo '
-		<input type="hidden" name="page" value="', $context['next_page'], '" />
-		<input type="submit" value="Next" onclick="return submitThisOnce(this);" class="button_submit" />';
+		<input type="hidden" name="page" value="', $context['next_page'], '">
+		<input type="submit" value="Next" onclick="return submitThisOnce(this);" class="button">';
 
 	echo '</form>';
 }

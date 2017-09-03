@@ -31,7 +31,7 @@ function template_assign()
 	echo '
 	<div class="cat_bar">
 		<h3 class="catbg">
-			<img src="', $settings['default_images_url'], '/simpledesk/assign.png" alt="*" />
+			<img src="', $settings['default_images_url'], '/simpledesk/assign.png" alt="*">
 			', $txt['shd_ticket_assign_ticket'], '
 		</h3>
 	</div>
@@ -58,13 +58,13 @@ function template_assign()
 					</select>
 				</dd>
 			</dl>
-			<input type="submit" name="cancel" value="', ($context['shd_return_to'] == 'home' ? $txt['shd_cancel_home'] : $txt['shd_cancel_ticket']), '" accesskey="c" class="button_submit" />
-			<input type="submit" value="', $txt['shd_ticket_assign_ticket'], '" onclick="return submitThisOnce(this);" accesskey="s" class="button_submit" />
-			<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />';
+			<input type="submit" name="cancel" value="', ($context['shd_return_to'] == 'home' ? $txt['shd_cancel_home'] : $txt['shd_cancel_ticket']), '" accesskey="c" class="button">
+			<input type="submit" value="', $txt['shd_ticket_assign_ticket'], '" onclick="return submitThisOnce(this);" accesskey="s" class="button">
+			<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">';
 
 	if ($context['shd_return_to'] == 'home')
 		echo '
-			<input type="hidden" name="home" value="1" />';
+			<input type="hidden" name="home" value="1">';
 
 	echo '
 		</form>

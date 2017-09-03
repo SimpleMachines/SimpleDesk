@@ -20,7 +20,7 @@ function template_shd_permissions_home()
 	echo '
 		<div class="cat_bar">
 			<h3 class="catbg">
-				<img src="', $settings['default_images_url'], '/simpledesk/permissions.png" class="icon" alt="*" />
+				<img src="', $settings['default_images_url'], '/simpledesk/permissions.png" class="icon" alt="*">
 				', $txt['shd_admin_permissions'], '
 			</h3>
 		</div>
@@ -29,7 +29,7 @@ function template_shd_permissions_home()
 		</div>
 		<div class="title_bar">
 			<h3 class="titlebg">
-				<img src="', $settings['default_images_url'], '/simpledesk/position.png" alt="*" />
+				<img src="', $settings['default_images_url'], '/simpledesk/position.png" alt="*">
 				', $txt['shd_role_templates'], '
 			</h3>
 		</div>
@@ -46,7 +46,7 @@ function template_shd_permissions_home()
 	{
 		echo '
 			<tr class="windowbg">
-				<td>', !empty($role_details['icon']) ? ('<img src="' . $settings['default_images_url'] . '/simpledesk/' . $role_details['icon'] . '" alt="" />') : '', '</td>
+				<td>', !empty($role_details['icon']) ? ('<img src="' . $settings['default_images_url'] . '/simpledesk/' . $role_details['icon'] . '" alt="">') : '', '</td>
 				<td>
 					', $txt[$role_details['description']], '
 					<div class="smalltext">[<a href="', $scripturl, '?action=admin;area=helpdesk_permissions;sa=createrole;template=', $role_id, '">', $txt['shd_create_role'], '</a>]</div>
@@ -59,7 +59,7 @@ function template_shd_permissions_home()
 		</table>
 		<div class="title_bar">
 			<h3 class="titlebg">
-				<img src="', $settings['default_images_url'], '/simpledesk/roles.png" alt="*" />
+				<img src="', $settings['default_images_url'], '/simpledesk/roles.png" alt="*">
 				', $txt['shd_roles'], '
 			</h3>
 		</div>
@@ -87,7 +87,7 @@ function template_shd_permissions_home()
 		{
 			echo '
 			<tr class="windowbg">
-				<td>', !empty($role_details['template_icon']) ? ('<img src="' . $settings['default_images_url'] . '/simpledesk/' . $role_details['template_icon'] . '" alt="" title="' . sprintf($txt['shd_based_on'], $role_details['template_name']) . '" />') : '', '</td>
+				<td>', !empty($role_details['template_icon']) ? ('<img src="' . $settings['default_images_url'] . '/simpledesk/' . $role_details['template_icon'] . '" alt="" title="' . sprintf($txt['shd_based_on'], $role_details['template_name']) . '">') : '', '</td>
 				<td>
 					', $role_details['name'], '
 					<div class="smalltext">
@@ -167,7 +167,7 @@ function template_shd_display_permission_list($permissions)
 		}
 
 		if (!empty($permtitle))
-			$permission_set[$group][] = '<img src="' . shd_image_url($icon) . '" alt="" title="' . $permtitle . '" />';
+			$permission_set[$group][] = '<img src="' . shd_image_url($icon) . '" alt="" title="' . $permtitle . '">';
 	}
 
 	foreach ($context['shd_permissions']['group_display'] as $cell => $rows)
@@ -197,7 +197,7 @@ function template_shd_create_role()
 	echo '
 		<div class="cat_bar">
 			<h3 class="catbg">
-				<img src="', $settings['default_images_url'], '/simpledesk/permissions.png" class="icon" alt="*" />
+				<img src="', $settings['default_images_url'], '/simpledesk/permissions.png" class="icon" alt="*">
 				', $txt['shd_admin_permissions'], '
 			</h3>
 		</div>
@@ -206,7 +206,7 @@ function template_shd_create_role()
 		</div>
 		<div class="cat_bar">
 			<h3 class="catbg">
-				<img src="', $settings['default_images_url'], '/simpledesk/position.png" alt="*" />
+				<img src="', $settings['default_images_url'], '/simpledesk/position.png" alt="*">
 				', $txt['shd_create_role'], '
 			</h3>
 		</div>
@@ -215,16 +215,16 @@ function template_shd_create_role()
 				<dl class="settings">
 					<dt><strong>', $txt['shd_create_based_on'], ':</strong></dt>
 					<dd>
-						<img alt="*" src="', $settings['default_images_url'], '/simpledesk/', $context['shd_permissions']['roles'][$_REQUEST['template']]['icon'], '" />
+						<img alt="*" src="', $settings['default_images_url'], '/simpledesk/', $context['shd_permissions']['roles'][$_REQUEST['template']]['icon'], '">
 						', $txt[$context['shd_permissions']['roles'][$_REQUEST['template']]['description']], '
 					</dd>
 					<dt><strong>', $txt['shd_create_name'], '</strong></dt>
-					<dd><input type="text" name="rolename" id="rolename" value="" class="input_text" size="30" /></dd>
+					<dd><input type="text" name="rolename" id="rolename" value=""  size="30"></dd>
 				</dl>
-				<input type="submit" value="', $txt['shd_create_role'], '" onclick="return submitThisOnce(this);" accesskey="s" class="button_submit" />
-				<input type="hidden" name="template" value="', $_REQUEST['template'], '" />
-				<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
-				<input type="hidden" name="seqnum" value="', $context['form_sequence_number'], '" />
+				<input type="submit" value="', $txt['shd_create_role'], '" onclick="return submitThisOnce(this);" accesskey="s" class="button">
+				<input type="hidden" name="template" value="', $_REQUEST['template'], '">
+				<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">
+				<input type="hidden" name="seqnum" value="', $context['form_sequence_number'], '">
 			</form>
 		</div>';
 }
@@ -245,7 +245,7 @@ function template_shd_edit_role()
 	echo '
 		<div class="cat_bar">
 			<h3 class="catbg">
-				<img src="', $settings['default_images_url'], '/simpledesk/permissions.png" class="icon" alt="*" />
+				<img src="', $settings['default_images_url'], '/simpledesk/permissions.png" class="icon" alt="*">
 				', $txt['shd_admin_permissions'], '
 			</h3>
 		</div>
@@ -297,7 +297,7 @@ function template_shd_edit_role()
 		<form action="', $scripturl, '?action=admin;area=helpdesk_permissions;sa=saverole" method="post">
 			<div class="cat_bar cat_collapsed">
 				<h3 class="catbg">
-					<img src="', $settings['default_images_url'], '/simpledesk/position.png" alt="*" />
+					<img src="', $settings['default_images_url'], '/simpledesk/position.png" alt="*">
 					', $txt['shd_edit_role'], '
 				</h3>
 			</div>
@@ -305,11 +305,11 @@ function template_shd_edit_role()
 				<dl class="settings">
 					<dt><strong>', $txt['shd_is_based_on'], ':</strong></dt>
 					<dd>
-						<img alt="*" src="', $settings['default_images_url'], '/simpledesk/', $role['template_icon'], '" />
+						<img alt="*" src="', $settings['default_images_url'], '/simpledesk/', $role['template_icon'], '">
 						', $role['template_name'], '
 					</dd>
 					<dt><strong>', $txt['shd_role_name'], ':</strong></dt>
-					<dd><input type="text" name="rolename" id="rolename" value="', $role['name'], '" class="input_text" size="30" /></dd>
+					<dd><input type="text" name="rolename" id="rolename" value="', $role['name'], '"  size="30"></dd>
 				</dl>
 			</div>';
 
@@ -340,10 +340,10 @@ function template_shd_edit_role()
 					<h3 class="catbg">
 						<span class="floatright">
 							<a class="permcollapse" href="#" onclick="shd_toggleblock(\'', $rowitem, '\'); return false;">
-								<img src="', $settings['images_url'], '/selected_open.png" id="permexpandicon_', $rowitem, '" style="display:none;" />
+								<img src="', $settings['images_url'], '/selected_open.png" id="permexpandicon_', $rowitem, '" style="display:none;">
 							</a>
 						</span>
-						<img src="', $settings['default_images_url'], '/simpledesk/', $rowicon, '" alt="*" />
+						<img src="', $settings['default_images_url'], '/simpledesk/', $rowicon, '" alt="*">
 						<a href="#" onclick="shd_toggleblock(\'', $rowitem, '\'); return false;">', $txt['shd_permgroup_' . $rowitem], '</a>
 					</h3>
 				</div>
@@ -373,7 +373,7 @@ function template_shd_edit_role()
 				}
 
 				echo '
-						<dt', (empty($txt['permissionhelp_' . $permission]) ? '' : ' title="' . $txt['permissionhelp_' . $permission] . '"') . '><img src="', shd_image_url($icon), '" alt="*" />', $txt['permissionname_' . $permission], '</dt>
+						<dt', (empty($txt['permissionhelp_' . $permission]) ? '' : ' title="' . $txt['permissionhelp_' . $permission] . '"') . '><img src="', shd_image_url($icon), '" alt="*">', $txt['permissionname_' . $permission], '</dt>
 						<dd>
 							<span id="perm_', $permission, '_icon" class="', $perm_class, '"></span>
 							<select name="perm_', $permission, '" id="perm_', $permission, '" onchange="javascript:shd_chicon(this);">
@@ -428,7 +428,7 @@ function template_shd_edit_role()
 		<div class="floatleft" style="width: 100%;">
 			<div class="cat_bar">
 				<h3 class="catbg">
-					<img src="', $settings['default_images_url'], '/simpledesk/roles.png" alt="*" />
+					<img src="', $settings['default_images_url'], '/simpledesk/roles.png" alt="*">
 					', $txt['shd_role_membergroups'], '
 				</h3>
 			</div>
@@ -453,12 +453,12 @@ function template_shd_edit_role()
 		{
 			$icons = explode('#', $group['icons']);
 			if (!empty($icons[0]) && !empty($icons[1]))
-				echo str_repeat('<img src="' . $settings['images_url'] . '/membericons/' . $icons[1] . '" alt="" />', $icons[0]);
+				echo str_repeat('<img src="' . $settings['images_url'] . '/membericons/' . $icons[1] . '" alt="">', $icons[0]);
 		}
 
 		echo '
 					</td>
-					<td><input type="checkbox" class="input_check" name="group', $id_group, '"', (in_array($id_group, $context['role_groups']) ? ' checked="checked"' : ''), ' /></td>
+					<td><input type="checkbox"  name="group', $id_group, '"', (in_array($id_group, $context['role_groups']) ? ' checked="checked"' : ''), '></td>
 				</tr>
 			</div>';
 	}
@@ -468,7 +468,7 @@ function template_shd_edit_role()
 			<div class="floatleft" style="width: 100%;">
 				<div class="cat_bar">
 					<h3 class="catbg">
-						<img src="', $settings['default_images_url'], '/simpledesk/departments.png" alt="*" />
+						<img src="', $settings['default_images_url'], '/simpledesk/departments.png" alt="*">
 						', $txt['shd_role_departments'], '
 					</h3>
 				</div>
@@ -486,17 +486,17 @@ function template_shd_edit_role()
 		echo '
 					<tr class="windowbg">
 						<td>', $dept['dept_name'], '</td>
-						<td><input type="checkbox" class="input_check" name="dept', $id_dept, '"', !empty($dept['is_role']) ? ' checked="checked"' : '', ' /></td>
+						<td><input type="checkbox"  name="dept', $id_dept, '"', !empty($dept['is_role']) ? ' checked="checked"' : '', '></td>
 					</tr>';
 	}
 
 	echo '
 				</table>
 			</div>
-			<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
-			<input type="hidden" name="role" value="', $_REQUEST['role'], '" />
-			<input type="submit" value="', $txt['shd_edit_role'], '" onclick="return submitThisOnce(this);" accesskey="s" class="button_submit" />
-			<input type="submit" value="', $txt['shd_delete_role'], '" onclick="return confirm(' . JavaScriptEscape($txt['shd_delete_role_confirm']) . ');" name="delete" class="button_submit" />
+			<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">
+			<input type="hidden" name="role" value="', $_REQUEST['role'], '">
+			<input type="submit" value="', $txt['shd_edit_role'], '" onclick="return submitThisOnce(this);" accesskey="s" class="button">
+			<input type="submit" value="', $txt['shd_delete_role'], '" onclick="return confirm(' . JavaScriptEscape($txt['shd_delete_role_confirm']) . ');" name="delete" class="button">
 		</form>';
 }
 
@@ -512,7 +512,7 @@ function template_shd_copy_role()
 	echo '
 		<div class="cat_bar">
 			<h3 class="catbg">
-				<img src="', $settings['default_images_url'], '/simpledesk/permissions.png" class="icon" alt="*" />
+				<img src="', $settings['default_images_url'], '/simpledesk/permissions.png" class="icon" alt="*">
 				', $txt['shd_admin_permissions'], '
 			</h3>
 		</div>
@@ -521,7 +521,7 @@ function template_shd_copy_role()
 		</div>
 		<div class="cat_bar">
 			<h3 class="catbg">
-				<img src="', $settings['default_images_url'], '/simpledesk/position.png" alt="*" />
+				<img src="', $settings['default_images_url'], '/simpledesk/position.png" alt="*">
 				', $txt['shd_copy_role'], '
 			</h3>
 		</div>
@@ -530,18 +530,18 @@ function template_shd_copy_role()
 				<dl class="settings">
 					<dt><strong>', $txt['shd_create_based_on'], ':</strong></dt>
 					<dd>
-						<img alt="*" src="', $settings['default_images_url'], '/simpledesk/', $context['shd_permissions']['user_defined_roles'][$_REQUEST['role']]['template_icon'], '" />
+						<img alt="*" src="', $settings['default_images_url'], '/simpledesk/', $context['shd_permissions']['user_defined_roles'][$_REQUEST['role']]['template_icon'], '">
 						', $context['shd_permissions']['user_defined_roles'][$_REQUEST['role']]['name'], '
 					</dd>
 					<dt><strong>', $txt['shd_create_name'], '</strong></dt>
-					<dd><input type="text" name="rolename" id="rolename" value="" class="input_text" size="30" /></dd>
+					<dd><input type="text" name="rolename" id="rolename" value=""  size="30"></dd>
 					<dt><strong>', $txt['shd_copy_role_groups'], '</strong></dt>
-					<dd><input type="checkbox" name="copygroups" id="copygroups" value="1" class="input_check" /></dd>
+					<dd><input type="checkbox" name="copygroups" id="copygroups" value="1" ></dd>
 				</dl>
-				<input type="submit" value="', $txt['shd_copy_role'], '" onclick="return submitThisOnce(this);" accesskey="s" class="button_submit" />
-				<input type="hidden" name="role" value="', $_REQUEST['role'], '" />
-				<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
-				<input type="hidden" name="seqnum" value="', $context['form_sequence_number'], '" />
+				<input type="submit" value="', $txt['shd_copy_role'], '" onclick="return submitThisOnce(this);" accesskey="s" class="button">
+				<input type="hidden" name="role" value="', $_REQUEST['role'], '">
+				<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">
+				<input type="hidden" name="seqnum" value="', $context['form_sequence_number'], '">
 			</form>
 		</div>';
 }

@@ -42,7 +42,7 @@ $txt['shd_admin_welcome'] = 'Welcome to the main helpdesk administration center!
 $txt['shd_admin_title'] = 'Helpdesk Administration Center';
 $txt['shd_staff_list'] = 'Helpdesk staff';
 $txt['shd_update_available'] = 'New version available!';
-$txt['shd_update_message'] = 'A new version of SimpleDesk has been released. We recommened you to <a href="#" id="update-link">update to the latest version</a> in order to stay secure and enjoy all features our modification have to offer.' . "\n\n" . '<span style="display: none;" id="information-link-span"><br />For more information on what is new in this release, please visit <a href="#" id="information-link" target="_blank">our website</a>.</span><br />' . "\n\n" . '<strong>The SimpleDesk Team</strong>';
+$txt['shd_update_message'] = 'A new version of SimpleDesk has been released. We recommened you to <a href="#" id="update-link">update to the latest version</a> in order to stay secure and enjoy all features our modification have to offer.' . "\n\n" . '<span style="display: none;" id="information-link-span"><br>For more information on what is new in this release, please visit <a href="#" id="information-link" target="_blank">our website</a>.</span><br>' . "\n\n" . '<strong>The SimpleDesk Team</strong>';
 //@}
 
 //! @name Urgency levels, ties to helpdesk_tickets.urgency

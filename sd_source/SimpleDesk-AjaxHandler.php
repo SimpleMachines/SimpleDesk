@@ -84,9 +84,9 @@ function shd_ajax()
 		{
 			foreach ($context['ajax_return'] as $key => $value)
 			{
-				if (empty($value)) // for <tag />
+				if (empty($value)) // for <tag>
 					echo '
-	<', $key, ' />';
+	<', $key, '>';
 				else
 				{
 					$value = (array) $value;
@@ -345,7 +345,7 @@ function shd_ajax_quote()
 				require_once($sourcedir . '/Subs-Editor.php');
 				$row['body'] = strtr($row['body'], array('&lt;' => '#smlt#', '&gt;' => '#smgt#', '&amp;' => '#smamp#'));
 				$row['body'] = bbc_to_html($row['body']);
-				$lb = '<br />';
+				$lb = '<br>';
 			}
 			else
 				$lb = "\n";
@@ -795,26 +795,26 @@ function shd_ajax_notify()
 		}
 
 		if (!empty($notify_list['being_notified']))
-			echo '<span class="shd_ajax_head">', $txt['shd_ping_already_' . (count($notify_list['being_notified']) == 1 ? '1' : 'n')], '</span><br />', implode(', ', $notify_list['being_notified']);
+			echo '<span class="shd_ajax_head">', $txt['shd_ping_already_' . (count($notify_list['being_notified']) == 1 ? '1' : 'n')], '</span><br>', implode(', ', $notify_list['being_notified']);
 
 		if (!empty($notify_list['optional']))
 		{
 			if (!empty($notify_list['being_notified']))
-				echo '<br /><br />';
+				echo '<br><br>';
 
-			echo '<span class="shd_ajax_head">', $txt['shd_ping_' . (count($notify_list['optional']) == 1 ? '1' : 'n')], '</span><br />';
+			echo '<span class="shd_ajax_head">', $txt['shd_ping_' . (count($notify_list['optional']) == 1 ? '1' : 'n')], '</span><br>';
 			foreach ($notify_list['optional'] as $id => $member)
-				echo '<div class="shd_ajaxnotify"><input type="checkbox" name="notify[', $id, ']" value="', $id, '"', in_array($id, $selected) ? ' checked="checked"' : '', ' class="input_check" /> ', $member, '</div>';
+				echo '<div class="shd_ajaxnotify"><input type="checkbox" name="notify[', $id, ']" value="', $id, '"', in_array($id, $selected) ? ' checked="checked"' : '', ' > ', $member, '</div>';
 		}
 
 		if (!empty($notify_list['optional_butoff']))
 		{
 			if (!empty($notify_list['being_notified']) || !empty($notify_list['optional_butoff']))
-				echo '<br /><br />';
+				echo '<br><br>';
 
-			echo '<span class="shd_ajax_head">', $txt['shd_ping_none_' . (count($notify_list['optional_butoff']) == 1 ? '1' : 'n')], '</span><br />';
+			echo '<span class="shd_ajax_head">', $txt['shd_ping_none_' . (count($notify_list['optional_butoff']) == 1 ? '1' : 'n')], '</span><br>';
 			foreach ($notify_list['optional_butoff'] as $id => $member)
-				echo '<div class="shd_ajaxnotify"><input type="checkbox" name="notify[', $id, ']" value="', $id, '"', in_array($id, $selected) ? ' checked="checked"' : '', ' class="input_check" /> ', $member, '</div>';
+				echo '<div class="shd_ajaxnotify"><input type="checkbox" name="notify[', $id, ']" value="', $id, '"', in_array($id, $selected) ? ' checked="checked"' : '', ' > ', $member, '</div>';
 		}
 
 		echo ']', ']></notify>';

@@ -30,7 +30,7 @@ function template_movedept()
 	echo '
 	<div class="cat_bar">
 		<h3 class="catbg">
-			<img src="', $settings['default_images_url'], '/simpledesk/movedept.png" alt="*" />
+			<img src="', $settings['default_images_url'], '/simpledesk/movedept.png" alt="*">
 			', $txt['shd_ticket_move_dept'], '
 		</h3>
 	</div>
@@ -63,7 +63,7 @@ function template_movedept()
 					<strong>', $txt['shd_move_send_pm'], ':</strong>
 				</dt>
 				<dd>
-					<input type="checkbox" name="send_pm" id="send_pm" checked="checked" onclick="document.getElementById(\'pm_message\').style.display = this.checked ? \'block\' : \'none\';" class="input_check" />
+					<input type="checkbox" name="send_pm" id="send_pm" checked="checked" onclick="document.getElementById(\'pm_message\').style.display = this.checked ? \'block\' : \'none\';" >
 				</dd>
 			</dl>
 			<fieldset id="pm_message">
@@ -76,15 +76,15 @@ function template_movedept()
 					</dd>
 				</dl>
 			</fieldset>
-			<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />';
+			<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">';
 
 	if ($context['shd_return_to'] == 'home')
 		echo '
-			<input type="hidden" name="home" value="1" />';
+			<input type="hidden" name="home" value="1">';
 
 	echo '
-			<input type="submit" name="cancel" value="', ($context['shd_return_to'] == 'home' ? $txt['shd_cancel_home'] : $txt['shd_cancel_ticket']), '" accesskey="c" class="button_submit" />
-			<input type="submit" value="', $txt['shd_ticket_move'], '" onclick="return submitThisOnce(this);" accesskey="s" class="button_submit" />
+			<input type="submit" name="cancel" value="', ($context['shd_return_to'] == 'home' ? $txt['shd_cancel_home'] : $txt['shd_cancel_ticket']), '" accesskey="c" class="button">
+			<input type="submit" value="', $txt['shd_ticket_move'], '" onclick="return submitThisOnce(this);" accesskey="s" class="button">
 		</form>
 	</div>';
 }

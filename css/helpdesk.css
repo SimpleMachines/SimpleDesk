@@ -240,7 +240,7 @@ form#postmodify .shd_ticket_roundframe
 {
 	margin-top: 8px;
 }
-.shd_customfields .input_text
+.shd_customfields input[type="text"]
 {
 	width: 85%;
 }
