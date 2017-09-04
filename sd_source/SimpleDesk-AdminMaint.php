@@ -756,7 +756,7 @@ function shd_maint_starter_updater()
 				LEFT JOIN {db_prefix}helpdesk_ticket_replies AS hdtr_first ON (hdt.id_first_msg = hdtr_first.id_msg)
 				LEFT JOIN {db_prefix}helpdesk_ticket_replies AS hdtr_last ON (hdt.id_last_msg = hdtr_last.id_msg)
 			WHERE hdt.id_ticket IN ({array_int:tickets})
-			GROUP BY hdt.id_ticket',
+			GROUP BY 1, 2, 3',
 			array(
 				'tickets' => array_keys($tickets),
 			)

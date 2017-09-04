@@ -1129,7 +1129,7 @@ function shd_recalc_ids($ticket)
 			INNER JOIN {db_prefix}helpdesk_tickets AS hdt ON (hdt.id_ticket = hdtr.id_ticket)
 		WHERE hdtr.id_msg > hdt.id_first_msg
 			AND hdt.id_ticket = {int:ticket}
-		GROUP BY hdtr.message_status',
+		GROUP BY hdtr.message_status, hdt.id_first_msg',
 		array(
 			'ticket' => $ticket,
 		)

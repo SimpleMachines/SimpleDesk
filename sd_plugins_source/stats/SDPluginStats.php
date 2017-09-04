@@ -167,7 +167,7 @@ function shd_stats_today()
 			INNER JOIN {db_prefix}helpdesk_tickets AS t ON (la.id_ticket = t.id_ticket)
 		WHERE la.action IN ({array_string:actions})
 			AND la.log_time > {int:today}
-		GROUP BY la.action',
+		GROUP BY la.action, t.status',
 		array(
 			'actions' => array_keys($actions),
 			// we could use strtotime from a date(n j Y), but this seems safer calculations
@@ -243,7 +243,7 @@ function shd_stats_average()
 			FROM {db_prefix}helpdesk_log_action AS la
 				INNER JOIN {db_prefix}helpdesk_tickets AS t ON (la.id_ticket = t.id_ticket)
 			WHERE la.action IN ({array_string:actions})
-			GROUP BY (la.id_ticket)',
+			GROUP BY t.status',
 			array(
 				'actions' => $action,
 				'24hrs' => 86400,
