@@ -507,7 +507,7 @@ function shd_search2()
  *	Finds all members specified in a input field and returns their id_member.
  *
  *	@since 1.0
- *	@param array $field The input field containing the names from a SMF autocomplete member box
+ *	@param string $field The input field containing the names from a SMF autocomplete member box
 */
 function shd_get_named_people($field)
 {

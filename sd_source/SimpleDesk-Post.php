@@ -1474,10 +1474,10 @@ function shd_setup_replies($first_msg)
  *	Sets up the post box for tuckets
  *
  *	@since 1.0
- *	@param array $id The id of the post box
- *	@param array $message The message for the post box
+ *	@param string $id The id of the post box
+ *	@param string $message The message for the post box
  *	@param array $buttons Buttons on the post box
- *	@param array $width (optional) The width of the post box
+ *	@param int $width (optional) The width of the post box
 */
 function shd_postbox($id, $message, $buttons, $width = '90%')
 {
