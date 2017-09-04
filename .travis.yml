@@ -18,4 +18,4 @@ script:
   - sudo add-apt-repository ppa:git-core/ppa -y
   - sudo apt-get update
   - sudo apt-get install git
-  - ./buildTools/runTools.sh
+  - if ./buildTools/runTools.sh travis | grep "Error:"; then exit 1; fi
