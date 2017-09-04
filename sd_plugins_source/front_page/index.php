@@ -52,7 +52,7 @@ function shdplugin_front_page()
 			'title' => 'shdp_frontpage',
 			'description' => 'shdp_frontpage_desc',
 			'author' => 'SimpleDesk Team',
-			'website' => 'http://www.simpledesk.net/',
+			'website' => 'https://www.simpledesk.net/',
 			'version' => '1.0.1',
 			'compatibility' => array(
 				'SimpleDesk 2.1 Beta 1', // should tie up with the SHD_VERSION constants

@@ -1,4 +1,4 @@
-[url=http://www.simpledesk.net/][img]http://www.simpledesk.net/promo/graphics/signatures/signature1.png[/img][/url]
+[url=https://www.simpledesk.net/][img]https://www.simpledesk.net/promo/graphics/signatures/signature1.png[/img][/url]
 
 Thank you for downloading SimpleDesk :)
 
@@ -43,7 +43,7 @@ Well, once you click the button and install this mod, the installer will take yo
 
 [b]What if I need help?[/b]
 
-You can always get help on our forum, http://www.simpledesk.net/community/
+You can always get help on our forum, https://www.simpledesk.net/community/
 
 When SimpleDesk is installed, there will be an extra area for support in the SimpleDesk admin area, that will take you to our forum and help you make a post in the best place for your question - and provide us with some necessary information at the same time.
 

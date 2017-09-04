@@ -52,7 +52,7 @@ function shdplugin_stats()
 			'title' => 'shdp_stats',
 			'description' => 'shdp_stats_desc',
 			'author' => 'SimpleDesk Team',
-			'website' => 'http://www.simpledesk.net/',
+			'website' => 'https://www.simpledesk.net/',
 			'version' => '1.0',
 			'compatibility' => array(
 				'SimpleDesk 2.0 Anatidae', // should tie up with the SHD_VERSION constants
