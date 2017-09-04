@@ -311,7 +311,7 @@ function shd_search2()
 
 		$query = shd_db_query('', '
 			SELECT hdt.id_ticket, hdt.id_dept, hdd.dept_name, hdt.subject, hdt.urgency, hdt.private, hdt.last_updated, hdtr.body,
-				hdtr.smileys_enabled, hdtr.id_member AS id_member, IFNULL(mem.real_name, hdtr.poster_name) AS poster_name, hdtr.poster_time
+				hdtr.smileys_enabled, hdtr.id_member AS id_member, COALESCE(mem.real_name, hdtr.poster_name) AS poster_name, hdtr.poster_time
 			FROM {db_prefix}helpdesk_tickets AS hdt
 				INNER JOIN {db_prefix}helpdesk_ticket_replies AS hdtr ON (hdt.id_first_msg = hdtr.id_msg)
 				INNER JOIN {db_prefix}helpdesk_depts AS hdd ON (hdt.id_dept = hdd.id_dept)
@@ -475,7 +475,7 @@ function shd_search2()
 		// Get the results for displaying.
 		$query = shd_db_query('', '
 			SELECT hdt.id_ticket, hdt.id_dept, hdd.dept_name, hdt.subject, hdt.urgency, hdt.private, hdt.last_updated, hdtr.body,
-				hdtr.smileys_enabled, hdtr.id_member AS id_member, IFNULL(mem.real_name, hdtr.poster_name) AS poster_name, hdtr.poster_time,
+				hdtr.smileys_enabled, hdtr.id_member AS id_member, COALESCE(mem.real_name, hdtr.poster_name) AS poster_name, hdtr.poster_time,
 				hdt.id_first_msg, hdtr.id_msg
 			FROM {db_prefix}helpdesk_ticket_replies AS hdtr
 				INNER JOIN {db_prefix}helpdesk_tickets AS hdt ON (hdt.id_ticket = hdtr.id_ticket)

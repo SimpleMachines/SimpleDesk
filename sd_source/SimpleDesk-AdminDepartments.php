@@ -214,7 +214,7 @@ function shd_admin_create_dept()
 		$smcFunc['db_free_result']($query);
 
 		// Create the department
-		$smcFunc['db_insert']('insert',
+		$newdept = $smcFunc['db_insert']('insert',
 			'{db_prefix}helpdesk_depts',
 			array(
 				'dept_name' => 'string', 'description' => 'string', 'board_cat' => 'int', 'before_after' => 'int', 'dept_order' => 'int',
@@ -224,10 +224,10 @@ function shd_admin_create_dept()
 			),
 			array(
 				'id_dept',
-			)
+			),
+			1
 		);
 
-		$newdept = $smcFunc['db_insert_id']('{db_prefix}helpdesk_depts', 'id_dept');
 		if (empty($newdept))
 			fatal_lang_error('shd_could_not_create_dept', false);
 

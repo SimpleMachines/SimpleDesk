@@ -316,7 +316,7 @@ function shd_ajax_quote()
 	if (!empty($_REQUEST['quote']))
 	{
 		$query = shd_db_query('', '
-			SELECT hdtr.body, IFNULL(mem.real_name, hdtr.poster_name) AS poster_name, hdtr.poster_time, hdt.id_ticket, hdt.id_first_msg
+			SELECT hdtr.body, COALESCE(mem.real_name, hdtr.poster_name) AS poster_name, hdtr.poster_time, hdt.id_ticket, hdt.id_first_msg
 			FROM {db_prefix}helpdesk_ticket_replies AS hdtr
 				INNER JOIN {db_prefix}helpdesk_tickets AS hdt ON (hdtr.id_ticket = hdt.id_ticket)
 				LEFT JOIN {db_prefix}members AS mem ON (hdtr.id_member = mem.id_member)

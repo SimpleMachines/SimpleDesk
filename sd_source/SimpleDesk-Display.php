@@ -999,9 +999,9 @@ function shd_display_load_attachments()
 	if ($modSettings['shd_attachments_mode'] == 'ticket')
 	{
 		$query = shd_db_query('', '
-			SELECT hda.id_attach, hda.id_msg, hda.id_ticket, a.filename, a.id_folder, a.file_hash, IFNULL(a.size, 0) AS filesize,
+			SELECT hda.id_attach, hda.id_msg, hda.id_ticket, a.filename, a.id_folder, a.file_hash, COALESCE(a.size, 0) AS filesize,
 				a.width, a.height' . (empty($modSettings['attachmentShowImages']) || empty($modSettings['attachmentThumbnails']) ? '' : ',
-				IFNULL(thumb.id_attach, 0) AS id_thumb, thumb.width AS thumb_width, thumb.height AS thumb_height') . '
+				COALESCE(thumb.id_attach, 0) AS id_thumb, thumb.width AS thumb_width, thumb.height AS thumb_height') . '
 			FROM {db_prefix}helpdesk_attachments AS hda
 				INNER JOIN {db_prefix}attachments AS a ON (hda.id_attach = a.id_attach)' . (empty($modSettings['attachmentShowImages']) || empty($modSettings['attachmentThumbnails']) ? '' : '
 				LEFT JOIN {db_prefix}attachments AS thumb ON (thumb.id_attach = a.id_thumb)') . '
@@ -1029,9 +1029,9 @@ function shd_display_load_attachments()
 			return;
 
 		$query = shd_db_query('', '
-			SELECT hda.id_attach, hda.id_msg, hda.id_ticket, a.filename, a.id_folder, a.file_hash, IFNULL(a.size, 0) AS filesize,
+			SELECT hda.id_attach, hda.id_msg, hda.id_ticket, a.filename, a.id_folder, a.file_hash, COALESCE(a.size, 0) AS filesize,
 				a.width, a.height' . (empty($modSettings['attachmentShowImages']) || empty($modSettings['attachmentThumbnails']) ? '' : ',
-				IFNULL(thumb.id_attach, 0) AS id_thumb, thumb.width AS thumb_width, thumb.height AS thumb_height') . '
+				COALESCE(thumb.id_attach, 0) AS id_thumb, thumb.width AS thumb_width, thumb.height AS thumb_height') . '
 			FROM {db_prefix}helpdesk_attachments AS hda
 				INNER JOIN {db_prefix}attachments AS a ON (hda.id_attach = a.id_attach)' . (empty($modSettings['attachmentShowImages']) || empty($modSettings['attachmentThumbnails']) ? '' : '
 				LEFT JOIN {db_prefix}attachments AS thumb ON (thumb.id_attach = a.id_thumb)') . '
@@ -1124,15 +1124,15 @@ function shd_attachment_info($attach_info)
 					$thumb_filename = $attach_info['filename'] . '_thumb';
 					$thumb_hash = getAttachmentFilename($thumb_filename, false, null, true);
 
+					$old_id_thumb = $attach_info['id_thumb'];
 					// Add this beauty to the database.
-					$smcFunc['db_insert']('',
+					$attach_info['id_thumb'] = $smcFunc['db_insert']('',
 						'{db_prefix}attachments',
 						array('id_folder' => 'int', 'id_msg' => 'int', 'attachment_type' => 'int', 'filename' => 'string', 'file_hash' => 'string', 'size' => 'int', 'width' => 'int', 'height' => 'int', 'fileext' => 'string', 'mime_type' => 'string'),
 						array($id_folder_thumb, 0, 3, $thumb_filename, $thumb_hash, (int) $thumb_size, (int) $attach_info['thumb_width'], (int) $attach_info['thumb_height'], $thumb_ext, $thumb_mime),
-						array('id_attach')
+						array('id_attach'),
+						1
 					);
-					$old_id_thumb = $attach_info['id_thumb'];
-					$attach_info['id_thumb'] = $smcFunc['db_insert_id']('{db_prefix}attachments', 'id_attach');
 					if (!empty($attach_info['id_thumb']))
 					{
 						// Update the tables to notify that we has us a thumbnail

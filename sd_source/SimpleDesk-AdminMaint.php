@@ -922,7 +922,7 @@ function shd_maint_invalid_dept()
 
 		$dept_order++;
 
-		$smcFunc['db_insert']('replace',
+		$last_dept = $smcFunc['db_insert']('replace',
 			'{db_prefix}helpdesk_depts',
 			array(
 				'dept_name' => 'string', 'description' => 'string', 'board_cat' => 'int', 'before_after' => 'int', 'dept_order' => 'int',
@@ -930,10 +930,10 @@ function shd_maint_invalid_dept()
 			array(
 				$txt['shd_admin_recovered_dept'], $txt['shd_admin_recovered_dept_desc'], 0, 0, $dept_order,
 			),
-			array('id_dept')
+			array('id_dept'),
+			1
 		);
 
-		$last_dept = $smcFunc['db_insert_id']('{db_prefix}hepldesk_depts', 'id_dept');
 		$smcFunc['db_query']('', '
 			UPDATE {db_prefix}helpdesk_tickets
 			SET id_dept = {int:new_dept}

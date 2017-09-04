@@ -889,7 +889,7 @@ function sd_upgrade_create_depts()
 	$smcFunc['db_free_result']($query);
 	if (empty($count))
 	{
-		$smcFunc['db_insert']('replace',
+		$smcFunc['db_insert']('insert',
 			'{db_prefix}helpdesk_depts',
 			array(
 				'dept_name' => 'string', 'board_cat' => 'int', 'description' => 'string', 'before_after' => 'int', 'dept_order' => 'int', 'dept_theme' => 'int',
@@ -942,6 +942,9 @@ function sd_upgrade_recreate_search()
 function sd_upgrade_fix_last_updated()
 {
 	global $smcFunc;
+
+	if ($smcFunc['db_title'] == 'PostgreSQL')
+		return;
 
 	$smcFunc['db_query']('', '
 	UPDATE {db_prefix}helpdesk_tickets AS hdt, {db_prefix}helpdesk_ticket_replies AS hdtr

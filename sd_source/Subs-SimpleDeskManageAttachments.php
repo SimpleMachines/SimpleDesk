@@ -288,7 +288,7 @@ function shd_list_get_files($start, $items_per_page, $sort, $browse_type)
 
 	$request = $smcFunc['db_query']('', '
 		SELECT
-			hdtr.id_msg, IFNULL(mem.real_name, hdtr.poster_name) AS poster_name, hdtr.poster_time, hdt.id_ticket, hdtr.id_member,
+			hdtr.id_msg, COALESCE(mem.real_name, hdtr.poster_name) AS poster_name, hdtr.poster_time, hdt.id_ticket, hdtr.id_member,
 			a.id_attach, a.filename, a.file_hash, a.attachment_type, a.size, a.width, a.height, a.downloads, hdt.subject
 		FROM {db_prefix}attachments AS a
 			INNER JOIN {db_prefix}helpdesk_attachments AS hda ON (a.id_attach = hda.id_attach)

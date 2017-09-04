@@ -239,9 +239,9 @@ function ssi_getSDTickets($query_where, $query_where_params = array(), $query_li
 	$query = shd_db_query('', '
 		SELECT hdt.id_ticket, hdt.subject, hdt.num_replies, hdt.private, hdt.urgency, hdt.status, hdt.dept,
 			hdtr_first.poster_time AS start_time, hdt.last_updated AS last_time,
-			IFNULL(mem.real_name, hdtr_first.poster_name) AS starter_name, IFNULL(mem.id_member, 0) AS starter_id,
-			IFNULL(ma.real_name, 0) AS assigned_name, IFNULL(ma.id_member, 0) AS assigned_id,
-			IFNULL(mm.real_name, hdtr_last.modified_name) AS modified_name, IFNULL(mm.id_member, 0) AS modified_id
+			COALESCE(mem.real_name, hdtr_first.poster_name) AS starter_name, COALESCE(mem.id_member, 0) AS starter_id,
+			COALESCE(ma.real_name, 0) AS assigned_name, COALESCE(ma.id_member, 0) AS assigned_id,
+			COALESCE(mm.real_name, hdtr_last.modified_name) AS modified_name, COALESCE(mm.id_member, 0) AS modified_id
 		FROM {db_prefix}helpdesk_tickets AS hdt
 			INNER JOIN {db_prefix}helpdesk_ticket_replies AS hdtr_first ON (hdt.id_first_msg = hdtr_first.id_msg)
 			INNER JOIN {db_prefix}helpdesk_ticket_replies AS hdtr_last ON (hdt.id_last_msg = hdtr_last.id_msg)

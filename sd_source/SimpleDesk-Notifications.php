@@ -506,7 +506,7 @@ function shd_notify_popup()
 		fatal_lang_error('no_access', false);
 
 	$query = $smcFunc['db_query']('', '
-		SELECT hdla.id_member, hdla.id_ticket, hdla.id_msg, hdla.extra, IFNULL(hdtr.body, {string:empty}) AS body, IFNULL(mem.real_name, hdtr.poster_name) AS poster_name
+		SELECT hdla.id_member, hdla.id_ticket, hdla.id_msg, hdla.extra, COALESCE(hdtr.body, {string:empty}) AS body, COALESCE(mem.real_name, hdtr.poster_name) AS poster_name
 		FROM {db_prefix}helpdesk_log_action AS hdla
 			LEFT JOIN {db_prefix}helpdesk_ticket_replies AS hdtr ON (hdla.id_msg = hdtr.id_msg)
 			LEFT JOIN {db_prefix}members AS mem ON (hdtr.id_member = mem.id_member)
