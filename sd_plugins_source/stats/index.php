@@ -55,7 +55,7 @@ function shdplugin_stats()
 			'website' => 'http://www.simpledesk.net/',
 			'version' => '1.0',
 			'compatibility' => array(
-				'SimpleDesk 2.0 Anatidae', // should tie up with the SHD_VERSION constants
+				'SimpleDesk 2.1 Beta 1', // should tie up with the SHD_VERSION constants
 			),
 			'acp_url' => 'action=admin;area=helpdesk_options;sa=stats',
 		),
