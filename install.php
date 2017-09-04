@@ -224,7 +224,7 @@ function sd_get_install_rows()
 		),
 		'data' => array(
 			'SimpleDesk Plugins',
-			'http://www.simpledesk.net/download/plugins/2.0', // !!! This should be updated in later releases!
+			'https://www.simpledesk.net/download/plugins/2.0', // !!! This should be updated in later releases!
 		),
 		'keys' => array('id_server'),
 	);

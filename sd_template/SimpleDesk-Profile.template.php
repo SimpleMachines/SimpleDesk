@@ -844,4 +844,3 @@ function template_profile_shd_theme_settings()
 						<dl>
 							<dd></dd>';
 }
-

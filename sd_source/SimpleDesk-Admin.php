@@ -898,7 +898,7 @@ function shd_admin_support()
 {
 	global $context;
 
-	$context['shd_support_url'] = 'http://www.simpledesk.net/support/post.php';
+	$context['shd_support_url'] = 'https://www.simpledesk.net/support/post.php';
 	$context['sub_template'] = 'shd_support';
 }
 

@@ -130,9 +130,10 @@ $smcFunc['db_query']('', '
 // Also remove the plugins package server.
 $query = $smcFunc['db_query']('', '
 	DELETE FROM {db_prefix}package_servers
-	WHERE url LIKE {string:plugins}',
+	WHERE url LIKE {string:plugins_http} OR url LIKE {string:plugins_https}',
 	array(
-		'plugins' => 'http://www.simpledesk.net/downloads/plugins/%',
+		'plugins_http' => 'http://www.simpledesk.net/downloads/plugins/%',
+		'plugins_https' => 'https://www.simpledesk.net/downloads/plugins/%',
 	)
 );
 

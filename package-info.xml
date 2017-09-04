@@ -10,11 +10,11 @@
 		<readme lang="english" parsebbc="true" type="inline">This mod is [b]not compatible[/b] with your version of SMF, it requires 2.0 final or later.</readme>
 	</install>
 
-	<install for="2.0, 2.0.1-2.0.99">
-		<readme lang="english" parsebbc="true" type="inline">This package is for SMF 2.1, to install SimpleDesk on your version of SMF use the proper package.</readme>
+	<install for="2.0, 2.0.1-2.0.99, 2.1 Beta 1, 2.1 Beta 2">
+		<readme lang="english" parsebbc="true" type="inline">This package is for SMF 2.1 , to install SimpleDesk on your version of SMF use the proper package.</readme>
 	</install>
 
-	<install for="2.1 Beta 2">
+	<install for="2.1 Beta 3, 2.1 Beta 4">
 		<!-- readme files -->
 		<readme lang="english" parsebbc="true" type="file">language-readme/readme.english.txt</readme>
 
@@ -53,7 +53,7 @@
 		<redirect url="?action=admin;area=helpdesk_info" />
 	</install>
 
-	<uninstall for="2.1 Beta 2">
+	<uninstall for="2.1 Beta 3, 2.1 Beta 4">
 		<!-- database changes, undone -->
 		<database>uninstall-optional.php</database>
 		<code type="file">uninstall-required.php</code>

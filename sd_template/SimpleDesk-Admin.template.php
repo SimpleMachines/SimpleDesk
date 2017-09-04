@@ -161,8 +161,8 @@ function template_shd_admin()
 	// The below functions include all the scripts needed from the simpledesk.net site. The language and format are passed for internationalization.
 	if (empty($modSettings['disable_smf_js']))
 		echo '
-		<script type="text/javascript" src="http://www.simpledesk.net/sd/current-version.js"></script>
-		<script type="text/javascript" src="http://www.simpledesk.net/sd/latest-news.js"></script>';
+		<script type="text/javascript" src="https://www.simpledesk.net/sd/current-version.js"></script>
+		<script type="text/javascript" src="https://www.simpledesk.net/sd/latest-news.js"></script>';
 
 	// This sets the announcements and current versions themselves ;).
 	echo '
