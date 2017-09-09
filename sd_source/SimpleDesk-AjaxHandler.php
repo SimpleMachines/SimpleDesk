@@ -121,7 +121,7 @@ function shd_ajax()
  *	- clear the cache of tickets for the Helpdesk menu item
  *	- return $context['ajax_return']['message'] as the new privacy item
  *
- *	@return bool Ignored by the main handler, but returns true.
+ *	@return bool|null Ignored by the main handler, but returns true.
  *  @since 1.0
 */
 function shd_ajax_privacy()
@@ -209,7 +209,7 @@ function shd_ajax_privacy()
  *	- identify whether the new urgency continues to allow the current user to change urgency or not
  *	- put the button links if appropriate into $context['ajax_return']['increase'] and $context['ajax_return']['decrease'] and return
  *
- *	@return bool Ignored by the main handler, but returns true.
+ *	@return bool|null Ignored by the main handler, but returns true.
  *  @since 1.0
 */
 function shd_ajax_urgency()
@@ -307,7 +307,7 @@ function shd_ajax_urgency()
  *	- Do other XML sanitising
  *	- Return via $context['ajax_raw'] for {@link shd_ajax()} to output
  *
- *	@return bool Ignored by the main handler, but returns true.
+ *	@return bool|null Ignored by the main handler, but returns true.
  *  @since 1.0
 */
 function shd_ajax_quote()
@@ -383,7 +383,7 @@ function shd_ajax_quote()
  *	- Do other XML sanitising
  *	- Return via $context['ajax_raw'] for {@link shd_ajax()} to output
  *
- *	@return bool Ignored by the main handler, but returns true.
+ *	@return bool|null Ignored by the main handler, but returns true.
  *  @since 2.0
 */
 function shd_ajax_canned()
@@ -470,7 +470,7 @@ function shd_ajax_canned()
  *	- Get the list of who can be assigned a ticket.
  *	- Return that via AJAX.
  *
- *	@return bool Ignored by the main handler, but returns true.
+ *	@return bool|null Ignored by the main handler, but returns true.
  *  @since 1.0
 */
 function shd_ajax_assign()
@@ -532,7 +532,7 @@ function shd_ajax_assign()
  *	- Get the list of who can be assigned a ticket; if requested user not on that list, bail.
  *	- Update and build return status, and return via AJAX.
  *
- *	@return bool Ignored by the main handler, but returns true.
+ *	@return bool|null Ignored by the main handler, but returns true.
  *  @since 1.0
  */
 function shd_ajax_assign2()
@@ -598,7 +598,7 @@ function shd_ajax_assign2()
 /**
  *	Provide the list of possible notification recipients.
  *
- *	@return bool Ignored by the main handler, but returns true.
+ *	@return bool|null Ignored by the main handler, but returns true.
  *	@since 2.0
 */
 function shd_ajax_notify()
