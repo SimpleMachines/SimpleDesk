@@ -13,7 +13,7 @@ function shd_privacyControl(oOpts)
 shd_privacyControl.prototype.init = function ()
 {
 	var oDiv = document.getElementById(shd_privacyControl.prototype.opts.sSrcA);
-	if (oDiv != null)
+	if (oDiv !== null)
 		oDiv.onclick = shd_privacyControl.prototype.action;
 }
 
@@ -72,9 +72,9 @@ shd_urgencyControl.prototype.init = function ()
 			continue;
 
 		var oDiv = document.getElementById('urglink_' + shd_urgencyControl.prototype.opts.aButtonOps[i]);
-		if (oDiv != null && i == 'up')
+		if (oDiv !== null && i == 'up')
 			oDiv.onclick = shd_urgencyControl.prototype.actionUp;
-		else if (oDiv != null && i == 'down')
+		else if (oDiv !== null && i == 'down')
 			oDiv.onclick = shd_urgencyControl.prototype.actionDown; // I *did* try to make this a single parameterised function but it always fired when it wasn't supposed to
 	}
 }
@@ -125,7 +125,7 @@ shd_urgencyControl.prototype.callback = function (oRecvd)
 			{
 				var oBtn = oRecvd.getElementsByTagName(btn_set[i]);
 				var oSpan = document.getElementById('urgency_' + btn_set[i]);
-				setInnerHTML(oSpan, (oBtn.length != 0 ? oBtn[0].firstChild.nodeValue : ''));
+				setInnerHTML(oSpan, (oBtn.length !== 0 ? oBtn[0].firstChild.nodeValue : ''));
 			}
 			// Attach JS events to new links
 			shd_urgencyControl.prototype.init();
@@ -196,7 +196,7 @@ shd_attach_select.prototype.checkExtension = function (filename)
 	if (!shd_attach_select.prototype.opts.attachment_ext)
 		return true; // we're not checking
 
-	if (!filename || filename.length == 0)
+	if (!filename || filename.length === 0)
 	{
 		shd_attach_select.prototype.opts.message_ext_error_final = shd_attach_select.prototype.opts.message_ext_error.replace(' ({ext})', '');
 		return false; // pfft, didn't specify anything
@@ -255,7 +255,7 @@ shd_attach_select.prototype.checkActive = function()
 	var session_attach = 0;
 	for (var i in elements)
 	{
-		if (elements[i] && elements[i].type == 'checkbox' && elements[i].name == 'attach_del[]' && elements[i].checked == true)
+		if (elements[i] && elements[i].type == 'checkbox' && elements[i].name == 'attach_del[]' && elements[i].checked === true)
 			session_attach++;
 	}
 
@@ -275,7 +275,7 @@ function QuickReply(oOptions)
 QuickReply.prototype.quote = function (iMessageId, sSessionId, sSessionVar, bTemplateUpgraded)
 {
 	// Add backwards compatibility with old themes.
-	if (sSessionVar == true)
+	if (sSessionVar === true)
 	{
 		bTemplateUpgraded = true;
 		sSessionVar = 'sesc';
@@ -286,29 +286,25 @@ QuickReply.prototype.quote = function (iMessageId, sSessionId, sSessionVar, bTem
 		// This is for compatibility.
 		if (bTemplateUpgraded)
 			return true;
-		else
-		{
-			window.location.href = smf_prepareScriptUrl(this.opt.sScriptUrl) + 'action=helpdesk;sa=reply;quote=' + iMessageId + ';ticket=' + this.opt.iTicketId + '.' + this.opt.iStart + ';' + sSessionVar + '=' + sSessionId;
-			return false;
-		}
-	}
-	else
-	{
-		// Doing it the XMLhttp way?
-		if (window.XMLHttpRequest)
-		{
-			ajax_indicator(true);
-			getXMLDocument(smf_prepareScriptUrl(this.opt.sScriptUrl) + 'action=helpdesk;sa=ajax;op=quote;quote=' + iMessageId + ';' + sSessionVar + '=' + sSessionId + ';xml' + ';mode=' + (oEditorHandle_shd_message.bRichTextEnabled ? 1 : 0), this.onQuoteReceived);
-		}
 
-		// Move the view to the quick reply box.
-		if (navigator.appName == 'Microsoft Internet Explorer')
-			window.location.hash = this.opt.sJumpAnchor;
-		else
-			window.location.hash = '#' + this.opt.sJumpAnchor;
-
+		window.location.href = smf_prepareScriptUrl(this.opt.sScriptUrl) + 'action=helpdesk;sa=reply;quote=' + iMessageId + ';ticket=' + this.opt.iTicketId + '.' + this.opt.iStart + ';' + sSessionVar + '=' + sSessionId;
 		return false;
 	}
+
+	// Doing it the XMLhttp way?
+	if (window.XMLHttpRequest)
+	{
+		ajax_indicator(true);
+		getXMLDocument(smf_prepareScriptUrl(this.opt.sScriptUrl) + 'action=helpdesk;sa=ajax;op=quote;quote=' + iMessageId + ';' + sSessionVar + '=' + sSessionId + ';xml' + ';mode=' + (oEditorHandle_shd_message.bRichTextEnabled ? 1 : 0), this.onQuoteReceived);
+	}
+
+	// Move the view to the quick reply box.
+	if (navigator.appName == 'Microsoft Internet Explorer')
+		window.location.hash = this.opt.sJumpAnchor;
+	else
+		window.location.hash = '#' + this.opt.sJumpAnchor;
+
+	return false;
 }
 
 // This is the callback function used after the XMLhttp request.
