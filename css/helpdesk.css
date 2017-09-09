@@ -2,51 +2,42 @@
 * General stuff used all around the helpdesk 	*
 ***********************************/
 /* SimpleDesk icons */
-.shd_smallicon
-{
+.shd_smallicon {
 	width: 13px;
 	height: 13px;
 	margin-right: 4px;
 }
-.shd_icon_minihead
-{
+.shd_icon_minihead {
 	position: relative;
 	top: 3px;
 }
-.shd_icon
-{
+.shd_icon {
 	position: relative;
 	top: 3px;
 }
-.shd_tinyicon
-{
+.shd_tinyicon {
 	width: 9px;
 	height: 9px;
 }
 
-.shd_main_hd
-{
+.shd_main_hd {
 	margin-top: -3px;
 }
 
-.shd_no_margin
-{
+.shd_no_margin {
 	margin: 0;
 }
 
-.shd_hide_bottom_border
-{
+.shd_hide_bottom_border {
 	border-bottom: 0;
 }
 
-.shd_staffresources ul
-{
+.shd_staffresources ul {
 	list-style-type: none;
 	padding: 0;
 	margin: 0;
 }
-.shd_staffresources li
-{
+.shd_staffresources li {
 	margin-bottom: 3px;
 }
 
@@ -56,55 +47,46 @@
 	margin-left: 1em;
 }
 
-.shd_assignees
-{
+.shd_assignees {
 	background-color:inherit;
 	padding-left: 1em;
 }
 
-.shd_assignees:hover
-{
+.shd_assignees:hover {
 	background-color: #bbbbbb;
 }
 
-.shd_assign_button, .shd_assignees
-{
+.shd_assign_button, .shd_assignees {
 	cursor: pointer;
 }
 
-.information li dt
-{
+.information li dt {
 	color: gray;
 	font-weight: bold;
 	float: left;
 }
 
-.information li dd
-{
+.information li dd {
 	float: left;
 	margin: 0;
 	padding: 0 4px 0 7px;
 }
 
-dd#assigned_button
-{
+dd#assigned_button {
 	padding: 1px 0;
 }
 
-span.shd_new_tickets
-{
+span.shd_new_tickets {
 	margin-left: 5px;
     padding: 1px 5px 3px 4px;
 }
 
 /* The page index color looks ugly with our theme. */
-.shd_cat_bar .current_page, .shd_pages .current_page
-{
+.shd_cat_bar .current_page, .shd_pages .current_page {
 	color: #fff;
 	padding: 0;
 }
-.bot_page .current_page
-{
+.bot_page .current_page {
 	padding: 0;
 }
 
@@ -113,151 +95,124 @@ span.shd_new_tickets
 ***********************************/
 
 /* This is done to position icons perfectly in the ticket header (i.e the navigation)*/
-h3.ticketheader img
-{
+h3.ticketheader img {
 	top: 2px;
 	position: relative;
 	margin-right: 2px;
 }
 
 /* Ticket details (Left-floated box) */
-.shd_ticket_side_column
-{
+.shd_ticket_side_column {
 	float: left;
 	width: 20%;
 	padding: 0 5px 5px 5px;
 }
-.shd_ticketdetails
-{
+.shd_ticketdetails {
 	overflow: auto;
 	float: left;
 	width: 100%;
 }
-.shd_ticketdetails .shd_smallicon
-{
+.shd_ticketdetails .shd_smallicon {
 	padding-top: 7px;
 }
-.shd_customfields
-{
+.shd_customfields {
 	width: 66%;
 	margin-bottom: 0;
 	float: left;
 	margin-top: 5px;
 }
-.shd_additional_details
-{
+.shd_additional_details {
 	overflow: auto;
 	float: left;
 	width: 100%;
 }
-.shd_ticket_side_column li
-{
+.shd_ticket_side_column li {
 	line-height: 1.8em;
 }
 
 /* The ticket container */
-form#postmodify .shd_ticket_roundframe
-{
+form#postmodify .shd_ticket_roundframe {
 	padding: 12px 16px;
 }
-.shd_ticket
-{
+.shd_ticket {
 	min-height: 250px;
 }
-.shd_ticket_description
-{
+.shd_ticket_description {
 	margin-left: 260px;
 }
 
-#shd_ticket_text
-{
+#shd_ticket_text {
 	min-height: 100px;
 }
 
 /* The left column in the ticket display */
-.shd_ticket_leftcolumn
-{
+.shd_ticket_leftcolumn {
 	width: 25%;
 }
-.shd_ticket_leftcolumn .roundframe
-{
+.shd_ticket_leftcolumn .roundframe {
 	margin: 0;
 }
 /* The right column in the ticket display */
-.shd_ticket_rightcolumn
-{
+.shd_ticket_rightcolumn {
 	width: 75%;
 }
 
 /* The Respond, Edit, Delete etc links */
-.shd_ticketlinks a
-{
+.shd_ticketlinks a {
 	margin-right: 10px;
 }
-.shd_ticketlinks a#last
-{
+.shd_ticketlinks a#last {
 	margin-right: 0px;
 }
 
-.shd_ticket_avatar
-{
+.shd_ticket_avatar {
 	margin: 1em auto;
 	text-align: center;
 }
 
-.shd_modified
-{
+.shd_modified {
 	margin-top: 20px;
 }
 
-.postreply
-{
+.postreply {
 	margin: 0;
 }
 
-.postmodify
-{
+.postmodify {
 	margin: 0;
 }
 
 /* The 'Go to the main log' link in ticket logs */
-.shd_main_log
-{
+.shd_main_log {
 	font-size: 80%;
 }
-.shd_main_log img
-{
+.shd_main_log img {
 	position: relative;
 	top: 3px;
 	margin-right: 2px;
 }
-#shd_ticket_log_expand
-{
+#shd_ticket_log_expand {
 	margin-top: 8px;
 	position: relative;
 	left: 4px;
 }
-#shd_custom_fields_swap
-{
+#shd_custom_fields_swap {
 	margin-top: 8px;
 }
 .shd_customfields input[type="text"]
 {
 	width: 85%;
 }
-.shd_ticket_log_expand_container
-{
+.shd_ticket_log_expand_container {
 	margin-right: 3px;
 }
 
-#quickReplyExpand
-{
+#quickReplyExpand {
 	margin-top: 8px;
 }
 
 /* Override editor margins */
-#quickReplyOptions form textarea
-{
+#quickReplyOptions form textarea {
 	margin-bottom: 0!important;
 }
 
@@ -266,9 +221,8 @@ form#postmodify .shd_ticket_roundframe
 ***********************************/
 
 /* The big reply button */
-.shd_replybutton
-{
-	background: url('../images/simpledesk/respond.png') no-repeat left;
+.shd_replybutton {
+	background: url(../images/simpledesk/respond.png) no-repeat left;
 	background-position: 10px;
 	padding: 8px 10px 10px 40px;
 	font-weight: bold;
@@ -278,9 +232,8 @@ form#postmodify .shd_ticket_roundframe
 	border-radius: 7px;
 }
 /* The big quote button */
-.shd_quotebutton
-{
-	background: url('../images/simpledesk/quote.png') no-repeat left;
+.shd_quotebutton {
+	background: url(../images/simpledesk/quote.png) no-repeat left;
 	background-position: 10px;
 	padding: 8px 10px 10px 40px;
 	font-weight: bold;
@@ -291,11 +244,10 @@ form#postmodify .shd_ticket_roundframe
 	border-radius: 7px;
 }
 /* Go advanced! */
-.shd_advancedbutton
-{
+.shd_advancedbutton {
 	margin-top: 10px;
 	height: 15px;
-	background: url('../images/simpledesk/advanced.png') no-repeat left;
+	background: url(../images/simpledesk/advanced.png) no-repeat left;
 	background-position: 10px;
 	padding: 10px;
 	padding-left: 40px;
@@ -306,10 +258,9 @@ form#postmodify .shd_ticket_roundframe
 }
 
 /* Edit settings*/
-.shd_editpreferences
-{
+.shd_editpreferences {
 	height: 15px;
-	background: url('../images/simpledesk/edit.png') no-repeat left;
+	background: url(../images/simpledesk/edit.png) no-repeat left;
 	background-position: 10px;
 	padding: 10px;
 	padding-left: 40px;
@@ -320,8 +271,7 @@ form#postmodify .shd_ticket_roundframe
 }
 
 /* Show tickets */
-.shd_showtickets
-{
+.shd_showtickets {
 	height: 15px;
 	padding: 10px;
 	padding-left: 40px;
@@ -330,62 +280,51 @@ form#postmodify .shd_ticket_roundframe
 	font-size: 100%;
 	margin-right: 10px;
 }
-#shd_showtickets
-{
-	background: url('../images/simpledesk/details.png') no-repeat left;
+#shd_showtickets {
+	background: url(../images/simpledesk/details.png) no-repeat left;
 	background-position: 10px;
 }
-#shd_post_proxy
-{
-	background: url('../images/simpledesk/proxy.png') no-repeat left;
+#shd_post_proxy {
+	background: url(../images/simpledesk/proxy.png) no-repeat left;
 	background-position: 10px;
 }
-#shd_post_ticket
-{
-	background: url('../images/simpledesk/ticket.png') no-repeat left;
+#shd_post_ticket {
+	background: url(../images/simpledesk/ticket.png) no-repeat left;
 	background-position: 10px;
 }
 
 /**********************************
 * Ticket replies				 *
 ***********************************/
-.shd_posterinfo
-{
+.shd_posterinfo {
 	width: 14em;
 	text-align: center;
 	margin-left: 3px;
 	overflow: hidden;
 }
-.shd_postername
-{
+.shd_postername {
 	font-size: 120%;
 }
-.shd_groupmargin
-{
+.shd_groupmargin {
 	margin-bottom: 10px;
 }
-.shd_posteravatar img
-{
+.shd_posteravatar img {
 	padding: 0px;
 	max-width: 10.5em;
 }
-.shd_replyarea
-{
+.shd_replyarea {
 	padding-left: 14em;
 	margin-left: 10px;
 }
 
-.shd_reply .avatar
-{
+.shd_reply .avatar {
 	margin-bottom: 10px;
 }
 
-.shd_ajax_head
-{
+.shd_ajax_head {
 	font-weight: bold;
 }
-.shd_ajaxnotify
-{
+.shd_ajaxnotify {
 	width: 40%;
 	margin-right: 5%;
 	float: left;
@@ -394,55 +333,45 @@ form#postmodify .shd_ticket_roundframe
 /**********************************
 * Attachment stuff				  *
 ***********************************/
-.shd_reply_attachments
-{
+.shd_reply_attachments {
 	width: 66%;
 	margin-bottom: 0;
 	float: left;
 	margin-top: 5px;
 }
-.shd_reply_attachments ul, .shd_reply_attachments li
-{
+.shd_reply_attachments ul, .shd_reply_attachments li {
 	display: block;
 	list-style-type: none;
 }
 
-.shd_reply_attachments li
-{
+.shd_reply_attachments li {
 	float: left;
 	width: 30%;
 }
 
-.shd_attachment
-{
+.shd_attachment {
 	padding-bottom: 5px;
 	font-size: 85%;
 }
-.shd_attachmentpreview
-{
+.shd_attachmentpreview {
 	text-align: center;
 }
-.shd_attachmentpreview img
-{
+.shd_attachmentpreview img {
 	max-width: 75px;
 	margin: 3px;
 	margin-top: 6px;
 }
-.shd_attachmentpreview .description
-{
+.shd_attachmentpreview .description {
 	padding: 0;
 }
-.shd_removeattachment
-{
+.shd_removeattachment {
 	margin-left: -8px;
 	margin-right: 3px;
 }
-.shd_attachmentcolumn
-{
+.shd_attachmentcolumn {
 	margin-right: 20px;
 }
-.shd_thumb
-{
+.shd_thumb {
 	border: 0;
 	display: block;
 	margin-left: auto;
@@ -452,31 +381,25 @@ form#postmodify .shd_ticket_roundframe
 /**********************************
 * Posting and editing tickets/replies		 *
 ***********************************/
-#shd_bbcbox
-{
+#shd_bbcbox {
    margin: 0 0 0.5em 0;
 }
-#shd_bbcbox div
-{
+#shd_bbcbox div {
 	margin: 0.2em 0;
 	vertical-align: top;
 }
-#shd_bbcbox div img
-{
+#shd_bbcbox div img {
 	margin: 0 1px 0 0;
 	vertical-align: top;
 }
-#shd_bbcbox select
-{
+#shd_bbcbox select {
 	margin: 0 2px;
 }
 /* The smiley strip */
-#shd_smileybox
-{
+#shd_smileybox {
 	margin: 0.75em 0 0.5em 0;
 }
-#canned_replies
-{
+#canned_replies {
 	float: left;
 	width: 66%;
 	margin-top: 1em;
@@ -485,18 +408,15 @@ form#postmodify .shd_ticket_roundframe
 /**********************************
 * General actions				 *
 ***********************************/
-.pm_message
-{
+.pm_message {
 	margin-top: 1ex;
 }
 
 /* The 'Empty log' link in the action log */
-.shd_empty_log
-{
+.shd_empty_log {
 	font-size: 80%;
 }
-.shd_empty_log img
-{
+.shd_empty_log img {
 	position: relative;
 	top: 3px;
 	margin-right: 2px;
@@ -505,132 +425,107 @@ form#postmodify .shd_ticket_roundframe
 /**********************************
 * The profile				 	*
 ***********************************/
-.shd_profile_navigation
-{
+.shd_profile_navigation {
 	margin-right: 20px;
 }
-.shd_profile_nav_list, .shd_profile_nav_list ul, .shd_profile_nav_list li
-{
+.shd_profile_nav_list, .shd_profile_nav_list ul, .shd_profile_nav_list li {
 	margin: 0;
 	padding: 0;
 	list-style-type: none;
 }
-.shd_profile_nav_inline, .shd_profile_nav_inline ul, .shd_profile_nav_inline li
-{
+.shd_profile_nav_inline, .shd_profile_nav_inline ul, .shd_profile_nav_inline li {
 	margin: 0;
 	padding: 0;
 	list-style-type: none;
 	float: left;
 }
-.shd_profile_nav_inline li
-{
+.shd_profile_nav_inline li {
 	margin-right: 10px;
 	border-right: 1px solid #cccccc;
 	padding-right: 10px;
 }
-.shd_profile_nav_inline img
-{
+.shd_profile_nav_inline img {
 	margin-left: 4px;
 }
 
-.shd_profile_nav_inline li.shd_inline_last
-{
+.shd_profile_nav_inline li.shd_inline_last {
 	border-right: none;
 }
 
 /* I'm not sure about the above, I'll rewrite them later */
-.bot_page
-{
+.bot_page {
 	border: 1px solid #DDD;
 	border-top: none;
 }
-#ticket_log_header
-{
+#ticket_log_header {
 	clear: both;
 }
 
 /* Urgency stuff */
-.generic_icons.urgency_increase
-{
+.generic_icons.urgency_increase {
 	background-position: -161px -5px;
 }
-.generic_icons.urgency_decrease
-{
+.generic_icons.urgency_decrease {
 	background-position: -213px -5px;
 }
 
 /* We need some adjustments */
-dl.stats dd span, dl.stats dt span
-{
+dl.stats dd span, dl.stats dt span {
 	position: relative;
 	padding: 0;
 }
 
 /* We need something like winfo in helpdesk */
-.noup
-{
+.noup {
 	border-top-left-radius: 0;
 	border-top-right-radius: 0;
 	margin: 0 !important;
 }
 
-.shd_icon_fullhead
-{
+.shd_icon_fullhead {
 	position: relative;
 }
 
 /* Something to keep it look good */
-#replies .windowbg:last-of-type
-{
+#replies .windowbg:last-of-type {
 	border-bottom-left-radius: 0;
 	border-bottom-right-radius: 0;
 }
 
 /* Helpdesk table-width*/
-.shd_5
-{
+.shd_5 {
 	width: 5%;
 }
-.shd_10
-{
+.shd_10 {
 	width: 10%;
 }
-.shd_20
-{
+.shd_20 {
 	width: 20%;
 }
-.shd_25
-{
+.shd_25 {
 	width: 25%;
 }
-.shd_33
-{
+.shd_33 {
 	width: 33%;
 }
-.shd_50
-{
+.shd_50 {
 	width: 50%;
 }
-.shd_75
-{
+.shd_75 {
 	width: 75%;
 }
 
 /* Start of responsiveness */
 /* This will be moved to its file once it gets more work on it */
-@media (max-width: 480px)
-{
-	.shd_ticket_rightcolumn, .shd_ticket_leftcolumn
-	{
+@media (max-width: 480px) {
+	.shd_ticket_rightcolumn, .shd_ticket_leftcolumn {
 		width: 100%;
 		padding: 0;
 	}
-	.shd_ticket_rightcolumn
-	{
+	.shd_ticket_rightcolumn {
 		margin-top: 10px;
 	}
-	.shd_profile_navigation
-	{
+	.shd_profile_navigation {
 		margin-right: 0;
 	}
 	input[type="checkbox"]
