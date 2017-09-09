@@ -239,7 +239,7 @@ function template_shd_edit_role()
 	global $context, $settings, $txt, $modSettings, $scripturl;
 
 	// This is to shortcut settings for the role we want.
-	$role = &$context['shd_permissions']['user_defined_roles'][$_REQUEST['role']];
+	$role = &$context['shd_permissions']['user_defined_roles'][$context['shd_role_id']];
 
 	// Start the page off, including the rename-role bit.
 	echo '
@@ -494,7 +494,7 @@ function template_shd_edit_role()
 				</table>
 			</div>
 			<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">
-			<input type="hidden" name="role" value="', $_REQUEST['role'], '">
+			<input type="hidden" name="role" value="', $context['shd_role_id'], '">
 			<input type="submit" value="', $txt['shd_edit_role'], '" onclick="return submitThisOnce(this);" accesskey="s" class="button">
 			<input type="submit" value="', $txt['shd_delete_role'], '" onclick="return confirm(' . JavaScriptEscape($txt['shd_delete_role_confirm']) . ');" name="delete" class="button">
 		</form>';
@@ -530,8 +530,8 @@ function template_shd_copy_role()
 				<dl class="settings">
 					<dt><strong>', $txt['shd_create_based_on'], ':</strong></dt>
 					<dd>
-						<img alt="*" src="', $settings['default_images_url'], '/simpledesk/', $context['shd_permissions']['user_defined_roles'][$_REQUEST['role']]['template_icon'], '">
-						', $context['shd_permissions']['user_defined_roles'][$_REQUEST['role']]['name'], '
+						<img alt="*" src="', $settings['default_images_url'], '/simpledesk/', $context['shd_permissions']['user_defined_roles'][$context['shd_role_id']]['template_icon'], '">
+						', $context['shd_permissions']['user_defined_roles'][$context['shd_role_id']]['name'], '
 					</dd>
 					<dt><strong>', $txt['shd_create_name'], '</strong></dt>
 					<dd><input type="text" name="rolename" id="rolename" value=""  size="30"></dd>
@@ -539,7 +539,7 @@ function template_shd_copy_role()
 					<dd><input type="checkbox" name="copygroups" id="copygroups" value="1" ></dd>
 				</dl>
 				<input type="submit" value="', $txt['shd_copy_role'], '" onclick="return submitThisOnce(this);" accesskey="s" class="button">
-				<input type="hidden" name="role" value="', $_REQUEST['role'], '">
+				<input type="hidden" name="role" value="', $context['shd_role_id'], '">
 				<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">
 				<input type="hidden" name="seqnum" value="', $context['form_sequence_number'], '">
 			</form>
