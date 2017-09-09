@@ -643,54 +643,88 @@ function template_ticket_additional_options()
 	{
 		echo '
 					</div>';
-		return;
+	}
+	else
+	{
+		// Attachments handling..
+		template_show_attachments();
+		template_add_attachments();
 	}
 
-	if (!empty($context['current_attachments']))
-	{
-		echo '
+	template_singleton_email();
+}
+
+/**
+ *	Displays existing attachments and allows removing if they have permissions.
+ *
+ *	@since 2.0
+ *	@return null Output is directly sent.
+*/
+function template_show_attachments()
+{
+	global $context, $txt;
+
+	if (empty($context['current_attachments']))
+		return;
+
+	echo '
 						<dl id="postAttachment">
 							<dt>
 								', $txt['attached'], ':
 							</dt>';
 
-		$can_delete = false;
-		foreach ($context['current_attachments'] as $attachment)
-		{
-			if (!empty($attachment['can_delete']))
-				$can_delete = true;
-			break;
-		}
+	$can_delete = false;
+	foreach ($context['current_attachments'] as $attachment)
+	{
+		if (!empty($attachment['can_delete']))
+			$can_delete = true;
+		break;
+	}
 
-		if ($can_delete)
-		{
-
-			echo '
+	if ($can_delete)
+	{
+		echo '
 							<dd class="smalltext">
 								<input type="hidden" name="attach_del[]" value="0">
 								', $txt['uncheck_unwatchd_attach'], ':
 							</dd>';
-			foreach ($context['current_attachments'] as $attachment)
-				echo '
+
+		foreach ($context['current_attachments'] as $attachment)
+			echo '
 							<dd class="smalltext">
 								<label for="attachment_', $attachment['id'], '"><input type="checkbox" id="attachment_', $attachment['id'], '" name="attach_del[]" value="', $attachment['id'], '"', empty($attachment['unchecked']) ? ' checked="checked"' : '', '  onclick="javascript:oAttach.checkActive();"> ', $attachment['name'], '</label>
 							</dd>';
-		}
-		else
-		{
-			foreach ($context['current_attachments'] as $attachment)
-				echo '
+	}
+	else
+	{
+		foreach ($context['current_attachments'] as $attachment)
+			echo '
 							<dd class="smalltext">', $attachment['name'], '</dd>';
-		}
-
-		echo '
-						</dl>';
 	}
 
-	if (!empty($context['ticket_form']['do_attach']))
-	{
-		// JS for our pretty widget
+	echo '
+						</dl>';
+
+	if (!empty($context['files_in_session_warning']))
 		echo '
+						<div class="smalltext">', $context['files_in_session_warning'], '</div>';
+}
+
+/**
+ *	Sets up adding attachments if they have permissions to do so.
+ *
+ *	@since 2.0
+ *	@return null Output is directly sent.
+*/
+function template_add_attachments()
+{
+	global $context, $modSettings, $txt;
+
+	if (empty($context['ticket_form']['do_attach']))
+		return;
+
+	// JS for our pretty widget
+	echo '
 						<dl id="postAttachment2">
 							<dt>
 								', $txt['attach'], ':
@@ -700,25 +734,23 @@ function template_ticket_additional_options()
 								<div id="shd_attachlist_container"></div>
 							</dd>';
 
-		echo '
+	echo '
 							<dd class="smalltext">';
 
-		// Show some useful information such as allowed extensions, maximum size and amount of attachments allowed.
-		if (!empty($modSettings['attachmentCheckExtensions']))
-			echo '
+	// Show some useful information such as allowed extensions, maximum size and amount of attachments allowed.
+	if (!empty($modSettings['attachmentCheckExtensions']))
+		echo '
 								', $txt['allowed_types'], ': ', $context['allowed_extensions'], '<br>';
 
-		if (!empty($context['attachment_restrictions']))
-			echo '
+	if (!empty($context['attachment_restrictions']))
+		echo '
 								', $txt['attach_restrictions'], ' ', implode(', ', $context['attachment_restrictions']), '<br>';
 
-		echo '
+	echo '
 							</dd>
 						</dl>';
-		template_singleton_email();
 
-		echo '
-					</div>
+	echo '
 					<script type="text/javascript"><!-- // --><![CDATA[
 	var oAttach = new shd_attach_select({
 		file_item: "shd_attach",
@@ -726,38 +758,44 @@ function template_ticket_additional_options()
 		max: ', $context['ticket_form']['num_allowed_attachments'], ',
 		message_txt_delete: ', JavaScriptEscape($txt['remove']);
 
-		if (!empty($modSettings['attachmentExtensions']) && !empty($modSettings['attachmentCheckExtensions']))
-		{
-			$ext = explode(',', $modSettings['attachmentExtensions']);
-			foreach ($ext as $k => $v)
-				$ext[$k] = JavaScriptEscape($v);
+	if (!empty($modSettings['attachmentExtensions']) && !empty($modSettings['attachmentCheckExtensions']))
+	{
+		$ext = explode(',', $modSettings['attachmentExtensions']);
+		foreach ($ext as $k => $v)
+			$ext[$k] = JavaScriptEscape($v);
 
-			echo ',
+		echo ',
 		message_ext_error: ', JavaScriptEscape(str_replace('{attach_exts}', $context['allowed_extensions'], $txt['shd_cannot_attach_ext'])), ',
 		attachment_ext: [', implode(',', $ext), ']';
-		}
+	}
 
-		echo '
+	echo '
 	});
 					// ]]></script>';
-	}
 }
 
+/**
+ *	Display notification options.
+ *
+ *	@since 2.0
+ *	@return null Output is directly sent.
+*/
 function template_singleton_email()
 {
 	global $context, $txt;
 
-	if (!empty($context['can_ping']))
-	{
-		echo '
+	if (empty($context['can_ping']))
+		return;
+
+	echo '
 						<div id="shd_notifications_div" style="display:none;">
 							<a href="#" onclick="getAjaxNotifications(); return false;">', $txt['shd_select_notifications'], '</a>';
 
-		if (!empty($context['notification_ping_list']))
-			echo '
+	if (!empty($context['notification_ping_list']))
+		echo '
 							<input type="hidden" name="list" value="', $context['notification_ping_list'], '">';
 
-		echo '
+	echo '
 						</div>
 						<script type="text/javascript"><!-- // --><![CDATA[
 	document.getElementById("shd_notifications_div").style.display = "";
@@ -776,7 +814,6 @@ function template_singleton_email()
 			document.getElementById("shd_notifications_div").innerHTML = notify[0].firstChild.nodeValue;
 	}
 						// ]]></script>';
-	}
 }
 
 function template_ticket_begin_replies()
