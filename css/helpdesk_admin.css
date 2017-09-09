@@ -1,13 +1,16 @@
-#sdAnnouncements dt {
+#sdAnnouncements dt
+{
 	padding: 4px 6px 2px 6px;
 	border-top: 1px solid #bf6900;
 }
-#sdAnnouncements dt a {
+#sdAnnouncements dt a
+{
 	color: #bf6900;
 	font-weight: bold;
 	display: block;
 }
-#sdAnnouncements dd {
+#sdAnnouncements dd
+{
 	margin: 0;
 	padding: 6px 12px;
 	border-top: double #ddd;
@@ -17,7 +20,8 @@
 	margin-top: 10px;
 	margin-bottom: 10px;
 }
-#admin_main_section .windowbg {
+#admin_main_section .windowbg
+{
 	height: 15em;
 }
 #sd_credits
@@ -85,22 +89,22 @@
 
 .shd_yes
 {
-	background:url(../images/simpledesk/perm_yes.png) no-repeat;
+	background:url('../images/simpledesk/perm_yes.png') no-repeat;
 }
 
 .shd_no
 {
-	background:url(../images/simpledesk/perm_no.png) no-repeat;
+	background:url('../images/simpledesk/perm_no.png') no-repeat;
 }
 
 .shd_own
 {
-	background:url(../images/simpledesk/perm_own.png) no-repeat;
+	background:url('../images/simpledesk/perm_own.png') no-repeat;
 }
 
 .shd_any
 {
-	background:url(../images/simpledesk/perm_any.png) no-repeat;
+	background:url('../images/simpledesk/perm_any.png') no-repeat;
 }
 
 dl.permsettings
@@ -186,35 +190,35 @@ h3 a.permcollapse img
 
 .cf_ui_text
 {
-	background:url(../images/simpledesk/cf_ui_text.png) no-repeat;
+	background:url('../images/simpledesk/cf_ui_text.png') no-repeat;
 }
 .cf_ui_largetext
 {
-	background:url(../images/simpledesk/cf_ui_largetext.png) no-repeat;
+	background:url('../images/simpledesk/cf_ui_largetext.png') no-repeat;
 }
 .cf_ui_int
 {
-	background:url(../images/simpledesk/cf_ui_int.png) no-repeat;
+	background:url('../images/simpledesk/cf_ui_int.png') no-repeat;
 }
 .cf_ui_float
 {
-	background:url(../images/simpledesk/cf_ui_float.png) no-repeat;
+	background:url('../images/simpledesk/cf_ui_float.png') no-repeat;
 }
 .cf_ui_select
 {
-	background:url(../images/simpledesk/cf_ui_select.png) no-repeat;
+	background:url('../images/simpledesk/cf_ui_select.png') no-repeat;
 }
 .cf_ui_checkbox
 {
-	background:url(../images/simpledesk/cf_ui_checkbox.png) no-repeat;
+	background:url('../images/simpledesk/cf_ui_checkbox.png') no-repeat;
 }
 .cf_ui_radio
 {
-	background:url(../images/simpledesk/cf_ui_radio.png) no-repeat;
+	background:url('../images/simpledesk/cf_ui_radio.png') no-repeat;
 }
 .cf_ui_multi
 {
-	background:url(../images/simpledesk/cf_ui_multi.png) no-repeat;
+	background:url('../images/simpledesk/cf_ui_multi.png') no-repeat;
 }
 
 .langblock
