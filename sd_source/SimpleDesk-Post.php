@@ -1274,12 +1274,15 @@ function shd_save_reply()
 			shd_modify_ticket_post($msgOptions, $ticketOptions, $posterOptions);
 
 			// OK, did we get any custom fields back?
-			foreach ($context['custom_fields_updated'] as $field)
+			if (!empty($context['custom_fields_updated']))
 			{
-				$action = 'cf_' . ($field['scope'] == CFIELD_TICKET ? 'tkt' : 'rpl') . (empty($field['default']) ? 'change_' : 'chgdef_') . ($field['visible'][0] ? 'user' : '') . ($field['visible'][1] ? 'staff' : '') . 'admin';
-				unset($field['default'], $field['scope'], $field['visible']);
-				$field['subject'] = $ticketinfo['subject'];
-				shd_log_action($action, $field);
+				foreach ($context['custom_fields_updated'] as $field)
+				{
+					$action = 'cf_' . ($field['scope'] == CFIELD_TICKET ? 'tkt' : 'rpl') . (empty($field['default']) ? 'change_' : 'chgdef_') . ($field['visible'][0] ? 'user' : '') . ($field['visible'][1] ? 'staff' : '') . 'admin';
+					unset($field['default'], $field['scope'], $field['visible']);
+					$field['subject'] = $ticketinfo['subject'];
+					shd_log_action($action, $field);
+				}
 			}
 		}
 

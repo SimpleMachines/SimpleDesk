@@ -45,9 +45,9 @@ function shd_admin_departments()
 		'savedept' => 'shd_admin_save_dept',
 	);
 
-	$_REQUEST['sa'] = isset($_REQUEST['sa']) && isset($subactions[$_REQUEST['sa']]) ? $_REQUEST['sa'] : 'main';
+	$context['shd_current_subaction'] = isset($_REQUEST['sa']) && isset($subactions[$_REQUEST['sa']]) ? $_REQUEST['sa'] : 'main';
 
-	$subactions[$_REQUEST['sa']]();
+	$subactions[$context['shd_current_subaction']]();
 }
 
 /**

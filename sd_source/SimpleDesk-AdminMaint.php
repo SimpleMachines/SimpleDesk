@@ -75,10 +75,10 @@ function shd_admin_maint()
 		),
 	);
 
-	$_REQUEST['sa'] = isset($_REQUEST['sa']) && isset($subactions[$_REQUEST['sa']]) ? $_REQUEST['sa'] : 'main';
+	$context['shd_current_subaction'] = isset($_REQUEST['sa']) && isset($subactions[$_REQUEST['sa']]) ? $_REQUEST['sa'] : 'main';
 
 	$context[$context['admin_menu_name']]['tab_data'] = array(
-		'title' => '<img src="' . $settings['default_theme_url'] . '/images/simpledesk/' . $subactions[$_REQUEST['sa']]['icon'] . '" class="icon" alt="*">' . $subactions[$_REQUEST['sa']]['title'],
+		'title' => '<img src="' . $settings['default_theme_url'] . '/images/simpledesk/' . $subactions[$context['shd_current_subaction']]['icon'] . '" class="icon" alt="*">' . $subactions[$context['shd_current_subaction']]['title'],
 		'description' => $txt['shd_admin_options_desc'],
 		'tabs' => array(
 			'main' => array(
@@ -91,9 +91,9 @@ function shd_admin_maint()
 	);
 
 	// We need to fix the descriptions just in case.
-	if (isset($subactions[$_REQUEST['sa']]['description']))
-		$context[$context['admin_menu_name']]['tab_data']['tabs']['main']['description'] = $subactions[$_REQUEST['sa']]['description'];
-	$subactions[$_REQUEST['sa']]['function']();
+	if (isset($subactions[$context['shd_current_subaction']]['description']))
+		$context[$context['admin_menu_name']]['tab_data']['tabs']['main']['description'] = $subactions[$context['shd_current_subaction']]['description'];
+	$subactions[$context['shd_current_subaction']]['function']();
 }
 
 function shd_admin_maint_home()

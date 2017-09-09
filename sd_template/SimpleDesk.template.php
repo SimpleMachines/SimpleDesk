@@ -73,7 +73,7 @@ function template_main()
 	{
 		$context['current_block'] = $block;
 		if (!empty($context['ticket_blocks'][$block]['count']) && $context['ticket_blocks'][$block]['count'] > 10)
-			$context['block_link'] = $_REQUEST['sa'] == 'viewblock' ? $scripturl . '?' . $context['shd_home'] . $context['shd_dept_link'] : $scripturl . '?action=helpdesk;sa=viewblock;block=' . $block . $context['shd_dept_link'] . '#shd_block_' . $block;
+			$context['block_link'] = $context['shd_current_subaction'] == 'viewblock' ? $scripturl . '?' . $context['shd_home'] . $context['shd_dept_link'] : $scripturl . '?action=helpdesk;sa=viewblock;block=' . $block . $context['shd_dept_link'] . '#shd_block_' . $block;
 		else
 			$context['block_link'] = '';
 
@@ -530,7 +530,7 @@ function template_shd_menu_header($header, $string)
 		$link .= ';so_' . $block_key . '=' . ($block_key != $context['current_block'] ? $block['sort']['item'] : $header) . '_' . $link_direction;
 	}
 
-	$html = '<a href="' . $scripturl . '?action=helpdesk;sa=' . $_REQUEST['sa'] . ($_REQUEST['sa'] == 'viewblock' ? ';block=' . $_REQUEST['block'] : '') . $link . $context['shd_dept_link'] . '">' . $string . '</a> ';
+	$html = '<a href="' . $scripturl . '?action=helpdesk;sa=' . $context['shd_current_subaction'] . ($context['shd_current_subaction'] == 'viewblock' ? ';block=' . $_REQUEST['block'] : '') . $link . $context['shd_dept_link'] . '">' . $string . '</a> ';
 
 	if ($context['ticket_blocks'][$context['current_block']]['sort']['item'] == $header)
 		$html .= '<img src="' . $settings['images_url'] . '/simpledesk/move_' . ($context['ticket_blocks'][$context['current_block']]['sort']['direction'] == 'asc' ? 'down' : 'up') . '.png" alt="">';

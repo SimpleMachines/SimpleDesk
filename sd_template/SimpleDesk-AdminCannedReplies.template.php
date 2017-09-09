@@ -136,12 +136,12 @@ function template_shd_edit_canned_category()
 				</dl>
 				<input type="submit" value="', $context['page_title'], '" onclick="return submitThisOnce(this);" accesskey="s" class="button">';
 
-	if ($_REQUEST['cat'] != 'new')
+	if ($context['canned_category'] != 'new')
 		echo '
 				<input type="submit" name="delete" value="', $txt['shd_admin_cannedreplies_deletecat'], '" onclick="return confirm(', JavaScriptEscape($txt['shd_admin_cannedreplies_delete_confirm']), ') && submitThisOnce(this);" class="button">';
 
 	echo '
-				<input type="hidden" name="cat" value="', $_REQUEST['cat'], '">
+				<input type="hidden" name="cat" value="', $context['canned_category'], '">
 				<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">
 				<input type="hidden" name="seqnum" value="', $context['form_sequence_number'], '">
 			</form>
@@ -265,7 +265,7 @@ function template_shd_move_reply_cat()
 					</dd>
 				</dl>
 				<input type="submit" value="', $txt['shd_admin_cannedreplies_movereply'], '" onclick="return submitThisOnce(this);" class="button">
-				<input type="hidden" name="reply" value="', $_REQUEST['reply'], '">
+				<input type="hidden" name="reply" value="', $context['canned_reply_id'], '">
 				<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">
 				<input type="hidden" name="seqnum" value="', $context['form_sequence_number'], '">
 			</form>

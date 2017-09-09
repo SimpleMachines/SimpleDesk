@@ -215,14 +215,14 @@ function template_shd_create_role()
 				<dl class="settings">
 					<dt><strong>', $txt['shd_create_based_on'], ':</strong></dt>
 					<dd>
-						<img alt="*" src="', $settings['default_images_url'], '/simpledesk/', $context['shd_permissions']['roles'][$_REQUEST['template']]['icon'], '">
-						', $txt[$context['shd_permissions']['roles'][$_REQUEST['template']]['description']], '
+						<img alt="*" src="', $settings['default_images_url'], '/simpledesk/', $context['shd_permissions']['roles'][$context['role_template_id']]['icon'], '">
+						', $txt[$context['shd_permissions']['roles'][$context['role_template_id']]['description']], '
 					</dd>
 					<dt><strong>', $txt['shd_create_name'], '</strong></dt>
 					<dd><input type="text" name="rolename" id="rolename" value=""  size="30"></dd>
 				</dl>
 				<input type="submit" value="', $txt['shd_create_role'], '" onclick="return submitThisOnce(this);" accesskey="s" class="button">
-				<input type="hidden" name="template" value="', $_REQUEST['template'], '">
+				<input type="hidden" name="template" value="', $context['role_template_id'], '">
 				<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">
 				<input type="hidden" name="seqnum" value="', $context['form_sequence_number'], '">
 			</form>

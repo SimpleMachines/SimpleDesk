@@ -325,6 +325,7 @@ function sd_get_install_hooks()
 	$hooks[] = array(
 		'hook' => 'integrate_remove_attachments',
 		'function' => 'shd_remove_attachments',
+		'file' => '$sourcedir/sd_source/Subs-SimpleDeskAdmin.php',
 		'perm' => true,
 	);
 	$hooks[] = array(

@@ -47,7 +47,7 @@ function shd_admin_custom()
 		'save' => 'shd_admin_custom_save',
 	);
 
-	$_REQUEST['sa'] = isset($_REQUEST['sa']) && isset($subactions[$_REQUEST['sa']]) ? $_REQUEST['sa'] : 'main';
+	$context['shd_current_subaction'] = isset($_REQUEST['sa']) && isset($subactions[$_REQUEST['sa']]) ? $_REQUEST['sa'] : 'main';
 
 	$context['field_types'] = array(
 		CFIELD_TYPE_TEXT => array($txt['shd_admin_custom_fields_ui_text'], 'text'),
@@ -60,7 +60,7 @@ function shd_admin_custom()
 		CFIELD_TYPE_MULTI => array($txt['shd_admin_custom_fields_ui_multi'], 'multi'),
 	);
 
-	$subactions[$_REQUEST['sa']]();
+	$subactions[$context['shd_current_subaction']]();
 }
 
 /**

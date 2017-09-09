@@ -50,9 +50,9 @@ function shd_admin_canned()
 		'savereply' => 'shd_admin_canned_savereply',
 	);
 
-	$_REQUEST['sa'] = isset($_REQUEST['sa']) && isset($subactions[$_REQUEST['sa']]) ? $_REQUEST['sa'] : 'main';
+	$context['shd_current_subaction'] = isset($_REQUEST['sa']) && isset($subactions[$_REQUEST['sa']]) ? $_REQUEST['sa'] : 'main';
 
-	$subactions[$_REQUEST['sa']]();
+	$subactions[$context['shd_current_subaction']]();
 }
 
 /**
@@ -140,7 +140,7 @@ function shd_admin_canned_movecat()
 
 	checkSession('get');
 
-	$_REQUEST['cat'] = isset($_REQUEST['cat']) ? (int) $_REQUEST['cat'] : 0;
+	$context['canned_category'] = isset($_REQUEST['cat']) ? (int) $_REQUEST['cat'] : 0;
 	$_REQUEST['direction'] = isset($_REQUEST['direction']) && in_array($_REQUEST['direction'], array('up', 'down')) ? $_REQUEST['direction'] : '';
 
 	$query = shd_db_query('', '
@@ -162,10 +162,10 @@ function shd_admin_canned_movecat()
 	ksort($cats);
 
 	$cats_map = array_flip($cats);
-	if (empty($cats_map[$_REQUEST['cat']]))
+	if (empty($cats_map[$context['canned_category']]))
 		fatal_lang_error('shd_admin_cannedreplies_cannot_move_cat', false);
 
-	$current_pos = $cats_map[$_REQUEST['cat']];
+	$current_pos = $cats_map[$context['canned_category']];
 	$destination = $current_pos + ($_REQUEST['direction'] == 'up' ? -1 : 1);
 
 	if (empty($cats[$destination]))
@@ -179,7 +179,7 @@ function shd_admin_canned_movecat()
 		WHERE id_cat = {int:cat}',
 		array(
 			'new_pos' => $destination,
-			'cat' => $_REQUEST['cat'],
+			'cat' => $context['canned_category'],
 		)
 	);
 
@@ -196,7 +196,7 @@ function shd_admin_canned_movecat()
 	// Log this action.
 	shd_admin_log('admin_canned', array(
 		'action' => 'cat_move',
-		'id' => $_REQUEST['cat'],
+		'id' => $context['canned_category'],
 		'direction' => $_REQUEST['direction'] == 'up' ? 'up' : 'down',
 	));
 
@@ -214,7 +214,7 @@ function shd_admin_canned_movereply()
 
 	checkSession('get');
 
-	$_REQUEST['reply'] = isset($_REQUEST['reply']) ? (int) $_REQUEST['reply'] : 0;
+	$context['canned_reply_id'] = isset($_REQUEST['reply']) ? (int) $_REQUEST['reply'] : 0;
 	$_REQUEST['direction'] = isset($_REQUEST['direction']) && in_array($_REQUEST['direction'], array('up', 'down')) ? $_REQUEST['direction'] : '';
 
 	$query = shd_db_query('', '
@@ -236,10 +236,10 @@ function shd_admin_canned_movereply()
 	ksort($replies);
 
 	$replies_map = array_flip($replies);
-	if (empty($replies_map[$_REQUEST['reply']]))
+	if (empty($replies_map[$context['canned_reply_id']]))
 		fatal_lang_error('shd_admin_cannedreplies_cannot_move_reply', false);
 
-	$current_pos = $replies_map[$_REQUEST['reply']];
+	$current_pos = $replies_map[$context['canned_reply_id']];
 	$destination = $current_pos + ($_REQUEST['direction'] == 'up' ? -1 : 1);
 
 	if (empty($replies[$destination]))
@@ -253,7 +253,7 @@ function shd_admin_canned_movereply()
 		WHERE id_reply = {int:reply}',
 		array(
 			'new_pos' => $destination,
-			'reply' => $_REQUEST['reply'],
+			'reply' => $context['canned_reply_id'],
 		)
 	);
 
@@ -270,7 +270,7 @@ function shd_admin_canned_movereply()
 	// Log this action.
 	shd_admin_log('admin_canned', array(
 		'action' => 'reply_move',
-		'id' => $_REQUEST['reply'],
+		'id' => $context['canned_reply_id'],
 		'direction' => $_REQUEST['direction'] == 'up' ? 'up' : 'down',
 	));
 
@@ -290,7 +290,7 @@ function shd_admin_canned_createcat()
 	$context['sub_template'] = 'shd_edit_canned_category';
 
 	// Setting up for the form. One form, two uses, sneaky, huh.
-	$_REQUEST['cat'] = 'new';
+	$context['canned_category'] = 'new';
 	$context['category_name'] = '';
 	checkSubmitOnce('register');
 }
@@ -302,13 +302,13 @@ function shd_admin_canned_editcat()
 	$context['page_title'] = $txt['shd_admin_cannedreplies_editcat'];
 	$context['sub_template'] = 'shd_edit_canned_category';
 
-	$_REQUEST['cat'] = isset($_REQUEST['cat']) ? (int) $_REQUEST['cat'] : 0;
+	$context['canned_category'] = isset($_REQUEST['cat']) ? (int) $_REQUEST['cat'] : 0;
 	$query = $smcFunc['db_query']('', '
 		SELECT cat_name
 		FROM {db_prefix}helpdesk_cannedreplies_cats
 		WHERE id_cat = {int:cat}',
 		array(
-			'cat' => $_REQUEST['cat'],
+			'cat' => $context['canned_category'],
 		)
 	);
 	if ($smcFunc['db_num_rows']($query) == 0)
@@ -331,8 +331,8 @@ function shd_admin_canned_savecat()
 	// If we're deleting a category, do it first, get it out the way.
 	if (!empty($_POST['delete']))
 	{
-		$_REQUEST['cat'] = isset($_REQUEST['cat']) ? (int) $_REQUEST['cat'] : 0;
-		if ($_REQUEST['cat'] > 0)
+		$context['canned_category'] = isset($_REQUEST['cat']) ? (int) $_REQUEST['cat'] : 0;
+		if ($context['canned_category'] > 0)
 		{
 			// 1. Get the category's position.
 			$query = $smcFunc['db_query']('', '
@@ -340,7 +340,7 @@ function shd_admin_canned_savecat()
 				FROM {db_prefix}helpdesk_cannedreplies_cats
 				WHERE id_cat = {int:cat}',
 				array(
-					'cat' => $_REQUEST['cat'],
+					'cat' => $context['canned_category'],
 				)
 			);
 			if ($smcFunc['db_num_rows']($query) == 0)
@@ -353,7 +353,7 @@ function shd_admin_canned_savecat()
 				DELETE FROM {db_prefix}helpdesk_cannedreplies_cats
 				WHERE id_cat = {int:cat}',
 				array(
-					'cat' => $_REQUEST['cat'],
+					'cat' => $context['canned_category'],
 				)
 			);
 			// 3. Bump everything else up one.
@@ -371,7 +371,7 @@ function shd_admin_canned_savecat()
 				FROM {db_prefix}helpdesk_cannedreplies
 				WHERE id_cat = {int:cat}',
 				array(
-					'cat' => (int) $_REQUEST['cat'],
+					'cat' => (int) $context['canned_category'],
 				)
 			);
 			$replies = array();
@@ -402,7 +402,7 @@ function shd_admin_canned_savecat()
 			// Log this action.
 			shd_admin_log('admin_canned', array(
 				'action' => 'cat_delete',
-				'id' => $_REQUEST['cat'],
+				'id' => $context['canned_category'],
 			));
 		}
 
@@ -487,13 +487,13 @@ function shd_admin_canned_createreply()
 	$context['page_title'] = $txt['shd_admin_cannedreplies_addreply'];
 	$context['sub_template'] = 'shd_edit_canned_reply';
 
-	$_REQUEST['cat'] = isset($_REQUEST['cat']) ? (int) $_REQUEST['cat'] : 0;
+	$context['canned_category'] = isset($_REQUEST['cat']) ? (int) $_REQUEST['cat'] : 0;
 	$query = $smcFunc['db_query']('', '
 		SELECT cat_name
 		FROM {db_prefix}helpdesk_cannedreplies_cats
 		WHERE id_cat = {int:cat}',
 		array(
-			'cat' => $_REQUEST['cat'],
+			'cat' => $context['canned_category'],
 		)
 	);
 
@@ -512,7 +512,7 @@ function shd_admin_canned_createreply()
 		'active' => 1,
 		'vis_user' => '',
 		'vis_staff' => '',
-		'cat' => $_REQUEST['cat'],
+		'cat' => $context['canned_category'],
 		'depts_selected' => array(),
 		'depts_available' => array(),
 	);
@@ -554,13 +554,13 @@ function shd_admin_canned_editreply()
 	$context['page_title'] = $txt['shd_admin_cannedreplies_editreply'];
 	$context['sub_template'] = 'shd_edit_canned_reply';
 
-	$_REQUEST['reply'] = isset($_REQUEST['reply']) ? (int) $_REQUEST['reply'] : 0;
+	$context['canned_reply_id'] = isset($_REQUEST['reply']) ? (int) $_REQUEST['reply'] : 0;
 	$query = $smcFunc['db_query']('', '
 		SELECT hdcr.title, hdcr.body, hdcr.vis_user, hdcr.vis_staff, hdcr.active, hdcr.id_cat
 		FROM {db_prefix}helpdesk_cannedreplies AS hdcr
 		WHERE id_reply = {int:reply}',
 		array(
-			'reply' => $_REQUEST['reply'],
+			'reply' => $context['canned_reply_id'],
 		)
 	);
 
@@ -574,7 +574,7 @@ function shd_admin_canned_editreply()
 	$smcFunc['db_free_result']($query);
 
 	$context['canned_reply'] = array(
-		'id' => $_REQUEST['reply'],
+		'id' => $context['canned_reply_id'],
 		'title' => $row['title'],
 		'body' => un_preparsecode($row['body']),
 		'active' => !empty($row['active']),
@@ -600,7 +600,7 @@ function shd_admin_canned_editreply()
 		FROM {db_prefix}helpdesk_cannedreplies_depts AS hdcrd
 		WHERE hdcrd.id_reply = {int:reply}',
 		array(
-			'reply' => $_REQUEST['reply'],
+			'reply' => $context['canned_reply_id'],
 		)
 	);
 	while ($row = $smcFunc['db_fetch_assoc']($query))
@@ -633,10 +633,10 @@ function shd_admin_canned_savereply()
 	require_once($sourcedir . '/Subs-Post.php');
 
 	// If we're deleting this reply, do it first and get it out the way.
+	$context['canned_reply_id'] = isset($_REQUEST['reply']) && $_REQUEST['reply'] == 'new' ? 'new' : (isset($_REQUEST['reply']) ? (int) $_REQUEST['reply'] : 0);
 	if (!empty($_REQUEST['delete']))
 	{
-		$_REQUEST['reply'] = isset($_REQUEST['reply']) ? (int) $_REQUEST['reply'] : 0;
-		if ($_REQUEST['reply'] > 0)
+		if ($context['canned_reply_id'] > 0)
 		{
 			// 1. Get the current position.
 			$query = $smcFunc['db_query']('', '
@@ -644,7 +644,7 @@ function shd_admin_canned_savereply()
 				FROM {db_prefix}helpdesk_cannedreplies
 				WHERE id_reply = {int:reply}',
 				array(
-					'reply' => $_REQUEST['reply'],
+					'reply' => $context['canned_reply_id'],
 				)
 			);
 			if ($smcFunc['db_num_rows']($query) == 0)
@@ -656,7 +656,7 @@ function shd_admin_canned_savereply()
 				DELETE FROM {db_prefix}helpdesk_cannedreplies
 				WHERE id_reply = {int:reply}',
 				array(
-					'reply' => $_REQUEST['reply'],
+					'reply' => $context['canned_reply_id'],
 				)
 			);
 			// 3. Shunt the rest up one.
@@ -673,20 +673,20 @@ function shd_admin_canned_savereply()
 				DELETE FROM {db_prefix}helpdesk_cannedreplies_depts
 				WHERE id_reply = {int:reply}',
 				array(
-					'reply' => $_REQUEST['reply'],
+					'reply' => $context['canned_reply_id'],
 				)
 			);
 
 			// Log this action.
 			shd_admin_log('admin_canned', array(
 					'action' => 'reply_delete',
-					'id' => $_REQUEST['reply'],
+					'id' => $context['canned_reply_id'],
 			));
 		}
 		redirectexit('action=admin;area=helpdesk_cannedreplies');
 	}
 
-	if (empty($_REQUEST['reply']))
+	if (empty($context['canned_reply_id']))
 		fatal_lang_error('shd_admin_cannedreplies_thereplyisalie', false);
 
 	$_POST['title'] = isset($_POST['title']) ? strtr($smcFunc['htmlspecialchars']($_POST['title']), array("\r" => '', "\n" => '', "\t" => '')) : '';
@@ -745,7 +745,7 @@ function shd_admin_canned_savereply()
 
 	checkSubmitOnce('check');
 
-	if ($_REQUEST['reply'] == 'new')
+	if ($context['canned_reply_id'] == 'new')
 	{
 		// 1. Get the next reply order
 		$query = $smcFunc['db_query']('', '
@@ -803,7 +803,7 @@ function shd_admin_canned_savereply()
 			FROM {db_prefix}helpdesk_cannedreplies
 			WHERE id_reply = {int:reply}',
 			array(
-				'reply' => $_REQUEST['reply'],
+				'reply' => $context['canned_reply_id'],
 			)
 		);
 		if ($smcFunc['db_num_rows']($query) == 0)
@@ -820,7 +820,7 @@ function shd_admin_canned_savereply()
 				active = {int:active}
 			WHERE id_reply = {int:reply}',
 			array(
-				'reply' => $_REQUEST['reply'],
+				'reply' => $context['canned_reply_id'],
 				'title' => $_POST['title'],
 				'body' => $_POST['shd_canned_reply'],
 				'vis_user' => $_POST['vis_user'],
@@ -834,13 +834,13 @@ function shd_admin_canned_savereply()
 			DELETE FROM {db_prefix}helpdesk_cannedreplies_depts
 			WHERE id_reply = {int:reply}',
 			array(
-				'reply' => $_REQUEST['reply'],
+				'reply' => $context['canned_reply_id'],
 			)
 		);
 
 		$insert = array();
 		foreach ($depts_insert as $dept)
-			$insert[] = array($dept, $_REQUEST['reply']);
+			$insert[] = array($dept, $context['canned_reply_id']);
 
 		$smcFunc['db_insert']('insert',
 			'{db_prefix}helpdesk_cannedreplies_depts',
@@ -855,7 +855,7 @@ function shd_admin_canned_savereply()
 
 		shd_admin_log('admin_canned', array(
 			'action' => 'reply_update',
-			'id' => $_REQUEST['reply'],
+			'id' => $context['canned_reply_id'],
 		));
 	}
 
@@ -867,8 +867,8 @@ function shd_admin_canned_movereplycat()
 	global $context, $smcFunc, $txt, $sourcedir, $scripturl;
 
 	// Before we go any further, establish that the user specified a reply to move and that there is at least one category not including the one the reply is in.
-	$_REQUEST['reply'] = isset($_REQUEST['reply']) ? (int) $_REQUEST['reply'] : 0;
-	if (empty($_REQUEST['reply']) || $_REQUEST['reply'] < 0)
+	$context['canned_reply_id'] = isset($_REQUEST['reply']) ? (int) $_REQUEST['reply'] : 0;
+	if (empty($context['canned_reply_id']) || $context['canned_reply_id'] < 0)
 		fatal_lang_error('shd_admin_cannedreplies_thereplyisalie', false);
 
 	$query = $smcFunc['db_query']('', '
@@ -876,7 +876,7 @@ function shd_admin_canned_movereplycat()
 		FROM {db_prefix}helpdesk_cannedreplies
 		WHERE id_reply = {int:reply}',
 		array(
-			'reply' => $_REQUEST['reply'],
+			'reply' => $context['canned_reply_id'],
 		)
 	);
 	if ($smcFunc['db_num_rows']($query) == 0)
@@ -942,7 +942,7 @@ function shd_admin_canned_movereplycat()
 			array(
 				'newcat' => $_REQUEST['newcat'],
 				'newpos' => (int) $newpos + 1,
-				'reply' => $_REQUEST['reply'],
+				'reply' => $context['canned_reply_id'],
 			)
 		);
 
@@ -961,7 +961,7 @@ function shd_admin_canned_movereplycat()
 		// 5. Log this action.
 		shd_admin_log('admin_canned', array(
 			'action' => 'reply_move',
-			'id' => $_REQUEST['reply'],
+			'id' => $context['canned_reply_id'],
 		));
 
 		// 6. Scram.

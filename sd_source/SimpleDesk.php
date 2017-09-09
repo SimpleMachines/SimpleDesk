@@ -300,21 +300,22 @@ function shd_main()
 	// Int hooks - after we basically set everything up (so it's manipulatable by the hook, but before we do the last bits of finalisation)
 	call_integration_hook('shd_hook_helpdesk', array(&$subactions));
 
-	// What are we doing?
+	// What are we doing?, We shouldn't use $_REQUEST anywhere, but clean it just incase.
 	$_REQUEST['sa'] = (!empty($_REQUEST['sa']) && isset($subactions[$_REQUEST['sa']])) ? $_REQUEST['sa'] : 'main';
-	$context['sub_action'] = $subactions[$_REQUEST['sa']];
+	$context['shd_current_subaction'] = $_REQUEST['sa'];
+	$context['sub_action'] = $subactions[$context['shd_current_subaction']];
 
 	$context['can_new_ticket'] = shd_allowed_to('shd_new_ticket', $context['shd_department']);
 	$context['can_proxy_ticket'] = $context['can_new_ticket'] && shd_allowed_to('shd_post_proxy', $context['shd_department']);
 	$context['can_view_closed'] = shd_allowed_to(array('shd_view_closed_own', 'shd_view_closed_any'), $context['shd_department']);
 	$context['can_view_recycle'] = shd_allowed_to('shd_access_recyclebin', $context['shd_department']);
-	$context['display_back_to_hd'] = !in_array($_REQUEST['sa'], array('main', 'viewblock', 'recyclebin', 'closedtickets', 'dept'));
+	$context['display_back_to_hd'] = !in_array($context['shd_current_subaction'], array('main', 'viewblock', 'recyclebin', 'closedtickets', 'dept'));
 	$context['can_shd_search'] = shd_allowed_to('shd_search', 0);
 	$context['can_view_options'] = shd_allowed_to(array('shd_view_preferences_own', 'shd_view_preferences_any'), 0);
 
 	// Highlight the correct button.
-	if (isset($context['navigation'][$_REQUEST['sa']]))
-		$context['navigation'][$_REQUEST['sa']]['active'] = true;
+	if (isset($context['navigation'][$context['shd_current_subaction']]))
+		$context['navigation'][$context['shd_current_subaction']]['active'] = true;
 
 	// Send them away.
 	if ($context['sub_action'][0] !== null)
@@ -323,7 +324,7 @@ function shd_main()
 	$context['sub_action'][1]();
 
 	// Maintenance mode? If it were, the helpdesk is considered inactive for the purposes of everything to all but those without admin-helpdesk rights - but we must have them if we're here!
-	if (!empty($modSettings['shd_maintenance_mode']) && $_REQUEST['sa'] != 'ajax')
+	if (!empty($modSettings['shd_maintenance_mode']) && $context['shd_current_subaction'] != 'ajax')
 		$context['template_layers'][] = 'shd_maintenance';
 
 	call_integration_hook('shd_hook_after_main');
@@ -737,7 +738,7 @@ function shd_helpdesk_listing()
 		shd_is_allowed_to($context['shd_permission']);
 
 	$block_list = array_keys($context['ticket_blocks']);
-	$primary_url = '?action=helpdesk;sa=' . $_REQUEST['sa'];
+	$primary_url = '?action=helpdesk;sa=' . $context['shd_current_subaction'];
 
 	// First figure out the start positions of each item and sanitise them
 	foreach ($context['ticket_blocks'] as $block_key => $block)
@@ -835,7 +836,7 @@ function shd_helpdesk_listing()
 		{
 			$sort = '';
 			$sort_item = 'updated';
-			$sort_dir = $_REQUEST['sa'] == 'closedtickets' || $_REQUEST['sa'] == 'recyclebin' ? 'desc' : 'asc'; // default to newest first if on recyclebin or closed tickets, otherwise oldest first
+			$sort_dir = $context['shd_current_subaction'] == 'closedtickets' || $context['shd_current_subaction'] == 'recyclebin' ? 'desc' : 'asc'; // default to newest first if on recyclebin or closed tickets, otherwise oldest first
 		}
 
 		if ($sort != '')
@@ -957,7 +958,7 @@ function shd_helpdesk_listing()
 				'id' => $row['id_ticket'],
 				'display_id' => str_pad($row['id_ticket'], $modSettings['shd_zerofill'], '0', STR_PAD_LEFT),
 				'dept_link' => empty($context['shd_department']) && $context['shd_multi_dept'] ? '[<a href="' . $scripturl . '?' . $context['shd_home'] . ';dept=' . $row['id_dept'] . '">' . $row['dept_name'] . '</a>] ' : '',
-				'link' => '<a href="' . $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $row['id_ticket'] . ($_REQUEST['sa'] == 'recyclebin' ? ';recycle' : '') . '">' . $row['subject'] . '</a>',
+				'link' => '<a href="' . $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $row['id_ticket'] . ($context['shd_current_subaction'] == 'recyclebin' ? ';recycle' : '') . '">' . $row['subject'] . '</a>',
 				'subject' => $row['subject'],
 				'status' => array(
 					'level' => $row['status'],
@@ -980,13 +981,13 @@ function shd_helpdesk_listing()
 					'label' => $row['urgency'] > TICKET_URGENCY_HIGH ? '<span class="error">' . $txt['shd_urgency_' . $row['urgency']] . '</span>' : $txt['shd_urgency_' . $row['urgency']],
 				),
 				'is_unread' => ($row['id_last_msg'] > $row['log_read']),
-				'new_href' => ($row['id_last_msg'] <= $row['log_read']) ? '' : ($scripturl . '?action=helpdesk;sa=ticket;ticket=' . $row['id_ticket'] . '.new' . ($_REQUEST['sa'] == 'recyclebin' ? ';recycle' : '') . '#new'),
+				'new_href' => ($row['id_last_msg'] <= $row['log_read']) ? '' : ($scripturl . '?action=helpdesk;sa=ticket;ticket=' . $row['id_ticket'] . '.new' . ($context['shd_current_subaction'] == 'recyclebin' ? ';recycle' : '') . '#new'),
 				'private' => $row['private'],
 				'actions' => array(
 					'movedept' => !empty($context['shd_multi_dept']) && (shd_allowed_to('shd_move_dept_any', $context['shd_department']) || ($is_own && shd_allowed_to('shd_move_dept_own', $context['shd_department']))) ? '<a href="' . $scripturl . '?action=helpdesk;sa=movedept;ticket=' . $row['id_ticket'] . ';home;' . $context['session_var'] . '=' . $context['session_id'] . '" title="' . $txt['shd_move_dept'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/movedept.png" alt="' . $txt['shd_move_dept'] . '"></a>' : '',
 				),
 				'num_replies' => $row['num_replies'],
-				'replies_href' => $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $row['id_ticket'] . '.msg' . $row['id_last_msg'] . '#msg' . $row['id_last_msg'] . ($_REQUEST['sa'] == 'recyclebin' ? ';recycle' : ''),
+				'replies_href' => $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $row['id_ticket'] . '.msg' . $row['id_last_msg'] . '#msg' . $row['id_last_msg'] . ($context['shd_current_subaction'] == 'recyclebin' ? ';recycle' : ''),
 				'all_replies' => (int) $row['num_replies'] + (int) $row['deleted_replies'],
 			);
 
@@ -1092,7 +1093,7 @@ function shd_helpdesk_listing()
 			$base_url .= $block['sort']['link_bits'][$block['sort']['item']];
 	}
 
-	if ($_REQUEST['sa'] != 'viewblock')
+	if ($context['shd_current_subaction'] != 'viewblock')
 	{
 		foreach ($context['ticket_blocks'] as $block_id => $block)
 		{
@@ -1187,9 +1188,9 @@ function shd_helpdesk_listing()
 		$tickets[$row['id_post']][$row['id_field']] = $row['value'];
 
 	// 3. Apply the values into the tickets.
-	if ($_REQUEST['sa'] == 'closedtickets')
+	if ($context['shd_current_subaction'] == 'closedtickets')
 		$context['filterbase'] = $scripturl . '?action=helpdesk;sa=closedtickets';
-	elseif ($_REQUEST['sa'] == 'recyclebin')
+	elseif ($context['shd_current_subaction'] == 'recyclebin')
 		$context['filterbase'] = $scripturl . '?action=helpdesk;sa=recyclebin';
 	else
 		$context['filterbase'] = $scripturl . '?' . $context['shd_home'];
@@ -1246,7 +1247,7 @@ function shd_helpdesk_listing()
 				if (!empty($prefix))
 				{
 					$context['ticket_blocks'][$block_id]['tickets'][$ticket_id]['subject'] = $prefix . $subject;
-					$context['ticket_blocks'][$block_id]['tickets'][$ticket_id]['link'] = $prefix . '<a href="' . $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $ticket_id . ($_REQUEST['sa'] == 'recyclebin' ? ';recycle' : '') . '">' . $subject . '</a>';
+					$context['ticket_blocks'][$block_id]['tickets'][$ticket_id]['link'] = $prefix . '<a href="' . $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $ticket_id . ($context['shd_current_subaction'] == 'recyclebin' ? ';recycle' : '') . '">' . $subject . '</a>';
 				}
 			}
 		}
