@@ -86,7 +86,7 @@ sd_AdminIndex.prototype.checkUpdateAvailable = function ()
 	}
 
 	// If we decide to override life into "red" mode, do it.
-	if ('sdUpdateCritical' in window && window.sdUpdateCritical == true)
+	if ('sdUpdateCritical' in window && window.sdUpdateCritical === true)
 	{
 		document.getElementById('update_container').className = 'errorbox';
 		document.getElementById('update_critical_title').style.display = 'block';
@@ -114,12 +114,12 @@ function toggleItem(itemID, theme_url, txt_on, txt_off)
 {
 	// Toggle the hidden item.
 	var itemValueHandle = document.getElementById("feature_" + itemID);
-	itemValueHandle.value = itemValueHandle.value == 1 ? 0 : 1;
+	itemValueHandle.value = itemValueHandle.value === 1 ? 0 : 1;
 
 	// Change the image, alternative text and the title.
-	document.getElementById("switch_" + itemID).src = theme_url + '/simpledesk/switch_' + (itemValueHandle.value == 1 ? 'on' : 'off') + '.png';
-	document.getElementById("switch_" + itemID).alt = itemValueHandle.value == 1 ? txt_off : txt_on;
-	document.getElementById("switch_" + itemID).title = itemValueHandle.value == 1 ? txt_off : txt_on;
+	document.getElementById("switch_" + itemID).src = theme_url + '/simpledesk/switch_' + (itemValueHandle.value === 1 ? 'on' : 'off') + '.png';
+	document.getElementById("switch_" + itemID).alt = itemValueHandle.value === 1 ? txt_off : txt_on;
+	document.getElementById("switch_" + itemID).title = itemValueHandle.value === 1 ? txt_off : txt_on;
 
 	// Don't reload.
 	return false;

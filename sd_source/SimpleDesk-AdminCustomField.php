@@ -673,9 +673,9 @@ function shd_admin_cf_icons()
 {
 	global $context, $settings, $txt;
 
-	static $iconlist = null;
+	static $iconlist = array();
 
-	if ($iconlist !== null)
+	if (!empty($iconlist))
 		return $iconlist;
 
 	$iconlist = array(

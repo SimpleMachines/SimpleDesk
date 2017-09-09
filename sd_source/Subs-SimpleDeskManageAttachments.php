@@ -32,10 +32,10 @@ if (!defined('SMF'))
  *	SMF tells us which attachments with no messages that it wants to fix.
  *  We check to see if that is a helpdesk attachment, if it is, we remove it.
  *
- *	@since 2.1
  *	@param array &$ignore_ids The ids to ignore.
  *	@param array &$min_substep The miniumn id we are looking for.
  *	@param array &$max_substep The max id we are looking for.
+ *	@since 2.1
 */
 function shd_repair_attachments_nomsg(&$ignore_ids, $min_substep, $max_substep)
 {
@@ -113,13 +113,19 @@ function shd_attachments_browse(&$listOptions, &$titles, &$list_title)
 		$list_title .= '<a href="' . $scripturl . $details[0] . '">' . $details[1] . '</a>';
 	}
 
-	$listOptions['title'] = $list_title;
-
 	// We're actually wanting helpdesk only stuff, so do it and bail
 	if (isset($_REQUEST['shd_attach']) || isset($_REQUEST['shd_thumb']))
 		$listOptions = shd_admin_browse_attachments($list_title);
 }
 
+/**
+ *	Builds a SMF list of attachments.
+ *
+ *	@param string $list_title A list title, if none is specified we default to the either a generic title.
+ *
+ *	@return array List option data to be passed to createList.
+ *	@since 2.1
+*/
 function shd_admin_browse_attachments($list_title = '')
 {
 	global $context, $txt, $scripturl, $options, $modSettings;
@@ -282,6 +288,18 @@ function shd_admin_browse_attachments($list_title = '')
 	return $listOptions;
 }
 
+/**
+ *	Retrieves the total number of attachments.
+ *
+ *	@param int $start The starting position in the query.
+ *	@param int $items_per_page The number of attachments per page to show.
+ *	@param string $sort A valid sort action as determined by our main function
+ *	@param string $browse_type shd_thumb if a thumbnail otherwise shd_attach.
+ *
+ *	@return array Attachment data.
+ *	@since 2.1
+ *	@see shd_admin_browse_attachments
+*/
 function shd_list_get_files($start, $items_per_page, $sort, $browse_type)
 {
 	global $smcFunc, $txt;
@@ -313,6 +331,15 @@ function shd_list_get_files($start, $items_per_page, $sort, $browse_type)
 	return $files;
 }
 
+/**
+ *	Retrieves the total number of attachments.
+ *
+ *	@param string $browse_type shd_thumb if a thumbnail otherwise shd_attach.
+ *
+ *	@return int Number of attachments possible.
+ *	@since 2.1
+ *	@see shd_admin_browse_attachments
+*/
 function shd_list_get_num_files($browse_type)
 {
 	global $smcFunc;

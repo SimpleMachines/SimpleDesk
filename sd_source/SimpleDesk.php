@@ -588,6 +588,9 @@ function shd_view_block()
 	if (empty($_REQUEST['block']) || empty($context['ticket_blocks'][$_REQUEST['block']]) || empty($context['ticket_blocks'][$_REQUEST['block']]['count']))
 		redirectexit($context['shd_home'] . $context['shd_dept_link']);
 
+	// At this point we have validated the block and kicked out the bad ones.
+	$context['shd_current_block'] = $_REQUEST['block'];
+
 	$context['items_per_page'] = 10;
 	foreach ($context['ticket_blocks'] as $block => $details)
 	{

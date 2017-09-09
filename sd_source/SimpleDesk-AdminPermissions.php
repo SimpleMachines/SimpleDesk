@@ -140,10 +140,10 @@ function shd_admin_edit_role()
 {
 	global $context, $txt, $smcFunc, $scripturl;
 
-	$_REQUEST['role'] = isset($_REQUEST['role']) ? (int) $_REQUEST['role'] : 0;
-	shd_load_role($_REQUEST['role']);
+	$context['shd_role_id'] = isset($_REQUEST['role']) ? (int) $_REQUEST['role'] : 0;
+	shd_load_role($context['shd_role_id']);
 
-	if (empty($context['shd_permissions']['user_defined_roles'][$_REQUEST['role']]))
+	if (empty($context['shd_permissions']['user_defined_roles'][$context['shd_role_id']]))
 		fatal_lang_error('shd_unknown_role', false);
 
 	// OK, figure out what groups are possible groups (including regular members), and what groups this role has.
@@ -184,7 +184,7 @@ function shd_admin_edit_role()
 		FROM {db_prefix}helpdesk_role_groups
 		WHERE id_role = {int:role}',
 		array(
-			'role' => $_REQUEST['role'],
+			'role' => $context['shd_role_id'],
 		)
 	);
 
@@ -201,7 +201,7 @@ function shd_admin_edit_role()
 			LEFT JOIN {db_prefix}helpdesk_dept_roles AS hddr ON (hddr.id_dept = hdd.id_dept AND hddr.id_role = {int:role})
 		ORDER BY hdd.dept_order',
 		array(
-			'role' => $_REQUEST['role'],
+			'role' => $context['shd_role_id'],
 		)
 	);
 	while ($row = $smcFunc['db_fetch_assoc']($query))
@@ -225,15 +225,15 @@ function shd_admin_save_role()
 	checkSession();
 
 	// 2. Acting in a role, are we? Is it one we have the script for?
-	$_REQUEST['role'] = isset($_REQUEST['role']) ? (int) $_REQUEST['role'] : 0;
-	shd_load_role($_REQUEST['role']);
+	$context['shd_role_id'] = isset($_REQUEST['role']) ? (int) $_REQUEST['role'] : 0;
+	shd_load_role($context['shd_role_id']);
 
 	// Hah, no, you're just an extra, bye.
-	if (empty($context['shd_permissions']['user_defined_roles'][$_REQUEST['role']]))
+	if (empty($context['shd_permissions']['user_defined_roles'][$context['shd_role_id']]))
 		fatal_lang_error('shd_unknown_role', false);
 
 	// 2b. Oh, we have actually heard of you. That's fine, we'll just refer to you by codename because we're lazy.
-	$role = &$context['shd_permissions']['user_defined_roles'][$_REQUEST['role']];
+	$role = &$context['shd_permissions']['user_defined_roles'][$context['shd_role_id']];
 
 	// 3. Are you the gunman behind the grassy knoll?
 	if (isset($_POST['delete']))
@@ -243,7 +243,7 @@ function shd_admin_save_role()
 			DELETE FROM {db_prefix}helpdesk_roles
 			WHERE id_role = {int:role}',
 			array(
-				'role' => $_REQUEST['role'],
+				'role' => $context['shd_role_id'],
 			)
 		);
 
@@ -251,7 +251,7 @@ function shd_admin_save_role()
 			DELETE FROM {db_prefix}helpdesk_role_groups
 			WHERE id_role = {int:role}',
 			array(
-				'role' => $_REQUEST['role'],
+				'role' => $context['shd_role_id'],
 			)
 		);
 
@@ -259,7 +259,7 @@ function shd_admin_save_role()
 			DELETE FROM {db_prefix}helpdesk_role_permissions
 			WHERE id_role = {int:role}',
 			array(
-				'role' => $_REQUEST['role'],
+				'role' => $context['shd_role_id'],
 			)
 		);
 
@@ -267,7 +267,7 @@ function shd_admin_save_role()
 			DELETE FROM {db_prefix}helpdesk_dept_roles
 			WHERE id_role = {int:role}',
 			array(
-				'role' => $_REQUEST['role'],
+				'role' => $context['shd_role_id'],
 			)
 		);
 
@@ -294,7 +294,7 @@ function shd_admin_save_role()
 			SET role_name = {string:rolename}
 			WHERE id_role = {int:role}',
 			array(
-				'role' => $_REQUEST['role'],
+				'role' => $context['shd_role_id'],
 				'rolename' => $_POST['rolename'],
 			)
 		);
@@ -373,7 +373,7 @@ function shd_admin_save_role()
 	{
 		$insert = array();
 		foreach ($perm_changes['add_update'] as $perm => $permvalue)
-			$insert[] = array($_REQUEST['role'], $perm, $permvalue);
+			$insert[] = array($context['shd_role_id'], $perm, $permvalue);
 
 		$smcFunc['db_insert']('replace',
 			'{db_prefix}helpdesk_role_permissions',
@@ -395,7 +395,7 @@ function shd_admin_save_role()
 				AND permission IN ({array_string:permissions})
 			LIMIT 1',
 			array(
-				'role' => $_REQUEST['role'],
+				'role' => $context['shd_role_id'],
 				'permissions' => $perm_changes['remove'],
 			)
 		);
@@ -444,7 +444,7 @@ function shd_admin_save_role()
 			WHERE id_role = {int:role}
 				AND id_group IN ({array_int:groups})',
 			array(
-				'role' => $_REQUEST['role'],
+				'role' => $context['shd_role_id'],
 				'groups' => $groups['remove'],
 			)
 		);
@@ -454,7 +454,7 @@ function shd_admin_save_role()
 	{
 		$insert = array();
 		foreach ($groups['add'] as $add)
-			$insert[] = array($_REQUEST['role'], $add);
+			$insert[] = array($context['shd_role_id'], $add);
 
 		$smcFunc['db_insert']('replace',
 			'{db_prefix}helpdesk_role_groups',
@@ -476,14 +476,14 @@ function shd_admin_save_role()
 		FROM {db_prefix}helpdesk_depts');
 	while ($row = $smcFunc['db_fetch_assoc']($query))
 		if (!empty($_POST['dept' . $row['id_dept']]))
-			$add[] = array($_REQUEST['role'], $row['id_dept']);
+			$add[] = array($context['shd_role_id'], $row['id_dept']);
 
 	// 9.2 Remove existing depts
 	$smcFunc['db_query']('', '
 		DELETE FROM {db_prefix}helpdesk_dept_roles
 		WHERE id_role = {int:role}',
 		array(
-			'role' => $_REQUEST['role'],
+			'role' => $context['shd_role_id'],
 		)
 	);
 
@@ -502,7 +502,7 @@ function shd_admin_save_role()
 	// 10. Log this.
 	shd_admin_log('admin_permissions', array(
 		'action' => 'change_role',
-		'id' => $_REQUEST['role'],
+		'id' => $context['shd_role_id'],
 	));
 
 	// All done, back to the main screen
@@ -518,11 +518,11 @@ function shd_admin_copy_role()
 {
 	global $context, $txt, $smcFunc;
 
-	$_REQUEST['role'] = isset($_REQUEST['role']) ? (int) $_REQUEST['role'] : 0;
-	shd_load_role($_REQUEST['role']);
+	$context['shd_role_id'] = isset($_REQUEST['role']) ? (int) $_REQUEST['role'] : 0;
+	shd_load_role($context['shd_role_id']);
 
 	// Hah, no, you're just an extra, bye.
-	if (empty($context['shd_permissions']['user_defined_roles'][$_REQUEST['role']]))
+	if (empty($context['shd_permissions']['user_defined_roles'][$context['shd_role_id']]))
 		fatal_lang_error('shd_unknown_role', false);
 
 	if (empty($_REQUEST['part']))
@@ -549,7 +549,7 @@ function shd_admin_copy_role()
 				'template' => 'int', 'role_name' => 'string',
 			),
 			array(
-				$context['shd_permissions']['user_defined_roles'][$_REQUEST['role']]['template'], $_POST['rolename'],
+				$context['shd_permissions']['user_defined_roles'][$context['shd_role_id']]['template'], $_POST['rolename'],
 			),
 			array(
 				'id_role',
@@ -567,7 +567,7 @@ function shd_admin_copy_role()
 			FROM {db_prefix}helpdesk_role_permissions
 			WHERE id_role = {int:role}',
 			array(
-				'role' => $_REQUEST['role'],
+				'role' => $context['shd_role_id'],
 			)
 		);
 
@@ -601,7 +601,7 @@ function shd_admin_copy_role()
 				FROM {db_prefix}helpdesk_role_groups
 				WHERE id_role = {int:role}',
 				array(
-					'role' => $_REQUEST['role'],
+					'role' => $context['shd_role_id'],
 				)
 			);
 
@@ -630,7 +630,7 @@ function shd_admin_copy_role()
 				FROM {db_prefix}helpdesk_dept_roles
 				WHERE id_role = {int:role}',
 				array(
-					'role' => $_REQUEST['role'],
+					'role' => $context['shd_role_id'],
 				)
 			);
 			while ($row = $smcFunc['db_fetch_assoc']($query))
@@ -655,7 +655,7 @@ function shd_admin_copy_role()
 		// Can't miss this.
 		shd_admin_log('admin_permissions', array(
 			'action' => 'copy_role',
-			'from' => $_REQUEST['role'],
+			'from' => $context['shd_role_id'],
 			'to' => $newrole,
 		));
 

@@ -978,7 +978,7 @@ function shd_prepare_ticket_context()
  *	"attach to ticket" is simply loaded into an indexed array stored in $context['ticket_attach']['ticket'], while "attach
  *	to reply" is loaded into an indexed array subset in $context['ticket_attach']['reply'][msg_id] to retain the association.
  *
- *	@return array Builds an array within $contxt['ticket_attach'], as noted above. The individual data items per attachment are:
+ *	@return null|array Builds an array within $contxt['ticket_attach'], as noted above. The individual data items per attachment are:
  *	- id: Numeric id for attachment itself
  *	- name: HTML sanitised name of the attachment's filename
  *	- size: string listing the size of the attachment, converted to kilobytes and rounded to two decimal places

@@ -49,10 +49,10 @@ function ssi_shd_called()
  *	Gets a list of the tickets currently open that are a given user's (subject to ticket visibility).
  *
  *	@param int $started_by The user id whose tickets you want to examine, defaults to the current user.
- *  @param int $dept An array of department ids whose tickets you want to examine, defaults to all departments.
+ *	@param array|int $dept An array of department ids whose tickets you want to examine, defaults to all departments.
  *	@param int $limit The number of tickets to limit to, default 10.
  *	@param string $output_method Set to 'echo' for displaying content, set to 'array' to simply return data.
- *	@return array An array of data, more details under the underlying function {@link ssi_getSDTickets()}
+ *	@return null|array An array of data, more details under the underlying function {@link ssi_getSDTickets()}
  *	@since 2.0
 */
 function ssi_userTickets($started_by = 0, $dept = array(), $limit = 10, $output_method = 'echo')
@@ -98,10 +98,10 @@ function ssi_userTickets($started_by = 0, $dept = array(), $limit = 10, $output_
  *	Gets a list of the tickets currently open that are assigned to the current user (presumably staff, subject to ticket visibility).
  *
  *	@param int $assignee The user id whose tickets whose assigned tickets you want to examine, defaults to the current user.
- *  @param int $dept An array of department ids whose tickets you want to examine, defaults to all departments.
+ *	@param int|array $dept An array of department ids whose tickets you want to examine, defaults to all departments.
  *	@param int $limit The number of tickets to limit to, default 10.
  *	@param string $output_method Set to 'echo' for displaying content, set to 'array' to simply return data.
- *	@return array An array of data, more details under the underlying function {@link ssi_getSDTickets()}
+ *	@return null|array An array of data, more details under the underlying function {@link ssi_getSDTickets()}
  *	@since 2.0
 */
 function ssi_staffAssignedTickets($assignee = 0, $dept = array(), $limit = 10, $output_method = 'echo')
@@ -145,10 +145,10 @@ function ssi_staffAssignedTickets($assignee = 0, $dept = array(), $limit = 10, $
  *	Gets a list of all tickets based on urgency criteria given (subject to ticket visibility)
  *
  *	@param int $urgency The urgency of tickets you want to get.
- *  @param int $dept An array of department ids whose tickets you want to examine, defaults to all departments.
+ *	@param int|array $dept An array of department ids whose tickets you want to examine, defaults to all departments.
  *	@param int $limit The number of tickets to limit to, default 10.
  *	@param string $output_method Set to 'echo' for displaying content, set to 'array' to simply return data.
- *	@return array An array of data, more details under the underlying function {@link ssi_getSDTickets()}
+ *	@return null|array An array of data, more details under the underlying function {@link ssi_getSDTickets()}
  *	@since 2.0
 */
 function ssi_staffTicketsUrgency($urgency, $dept = array(), $limit = 10, $output_method = 'echo')
@@ -188,7 +188,7 @@ function ssi_staffTicketsUrgency($urgency, $dept = array(), $limit = 10, $output
  *	@param array $query_where_params Key/value associative array to be injected into the query, related to $query_where.
  *	@param int $query_limit Number of items to limit the query to.
  *	@param string $query_order The clause to order tickets by, defaults to tickets by order of creation.
- *	@return array An array of arrays, each primary item containing the following:
+ *	@return null|array An array of arrays, each primary item containing the following:
  *	<ul>
  *	<li>id: Main ticket id</li>
  *	<li>display_id: Formatted ticket id in [0000x] format</li>
