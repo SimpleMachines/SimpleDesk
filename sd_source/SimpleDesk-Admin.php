@@ -200,15 +200,15 @@ function shd_admin_info()
 	);
 
 	call_integration_hook('shd_hook_hdadmininfo', array(&$subactions));
-	$_REQUEST['sa'] = isset($_REQUEST['sa']) && isset($subactions[$_REQUEST['sa']]) ? $_REQUEST['sa'] : 'main';
+	$context['shd_current_subaction'] = isset($_REQUEST['sa']) && isset($subactions[$_REQUEST['sa']]) ? $_REQUEST['sa'] : 'main';
 
 	// Now that we have validated the subaction.	
-	$context[$context['admin_menu_name']]['tab_data']['title'] = '<img src="' . $settings['images_url'] . '/admin/shd/' . $subactions[$_REQUEST['sa']]['icon'] . '" class="icon" alt="*">' . $subactions[$_REQUEST['sa']]['title'];
+	$context[$context['admin_menu_name']]['tab_data']['title'] = '<img src="' . $settings['images_url'] . '/admin/shd/' . $subactions[$context['shd_current_subaction']]['icon'] . '" class="icon" alt="*">' . $subactions[$context['shd_current_subaction']]['title'];
 
 	// Are we doing the main page, or leaving here?
-	if (!empty($subactions[$_REQUEST['sa']]['function']))
+	if (!empty($subactions[$context['shd_current_subaction']]['function']))
 	{
-		$subactions[$_REQUEST['sa']]['function']();
+		$subactions[$context['shd_current_subaction']]['function']();
 		return;
 	}
 
@@ -300,11 +300,11 @@ function shd_admin_options($return_config)
 	// Int hooks - after we basically set everything up (so it's manipulatable by the hook, but before we do the last bits of finalisation)
 	call_integration_hook('shd_hook_hdadminopts');
 
-	$_REQUEST['sa'] = isset($_REQUEST['sa']) && isset($context[$context['admin_menu_name']]['tab_data']['tabs'][$_REQUEST['sa']]) ? $_REQUEST['sa'] : 'display';
+	$context['shd_current_subaction'] = isset($_REQUEST['sa']) && isset($context[$context['admin_menu_name']]['tab_data']['tabs'][$_REQUEST['sa']]) ? $_REQUEST['sa'] : 'display';
 	if (empty($context['post_url']))
-		$context['post_url'] = $scripturl . '?action=admin;area=helpdesk_options;save;sa=' . $_REQUEST['sa'];
+		$context['post_url'] = $scripturl . '?action=admin;area=helpdesk_options;save;sa=' . $context['shd_current_subaction'];
 
-	$config_vars = $context[$context['admin_menu_name']]['tab_data']['tabs'][$_REQUEST['sa']]['function']($return_config);
+	$config_vars = $context[$context['admin_menu_name']]['tab_data']['tabs'][$context['shd_current_subaction']]['function']($return_config);
 
 	if ($return_config)
 		return $config_vars;
@@ -316,7 +316,7 @@ function shd_admin_options($return_config)
 		$save_vars = $config_vars;
 
 		// If we're saving the posting options, we need to process the BBC tags.
-		if ($_REQUEST['sa'] == 'posting')
+		if ($context['shd_current_subaction'] == 'posting')
 		{
 			if (!isset($_POST['shd_bbc_enabledTags']))
 				$_POST['shd_bbc_enabledTags'] = array();
@@ -334,7 +334,7 @@ function shd_admin_options($return_config)
 		shd_admin_log_configvar($save_vars);
 		saveDBSettings($save_vars);
 		$_SESSION['adm-save'] = true;
-		redirectexit('action=admin;area=helpdesk_options;sa=' . $_REQUEST['sa']);
+		redirectexit('action=admin;area=helpdesk_options;sa=' . $context['shd_current_subaction']);
 	}
 
 	createToken('admin-dbsc');

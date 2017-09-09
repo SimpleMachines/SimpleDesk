@@ -110,6 +110,7 @@ $hooks = array();
 	$hooks[] = array(
 		'hook' => 'integrate_remove_attachments',
 		'function' => 'shd_remove_attachments',
+		'file' => '$sourcedir/sd_source/Subs-SimpleDeskAdmin.php',
 	);
 	$hooks[] = array(
 		'hook' => 'integrate_repair_attachments_nomsg',

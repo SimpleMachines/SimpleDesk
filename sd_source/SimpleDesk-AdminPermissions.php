@@ -47,9 +47,9 @@ function shd_admin_permissions()
 		'copyrole' => 'shd_admin_copy_role',
 	);
 
-	$_REQUEST['sa'] = isset($_REQUEST['sa']) && isset($subactions[$_REQUEST['sa']]) ? $_REQUEST['sa'] : 'main';
+	$context['shd_current_subaction'] = isset($_REQUEST['sa']) && isset($subactions[$_REQUEST['sa']]) ? $_REQUEST['sa'] : 'main';
 
-	$subactions[$_REQUEST['sa']]();
+	$subactions[$context['shd_current_subaction']]();
 }
 
 /**
@@ -86,8 +86,8 @@ function shd_admin_create_role()
 {
 	global $context, $txt, $smcFunc;
 
-	$_REQUEST['template'] = isset($_REQUEST['template']) ? (int) $_REQUEST['template'] : 0;
-	if (empty($context['shd_permissions']['roles'][$_REQUEST['template']]))
+	$context['role_template_id'] = isset($_REQUEST['template']) ? (int) $_REQUEST['template'] : 0;
+	if (empty($context['shd_permissions']['roles'][$context['role_template_id']]))
 		fatal_lang_error('shd_unknown_template', false);
 
 	if (empty($_REQUEST['part']))
@@ -114,7 +114,7 @@ function shd_admin_create_role()
 				'template' => 'int', 'role_name' => 'string',
 			),
 			array(
-				$_REQUEST['template'], $_POST['rolename'],
+				$context['role_template_id'], $_POST['rolename'],
 			),
 			array(
 				'id_role',
