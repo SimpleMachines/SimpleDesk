@@ -12,107 +12,86 @@
 	padding: 6px 12px;
 	border-top: double #ddd;
 }
-#sd_update_section
-{
+#sd_update_section {
 	margin-top: 10px;
 	margin-bottom: 10px;
 }
 #admin_main_section .windowbg {
 	height: 15em;
 }
-#sd_credits
-{
+#sd_credits {
 }
-.sd_group_name
-{
+.sd_group_name {
 }
-.sd_group_name hr
-{
+.sd_group_name hr {
 	margin-top: 2px;
 }
-.shd_help
-{
+.shd_help {
 	float: right;
 	margin-top: 8px;
 }
-.shd_admin_leftcolumn
-{
+.shd_admin_leftcolumn {
 	width: 74%;
 	margin-right: 10px;
 }
-.shd_admin_rightcolumn
-{
+.shd_admin_rightcolumn {
 	width: 24%;
 }
-.shd_credits_break
-{
+.shd_credits_break {
 	margin-bottom: 0;
 
 }
-.shd_former_contributor
-{
+.shd_former_contributor {
 	color: #696969;
 }
-.shd_bbc_list
-{
+.shd_bbc_list {
 	width: 33%;
 }
-.shd_info_box
-{
+.shd_info_box {
 	margin-bottom: 0;
 }
 
-.disabled
-{
+.disabled {
 	color: #777777;
 }
 
-.shd_credits_names
-{
+.shd_credits_names {
 	margin-left: 57px;
 }
 
-.shd_valign_top
-{
+.shd_valign_top {
 	vertical-align: top;
 }
 
-.shd_yes, .shd_no, .shd_own, .shd_any
-{
+.shd_yes, .shd_no, .shd_own, .shd_any {
 	padding-left:19px;
 	padding-bottom:3px;
 }
 
-.shd_yes
-{
+.shd_yes {
 	background:url(../images/simpledesk/perm_yes.png) no-repeat;
 }
 
-.shd_no
-{
+.shd_no {
 	background:url(../images/simpledesk/perm_no.png) no-repeat;
 }
 
-.shd_own
-{
+.shd_own {
 	background:url(../images/simpledesk/perm_own.png) no-repeat;
 }
 
-.shd_any
-{
+.shd_any {
 	background:url(../images/simpledesk/perm_any.png) no-repeat;
 }
 
-dl.permsettings
-{
+dl.permsettings {
 	clear: right;
 	overflow: auto;
 	margin: 0 0 10px 0;
 	padding: 0;
 }
 
-dl.permsettings dt
-{
+dl.permsettings dt {
 	width: 58%;
 	float: left;
 	margin: 0 0 10px 0;
@@ -120,8 +99,7 @@ dl.permsettings dt
 	clear: both;
 }
 
-dl.permsettings dt.settings_title
-{
+dl.permsettings dt.settings_title {
 	width: 100%;
 	float: none;
 	margin: 0 0 10px 0;
@@ -130,8 +108,7 @@ dl.permsettings dt.settings_title
 	clear: both;
 }
 
-dl.permsettings dt.windowbg
-{
+dl.permsettings dt.windowbg {
 	width: 98%;
 	float: left;
 	margin: 0 0 3px 0;
@@ -139,99 +116,80 @@ dl.permsettings dt.windowbg
 	clear: both;
 }
 
-dl.permsettings dd
-{
+dl.permsettings dd {
 	width: 38%;
 	float: left;
 	margin: 0 0 3px 0;
 	padding: 0;
 }
 
-dl.cannedsettings dt
-{
+dl.cannedsettings dt {
 	width: 30%;
 }
 
-dl.cannedsettings dd
-{
+dl.cannedsettings dd {
 	width: 68%;
 }
 
-dl.cannedsettings dd img
-{
+dl.cannedsettings dd img {
 	margin: 0;
 }
 
-dl.permsettings img, dl.cannedsettings dd img.icon
-{
+dl.permsettings img, dl.cannedsettings dd img.icon {
 	margin: 0 10px 0 0;
 }
 
-h3 a.permcollapse img
-{
+h3 a.permcollapse img {
 	margin-top:8px;
 }
 
-#cf_fieldicon_icon
-{
+#cf_fieldicon_icon {
 	padding-left:19px;
 	padding-bottom:3px;
 }
 
-.cf_ui_text, .cf_ui_largetext, .cf_ui_int, .cf_ui_float, .cf_ui_select, .cf_ui_checkbox, .cf_ui_radio, .cf_ui_multi
-{
+.cf_ui_text, .cf_ui_largetext, .cf_ui_int, .cf_ui_float, .cf_ui_select, .cf_ui_checkbox, .cf_ui_radio, .cf_ui_multi {
 	padding-left:19px;
 	padding-bottom:3px;
 }
 
-.cf_ui_text
-{
+.cf_ui_text {
 	background:url(../images/simpledesk/cf_ui_text.png) no-repeat;
 }
-.cf_ui_largetext
-{
+.cf_ui_largetext {
 	background:url(../images/simpledesk/cf_ui_largetext.png) no-repeat;
 }
-.cf_ui_int
-{
+.cf_ui_int {
 	background:url(../images/simpledesk/cf_ui_int.png) no-repeat;
 }
-.cf_ui_float
-{
+.cf_ui_float {
 	background:url(../images/simpledesk/cf_ui_float.png) no-repeat;
 }
-.cf_ui_select
-{
+.cf_ui_select {
 	background:url(../images/simpledesk/cf_ui_select.png) no-repeat;
 }
-.cf_ui_checkbox
-{
+.cf_ui_checkbox {
 	background:url(../images/simpledesk/cf_ui_checkbox.png) no-repeat;
 }
-.cf_ui_radio
-{
+.cf_ui_radio {
 	background:url(../images/simpledesk/cf_ui_radio.png) no-repeat;
 }
-.cf_ui_multi
-{
+.cf_ui_multi {
 	background:url(../images/simpledesk/cf_ui_multi.png) no-repeat;
 }
 
-.langblock
-{
+.langblock {
 	width:30%;
 	float:right;
 	display:block;
 }
 
-#error_log td.half_width
-{
+#error_log td.half_width {
 	vertical-align: top;
 }
 
 /* Plugin switch inmage */
-.features_switch
-{
+.features_switch {
 	float: right;
 	margin: 0.2em 1em 1em;
 }
