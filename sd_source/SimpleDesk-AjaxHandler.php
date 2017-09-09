@@ -847,7 +847,6 @@ function shd_ajax_notify()
  *
  *	@return null No output is generated, rather $user_name is updated to be a valid link.
  *  @since 2.0
- */
 */
 function shd_format_notify_name(&$user_name, $user_id, $ticket_starter)
 {

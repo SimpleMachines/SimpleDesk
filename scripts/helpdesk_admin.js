@@ -117,9 +117,9 @@ function toggleItem(itemID, theme_url, txt_on, txt_off)
 	itemValueHandle.value = itemValueHandle.value === 1 ? 0 : 1;
 
 	// Change the image, alternative text and the title.
-	document.getElementById("switch_" + itemID).src = theme_url + '/simpledesk/switch_' + (itemValueHandle.value == 1 ? 'on' : 'off') + '.png';
-	document.getElementById("switch_" + itemID).alt = itemValueHandle.value == 1 ? txt_off : txt_on;
-	document.getElementById("switch_" + itemID).title = itemValueHandle.value == 1 ? txt_off : txt_on;
+	document.getElementById("switch_" + itemID).src = theme_url + '/simpledesk/switch_' + (itemValueHandle.value === 1 ? 'on' : 'off') + '.png';
+	document.getElementById("switch_" + itemID).alt = itemValueHandle.value === 1 ? txt_off : txt_on;
+	document.getElementById("switch_" + itemID).title = itemValueHandle.value === 1 ? txt_off : txt_on;
 
 	// Don't reload.
 	return false;
