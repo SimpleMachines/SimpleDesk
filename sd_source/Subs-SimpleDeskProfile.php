@@ -325,6 +325,15 @@ function shd_list_get_ip_messages($start, $items_per_page, $sort, $where, $where
 	return $messages;
 }
 
+/**
+ *	Returns the number of helpdesk replies found for track ip.
+ *
+ *	@param string $where a valid SQL WHERE options for filtering data.
+ *	@param array $where_vars Valid options to be passed to $smcFunc.
+ *
+ *	@since 2.0
+ *	@return int A total count of helpdesk replies matching the WHERE filter.
+*/
 function shd_list_get_ip_message_count($where, $where_vars = array())
 {
 	global $smcFunc;

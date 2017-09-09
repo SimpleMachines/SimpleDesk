@@ -267,7 +267,7 @@ function shd_init()
  *	@param string $identifier SMF-style query identifier for database backend-specific replacements
  *	@param string $db_string Standard SMF 2.0 style database query, including {query_see_ticket} if appropriate
  *	@param array $db_values Standard SMF 2.0 style hash map of parameters to inject into the query
- *	@param resource $connection A database connection variable, if supplied, to override the one used by SMF by default
+ *	@param resource|null $connection A database connection variable, if supplied, to override the one used by SMF by default
  *	@return resource Standard database query resource, suitable for processing with other $smcFunc['db_*'] functions
  *
  *	@see shd_load_user_perms()
@@ -1024,6 +1024,7 @@ function shd_determine_status($action, $starter_id = 0, $replier_id = 0, $replie
 
 	switch ($action)
 	{
+		default:
 		case 'new':
 			return TICKET_STATUS_NEW; // it's a new ticket, what more can I say?
 		case 'resolve':
@@ -1665,6 +1666,7 @@ function shd_init_actions(&$actionArray)
 /**
  *	Last-minute buffer replacements to be made, e.g. removing unwanted content in helpdesk-only mode.
  *
+ *	@return string Modified output buffer.
  *	@since 2.0
 */
 function shd_buffer_replace($buffer)

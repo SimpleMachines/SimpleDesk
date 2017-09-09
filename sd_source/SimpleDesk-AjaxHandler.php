@@ -120,6 +120,9 @@ function shd_ajax()
  *	- switch privacy, update database
  *	- clear the cache of tickets for the Helpdesk menu item
  *	- return $context['ajax_return']['message'] as the new privacy item
+ *
+ *	@return bool Ignored by the main handler, but returns true.
+ *  @since 1.0
 */
 function shd_ajax_privacy()
 {
@@ -205,6 +208,9 @@ function shd_ajax_privacy()
  *	- update the database with the new urgency
  *	- identify whether the new urgency continues to allow the current user to change urgency or not
  *	- put the button links if appropriate into $context['ajax_return']['increase'] and $context['ajax_return']['decrease'] and return
+ *
+ *	@return bool Ignored by the main handler, but returns true.
+ *  @since 1.0
 */
 function shd_ajax_urgency()
 {
@@ -300,6 +306,9 @@ function shd_ajax_urgency()
  *	- Convert to SMF style BBC-to-HTML if using WYSIWYG
  *	- Do other XML sanitising
  *	- Return via $context['ajax_raw'] for {@link shd_ajax()} to output
+ *
+ *	@return bool Ignored by the main handler, but returns true.
+ *  @since 1.0
 */
 function shd_ajax_quote()
 {
@@ -373,6 +382,9 @@ function shd_ajax_quote()
  *	- Convert to SMF style BBC-to-HTML if using WYSIWYG
  *	- Do other XML sanitising
  *	- Return via $context['ajax_raw'] for {@link shd_ajax()} to output
+ *
+ *	@return bool Ignored by the main handler, but returns true.
+ *  @since 2.0
 */
 function shd_ajax_canned()
 {
@@ -457,6 +469,9 @@ function shd_ajax_canned()
  *	- Get the list of information for a ticket (which implicitly checks ticket access); if you can't see the ticket, bail.
  *	- Get the list of who can be assigned a ticket.
  *	- Return that via AJAX.
+ *
+ *	@return bool Ignored by the main handler, but returns true.
+ *  @since 1.0
 */
 function shd_ajax_assign()
 {
@@ -516,8 +531,10 @@ function shd_ajax_assign()
  *	- Get the list of information for a ticket (which implicitly checks ticket access); if you can't see the ticket, bail.
  *	- Get the list of who can be assigned a ticket; if requested user not on that list, bail.
  *	- Update and build return status, and return via AJAX.
+ *
+ *	@return bool Ignored by the main handler, but returns true.
+ *  @since 1.0
  */
-
 function shd_ajax_assign2()
 {
 	global $context, $smcFunc, $txt, $sourcedir, $user_profile;
@@ -581,6 +598,7 @@ function shd_ajax_assign2()
 /**
  *	Provide the list of possible notification recipients.
  *
+ *	@return bool Ignored by the main handler, but returns true.
  *	@since 2.0
 */
 function shd_ajax_notify()
@@ -824,6 +842,13 @@ function shd_ajax_notify()
 	}
 }
 
+/**
+ *	Formats a user with a valid profile link.
+ *
+ *	@return null No output is generated, rather $user_name is updated to be a valid link.
+ *  @since 2.0
+ */
+*/
 function shd_format_notify_name(&$user_name, $user_id, $ticket_starter)
 {
 	global $txt;

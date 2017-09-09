@@ -30,7 +30,7 @@ if (!defined('SMF'))
 /**
  *	Identify and return the character set parameters for searching.
  *
- *	@return An array of two items, the overall character set currently in use and the list of characters to be permitted in searches in the form of a regular expression character class.
+ *	@return array An array of two items, the overall character set currently in use and the list of characters to be permitted in searches in the form of a regular expression character class.
  *	@see shd_return_exclude_regex()
 */
 function shd_search_charset()

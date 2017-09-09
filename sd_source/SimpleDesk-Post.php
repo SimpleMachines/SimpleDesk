@@ -1480,7 +1480,7 @@ function shd_setup_replies($first_msg)
  *	@param string $id The id of the post box
  *	@param string $message The message for the post box
  *	@param array $buttons Buttons on the post box
- *	@param int $width (optional) The width of the post box
+ *	@param string|int $width (optional) The width of the post box, can use percents, ems, px, etc.
 */
 function shd_postbox($id, $message, $buttons, $width = '90%')
 {

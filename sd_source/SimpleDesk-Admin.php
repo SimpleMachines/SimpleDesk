@@ -249,6 +249,9 @@ function shd_admin_info()
  *
  *	This function handles all the sub areas under General Options, and adds the options listed in the relevant functions. In 1.0, all the options were stored in here, but in 1.1 they have been moved into their own functions.
  *
+ *	@param bool $return_config Whether to return configuration items or not
+ *
+ *	@return null|array If $return_config is true, An array of options, otherwise this falls into to SMF's generic settings handler.
  *	@since 1.0
 */
 function shd_admin_options($return_config)
