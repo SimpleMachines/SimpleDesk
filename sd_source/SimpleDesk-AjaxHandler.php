@@ -835,7 +835,7 @@ function shd_ajax_notify()
 				echo '<div class="shd_ajaxnotify"><input type="checkbox" name="notify[', $id, ']" value="', $id, '"', in_array($id, $selected) ? ' checked="checked"' : '', ' > ', $member, '</div>';
 		}
 
-		echo ']', ']></notify>';
+		echo '<br class="clear">]', ']></notify>';
 
 		$content = ob_get_clean();
 		return $context['ajax_raw'] = cleanXml($content);

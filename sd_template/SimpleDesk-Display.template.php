@@ -403,7 +403,7 @@ function template_viewticketattach()
 					<img src="', $settings['default_images_url'], '/simpledesk/attachments.png" alt="">', $txt['shd_ticket_attachments'], ' (', count($context['ticket_attach']['ticket']), ')
 				</h3>
 			</div>
-			<div class="windowbg2">
+			<div class="windowbg">
 				<div class="shd_attachmentbox">';
 
 		foreach ($context['ticket_attach']['ticket'] as $attachment)
@@ -1011,7 +1011,7 @@ function template_ticketactionlog()
 
 		if (empty($context['ticket_log']))
 			echo '
-				<tr class="windowbg2">
+				<tr class="windowbg">
 					<td colspan="3" class="shd_noticket">', $txt['shd_ticket_log_none'], '</td>
 				</tr>';
 		else

@@ -3,8 +3,8 @@
 ***********************************/
 /* SimpleDesk icons */
 .shd_smallicon {
-	width: 13px;
-	height: 13px;
+	width: 16px;
+	height: 20px;
 	margin-right: 4px;
 }
 .shd_icon_minihead {
@@ -334,9 +334,7 @@ form#postmodify .shd_ticket_roundframe {
 * Attachment stuff				  *
 ***********************************/
 .shd_reply_attachments {
-	width: 66%;
 	margin-bottom: 0;
-	float: left;
 	margin-top: 5px;
 }
 .shd_reply_attachments ul, .shd_reply_attachments li {
@@ -378,6 +376,10 @@ form#postmodify .shd_ticket_roundframe {
 	margin-right: auto;
 }
 
+#shd_notifications_div {
+	margin-top: 1em;
+}
+
 /**********************************
 * Posting and editing tickets/replies		 *
 ***********************************/
@@ -400,8 +402,6 @@ form#postmodify .shd_ticket_roundframe {
 	margin: 0.75em 0 0.5em 0;
 }
 #canned_replies {
-	float: left;
-	width: 66%;
 	margin-top: 1em;
 }
 
