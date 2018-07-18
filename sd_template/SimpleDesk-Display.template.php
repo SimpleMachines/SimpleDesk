@@ -81,7 +81,7 @@ function template_viewticket()
 						</dd>
 						<dt><img src="', $settings['default_images_url'], '/simpledesk/staff.png" alt="" class="shd_smallicon"> ', $txt['shd_ticket_assignedto'], ':</dt>
 						<dd><span id="assigned_to">', $context['ticket']['assigned']['link'], '</span><span id="assigned_button"></span></dd>
-						<dt class="full_width">
+						<dt class="shd_assignees_list">
 							<ul id="assigned_list" style="display:none;"></ul>
 						</dt>
 						<dt><img src="', $settings['default_images_url'], '/simpledesk/status.png" alt="" class="shd_smallicon"/> ', $txt['shd_ticket_status'], ':</dt>

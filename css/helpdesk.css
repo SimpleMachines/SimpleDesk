@@ -60,6 +60,10 @@
 	cursor: pointer;
 }
 
+.stats .shd_assignees_list {
+	width: 100%;
+}
+
 .information li dt {
 	color: gray;
 	font-weight: bold;
@@ -462,10 +466,10 @@ form#postmodify .shd_ticket_roundframe {
 }
 
 /* Urgency stuff */
-.generic_icons.urgency_increase {
+.generic_icons.urgency_increase::before {
 	background-position: -161px -5px;
 }
-.generic_icons.urgency_decrease {
+.generic_icons.urgency_decrease::before {
 	background-position: -213px -5px;
 }
 

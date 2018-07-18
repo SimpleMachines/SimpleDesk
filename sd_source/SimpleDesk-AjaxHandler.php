@@ -73,38 +73,59 @@ function shd_ajax()
 	if (!empty($_REQUEST['op']) && !empty($subactions[$_REQUEST['op']]))
 		$subactions[$_REQUEST['op']]();
 
-	header('Content-Type: text/xml; charset=' . (empty($context['character_set']) ? 'ISO-8859-1' : $context['character_set']));
-	echo '<?xml version="1.0" encoding="', $context['character_set'], '"?' . '>';
-
-	if (empty($context['ajax_raw'])) // if something wants to do something funky, let it otherwise use the standard format
+	// Json support.
+	if (isset($context['ajax_type']) && $context['ajax_type'] == 'json')
 	{
-		echo '<response>';
+		header('Content-Type: application/json; charset=UTF8');
 
-		if (!empty($context['ajax_return']) && is_array($context['ajax_return']))
-		{
-			foreach ($context['ajax_return'] as $key => $value)
-			{
-				if (empty($value)) // for <tag>
-					echo '
-	<', $key, '>';
-				else
-				{
-					$value = (array) $value;
-					foreach ($value as $thisvalue)
-						echo '
-	<', $key, '><![CD', 'ATA[', $thisvalue, ']', ']></', $key, '>';
-				}
-			}
-		}
+		if (empty($context['ajax_raw']) && is_array($context['ajax_return']) && isset($context['ajax_return']['success']))
+			echo json_encode($context['ajax_return']);
+		elseif (empty($context['ajax_raw']) && is_array($context['ajax_return']))
+			echo json_encode(array_merge(array('success' => true), $context['ajax_return']));
+		elseif (!empty($context['ajax_raw']) && is_array($context['ajax_raw']))
+			echo json_encode($context['ajax_return']);
+		elseif (!empty($context['ajax_raw']))
+			echo $context['ajax_raw'];
+		else
+			echo json_encode(array('success' => false));
 
-		echo '
-</response>';
+		obExit(false);
 	}
 	else
 	{
-		echo $context['ajax_raw']; // assumed to be just well formed XML sans the header
+		header('Content-Type: text/xml; charset=' . (empty($context['character_set']) ? 'ISO-8859-1' : $context['character_set']));
+		echo '<?xml version="1.0" encoding="', $context['character_set'], '"?' . '>';
+
+		if (empty($context['ajax_raw'])) // if something wants to do something funky, let it otherwise use the standard format
+		{
+			echo '<response>';
+
+			if (!empty($context['ajax_return']) && is_array($context['ajax_return']))
+			{
+				foreach ($context['ajax_return'] as $key => $value)
+				{
+					if (empty($value)) // for <tag>
+						echo '
+		<', $key, '>';
+					else
+					{
+						$value = (array) $value;
+						foreach ($value as $thisvalue)
+							echo '
+		<', $key, '><![CD', 'ATA[', $thisvalue, ']', ']></', $key, '>';
+					}
+				}
+			}
+
+			echo '
+	</response>';
+		}
+		else
+		{
+			echo $context['ajax_raw']; // assumed to be just well formed XML sans the header
+		}
+		obExit(false);
 	}
-	obExit(false);
 }
 
 /**
@@ -128,17 +149,20 @@ function shd_ajax_privacy()
 {
 	global $smcFunc, $user_info, $context, $txt, $sourcedir;
 
+	// Use Json for the response.
+	$context['ajax_type'] = 'json';
+
 	$session_check = checkSession('get', '', false); // check the session but don't die fatally.
 	if (!empty($session_check))
 	{
-		$context['ajax_return'] = array('error' => $txt[$session_check]);
+		$context['ajax_return'] = array('success' => false, 'error' => $txt[$session_check]);
 		return;
 	}
 
 	// First, figure out the state of the ticket - is it private or not? Can we even see it?
 	if (empty($context['ticket_id']))
 	{
-		$context['ajax_return'] = array('error' => $txt['shd_no_ticket']);
+		$context['ajax_return'] = array('success' => false, 'error' => $txt['shd_no_ticket']);
 		return;
 	}
 
@@ -156,7 +180,7 @@ function shd_ajax_privacy()
 	{
 		if (in_array($row['status'], array(TICKET_STATUS_CLOSED, TICKET_STATUS_DELETED)) || !shd_allowed_to('shd_alter_privacy_any', $row['id_dept']) && (!shd_allowed_to('shd_alter_privacy_own', $row['id_dept']) || $row['id_member_started'] != $user_info['id']))
 		{
-			$context['ajax_return'] = array('error' => $txt['shd_cannot_change_privacy']);
+			$context['ajax_return'] = array('success' => false, 'error' => $txt['shd_cannot_change_privacy']);
 			return;
 		}
 
@@ -185,11 +209,11 @@ function shd_ajax_privacy()
 		// Make sure we recalculate the number of tickets on next page load
 		shd_clear_active_tickets($row['id_dept']);
 
-		$context['ajax_return'] = array('message' => $new ? $txt['shd_ticket_private'] : $txt['shd_ticket_notprivate']);
+		$context['ajax_return'] = array('success' => true, 'message' => $new ? $txt['shd_ticket_private'] : $txt['shd_ticket_notprivate']);
 	}
 	else
 	{
-		$context['ajax_return'] = array('error' => $txt['shd_no_ticket']);
+		$context['ajax_return'] = array('success' => false, 'error' => $txt['shd_no_ticket']);
 		return;
 	}
 }
@@ -216,17 +240,20 @@ function shd_ajax_urgency()
 {
 	global $smcFunc, $user_info, $context, $txt, $scripturl, $settings, $sourcedir;
 
+	// Use Json for the response.
+	$context['ajax_type'] = 'json';
+
 	$session_check = checkSession('get', '', false); // check the session but don't die fatally.
 	if (!empty($session_check))
 	{
-		$context['ajax_return'] = array('error' => $txt[$session_check]);
+		$context['ajax_return'] = array('success' => false, 'error' => $txt[$session_check]);
 		return;
 	}
 
 	// First, figure out the state of the ticket - is it private or not? Can we even see it?
 	if (empty($context['ticket_id']))
 	{
-		$context['ajax_return'] = array('error' => $txt['shd_no_ticket']);
+		$context['ajax_return'] = array('success' => false, 'error' => $txt['shd_no_ticket']);
 		return;
 	}
 
@@ -246,7 +273,7 @@ function shd_ajax_urgency()
 
 		if (empty($_GET['change']) || empty($can_urgency[$_GET['change']]))
 		{
-			$context['ajax_return'] = array('error' => $txt['shd_cannot_change_urgency']);
+			$context['ajax_return'] = array('success' => false, 'error' => $txt['shd_cannot_change_urgency']);
 			return;
 		}
 
@@ -274,6 +301,7 @@ function shd_ajax_urgency()
 		$new_options = shd_can_alter_urgency($new_urgency, $row['id_member_started'], ($row['status'] == TICKET_STATUS_CLOSED), ($row['status'] == TICKET_STATUS_DELETED), $row['id_dept']);
 
 		$context['ajax_return'] = array(
+			'success' => true,
 			'message' => $new_urgency > TICKET_URGENCY_HIGH ? '<span class="error">' . $txt['shd_urgency_' . $new_urgency] . '</span>' : $txt['shd_urgency_' . $new_urgency],
 		);
 
@@ -315,6 +343,9 @@ function shd_ajax_quote()
 	global $modSettings, $user_info, $txt, $settings, $context;
 	global $sourcedir, $smcFunc;
 
+	// Use Json for the response.
+	$context['ajax_type'] = 'json';
+
 	loadLanguage('Post');
 	checkSession('get');
 
@@ -354,7 +385,7 @@ function shd_ajax_quote()
 				require_once($sourcedir . '/Subs-Editor.php');
 				$row['body'] = strtr($row['body'], array('&lt;' => '#smlt#', '&gt;' => '#smgt#', '&amp;' => '#smamp#'));
 				$row['body'] = bbc_to_html($row['body']);
-				$lb = '<br>';
+				$lb = "\n";
 			}
 			else
 				$lb = "\n";
@@ -367,9 +398,7 @@ function shd_ajax_quote()
 		}
 	}
 
-	$message = strtr($message, array('&nbsp;' => '&#160;', '<' => '&lt;', '>' => '&gt;'));
-
-	$context['ajax_raw'] = '<quote>' . $message . '</quote>';
+	$context['ajax_return'] = array('success' => true, 'message' => $message);
 }
 
 /**
@@ -390,6 +419,9 @@ function shd_ajax_canned()
 {
 	global $modSettings, $user_info, $txt, $settings, $context;
 	global $sourcedir, $smcFunc;
+
+	// Use Json for the response.
+	$context['ajax_type'] = 'json';
 
 	loadLanguage('Post');
 	checkSession('get');
@@ -457,7 +489,7 @@ function shd_ajax_canned()
 
 	$message = strtr($message, array('&nbsp;' => '&#160;', '<' => '&lt;', '>' => '&gt;'));
 
-	$context['ajax_raw'] = '<quote>' . $message . '</quote>';
+	$context['ajax_return'] = array('success' => true, 'message' => $message);
 }
 
 /**
@@ -477,6 +509,9 @@ function shd_ajax_assign()
 {
 	global $context, $smcFunc, $txt, $sourcedir, $user_profile;
 
+	// Use Json for the response.
+	$context['ajax_type'] = 'json';
+
 	checkSession('get');
 
 	if (!empty($context['ticket_id']))
@@ -495,17 +530,17 @@ function shd_ajax_assign()
 		$smcFunc['db_free_result']($query);
 	}
 	if (empty($valid))
-		return $context['ajax_return'] = array('error' => $txt['shd_no_ticket']);
+		return $context['ajax_return'] = array('success' => false, 'error' => $txt['shd_no_ticket']);
 
 	require_once($sourcedir . '/sd_source/SimpleDesk-Assign.php');
 	$assignees = shd_get_possible_assignees($private, $ticket_starter, $dept);
 	array_unshift($assignees, 0); // add the unassigned option in at the start
 
 	if (empty($assignees))
-		return $context['ajax_return'] = array('error' => $txt['shd_no_staff_assign']);
+		return $context['ajax_return'] = array('success' => false, 'error' => $txt['shd_no_staff_assign']);
 
 	if (!shd_allowed_to('shd_assign_ticket_any', $dept) || $status == TICKET_STATUS_CLOSED || $status == TICKET_STATUS_DELETED)
-		return $context['ajax_return'] = array('error' => $txt['shd_cannot_assign']);
+		return $context['ajax_return'] = array('success' => false, 'error' => $txt['shd_cannot_assign']);
 
 	// OK, so we have the general values we need. Let's get user names, and get ready to kick this back to the user. We'll build the XML here though.
 	loadMemberData($assignees);
@@ -513,13 +548,16 @@ function shd_ajax_assign()
 	// Just out of interest, who's an admin?
 	$admins = shd_members_allowed_to('admin_helpdesk', $dept);
 
-	$context['ajax_raw'] = '<response>';
+	$context['ajax_return'] = array('success' => true, 'members' => array());
 	foreach ($assignees as $assignee)
-		$context['ajax_raw'] .= '
-<member uid="' . $assignee . '"' . (!empty($assignee) ? (in_array($assignee, $admins) ? ' admin="yes"' : ' admin="no"') : '') . ($ticket_assigned == $assignee ? ' assigned="yes"' : '') . '><![CD' . 'ATA[' . (empty($assignee) ? '<span class="error">' . $txt['shd_unassigned'] . '</span>' : $user_profile[$assignee]['member_name']) . ']' . ']></member>';
+		$context['ajax_return']['members'][$assignee] = array(
+			'uid' => $assignee,
+			'admin' => in_array($assignee, $admins) ? 'yes' : 'no',
+			'assigned' => $ticket_assigned == $assignee ? 'yes' : 'no',
+			'name' => empty($assignee) ? '<span class="error">' . $txt['shd_unassigned'] . '</span>' : $user_profile[$assignee]['member_name'],
+		);
 
-	$context['ajax_raw'] .= '
-</response>';
+	return $context['ajax_return'];
 }
 
 /**
@@ -538,6 +576,9 @@ function shd_ajax_assign()
 function shd_ajax_assign2()
 {
 	global $context, $smcFunc, $txt, $sourcedir, $user_profile;
+
+	// Use Json for the response.
+	$context['ajax_type'] = 'json';
 
 	checkSession('get');
 
@@ -560,10 +601,10 @@ function shd_ajax_assign2()
 		return $context['ajax_return'] = array('error' => $txt['shd_no_ticket']);
 
 	if (!isset($_GET['to_user']) || !is_numeric($_GET['to_user']))
-		return $context['ajax_return'] = array('error' => $txt['shd_assigned_not_permitted'] . 'line459');
+		return $context['ajax_return'] = array('success' => false, 'error' => $txt['shd_assigned_not_permitted'] . 'line459');
 
 	if (!shd_allowed_to('shd_assign_ticket_any', $dept) || $status == TICKET_STATUS_CLOSED || $status == TICKET_STATUS_DELETED)
-		return $context['ajax_return'] = array('error' => $txt['shd_cannot_assign']);
+		return $context['ajax_return'] = array('success' => false, 'error' => $txt['shd_cannot_assign']);
 
 	$_GET['to_user'] = isset($_GET['to_user']) ? (int) $_GET['to_user'] : 0;
 
@@ -572,7 +613,7 @@ function shd_ajax_assign2()
 	array_unshift($assignees, 0); // add the unassigned option in at the start
 
 	if (!in_array($_GET['to_user'], $assignees))
-		return $context['ajax_return'] = array('error' => $txt['shd_assigned_not_permitted']);
+		return $context['ajax_return'] = array('success' => false, 'error' => $txt['shd_assigned_not_permitted']);
 
 	if (!empty($_GET['to_user']))
 		loadMemberData($_GET['to_user']);
@@ -592,7 +633,7 @@ function shd_ajax_assign2()
 		shd_commit_assignment($context['ticket_id'], $_GET['to_user'], true);
 	}
 
-	return $context['ajax_return'] = array('assigned' => $user_name);
+	return $context['ajax_return'] = array('success' => true, 'assigned' => $user_name);
 }
 
 /**
@@ -605,9 +646,12 @@ function shd_ajax_notify()
 {
 	global $txt, $context, $smcFunc, $user_profile, $modSettings, $sourcedir;
 
+	// Use Json for the response.
+	$context['ajax_type'] = 'json';
+
 	$session_check = checkSession('get', '', false); // check the session but don't die fatally.
 	if (!empty($session_check))
-		return $context['ajax_return'] = array('error' => $txt[$session_check]);
+		return $context['ajax_return'] = array('success' => false, 'error' => $txt[$session_check]);
 
 	shd_load_language('sd_language/SimpleDeskNotifications');
 	require_once($sourcedir . '/sd_source/SimpleDesk-Notifications.php');
@@ -628,7 +672,7 @@ function shd_ajax_notify()
 		$smcFunc['db_free_result']($query);
 	}
 	if (empty($ticket) || !shd_allowed_to('shd_singleton_email', $ticket['id_dept']) || $ticket['status'] == TICKET_STATUS_CLOSED || $ticket['status'] == TICKET_STATUS_DELETED)
-		return $context['ajax_return'] = array('error' => $txt['shd_no_ticket']);
+		return $context['ajax_return'] = array('success' => false, 'error' => $txt['shd_no_ticket']);
 
 	// So, we need to start figuring out who's going to be notified, who won't be and who we might be interested in notifying.
 	$notify_list = array(
@@ -797,12 +841,9 @@ function shd_ajax_notify()
 	}
 
 	if (empty($notify_list) || empty($members))
-		return $context['ajax_raw'] = '<notify><![C' . 'DATA[' . cleanXml($txt['shd_ping_none']) . ']' . ']></notify>';
+		return $context['ajax_return'] = array('success' => false, 'error' => $txt['shd_ping_none']);
 	else
 	{
-		ob_start();
-		echo '<notify><![C', 'DATA[';
-
 		$selected = array();
 		if (!empty($_GET['list']))
 		{
@@ -812,33 +853,16 @@ function shd_ajax_notify()
 					$selected[] = (int) $id;
 		}
 
-		if (!empty($notify_list['being_notified']))
-			echo '<span class="shd_ajax_head">', $txt['shd_ping_already_' . (count($notify_list['being_notified']) == 1 ? '1' : 'n')], '</span><br>', implode(', ', $notify_list['being_notified']);
-
-		if (!empty($notify_list['optional']))
-		{
-			if (!empty($notify_list['being_notified']))
-				echo '<br><br>';
-
-			echo '<span class="shd_ajax_head">', $txt['shd_ping_' . (count($notify_list['optional']) == 1 ? '1' : 'n')], '</span><br>';
-			foreach ($notify_list['optional'] as $id => $member)
-				echo '<div class="shd_ajaxnotify"><input type="checkbox" name="notify[', $id, ']" value="', $id, '"', in_array($id, $selected) ? ' checked="checked"' : '', ' > ', $member, '</div>';
-		}
-
-		if (!empty($notify_list['optional_butoff']))
-		{
-			if (!empty($notify_list['being_notified']) || !empty($notify_list['optional_butoff']))
-				echo '<br><br>';
-
-			echo '<span class="shd_ajax_head">', $txt['shd_ping_none_' . (count($notify_list['optional_butoff']) == 1 ? '1' : 'n')], '</span><br>';
-			foreach ($notify_list['optional_butoff'] as $id => $member)
-				echo '<div class="shd_ajaxnotify"><input type="checkbox" name="notify[', $id, ']" value="', $id, '"', in_array($id, $selected) ? ' checked="checked"' : '', ' > ', $member, '</div>';
-		}
-
-		echo '<br class="clear">]', ']></notify>';
-
-		$content = ob_get_clean();
-		return $context['ajax_raw'] = cleanXml($content);
+		return $context['ajax_return'] = array(
+			'success' => true,
+			'being_notified_txt' => !empty($notify_list['being_notified']) ? $txt['shd_ping_already_' . (count($notify_list['being_notified']) == 1 ? '1' : 'n')] : '',
+			'being_notified' => !empty($notify_list['being_notified']) ? $notify_list['being_notified'] : array(),
+			'optional_txt' => !empty($notify_list['optional']) ? $txt['shd_ping_' . (count($notify_list['optional']) == 1 ? '1' : 'n')] : '',
+			'optional' => !empty($notify_list['optional']) ? $notify_list['optional'] : array(),
+			'optional_butoff_txt' => !empty($notify_list['optional_butoff']) ? $txt['shd_ping_none_' . (count($notify_list['optional_butoff']) == 1 ? '1' : 'n')] : '',
+			'optional_butoff' => !empty($notify_list['optional_butoff']) ? $notify_list['optional_butoff'] : array(),
+			'selected' => $selected,
+		);
 	}
 }
 
