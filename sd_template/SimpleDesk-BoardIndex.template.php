@@ -6,14 +6,14 @@
  *	customised views for the recycle bin and the list of resolved tickets.
  *
  *	@package template
- *	@since 1.0
+ *	@since 2.1
 */
 
 /**
  *	Board Index Integration for SimpleDesk Icons.
  *
  *  @param array $board Current board information.
- *	@since 2.0
+ *	@since 2.1
 */
 function template_bi_shd_icon($board)
 {
@@ -26,7 +26,8 @@ function template_bi_shd_icon($board)
 /**
  *	Board Index Integration for SimpleDesk Stats.
  *
- * @param array $board Current board information.
+ *  @param array $board Current board information.
+ *  @since 2.1
  */
 function template_bi_shd_stats($board)
 {

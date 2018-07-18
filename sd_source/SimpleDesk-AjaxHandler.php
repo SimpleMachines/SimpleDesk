@@ -71,61 +71,82 @@ function shd_ajax()
 	$context['ajax_raw'] = '';
 
 	if (!empty($_REQUEST['op']) && !empty($subactions[$_REQUEST['op']]))
-		$subactions[$_REQUEST['op']]();
+		$result = $subactions[$_REQUEST['op']]();
+
+	if (empty($context['ajax_return']) && empty($context['ajax_raw']) && !empty($result))
+		$context['ajax_return'] = $result;
 
 	// Json support.
 	if (isset($context['ajax_type']) && $context['ajax_type'] == 'json')
-	{
-		header('Content-Type: application/json; charset=UTF8');
-
-		if (empty($context['ajax_raw']) && is_array($context['ajax_return']) && isset($context['ajax_return']['success']))
-			echo json_encode($context['ajax_return']);
-		elseif (empty($context['ajax_raw']) && is_array($context['ajax_return']))
-			echo json_encode(array_merge(array('success' => true), $context['ajax_return']));
-		elseif (!empty($context['ajax_raw']) && is_array($context['ajax_raw']))
-			echo json_encode($context['ajax_return']);
-		elseif (!empty($context['ajax_raw']))
-			echo $context['ajax_raw'];
-		else
-			echo json_encode(array('success' => false));
-
-		obExit(false);
-	}
+		return shd_ajax_json_response();
 	else
+		return shd_ajax_xml_response();
+}
+
+/**
+ *	Handles returning a response in XML format
+ *
+ *  @since 2.1
+*/
+function shd_ajax_xml_response()
+{
+	global $context;
+
+	header('Content-Type: text/xml; charset=' . (empty($context['character_set']) ? 'ISO-8859-1' : $context['character_set']));
+	echo '<?xml version="1.0" encoding="', $context['character_set'], '"?' . '>';
+
+	if (empty($context['ajax_raw'])) // if something wants to do something funky, let it otherwise use the standard format
 	{
-		header('Content-Type: text/xml; charset=' . (empty($context['character_set']) ? 'ISO-8859-1' : $context['character_set']));
-		echo '<?xml version="1.0" encoding="', $context['character_set'], '"?' . '>';
+		echo '<response>';
 
-		if (empty($context['ajax_raw'])) // if something wants to do something funky, let it otherwise use the standard format
+		if (!empty($context['ajax_return']) && is_array($context['ajax_return']))
 		{
-			echo '<response>';
-
-			if (!empty($context['ajax_return']) && is_array($context['ajax_return']))
+			foreach ($context['ajax_return'] as $key => $value)
 			{
-				foreach ($context['ajax_return'] as $key => $value)
+				if (empty($value)) // for <tag>
+					echo '
+	<', $key, '>';
+				else
 				{
-					if (empty($value)) // for <tag>
+					$value = (array) $value;
+					foreach ($value as $thisvalue)
 						echo '
-		<', $key, '>';
-					else
-					{
-						$value = (array) $value;
-						foreach ($value as $thisvalue)
-							echo '
-		<', $key, '><![CD', 'ATA[', $thisvalue, ']', ']></', $key, '>';
-					}
+	<', $key, '><![CD', 'ATA[', $thisvalue, ']', ']></', $key, '>';
 				}
 			}
+		}
 
-			echo '
-	</response>';
-		}
-		else
-		{
-			echo $context['ajax_raw']; // assumed to be just well formed XML sans the header
-		}
-		obExit(false);
+		echo '
+</response>';
 	}
+	else
+		echo $context['ajax_raw']; // assumed to be just well formed XML sans the header
+	obExit(false);
+}
+
+/**
+ *	Handles returning a response in JSON format
+ *
+ *  @since 2.1
+*/
+function shd_ajax_json_response()
+{
+	global $context;
+
+	header('Content-Type: application/json; charset=UTF8');
+
+	if (empty($context['ajax_raw']) && is_array($context['ajax_return']) && isset($context['ajax_return']['success']))
+		echo json_encode($context['ajax_return']);
+	elseif (empty($context['ajax_raw']) && is_array($context['ajax_return']))
+		echo json_encode(array_merge(array('success' => true), $context['ajax_return']));
+	elseif (!empty($context['ajax_raw']) && is_array($context['ajax_raw']))
+		echo json_encode($context['ajax_return']);
+	elseif (!empty($context['ajax_raw']))
+		echo $context['ajax_raw'];
+	else
+		echo json_encode(array('success' => false));
+
+	obExit(false);
 }
 
 /**
@@ -142,7 +163,7 @@ function shd_ajax()
  *	- clear the cache of tickets for the Helpdesk menu item
  *	- return $context['ajax_return']['message'] as the new privacy item
  *
- *	@return bool|null Ignored by the main handler, but returns true.
+ *	@return array Response data for Ajax.
  *  @since 1.0
 */
 function shd_ajax_privacy()
@@ -154,17 +175,11 @@ function shd_ajax_privacy()
 
 	$session_check = checkSession('get', '', false); // check the session but don't die fatally.
 	if (!empty($session_check))
-	{
-		$context['ajax_return'] = array('success' => false, 'error' => $txt[$session_check]);
-		return;
-	}
+		return array('success' => false, 'error' => $txt[$session_check]);
 
 	// First, figure out the state of the ticket - is it private or not? Can we even see it?
 	if (empty($context['ticket_id']))
-	{
-		$context['ajax_return'] = array('success' => false, 'error' => $txt['shd_no_ticket']);
-		return;
-	}
+		return array('success' => false, 'error' => $txt['shd_no_ticket']);
 
 	$query = shd_db_query('', '
 		SELECT id_member_started, subject, private, status, id_dept
@@ -179,10 +194,7 @@ function shd_ajax_privacy()
 	if ($row = $smcFunc['db_fetch_assoc']($query))
 	{
 		if (in_array($row['status'], array(TICKET_STATUS_CLOSED, TICKET_STATUS_DELETED)) || !shd_allowed_to('shd_alter_privacy_any', $row['id_dept']) && (!shd_allowed_to('shd_alter_privacy_own', $row['id_dept']) || $row['id_member_started'] != $user_info['id']))
-		{
-			$context['ajax_return'] = array('success' => false, 'error' => $txt['shd_cannot_change_privacy']);
-			return;
-		}
+			return array('success' => false, 'error' => $txt['shd_cannot_change_privacy']);
 
 		$smcFunc['db_free_result']($query);
 
@@ -209,13 +221,10 @@ function shd_ajax_privacy()
 		// Make sure we recalculate the number of tickets on next page load
 		shd_clear_active_tickets($row['id_dept']);
 
-		$context['ajax_return'] = array('success' => true, 'message' => $new ? $txt['shd_ticket_private'] : $txt['shd_ticket_notprivate']);
+		return array('success' => true, 'message' => $new ? $txt['shd_ticket_private'] : $txt['shd_ticket_notprivate']);
 	}
 	else
-	{
-		$context['ajax_return'] = array('success' => false, 'error' => $txt['shd_no_ticket']);
-		return;
-	}
+		return array('success' => false, 'error' => $txt['shd_no_ticket']);
 }
 
 /**
@@ -233,7 +242,7 @@ function shd_ajax_privacy()
  *	- identify whether the new urgency continues to allow the current user to change urgency or not
  *	- put the button links if appropriate into $context['ajax_return']['increase'] and $context['ajax_return']['decrease'] and return
  *
- *	@return bool|null Ignored by the main handler, but returns true.
+ *	@return array Response data for Ajax.
  *  @since 1.0
 */
 function shd_ajax_urgency()
@@ -245,17 +254,11 @@ function shd_ajax_urgency()
 
 	$session_check = checkSession('get', '', false); // check the session but don't die fatally.
 	if (!empty($session_check))
-	{
-		$context['ajax_return'] = array('success' => false, 'error' => $txt[$session_check]);
-		return;
-	}
+		return array('success' => false, 'error' => $txt[$session_check]);
 
 	// First, figure out the state of the ticket - is it private or not? Can we even see it?
 	if (empty($context['ticket_id']))
-	{
-		$context['ajax_return'] = array('success' => false, 'error' => $txt['shd_no_ticket']);
-		return;
-	}
+		return array('success' => false, 'error' => $txt['shd_no_ticket']);
 
 	$query = shd_db_query('', '
 		SELECT id_member_started, subject, urgency, status, id_dept
@@ -272,10 +275,7 @@ function shd_ajax_urgency()
 		$can_urgency = shd_can_alter_urgency($row['urgency'], $row['id_member_started'], ($row['status'] == TICKET_STATUS_CLOSED), ($row['status'] == TICKET_STATUS_DELETED), $row['id_dept']);
 
 		if (empty($_GET['change']) || empty($can_urgency[$_GET['change']]))
-		{
-			$context['ajax_return'] = array('success' => false, 'error' => $txt['shd_cannot_change_urgency']);
-			return;
-		}
+			return array('success' => false, 'error' => $txt['shd_cannot_change_urgency']);
 
 		$new_urgency = $row['urgency'] + ($_GET['change'] == 'increase' ? 1 : -1);
 		$action = 'urgency_' . $_GET['change'];
@@ -314,13 +314,10 @@ function shd_ajax_urgency()
 			if ($can)
 				$context['ajax_return'][$button] = $array[$button];
 
-		return;
+		return $context['ajax_return'];
 	}
 	else
-	{
-		$context['ajax_return'] = array('error' => $txt['shd_no_ticket']);
-		return;
-	}
+		return array('error' => $txt['shd_no_ticket']);
 }
 
 /**
@@ -335,7 +332,7 @@ function shd_ajax_urgency()
  *	- Do other XML sanitising
  *	- Return via $context['ajax_raw'] for {@link shd_ajax()} to output
  *
- *	@return bool|null Ignored by the main handler, but returns true.
+ *	@return array Response data for Ajax.
  *  @since 1.0
 */
 function shd_ajax_quote()
@@ -398,7 +395,7 @@ function shd_ajax_quote()
 		}
 	}
 
-	$context['ajax_return'] = array('success' => true, 'message' => $message);
+	return array('success' => true, 'message' => $message);
 }
 
 /**
@@ -412,7 +409,7 @@ function shd_ajax_quote()
  *	- Do other XML sanitising
  *	- Return via $context['ajax_raw'] for {@link shd_ajax()} to output
  *
- *	@return bool|null Ignored by the main handler, but returns true.
+ *	@return array Response data for Ajax.
  *  @since 2.0
 */
 function shd_ajax_canned()
@@ -449,7 +446,7 @@ function shd_ajax_canned()
 		if ($smcFunc['db_num_rows']($query) == 0)
 		{
 			$smcFunc['db_free_result']($query);
-			return $context['ajax_raw'] = '<quote>' . $message . '</quote>';
+			return array('success' => true, 'message' => $message);
 		}
 
 		$row = $smcFunc['db_fetch_assoc']($query);
@@ -457,19 +454,19 @@ function shd_ajax_canned()
 
 		// Check ability to reply to this ticket. No ability to reply at all, no canned reply.
 		if (!shd_allowed_to('shd_reply_ticket_own', $row['id_dept']) && !shd_allowed_to('shd_reply_ticket_any', $row['id_dept']))
-			return $context['ajax_raw'] = '<quote>' . $message . '</quote>';
+			return array('success' => true, 'message' => $message);
 
 		// Now check for can-reply-to-own (reply to any will pass this check correctly anyway)
 		if (!shd_allowed_to('shd_reply_ticket_any', $row['id_dept']) && shd_allowed_to('shd_reply_ticket_own', $row['id_dept']) && $row['id_member_started'] != $user_info['id'])
-			return $context['ajax_raw'] = '<quote>' . $message . '</quote>';
+			return array('success' => true, 'message' => $message);
 
 		// Now verify the per-reply visibility. Only applies to non admins anyway...
 		if (!shd_allowed_to('admin_helpdesk', $row['id_dept']) && !$user_info['is_admin'])
 		{
 			if (shd_allowed_to('shd_staff', $row['id_dept']) && empty($row['vis_staff']))
-				return $context['ajax_raw'] = '<quote>' . $message . '</quote>';
+				return array('success' => true, 'message' => $message);
 			elseif (!shd_allowed_to('shd_staff', $row['id_dept']) && empty($row['vis_user']))
-				return $context['ajax_raw'] = '<quote>' . $message . '</quote>';
+				return array('success' => true, 'message' => $message);
 		}
 
 		$message = un_preparsecode($row['body']);
@@ -489,7 +486,7 @@ function shd_ajax_canned()
 
 	$message = strtr($message, array('&nbsp;' => '&#160;', '<' => '&lt;', '>' => '&gt;'));
 
-	$context['ajax_return'] = array('success' => true, 'message' => $message);
+	return array('success' => true, 'message' => $message);
 }
 
 /**
@@ -502,7 +499,7 @@ function shd_ajax_canned()
  *	- Get the list of who can be assigned a ticket.
  *	- Return that via AJAX.
  *
- *	@return bool|null Ignored by the main handler, but returns true.
+ *	@return array Response data for Ajax.
  *  @since 1.0
 */
 function shd_ajax_assign()
@@ -530,17 +527,17 @@ function shd_ajax_assign()
 		$smcFunc['db_free_result']($query);
 	}
 	if (empty($valid))
-		return $context['ajax_return'] = array('success' => false, 'error' => $txt['shd_no_ticket']);
+		return array('success' => false, 'error' => $txt['shd_no_ticket']);
 
 	require_once($sourcedir . '/sd_source/SimpleDesk-Assign.php');
 	$assignees = shd_get_possible_assignees($private, $ticket_starter, $dept);
 	array_unshift($assignees, 0); // add the unassigned option in at the start
 
 	if (empty($assignees))
-		return $context['ajax_return'] = array('success' => false, 'error' => $txt['shd_no_staff_assign']);
+		return array('success' => false, 'error' => $txt['shd_no_staff_assign']);
 
 	if (!shd_allowed_to('shd_assign_ticket_any', $dept) || $status == TICKET_STATUS_CLOSED || $status == TICKET_STATUS_DELETED)
-		return $context['ajax_return'] = array('success' => false, 'error' => $txt['shd_cannot_assign']);
+		return array('success' => false, 'error' => $txt['shd_cannot_assign']);
 
 	// OK, so we have the general values we need. Let's get user names, and get ready to kick this back to the user. We'll build the XML here though.
 	loadMemberData($assignees);
@@ -570,7 +567,7 @@ function shd_ajax_assign()
  *	- Get the list of who can be assigned a ticket; if requested user not on that list, bail.
  *	- Update and build return status, and return via AJAX.
  *
- *	@return bool|null Ignored by the main handler, but returns true.
+ *	@return array Response data for Ajax.
  *  @since 1.0
  */
 function shd_ajax_assign2()
@@ -598,13 +595,13 @@ function shd_ajax_assign2()
 		$smcFunc['db_free_result']($query);
 	}
 	if (empty($valid))
-		return $context['ajax_return'] = array('error' => $txt['shd_no_ticket']);
+		return array('error' => $txt['shd_no_ticket']);
 
 	if (!isset($_GET['to_user']) || !is_numeric($_GET['to_user']))
-		return $context['ajax_return'] = array('success' => false, 'error' => $txt['shd_assigned_not_permitted'] . 'line459');
+		return array('success' => false, 'error' => $txt['shd_assigned_not_permitted'] . 'line459');
 
 	if (!shd_allowed_to('shd_assign_ticket_any', $dept) || $status == TICKET_STATUS_CLOSED || $status == TICKET_STATUS_DELETED)
-		return $context['ajax_return'] = array('success' => false, 'error' => $txt['shd_cannot_assign']);
+		return array('success' => false, 'error' => $txt['shd_cannot_assign']);
 
 	$_GET['to_user'] = isset($_GET['to_user']) ? (int) $_GET['to_user'] : 0;
 
@@ -613,7 +610,7 @@ function shd_ajax_assign2()
 	array_unshift($assignees, 0); // add the unassigned option in at the start
 
 	if (!in_array($_GET['to_user'], $assignees))
-		return $context['ajax_return'] = array('success' => false, 'error' => $txt['shd_assigned_not_permitted']);
+		return array('success' => false, 'error' => $txt['shd_assigned_not_permitted']);
 
 	if (!empty($_GET['to_user']))
 		loadMemberData($_GET['to_user']);
@@ -633,13 +630,13 @@ function shd_ajax_assign2()
 		shd_commit_assignment($context['ticket_id'], $_GET['to_user'], true);
 	}
 
-	return $context['ajax_return'] = array('success' => true, 'assigned' => $user_name);
+	return array('success' => true, 'assigned' => $user_name);
 }
 
 /**
  *	Provide the list of possible notification recipients.
  *
- *	@return bool|null Ignored by the main handler, but returns true.
+ *	@return array Response data for Ajax.
  *	@since 2.0
 */
 function shd_ajax_notify()
@@ -651,7 +648,7 @@ function shd_ajax_notify()
 
 	$session_check = checkSession('get', '', false); // check the session but don't die fatally.
 	if (!empty($session_check))
-		return $context['ajax_return'] = array('success' => false, 'error' => $txt[$session_check]);
+		return array('success' => false, 'error' => $txt[$session_check]);
 
 	shd_load_language('sd_language/SimpleDeskNotifications');
 	require_once($sourcedir . '/sd_source/SimpleDesk-Notifications.php');
@@ -672,7 +669,7 @@ function shd_ajax_notify()
 		$smcFunc['db_free_result']($query);
 	}
 	if (empty($ticket) || !shd_allowed_to('shd_singleton_email', $ticket['id_dept']) || $ticket['status'] == TICKET_STATUS_CLOSED || $ticket['status'] == TICKET_STATUS_DELETED)
-		return $context['ajax_return'] = array('success' => false, 'error' => $txt['shd_no_ticket']);
+		return array('success' => false, 'error' => $txt['shd_no_ticket']);
 
 	// So, we need to start figuring out who's going to be notified, who won't be and who we might be interested in notifying.
 	$notify_list = array(
@@ -853,7 +850,7 @@ function shd_ajax_notify()
 					$selected[] = (int) $id;
 		}
 
-		return $context['ajax_return'] = array(
+		return array(
 			'success' => true,
 			'being_notified_txt' => !empty($notify_list['being_notified']) ? $txt['shd_ping_already_' . (count($notify_list['being_notified']) == 1 ? '1' : 'n')] : '',
 			'being_notified' => !empty($notify_list['being_notified']) ? $notify_list['being_notified'] : array(),
