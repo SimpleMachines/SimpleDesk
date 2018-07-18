@@ -150,6 +150,12 @@ function template_ticket_custom_fields()
 		return;
 
 	echo '
+				<br class="clear">
+				<div class="title_bar"', empty($context['ticket_form']['dept']) ? ' style="display:none;"' : '', '>
+					<h3 class="titlebg">
+						<a href="#">', $txt['shd_ticket_additional_details'], '</a>
+					</h3>
+				</div>
 				<div class="shd_customfields" id="shd_customfields"', empty($context['ticket_form']['dept']) ? ' style="display:none;"' : '', '>';
 
 		// Loop through each custom field
@@ -626,6 +632,13 @@ function template_ticket_additional_options()
 	global $context, $options, $txt, $modSettings, $settings;
 
 	echo '
+					<br class="clear">
+					<div class="title_bar">
+						<h3 class="titlebg">
+							<span class="toggle_up floatright" id="shd_additionalOptionsToggle"></span>
+							<a href="#" id="shd_additionalOptionsLink">', $txt['shd_ticket_additional_information'], '</a>
+						</h3>
+					</div>
 					<div id="postAdditionalOptionsHeader"', !empty($context['shd_display']) ? ' style="display:none;"' : '', ' class="shd_reply_attachments">
 						<ul class="post_options">';
 
@@ -644,7 +657,31 @@ function template_ticket_additional_options()
 	template_add_attachments();
 
 	echo '
-					</div>';
+					</div>
+					<script>
+						var oAdditionalOptionsToggle = new smc_Toggle({
+							bToggleEnabled: true,
+							bCurrentlyCollapsed: ', empty($options['collapse_shd_additionalOptions']) ? 'false' : 'true', ',
+							aSwappableContainers: [
+								\'postAdditionalOptionsHeader\'
+							],
+							aSwapImages: [
+								{
+									sId: \'shd_additionalOptionsToggle\',
+								}
+							],
+							oThemeOptions: {
+								bUseThemeSettings: ', $context['user']['is_guest'] ? 'false' : 'true', ',
+								sOptionName: \'collapse_shd_additionalOptions\',
+								sSessionId: smf_session_id,
+								sSessionVar: smf_session_var,
+							},
+							oCookieOptions: {
+								bUseCookie: false,
+								sCookieName: \'shd_additionalOptions\'
+							}
+						});
+					</script>';
 
 	template_singleton_email();
 }
