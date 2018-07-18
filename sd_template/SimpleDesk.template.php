@@ -413,11 +413,11 @@ function template_ticket_block()
 						$unread_image = $ticket['is_unread'] ? 'unread.png' : 'read.png';
 						$unread_txt = $ticket['is_unread'] ? $txt['shd_ticket_new'] : $txt['shd_ticket_notnew'];
 						echo '
-							<td width="1%">
+							<td width="3%">
 								<img src="', $settings['default_images_url'], '/simpledesk/', $unread_image, '" alt="', $unread_txt, '" title="', $unread_txt, '">
 								<img src="', $settings['default_images_url'], '/simpledesk/', $private_image, '" alt="', $private_txt, '" title="', $private_txt, '">
 							</td>
-							<td width="4%" class="smalltext">', $ticket['display_id'], '</td>';
+							<td class="smalltext">', $ticket['display_id'], '</td>';
 						break;
 					case 'ticket_name':
 						echo '

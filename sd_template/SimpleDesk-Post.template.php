@@ -530,7 +530,7 @@ function template_ticket_postbox()
 	template_ticket_cannedreplies();
 
 	echo '
-						<br>
+						<br class="clear">
 						<span class="smalltext"><br>', $context['browser']['is_firefox'] ? $txt['shortcuts_firefox'] : $txt['shortcuts'], '</span><br>
 						<input type="submit" value="', isset($editor_context['labels']['post_button']) ? $editor_context['labels']['post_button'] : $txt['post'], '" tabindex="', $context['tabindex']++, '" accesskey="s" class="button">
 						<input class="button" type="submit" name="preview" value="', $txt['preview'], '" accesskey="p" tabindex="', $context['tabindex']++, '">';
@@ -639,17 +639,12 @@ function template_ticket_additional_options()
 	echo '
 						</ul>';
 
-	if (empty($context['current_attachments']) && empty($context['ticket_form']['do_attach']))
-	{
-		echo '
+	// Attachments handling..
+	template_show_attachments();
+	template_add_attachments();
+
+	echo '
 					</div>';
-	}
-	else
-	{
-		// Attachments handling..
-		template_show_attachments();
-		template_add_attachments();
-	}
 
 	template_singleton_email();
 }
@@ -796,6 +791,7 @@ function template_singleton_email()
 							<input type="hidden" name="list" value="', $context['notification_ping_list'], '">';
 
 	echo '
+							<br class="clear">
 						</div>
 						<script type="text/javascript"><!-- // --><![CDATA[
 	document.getElementById("shd_notifications_div").style.display = "";

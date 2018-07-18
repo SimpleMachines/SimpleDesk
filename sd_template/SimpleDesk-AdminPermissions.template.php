@@ -311,7 +311,8 @@ function template_shd_edit_role()
 					<dt><strong>', $txt['shd_role_name'], ':</strong></dt>
 					<dd><input type="text" name="rolename" id="rolename" value="', $role['name'], '"  size="30"></dd>
 				</dl>
-			</div>';
+			</div>
+			<br class="clear">';
 
 	// Get ready to display the actual permissions
 	$permission_set = array();
@@ -465,6 +466,7 @@ function template_shd_edit_role()
 
 	echo '
 			</table>
+			<br class="clear">
 			<div class="floatleft" style="width: 100%;">
 				<div class="cat_bar">
 					<h3 class="catbg">

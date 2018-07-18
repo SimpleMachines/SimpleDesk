@@ -362,23 +362,21 @@ function template_shd_profile_show_tickets()
 		$item_link = '"<a href="' . $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $item['ticket'] . '.' . ($item['is_ticket'] ? '0' : ($item['start'] . '#msg' . $item['msg'])) . '">' . $item['subject'] . '</a>"';
 
 		echo '
-		<div class="topic">
-			<div class="', $item['alternate'] == 0 ? 'windowbg2' : 'windowbg', ' core_posts">
-				<div class="content">
-					<div class="counter">', $item['counter'], '</div>
-					<div class="topic_details">
-						<h5><strong>', !$item['is_ticket'] ? sprintf($txt['shd_profile_reply_to_ticket'], $item_link) : sprintf($txt['shd_profile_a_ticket'], $item_link), '</strong></h5>
-						<span class="smalltext">&#171;&nbsp;<strong>', $txt['on'], ':</strong> ', $item['time'], '&nbsp;&#187;</span>
-					</div>
-					<div class="list_posts">
-						', $item['body'], '
-						<div class="block floatright">
-							<a href="', $scripturl, '?action=helpdesk;sa=ticket;ticket=', $item['ticket'], '.0" class="button">', $txt['shd_profile_view_full_ticket'], '</a>
-						</div>
+		<div class="windowbg core_posts">
+			<div class="content">
+				<div class="counter">', $item['counter'], '</div>
+				<div class="topic_details">
+					<h5><strong>', !$item['is_ticket'] ? sprintf($txt['shd_profile_reply_to_ticket'], $item_link) : sprintf($txt['shd_profile_a_ticket'], $item_link), '</strong></h5>
+					<span class="smalltext">&#171;&nbsp;<strong>', $txt['on'], ':</strong> ', $item['time'], '&nbsp;&#187;</span>
+				</div>
+				<div class="list_posts">
+					', $item['body'], '
+					<div class="block floatright">
+						<a href="', $scripturl, '?action=helpdesk;sa=ticket;ticket=', $item['ticket'], '.0" class="button">', $txt['shd_profile_view_full_ticket'], '</a>
 					</div>
 				</div>
-				<br>
 			</div>
+			<br>
 		</div>';
 	}
 
@@ -426,7 +424,7 @@ function template_shd_profile_show_notify_override()
 	if (empty($context['tickets']))
 	{
 		echo '
-					<tr class="windowbg2">
+					<tr class="windowbg">
 						<td colspan="7">', $txt['shd_error_no_tickets'], '</td>
 					</tr>';
 	}
@@ -696,7 +694,7 @@ function template_shd_profile_actionlog()
 
 	if (empty($context['action_log']))
 		echo '
-						<tr class="windowbg2">
+						<tr class="windowbg">
 							<td colspan="2" class="shd_noticket">', $txt['shd_profile_log_none'], '</td>
 						</tr>';
 	else
