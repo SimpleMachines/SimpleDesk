@@ -1,5 +1,37 @@
 /* Javascript for the main Helpdesk */
 
+/* Implant a JSON handler for Ajax */
+function shd_getJSONDocument(sUrl, funcCallback, sMethod)
+{
+	ajax_indicator(true);
+
+	if (typeof(sMethod) == 'undefined')
+		sMethod = 'GET';
+
+	var oCaller = this;
+	var oMyDoc = $.ajax({
+		method: sMethod,
+		url: sUrl,
+		cache: false,
+		dataType: 'json',
+		success: function(responseJSON) {
+			if (typeof(funcCallback) != 'undefined')
+			{
+				ajax_indicator(false);
+
+				funcCallback.call(oCaller, responseJSON);
+			}
+		},
+	});
+
+	return oMyDoc;
+}
+
+function shd_sendJSONDocument(sUrl, funcCallback)
+{
+	return shd_getJSONDocument(sUrl, funcCallback, 'POST');
+}
+
 /* The privacy toggle in AJAX */
 function shd_privacyControl(oOpts)
 {
@@ -19,33 +51,18 @@ shd_privacyControl.prototype.init = function ()
 
 shd_privacyControl.prototype.action = function ()
 {
-	ajax_indicator(true);
-	getXMLDocument(shd_privacyControl.prototype.opts.sUrl + ';' + shd_privacyControl.prototype.opts.sSession, shd_privacyControl.prototype.callback);
+	shd_getJSONDocument(shd_privacyControl.prototype.opts.sUrl + ';' + shd_privacyControl.prototype.opts.sSession, shd_privacyControl.prototype.callback);
 	return false;
 }
 
 shd_privacyControl.prototype.callback = function (oRecvd)
 {
-	ajax_indicator(false);
-	if (oRecvd)
+	if (oRecvd && oRecvd.success == false)
+		alert(oRecvd.error);
+	else if (oRecvd && oRecvd.message)
 	{
-		var errors = oRecvd.getElementsByTagName('error');
-		if (errors.length > 0)
-		{
-			var msg = "";
-			for (var i = 0; i < errors.length; i++)
-				msg += errors[i].firstChild.nodeValue + "\n";
-			alert(msg);
-		}
-		else
-		{
-			var msg = oRecvd.getElementsByTagName('message');
-			if (msg.length > 0)
-			{
-				var oSpan = document.getElementById(shd_privacyControl.prototype.opts.sDestSpan);
-				oSpan.firstChild.nodeValue = msg[0].firstChild.nodeValue;
-			}
-		}
+		var oSpan = document.getElementById(shd_privacyControl.prototype.opts.sDestSpan);
+		oSpan.firstChild.nodeValue = oRecvd.message;
 	}
 	else
 		if (confirm(shd_ajax_problem))
@@ -91,45 +108,30 @@ shd_urgencyControl.prototype.actionDown = function ()
 
 shd_urgencyControl.prototype.action = function (direction)
 {
-	ajax_indicator(true);
 	shd_urgencyControl.prototype.opts.direction = direction;
-	getXMLDocument(shd_urgencyControl.prototype.opts.sUrl + shd_urgencyControl.prototype.opts.aButtonOps[direction] + ';' + shd_urgencyControl.prototype.opts.sSession, shd_urgencyControl.prototype.callback);
+	shd_getJSONDocument(shd_urgencyControl.prototype.opts.sUrl + shd_urgencyControl.prototype.opts.aButtonOps[direction] + ';' + shd_urgencyControl.prototype.opts.sSession, shd_urgencyControl.prototype.callback);
 	return false;
 }
 
 shd_urgencyControl.prototype.callback = function (oRecvd)
 {
-	ajax_indicator(false);
-	if (oRecvd)
+	if (oRecvd && oRecvd.success == false)
+		alert(oRecvd.error);
+	else if (oRecvd && oRecvd.message)
 	{
-		var errors = oRecvd.getElementsByTagName('error');
-		if (errors.length > 0)
-		{
-			var msg = "";
-			for (var i = 0; i < errors.length; i++)
-				msg += errors[i].firstChild.nodeValue + "\n";
-			alert(msg);
-		}
-		else
-		{
-			var msg = oRecvd.getElementsByTagName('message');
-			if (msg.length > 0)
-			{
-				var oSpan = document.getElementById(shd_urgencyControl.prototype.opts.sDestSpan);
-				setInnerHTML(oSpan, msg[0].firstChild.nodeValue);
-			}
-			// Now to reset the buttons
-			var btn_set = [ "increase", "decrease" ];
+		var oSpan = document.getElementById(shd_urgencyControl.prototype.opts.sDestSpan);
+		setInnerHTML(document.getElementById(shd_urgencyControl.prototype.opts.sDestSpan), oRecvd.message);
 
-			for (var i in btn_set)
-			{
-				var oBtn = oRecvd.getElementsByTagName(btn_set[i]);
-				var oSpan = document.getElementById('urgency_' + btn_set[i]);
-				setInnerHTML(oSpan, (oBtn.length !== 0 ? oBtn[0].firstChild.nodeValue : ''));
-			}
-			// Attach JS events to new links
-			shd_urgencyControl.prototype.init();
+		var btn_set = [ "increase", "decrease" ];
+		for (var i in btn_set)
+		{
+			var oBtn = oRecvd[btn_set[i]];
+			var oSpan = document.getElementById('urgency_' + btn_set[i]);
+			setInnerHTML(oSpan, (oBtn ? oBtn : ''));
 		}
+
+		// Attach JS events to new links
+		shd_urgencyControl.prototype.init();
 	}
 	else
 		if (confirm(shd_ajax_problem))
@@ -274,29 +276,13 @@ function QuickReply(oOptions)
 // When a user presses quote, put it in the quick reply box (if expanded).
 QuickReply.prototype.quote = function (iMessageId, sSessionId, sSessionVar, bTemplateUpgraded)
 {
-	// Add backwards compatibility with old themes.
-	if (sSessionVar === true)
-	{
-		bTemplateUpgraded = true;
-		sSessionVar = 'sesc';
-	}
-
 	if (this.bCollapsed)
 	{
-		// This is for compatibility.
-		if (bTemplateUpgraded)
-			return true;
-
 		window.location.href = smf_prepareScriptUrl(this.opt.sScriptUrl) + 'action=helpdesk;sa=reply;quote=' + iMessageId + ';ticket=' + this.opt.iTicketId + '.' + this.opt.iStart + ';' + sSessionVar + '=' + sSessionId;
 		return false;
 	}
 
-	// Doing it the XMLhttp way?
-	if (window.XMLHttpRequest)
-	{
-		ajax_indicator(true);
-		getXMLDocument(smf_prepareScriptUrl(this.opt.sScriptUrl) + 'action=helpdesk;sa=ajax;op=quote;quote=' + iMessageId + ';' + sSessionVar + '=' + sSessionId + ';xml' + ';mode=' + (oEditorHandle_shd_message.bRichTextEnabled ? 1 : 0), this.onQuoteReceived);
-	}
+	shd_getJSONDocument(smf_prepareScriptUrl(this.opt.sScriptUrl) + 'action=helpdesk;sa=ajax;op=quote;quote=' + iMessageId + ';' + sSessionVar + '=' + sSessionId + ';json' + ';mode=' + (oEditorHandle_shd_message.bRichTextEnabled ? 1 : 0), this.onQuoteReceived);
 
 	// Move the view to the quick reply box.
 	if (navigator.appName == 'Microsoft Internet Explorer')
@@ -307,17 +293,11 @@ QuickReply.prototype.quote = function (iMessageId, sSessionId, sSessionVar, bTem
 	return false;
 }
 
-// This is the callback function used after the XMLhttp request.
-QuickReply.prototype.onQuoteReceived = function (oXMLDoc)
+// This is the callback function used after the json request.
+QuickReply.prototype.onQuoteReceived = function (oRecvd)
 {
-	var sQuoteText = '';
-
-	for (var i = 0; i < oXMLDoc.getElementsByTagName('quote')[0].childNodes.length; i++)
-		sQuoteText += oXMLDoc.getElementsByTagName('quote')[0].childNodes[i].nodeValue;
-
-	oEditorHandle_shd_message.insertText(sQuoteText, false, true);
-
-	ajax_indicator(false);
+	if (oRecvd && oRecvd.success == true && oRecvd.message)
+		oEditorHandle_shd_message.insertText(oRecvd.message, false, true);
 }
 
 // The function handling the swapping of the quick reply.
@@ -343,27 +323,16 @@ CannedReply.prototype.getReply = function ()
 	if (!iReplyId || parseInt(iReplyId, 10) < 1)
 		return false;
 
-	// Doing it the XMLhttp way?
-	if (window.XMLHttpRequest)
-	{
-		ajax_indicator(true);
-		getXMLDocument(smf_prepareScriptUrl(this.opt.sScriptUrl) + 'action=helpdesk;sa=ajax;op=canned;ticket=' + this.opt.iTicketId + ';reply=' + iReplyId + ';' + this.opt.sSessionVar + '=' + this.opt.sSessionId + ';xml' + ';mode=' + (oEditorHandle_shd_message.bRichTextEnabled ? 1 : 0), this.onReplyReceived);
-	}
+	shd_getJSONDocument(smf_prepareScriptUrl(this.opt.sScriptUrl) + 'action=helpdesk;sa=ajax;op=canned;ticket=' + this.opt.iTicketId + ';reply=' + iReplyId + ';' + this.opt.sSessionVar + '=' + this.opt.sSessionId + ';json' + ';mode=' + (oEditorHandle_shd_message.bRichTextEnabled ? 1 : 0), this.onReplyReceived);
 
 	return false;
 }
 
-// This is the callback function used after the XMLhttp request.
-CannedReply.prototype.onReplyReceived = function (oXMLDoc)
+// This is the callback function used after the json request.
+CannedReply.prototype.onReplyReceived = function (oRecvd)
 {
-	var sQuoteText = '';
-
-	for (var i = 0; i < oXMLDoc.getElementsByTagName('quote')[0].childNodes.length; i++)
-		sQuoteText += oXMLDoc.getElementsByTagName('quote')[0].childNodes[i].nodeValue;
-
-	oEditorHandle_shd_message.insertText(sQuoteText, false, true);
-
-	ajax_indicator(false);
+	if (oRecvd && oRecvd.success == true && oRecvd.message)
+		oEditorHandle_shd_message.insertText(oRecvd.message, false, true);
 }
 
 // The quick jump function
@@ -435,36 +404,29 @@ AjaxAssign.prototype.expand = function ()
 	img.setAttribute('src', this.opt.sImagesUrl + "/" + this.opt.sImageExpanded);
 
 	// Fetch the list of items
-	ajax_indicator(true);
-	getXMLDocument.call(this, smf_prepareScriptUrl(this.opt.sScriptUrl) + 'action=helpdesk;sa=ajax;op=assign;ticket=' + this.opt.iTicketId + ';' + sSessV + '=' + sSessI, this.expand_callback);
+	shd_getJSONDocument.call(this, smf_prepareScriptUrl(this.opt.sScriptUrl) + 'action=helpdesk;sa=ajax;op=assign;ticket=' + this.opt.iTicketId + ';' + sSessV + '=' + sSessI, this.expand_callback);
 }
 
-AjaxAssign.prototype.expand_callback = function (XMLDoc)
+AjaxAssign.prototype.expand_callback = function (oRecvd)
 {
-	// Receive the list of assignees
-	ajax_indicator(false);
-	var errors = XMLDoc.getElementsByTagName('error');
-	if (errors.length > 0)
-	{
-		alert(errors[0].childNodes[0].nodeValue);
-		this.collapse();
-	}
-	else
+	if (oRecvd && oRecvd.success == false)
+		alert(oRecvd.error);
+	else if (oRecvd && oRecvd.members)
 	{
 		var assign_list = document.getElementById(this.opt.sListId);
 		assign_list.innerHTML = '';
 		assign_list.setAttribute('style', 'display:block');
 
-		var elements = XMLDoc.getElementsByTagName('member');
-		// We could, in all honesty, sit and build the content normally with document.createElement.
-		// But really, this is quicker, not just for us but for the browser too.
 		var newhtml = '';
-		for (var i = 0, n = elements.length; i < n; i++)
+		for (var i in oRecvd.members)
 		{
-			newhtml += '<li class="shd_assignees" onclick="' + this.opt.sSelf + '.assign(' + elements[i].getAttribute('uid') + ');">';
-			if (elements[i].getAttribute('admin'))
-				newhtml += '<img src="' + smf_default_theme_url + '/images/simpledesk/' + (elements[i].getAttribute('admin') == 'yes' ? 'admin' : 'staff') + '.png" alt="" class="shd_smallicon"> ';
-			newhtml += elements[i].childNodes[0].nodeValue + '</li>';
+			cur = oRecvd.members[i];
+			newhtml += '<li class="shd_assignees" onclick="' + this.opt.sSelf + '.assign(' + cur.uid + ');">';
+
+			if (cur.admin)
+				newhtml += '<img src="' + smf_default_theme_url + '/images/simpledesk/' + (cur.admin == 'yes' ? 'admin' : 'staff') + '.png" alt="" class="shd_smallicon"> ';
+
+			newhtml += cur.name + '</li>';
 		}
 
 		assign_list.innerHTML = newhtml;
@@ -475,23 +437,20 @@ AjaxAssign.prototype.assign = function (uid)
 {
 	// Click handler for the assignment list, to issue the assign
 	ajax_indicator(true);
-	getXMLDocument.call(this, smf_prepareScriptUrl(this.opt.sScriptUrl) + 'action=helpdesk;sa=ajax;op=assign2;ticket=' + this.opt.iTicketId + ';to_user=' + uid + ';' + sSessV + '=' + sSessI, this.assign_callback);
+	shd_getJSONDocument.call(this, smf_prepareScriptUrl(this.opt.sScriptUrl) + 'action=helpdesk;sa=ajax;op=assign2;ticket=' + this.opt.iTicketId + ';to_user=' + uid + ';' + sSessV + '=' + sSessI, this.assign_callback);
 }
 
-AjaxAssign.prototype.assign_callback = function(XMLDoc)
+AjaxAssign.prototype.assign_callback = function(oRecvd)
 {
 	// Click handler callback for assignment, to handle once the request has been made
-	ajax_indicator(false);
 	this.collapse();
-	var errors = XMLDoc.getElementsByTagName('error');
-	if (errors.length > 0)
-		alert(errors[0].childNodes[0].nodeValue);
-	else
+
+	if (oRecvd && oRecvd.success == false)
+		alert(oRecvd.error);
+	else if (oRecvd && oRecvd.assigned)
 	{
-		var elements = XMLDoc.getElementsByTagName('assigned');
-		document.getElementById(this.opt.sAssignedSpan).innerHTML = elements[0].childNodes[0].nodeValue;
+		document.getElementById(this.opt.sAssignedSpan).innerHTML = oRecvd.assigned;
 	}
-	this.collapse();
 }
 
 AjaxAssign.prototype.collapse = function ()
@@ -503,4 +462,111 @@ AjaxAssign.prototype.collapse = function ()
 
 	var img = document.getElementById('assign_' + this.opt.sSelf);
 	img.setAttribute('src', this.opt.sImagesUrl + "/" + this.opt.sImageCollapsed);
+}
+
+/* Ajax Notifications List */
+function shd_notifications(iTicketId, oOptions)
+{
+	this.ticketId = iTicketId;
+	this.opt = oOptions;
+	this.init();
+	return false;
+}
+
+shd_notifications.prototype.init = function ()
+{
+	var oLink = document.getElementById(this.opt.sLinkId);
+
+	oLink.instanceRef = this;
+	oLink.onclick = function (oEvent) {return this.instanceRef.receiveNotifications(oEvent);};
+
+	document.getElementById(this.opt.sContainerId).style.display = "";
+}
+
+shd_notifications.prototype.receiveNotifications = function ()
+{
+	shd_getJSONDocument.call(this, smf_prepareScriptUrl(smf_scripturl) + "action=helpdesk;sa=ajax;op=notify;ticket=" + this.ticketId + ";" + this.opt.sSessionVar + '=' + this.opt.sSessionId + (this.opt.sPinglist ? ";" + this.opt.sPinglist : ''), this.onReceiveNotifications);
+	return false;
+}
+
+shd_notifications.prototype.onReceiveNotifications = function (oRecvd)
+{
+	if (typeof(oRecvd) == 'undefined')
+		return;
+
+	if (oRecvd && oRecvd.success == false)
+		alert(oRecvd.error);
+
+	var newhtml = '';
+	var template = this.opt.oMainTemplate;
+	if (oRecvd.being_notified)
+	{
+		var subtemplate = this.opt.oNotifiedTemplate;
+
+		var temphtml = '';
+		var member = '';
+		for (var i in oRecvd.being_notified)
+		{
+			cur = oRecvd.being_notified[i];
+			member = subtemplate.replace('%name%', cur);
+
+			temphtml += cur;
+		}
+
+		newhtml = template.replace('%title%', oRecvd.being_notified_txt).replace('%subtemplate%', temphtml);
+	}
+
+	if (oRecvd.optional)
+	{
+		var subtemplate = this.opt.oOptionalTemplate;
+
+		var temphtml = '';
+		var member = '';
+		for (var i in oRecvd.optional)
+		{
+			cur = oRecvd.optional[i];
+
+			member = subtemplate.replace('%name%', cur);
+			member = member.replace('%index%', i);
+			member = member.replace('%index%', i);
+
+			for (var j in oRecvd.selected)
+			{
+				var k = oRecvd.selected[j];
+				member = member.replace('%checked%', i == k ? ' checked' : '');
+			}
+
+			temphtml += member;
+		}
+
+		newhtml += template.replace('%title%', oRecvd.optional_txt).replace('%subtemplate%', temphtml);
+	}
+
+
+	if (oRecvd.optional_butoff)
+	{
+		var subtemplate = this.opt.oOptionalOffTemplate;
+
+		var temphtml = '';
+		var member = '';
+		for (var i in oRecvd.optional_butoff)
+		{
+			cur = oRecvd.optional_butoff[i];
+			member = subtemplate.replace('%name%', cur);
+			member = member.replace('%index%', i);
+			member = member.replace('%index%', i);
+
+			for (var j in oRecvd.selected)
+			{
+				var k = oRecvd.selected[j];
+				member = member.replace('%checked%', i == k ? ' checked' : '');
+			}
+
+			temphtml += member;
+		}
+
+		newhtml += template.replace('%title%', oRecvd.optional_butoff_txt).replace('%subtemplate%', temphtml);
+	}
+
+	document.getElementById("shd_notifications_div").innerHTML = newhtml;
 }

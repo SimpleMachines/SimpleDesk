@@ -784,7 +784,7 @@ function template_singleton_email()
 
 	echo '
 						<div id="shd_notifications_div" style="display:none;">
-							<a href="#" onclick="getAjaxNotifications(); return false;">', $txt['shd_select_notifications'], '</a>';
+							<a href="#" id="shd_getAjaxNotifications">', $txt['shd_select_notifications'], '</a>';
 
 	if (!empty($context['notification_ping_list']))
 		echo '
@@ -794,21 +794,23 @@ function template_singleton_email()
 							<br class="clear">
 						</div>
 						<script type="text/javascript"><!-- // --><![CDATA[
-	document.getElementById("shd_notifications_div").style.display = "";
-
-	function getAjaxNotifications()
-	{
-		ajax_indicator(true);
-		getXMLDocument(smf_prepareScriptUrl(smf_scripturl) + "action=helpdesk;sa=ajax;op=notify;ticket=', $context['ticket_id'], ';', $context['session_var'], '=', $context['session_id'], !empty($context['notification_ping_list']) ? ';list=' . $context['notification_ping_list'] : '', '", handleAjaxNotifications);
-	}
-
-	function handleAjaxNotifications(XMLDoc)
-	{
-		ajax_indicator(false);
-		var notify = XMLDoc.getElementsByTagName("notify");
-		if (notify.length == 1)
-			document.getElementById("shd_notifications_div").innerHTML = notify[0].firstChild.nodeValue;
-	}
+	var shd_oNotifications = new shd_notifications(', $context['ticket_id'], ', {
+		sContainerId: "shd_notifications_div",
+		sLinkId: "shd_getAjaxNotifications",
+		sPinglist: "', (!empty($context['notification_ping_list']) ? $context['notification_ping_list'] : ''), '",
+		sSessionId: smf_session_id,
+		sSessionVar: smf_session_var,
+		oMainTemplate: ', JavaScriptEscape('
+			<span class=\'shd_ajax_head\'>%title%</span><br>%subtemplate%<br>
+							'), ',
+		oNotifiedTemplate: ', JavaScriptEscape('%name%, '), ',
+		oOptionalTemplate: ', JavaScriptEscape('
+				<div class=\'shd_ajaxnotify\'><input type=\'checkbox\' name=\'notify[%index%]\' value=\'%index%\'%checked%>%name%</div>
+								'), ',
+		oOptionalOffTemplate: ', JavaScriptEscape('
+				<div class=\'shd_ajaxnotify\'><input type=\'checkbox\' name=\'notify[%index%]\' value=\'%index%\'%checked%>%name%</div>
+								'), ',
+	});
 						// ]]></script>';
 }
 
