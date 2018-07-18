@@ -138,3 +138,8 @@
 	background: url(../images/simpledesk/icons/shd_generic_icons.png) no-repeat;
 	background-position: -267px -25px;
 }
+
+.board_icon a.board_helpdesk {
+	background: url(../images/simpledesk/helpdesk_on.png) no-repeat;
+
+}

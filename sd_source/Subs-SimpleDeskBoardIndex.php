@@ -194,8 +194,12 @@ function shd_dept_board($dept)
 {
 	global $txt, $scripturl, $context;
 
+	// Templates we may need.
+	loadTemplate('sd_template/SimpleDesk-BoardIndex');
+
 	return array(
 		'id' => 'shd' . $dept['id_dept'],
+		'type' => 'shd',
 		'shd' => true,
 		'name' => $dept['dept_name'],
 		'description' => $dept['description'],
@@ -226,7 +230,7 @@ function shd_dept_board($dept)
 			'href' => '',
 			'link' => $txt['not_applicable'],
 		),
-		'board_class' => 'off',
+		'board_class' => 'helpdesk',
 	);
 }
 
