@@ -107,7 +107,7 @@ function template_viewticket()
 			{
 				// No need to display anything if there isn't any content to display.
 				$content = false;
-				foreach ($context['ticket']['custom_fields']['prefixfilter'] AS $field)
+				foreach ($context['ticket']['custom_fields']['prefixfilter'] as $field)
 				{
 					if (!empty($field['value']) || $field['display_empty'])
 					{
@@ -122,14 +122,14 @@ function template_viewticket()
 							<hr>
 							<ul>';
 
-					foreach ($context['ticket']['custom_fields']['prefixfilter'] AS $field)
+					foreach ($context['ticket']['custom_fields']['prefixfilter'] as $field)
 					{
 						if ($field['display_empty'] || !empty($field['value']))
 						{
 							echo '
 								<li>
 									<dl>
-										<dt>', !empty($field['icon']) ? '<img src="' . $settings['default_images_url'] . '/simpledesk/cf/' . $field['icon'] . '" alt="" class="shd_smallicon">' : '', ' ', $field['name'],':</dt>
+										<dt>', !empty($field['icon']) ? '<img src="' . $settings['default_images_url'] . '/simpledesk/cf/' . $field['icon'] . '" alt="" class="shd_smallicon">' : '', ' ', $field['name'], ':</dt>
 										<dd>';
 
 							if (empty($field['value']) && $field['display_empty'])
@@ -166,7 +166,7 @@ function template_viewticket()
 			{
 				// No need to display anything if there isn't any content to display.
 				$content = false;
-				foreach ($context['ticket']['custom_fields']['details'] AS $field)
+				foreach ($context['ticket']['custom_fields']['details'] as $field)
 				{
 					if (!empty($field['value']) || $field['display_empty'])
 					{
@@ -183,14 +183,14 @@ function template_viewticket()
 						<hr>
 							<ul>';
 
-					foreach ($context['ticket']['custom_fields']['details'] AS $field)
+					foreach ($context['ticket']['custom_fields']['details'] as $field)
 					{
 						if ($field['display_empty'] || !empty($field['value']))
 						{
 							echo '
 								<li>
 									<dl>
-										<dt>', !empty($field['icon']) ? '<img src="' . $settings['default_images_url'] . '/simpledesk/cf/' . $field['icon'] . '" alt="" class="shd_smallicon">' : '', ' ', $field['name'],':</dt>
+										<dt>', !empty($field['icon']) ? '<img src="' . $settings['default_images_url'] . '/simpledesk/cf/' . $field['icon'] . '" alt="" class="shd_smallicon">' : '', ' ', $field['name'], ':</dt>
 										<dd>';
 
 							if ($field['type'] == CFIELD_TYPE_CHECKBOX)
@@ -242,7 +242,7 @@ function template_viewticket()
 					<img src="', $settings['default_images_url'], '/simpledesk/name.png" alt="" class="shd_smallicon shd_icon_minihead"> <strong>';
 
 			$output = '';
-			foreach ($context['ticket']['custom_fields']['prefix'] AS $field)
+			foreach ($context['ticket']['custom_fields']['prefix'] as $field)
 			{
 				if (!isset($field['value']))
 					continue;
@@ -562,7 +562,7 @@ function template_additional_fields()
 	{
 		// No need to display anything if there isn't any content to display.
 		$content = false;
-		foreach ($context['ticket']['custom_fields']['information'] AS $field)
+		foreach ($context['ticket']['custom_fields']['information'] as $field)
 		{
 			if (!empty($field['value']) || $field['display_empty'])
 			{
@@ -584,14 +584,14 @@ function template_additional_fields()
 			</div>
 			<div class="roundframe" id="additional_info">';
 
-			foreach ($context['ticket']['custom_fields']['information'] AS $field)
+			foreach ($context['ticket']['custom_fields']['information'] as $field)
 			{
 				if ($field['display_empty'] || !empty($field['value']) || $field['type'] == CFIELD_TYPE_CHECKBOX)
 				{
 					echo '
 					<div class="information">
-						', !empty($field['icon']) ? '<img src="' . $settings['default_images_url'] . '/simpledesk/cf/' . $field['icon'] . '" alt="" class="shd_smallicon">' : '','
-						<strong>', $field['name'],':</strong><hr>';
+						', !empty($field['icon']) ? '<img src="' . $settings['default_images_url'] . '/simpledesk/cf/' . $field['icon'] . '" alt="" class="shd_smallicon">' : '', '
+						<strong>', $field['name'], ':</strong><hr>';
 
 					if ($field['type'] == CFIELD_TYPE_CHECKBOX)
 						echo !empty($field['value']) ? $txt['yes'] : $txt['no'];
@@ -772,7 +772,7 @@ function template_viewreplies()
 	if (empty($reply_request))
 	{
 		echo '
-			<div class="roundframe">', $txt['shd_no_replies'],'</div>';
+			<div class="roundframe">', $txt['shd_no_replies'], '</div>';
 	}
 	else
 	{
@@ -839,13 +839,13 @@ function template_viewreplies()
 			echo '
 							<hr>';
 
-			foreach ($context['custom_fields_replies'][$reply['id']] AS $field)
+			foreach ($context['custom_fields_replies'][$reply['id']] as $field)
 			{
 				if ($field['display_empty'] || !empty($field['value']) || $field['type'] == CFIELD_TYPE_CHECKBOX)
 				{
 					echo '
-							', !empty($field['icon']) ? '<img src="' . $settings['default_images_url'] . '/simpledesk/cf/' . $field['icon'] . '" alt="" class="shd_smallicon">' : '','
-							<strong>', $field['name'],': </strong>';
+							', !empty($field['icon']) ? '<img src="' . $settings['default_images_url'] . '/simpledesk/cf/' . $field['icon'] . '" alt="" class="shd_smallicon">' : '', '
+							<strong>', $field['name'], ': </strong>';
 
 					if ($field['type'] == CFIELD_TYPE_CHECKBOX)
 						echo !empty($field['value']) ? $txt['yes'] : $txt['no'], '<br><br>';
