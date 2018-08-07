@@ -125,7 +125,7 @@ function shd_admin_custom_new()
 		'placement' => CFIELD_PLACE_DETAILS,
 	));
 
-	$context['custom_field']['options'] = array(1 => '', '', '', 'inactive' => array());
+	$context['custom_field']['options'] = array(1 => '', '', '', 'inactive' => array(), 'order' => array());
 	$context['custom_field']['default_value'] = false;
 
 	// Get the list of departments, and whether a field is required in each department.
@@ -139,6 +139,8 @@ function shd_admin_custom_new()
 	while ($row = $smcFunc['db_fetch_assoc']($query))
 		$context['dept_fields'][$row['id_dept']] = $row;
 	$smcFunc['db_free_result']($query);
+
+	loadLanguage('ManageSettings');
 }
 
 /**
@@ -154,7 +156,8 @@ function shd_admin_custom_edit()
 
 	$query = shd_db_query('', '
 		SELECT id_field, active, field_order, field_name, field_desc, field_loc, icon, field_type,
-		field_length, field_options, bbc, default_value, can_see, can_edit, display_empty, placement
+		field_length, field_options, bbc, default_value, can_see, can_edit,
+		display_empty, placement
 		FROM {db_prefix}helpdesk_custom_fields
 		WHERE id_field = {int:field}',
 		array(
@@ -171,8 +174,26 @@ function shd_admin_custom_edit()
 		$context['page_title'] = $txt['shd_admin_edit_custom_field'];
 		$context['sub_template'] = 'shd_custom_field_edit';
 		$context['custom_field']['options'] = !empty($row['field_options']) ? smf_json_decode($row['field_options'], true) : array(1 => '', '', '');
+
 		if (empty($context['custom_field']['options']['inactive']))
 			$context['custom_field']['options']['inactive'] = array();
+
+		if (!isset($context['custom_field']['options']['order']))
+			$context['custom_field']['options']['order'] = array();
+
+		// If this option isn't in the order, make it so!
+		foreach ($context['custom_field']['options'] as $key => $val)
+			if (!in_array($key, array('inactive', 'order')) && !in_array($key, $context['custom_field']['options']['order']))
+				$context['custom_field']['options']['order'][] = $key;
+
+		// Make sure it exists in the order.
+		foreach ($context['custom_field']['options']['order'] as $key => $val)
+			if (!isset($context['custom_field']['options'][$val]))
+				unset($context['custom_field']['options']['order'][$val]);
+
+		// first and last order.
+		$context['custom_field']['order_first'] = current($context['custom_field']['options']['order']);
+		$context['custom_field']['order_last'] = end($context['custom_field']['options']['order']);
 
 		// If this is a textarea, we need to get its dimensions too.
 		if ($context['custom_field']['field_type'] == CFIELD_TYPE_LARGETEXT)
@@ -216,6 +237,8 @@ function shd_admin_custom_edit()
 		$smcFunc['db_free_result']($query);
 		fatal_lang_error('shd_admin_cannot_edit_custom_field', false);
 	}
+
+	loadLanguage('ManageSettings');
 }
 
 /**
@@ -373,6 +396,7 @@ function shd_admin_custom_save()
 	$defaultOptions = array();
 	if (!empty($_POST['select_option']) && ($_POST['field_type'] == CFIELD_TYPE_SELECT || $_POST['field_type'] == CFIELD_TYPE_RADIO || $_POST['field_type'] == CFIELD_TYPE_MULTI))
 	{
+		$optionsOrder = array();
 		foreach ($_POST['select_option'] as $k => $v)
 		{
 			// Clean, clean, clean...
@@ -391,7 +415,12 @@ function shd_admin_custom_save()
 			// Is it default?
 			if (isset($_POST['default_select']) && $_POST['default_select'] == $k)
 				$_POST['default_check'] = $k;
+
+			// Our order.
+			$optionsOrder[$_POST['order'][$k]] = $k;
 		}
+
+		$newOptions['order'] = $optionsOrder;
 		$options = json_encode($newOptions);
 	}
 
@@ -511,7 +540,7 @@ function shd_admin_custom_save()
 			// First, figure out what fields we had before.
 			foreach ($row['field_options'] as $k => $v)
 			{
-				if ($k == 'inactive')
+				if ($k == 'inactive' || $k == 'order')
 					continue;
 				if (!isset($newOptions[$k]))
 					$inactive[] = $k;
@@ -521,6 +550,7 @@ function shd_admin_custom_save()
 			foreach ($newOptions as $k => $v)
 				$new_fields[$k] = $v;
 			$new_fields['inactive'] = $inactive;
+			$new_fields['order'] = $optionsOrder;
 			$options = json_encode($new_fields);
 		}
 

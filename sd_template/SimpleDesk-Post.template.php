@@ -229,10 +229,12 @@ function template_ticket_custom_fields()
 								<select name="field-', $field['id'], '">
 									<option value="0"', $field['value'] == 0 ? ' selected="selected"' : '', !empty($field['is_required']) ? ' disabled="disabled"' : '', '>', $txt['shd_choose_one'], '&nbsp;</option>';
 
-					foreach ($field['options'] as $key => $option)
+					foreach ($field['options']['order'] as $order => $key)
 					{
-						if ($key == 'inactive' || in_array($key, $field['options']['inactive']))
+						if ($key == 'order' || $key == 'inactive' || in_array($key, $field['options']['inactive']))
 							continue;
+
+						$option = $field['options'][$key];
 
 						echo '
 									<option value="', $key, '"', $field['value'] == $key ? ' selected="selected"' : '', '>', $option, '&nbsp;</option>';

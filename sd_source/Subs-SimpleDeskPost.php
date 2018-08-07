@@ -585,7 +585,7 @@ function shd_modify_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 				'fieldtype' => $field['type'],
 			);
 			if ($field['new_value'] == $field['default_value'])
-				$context['custom_fields_updated'][count($context['custom_fields_updated'])-1]['default'] = true;
+				$context['custom_fields_updated'][count($context['custom_fields_updated']) - 1]['default'] = true;
 		}
 	}
 	// Same deal, this time for message options. See above for comments.
@@ -637,7 +637,7 @@ function shd_modify_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 					'fieldtype' => $field['type'],
 				);
 				if ($field['new_value'] == $field['default_value'])
-					$context['custom_fields_updated'][count($context['custom_fields_updated'])-1]['default'] = true;
+					$context['custom_fields_updated'][count($context['custom_fields_updated']) - 1]['default'] = true;
 			}
 		}
 	}
@@ -753,7 +753,7 @@ function shd_load_custom_fields($is_ticket = true, $ticketContext = 0, $dept = 0
 				'field_type' => $is_ticket ? CFIELD_TICKET : CFIELD_REPLY,
 			)
 		);
-		while($row = $smcFunc['db_fetch_assoc']($query))
+		while ($row = $smcFunc['db_fetch_assoc']($query))
 			$field_values[$row['id_field']] = $row['value'];
 		$smcFunc['db_free_result']($query);
 	}
@@ -764,7 +764,7 @@ function shd_load_custom_fields($is_ticket = true, $ticketContext = 0, $dept = 0
 			cf.field_type, cf.field_options, cf.default_value, cf.bbc, cf.can_see, cf.can_edit, cf.field_length,
 			cf.display_empty, cfd.required, cf.placement, cfd.id_dept
 		FROM {db_prefix}helpdesk_custom_fields AS cf
-			INNER JOIN {db_prefix}helpdesk_custom_fields_depts AS cfd ON (cf.id_field = cfd.id_field' . (!empty($dept) ? ' AND cfd.id_dept = {int:dept}' : '') .')
+			INNER JOIN {db_prefix}helpdesk_custom_fields_depts AS cfd ON (cf.id_field = cfd.id_field' . (!empty($dept) ? ' AND cfd.id_dept = {int:dept}' : '') . ')
 		WHERE cf.active = 1
 			AND cf.field_loc IN ({array_int:visibility})
 		ORDER BY cf.field_order',
@@ -782,7 +782,7 @@ function shd_load_custom_fields($is_ticket = true, $ticketContext = 0, $dept = 0
 	$is_admin = shd_allowed_to('admin_helpdesk', $dept); // this includes forum admins
 
 	// Loop through all fields and figure out where they should be.
-	while($row = $smcFunc['db_fetch_assoc']($custom_fields))
+	while ($row = $smcFunc['db_fetch_assoc']($custom_fields))
 	{
 		// Can the user even see this field? If we can't see the field, it doesn't exist to us for posting purposes.
 		list($user_see, $staff_see) = explode(',', $row['can_see']);
@@ -833,7 +833,7 @@ function shd_load_custom_fields($is_ticket = true, $ticketContext = 0, $dept = 0
 			{
 				foreach ($context['ticket_form']['custom_fields'][$loc][$row['id_field']]['options'] as $k => $v)
 				{
-					if ($k != 'inactive')
+					if ($k != 'inactive' && $k != 'order')
 						$context['ticket_form']['custom_fields'][$loc][$row['id_field']]['options'][$k] = (strpos($v, '[') !== false) ? trim(strip_tags(parse_bbc($v))) : trim($v);
 				}
 			}
@@ -841,6 +841,21 @@ function shd_load_custom_fields($is_ticket = true, $ticketContext = 0, $dept = 0
 		$context['ticket_form']['custom_fields'][$loc][$row['id_field']]['depts'][] = $row['id_dept'];
 		if (!empty($context['ticket_form']['custom_fields'][$loc][$row['id_field']]['options']) && empty($context['ticket_form']['custom_fields'][$loc][$row['id_field']]['options']['inactive']))
 			$context['ticket_form']['custom_fields'][$loc][$row['id_field']]['options']['inactive'] = array();
+
+		if (!empty($context['ticket_form']['custom_fields'][$loc][$row['id_field']]['options']) && !isset($context['ticket_form']['custom_fields'][$loc][$row['id_field']]['options']['order']))
+			$context['ticket_form']['custom_fields'][$loc][$row['id_field']]['options']['order'] = array();
+
+		// If this option isn't in the order, make it so!
+		if (!empty($context['ticket_form']['custom_fields'][$loc][$row['id_field']]['options']))
+			foreach ($context['ticket_form']['custom_fields'][$loc][$row['id_field']]['options'] as $key => $val)
+				if (!in_array($key, array('inactive', 'order')) && !in_array($key, $context['ticket_form']['custom_fields'][$loc][$row['id_field']]['options']['order']))
+					$context['ticket_form']['custom_fields'][$loc][$row['id_field']]['options']['order'][] = $key;
+
+		// Make sure it exists in the order.
+		if (!empty($context['ticket_form']['custom_fields'][$loc][$row['id_field']]['options']))
+			foreach ($context['ticket_form']['custom_fields'][$loc][$row['id_field']]['options']['order'] as $key => $val)
+				if (!isset($context['ticket_form']['custom_fields'][$loc][$row['id_field']]['options'][$val]))
+					unset($context['ticket_form']['custom_fields'][$loc][$row['id_field']]['options']['order'][$val]);
 
 		if (isset($field_values[$row['id_field']]))
 		{

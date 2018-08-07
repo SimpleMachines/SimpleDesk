@@ -751,7 +751,7 @@ function shd_load_role($loadrole = 0)
 		)
 	);
 
-	while($row = $smcFunc['db_fetch_assoc']($query))
+	while ($row = $smcFunc['db_fetch_assoc']($query))
 		$context['shd_permissions']['user_defined_roles'][$row['id_role']]['permissions'][$row['permission']] = $row['add_type']; // if it's defined in the DB it's somehow different to what the template so replace the template
 
 	$smcFunc['db_free_result']($query);

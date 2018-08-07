@@ -694,7 +694,7 @@ function shd_ajax_notify()
 		$notify_list[$row['notify_state'] == NOTIFY_NEVER ? 'optional_butoff' : 'being_notified'][$row['id_member']] = true;
 
 	// Did we exclude admins? If we did, we would have scooped the list of admins. If they're in the 'not being notified but you can...' list, remove them.
-	if (!empty($context['list_admin_exclude']))
+	if (!empty($context['list_admin_exclude']) && is_array($context['list_admin_exclude']))
 	{
 		foreach ($context['list_admin_exclude'] as $user_id)
 			if (isset($notify_list['optional_butoff'][$user_id]))

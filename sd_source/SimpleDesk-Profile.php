@@ -93,7 +93,7 @@ function shd_profile_main($memID)
 	call_integration_hook('shd_hook_hdprofile', array(&$subActions, &$memID));
 
 	// Make sure the menu is configured appropriately
-	$context['shd_profile_menu'][count($context['shd_profile_menu'])-1]['is_last'] = true;
+	$context['shd_profile_menu'][count($context['shd_profile_menu']) - 1]['is_last'] = true;
 
 	$_REQUEST['area'] = isset($_REQUEST['area']) && isset($subActions[$_REQUEST['area']]) ? $_REQUEST['area'] : 'helpdesk';
 	$context['sub_action'] = $_REQUEST['area'];
@@ -596,7 +596,7 @@ function shd_profile_permissions($memID)
 	shd_load_all_permission_sets();
 
 	// 1. What groups is this user in? And we need all their groups, which in 'profile' mode, SMF helpfully puts into $user_profile[$memID] for us.
-	$groups = empty($user_profile[$memID]['additional_groups']) ? array() :  explode(',', $user_profile[$memID]['additional_groups']);
+	$groups = empty($user_profile[$memID]['additional_groups']) ? array() : explode(',', $user_profile[$memID]['additional_groups']);
 	$groups[] = $user_profile[$memID]['id_group'];
 
 	// Sanitise this little lot
@@ -712,7 +712,7 @@ function shd_profile_permissions($memID)
 			)
 		);
 
-		while($row = $smcFunc['db_fetch_assoc']($query))
+		while ($row = $smcFunc['db_fetch_assoc']($query))
 			$role_permissions[$row['id_role']][$row['permission']] = $row['add_type']; // if it's defined in the DB it's somehow different to what the template so replace the template
 	}
 

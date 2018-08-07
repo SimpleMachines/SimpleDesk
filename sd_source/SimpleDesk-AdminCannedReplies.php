@@ -113,7 +113,7 @@ function shd_admin_canned_list()
 		if (!empty($cat['replies']))
 		{
 			$context['canned_replies'][$cat_id]['replies'][0]['move_up'] = false;
-			$context['canned_replies'][$cat_id]['replies'][count($cat['replies'])-1]['move_down'] = false;
+			$context['canned_replies'][$cat_id]['replies'][count($cat['replies']) - 1]['move_down'] = false;
 		}
 		$context['canned_replies'][$cat_id]['move_up'] &= $context['move_between_cats'];
 		$context['canned_replies'][$cat_id]['move_down'] &= $context['move_between_cats'];

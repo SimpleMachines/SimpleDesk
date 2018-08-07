@@ -693,7 +693,7 @@ function shd_count_helpdesk_tickets($status = '', $is_staff = false)
 		}
 	}
 
-	switch($status)
+	switch ($status)
 	{
 		case 'open':
 			return (
@@ -1197,7 +1197,7 @@ function shd_recalc_ids($ticket)
 /**
  *	Load the user preferences for the given user.
  *
- *	@param mixed $user Normally, an int being the user id of the user whose preferences should be attempted to be loaded. If === false, return the list of default prefs (for the pref UI), or if 0 or omitted, load the current user.
+ *	@param int|bool $user Normally, an int being the user id of the user whose preferences should be attempted to be loaded. If === false, return the list of default prefs (for the pref UI), or if 0 or omitted, load the current user.
  *
  *	@return array If $user === false, the list of options, their types and default values is returned. Otherwise, return an array of prefs (adjusted for this user)
  *	@since 2.0
@@ -2075,7 +2075,7 @@ function shd_bbc_codes(&$codes, &$no_autolink_tags)
 {
 	global $scripturl, $txt;
 
-	$codes[] =	array(
+	$codes[] = array(
 		'tag' => 'quote',
 		'parameters' => array(
 			'author' => array('match' => '([^<>]{1,192}?)'),

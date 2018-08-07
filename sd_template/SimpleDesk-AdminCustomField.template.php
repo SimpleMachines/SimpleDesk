@@ -157,22 +157,29 @@ function template_shd_custom_field_edit()
 					document.getElementById("required_dept" + id).disabled = state;
 					document.getElementById("required_dept_multi_" + id).disabled = state;
 				}
-				var startOptID = ', count($context['custom_field']['options']), ';
+				var startOptID = ', !empty($context['custom_field']['options']['order']) ? count($context['custom_field']['options']['order']) + 1 : 1, ';
 				function add_option()
 				{
 					var ftype = document.getElementById("cf_fieldtype").value;
-					var newHTML = \'<br><input type="radio" id="radio_\' + startOptID + \'" name="default_select" value="\' + startOptID + \'" id="\' + startOptID + \'"\';
+					var newHTML = \'<br id="break_\' + startOptID + \'"><input type="radio" id="radio_\' + startOptID + \'" name="default_select" value="\' + startOptID + \'" id="\' + startOptID + \'"\';
 					if (ftype == ', CFIELD_TYPE_MULTI, ')
 						newHTML += \' style="display:none;"\';
 					newHTML += \' >\' + "\n";
 					newHTML += \'<input type="checkbox" id="multi_\' + startOptID + \'" name="default_select_multi[\' + startOptID + \']" value="\' + startOptID + \'"\';
 					if (ftype != ', CFIELD_TYPE_MULTI, ')
 						newHTML += \' style="display:none;"\';
-					newHTML += \' >\' + "\n";
-					newHTML += \'<input type="text" name="select_option[\' + startOptID + \']" value="" ><span id="addopt"></span>\';
+					newHTML += \' ><input type="text" id="option_\' + startOptID + \'" name="select_option[\' + startOptID + \']" value="" >\' + "\n";
+					newHTML += \'<span id="order_\' + startOptID + \'" class="custom_field_order"><input id="order_\' + startOptID + \'_input" type="hidden" name="order[\' + startOptID + \']" value="\' + (startOptID - 1) + \'" data-key="\' + startOptID + \'">\' + "\n";
+					newHTML += \'<a href="#" class="custom_field_move_up" data-key="\' + startOptID + \'"><img src="', $settings['default_images_url'], '/simpledesk/move_up.png" class="icon" alt="', $txt['custom_edit_order_up'], '" title="', $txt['custom_edit_order_up'], '"/></a>\';
+					newHTML += \'<a href="#" class="custom_field_move_down" data-key="\' + startOptID + \'"><img src="', $settings['default_images_url'], '/simpledesk/move_down.png" class="icon" alt="', $txt['custom_edit_order_down'], '" title="', $txt['custom_edit_order_down'], '"/></a>\';
+					newHTML += \'</span>\' + "\n";
+
+					newHTML += \'<span id="addopt"></span>\';
 
 					setOuterHTML(document.getElementById("addopt"), newHTML);
 					startOptID++;
+
+					optionsOrder.resortNew();
 				}
 				function update_default_label(defstate)
 				{
@@ -323,28 +330,39 @@ function template_shd_custom_field_edit()
 									<span id="cf_options_multi_default"', $context['field_type_value'] == CFIELD_TYPE_MULTI ? ' style=""' : ' style="display:none;"', '>', $txt['shd_admin_custom_field_options_multi'], '</span>
 								</div>
 							</dt>
-							<dd id="options_dd"', in_array($context['field_type_value'], array(CFIELD_TYPE_SELECT, CFIELD_TYPE_RADIO, CFIELD_TYPE_MULTI)) ? '' : ' style="display: none;"','>
-								<input type="radio" id="radio_0" name="default_select" value="0"', $context['custom_field']['default_value'] == 0 ? ' checked="checked"' : '', $context['field_type_value'] != CFIELD_TYPE_MULTI ? '' : ' style="display:none;"', ' > <span id="radio_text_0"', $context['field_type_value'] != CFIELD_TYPE_MULTI ? '' : ' style="display:none;"', '>', $txt['shd_admin_custom_field_no_selected_default'], '</span>';
+							<dd id="options_dd"', in_array($context['field_type_value'], array(CFIELD_TYPE_SELECT, CFIELD_TYPE_RADIO, CFIELD_TYPE_MULTI)) ? '' : ' style="display: none;"','>								
+								<input type="radio" id="radio_0" name="default_select" value="0"', $context['custom_field']['default_value'] == 0 ? ' checked="checked"' : '', $context['field_type_value'] != CFIELD_TYPE_MULTI ? '' : ' style="display:none;"', ' >
+								<span id="radio_text_0"', $context['field_type_value'] != CFIELD_TYPE_MULTI ? '' : ' style="display:none;"', '>', $txt['shd_admin_custom_field_no_selected_default'], '</span>
+								<div id="custom_fields_list">';
 
 	// Convert it to an array for displaying the main doodah
 	if ($context['field_type_value'] == CFIELD_TYPE_MULTI)
 		$context['custom_field']['default_value'] = explode(',', $context['custom_field']['default_value']);
 
-	foreach ($context['custom_field']['options'] as $k => $option)
+	foreach ($context['custom_field']['options']['order'] as $order => $k)
 	{
-		if ($k == 'inactive' || in_array($k, $context['custom_field']['options']['inactive']))
+		if ($k == 'order' || $k == 'inactive' || in_array($k, $context['custom_field']['options']['inactive']))
 			continue;
+		$option = $context['custom_field']['options'][$k];
 
 		echo '
-								<br>
-								<input type="radio" id="radio_', $k, '" name="default_select" value="', $k, '"', $context['field_type_value'] != CFIELD_TYPE_MULTI && $context['custom_field']['default_value'] == $k ? ' checked="checked"' : '', $context['field_type_value'] != CFIELD_TYPE_MULTI ? '' : ' style="display:none;"', ' >
-								<input type="checkbox" id="multi_', $k, '" name="default_select_multi[', $k, ']" value="', $k, '"', $context['field_type_value'] == CFIELD_TYPE_MULTI && in_array($k, $context['custom_field']['default_value']) ? ' checked="checked"' : '', $context['field_type_value'] == CFIELD_TYPE_MULTI ? '' : ' style="display:none;"', ' >
-								<input type="text" name="select_option[', $k, ']" value="', $option, '" >';
+									<br id="break_', $k, '">
+									<input type="radio" id="radio_', $k, '" name="default_select" value="', $k, '"', $context['field_type_value'] != CFIELD_TYPE_MULTI && $context['custom_field']['default_value'] == $k ? ' checked="checked"' : '', $context['field_type_value'] != CFIELD_TYPE_MULTI ? '' : ' style="display:none;"', ' >
+									<input type="checkbox" id="multi_', $k, '" name="default_select_multi[', $k, ']" value="', $k, '"', $context['field_type_value'] == CFIELD_TYPE_MULTI && in_array($k, $context['custom_field']['default_value']) ? ' checked="checked"' : '', $context['field_type_value'] == CFIELD_TYPE_MULTI ? '' : ' style="display:none;"', ' >
+									<input type="text" id="option_', $k, '" name="select_option[', $k, ']" value="', $option, '">
+									<span id="order_', $k, '" class="custom_field_order"><input id="order_', $k, '_input" type="hidden" name="order[', $k, ']" value="', $order, '" data-key="', $k, '">';
+
+			echo '<a href="#" class="custom_field_move_up" data-key="', $k, '"', $context['custom_field']['order_first'] == $k ? ' style="display:none;"' : '', '><img src="', $settings['default_images_url'], '/simpledesk/move_up.png" class="icon" alt="', $txt['custom_edit_order_up'], '" title="', $txt['custom_edit_order_up'], '"/></a>';
+			echo '<a href="#" class="custom_field_move_down" data-key="', $k, '"', $context['custom_field']['order_last'] == $k ? ' style="display:none;"' : '', '><img src="', $settings['default_images_url'], '/simpledesk/move_down.png" class="icon" alt="', $txt['custom_edit_order_down'], '" title="', $txt['custom_edit_order_down'], '"/></a>';
+
+		echo '</span>';
+
 	}
 
 	echo '
 								<span id="addopt"></span>
-								[<a href="" onclick="add_option(); return false;">', $txt['more'], '</a>]
+								</div>
+								<span id="addopt_link">[<a href="" onclick="add_option(); return false;">', $txt['more'], '</a>]</span>
 							</dd>
 							<dt id="default_dt"', $context['field_type_value'] == CFIELD_TYPE_CHECKBOX ? '' : ' style="display: none;"','>
 								<strong>', $txt['shd_admin_custom_field_default_state'], ':</strong>
@@ -394,5 +412,9 @@ function template_shd_custom_field_edit()
 					<input type="submit" value="', $txt['shd_admin_cancel_custom_field'], '" name="cancel" class="button">
 					<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">
 					<input type="hidden" name="field" value="', empty($context['custom_field']['id_field']) ? 0 : $context['custom_field']['id_field'], '">
-				</form>';
+				</form>
+
+	<script type="text/javascript">
+		var optionsOrder = new shd_custom_field_order({});
+	</script>';
 }
