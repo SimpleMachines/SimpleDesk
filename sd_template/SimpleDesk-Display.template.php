@@ -987,7 +987,7 @@ function template_ticketactionlog()
 		echo '
 			<div class="cat_bar" id="ticket_log_header">
 				<h3 class="titlebg">
-					<span class="floatright shd_ticket_log_expand_container"> <a href="#" onclick="ActionLog.swap(); return false;"><img src="', $settings['images_url'], '/expand.png" alt="+" id="shd_ticket_log_expand" class="icon" style="display:none;"></a></span>
+					<span class="floatright shd_ticket_log_expand_container"> <a href="#" onclick="ActionLog.swap(); return false;"><img src="', $settings['images_url'], '/selected.png" alt="+" id="shd_ticket_log_expand" class="icon" style="display:none;"></a></span>
 					<img src="', $settings['default_images_url'], '/simpledesk/log.png" class="icon" alt="*">
 					<a href="#" onclick="ActionLog.swap(); return false;">', $txt['shd_ticket_log'], '</a>
 					<span class="smalltext">(', $context['ticket_log_count'] == 1 ? $txt['shd_ticket_log_count_one'] : sprintf($txt['shd_ticket_log_count_more'], $context['ticket_log_count']), ')</span>

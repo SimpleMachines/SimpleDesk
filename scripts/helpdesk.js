@@ -57,7 +57,7 @@ shd_privacyControl.prototype.action = function ()
 
 shd_privacyControl.prototype.callback = function (oRecvd)
 {
-	if (oRecvd && oRecvd.success == false)
+	if (oRecvd && oRecvd.success === false)
 		alert(oRecvd.error);
 	else if (oRecvd && oRecvd.message)
 	{
@@ -115,11 +115,10 @@ shd_urgencyControl.prototype.action = function (direction)
 
 shd_urgencyControl.prototype.callback = function (oRecvd)
 {
-	if (oRecvd && oRecvd.success == false)
+	if (oRecvd && oRecvd.success === false)
 		alert(oRecvd.error);
 	else if (oRecvd && oRecvd.message)
 	{
-		var oSpan = document.getElementById(shd_urgencyControl.prototype.opts.sDestSpan);
 		setInnerHTML(document.getElementById(shd_urgencyControl.prototype.opts.sDestSpan), oRecvd.message);
 
 		var btn_set = [ "increase", "decrease" ];
@@ -274,7 +273,7 @@ function QuickReply(oOptions)
 }
 
 // When a user presses quote, put it in the quick reply box (if expanded).
-QuickReply.prototype.quote = function (iMessageId, sSessionId, sSessionVar, bTemplateUpgraded)
+QuickReply.prototype.quote = function (iMessageId, sSessionId, sSessionVar)
 {
 	if (this.bCollapsed)
 	{
@@ -296,7 +295,7 @@ QuickReply.prototype.quote = function (iMessageId, sSessionId, sSessionVar, bTem
 // This is the callback function used after the json request.
 QuickReply.prototype.onQuoteReceived = function (oRecvd)
 {
-	if (oRecvd && oRecvd.success == true && oRecvd.message)
+	if (oRecvd && oRecvd.success === true && oRecvd.message)
 		oEditorHandle_shd_message.insertText(oRecvd.message, false, true);
 }
 
@@ -331,7 +330,7 @@ CannedReply.prototype.getReply = function ()
 // This is the callback function used after the json request.
 CannedReply.prototype.onReplyReceived = function (oRecvd)
 {
-	if (oRecvd && oRecvd.success == true && oRecvd.message)
+	if (oRecvd && oRecvd.success === true && oRecvd.message)
 		oEditorHandle_shd_message.insertText(oRecvd.message, false, true);
 }
 
@@ -409,7 +408,7 @@ AjaxAssign.prototype.expand = function ()
 
 AjaxAssign.prototype.expand_callback = function (oRecvd)
 {
-	if (oRecvd && oRecvd.success == false)
+	if (oRecvd && oRecvd.success === false)
 		alert(oRecvd.error);
 	else if (oRecvd && oRecvd.members)
 	{
@@ -418,8 +417,12 @@ AjaxAssign.prototype.expand_callback = function (oRecvd)
 		assign_list.setAttribute('style', 'display:block');
 
 		var newhtml = '';
+		var cur = 0;
 		for (var i in oRecvd.members)
 		{
+			if (!oRecvd.members.hasOwnProperty(i))
+				continue;
+
 			cur = oRecvd.members[i];
 			newhtml += '<li class="shd_assignees" onclick="' + this.opt.sSelf + '.assign(' + cur.uid + ');">';
 
@@ -445,7 +448,7 @@ AjaxAssign.prototype.assign_callback = function(oRecvd)
 	// Click handler callback for assignment, to handle once the request has been made
 	this.collapse();
 
-	if (oRecvd && oRecvd.success == false)
+	if (oRecvd && oRecvd.success === false)
 		alert(oRecvd.error);
 	else if (oRecvd && oRecvd.assigned)
 	{
@@ -494,23 +497,28 @@ shd_notifications.prototype.onReceiveNotifications = function (oRecvd)
 	if (typeof(oRecvd) == 'undefined')
 		return;
 
-	if (oRecvd && oRecvd.success == false)
+	if (oRecvd && oRecvd.success === false)
 		alert(oRecvd.error);
 
-	var newhtml = '';
+	var newhtml = ''; var temphtml = ''; var member = ''; var subtemplate = '';
+	var cur = 0; var i = 0; var j = 0; var k = 0;
 	var template = this.opt.oMainTemplate;
+
 	if (oRecvd.being_notified)
 	{
-		var subtemplate = this.opt.oNotifiedTemplate;
+		subtemplate = this.opt.oNotifiedTemplate;
 
-		var temphtml = '';
-		var member = '';
-		for (var i in oRecvd.being_notified)
+		temphtml = '';
+		member = '';
+		for (i in oRecvd.being_notified)
 		{
+			if (!oRecvd.being_notified.hasOwnProperty(i))
+				continue;
+
 			cur = oRecvd.being_notified[i];
 			member = subtemplate.replace('%name%', cur);
 
-			temphtml += cur;
+			temphtml += member;
 		}
 
 		newhtml = template.replace('%title%', oRecvd.being_notified_txt).replace('%subtemplate%', temphtml);
@@ -518,21 +526,24 @@ shd_notifications.prototype.onReceiveNotifications = function (oRecvd)
 
 	if (oRecvd.optional)
 	{
-		var subtemplate = this.opt.oOptionalTemplate;
+		subtemplate = this.opt.oOptionalTemplate;
 
-		var temphtml = '';
-		var member = '';
+		temphtml = '';
+		member = '';
 		for (var i in oRecvd.optional)
 		{
+			if (!oRecvd.optional.hasOwnProperty(i))
+				continue;
+
 			cur = oRecvd.optional[i];
 
 			member = subtemplate.replace('%name%', cur);
 			member = member.replace('%index%', i);
 			member = member.replace('%index%', i);
 
-			for (var j in oRecvd.selected)
+			for (j in oRecvd.selected)
 			{
-				var k = oRecvd.selected[j];
+				k = oRecvd.selected[j];
 				member = member.replace('%checked%', i == k ? ' checked' : '');
 			}
 
@@ -545,20 +556,23 @@ shd_notifications.prototype.onReceiveNotifications = function (oRecvd)
 
 	if (oRecvd.optional_butoff)
 	{
-		var subtemplate = this.opt.oOptionalOffTemplate;
+		subtemplate = this.opt.oOptionalOffTemplate;
 
-		var temphtml = '';
-		var member = '';
-		for (var i in oRecvd.optional_butoff)
+		temphtml = '';
+		member = '';
+		for (i in oRecvd.optional_butoff)
 		{
+			if (!oRecvd.optional_butoff.hasOwnProperty(i))
+				continue;
+
 			cur = oRecvd.optional_butoff[i];
 			member = subtemplate.replace('%name%', cur);
 			member = member.replace('%index%', i);
 			member = member.replace('%index%', i);
 
-			for (var j in oRecvd.selected)
+			for (j in oRecvd.selected)
 			{
-				var k = oRecvd.selected[j];
+				k = oRecvd.selected[j];
 				member = member.replace('%checked%', i == k ? ' checked' : '');
 			}
 

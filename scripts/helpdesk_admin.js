@@ -141,8 +141,8 @@ function shd_custom_field_order(oOptions)
 	if (!this.opt.aCustHTMLFields)
 		this.opt.aCustHTMLFields = ['break_{KEY}', 'radio_{KEY}', 'multi_{KEY}', 'option_{KEY}', 'order_{KEY}'];
 
-	this.currentOrder = new Array();
-	this.newOrder = new Array();
+	this.currentOrder = [];
+	this.newOrder = [];
 
 	this.init();
 	return false;
@@ -155,16 +155,14 @@ shd_custom_field_order.prototype.init = function ()
 	$(document).on('click', '#' + this.opt.sFieldsContainer + ' .' + this.opt.sOptionsMoveDownClass, function(e){
 		e.preventDefault();
 		var clickedKey = $(this).data('key');
-		var clickedOrder = $('#order_' + clickedKey + ' input').val();
+		var clickedOrder = parseInt($('#order_' + clickedKey + ' input').val());
 		self.move(clickedKey, clickedOrder, clickedOrder + 1);
-		return;
 	});
 	$(document).on('click', '#' + this.opt.sFieldsContainer + ' .' + this.opt.sOptionsMoveUpClass, function(e){
 		e.preventDefault();
 		var clickedKey = $(this).data('key');
-		var clickedOrder = $('#order_' + clickedKey + ' input').val();
+		var clickedOrder = parseInt($('#order_' + clickedKey + ' input').val());
 		self.move(clickedKey, clickedOrder, clickedOrder - 1);
-		return;
 	});
 }
 
@@ -175,8 +173,7 @@ shd_custom_field_order.prototype.cloneArray = function (arraySource)
 
 shd_custom_field_order.prototype.move = function (clickedKey, clickedOrder, movedOrder)
 {
-	var currentOrder = new Array();
-	var newOrder = new Array();
+	var currentOrder = [];
 
 	// Get our current Order items.
 	var self = this;
@@ -214,7 +211,7 @@ shd_custom_field_order.prototype.move = function (clickedKey, clickedOrder, move
 
 shd_custom_field_order.prototype.resortNew = function ()
 {
-	var currentOrder = new Array();
+	var currentOrder = [];
 
 	$('#' + this.opt.sFieldsContainer + ' .' + this.opt.sOptionsOrderClass + ' input').each(function() {
 		currentOrder[$(this).val()] = $(this).data('key');
@@ -234,7 +231,7 @@ shd_custom_field_order.prototype.resort = function (currentOrder)
 
 	// Go through each possible option and reorder it, you can't do this first since outerHTML doesn't contain the updated information.
 	$(currentOrder).each(function(order, key) {
-		orderHTML = $('#order_' + key + '_input').val(order);
+		$('#order_' + key + '_input').val(order);
 
 		// First item, we hide the move up.
 		if (firstField == key)
