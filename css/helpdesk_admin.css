@@ -139,6 +139,10 @@ dl.permsettings img, dl.cannedsettings dd img.icon {
 	margin: 0 10px 0 0;
 }
 
+dl span.custom_field_order img {
+	margin-right: 0;	
+}
+
 h3 a.permcollapse img {
 	margin-top:8px;
 }

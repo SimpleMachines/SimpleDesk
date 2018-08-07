@@ -833,7 +833,7 @@ function shd_load_custom_fields($is_ticket = true, $ticketContext = 0, $dept = 0
 			{
 				foreach ($context['ticket_form']['custom_fields'][$loc][$row['id_field']]['options'] as $k => $v)
 				{
-					if ($k != 'inactive')
+					if ($k != 'inactive' && $k != 'order')
 						$context['ticket_form']['custom_fields'][$loc][$row['id_field']]['options'][$k] = (strpos($v, '[') !== false) ? trim(strip_tags(parse_bbc($v))) : trim($v);
 				}
 			}
@@ -841,6 +841,21 @@ function shd_load_custom_fields($is_ticket = true, $ticketContext = 0, $dept = 0
 		$context['ticket_form']['custom_fields'][$loc][$row['id_field']]['depts'][] = $row['id_dept'];
 		if (!empty($context['ticket_form']['custom_fields'][$loc][$row['id_field']]['options']) && empty($context['ticket_form']['custom_fields'][$loc][$row['id_field']]['options']['inactive']))
 			$context['ticket_form']['custom_fields'][$loc][$row['id_field']]['options']['inactive'] = array();
+
+		if (!empty($context['ticket_form']['custom_fields'][$loc][$row['id_field']]['options']) && !isset($context['ticket_form']['custom_fields'][$loc][$row['id_field']]['options']['order']))
+			$context['ticket_form']['custom_fields'][$loc][$row['id_field']]['options']['order'] = array();
+
+		// If this option isn't in the order, make it so!
+		if (!empty($context['ticket_form']['custom_fields'][$loc][$row['id_field']]['options']))
+			foreach ($context['ticket_form']['custom_fields'][$loc][$row['id_field']]['options'] as $key => $val)
+				if (!in_array($key, array('inactive', 'order')) && !in_array($key, $context['ticket_form']['custom_fields'][$loc][$row['id_field']]['options']['order']))
+					$context['ticket_form']['custom_fields'][$loc][$row['id_field']]['options']['order'][] = $key;
+
+		// Make sure it exists in the order.
+		if (!empty($context['ticket_form']['custom_fields'][$loc][$row['id_field']]['options']))
+			foreach ($context['ticket_form']['custom_fields'][$loc][$row['id_field']]['options']['order'] as $key => $val)
+				if (!isset($context['ticket_form']['custom_fields'][$loc][$row['id_field']]['options'][$val]))
+					unset($context['ticket_form']['custom_fields'][$loc][$row['id_field']]['options']['order'][$val]);
 
 		if (isset($field_values[$row['id_field']]))
 		{

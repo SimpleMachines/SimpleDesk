@@ -97,15 +97,15 @@
 		<hook hook="integrate_SSI" function="$sourcedir/SimpleDesk-SSI.php" />
 
 		<!-- database changes -->
-		<database>install.php</database>
+		<database>install-sd.php</database>
 
 		<redirect url="?action=admin;area=helpdesk_info" />
 	</install>
 
 	<uninstall for="2.1 Beta 3, 2.1 Beta 4">
 		<!-- database changes, undone -->
-		<database>uninstall-optional.php</database>
-		<code type="file">uninstall-required.php</code>
+		<database>uninstall-sd-optional.php</database>
+		<code type="file">uninstall-sd-required.php</code>
 
 		<!-- All the hooks -->
 			<!-- SMF Core -->

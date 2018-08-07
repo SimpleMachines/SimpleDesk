@@ -124,3 +124,132 @@ function toggleItem(itemID, theme_url, txt_on, txt_off)
 	// Don't reload.
 	return false;
 }
+
+/* Sort Custom Fields */
+function shd_custom_field_order(oOptions)
+{
+	this.opt = oOptions;
+
+	if (!this.opt.sFieldsContainer)
+		this.opt.sFieldsContainer = 'custom_fields_list';
+	if (!this.opt.sOptionsOrderClass)
+		this.opt.sOptionsOrderClass = 'custom_field_order';
+	if (!this.opt.sOptionsMoveDownClass)
+		this.opt.sOptionsMoveDownClass = 'custom_field_move_down';
+	if (!this.opt.sOptionsMoveUpClass)
+		this.opt.sOptionsMoveUpClass = 'custom_field_move_up';
+	if (!this.opt.aCustHTMLFields)
+		this.opt.aCustHTMLFields = ['break_{KEY}', 'radio_{KEY}', 'multi_{KEY}', 'option_{KEY}', 'order_{KEY}'];
+
+	this.currentOrder = new Array();
+	this.newOrder = new Array();
+
+	this.init();
+	return false;
+}
+
+shd_custom_field_order.prototype.init = function ()
+{
+	var self = this;
+
+	$(document).on('click', '#' + this.opt.sFieldsContainer + ' .' + this.opt.sOptionsMoveDownClass, function(e){
+		e.preventDefault();
+		var clickedKey = $(this).data('key');
+		var clickedOrder = $('#order_' + clickedKey + ' input').val();
+		self.move(clickedKey, clickedOrder, clickedOrder + 1);
+		return;
+	});
+	$(document).on('click', '#' + this.opt.sFieldsContainer + ' .' + this.opt.sOptionsMoveUpClass, function(e){
+		e.preventDefault();
+		var clickedKey = $(this).data('key');
+		var clickedOrder = $('#order_' + clickedKey + ' input').val();
+		self.move(clickedKey, clickedOrder, clickedOrder - 1);
+		return;
+	});
+}
+
+shd_custom_field_order.prototype.cloneArray = function (arraySource)
+{
+	return arraySource.slice(0);
+}
+
+shd_custom_field_order.prototype.move = function (clickedKey, clickedOrder, movedOrder)
+{
+	var currentOrder = new Array();
+	var newOrder = new Array();
+
+	// Get our current Order items.
+	var self = this;
+	$('#' + this.opt.sFieldsContainer + ' .' + this.opt.sOptionsOrderClass + ' input').each(function() {
+		currentOrder[$(this).val()] = $(this).data('key');
+
+		// Capture the current input. attr is used here as data doesn't get retained.
+		$('#option_' + $(this).data('key')).attr('data-value-input', $('#option_' + $(this).data('key')).val());
+	});
+
+	// Make sure it can go that way.
+	if (
+		(clickedOrder > movedOrder && movedOrder < 0) ||
+		(clickedOrder < movedOrder && clickedOrder >= currentOrder.length - 1)
+	)
+		return;
+
+	// Put this into the right place.
+	newOrder = this.cloneArray(currentOrder);
+	newOrder.splice(clickedOrder, 1);
+	newOrder.splice(movedOrder, 0, clickedKey);
+
+	// Build up the new HTML and move it.
+	var newDiv = '';
+	$(newOrder).each(function(order, key) {
+		$(self.opt.aCustHTMLFields).each(function(order2, field) {
+			newDiv += $('#' + field.replace('{KEY}', key)).prop('outerHTML');
+		});
+	});
+	newDiv += '<span id="addopt"></span>';
+	$('#' + this.opt.sFieldsContainer).html(newDiv);
+
+	this.resort(newOrder);
+}
+
+shd_custom_field_order.prototype.resortNew = function ()
+{
+	var currentOrder = new Array();
+
+	$('#' + this.opt.sFieldsContainer + ' .' + this.opt.sOptionsOrderClass + ' input').each(function() {
+		currentOrder[$(this).val()] = $(this).data('key');
+
+		// Capture the current input. attr is used here as data doesn't get retained.
+		$('#option_' + $(this).data('key')).attr('data-value-input', $('#option_' + $(this).data('key')).val());
+	});
+
+	this.resort(currentOrder);
+}
+
+shd_custom_field_order.prototype.resort = function (currentOrder)
+{
+	// Find out the new orders.
+	var firstField = typeof currentOrder[0] === 'undefined' ? 0 : currentOrder[0];
+	var lastField = currentOrder[currentOrder.length - 1];
+
+	// Go through each possible option and reorder it, you can't do this first since outerHTML doesn't contain the updated information.
+	$(currentOrder).each(function(order, key) {
+		orderHTML = $('#order_' + key + '_input').val(order);
+
+		// First item, we hide the move up.
+		if (firstField == key)
+			$('#order_' + key + ' a.custom_field_move_up').hide();
+		else
+			$('#order_' + key + ' a.custom_field_move_up').show();
+
+		// Last item we hide the move down.
+		if (lastField == key)
+			$('#order_' + key + ' a.custom_field_move_down').hide();
+		else
+			$('#order_' + key + ' a.custom_field_move_down').show();
+
+		// Capture the current input.
+		if ($('#option_' + key).data('value-input'))
+			$('#option_' + key).val($('#option_' + key).attr('data-value-input'));
+	});
+}
