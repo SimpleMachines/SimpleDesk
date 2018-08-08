@@ -24,7 +24,6 @@
  *	@package source
  *	@since 1.0
 */
-
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
@@ -70,7 +69,6 @@ function shd_assign()
 		)
 	);
 
-	$log_params = array();
 	if ($row = $smcFunc['db_fetch_row']($query))
 	{
 		list($ticket_starter, $ticket_owner, $private, $subject, $dept, $status, $dept_name) = $row;
@@ -195,8 +193,6 @@ function shd_assign2()
 		)
 	);
 
-	$log_params = array();
-
 	if ($row = $smcFunc['db_fetch_row']($query))
 	{
 		list($ticket_starter, $ticket_owner, $private, $subject, $status, $dept) = $row;
@@ -215,7 +211,7 @@ function shd_assign2()
 
 	// Just in case, are they cancelling?
 	if (isset($_REQUEST['cancel']))
-		redirectexit('action=helpdesk;sa=ticket;ticket=' . $context['ticket_id']);
+		return redirectexit('action=helpdesk;sa=ticket;ticket=' . $context['ticket_id']);
 
 	if ($status == TICKET_STATUS_CLOSED || $status == TICKET_STATUS_DELETED)
 		return fatal_lang_error('shd_cannot_assign', false);
@@ -311,9 +307,8 @@ function shd_commit_assignment($ticket, $assignment, $is_ajax = false)
 		return;
 
 	if (!empty($context['shd_return_to']) && $context['shd_return_to'] == 'home')
-		redirectexit($context['shd_home'] . $context['shd_dept_link']);
-	else
-		redirectexit('action=helpdesk;sa=ticket;ticket=' . $ticket);
+		return redirectexit($context['shd_home'] . $context['shd_dept_link']);
+	return redirectexit('action=helpdesk;sa=ticket;ticket=' . $ticket);
 }
 
 /**

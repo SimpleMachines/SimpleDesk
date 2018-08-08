@@ -24,7 +24,6 @@
  *	@package subs
  *	@since 1.0
  */
-
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
@@ -151,11 +150,9 @@ function shd_load_action_log_entries($start = 0, $items_per_page = 10, $sort = '
 
 		// Notifications require us to collate all the user ids as we go along.
 		if ($row['action'] == 'notify' && !empty($row['extra']['emails']))
-		{
 			foreach ($row['extra']['emails'] as $email_type => $recipients)
 				if (!empty($recipients['u']))
 					$notify_members = array_merge($notify_members, explode(',', $recipients['u']));
-		}
 	}
 	$smcFunc['db_free_result']($request);
 
@@ -645,9 +642,9 @@ function shd_convert_msgbody($body_type)
 	global $smcFunc;
 
 	if ($body_type == 'text')
-		$smcFunc['db_change_column']('{db_prefix}helpdesk_ticket_replies', 'body', array('type' => 'mediumtext'));
+		$smcFunc['db_change_column']('{db_prefix}helpdesk_ticket_replies', 'body', array('type' => 'text'));
 	else
-		$smcFunc['db_change_column']('{db_prefix}messages', 'body', array('type' => 'text'));
+		$smcFunc['db_change_column']('{db_prefix}helpdesk_ticket_replies', 'body', array('type' => 'mediumtext'));
 }
 
 /**
@@ -929,11 +926,9 @@ function shd_load_admin_log_entries($start = 0, $items_per_page = 10, $sort = 'l
 			)
 		);
 		while ($row = $smcFunc['db_fetch_assoc']($request))
-		{
 			foreach ($ids['canned_cat'][$row['id']] as $id_action => $type)
 				if ($type == 'id')
 					$actions[$id_action]['id_name'] = $row['name'];
-		}
 		$smcFunc['db_free_result']($request);
 	}
 	if (!empty($ids['canned_reply']))
@@ -947,11 +942,9 @@ function shd_load_admin_log_entries($start = 0, $items_per_page = 10, $sort = 'l
 			)
 		);
 		while ($row = $smcFunc['db_fetch_assoc']($request))
-		{
 			foreach ($ids['canned_reply'][$row['id']] as $id_action => $type)
 				if ($type == 'id')
 					$actions[$id_action]['id_name'] = $row['name'];
-		}
 		$smcFunc['db_free_result']($request);
 	}
 	if (!empty($ids['custom_field']))
@@ -966,11 +959,9 @@ function shd_load_admin_log_entries($start = 0, $items_per_page = 10, $sort = 'l
 			)
 		);
 		while ($row = $smcFunc['db_fetch_assoc']($request))
-		{
 			foreach ($ids['custom_field'][$row['id']] as $id_action => $type)
 				if ($type == 'id')
 					$actions[$id_action]['id_name'] = $row['name'];
-		}
 		$smcFunc['db_free_result']($request);
 	}
 	if (!empty($ids['depts']))
@@ -985,10 +976,8 @@ function shd_load_admin_log_entries($start = 0, $items_per_page = 10, $sort = 'l
 			)
 		);
 		while ($row = $smcFunc['db_fetch_assoc']($request))
-		{
 			foreach ($ids['depts'][$row['id']] as $id_action => $type)
 				$actions[$id_action][$type == 'id' ? 'id_name' : ($type == 'to' ? 'to_name' : 'from_name')] = $row['name'];
-		}
 		$smcFunc['db_free_result']($request);
 	}
 	if (!empty($ids['members']))
@@ -1003,10 +992,8 @@ function shd_load_admin_log_entries($start = 0, $items_per_page = 10, $sort = 'l
 			)
 		);
 		while ($row = $smcFunc['db_fetch_assoc']($request))
-		{
 			foreach ($ids['custom_field'][$row['id']] as $id_action => $type)
 				$actions[$id_action][$type == 'to' ? 'to_name' : 'from_name'] = $row['name'];
-		}
 		$smcFunc['db_free_result']($request);
 	}
 	if (!empty($ids['permissions']))
@@ -1021,10 +1008,8 @@ function shd_load_admin_log_entries($start = 0, $items_per_page = 10, $sort = 'l
 			)
 		);
 		while ($row = $smcFunc['db_fetch_assoc']($request))
-		{
 			foreach ($ids['permissions'][$row['id']] as $id_action => $type)
 				$actions[$id_action][$type == 'id' ? 'id_name' : ($type == 'to' ? 'to_name' : 'from_name')] = $row['name'];
-		}
 		$smcFunc['db_free_result']($request);
 	}
 

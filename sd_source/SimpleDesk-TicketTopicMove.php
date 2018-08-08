@@ -24,7 +24,6 @@
  *	@package source
  *	@since 1.0
 */
-
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
@@ -133,7 +132,6 @@ function shd_tickettotopic()
 			'child_level' => $row['child_level'],
 		);
 	}
-
 	$smcFunc['db_free_result']($request);
 
 	if (empty($context['categories']))
@@ -245,11 +243,9 @@ function shd_tickettotopic()
 			}
 		}
 		else
-		{
 			// Non staff aren't special. They should not be able to make this decision. If someone can't see it, they don't get to make the choice.
 			if (!$field['visible']['user'] || !$field['visible']['staff'])
 				return fatal_lang_error('cannot_shd_move_ticket_topic_hidden_cfs', false);
-		}
 	}
 
 	// Store the ticket subject for the template
@@ -292,8 +288,7 @@ function shd_tickettotopic2()
 
 	if (empty($context['ticket_id']))
 		return fatal_lang_error('shd_no_ticket');
-
-	if (isset($_POST['send_pm']) && (!isset($_POST['pm_content']) || trim($_POST['pm_content']) == ''))
+	elseif (isset($_POST['send_pm']) && (!isset($_POST['pm_content']) || trim($_POST['pm_content']) == ''))
 	{
 		checkSubmitOnce('free');
 		return fatal_lang_error('shd_move_no_pm', false);
@@ -334,9 +329,8 @@ function shd_tickettotopic2()
 	);
 	if ($smcFunc['db_num_rows']($request) == 0)
 		return fatal_lang_error('no_board');
-	else
-		list ($pcounter, $board_name, $subject, $owner, $body, $firstmsg, $smileys_enabled, $modified_time, $modified_name, $time, $shd_id_msg, $deleted_replies, $dept) = $smcFunc['db_fetch_row']($request);
 
+	list ($pcounter, $board_name, $subject, $owner, $body, $firstmsg, $smileys_enabled, $modified_time, $modified_name, $time, $shd_id_msg, $deleted_replies, $dept) = $smcFunc['db_fetch_row']($request);
 	$smcFunc['db_free_result']($request);
 
 	if (!shd_allowed_to('shd_ticket_to_topic', $dept) || !empty($modSettings['shd_helpdesk_only']) || !empty($modSettings['shd_disable_tickettotopic']))
@@ -453,11 +447,9 @@ function shd_tickettotopic2()
 				$context['custom_fields_warning'] = true;
 		}
 		else
-		{
 			// Non staff aren't special. They should not be able to make this decision. If someone can't see it, they don't get to make the choice.
 			if (!$field['visible']['user'] || !$field['visible']['staff'])
 				return fatal_lang_error('cannot_shd_move_ticket_topic_hidden_cfs', false);
-		}
 
 		// Are we ignoring this field? If so, we can now safely get rid of it at this very point.
 		if (isset($_POST['field' . $field_id]) && $_POST['field' . $field_id] == 'lose')
@@ -710,13 +702,12 @@ function shd_tickettotopic2()
 		}
 
 		// Now we'll add this to the log.
-		$log_params = array(
+		shd_log_action('tickettotopic', array(
 			'subject' => $subject,
 			'board_id' => $_POST['toboard'],
 			'board_name' => $board_name,
 			'ticket' => $topic,
-		);
-		shd_log_action('tickettotopic', $log_params);
+		));
 
 		// Lastly, delete the ticket from the database.
 		shd_db_query('', '
@@ -772,7 +763,6 @@ function shd_append_custom_fields(&$body, $id_msg, $type)
 	global $context, $txt;
 
 	$content = array();
-
 	foreach ($context['custom_fields'] as $field_id => $field)
 	{
 		if (empty($field['values'][$type][$id_msg]))
@@ -809,9 +799,8 @@ function shd_append_custom_fields(&$body, $id_msg, $type)
 				if (!empty($opts))
 					$item = $field['name'] . ': ' . implode(', ', $opts);
 				break;
-
-
 		}
+
 		if (!empty($item))
 			$content[] = $item;
 		unset($item);
@@ -839,8 +828,7 @@ function shd_topictoticket()
 
 	if (!shd_allowed_to('shd_topic_to_ticket', 0) || !empty($modSettings['shd_helpdesk_only']) || !empty($modSettings['shd_disable_tickettotopic']))
 		return fatal_lang_error('shd_cannot_move_topic', false);
-
-	if (empty($_REQUEST['topic']))
+	elseif (empty($_REQUEST['topic']))
 		return fatal_lang_error('shd_no_topic');
 
 	$context['topic_id'] = (int) $_REQUEST['topic'];
@@ -886,8 +874,7 @@ function shd_topictoticket()
 
 	// We also want to be able to indicate whether the topic starter will be able to see the message after.
 	// Firstly, figure out what groups they're in, so we can establish that kind of thing.
-	$groups = array();
-	$depts = array();
+	$groups = $depts = array();
 	if (!empty($topic_starter))
 	{
 		// Sadly, loadMemberData only fetches additional_groups in profile mode, which also triggers other queries. We're better just getting it ourselves.
@@ -1003,19 +990,18 @@ function shd_topictoticket2()
 	$_REQUEST['dept'] = isset($_REQUEST['dept']) ? (int) $_REQUEST['dept'] : 0;
 	if (empty($_REQUEST['dept']))
 		$_REQUEST['dept'] = -1; // which is never a valid department!
+
 	if (!shd_allowed_to('shd_topic_to_ticket', $_REQUEST['dept']) || !empty($modSettings['shd_helpdesk_only']) || !empty($modSettings['shd_disable_tickettotopic']))
 		return fatal_lang_error('shd_cannot_move_topic', false);
-
-	if (empty($_REQUEST['topic']))
+	elseif (empty($_REQUEST['topic']))
 		return fatal_lang_error('shd_no_topic');
 
 	$context['topic_id'] = (int) $_REQUEST['topic'];
 
 	// Just in case, are they cancelling?
 	if (isset($_REQUEST['cancel']))
-		redirectexit('topic=' . $context['topic_id']);
-
-	if (isset($_POST['send_pm']) && (!isset($_POST['pm_content']) || trim($_POST['pm_content']) == ''))
+		return redirectexit('topic=' . $context['topic_id']);
+	elseif (isset($_POST['send_pm']) && (!isset($_POST['pm_content']) || trim($_POST['pm_content']) == ''))
 		return fatal_lang_error('shd_move_no_pm_topic', false);
 
 	require_once($sourcedir . '/sd_source/Subs-SimpleDeskPost.php');
@@ -1035,9 +1021,8 @@ function shd_topictoticket2()
 	);
 	if ($smcFunc['db_num_rows']($request) == 0)
 		return fatal_lang_error('shd_move_ticket_not_created');
-	else
-		list ($subject, $board, $owner, $body, $firstmsg, $smileys_enabled, $memberupdated, $numreplies, $postername, $posteremail, $posterip, $postertime, $modified_time, $modified_name, $smf_id_msg) = $smcFunc['db_fetch_row']($request);
 
+	list ($subject, $board, $owner, $body, $firstmsg, $smileys_enabled, $memberupdated, $numreplies, $postername, $posteremail, $posterip, $postertime, $modified_time, $modified_name, $smf_id_msg) = $smcFunc['db_fetch_row']($request);
 	$smcFunc['db_free_result']($request);
 
 	// Figure out what the status of the ticket should be.
@@ -1081,198 +1066,188 @@ function shd_topictoticket2()
 	$msg_assoc[$smf_id_msg] = $msgOptions['id'];
 
 	// Ticket created, let's dig out the replies and post them in the ticket, if there are any.
-	if (isset($ticketOptions['id']))
+	if (!isset($ticketOptions['id']))
+		return fatal_lang_error('shd_move_ticket_not_created', false);
+
+	$request = shd_db_query('', '
+		SELECT body, id_member, poster_time, poster_name, poster_email, poster_ip, smileys_enabled, id_msg
+		FROM {db_prefix}messages
+		WHERE id_topic = {int:topic}
+		AND id_msg != {int:topic_msg}',
+		array(
+			'topic' => $context['topic_id'],
+			'topic_msg' => $firstmsg,
+		)
+	);
+
+	$num_replies = $smcFunc['db_num_rows']($request) + 1; // Plus one since we want to count the main ticket post as well.
+
+	// The ID of the ticket we created
+	$ticket = $ticketOptions['id'];
+
+	if ($smcFunc['db_num_rows']($request) != 0)
 	{
-		$request = shd_db_query('', '
-			SELECT body, id_member, poster_time, poster_name, poster_email, poster_ip, smileys_enabled, id_msg
-			FROM {db_prefix}messages
-			WHERE id_topic = {int:topic}
-			AND id_msg != {int:topic_msg}',
+		// Now loop through each reply and post it.  Hopefully there aren't too many. *looks at clock*
+		while ($row = $smcFunc['db_fetch_assoc']($request))
+		{
+			$msgOptions = array(
+				'body' => $row['body'],
+				'smileys_enabled' => !empty($row['smileys_enabled']) ? 1 : 0,
+			);
+			$ticketOptions = array(
+				'id' => $ticket,
+				'mark_as_read' => false,
+			);
+			$posterOptions = array(
+				'id' => $row['id_member'],
+				'name' => !empty($row['poster_name']) ? $row['poster_name'] : '',
+				'email' => !empty($row['poster_email']) ? $row['poster_email'] : '',
+				'ip' => !empty($row['poster_ip']) ? $row['poster_ip'] : '',
+			);
+			shd_create_ticket_post($msgOptions, $ticketOptions, $posterOptions);
+			$msg_assoc[$row['id_msg']] = $msgOptions['id'];
+		}
+	}
+
+	// Ticket: check; Replies: check; Notfiy the topic starter, if desired.
+	if (isset($_POST['send_pm']))
+	{
+		require_once($sourcedir . '/Subs-Post.php');
+
+		$request = shd_db_query('pm_find_username', '
+			SELECT real_name
+			FROM {db_prefix}members
+			WHERE id_member = {int:user}
+			LIMIT 1',
 			array(
-				'topic' => $context['topic_id'],
-				'topic_msg' => $firstmsg,
+				'user' => $owner,
 			)
 		);
+		list ($username) = $smcFunc['db_fetch_row']($request);
+		$smcFunc['db_free_result']($request);
 
-		$num_replies = $smcFunc['db_num_rows']($request) + 1; // Plus one since we want to count the main ticket post as well.
+		// Fix the content
+		$replacements = array(
+			'{user}' => $username,
+			'{subject}' => $old_subject,
+			'{link}' => $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $ticket,
+		);
+		$message = str_replace(array_keys($replacements), array_values($replacements), $_POST['pm_content']);
 
-		// The ID of the ticket we created
-		$ticket = $ticketOptions['id'];
+		$recipients = array(
+			'to' => array($owner),
+			'bcc' => array()
+		);
 
-		if ($smcFunc['db_num_rows']($request) != 0)
+		sendpm($recipients, $txt['shd_ticket_moved_subject_topic'], un_htmlspecialchars($message));
+	}
+
+	// And now for something completely different: attachments
+	if (!empty($msg_assoc))
+	{
+		// 1. Get all the attachments for these messages from the attachments table
+		$attachIDs = array();
+		$query = shd_db_query('', '
+			SELECT id_attach, id_msg
+			FROM {db_prefix}attachments
+			WHERE id_msg IN ({array_int:smf_msgs})',
+			array(
+				'smf_msgs' => array_keys($msg_assoc),
+			)
+		);
+		while ($row = $smcFunc['db_fetch_assoc']($query))
+			$attachIDs[] = $row;
+		$smcFunc['db_free_result']($query);
+
+		if (!empty($attachIDs))
 		{
-			// Now loop through each reply and post it.  Hopefully there aren't too many. *looks at clock*
-			while ($row = $smcFunc['db_fetch_assoc']($request))
-			{
-				$msgOptions = array(
-					'body' => $row['body'],
-					'smileys_enabled' => !empty($row['smileys_enabled']) ? 1 : 0,
-				);
-				$ticketOptions = array(
-					'id' => $ticket,
-					'mark_as_read' => false,
-				);
-				$posterOptions = array(
-					'id' => $row['id_member'],
-					'name' => !empty($row['poster_name']) ? $row['poster_name'] : '',
-					'email' => !empty($row['poster_email']) ? $row['poster_email'] : '',
-					'ip' => !empty($row['poster_ip']) ? $row['poster_ip'] : '',
-				);
-				shd_create_ticket_post($msgOptions, $ticketOptions, $posterOptions);
-				$msg_assoc[$row['id_msg']] = $msgOptions['id'];
-			}
-		}
+			// 2. Do the switch
+			// 2.1. Add them to SD's tables
+			$array = array();
+			foreach ($attachIDs as $attach)
+				$array[] = array($attach['id_attach'], $ticket, $msg_assoc[$attach['id_msg']]);
 
-		// Ticket: check; Replies: check; Notfiy the topic starter, if desired.
-		if (isset($_POST['send_pm']))
-		{
-			require_once($sourcedir . '/Subs-Post.php');
-
-			$request = shd_db_query('pm_find_username', '
-				SELECT real_name
-				FROM {db_prefix}members
-				WHERE id_member = {int:user}
-				LIMIT 1',
-				array(
-					'user' => $owner,
-				)
-			);
-			list ($username) = $smcFunc['db_fetch_row']($request);
-			$smcFunc['db_free_result']($request);
-
-			// Fix the content
-			$replacements = array(
-				'{user}' => $username,
-				'{subject}' => $old_subject,
-				'{link}' => $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $ticket,
-			);
-			$message = str_replace(array_keys($replacements), array_values($replacements), $_POST['pm_content']);
-
-			$recipients = array(
-				'to' => array($owner),
-				'bcc' => array()
+			$smcFunc['db_insert']('replace',
+				'{db_prefix}helpdesk_attachments',
+				array('id_attach' => 'int', 'id_ticket' => 'int', 'id_msg' => 'int',),
+				$array,
+				array('id_attach',)
 			);
 
-			sendpm($recipients, $txt['shd_ticket_moved_subject_topic'], un_htmlspecialchars($message));
-		}
-
-		// And now for something completely different: attachments
-
-		if (!empty($msg_assoc))
-		{
-			// 1. Get all the attachments for these messages from the attachments table
-			$attachIDs = array();
-			$query = shd_db_query('', '
-				SELECT id_attach, id_msg
-				FROM {db_prefix}attachments
+			// 2.2. "Remove" them from SMF's table
+			shd_db_query('', '
+				UPDATE {db_prefix}attachments
+				SET id_msg = 0
 				WHERE id_msg IN ({array_int:smf_msgs})',
 				array(
 					'smf_msgs' => array_keys($msg_assoc),
 				)
 			);
-
-			while ($row = $smcFunc['db_fetch_assoc']($query))
-				$attachIDs[] = $row;
-			$smcFunc['db_free_result']($query);
-
-			if (!empty($attachIDs))
-			{
-				// 2. Do the switch
-				// 2.1. Add them to SD's tables
-				$array = array();
-				foreach ($attachIDs as $attach)
-					$array[] = array($attach['id_attach'], $ticket, $msg_assoc[$attach['id_msg']]);
-
-				$smcFunc['db_insert']('replace',
-					'{db_prefix}helpdesk_attachments',
-					array(
-						'id_attach' => 'int', 'id_ticket' => 'int', 'id_msg' => 'int',
-					),
-					$array,
-					array(
-						'id_attach',
-					)
-				);
-
-				// 2.2. "Remove" them from SMF's table
-				shd_db_query('', '
-					UPDATE {db_prefix}attachments
-					SET id_msg = 0
-					WHERE id_msg IN ({array_int:smf_msgs})',
-					array(
-						'smf_msgs' => array_keys($msg_assoc),
-					)
-				);
-			}
 		}
-
-		// Now we'll add this to the log.
-		$log_params = array(
-			'subject' => $subject,
-			'ticket' => $ticket,
-		);
-		shd_log_action('topictoticket', $log_params);
-
-		// Update post counts.
-		$request = shd_db_query('', '
-			SELECT id_member
-			FROM {db_prefix}messages
-			WHERE id_topic = {int:topic}',
-			array(
-				'topic' => $context['topic_id'],
-			)
-		);
-		$posters = array();
-		while ($row = $smcFunc['db_fetch_assoc']($request))
-		{
-			if (!isset($posters[$row['id_member']]))
-				$posters[$row['id_member']] = 0;
-
-			$posters[$row['id_member']]++;
-		}
-		$smcFunc['db_free_result']($request);
-
-		foreach ($posters as $id_member => $posts)
-			updateMemberData($id_member, array('posts' => 'posts - ' . $posts));
-
-		// Lastly, delete the topic from the database.
-		shd_db_query('', '
-			DELETE FROM {db_prefix}topics
-			WHERE id_topic = {int:topic}
-			LIMIT 1',
-			array(
-				'topic' => $context['topic_id'],
-			)
-		);
-		// And the replies, too.
-		shd_db_query('', '
-			DELETE FROM {db_prefix}messages
-			WHERE id_topic = {int:topic}',
-			array(
-				'topic' => $context['topic_id'],
-			)
-		);
-
-		// Update the stats.
-		require_once($sourcedir . '/Subs-Post.php');
-		updateStats('message');
-		updateStats('topic');
-		updateLastMessages($board);
-
-		// Update board post counts.
-		shd_db_query('', '
-			UPDATE {db_prefix}boards
-			SET num_topics = num_topics - 1,
-				num_posts = num_posts - {int:num_posts}
-			WHERE id_board = {int:board}',
-			array(
-				'board' => $board,
-				'num_posts' => $num_replies,
-			)
-		);
 	}
-	else
-		return fatal_lang_error('shd_move_ticket_not_created', false);
+
+	// Now we'll add this to the log.
+	shd_log_action('topictoticket', array(
+		'subject' => $subject,
+		'ticket' => $ticket,
+	));
+
+	// Update post counts.
+	$request = shd_db_query('', '
+		SELECT id_member
+		FROM {db_prefix}messages
+		WHERE id_topic = {int:topic}',
+		array(
+			'topic' => $context['topic_id'],
+		)
+	);
+	$posters = array();
+	while ($row = $smcFunc['db_fetch_assoc']($request))
+	{
+		if (!isset($posters[$row['id_member']]))
+			$posters[$row['id_member']] = 0;
+		$posters[$row['id_member']]++;
+	}
+	$smcFunc['db_free_result']($request);
+
+	foreach ($posters as $id_member => $posts)
+		updateMemberData($id_member, array('posts' => 'posts - ' . $posts));
+
+	// Lastly, delete the topic from the database.
+	shd_db_query('', '
+		DELETE FROM {db_prefix}topics
+		WHERE id_topic = {int:topic}
+		LIMIT 1',
+		array(
+			'topic' => $context['topic_id'],
+		)
+	);
+	// And the replies, too.
+	shd_db_query('', '
+		DELETE FROM {db_prefix}messages
+		WHERE id_topic = {int:topic}',
+		array(
+			'topic' => $context['topic_id'],
+		)
+	);
+
+	// Update the stats.
+	require_once($sourcedir . '/Subs-Post.php');
+	updateStats('message');
+	updateStats('topic');
+	updateLastMessages($board);
+
+	// Update board post counts.
+	shd_db_query('', '
+		UPDATE {db_prefix}boards
+		SET num_topics = num_topics - 1,
+			num_posts = num_posts - {int:num_posts}
+		WHERE id_board = {int:board}',
+		array(
+			'board' => $board,
+			'num_posts' => $num_replies,
+		)
+	);
 
 	// Send them to the ticket.
 	redirectexit('action=helpdesk;sa=ticket;ticket=' . $ticket);

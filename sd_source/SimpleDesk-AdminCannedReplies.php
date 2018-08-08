@@ -52,7 +52,7 @@ function shd_admin_canned()
 
 	$context['shd_current_subaction'] = isset($_REQUEST['sa']) && isset($subactions[$_REQUEST['sa']]) ? $_REQUEST['sa'] : 'main';
 
-	$subactions[$context['shd_current_subaction']]();
+	call_user_func($subactions[$context['shd_current_subaction']]);
 }
 
 /**
@@ -66,7 +66,6 @@ function shd_admin_canned_list()
 
 	$context['page_title'] = $txt['shd_admin_cannedreplies_home'];
 	$context['sub_template'] = 'shd_cannedreplies_home';
-
 	$context['canned_replies'] = array();
 
 	// 1. Get all the item/department joins. This could be complicated, so do it this way.
@@ -117,17 +116,13 @@ function shd_admin_canned_list()
 		}
 		$context['canned_replies'][$cat_id]['move_up'] &= $context['move_between_cats'];
 		$context['canned_replies'][$cat_id]['move_down'] &= $context['move_between_cats'];
-
-		if (!isset($first))
-			$first = $cat_id;
-		$last = $cat_id;
 	}
 
-	if (isset($first, $last))
-	{
-		$context['canned_replies'][$first]['move_up'] = false;
-		$context['canned_replies'][$last]['move_down'] = false;
-	}
+	if (!isset($cat_id))
+		return;
+
+	$context['canned_replies'][key($context['canned_replies'])]['move_up'] = false;
+	$context['canned_replies'][$cat_id]['move_down'] = false;
 }
 
 /**
@@ -159,7 +154,6 @@ function shd_admin_canned_movecat()
 	$cats = array();
 	while ($row = $smcFunc['db_fetch_assoc']($query))
 		$cats[$row['cat_order']] = $row['id_cat'];
-
 	ksort($cats);
 
 	$cats_map = array_flip($cats);
@@ -176,21 +170,14 @@ function shd_admin_canned_movecat()
 
 	shd_db_query('', '
 		UPDATE {db_prefix}helpdesk_cannedreplies_cats
-		SET cat_order = {int:new_pos}
-		WHERE id_cat = {int:cat}',
+		SET
+			cat_order = CASE WHEN (id_cat = {int:cat}) THEN {int:new_pos} ELSE {int:old_pos} END
+		WHERE id_cat = {int:cat} OR id_cat = {int:other_cat}',
 		array(
 			'new_pos' => $destination,
 			'cat' => $context['canned_category'],
-		)
-	);
-
-	shd_db_query('', '
-		UPDATE {db_prefix}helpdesk_cannedreplies_cats
-		SET cat_order = {int:old_pos}
-		WHERE id_cat = {int:other_cat}',
-		array(
-			'old_pos' => $current_pos,
 			'other_cat' => $other_cat,
+			'old_pos' => $current_pos,
 		)
 	);
 
@@ -233,7 +220,6 @@ function shd_admin_canned_movereply()
 	$replies = array();
 	while ($row = $smcFunc['db_fetch_assoc']($query))
 		$replies[$row['reply_order']] = $row['id_reply'];
-
 	ksort($replies);
 
 	$replies_map = array_flip($replies);
@@ -250,19 +236,11 @@ function shd_admin_canned_movereply()
 
 	shd_db_query('', '
 		UPDATE {db_prefix}helpdesk_cannedreplies
-		SET reply_order = {int:new_pos}
-		WHERE id_reply = {int:reply}',
+		SET reply_order = CASE WHEN id_reply = {int:reply} THEN {int:new_pos} ELSE {int:old_pos} END
+		WHERE id_reply = {int:reply} OR id_reply = {int:other_reply}',
 		array(
 			'new_pos' => $destination,
 			'reply' => $context['canned_reply_id'],
-		)
-	);
-
-	shd_db_query('', '
-		UPDATE {db_prefix}helpdesk_cannedreplies
-		SET reply_order = {int:old_pos}
-		WHERE id_reply = {int:other_reply}',
-		array(
 			'old_pos' => $current_pos,
 			'other_reply' => $other_reply,
 		)
@@ -432,15 +410,9 @@ function shd_admin_canned_savecat()
 		// Insert the category.
 		$id_cat = $smcFunc['db_insert']('insert',
 			'{db_prefix}helpdesk_cannedreplies_cats',
-			array(
-				'cat_name' => 'string', 'cat_order' => 'int',
-			),
-			array(
-				$_POST['catname'], (int) $current_max + 1,
-			),
-			array(
-				'id_cat',
-			),
+			array('cat_name' => 'string', 'cat_order' => 'int',),
+			array($_POST['catname'], (int) $current_max + 1,),
+			array('id_cat',),
 			1
 		);
 
@@ -503,7 +475,6 @@ function shd_admin_canned_createreply()
 		$smcFunc['db_free_result']($query);
 		return fatal_lang_error('shd_admin_cannedreplies_thecatisalie', false);
 	}
-
 	$smcFunc['db_free_result']($query);
 
 	$context['canned_reply'] = array(
@@ -529,7 +500,6 @@ function shd_admin_canned_createreply()
 	checkSubmitOnce('register');
 
 	require_once($sourcedir . '/Subs-Editor.php');
-
 	$editorOptions = array(
 		'id' => 'shd_canned_reply',
 		'value' => $context['canned_reply']['body'],
@@ -766,9 +736,7 @@ function shd_admin_canned_savereply()
 				$_POST['cat'], $_POST['title'], $_POST['shd_canned_reply'],
 				$_POST['vis_user'], $_POST['vis_staff'], (int) $current_max + 1, $_POST['active'],
 			),
-			array(
-				'id_cat',
-			),
+			array('id_cat',),
 			1
 		);
 
@@ -776,19 +744,15 @@ function shd_admin_canned_savereply()
 		if (empty($reply_id))
 			return fatal_lang_error('shd_admin_cannedreplies_notcreated', false);
 
-		$insert = array();
+		$inserts = array();
 		foreach ($depts_insert as $dept)
-			$insert[] = array($dept, $reply_id);
+			$inserts[] = array($dept, $reply_id);
 
 		$smcFunc['db_insert']('insert',
 			'{db_prefix}helpdesk_cannedreplies_depts',
-			array(
-				'id_dept' => 'int', 'id_reply' => 'int',
-			),
-			$insert,
-			array(
-				'id_dept', 'id_reply',
-			)
+			array('id_dept' => 'int', 'id_reply' => 'int',),
+			$inserts,
+			array('id_dept', 'id_reply',)
 		);
 
 		shd_admin_log('admin_canned', array(
@@ -839,19 +803,15 @@ function shd_admin_canned_savereply()
 			)
 		);
 
-		$insert = array();
+		$inserts = array();
 		foreach ($depts_insert as $dept)
-			$insert[] = array($dept, $context['canned_reply_id']);
+			$inserts[] = array($dept, $context['canned_reply_id']);
 
 		$smcFunc['db_insert']('insert',
 			'{db_prefix}helpdesk_cannedreplies_depts',
-			array(
-				'id_dept' => 'int', 'id_reply' => 'int',
-			),
-			$insert,
-			array(
-				'id_dept', 'id_reply',
-			)
+			array('id_dept' => 'int', 'id_reply' => 'int',),
+			$inserts,
+			array('id_dept', 'id_reply',)
 		);
 
 		shd_admin_log('admin_canned', array(

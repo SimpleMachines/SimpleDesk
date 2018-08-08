@@ -94,11 +94,9 @@ function shd_profile_main($memID)
 
 	// Make sure the menu is configured appropriately
 	$context['shd_profile_menu'][count($context['shd_profile_menu']) - 1]['is_last'] = true;
+	$context['sub_action'] = isset($_REQUEST['area']) && isset($subActions[$_REQUEST['area']]) ? $_REQUEST['area'] : 'helpdesk';
 
-	$_REQUEST['area'] = isset($_REQUEST['area']) && isset($subActions[$_REQUEST['area']]) ? $_REQUEST['area'] : 'helpdesk';
-	$context['sub_action'] = $_REQUEST['area'];
-
-	$subActions[$_REQUEST['area']]($memID);
+	call_user_func($subActions[$context['sub_action']], $memID);
 
 	// Maintenance mode? If it were, the helpdesk is considered inactive for the purposes of everything to all but those without admin-helpdesk rights - but we must have them if we're here!
 	if (!empty($modSettings['shd_maintenance_mode']))
@@ -135,6 +133,7 @@ function shd_profile_frontpage($memID)
 
 	$context['page_title'] = $txt['shd_profile_area'] . ' - ' . $txt['shd_profile_main'];
 	$context['sub_template'] = 'shd_profile_main';
+	$context['shd_numtickets'] = $context['shd_numopentickets'] = 0;
 
 	$query = shd_db_query('', '
 		SELECT COUNT(id_ticket) AS count, status
@@ -145,20 +144,16 @@ function shd_profile_frontpage($memID)
 			'member' => $memID,
 		)
 	);
-
-	$context['shd_numtickets'] = 0;
-	$context['shd_numopentickets'] = 0;
 	while ($row = $smcFunc['db_fetch_assoc']($query))
 	{
 		$context['shd_numtickets'] += $row['count'];
 		if ($row['status'] != TICKET_STATUS_CLOSED && $row['status'] != TICKET_STATUS_DELETED)
 			$context['shd_numopentickets'] += $row['count'];
 	}
+	$smcFunc['db_free_result']($query);
 
 	$context['shd_numtickets'] = comma_format($context['shd_numtickets']);
 	$context['shd_numopentickets'] = comma_format($context['shd_numopentickets']);
-
-	$smcFunc['db_free_result']($query);
 
 	$query = shd_db_query('', '
 		SELECT COUNT(id_ticket)
@@ -168,11 +163,10 @@ function shd_profile_frontpage($memID)
 			'member' => $memID,
 		)
 	);
-
 	list($context['shd_numassigned']) = $smcFunc['db_fetch_row']($query);
 	$smcFunc['db_free_result']($query);
-	$context['shd_numassigned'] = comma_format($context['shd_numassigned']);
 
+	$context['shd_numassigned'] = comma_format($context['shd_numassigned']);
 	$context['can_post_ticket'] = shd_allowed_to('shd_new_ticket', 0) && $memID == $context['user']['id'];
 	$context['can_post_proxy'] = shd_allowed_to('shd_new_ticket', 0) && shd_allowed_to('shd_post_proxy', 0) && $memID != $context['user']['id']; // since it's YOUR permissions, whether you can post on behalf of this user and this user isn't you!
 
@@ -215,9 +209,7 @@ function shd_profile_frontpage($memID)
 		$context['can_edit_ban'] = allowedTo('manage_bans');
 
 		$ban_query = array();
-		$ban_query_vars = array(
-			'time' => time(),
-		);
+		$ban_query_vars = array('time' => time());
 		$ban_query[] = 'id_member = ' . $context['member']['id'];
 
 		// Valid IP?
@@ -312,10 +304,8 @@ function shd_profile_preferences($memID)
 	}
 
 	foreach ($context['shd_preferences_options']['groups'] as $group => $groupinfo)
-	{
 		if (empty($groupinfo))
 			unset($context['shd_preferences_options']['groups'][$group]);
-	}
 
 	// Are we saving any options?
 	if (isset($_GET['save']))
@@ -351,10 +341,8 @@ function shd_profile_preferences($memID)
 					$changes['remove'][] = $pref;
 			}
 			else
-			{
 				if ($new_value != $current_value)
 					$changes['add'][] = array($memID, $pref, (string) $new_value);
-			}
 
 			// Finally, make sure whatever's in the array is actually what we've asked for
 			$context['member']['shd_preferences'][$pref] = $new_value;
@@ -365,13 +353,9 @@ function shd_profile_preferences($memID)
 		{
 			$smcFunc['db_insert']('replace',
 				'{db_prefix}helpdesk_preferences',
-				array(
-					'id_member' => 'int', 'variable' => 'string', 'value' => 'string',
-				),
+				array('id_member' => 'int', 'variable' => 'string', 'value' => 'string',),
 				$changes['add'],
-				array(
-					'id_member', 'variable',
-				)
+				array('id_member', 'variable',)
 			);
 		}
 
@@ -444,9 +428,8 @@ function shd_profile_show_tickets($memID)
 	list ($item_count) = $smcFunc['db_fetch_row']($request);
 	$smcFunc['db_free_result']($request);
 
-	$max_index = (int) $modSettings['defaultMaxMessages'];
-
 	// A little page index to help us along the way!
+	$max_index = (int) $modSettings['defaultMaxMessages'];
 	$context['page_index'] = shd_no_expand_pageindex($scripturl . '?action=profile;u=' . $memID . ';area=hd_showtickets' . ($context['can_haz_replies'] ? ';sa=replies' : ''), $context['start'], $item_count, $max_index);
 	$context['current_page'] = $context['start'] / $max_index;
 
@@ -539,7 +522,6 @@ function shd_profile_show_notify_override($memID)
 	global $txt, $user_info, $scripturl, $modSettings, $smcFunc, $board, $user_profile, $context;
 
 	$context['notify_type'] = $_GET['sa']; // We already checked it's monitor or ignore, if we didn't, we wouldn't be here!
-
 	$context['page_title'] = $txt['shd_profile_show_' . $context['notify_type'] . '_title'] . ' - ' . $user_profile[$memID]['real_name'];
 	$context['sub_template'] = 'shd_profile_show_notify_override';
 
@@ -709,15 +691,11 @@ function shd_profile_permissions($memID)
 	}
 
 	foreach ($role_permissions as $role_id => $permission_set)
-	{
 		foreach ($permission_set as $permission => $state)
-		{
 			if ($state == ROLEPERM_ALLOW)
 				$context['member_permissions']['allowed'][$permission][] = $role_id;
 			elseif ($state == ROLEPERM_DENY)
 				$context['member_permissions']['denied'][$permission][] = $role_id;
-		}
-	}
 }
 
 function shd_profile_actionlog($memID)

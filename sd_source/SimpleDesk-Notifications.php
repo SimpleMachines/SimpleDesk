@@ -74,19 +74,16 @@ function shd_notifications_notify_newticket(&$msgOptions, &$ticketOptions, &$pos
 			'pref' => 'notify_new_ticket',
 		)
 	);
-
 	while ($row = $smcFunc['db_fetch_assoc']($query))
 		$members[(int) $row['id_member']] = $row['value'];
 	$smcFunc['db_free_result']($query);
 
 	// OK, now figure out who we're sending to, and discard any member id's we're not sending to
 	foreach ($members as $member => $value)
-	{
 		if (!empty($value))
 			$members[$member] = 'new_ticket';
 		else
 			unset($members[$member]);
-	}
 
 	if (isset($members[$context['user']['id']]))
 		unset($members[$context['user']['id']]);
@@ -95,16 +92,14 @@ function shd_notifications_notify_newticket(&$msgOptions, &$ticketOptions, &$pos
 		return;
 
 	// Build the big ol' data set
-	$notify_data = array(
+	shd_notify_users(array(
 		'members' => $members,
 		'ticketlink' => $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $ticketOptions['id'],
 		'subject' => $ticketOptions['subject'],
 		'ticket' => $ticketOptions['id'],
 		'body' => $msgOptions['body'],
 		'poster_name' => $posterOptions['name'],
-	);
-
-	shd_notify_users($notify_data);
+	));
 }
 
 /**
@@ -122,9 +117,8 @@ function shd_notifications_notify_newreply(&$msgOptions, &$ticketOptions, &$post
 	// We did actually get a reply? Sometimes shd_modify_ticket_post() is called for other things, not just on reply.
 	if (empty($msgOptions['body']))
 		return;
-
 	// Alternatively, they might be doing a silent update.
-	if (!empty($_POST['silent_update']) && shd_allowed_to('shd_silent_update', $ticketOptions['dept']))
+	elseif (!empty($_POST['silent_update']) && shd_allowed_to('shd_silent_update', $ticketOptions['dept']))
 		return;
 
 	// We're doing various things here, so grab some general details, not just what we may have been passed before.
@@ -791,12 +785,10 @@ function shd_query_monitor_list($ticket_id)
 	);
 
 	while ($row = $smcFunc['db_fetch_assoc']($query))
-	{
 		if ($row['notify_state'] == NOTIFY_ALWAYS)
 			$members['always_notify'][] = $row['id_member'];
 		elseif ($row['notify_state'] == NOTIFY_NEVER)
 			$members['never_notify'][] = $row['id_member'];
-	}
 	$smcFunc['db_free_result']($query);
 
 	return $members;

@@ -32,7 +32,6 @@
  *	@package source
  *	@since 2.0
  */
-
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
@@ -63,12 +62,10 @@ function ssi_userTickets($started_by = 0, $dept = array(), $limit = 10, $output_
 		$started_by = $user_info['id'];
 
 	$limit = (int) $limit;
-
 	if (empty($limit))
 		return;
 
 	$query_where = 'hdt.id_member_started = {int:started}';
-
 	$query_where_params = array(
 		'started' => $started_by,
 	);
@@ -115,13 +112,11 @@ function ssi_staffAssignedTickets($assignee = 0, $dept = array(), $limit = 10, $
 		return;
 
 	$query_where = 'hdt.id_member_assigned = {int:assigned}';
-
 	$query_where_params = array(
 		'assigned' => $assignee,
 	);
 
 	$dept_ids = array();
-
 	if (!empty($dept))
 	{
 		// Did they perhaps just put an integer of some sort?
@@ -154,13 +149,11 @@ function ssi_staffAssignedTickets($assignee = 0, $dept = array(), $limit = 10, $
 function ssi_staffTicketsUrgency($urgency, $dept = array(), $limit = 10, $output_method = 'echo')
 {
 	$query_where = 'hdt.urgency = {int:urgency}';
-
 	$query_where_params = array(
 		'urgency' => $urgency,
 	);
 
 	$dept_ids = array();
-
 	if (!empty($dept))
 	{
 		// Did they perhaps just put an integer of some sort?

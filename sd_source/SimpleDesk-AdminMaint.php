@@ -93,7 +93,8 @@ function shd_admin_maint()
 	// We need to fix the descriptions just in case.
 	if (isset($subactions[$context['shd_current_subaction']]['description']))
 		$context[$context['admin_menu_name']]['tab_data']['tabs']['main']['description'] = $subactions[$context['shd_current_subaction']]['description'];
-	$subactions[$context['shd_current_subaction']]['function']();
+
+	call_user_func($subactions[$context['shd_current_subaction']]['function']);
 }
 
 function shd_admin_maint_home()
@@ -413,8 +414,6 @@ function shd_admin_maint_findrepair()
 	checkSession('request');
 
 	$context['page_title'] = $txt['shd_admin_maint_findrepair'];
-
-	$context['maint_steps'] = array();
 	$context['maint_steps'] = array(
 		array(
 			'name' => 'zero_entries',
@@ -449,9 +448,7 @@ function shd_admin_maint_findrepair()
 	if (isset($_GET['done']))
 	{
 		// Log this.
-		shd_admin_log('admin_maint', array(
-			'action' => 'findrepair',
-		));
+		shd_admin_log('admin_maint', array('action' => 'findrepair'));
 
 		$context['sub_template'] = 'shd_admin_maint_findrepairdone';
 		$context['maintenance_result'] = !empty($_SESSION['shd_maint']) ? $_SESSION['shd_maint'] : array();
@@ -472,8 +469,7 @@ function shd_admin_maint_findrepair()
 	for ($i = 0; $i <= $context['step']; $i++)
 		$context['continue_percent'] += $context['maint_steps'][$i]['pc'];
 
-	$function = 'shd_maint_' . $context['maint_steps'][$context['step']]['name'];
-	$function();
+	call_user_func('shd_maint_' . $context['maint_steps'][$context['step']]['name']);
 }
 
 // Validate that all tickets and messages have a valid id number
@@ -495,6 +491,7 @@ function shd_maint_zero_entries()
 			WHERE id_ticket = 0');
 		$_SESSION['shd_maint']['zero_tickets'] = $smcFunc['db_affected_rows']();
 	}
+	$smcFunc['db_free_result']($query);
 
 	// And ticket replies with an id-msg 0
 	$query = $smcFunc['db_query']('', '
@@ -510,6 +507,7 @@ function shd_maint_zero_entries()
 			WHERE id_msg = 0');
 		$_SESSION['shd_maint']['zero_msgs'] = $smcFunc['db_affected_rows']();
 	}
+	$smcFunc['db_free_result']($query);
 
 	// This is a short operation, no suboperation, so just tell it to go onto the next step.
 	$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . ($context['step'] + 1) . '">';
@@ -893,7 +891,6 @@ function shd_maint_invalid_dept()
 		FROM {db_prefix}helpdesk_tickets AS hdt
 			LEFT JOIN {db_prefix}helpdesk_depts AS hdd ON (hdt.id_dept = hdd.id_dept)
 		WHERE hdd.id_dept IS NULL');
-
 	while ($row = $smcFunc['db_fetch_assoc']($query))
 		$tickets[] = $row['id_ticket'];
 	$smcFunc['db_free_result']($query);
@@ -912,12 +909,8 @@ function shd_maint_invalid_dept()
 
 		$last_dept = $smcFunc['db_insert']('replace',
 			'{db_prefix}helpdesk_depts',
-			array(
-				'dept_name' => 'string', 'description' => 'string', 'board_cat' => 'int', 'before_after' => 'int', 'dept_order' => 'int',
-			),
-			array(
-				$txt['shd_admin_recovered_dept'], $txt['shd_admin_recovered_dept_desc'], 0, 0, $dept_order,
-			),
+			array('dept_name' => 'string', 'description' => 'string', 'board_cat' => 'int', 'before_after' => 'int', 'dept_order' => 'int',),
+			array($txt['shd_admin_recovered_dept'], $txt['shd_admin_recovered_dept_desc'], 0, 0, $dept_order,),
 			array('id_dept'),
 			1
 		);
@@ -1004,16 +997,10 @@ function shd_admin_maint_search()
 		if ($start >= $total || empty($tickets))
 		{
 			// Make sure we flag the index as built, then leave.
-			updateSettings(
-				array(
-					'shd_new_search_index' => 0,
-				)
-			);
+			updateSettings(array('shd_new_search_index' => 0));
 
 			// You guessed it, log this.
-			shd_admin_log('admin_maint', array(
-				'action' => 'search_rebuild',
-			));
+			shd_admin_log('admin_maint', array('action' => 'search_rebuild'));
 
 			redirectexit('action=admin;area=helpdesk_maint;sa=search;rebuilddone;' . $context['session_var'] . '=' . $context['session_id']);
 		}

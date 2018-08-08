@@ -135,12 +135,10 @@ function shd_add_to_boardindex($boardIndexOptions, &$categories)
 			FROM {db_prefix}categories
 			ORDER BY cat_order');
 		while ($row = $smcFunc['db_fetch_assoc']($request))
-		{
 			if (isset($old_cats[$row['id_cat']]))
 				$categories[$row['id_cat']] = $old_cats[$row['id_cat']];
 			elseif (isset($new_cats[$row['id_cat']]))
 				$categories[$row['id_cat']] = $new_cats[$row['id_cat']];
-		}
 		$smcFunc['db_free_result']($request);
 	}
 

@@ -25,7 +25,6 @@
  *	@package source
  *	@since 1.0
 */
-
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
@@ -218,7 +217,6 @@ function shd_view_ticket()
 		$context['display_private'] = true;
 
 	if ($ticketinfo['modified_time'] > 0)
-	{
 		$context['ticket']['modified'] = array(
 			'id' => $ticketinfo['modified_id'],
 			'name' => $ticketinfo['modified_name'],
@@ -226,7 +224,6 @@ function shd_view_ticket()
 			'timestamp' => $ticketinfo['modified_time'],
 			'time' => timeformat($ticketinfo['modified_time']),
 		);
-	}
 
 	$context['ticket']['urgency'] += shd_can_alter_urgency($ticketinfo['urgency'], $ticketinfo['starter_id'], $ticketinfo['closed'], $ticketinfo['deleted'], $context['ticket']['dept']);
 	$context['total_visible_posts'] = empty($context['display_recycle']) ? $context['ticket']['num_replies'] : (int) $context['ticket']['num_replies'] + (int) $context['ticket']['deleted_replies'];
@@ -247,7 +244,6 @@ function shd_view_ticket()
 	}
 
 	$context['page_index'] = shd_no_expand_pageindex($scripturl . '?action=helpdesk;sa=ticket;ticket=' . $context['ticket_id'] . '.%1$d' . (isset($_REQUEST['recycle']) ? ';recycle' : '') . '#replies', $context['ticket_start_from'], $context['total_visible_posts'], $context['messages_per_page'], true);
-
 	$context['get_replies'] = 'shd_prepare_ticket_context';
 
 	$query = shd_db_query('', '
@@ -272,7 +268,6 @@ function shd_view_ticket()
 	{
 		if (!empty($row['id_member']))
 			$posters[] = $row['id_member'];
-
 		if (!empty($row['modified_member']))
 			$posters[] = $row['modified_member'];
 
@@ -282,7 +277,6 @@ function shd_view_ticket()
 
 	// We might want the OP's avatar, add 'em to the list -- just in case.
 	$posters[] = $context['ticket']['id_member'];
-
 	$posters = array_unique($posters);
 
 	$context['shd_is_staff'] = array();
@@ -293,13 +287,11 @@ function shd_view_ticket()
 
 		// Are they current team members?
 		$team = array_intersect($posters, shd_members_allowed_to('shd_staff', $context['ticket']['dept']));
-
 		foreach ($team as $member)
 			$context['shd_is_staff'][$member] = true;
 	}
 
 	if (!empty($context['ticket_messages']))
-	{
 		$reply_request = shd_db_query('', '
 			SELECT
 				id_msg, poster_time, poster_ip, id_member, modified_time, modified_name, modified_member, body,
@@ -314,7 +306,6 @@ function shd_view_ticket()
 				'sort' => $context['ticket_sort'],
 			)
 		);
-	}
 	else
 	{
 		$reply_request = false;
@@ -409,11 +400,9 @@ function shd_view_ticket()
 			$field['options']['inactive'] = array();
 
 		if (in_array($field['type'], array(CFIELD_TYPE_RADIO, CFIELD_TYPE_SELECT, CFIELD_TYPE_MULTI)))
-		{
 			foreach ($field['options'] as $k => $v)
 				if ($k != 'inactive' && strpos($v, '[') !== false)
 					$field['options'][$k] = parse_bbc($v, false);
-		}
 
 		if (($row['field_loc'] & CFIELD_REPLY) && $field['editable'])
 			$context['ticket_form']['custom_fields']['reply'][$field['id']] = $field;
@@ -464,18 +453,12 @@ function shd_view_ticket()
 
 	// Mark read goes here
 	if (!empty($user_info['id']))
-	{
 		$smcFunc['db_insert']('replace',
 			'{db_prefix}helpdesk_log_read',
-			array(
-				'id_ticket' => 'int', 'id_member' => 'int', 'id_msg' => 'int',
-			),
-			array(
-				$context['ticket_id'], $user_info['id'], $ticketinfo['id_last_msg'],
-			),
+			array('id_ticket' => 'int', 'id_member' => 'int', 'id_msg' => 'int',),
+			array($context['ticket_id'], $user_info['id'], $ticketinfo['id_last_msg'],),
 			array('id_member', 'id_topic')
 		);
-	}
 
 	// Template stuff
 	$context['sub_template'] = 'viewticket';
@@ -685,13 +668,7 @@ function shd_view_ticket()
 	$context['can_ping'] = $context['can_reply'] && shd_allowed_to('shd_singleton_email', $context['ticket']['dept']);
 
 	// Set up the fancy editor
-	shd_postbox(
-		'shd_message',
-		'',
-		array(
-			'post_button' => $txt['shd_reply_ticket'],
-		)
-	);
+	shd_postbox('shd_message', '', array('post_button' => $txt['shd_reply_ticket']));
 
 	// Lastly, our magic AJAX stuff ;D and we know we already made html_headers exist in SimpleDesk.php, score!
 	$context['html_headers'] .= '
@@ -763,7 +740,6 @@ function shd_view_ticket()
 
 	$context['html_headers'] .= '
 	// ]' . ']></script>';
-
 	$context['shd_display'] = true;
 	$context['controls']['richedit']['shd_message']['rich_active'] = 0; // we don't want it by default!
 
@@ -965,7 +941,6 @@ function shd_prepare_ticket_context()
 
 	if (!empty($context['ticket_start_newfrom']) && $context['ticket_start_newfrom'] == $message['id_msg'])
 		$output['is_new'] = true;
-
 	return $output;
 }
 
@@ -1013,7 +988,6 @@ function shd_display_load_attachments()
 				'attachment_type' => 0,
 			)
 		);
-
 		// Ticket ones can just be added on, they're nice and straightforward
 		while ($row = $smcFunc['db_fetch_assoc']($query))
 			$context['ticket_attach'][$modSettings['shd_attachments_mode']][$row['id_attach']] = shd_attachment_info($row);
@@ -1043,7 +1017,6 @@ function shd_display_load_attachments()
 				'attachment_type' => 0,
 			)
 		);
-
 		// Message ones are a little trickier since we actually need to tie them to msg ids
 		while ($row = $smcFunc['db_fetch_assoc']($query))
 			$context['ticket_attach'][$modSettings['shd_attachments_mode']][$row['id_msg']][$row['id_attach']] = shd_attachment_info($row);

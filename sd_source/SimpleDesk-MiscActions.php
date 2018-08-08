@@ -24,7 +24,6 @@
  *	@package source
  *	@since 1.0
  */
-
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
@@ -95,68 +94,63 @@ function shd_ticket_resolve()
 			'current_ticket' => $context['ticket_id'],
 		)
 	);
-
-	if ($row = $smcFunc['db_fetch_assoc']($query))
+	if ($smcFunc['db_num_rows']($query) == 0)
 	{
 		$smcFunc['db_free_result']($query);
-
-		$action = ($row['status'] != TICKET_STATUS_CLOSED) ? 'resolve' : 'unresolve';
-
-		call_integration_hook('shd_hook_mark' . $action);
-
-		if (!shd_allowed_to('shd_' . $action . '_ticket_any', $row['id_dept']) && (!shd_allowed_to('shd_' . $action . '_ticket_own', $row['id_dept']) || $row['id_member_started'] != $user_info['id']))
-			return fatal_lang_error('shd_cannot_' . $action, false);
-
-		// OK, so what about any children related tickets that are still open? Eeek, could be awkward.
-		if (empty($modSettings['shd_disable_relationships']))
-		{
-			$query = shd_db_query('', '
-				SELECT COUNT(hdt.id_ticket)
-				FROM {db_prefix}helpdesk_relationships AS rel
-					INNER JOIN {db_prefix}helpdesk_tickets AS hdt ON (rel.secondary_ticket = hdt.id_ticket)
-				WHERE rel.primary_ticket = {int:ticket}
-					AND rel.rel_type = {int:parent}
-					AND hdt.status NOT IN ({array_int:closed_status})',
-				array(
-					'ticket' => $context['ticket_id'],
-					'parent' => RELATIONSHIP_ISPARENT,
-					'closed_status' => array(TICKET_STATUS_CLOSED, TICKET_STATUS_DELETED),
-				)
-			);
-			list($count_children) = $smcFunc['db_fetch_row']($query);
-			$smcFunc['db_free_result']($query);
-			if (!empty($count_children))
-				return fatal_lang_error('error_shd_cannot_resolve_children', false);
-		}
-
-		$new = shd_determine_status($action, $row['id_member_started'], $row['id_member_updated'], $row['num_replies'], $row['id_dept']);
-
-		shd_db_query('', '
-			UPDATE {db_prefix}helpdesk_tickets
-			SET status = {int:status}
-			WHERE id_ticket = {int:ticket}',
-			array(
-				'status' => $new,
-				'ticket' => $context['ticket_id'],
-			)
-		);
-
-		shd_log_action($action,
-			array(
-				'ticket' => $context['ticket_id'],
-				'subject' => $row['subject'],
-			)
-		);
-
-		shd_clear_active_tickets($row['id_dept']);
-
-		if ($context['shd_return_to'] == 'home')
-			redirectexit($context['shd_home'] . $context['shd_dept_link']);
-		else
-			redirectexit('action=helpdesk;sa=ticket;ticket=' . $context['ticket_id']);
-	}
-	else
 		return fatal_lang_error('shd_no_ticket', false);
+	}			
+	$row = $smcFunc['db_fetch_assoc']($query);
+	$smcFunc['db_free_result']($query);
+
+	$action = ($row['status'] != TICKET_STATUS_CLOSED) ? 'resolve' : 'unresolve';
+	call_integration_hook('shd_hook_mark' . $action);
+
+	if (!shd_allowed_to('shd_' . $action . '_ticket_any', $row['id_dept']) && (!shd_allowed_to('shd_' . $action . '_ticket_own', $row['id_dept']) || $row['id_member_started'] != $user_info['id']))
+		return fatal_lang_error('shd_cannot_' . $action, false);
+
+	// OK, so what about any children related tickets that are still open? Eeek, could be awkward.
+	if (empty($modSettings['shd_disable_relationships']))
+	{
+		$query = shd_db_query('', '
+			SELECT COUNT(hdt.id_ticket)
+			FROM {db_prefix}helpdesk_relationships AS rel
+				INNER JOIN {db_prefix}helpdesk_tickets AS hdt ON (rel.secondary_ticket = hdt.id_ticket)
+			WHERE rel.primary_ticket = {int:ticket}
+				AND rel.rel_type = {int:parent}
+				AND hdt.status NOT IN ({array_int:closed_status})',
+			array(
+				'ticket' => $context['ticket_id'],
+				'parent' => RELATIONSHIP_ISPARENT,
+				'closed_status' => array(TICKET_STATUS_CLOSED, TICKET_STATUS_DELETED),
+			)
+		);
+		list($count_children) = $smcFunc['db_fetch_row']($query);
+		$smcFunc['db_free_result']($query);
+		if (!empty($count_children))
+			return fatal_lang_error('error_shd_cannot_resolve_children', false);
+	}
+
+	$new = shd_determine_status($action, $row['id_member_started'], $row['id_member_updated'], $row['num_replies'], $row['id_dept']);
+
+	shd_db_query('', '
+		UPDATE {db_prefix}helpdesk_tickets
+		SET status = {int:status}
+		WHERE id_ticket = {int:ticket}',
+		array(
+			'status' => $new,
+			'ticket' => $context['ticket_id'],
+		)
+	);
+
+	shd_log_action($action, array(
+		'ticket' => $context['ticket_id'],
+		'subject' => $row['subject'],
+	));
+	shd_clear_active_tickets($row['id_dept']);
+
+	if ($context['shd_return_to'] == 'home')
+		redirectexit($context['shd_home'] . $context['shd_dept_link']);
+	redirectexit('action=helpdesk;sa=ticket;ticket=' . $context['ticket_id']);
 }
 
 /**
@@ -189,37 +183,36 @@ function shd_privacy_change_noajax()
 			'current_ticket' => $context['ticket_id'],
 		)
 	);
-
-	if ($row = $smcFunc['db_fetch_assoc']($query))
+	if ($smcFunc['db_num_rows']($query) == 0)
 	{
-		if (in_array($row['status'], array(TICKET_STATUS_CLOSED, TICKET_STATUS_DELETED)) || !shd_allowed_to('shd_alter_privacy_any', $row['id_dept']) && (!shd_allowed_to('shd_alter_privacy_own', $row['id_dept']) || $row['id_member_started'] != $user_info['id']))
-			return fatal_lang_error('shd_cannot_change_privacy', false);
-
 		$smcFunc['db_free_result']($query);
-
-		$action = empty($row['private']) ? 'markprivate' : 'marknotprivate';
-
-		require_once($sourcedir . '/sd_source/Subs-SimpleDeskPost.php');
-		$msgOptions = array();
-		$posterOptions = array();
-		$ticketOptions = array(
-			'id' => $context['ticket_id'],
-			'private' => empty($row['private']),
-		);
-
-		shd_modify_ticket_post($msgOptions, $ticketOptions, $posterOptions);
-
-		shd_log_action($action,
-			array(
-				'ticket' => $context['ticket_id'],
-				'subject' => $row['subject'],
-			)
-		);
-
-		redirectexit('action=helpdesk;sa=ticket;ticket=' . $context['ticket_id']);
-	}
-	else
 		return fatal_lang_error('shd_no_ticket', false);
+	}			
+	$row = $smcFunc['db_fetch_assoc']($query);
+	$smcFunc['db_free_result']($query);
+
+	if (in_array($row['status'], array(TICKET_STATUS_CLOSED, TICKET_STATUS_DELETED)) || !shd_allowed_to('shd_alter_privacy_any', $row['id_dept']) && (!shd_allowed_to('shd_alter_privacy_own', $row['id_dept']) || $row['id_member_started'] != $user_info['id']))
+		return fatal_lang_error('shd_cannot_change_privacy', false);
+
+	$smcFunc['db_free_result']($query);
+
+	$action = empty($row['private']) ? 'markprivate' : 'marknotprivate';
+
+	require_once($sourcedir . '/sd_source/Subs-SimpleDeskPost.php');
+	$msgOptions = array();
+	$posterOptions = array();
+	$ticketOptions = array(
+		'id' => $context['ticket_id'],
+		'private' => empty($row['private']),
+	);
+
+	shd_modify_ticket_post($msgOptions, $ticketOptions, $posterOptions);
+	shd_log_action($action, array(
+		'ticket' => $context['ticket_id'],
+		'subject' => $row['subject'],
+	));
+
+	redirectexit('action=helpdesk;sa=ticket;ticket=' . $context['ticket_id']);
 }
 
 /**
@@ -254,39 +247,39 @@ function shd_urgency_change_noajax()
 			'current_ticket' => $context['ticket_id'],
 		)
 	);
-
-	if ($row = $smcFunc['db_fetch_assoc']($query))
+	if ($smcFunc['db_num_rows']($query) == 0)
 	{
-		$can_urgency = shd_can_alter_urgency($row['urgency'], $row['id_member_started'], ($row['status'] == TICKET_STATUS_CLOSED), ($row['status'] == TICKET_STATUS_DELETED), $row['id_dept']);
-
-		if (empty($_GET['change']) || empty($can_urgency[$_GET['change']]))
-			return fatal_lang_error('shd_cannot_change_urgency');
-
-		$new_urgency = $row['urgency'] + ($_GET['change'] == 'increase' ? 1 : -1);
-		$action = 'urgency_' . $_GET['change'];
-
-		require_once($sourcedir . '/sd_source/Subs-SimpleDeskPost.php');
-		$msgOptions = array();
-		$posterOptions = array();
-		$ticketOptions = array(
-			'id' => $context['ticket_id'],
-			'urgency' => $new_urgency,
-		);
-
-		shd_modify_ticket_post($msgOptions, $ticketOptions, $posterOptions);
-
-		shd_log_action($action,
-			array(
-				'ticket' => $context['ticket_id'],
-				'subject' => $row['subject'],
-				'urgency' => $new_urgency,
-			)
-		);
-
-		redirectexit('action=helpdesk;sa=ticket;ticket=' . $context['ticket_id']);
-	}
-	else
+		$smcFunc['db_free_result']($query);
 		return fatal_lang_error('shd_no_ticket', false);
+	}			
+	$row = $smcFunc['db_fetch_assoc']($query);
+	$smcFunc['db_free_result']($query);
+
+	$can_urgency = shd_can_alter_urgency($row['urgency'], $row['id_member_started'], ($row['status'] == TICKET_STATUS_CLOSED), ($row['status'] == TICKET_STATUS_DELETED), $row['id_dept']);
+
+	if (empty($_GET['change']) || empty($can_urgency[$_GET['change']]))
+		return fatal_lang_error('shd_cannot_change_urgency');
+
+	$new_urgency = $row['urgency'] + ($_GET['change'] == 'increase' ? 1 : -1);
+	$action = 'urgency_' . $_GET['change'];
+
+	require_once($sourcedir . '/sd_source/Subs-SimpleDeskPost.php');
+	$msgOptions = array();
+	$posterOptions = array();
+	$ticketOptions = array(
+		'id' => $context['ticket_id'],
+		'urgency' => $new_urgency,
+	);
+
+	shd_modify_ticket_post($msgOptions, $ticketOptions, $posterOptions);
+
+	shd_log_action($action, array(
+		'ticket' => $context['ticket_id'],
+		'subject' => $row['subject'],
+		'urgency' => $new_urgency,
+	));
+
+	redirectexit('action=helpdesk;sa=ticket;ticket=' . $context['ticket_id']);
 }
 
 /**
@@ -311,8 +304,7 @@ function shd_ticket_relation()
 
 	if (empty($context['ticket_id']) || empty($otherticket))
 		return fatal_lang_error('shd_no_ticket', false);
-
-	if ($context['ticket_id'] == $otherticket)
+	elseif ($context['ticket_id'] == $otherticket)
 		return fatal_lang_error('shd_cannot_relate_self', false);
 
 	$actions = array(
@@ -334,10 +326,7 @@ function shd_ticket_relation()
 	$ticketinfo = shd_load_ticket($otherticket);
 	$secondary_subject = $ticketinfo['subject'];
 
-	if ($rel_action == 'delete')
-		shd_is_allowed_to('shd_delete_relationships', $dept);
-	else
-		shd_is_allowed_to('shd_create_relationships', $dept);
+	shd_is_allowed_to($rel_action == 'delete' ? 'shd_delete_relationships' : 'shd_create_relationships', $dept);
 
 	// See if there's an existing relationship with these parameters
 	$query = shd_db_query('', '
@@ -353,7 +342,6 @@ function shd_ticket_relation()
 
 	$new_relationship = ($smcFunc['db_num_rows']($query) == 0);
 	list($existing_relation) = $new_relationship ? array(-1) : $smcFunc['db_fetch_row']($query);
-
 	$smcFunc['db_free_result']($query);
 
 	if ($rel_action == 'delete' && $new_relationship)
@@ -409,21 +397,19 @@ function shd_ticket_relation()
 	// Now actually log it, main ticket first -- if it's different to the one we had before
 	if ($log_assoc_ids[$rel_action] != $existing_relation)
 	{
-		$params = array(
+		shd_log_action($logaction_ticket, array(
 			'ticket' => $context['ticket_id'],
 			'otherticket' => $otherticket,
 			'subject' => $primary_subject,
 			'othersubject' => $secondary_subject,
-		);
-		shd_log_action($logaction_ticket, $params);
+		));
 
-		$params = array(
+		shd_log_action($logaction_otherticket, array(
 			'ticket' => $otherticket,
 			'otherticket' => $context['ticket_id'],
 			'subject' => $secondary_subject,
 			'othersubject' => $primary_subject,
-		);
-		shd_log_action($logaction_otherticket, $params);
+		));
 	}
 
 	// See yah

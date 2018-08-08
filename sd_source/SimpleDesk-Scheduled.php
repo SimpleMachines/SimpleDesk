@@ -23,7 +23,6 @@
  *	@package source
  *	@since 2.0
 */
-
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
@@ -103,7 +102,6 @@ function shd_scheduled_close_tickets()
 		{
 			$rows = array();
 			foreach ($tickets as $ticket)
-			{
 				$rows[] = array(
 					$time, // log_time
 					0, // id_member
@@ -116,7 +114,6 @@ function shd_scheduled_close_tickets()
 						'auto' => true, // indicate to the action log that this is the case
 					)),
 				);
-			}
 
 			$smcFunc['db_insert']('',
 				'{db_prefix}helpdesk_log_action',
@@ -186,10 +183,8 @@ function shd_scheduled_purge_tickets()
 	// 3. Purge that list of threads too new to be deleted
 	$del_time = time() - (86400 * $modSettings['shd_autopurge_tickets_days']);
 	foreach ($tickets as $k => $v)
-	{
 		if ($v == 0 || $v > $del_time)
 			unset($tickets[$k], $subjects[$k]);
-	}
 
 	// Last chance to abort!
 	if (empty($tickets))

@@ -23,7 +23,6 @@
  *	@package source
  *	@since 2.0
 */
-
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
@@ -60,7 +59,6 @@ function shd_search()
 
 	$context['sub_template'] = 'search';
 	$context['page_title'] = $txt['shd_search'];
-
 	$context['linktree'][] = array(
 		'url' => $scripturl . '?action=helpdesk;sa=search',
 		'name' => $txt['shd_search'],

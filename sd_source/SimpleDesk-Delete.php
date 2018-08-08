@@ -25,7 +25,6 @@
  *	@todo Finish documenting this file.
  *	@since 1.0
 */
-
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
@@ -96,12 +95,10 @@ function shd_ticket_delete()
 		)
 	);
 
-	shd_log_action('delete',
-		array(
-			'ticket' => $context['ticket_id'],
-			'subject' => $subject,
-		)
-	);
+	shd_log_action('delete', array(
+		'ticket' => $context['ticket_id'],
+		'subject' => $subject,
+	));
 
 	// Expire the cache of count(active tickets)
 	shd_clear_active_tickets($row['id_dept']);
@@ -166,13 +163,11 @@ function shd_reply_delete()
 	);
 
 	// Logtastic!
-	shd_log_action('delete_reply',
-		array(
-			'ticket' => $context['ticket_id'],
-			'subject' => $subject,
-			'msg' => $_REQUEST['reply'],
-		)
-	);
+	shd_log_action('delete_reply', array(
+		'ticket' => $context['ticket_id'],
+		'subject' => $subject,
+		'msg' => $_REQUEST['reply'],
+	));
 
 	// OK, last but definitely not least, update num_replies and id_last_msg on the old ticket, and fix the old ticket's status
 	list($starter, $replier, $num_replies) = shd_recalc_ids($context['ticket_id']);
@@ -344,12 +339,10 @@ function shd_perma_delete()
 			removeAttachments($attachmentQuery);
 		}
 
-		shd_log_action('permadelete',
-			array(
-				'ticket' => $context['ticket_id'],
-				'subject' => $subject,
-			)
-		);
+		shd_log_action('permadelete', array(
+			'ticket' => $context['ticket_id'],
+			'subject' => $subject,
+		));
 
 		redirectexit('action=helpdesk;sa=recyclebin');
 	}
@@ -451,12 +444,10 @@ function shd_perma_delete()
 			removeAttachments($attachmentQuery);
 		}
 
-		shd_log_action('permadelete_reply',
-			array(
-				'ticket' => $context['ticket_id'],
-				'subject' => $subject,
-			)
-		);
+		shd_log_action('permadelete_reply', array(
+			'ticket' => $context['ticket_id'],
+			'subject' => $subject,
+		));
 
 		list($starter, $replier, $num_replies) = shd_recalc_ids($context['ticket_id']);
 		shd_db_query('', '
@@ -518,7 +509,6 @@ function shd_attach_delete()
 		'msg' => $id_msg,
 		'att_removed' => array(htmlspecialchars($filename)),
 	);
-
 	shd_log_action('editticket', $log_params);
 
 	// Now you can delete
@@ -588,18 +578,15 @@ function shd_ticket_restore()
 	// Expire the cache of count(active tickets)
 	shd_clear_active_tickets($row['id_dept']);
 
-	shd_log_action('restore',
-		array(
-			'ticket' => $context['ticket_id'],
-			'subject' => $subject,
-		)
-	);
+	shd_log_action('restore', array(
+		'ticket' => $context['ticket_id'],
+		'subject' => $subject,
+	));
 
 	// And home.
 	if (isset($_REQUEST['home']))
 		redirectexit($context['shd_home'] . $context['shd_dept_link']);
-	else
-		redirectexit('action=helpdesk;sa=ticket;ticket=' . $context['ticket_id']);
+	redirectexit('action=helpdesk;sa=ticket;ticket=' . $context['ticket_id']);
 }
 
 // Restore the given reply from the recycling bin.
@@ -661,13 +648,11 @@ function shd_reply_restore()
 	);
 
 	// Captain's Log, stardate 18.3.10.1010
-	shd_log_action('restore_reply',
-		array(
-			'ticket' => $context['ticket_id'],
-			'subject' => $subject,
-			'msg' => $_REQUEST['reply'],
-		)
-	);
+	shd_log_action('restore_reply', array(
+		'ticket' => $context['ticket_id'],
+		'subject' => $subject,
+		'msg' => $_REQUEST['reply'],
+	));
 
 	// Fix the topic data
 	list($starter, $replier, $num_replies) = shd_recalc_ids($context['ticket_id']);

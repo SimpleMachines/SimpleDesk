@@ -24,7 +24,6 @@
  *	@package subs
  *	@since 1.0
  */
-
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
@@ -162,7 +161,6 @@ function shd_create_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 
 	// It's do or die time: forget any user aborts!
 	$previous_ignore_user_abort = ignore_user_abort(true);
-
 	$new_ticket = empty($ticketOptions['id']);
 
 	// OK, so let's add the reply. Even if it's a new ticket and stuff, let's still add the msg first so we have our friendly msg id
@@ -260,9 +258,7 @@ function shd_create_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 
 		$smcFunc['db_insert']('replace',
 			'{db_prefix}helpdesk_attachments',
-			array(
-				'id_attach' => 'int', 'id_msg' => 'int', 'id_ticket' => 'int',
-			),
+			array('id_attach' => 'int', 'id_msg' => 'int', 'id_ticket' => 'int',),
 			$array,
 			array('id_attach')
 		);
@@ -306,10 +302,8 @@ function shd_create_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 	// Are we saving custom fields?
 	$rows = array();
 	if (!empty($ticketOptions['custom_fields']))
-	{
 		// We shouldn't need to be bothering with pre-existing ones. This is a new message in whatever form, after all.
 		foreach ($ticketOptions['custom_fields'] as $field_id => $field)
-		{
 			if (isset($field['new_value']))
 				$rows[] = array(
 					'id_post' => $ticketOptions['id'], // since custom fields for tickets are attached to the ticket id, with post_type as CFIELD_TICKET
@@ -317,13 +311,10 @@ function shd_create_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 					'value' => $field['new_value'],
 					'post_type' => CFIELD_TICKET, // See, I said so!
 				);
-		}
-	}
+
 	// Same deal, just this time for message fields.
 	if (!empty($msgOptions['custom_fields']))
-	{
 		foreach ($msgOptions['custom_fields'] as $field_id => $field)
-		{
 			if (isset($field['new_value']))
 				$rows[] = array(
 					'id_post' => $msgOptions['id'], // since custom fields for tickets are attached to the ticket id, with post_type as CFIELD_TICKET
@@ -331,17 +322,14 @@ function shd_create_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 					'value' => $field['new_value'],
 					'post_type' => CFIELD_REPLY, // See, I said so!
 				);
-		}
-	}
+
 	if (!empty($rows))
-	{
 		$smcFunc['db_insert']('replace',
 			'{db_prefix}helpdesk_custom_fields_values',
 			array('id_post' => 'int', 'id_field' => 'int', 'value' => 'string-65534', 'post_type' => 'int'),
 			$rows,
 			array('id_post', 'id_field')
 		);
-	}
 
 	// Int hooks
 	$hook = $new_ticket ? 'shd_hook_newticket' : 'shd_hook_newreply';
@@ -498,28 +486,23 @@ function shd_modify_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 
 	// GO GO GO! (message first)
 	if (!empty($messages_columns))
-	{
 		shd_db_query('', '
 			UPDATE {db_prefix}helpdesk_ticket_replies
 			SET ' . implode(', ', $messages_columns) . '
 			WHERE id_msg = {int:id_msg}',
 			$msg_update_parameters
 		);
-	}
 
 	if (!empty($ticket_columns))
-	{
 		shd_db_query('', '
 			UPDATE {db_prefix}helpdesk_tickets
 			SET ' . implode(', ', $ticket_columns) . '
 			WHERE id_ticket = {int:id_ticket}',
 			$ticket_update_parameters
 		);
-	}
 
 	// And fix unread list
 	if (!empty($msgOptions['modified']))
-	{
 		shd_db_query('', '
 			UPDATE {db_prefix}helpdesk_log_read
 			SET id_msg = {int:last_msg}
@@ -533,7 +516,6 @@ function shd_modify_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 				'edited_msg' => $msg_update_parameters['id_msg'],
 			)
 		);
-	}
 
 	// Are we updating custom fields?
 	$rows = array();
@@ -643,14 +625,12 @@ function shd_modify_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 	}
 	// If there are rows to add or update, commence.
 	if (!empty($rows))
-	{
 		$smcFunc['db_insert']('replace',
 			'{db_prefix}helpdesk_custom_fields_values',
 			array('id_post' => 'int', 'id_field' => 'int', 'value' => 'string-65534', 'post_type' => 'int'),
 			$rows,
 			array('id_post', 'id_field')
 		);
-	}
 
 	// Int hook
 	call_integration_hook('shd_hook_modpost', array(&$msgOptions, &$ticketOptions, &$posterOptions));
@@ -707,9 +687,7 @@ function shd_get_urgency_options($self_ticket = false, $dept = 0)
 	);
 
 	if (shd_allowed_to('shd_alter_urgency_higher_any', $dept) || ($self_ticket && shd_allowed_to('shd_alter_urgency_higher_own', $dept)))
-	{
 		$context['ticket_form']['urgency']['can_change'] = true;
-	}
 	elseif (shd_allowed_to('shd_alter_urgency_any', $dept) || ($self_ticket && shd_allowed_to('shd_alter_urgency_own', $dept)))
 	{
 		if (!empty($context['ticket_form']['urgency']['setting']) && $context['ticket_form']['urgency']['setting'] > TICKET_URGENCY_HIGH)
@@ -775,11 +753,11 @@ function shd_load_custom_fields($is_ticket = true, $ticketContext = 0, $dept = 0
 	);
 
 	$context['ticket_form']['custom_fields'] = array();
-
 	$loc = $is_ticket ? 'ticket' : $ticketContext;
-
 	$is_staff = shd_allowed_to('shd_staff', $dept);
 	$is_admin = shd_allowed_to('admin_helpdesk', $dept); // this includes forum admins
+
+	require_once($sourcedir . '/Subs-Editor.php');
 
 	// Loop through all fields and figure out where they should be.
 	while ($row = $smcFunc['db_fetch_assoc']($custom_fields))
@@ -824,20 +802,17 @@ function shd_load_custom_fields($is_ticket = true, $ticketContext = 0, $dept = 0
 			if ($row['field_type'] == CFIELD_TYPE_RADIO || $row['field_type'] == CFIELD_TYPE_MULTI)
 			{
 				foreach ($context['ticket_form']['custom_fields'][$loc][$row['id_field']]['options'] as $k => $v)
-				{
 					if ($k != 'inactive')
 						$context['ticket_form']['custom_fields'][$loc][$row['id_field']]['options'][$k] = (strpos($v, '[') !== false) ? parse_bbc($v) : $v;
-				}
 			}
 			elseif ($row['field_type'] == CFIELD_TYPE_SELECT)
 			{
 				foreach ($context['ticket_form']['custom_fields'][$loc][$row['id_field']]['options'] as $k => $v)
-				{
 					if ($k != 'inactive' && $k != 'order')
 						$context['ticket_form']['custom_fields'][$loc][$row['id_field']]['options'][$k] = (strpos($v, '[') !== false) ? trim(strip_tags(parse_bbc($v))) : trim($v);
-				}
 			}
 		}
+
 		$context['ticket_form']['custom_fields'][$loc][$row['id_field']]['depts'][] = $row['id_dept'];
 		if (!empty($context['ticket_form']['custom_fields'][$loc][$row['id_field']]['options']) && empty($context['ticket_form']['custom_fields'][$loc][$row['id_field']]['options']['inactive']))
 			$context['ticket_form']['custom_fields'][$loc][$row['id_field']]['options']['inactive'] = array();
@@ -864,11 +839,7 @@ function shd_load_custom_fields($is_ticket = true, $ticketContext = 0, $dept = 0
 
 			// Large text boxes may need fixing.
 			if ($context['ticket_form']['custom_fields'][$loc][$row['id_field']]['type'] == CFIELD_TYPE_LARGETEXT)
-			{
-				require_once($sourcedir . '/Subs-Editor.php');
-
 				$field_values[$row['id_field']] = html_to_bbc($field_values[$row['id_field']]);
-			}
 
 			$context['ticket_form']['custom_fields'][$loc][$row['id_field']]['value'] = $field_values[$row['id_field']];
 		}
@@ -893,8 +864,7 @@ function shd_validate_custom_fields($scope, $dept)
 	{
 		if (!$field['editable'] || !in_array($dept, $field['depts']))
 			continue;
-
-		if (empty($field['options']['inactive']))
+		elseif (empty($field['options']['inactive']))
 			$field['options']['inactive'] = array();
 
 		// Multi-selects are special. Deal with them first.
@@ -903,10 +873,8 @@ function shd_validate_custom_fields($scope, $dept)
 			$newvalues = array();
 			foreach ($field['options'] as $k => $v)
 				if (!empty($_POST['field-' . $field_id . '-' . $k]))
-				{
 					if (!in_array($k, $field['options']['inactive']) || empty($field['is_required']))
 						$newvalues[] = $k;
-				}
 
 			$value = !empty($newvalues) ? implode(',', $newvalues) : '';
 			if (!empty($field['is_required']) && count($newvalues) < $field['is_required'])

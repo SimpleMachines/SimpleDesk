@@ -25,7 +25,6 @@
  *	@todo Finish documenting this file.
  *	@since 1.0
 */
-
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
@@ -37,8 +36,8 @@ if (!defined('SMF'))
 function shd_post_ticket()
 {
 	global $context, $user_info, $sourcedir, $txt, $scripturl, $reply_request, $smcFunc, $options, $memberContext, $new_ticket, $modSettings;
-	$context['tabindex'] = 1;
 
+	$context['tabindex'] = 1;
 	$new_ticket = $_REQUEST['sa'] == 'newticket';
 
 	if ($new_ticket)
@@ -63,7 +62,6 @@ function shd_post_ticket()
 	require_once($sourcedir . '/Subs-Editor.php');
 
 	$context['template_layers'][] = 'shd_post_nojs';
-
 	$dept = $new_ticket ? $_REQUEST['dept'] : $ticketinfo['dept'];
 
 	$context['ticket_form'] = array( // yes, everything goes in here.
@@ -188,13 +186,7 @@ function shd_post_ticket()
 	shd_check_attachments();
 
 	// Set up the fancy editor
-	shd_postbox(
-		'shd_message',
-		$context['ticket_form']['message'],
-		array(
-			'post_button' => $context['ticket_form']['form_title'],
-		)
-	);
+	shd_postbox('shd_message', $context['ticket_form']['message'], array('post_button' => $context['ticket_form']['form_title']));
 
 	// Build the link tree and navigation
 	$context['linktree'][] = array(
@@ -220,7 +212,6 @@ function shd_save_post()
 
 	// Oh no, robots!
 	$context['robot_no_index'] = true;
-
 	$context['shd_errors'] = array();
 
 	// We'll probably be needing these.
@@ -270,14 +261,13 @@ function shd_save_post()
 	}
 
 	// Now send them off to the specific areas, whether that's saving a ticket or a reply
-
 	$actions = array(
 		'saveticket' => 'shd_save_ticket',
 		'savereply' => 'shd_save_reply',
 	);
 
 	if (isset($actions[$_REQUEST['sa']]))
-		$actions[$_REQUEST['sa']]();
+		call_user_func($actions[$_REQUEST['sa']]);
 }
 
 /**
@@ -624,13 +614,11 @@ function shd_save_ticket()
 				$ticketOptions['urgency'] = $context['ticket_form']['urgency']['setting'];
 				// log the change too
 				$action = ($context['ticket_form']['urgency']['setting'] > $ticketinfo['urgency']) ? 'urgency_increase' : 'urgency_decrease';
-				shd_log_action($action,
-					array(
-						'ticket' => $context['ticket_form']['ticket'],
-						'subject' => $context['ticket_form']['subject'],
-						'urgency' => $context['ticket_form']['urgency']['setting'],
-					)
-				);
+				shd_log_action($action, array(
+					'ticket' => $context['ticket_form']['ticket'],
+					'subject' => $context['ticket_form']['subject'],
+					'urgency' => $context['ticket_form']['urgency']['setting'],
+				));
 			}
 
 			// But these things do!
@@ -649,12 +637,10 @@ function shd_save_ticket()
 			if (!empty($context['can_solve']) && !empty($_POST['resolve_ticket']))
 			{
 				$ticketOptions['status'] = TICKET_STATUS_CLOSED;
-				shd_log_action('resolve',
-					array(
-						'ticket' => $context['ticket_id'],
-						'subject' => $ticketinfo['subject'],
-					)
-				);
+				shd_log_action('resolve', array(
+					'ticket' => $context['ticket_id'],
+					'subject' => $ticketinfo['subject'],
+				));
 			}
 
 			// DOOOOOOOO EEEEEEEEEEET NAO!
@@ -699,7 +685,6 @@ function shd_post_reply()
 	require_once($sourcedir . '/Subs-Editor.php');
 
 	$context['template_layers'][] = 'shd_post_nojs';
-
 	$ticketinfo = shd_load_ticket();
 	$context['shd_department'] = $ticketinfo['dept'];
 	$reply = array();
@@ -840,7 +825,6 @@ function shd_post_reply()
 		return fatal_lang_error('shd_cannon_reply_deleted', false);
 
 	shd_load_custom_fields(false, $context['ticket_form']['msg'], $context['ticket_form']['dept']);
-
 	shd_load_attachments();
 	shd_check_attachments();
 
@@ -879,9 +863,8 @@ function shd_post_reply()
 		{
 			$smcFunc['db_free_result']($query);
 
-			$row['body'] = un_preparsecode($row['body']);
-
 			// Censor the message!
+			$row['body'] = un_preparsecode($row['body']);
 			censorText($row['body']);
 			$row['body'] = preg_replace('~<br ?/?' . '>~i', "\n", $row['body']);
 
@@ -912,9 +895,7 @@ function shd_post_reply()
 	shd_postbox(
 		'shd_message',
 		$context['ticket_form']['reply'],
-		array(
-			'post_button' => !empty($reply['id_msg']) ? $txt['shd_ticket_edit_reply'] : $txt['shd_reply_ticket'],
-		)
+		array('post_button' => !empty($reply['id_msg']) ? $txt['shd_ticket_edit_reply'] : $txt['shd_reply_ticket'],)
 	);
 
 	// Build the link tree and navigation
@@ -1068,7 +1049,6 @@ function shd_save_reply()
 		);
 
 	shd_load_attachments();
-
 	shd_get_urgency_options($ticketinfo['is_own'], $ticketinfo['dept']);
 	$context['ticket_form']['urgency']['can_change'] = false;
 
@@ -1156,9 +1136,7 @@ function shd_save_reply()
 		shd_postbox(
 			'shd_message',
 			un_preparsecode($_POST['shd_message']),
-			array(
-				'post_button' => $new_reply ? $txt['shd_reply_ticket'] : $txt['shd_ticket_edit_reply'],
-			)
+			array('post_button' => $new_reply ? $txt['shd_reply_ticket'] : $txt['shd_ticket_edit_reply'],)
 		);
 
 		// Build the link tree and navigation
@@ -1328,21 +1306,14 @@ function shd_done_posting()
 		}
 	}
 
+	// After all this time... after everything we saw, after everything we lost... I have only one thing to say to you... BYE!
 	if (!$thank_you)
 	{
-		// After all this time... after everything we saw, after everything we lost... I have only one thing to say to you... BYE!
 		if (empty($_REQUEST['goback']))
 			redirectexit($context['shd_home'] . $context['shd_dept_link']);
 		elseif (!empty($context['ticket_form']['msg']))
-		{
-			// IE prior to 9 has issues with the ; in the URL and preserving the # fragment, so we give it & instead.
-			if ($context['browser']['is_ie'])
-				redirectexit('action=helpdesk&sa=ticket&ticket=' . $context['ticket_id'] . '.msg' . $context['ticket_form']['msg'] . '#msg' . $context['ticket_form']['msg'], true);
-			else
-				redirectexit('action=helpdesk;sa=ticket;ticket=' . $context['ticket_id'] . '.msg' . $context['ticket_form']['msg'] . '#msg' . $context['ticket_form']['msg'], false);
-		}
-		else
-			redirectexit('action=helpdesk;sa=ticket;ticket=' . $context['ticket_id']);
+			redirectexit('action=helpdesk;sa=ticket;ticket=' . $context['ticket_id'] . '.msg' . $context['ticket_form']['msg'] . '#msg' . $context['ticket_form']['msg'], false);
+		redirectexit('action=helpdesk;sa=ticket;ticket=' . $context['ticket_id']);
 	}
 }
 
@@ -1358,7 +1329,6 @@ function shd_setup_replies($first_msg)
 
 	$context['ticket_form']['do_replies'] = false;
 	$context['can_quote'] = false;
-
 	$context['can_see_ip'] = shd_allowed_to('shd_staff', $context['ticket_form']['dept']);
 
 	// OK, we're done with the ticket's own data. Now for replies.
@@ -1386,7 +1356,6 @@ function shd_setup_replies($first_msg)
 	{
 		if (!empty($row['id_member']))
 			$posters[] = $row['id_member'];
-
 		if (!empty($row['modified_member']))
 			$posters[] = $row['modified_member'];
 
@@ -1395,7 +1364,6 @@ function shd_setup_replies($first_msg)
 	$smcFunc['db_free_result']($query);
 
 	$posters = array_unique($posters);
-
 	$context['shd_is_staff'] = array();
 
 	if (!empty($messages))
@@ -1409,7 +1377,6 @@ function shd_setup_replies($first_msg)
 
 			// Are they current team members?
 			$team = array_intersect($posters, shd_members_allowed_to('shd_staff', $context['ticket_form']['dept']));
-
 			foreach ($team as $member)
 				$context['shd_is_staff'][$member] = true;
 		}
@@ -1487,7 +1454,7 @@ function shd_postbox($id, $message, $buttons, $width = '90%')
 		$disabled_tags = array();
 
 		// Loop through all the tags there are in this forum, and and each disabled tag to our 'hide-list'.
-		foreach (parse_bbc(false) AS $tag)
+		foreach (parse_bbc(false) as $tag)
 			if (!in_array($tag['tag'], $enabled_tags) || $modSettings['shd_enabled_bbc'] == 'shd_all_tags_disabled')
 				$disabled_tags[] = $tag['tag'];
 
@@ -1603,14 +1570,12 @@ function shd_load_attachments()
 			'thumb' => 3,
 		)
 	);
-
 	while ($row = $smcFunc['db_fetch_assoc']($query))
 		$context['current_attachments'][] = array(
 			'id' => $row['id_attach'],
 			'name' => preg_replace('~&amp;#(\\d{1,7}|x[0-9a-fA-F]{1,6});~', '&#\\1;', htmlspecialchars($row['filename'])),
 			'can_delete' => $deleteable,
 		);
-
 	$smcFunc['db_free_result']($query);
 }
 
@@ -1850,16 +1815,13 @@ function shd_handle_attachments()
 				'ticket' => $context['ticket_id'],
 			)
 		);
-
 		$attachments = array();
 		while ($row = $smcFunc['db_fetch_assoc']($query))
 			$attachments[] = $row['id_attach'];
-
 		$smcFunc['db_free_result']($query);
 
 		// OK, so attachments = full list of attachments on this post, del_temp is list of ones to keep, so look for the ones that aren't in both lists
 		$del_temp = array_diff($attachments, $del_temp);
-
 		if (!empty($del_temp))
 		{
 			$filenames = array();
@@ -1887,12 +1849,11 @@ function shd_handle_attachments()
 
 			// Now you can delete
 			require_once($sourcedir . '/ManageAttachments.php');
-			$attachmentQuery = array(
+			removeAttachments(array(
 				'attachment_type' => 0,
 				'id_msg' => 0,
 				'id_attach' => $del_temp,
-			);
-			removeAttachments($attachmentQuery);
+			));
 		}
 	}
 
@@ -2021,7 +1982,7 @@ function shd_handle_attachments()
 				if (in_array('bad_extension', $attachmentOptions['errors']))
 				{
 					checkSubmitOnce('free');
-					fatal_error($attachmentOptions['name'] . '.<br>' . $txt['cant_upload_type'] . ' ' . strtr($modSettings['attachmentExtensions'], array(',' => ', ')) . '.', false);
+					return fatal_error($attachmentOptions['name'] . '.<br>' . $txt['cant_upload_type'] . ' ' . strtr($modSettings['attachmentExtensions'], array(',' => ', ')) . '.', false);
 				}
 				if (in_array('directory_full', $attachmentOptions['errors']))
 				{
@@ -2031,7 +1992,7 @@ function shd_handle_attachments()
 				if (in_array('bad_filename', $attachmentOptions['errors']))
 				{
 					checkSubmitOnce('free');
-					fatal_error(basename($attachmentOptions['name']) . '.<br>' . $txt['restricted_filename'] . '.', 'critical');
+					return fatal_error(basename($attachmentOptions['name']) . '.<br>' . $txt['restricted_filename'] . '.', 'critical');
 				}
 				if (in_array('taken_filename', $attachmentOptions['errors']))
 				{
@@ -2132,7 +2093,6 @@ function shd_load_canned_replies()
 			AND hdcr.vis_user = 1';
 
 	$context['canned_replies'] = array();
-
 	$query = $smcFunc['db_query']('', '
 		SELECT hdcr.id_reply, hdcr.title, hdcrc.id_cat, hdcrc.cat_name
 		FROM {db_prefix}helpdesk_cannedreplies AS hdcr

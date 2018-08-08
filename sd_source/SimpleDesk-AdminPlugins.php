@@ -134,20 +134,14 @@ function shd_admin_plugins()
 			{
 				$setting_changes['shd_enabled_plugins'][] = $id;
 				foreach ($plugin['includes']['source'] as $include_point => $include_file)
-				{
 					if (isset($setting_changes['shd_include_' . $include_point]) && file_exists($sourcedir . '/sd_plugins_source/' . $id . '/' . $include_file))
 						$setting_changes['shd_include_' . $include_point][] = $id . '/' . $include_file;
-				}
 				foreach ($plugin['includes']['language'] as $include_point => $include_file)
-				{
 					if (isset($setting_changes['shd_includelang_' . $include_point]))
 						$setting_changes['shd_includelang_' . $include_point][] = $include_file;
-				}
 				foreach ($plugin['hooks'] as $include_point => $function)
-				{
 					if (isset($setting_changes['shd_hook_' . $include_point]))
 						$setting_changes['shd_hook_' . $include_point][] = $function;
-				}
 			}
 
 			// Is there a call back for settings?
@@ -171,16 +165,12 @@ function shd_admin_plugins()
 
 		// Any post save things?
 		foreach ($plugins as $id => $plugin)
-		{
 			// Standard save callback?
 			if (isset($plugin['save_callback']))
 				$plugin['save_callback'](!empty($_POST[$post_var_prefix . $id]));
-		}
 
 		// We know we did something.
-		shd_admin_log('admin_plugins', array(
-			'action' => 'update',
-		));
+		shd_admin_log('admin_plugins', array('action' => 'update'));
 
 		redirectexit('action=admin;area=helpdesk_plugins;' . $context['session_var'] . '=' . $context['session_id']);
 	}
@@ -252,9 +242,7 @@ function shd_unregister_plugin()
 	}
 
 	// Keep track of this.
-	shd_admin_log('admin_plugins', array(
-		'action' => 'remove',
-	));
+	shd_admin_log('admin_plugins', array('action' => 'remove'));
 
 	updateSettings($changes, true);
 }

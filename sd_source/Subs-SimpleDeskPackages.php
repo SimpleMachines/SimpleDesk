@@ -23,7 +23,6 @@
  *	@package subs
  *	@since 2.1
  */
-
 if (!defined('SMF'))
 	die('Hacking attempt...');
 

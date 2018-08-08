@@ -60,6 +60,7 @@ function shd_repair_attachments_nomsg(&$ignore_ids, $min_substep, $max_substep)
 	);
 	while ($row = $smcFunc['db_fetch_assoc']($request))
 		$ignore_ids[] = $row['id_attach'];
+	$smcFunc['db_free_result']($request);
 }
 
 /**
@@ -73,7 +74,6 @@ function shd_attachment_remove(&$filesRemoved, $attachments)
 {
 	if (in_array($_REQUEST['type'], array('shd_attach', 'shd_thumb')) && !empty($attachments))
 		$idsRemoved = removeAttachments(array('id_attach' => $attachments), '', true);
-
 	$filesRemoved = array_merge($filesRemoved, $idsRemoved);
 }
 
@@ -91,8 +91,7 @@ function shd_attachments_browse(&$listOptions, &$titles, &$list_title)
 
 	if (empty($modSettings['helpdesk_active']))
 		return;
-
-	if (isset($_REQUEST['shd_attach']) || isset($_REQUEST['shd_thumb']))
+	elseif (isset($_REQUEST['shd_attach']) || isset($_REQUEST['shd_thumb']))
 		$context['browse_type'] = isset($_REQUEST['shd_attach']) ? 'shd_attach' : 'shd_thumb';
 
 	$titles += array(
@@ -193,7 +192,6 @@ function shd_admin_browse_attachments($list_title = '')
 					'function' => function($rowData)
 					{
 						global $txt;
-
 						return sprintf('%1$s%2$s', round($rowData['size'] / 1024, 2), $txt['kilobyte']);
 					},
 					'class' => 'windowbg',
@@ -226,7 +224,6 @@ function shd_admin_browse_attachments($list_title = '')
 					'function' => function($rowData)
 					{
 						global $txt;
-
 						return empty($rowData['poster_time']) ? $txt['never'] : timeformat($rowData['poster_time']);
 					},
 					'class' => 'windowbg',
@@ -357,7 +354,6 @@ function shd_list_get_num_files($browse_type)
 			'guest_id_member' => 0,
 		)
 	);
-
 	list ($num_files) = $smcFunc['db_fetch_row']($request);
 	$smcFunc['db_free_result']($request);
 

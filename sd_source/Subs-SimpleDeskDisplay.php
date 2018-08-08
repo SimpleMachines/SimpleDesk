@@ -23,7 +23,6 @@
  *	@package subs
  *	@since 2.0
  */
-
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
@@ -41,9 +40,8 @@ function shd_download_request(&$attachRequest)
 	// Is this already a resource?  Then another hook has claimed the attachment as theirs.
 	if (is_resource($attachRequest))
 		return;
-
 	// If we don't have a ticket present, it is not our attachment.
-	if (empty($_REQUEST['ticket']))
+	elseif (empty($_REQUEST['ticket']))
 		return;
 
 	$_REQUEST['ticket'] = (int) $_REQUEST['ticket'];
