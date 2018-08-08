@@ -23,7 +23,6 @@
  *	@package subs
  *	@since 2.0
  */
-
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
@@ -302,14 +301,12 @@ function shd_load_user_perms()
 					'groups' => $user_info['groups'],
 				)
 			);
-
 			$roles = array();
 			while ($row = $smcFunc['db_fetch_assoc']($query))
 			{
 				$role_permissions[$row['id_role']] = $context['shd_permissions']['roles'][$row['template']]['permissions'];
 				$roles[$row['id_role']] = true;
 			}
-
 			$smcFunc['db_free_result']($query);
 
 			// 1a. Get all the departments these roles are in.
@@ -342,14 +339,11 @@ function shd_load_user_perms()
 						'roles' => array_keys($roles),
 					)
 				);
-
 				while ($row = $smcFunc['db_fetch_assoc']($query))
-				{
 					if ($row['add_type'] == ROLEPERM_DENY)
 						$denied[$row['permission']] = true;
 					else
 						$role_permissions[$row['id_role']][$row['permission']] = $row['add_type'];
-				}
 				$smcFunc['db_free_result']($query);
 			}
 
@@ -362,21 +356,15 @@ function shd_load_user_perms()
 						continue;
 
 					foreach ($perm_list as $perm => $value)
-					{
 						if ($value == ROLEPERM_ALLOW)
 							$user_info['shd_permissions'][$perm] = isset($user_info['shd_permissions'][$perm]) ? array_merge($user_info['shd_permissions'][$perm], $depts[$role]) : $depts[$role];
-					}
 				}
 
 			// 2.3 Apply any deny restrictions
 			if (!empty($denied))
-			{
 				foreach ($denied as $perm => $value)
-				{
 					if (isset($user_info['shd_permissions'][$perm]))
 						unset($user_info['shd_permissions'][$perm]);
-				}
-			}
 
 			cache_put_data($permissions_cache, $user_info['shd_permissions'], $perm_cache_time);
 		}
@@ -502,7 +490,6 @@ function shd_allowed_to($permission, $dept = 0)
 			foreach ($permission as $perm)
 				if (!empty($user_info['shd_permissions'][$perm]))
 					return true;
-
 			return false;
 		}
 		else
@@ -517,7 +504,6 @@ function shd_allowed_to($permission, $dept = 0)
 		foreach ($permission as $perm)
 			if (!empty($user_info['shd_permissions'][$perm]) && in_array($dept, $user_info['shd_permissions'][$perm]))
 				return true;
-
 		return false;
 	}
 }
@@ -647,10 +633,8 @@ function shd_groups_allowed_to($permission, $dept = 0)
 				'dept' => $dept,
 			)
 		);
-
 		while ($row = $smcFunc['db_fetch_assoc']($query))
 			$roles[$row['id_role']] = ROLEPERM_ALLOW; // See above. We know we have the permission present if we find it here.
-
 		$smcFunc['db_free_result']($query);
 	}
 
@@ -663,10 +647,8 @@ function shd_groups_allowed_to($permission, $dept = 0)
 			'permission' => $permission,
 		)
 	);
-
 	while ($row = $smcFunc['db_fetch_assoc']($query))
 		$roles[$row['id_role']] = $row['add_type'];
-
 	$smcFunc['db_free_result']($query);
 
 	// 3. Tie roles to groups
@@ -680,15 +662,13 @@ function shd_groups_allowed_to($permission, $dept = 0)
 				'roles' => array_keys($roles),
 			)
 		);
-
 		while ($row = $smcFunc['db_fetch_assoc']($query))
-		{
 			if ($roles[$row['id_role']] == ROLEPERM_ALLOW)
 				$member_groups['allowed'][] = $row['id_group'];
 			elseif ($roles[$row['id_role']] == ROLEPERM_DENY)
 				$member_groups['denied'][] = $row['id_group'];
 			// We don't have to do anything for ROLEPERM_DISALLOW
-		}
+		$smcFunc['db_free_result']($query);
 	}
 
 	// 4. All done, just clear up groups and send 'em home

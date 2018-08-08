@@ -47,7 +47,7 @@ function shd_admin_departments()
 
 	$context['shd_current_subaction'] = isset($_REQUEST['sa']) && isset($subactions[$_REQUEST['sa']]) ? $_REQUEST['sa'] : 'main';
 
-	$subactions[$context['shd_current_subaction']]();
+	call_user_func($subactions[$context['shd_current_subaction']]);
 }
 
 /**
@@ -70,18 +70,15 @@ function shd_admin_dept_list()
 		ORDER BY dept_order'
 	);
 	while ($row = $smcFunc['db_fetch_assoc']($query))
-	{
 		$context['shd_departments'][$row['id_dept']] = $row;
-		// Also get the first and last for in a minute
-		$last = $row['id_dept'];
-		if (empty($first))
-			$first = $row['id_dept'];
-	}
 	$smcFunc['db_free_result']($query);
 
+	if (empty($context['shd_departments']))
+		return;
+
 	// 1a. Make sure to log that a given row is first or last for the move wotsits.
-	$context['shd_departments'][$first]['is_first'] = true;
-	$context['shd_departments'][$last]['is_last'] = true;
+	$context['shd_departments'][key($context['shd_departments'])]['is_first'] = true;
+	$context['shd_departments'][end($context['shd_departments'])['id_dept']]['is_last'] = true;
 
 	// 2. Just for niceness, get all the helpdesk roles attached to each department.
 	$query = $smcFunc['db_query']('', '
@@ -113,42 +110,33 @@ function shd_admin_dept_move()
 	if ($smcFunc['db_num_rows']($query) == 0 || empty($_REQUEST['direction']))
 	{
 		$smcFunc['db_free_result']($query);
-		fatal_lang_error('shd_admin_cannot_move_dept', false);
+		return fatal_lang_error('shd_admin_cannot_move_dept', false);
 	}
 
 	$depts = array();
 	while ($row = $smcFunc['db_fetch_assoc']($query))
 		$depts[$row['dept_order']] = $row['id_dept'];
-
 	ksort($depts);
 
 	$depts_map = array_flip($depts);
 	if (empty($depts_map[$_REQUEST['dept']]))
-		fatal_lang_error('shd_admin_cannot_move_dept', false);
+		return fatal_lang_error('shd_admin_cannot_move_dept', false);
 
 	$current_pos = $depts_map[$_REQUEST['dept']];
 	$destination = $current_pos + ($_REQUEST['direction'] == 'up' ? -1 : 1);
 
 	if (empty($depts[$destination]))
-		fatal_lang_error('shd_admin_cannot_move_dept_' . $_REQUEST['direction'], false);
+		return fatal_lang_error('shd_admin_cannot_move_dept_' . $_REQUEST['direction'], false);
 
 	$other_dept = $depts[$destination];
 
 	shd_db_query('', '
 		UPDATE {db_prefix}helpdesk_depts
-		SET dept_order = {int:new_pos}
-		WHERE id_dept = {int:dept}',
+		SET dept_order = CASE WHEN id_dept = {int:dept} THEN {int:new_pos} ELSE {int:old_pos} END
+		WHERE id_dept = {int:dept} OR id_dept = {int:other_dept}',
 		array(
 			'new_pos' => $destination,
 			'dept' => $_REQUEST['dept'],
-		)
-	);
-
-	shd_db_query('', '
-		UPDATE {db_prefix}helpdesk_depts
-		SET dept_order = {int:old_pos}
-		WHERE id_dept = {int:other_dept}',
-		array(
 			'old_pos' => $current_pos,
 			'other_dept' => $other_dept,
 		)
@@ -192,16 +180,15 @@ function shd_admin_create_dept()
 
 		// Boring stuff like session checks done. Were you a naughty admin and didn't set it properly?
 		if (!isset($_POST['dept_name']) || $smcFunc['htmltrim']($smcFunc['htmlspecialchars']($_POST['dept_name'])) === '')
-			fatal_lang_error('shd_no_dept_name', false);
+			return fatal_lang_error('shd_no_dept_name', false);
 		else
 			$_POST['dept_name'] = strtr($smcFunc['htmlspecialchars']($_POST['dept_name']), array("\r" => '', "\n" => '', "\t" => ''));
 
 		// Now to check the category.
 		if (!isset($_POST['dept_cat']) || !isset($context['shd_cat_list'][$_POST['dept_cat']]))
-			fatal_lang_error('shd_invalid_category', false);
-		else
-			$_POST['dept_cat'] = (int) $_POST['dept_cat'];
+			return fatal_lang_error('shd_invalid_category', false);
 
+		$_POST['dept_cat'] = (int) $_POST['dept_cat'];
 		$_POST['dept_beforeafter'] = empty($_POST['dept_beforeafter']) || empty($_POST['dept_cat']) ? 0 : 1;
 		// Change '1 & 2' to '1 &amp; 2', but not '&amp;' to '&amp;amp;'...
 		$_POST['dept_desc'] = empty($_POST['dept_desc']) ? '' : preg_replace('~[&]([^;]{8}|[^;]{0,8}$)~', '&amp;$1', $_POST['dept_desc']);
@@ -216,20 +203,14 @@ function shd_admin_create_dept()
 		// Create the department
 		$newdept = $smcFunc['db_insert']('insert',
 			'{db_prefix}helpdesk_depts',
-			array(
-				'dept_name' => 'string', 'description' => 'string', 'board_cat' => 'int', 'before_after' => 'int', 'dept_order' => 'int',
-			),
-			array(
-				$_POST['dept_name'], $_POST['dept_desc'], $_POST['dept_cat'], $_POST['dept_beforeafter'], $maxdept + 1,
-			),
-			array(
-				'id_dept',
-			),
+			array('dept_name' => 'string', 'description' => 'string', 'board_cat' => 'int', 'before_after' => 'int', 'dept_order' => 'int',),
+			array($_POST['dept_name'], $_POST['dept_desc'], $_POST['dept_cat'], $_POST['dept_beforeafter'], $maxdept + 1,),
+			array('id_dept',),
 			1
 		);
 
 		if (empty($newdept))
-			fatal_lang_error('shd_could_not_create_dept', false);
+			return fatal_lang_error('shd_could_not_create_dept', false);
 
 		// Log this.
 		shd_admin_log('admin_dept', array(
@@ -262,7 +243,7 @@ function shd_admin_edit_dept()
 	if ($smcFunc['db_num_rows']($query) == 0)
 	{
 		$smcFunc['db_free_result']($query);
-		fatal_lang_error('shd_unknown_dept', false);
+		return fatal_lang_error('shd_unknown_dept', false);
 	}
 	$context['shd_dept'] = $smcFunc['db_fetch_assoc']($query);
 	$context['shd_dept']['description'] = htmlspecialchars($context['shd_dept']['description']);
@@ -328,7 +309,7 @@ function shd_admin_save_dept()
 	if ($smcFunc['db_num_rows']($query) == 0)
 	{
 		$smcFunc['db_free_result']($query);
-		fatal_lang_error('shd_unknown_dept', false);
+		return fatal_lang_error('shd_unknown_dept', false);
 	}
 	$context['shd_dept'] = $smcFunc['db_fetch_assoc']($query);
 	$smcFunc['db_free_result']($query);
@@ -342,7 +323,7 @@ function shd_admin_save_dept()
 			FROM {db_prefix}helpdesk_depts');
 		list($count) = $smcFunc['db_fetch_row']($query);
 		if ($count == 1)
-			fatal_lang_error('shd_must_have_dept', false);
+			return fatal_lang_error('shd_must_have_dept', false);
 
 		// What about it having tickets in it?
 		$query = $smcFunc['db_query']('', '
@@ -356,7 +337,7 @@ function shd_admin_save_dept()
 		list($count) = $smcFunc['db_fetch_row']($query);
 		$smcFunc['db_free_result']($query);
 		if (!empty($count))
-			fatal_lang_error('shd_dept_not_empty', false);
+			return fatal_lang_error('shd_dept_not_empty', false);
 
 		// Before we kill it, get its order position.
 		$query = $smcFunc['db_query']('', '
@@ -370,7 +351,7 @@ function shd_admin_save_dept()
 		if ($smcFunc['db_num_rows']($query) == 0)
 		{
 			$smcFunc['db_free_result']($query);
-			fatal_lang_error(shd_unknown_dept, false);
+			return fatal_lang_error(shd_unknown_dept, false);
 		}
 		list($dept_order) = $smcFunc['db_fetch_row']($query);
 		$smcFunc['db_free_result']($query);
@@ -427,16 +408,13 @@ function shd_admin_save_dept()
 	// 5. Get the stuff in the form.
 	// 5a. That there's something in the dept. name
 	if (!isset($_POST['dept_name']) || $smcFunc['htmltrim']($smcFunc['htmlspecialchars']($_POST['dept_name'])) === '')
-		fatal_lang_error('shd_no_dept_name', false);
-	else
-		$_POST['dept_name'] = strtr($smcFunc['htmlspecialchars']($_POST['dept_name']), array("\r" => '', "\n" => '', "\t" => ''));
-
+		return fatal_lang_error('shd_no_dept_name', false);
 	// 5b. Now to check the category exists and where we're putting it in the category.
-	if (!isset($_POST['dept_cat']) || !isset($context['shd_cat_list'][$_POST['dept_cat']]))
-		fatal_lang_error('shd_invalid_category', false);
-	else
-		$_POST['dept_cat'] = (int) $_POST['dept_cat'];
+	elseif (!isset($_POST['dept_cat']) || !isset($context['shd_cat_list'][$_POST['dept_cat']]))
+		return fatal_lang_error('shd_invalid_category', false);
 
+	$_POST['dept_name'] = strtr($smcFunc['htmlspecialchars']($_POST['dept_name']), array("\r" => '', "\n" => '', "\t" => ''));
+	$_POST['dept_cat'] = (int) $_POST['dept_cat'];
 	$_POST['dept_beforeafter'] = empty($_POST['dept_beforeafter']) || empty($_POST['dept_cat']) ? 0 : 1;
 	// Change '1 & 2' to '1 &amp; 2', but not '&amp;' to '&amp;amp;'...
 	$_POST['dept_desc'] = empty($_POST['dept_desc']) ? '' : preg_replace('~[&]([^;]{8}|[^;]{0,8}$)~', '&amp;$1', $_POST['dept_desc']);
@@ -446,10 +424,7 @@ function shd_admin_save_dept()
 	$_POST['dept_theme'] = isset($_POST['dept_theme']) && isset($context['dept_theme_list'][$_POST['dept_theme']]) ? (int) $_POST['dept_theme'] : 0;
 
 	$_POST['autoclose_days'] = isset($_POST['autoclose_days']) ? (int) $_POST['autoclose_days'] : 0;
-	if ($_POST['autoclose_days'] < 0)
-		$_POST['autoclose_days'] = 0;
-	if ($_POST['autoclose_days'] > 9999)
-		$_POST['autoclose_days'] = 9999;
+	$_POST['autoclose_days'] = $_POST['autoclose_days'] < 0 ? 0 : ($_POST['autoclose_days'] > 9999 ? 9999 : $_POST['autoclose_days']);
 
 	// 6. Commit that to DB.
 	$smcFunc['db_query']('', '
@@ -473,25 +448,21 @@ function shd_admin_save_dept()
 	);
 
 	// 7. Now update the list of roles attached to this department.
-	$add = array();
-	$remove = array();
+	$add = $remove = array();
 
 	// 7a. Get the list of roles and start from there.
 	$query = $smcFunc['db_query']('', '
 		SELECT id_role
 		FROM {db_prefix}helpdesk_roles');
 	while ($row = $smcFunc['db_fetch_assoc']($query))
-	{
 		if (!empty($_POST['role' . $row['id_role']]))
 			$add[] = $row['id_role'];
 		else
 			$remove[] = $row['id_role'];
-	}
 	$smcFunc['db_free_result']($query);
 
 	// 7b. Any to remove?
 	if (!empty($remove))
-	{
 		$smcFunc['db_query']('', '
 			DELETE FROM {db_prefix}helpdesk_dept_roles
 			WHERE id_role IN ({array_int:role})
@@ -501,24 +472,19 @@ function shd_admin_save_dept()
 				'role' => $remove,
 			)
 		);
-	}
 
 	// 7c. Any to add?
 	if (!empty($add))
 	{
-		$insert = array();
+		$inserts = array();
 		foreach ($add as $add_role)
-			$insert[] = array($add_role, $_REQUEST['dept']);
+			$inserts[] = array($add_role, $_REQUEST['dept']);
 
 		$smcFunc['db_insert']('replace',
 			'{db_prefix}helpdesk_dept_roles',
-			array(
-				'id_role' => 'int', 'id_dept' => 'int',
-			),
-			$insert,
-			array(
-				'id_role', 'id_dept',
-			)
+			array('id_role' => 'int', 'id_dept' => 'int',),
+			$inserts,
+			array('id_role', 'id_dept',)
 		);
 	}
 

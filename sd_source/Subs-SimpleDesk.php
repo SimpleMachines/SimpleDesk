@@ -24,7 +24,6 @@
  *	@package subs
  *	@since 1.0
  */
-
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
@@ -136,10 +135,8 @@ function shd_init()
 	);
 
 	foreach ($defaults as $var => $val)
-	{
 		if (empty($modSettings[$var]))
 			$modSettings[$var] = $val;
-	}
 
 	$modSettings['helpdesk_active'] = true;
 
@@ -158,8 +155,7 @@ function shd_init()
 			// You can only login.... otherwise, you're getting the "maintenance mode" display. Except we have to boot up a decent amount of SMF.
 			if (empty($_REQUEST['action']) || ($_REQUEST['action'] != 'login2' && $_REQUEST['action'] != 'logout'))
 			{
-				$_GET['action'] = '';
-				$_REQUEST['action'] = '';
+				$_GET['action'] = $_REQUEST['action'] = '';
 				$context['shd_maintenance_mode'] = true;
 				loadBoard();
 				loadPermissions();
@@ -336,10 +332,10 @@ function shd_get_active_tickets()
 			'status' => $status,
 		)
 	);
+	$row = $smcFunc['db_fetch_row']($query);
+	$smcFunc['db_free_result']($query);
 
 	$context['active_tickets_raw'] = 0;
-
-	$row = $smcFunc['db_fetch_row']($query);
 	if (!empty($row[0]))
 	{
 		$context['menu_buttons']['helpdesk']['alttitle'] = $txt['shd_helpdesk'] . ' [' . $row[0] . ']';
@@ -392,16 +388,12 @@ function shd_clear_active_tickets($dept = 0)
 	}
 	// Not so much?
 	else
-	{
 		foreach ($members as $member)
 			cache_put_data('shd_ticket_count_dept' . $dept . '_' . $member, null, 120);
-	}
 
 	// If we've updated this count, and the menu's cached, which it will be under the following conditions, update the 'settings'.
 	if (!empty($modSettings['cache_enable']) && $modSettings['cache_enable'] >= 2)
-		updateSettings(
-			array('settings_updated' => time())
-		);
+		updateSettings(array('settings_updated' => time()));
 }
 
 /**
@@ -621,9 +613,7 @@ function shd_count_helpdesk_tickets($status = '', $is_staff = false)
 
 		$temp = cache_get_data($cache_id, 180);
 		if ($temp !== null)
-		{
 			$context['ticket_count'] = $temp;
-		}
 		else
 		{
 			$query = shd_db_query('', '
@@ -663,7 +653,6 @@ function shd_count_helpdesk_tickets($status = '', $is_staff = false)
 						$context['ticket_count'][$row['status']] -= $row['tickets'];
 					}
 				}
-
 				$smcFunc['db_free_result']($query);
 			}
 
@@ -741,7 +730,7 @@ function shd_load_ticket($ticket = 0)
 
 	// Make sure they set a ticket ID.
 	if ($ticket == 0 && empty($context['ticket_id']))
-		fatal_lang_error('shd_no_ticket', false);
+		return fatal_lang_error('shd_no_ticket', false);
 
 	// Get the ticket data. Note this implicitly checks perms too.
 	$query = shd_db_query('', '
@@ -766,7 +755,7 @@ function shd_load_ticket($ticket = 0)
 	if ($smcFunc['db_num_rows']($query) == 0)
 	{
 		$smcFunc['db_free_result']($query);
-		fatal_lang_error('shd_no_ticket', false);
+		return fatal_lang_error('shd_no_ticket', false);
 	}
 
 	$ticketinfo = $smcFunc['db_fetch_assoc']($query);
@@ -814,10 +803,8 @@ function shd_format_text($text, $smileys = true, $cache = '')
 			$original_tags = parse_bbc(false);
 			$tags = array();
 			foreach ($original_tags as $smf_tag)
-			{
 				if (!isset($tags[$smf_tag['tag']]))
 					$tags[$smf_tag['tag']] = true;
-			}
 
 			// See what tagz we can haz.
 			if (!empty($modSettings['shd_enabled_bbc']))
@@ -829,15 +816,12 @@ function shd_format_text($text, $smileys = true, $cache = '')
 			$disabled_tags[] = '_SHD_DUMMY_TAG';
 			$smf_disabled = isset($modSettings['disabledBBC']) ? $modSettings['disabledBBC'] . ',_SHD_DUMMY_TAG' : '_SHD_DUMMY_TAG';
 			$shd_disabled = implode(',', $disabled_tags);
-
 		}
 
 		// wecanhazbbc
 		if ($shd_disabled == $smf_disabled)
-		{
 			// What SMF and SD have is the same, yay
 			$text = parse_bbc($text, (!empty($modSettings['shd_allow_ticket_smileys']) ? $smileys : false), $cache);
-		}
 		else
 		{
 			// first override SMF's disabled set with ours
@@ -957,8 +941,7 @@ function shd_profile_link($name, $id = 0)
 		return $name;
 	elseif ($any || ($own && $id == $user_info['id']))
 		return '<a href="' . $scripturl . '?action=profile;u=' . $id . '">' . $name . '</a>';
-	else
-		return $name;
+	return $name;
 }
 
 /**
@@ -976,10 +959,10 @@ function shd_profile_link($name, $id = 0)
 function shd_image_url($filename)
 {
 	global $settings;
+
 	if (file_exists($settings['default_theme_dir'] . '/images/sd_plugins/' . $filename))
 		return $settings['default_theme_url'] . '/images/sd_plugins/' . $filename;
-	else
-		return $settings['default_theme_url'] . '/images/simpledesk/' . $filename;
+	return $settings['default_theme_url'] . '/images/simpledesk/' . $filename;
 }
 
 /**
@@ -1124,6 +1107,12 @@ function shd_recalc_ids($ticket)
 	list($first_msg) = $smcFunc['db_fetch_row']($query);
 	$smcFunc['db_free_result']($query);
 
+	$messages = array(
+		MSG_STATUS_NORMAL => 0, // message_status = 0
+		MSG_STATUS_DELETED => 0, // message_status = 1
+	);
+	$last_msg = 0;
+
 	$query = shd_db_query('', '
 		SELECT hdtr.message_status, COUNT(hdtr.message_status) AS messages, hdt.id_first_msg, MAX(hdtr.id_msg) AS id_last_msg
 		FROM {db_prefix}helpdesk_ticket_replies AS hdtr
@@ -1135,13 +1124,6 @@ function shd_recalc_ids($ticket)
 			'ticket' => $ticket,
 		)
 	);
-
-	$messages = array(
-		MSG_STATUS_NORMAL => 0, // message_status = 0
-		MSG_STATUS_DELETED => 0, // message_status = 1
-	);
-
-	$last_msg = 0;
 	while ($row = $smcFunc['db_fetch_assoc']($query))
 	{
 		$first_msg = $row['id_first_msg'];
@@ -1149,7 +1131,6 @@ function shd_recalc_ids($ticket)
 		if ($row['message_status'] == MSG_STATUS_NORMAL)
 			$last_msg = $row['id_last_msg'];
 	}
-
 	$smcFunc['db_free_result']($query);
 
 	if (empty($last_msg))
@@ -1456,10 +1437,8 @@ function shd_load_user_prefs($user = 0)
 		call_integration_hook('shd_hook_prefs', array(&$pref_groups, &$base_prefs));
 
 		foreach ($base_prefs as $pref => $details)
-		{
 			if (empty($pref_groups[$details['group']]['enabled']) || empty($details['show']))
 				unset($base_prefs[$pref]);
-		}
 	}
 
 	// Do we just want the prefs list?
@@ -1476,10 +1455,8 @@ function shd_load_user_prefs($user = 0)
 
 		// Start with the defaults, but dealing with permissions as we go
 		foreach ($base_prefs as $pref => $details)
-		{
 			if (empty($details['permission']) || shd_allowed_to($details['permission'], 0))
 				$prefs[$pref] = $details['default'];
-		}
 	}
 	else
 	{
@@ -1498,10 +1475,8 @@ function shd_load_user_prefs($user = 0)
 					}
 			}
 			else
-			{
 				if (in_array($user, shd_members_allowed_to($details['permission'])))
 					$prefs[$pref] = $details['default'];
-			}
 		}
 	}
 
@@ -1514,12 +1489,10 @@ function shd_load_user_prefs($user = 0)
 			'user' => (int) $user,
 		)
 	);
-
 	while ($row = $smcFunc['db_fetch_assoc']($query))
-	{
 		if (isset($prefs[$row['variable']]))
 			$prefs[$row['variable']] = $row['value'];
-	}
+	$smcFunc['db_free_result']($query);
 
 	return $prefs;
 }
@@ -1538,10 +1511,8 @@ function shd_load_plugin_files($hook = '')
 
 	$filelist = explode(',', $modSettings['shd_include_' . $hook]);
 	foreach ($filelist as $file)
-	{
 		if (file_exists($sourcedir . '/sd_plugins_source/' . $file))
 			require_once($sourcedir . '/sd_plugins_source/' . $file);
-	}
 }
 
 /**
@@ -1680,12 +1651,10 @@ function shd_buffer_replace($buffer)
 
 		// If we're in helpdesk standalone mode, purge unread type links
 		if (!empty($modSettings['shd_helpdesk_only']))
-		{
 			$shd_preg_replacements += array(
 				'~<a(.+)action=unread(.+)</a>~iuU' => '',
 				'~<form([^<]+)action=search2(.+)</form>~iuUs' => '',
 			);
-		}
 
 		if (!empty($context['shd_buffer_replacements']))
 			$shd_replacements += $context['shd_buffer_replacements'];
@@ -1952,29 +1921,20 @@ function shd_main_menu(&$menu_buttons)
 		if (!empty($item))
 			$menu_buttons['home']['sub_buttons'][$item]['is_last'] = true;
 
-		unset($menu_buttons['helpdesk']);
-
 		// Disable help, search, calendar, moderation center
-		unset($menu_buttons['help'], $menu_buttons['search'], $menu_buttons['calendar'], $menu_buttons['moderate']);
-
-		$context['allow_search'] = false;
-		$context['allow_calendar'] = false;
-		$context['allow_moderation_center'] = false;
+		unset($menu_buttons['helpdesk'], $menu_buttons['help'], $menu_buttons['search'], $menu_buttons['calendar'], $menu_buttons['moderate']);
+		$context['allow_search'] = $context['allow_calendar'] = $context['allow_moderation_center'] = false;
 
 		// Disable PMs
 		if (!empty($modSettings['shd_disable_pm']))
 		{
-			$context['allow_pm'] = false;
-			$menu_buttons['pm']['show'] = false;
+			$context['allow_pm'] = $menu_buttons['pm']['show'] = false;
 			$context['user']['unread_messages'] = 0; // to disable it trying to add to the menu item
 		}
 
 		// Disable memberlist
 		if (!empty($modSettings['shd_disable_mlist']))
-		{
-			$context['allow_memberlist'] = false;
-			$menu_buttons['mlist']['show'] = false;
-		}
+			$context['allow_memberlist'] = $menu_buttons['mlist']['show'] = false;
 	}
 
 	// Now engage any hooks.

@@ -93,7 +93,8 @@ function shd_admin_maint()
 	// We need to fix the descriptions just in case.
 	if (isset($subactions[$context['shd_current_subaction']]['description']))
 		$context[$context['admin_menu_name']]['tab_data']['tabs']['main']['description'] = $subactions[$context['shd_current_subaction']]['description'];
-	$subactions[$context['shd_current_subaction']]['function']();
+
+	call_user_func($subactions[$context['shd_current_subaction']]['function']);
 }
 
 function shd_admin_maint_home()
@@ -137,7 +138,7 @@ function shd_admin_maint_reattribute()
 	$members = findMembers($_POST['to']);
 
 	if (empty($members))
-		fatal_lang_error('shd_reattribute_cannot_find_member');
+		return fatal_lang_error('shd_reattribute_cannot_find_member');
 
 	$memID = array_shift($members);
 	$memID = $memID['id'];
@@ -145,25 +146,25 @@ function shd_admin_maint_reattribute()
 	if ($_POST['type'] == 'email')
 	{
 		if (empty($_POST['from_email']))
-			fatal_lang_error('shd_reattribute_no_email');
+			return fatal_lang_error('shd_reattribute_no_email');
 		$clause = 'poster_email = {string:attribute}';
 		$attribute = $_POST['from_email'];
 	}
 	elseif ($_POST['type'] == 'name')
 	{
 		if (empty($_POST['from_name']))
-			fatal_lang_error('shd_reattribute_no_user');
+			return fatal_lang_error('shd_reattribute_no_user');
 		$clause = 'poster_name = {string:attribute}';
 		$attribute = $_POST['from_name'];
 	}
 	elseif ($_POST['type'] == 'starter')
 	{
 		if (empty($_POST['from_starter']))
-			fatal_lang_error('shd_reattribute_no_user');
+			return fatal_lang_error('shd_reattribute_no_user');
 		$from = findMembers($_POST['from_starter']);
 
 		if (empty($from))
-			fatal_lang_error('shd_reattribute_cannot_find_member_from');
+			return fatal_lang_error('shd_reattribute_cannot_find_member_from');
 
 		$fromID = array_shift($from);
 		$attribute = $fromID['id'];
@@ -174,7 +175,7 @@ function shd_admin_maint_reattribute()
 			WHERE id_member_started = {int:attribute})';
 	}
 	else
-		fatal_lang_error('shd_reattribute_no_user');
+		return fatal_lang_error('shd_reattribute_no_user');
 
 	// Now, we don't delete the user id from posts on account deletion, never have.
 	// So, get all the user ids attached to this user/email, make sure they're not in use, and then reattribute them.
@@ -193,7 +194,7 @@ function shd_admin_maint_reattribute()
 
 	// Did we find any members? If not, bail.
 	if (empty($members))
-		fatal_lang_error('shd_reattribute_no_messages', false);
+		return fatal_lang_error('shd_reattribute_no_messages', false);
 
 	// Topic starters are a bit easier.
 	if ($_POST['type'] == 'starter')
@@ -220,7 +221,7 @@ function shd_admin_maint_reattribute()
 		$members = array_diff($members, $temp_members);
 
 		if (empty($members))
-			fatal_lang_error('shd_reattribute_in_use', false);
+			return fatal_lang_error('shd_reattribute_in_use', false);
 
 		// OK, let's go!
 		$smcFunc['db_query']('', '
@@ -254,9 +255,9 @@ function shd_admin_maint_massdeptmove()
 	$_POST['id_dept_from'] = isset($_POST['id_dept_from']) ? (int) $_POST['id_dept_from'] : 0;
 	$_POST['id_dept_to'] = isset($_POST['id_dept_to']) ? (int) $_POST['id_dept_to'] : 0;
 	if ($_POST['id_dept_from'] == 0 || $_POST['id_dept_to'] == 0 || !in_array($_POST['id_dept_from'], $depts) || !in_array($_POST['id_dept_to'], $depts))
-		fatal_lang_error('shd_unknown_dept', false);
+		return fatal_lang_error('shd_unknown_dept', false);
 	elseif ($_POST['id_dept_from'] == $_POST['id_dept_to'])
-		fatal_lang_error('shd_admin_maint_massdeptmove_samedept', false);
+		return fatal_lang_error('shd_admin_maint_massdeptmove_samedept', false);
 
 	$clauses = array();
 	if (empty($_POST['moveopen']))
@@ -413,8 +414,6 @@ function shd_admin_maint_findrepair()
 	checkSession('request');
 
 	$context['page_title'] = $txt['shd_admin_maint_findrepair'];
-
-	$context['maint_steps'] = array();
 	$context['maint_steps'] = array(
 		array(
 			'name' => 'zero_entries',
@@ -449,9 +448,7 @@ function shd_admin_maint_findrepair()
 	if (isset($_GET['done']))
 	{
 		// Log this.
-		shd_admin_log('admin_maint', array(
-			'action' => 'findrepair',
-		));
+		shd_admin_log('admin_maint', array('action' => 'findrepair'));
 
 		$context['sub_template'] = 'shd_admin_maint_findrepairdone';
 		$context['maintenance_result'] = !empty($_SESSION['shd_maint']) ? $_SESSION['shd_maint'] : array();
@@ -472,8 +469,7 @@ function shd_admin_maint_findrepair()
 	for ($i = 0; $i <= $context['step']; $i++)
 		$context['continue_percent'] += $context['maint_steps'][$i]['pc'];
 
-	$function = 'shd_maint_' . $context['maint_steps'][$context['step']]['name'];
-	$function();
+	call_user_func('shd_maint_' . $context['maint_steps'][$context['step']]['name']);
 }
 
 // Validate that all tickets and messages have a valid id number
@@ -495,6 +491,7 @@ function shd_maint_zero_entries()
 			WHERE id_ticket = 0');
 		$_SESSION['shd_maint']['zero_tickets'] = $smcFunc['db_affected_rows']();
 	}
+	$smcFunc['db_free_result']($query);
 
 	// And ticket replies with an id-msg 0
 	$query = $smcFunc['db_query']('', '
@@ -510,6 +507,7 @@ function shd_maint_zero_entries()
 			WHERE id_msg = 0');
 		$_SESSION['shd_maint']['zero_msgs'] = $smcFunc['db_affected_rows']();
 	}
+	$smcFunc['db_free_result']($query);
 
 	// This is a short operation, no suboperation, so just tell it to go onto the next step.
 	$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . ($context['step'] + 1) . '">';
@@ -588,7 +586,6 @@ function shd_maint_deleted()
 		{
 			// Oh crap.
 			foreach ($tickets_modify as $id_ticket => $columns)
-			{
 				$smcFunc['db_query']('', '
 					UPDATE {db_prefix}helpdesk_tickets
 					SET num_replies = {int:num_replies},
@@ -602,18 +599,16 @@ function shd_maint_deleted()
 						'withdeleted' => $columns['withdeleted'],
 					)
 				);
-			}
+
 			$_SESSION['shd_maint']['deleted'] = count($tickets_modify);
 		}
 	}
 
 	// Another round?
 	$_REQUEST['start'] += $step_size;
+	// All done
 	if ($_REQUEST['start'] > $ticket_count)
-	{
-		// All done
 		$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . ($context['step'] + 1) . '">';
-	}
 	else
 	{
 		// More to do, call back - and provide the subtitle
@@ -685,7 +680,6 @@ function shd_maint_first_last()
 		{
 			// Oh crap.
 			foreach ($tickets_modify as $id_ticket => $columns)
-			{
 				$smcFunc['db_query']('', '
 					UPDATE {db_prefix}helpdesk_tickets
 					SET id_first_msg = {int:id_first_msg},
@@ -693,18 +687,16 @@ function shd_maint_first_last()
 					WHERE id_ticket = {int:id_ticket}',
 					$columns
 				);
-			}
+
 			$_SESSION['shd_maint']['first_last'] = count($tickets_modify);
 		}
 	}
 
 	// Another round?
 	$_REQUEST['start'] += $step_size;
+	// All done
 	if ($_REQUEST['start'] > $ticket_count)
-	{
-		// All done
 		$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . ($context['step'] + 1) . '">';
-	}
 	else
 	{
 		// More to do, call back - and provide the subtitle
@@ -776,7 +768,6 @@ function shd_maint_starter_updater()
 		{
 			// Oh crap.
 			foreach ($tickets_modify as $id_ticket => $columns)
-			{
 				$smcFunc['db_query']('', '
 					UPDATE {db_prefix}helpdesk_tickets
 					SET id_member_started = {int:id_member_started},
@@ -784,18 +775,16 @@ function shd_maint_starter_updater()
 					WHERE id_ticket = {int:id_ticket}',
 					$columns
 				);
-			}
+
 			$_SESSION['shd_maint']['starter_updater'] = count($tickets_modify);
 		}
 	}
 
 	// Another round?
 	$_REQUEST['start'] += $step_size;
+	// All done
 	if ($_REQUEST['start'] > $ticket_count)
-	{
-		// All done
 		$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . ($context['step'] + 1) . '">';
-	}
 	else
 	{
 		// More to do, call back - and provide the subtitle
@@ -861,7 +850,6 @@ function shd_maint_status()
 		{
 			// Oh crap.
 			foreach ($tickets_modify as $id_ticket => $status)
-			{
 				$smcFunc['db_query']('', '
 					UPDATE {db_prefix}helpdesk_tickets
 					SET status = {int:status}
@@ -871,18 +859,16 @@ function shd_maint_status()
 						'status' => $status,
 					)
 				);
-			}
+
 			$_SESSION['shd_maint']['status'] = count($tickets_modify);
 		}
 	}
 
 	// Another round?
 	$_REQUEST['start'] += $step_size;
+	// All done
 	if ($_REQUEST['start'] > $ticket_count)
-	{
-		// All done
 		$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . ($context['step'] + 1) . '">';
-	}
 	else
 	{
 		// More to do, call back - and provide the subtitle
@@ -905,7 +891,6 @@ function shd_maint_invalid_dept()
 		FROM {db_prefix}helpdesk_tickets AS hdt
 			LEFT JOIN {db_prefix}helpdesk_depts AS hdd ON (hdt.id_dept = hdd.id_dept)
 		WHERE hdd.id_dept IS NULL');
-
 	while ($row = $smcFunc['db_fetch_assoc']($query))
 		$tickets[] = $row['id_ticket'];
 	$smcFunc['db_free_result']($query);
@@ -924,12 +909,8 @@ function shd_maint_invalid_dept()
 
 		$last_dept = $smcFunc['db_insert']('replace',
 			'{db_prefix}helpdesk_depts',
-			array(
-				'dept_name' => 'string', 'description' => 'string', 'board_cat' => 'int', 'before_after' => 'int', 'dept_order' => 'int',
-			),
-			array(
-				$txt['shd_admin_recovered_dept'], $txt['shd_admin_recovered_dept_desc'], 0, 0, $dept_order,
-			),
+			array('dept_name' => 'string', 'description' => 'string', 'board_cat' => 'int', 'before_after' => 'int', 'dept_order' => 'int',),
+			array($txt['shd_admin_recovered_dept'], $txt['shd_admin_recovered_dept_desc'], 0, 0, $dept_order,),
 			array('id_dept'),
 			1
 		);
@@ -1016,16 +997,10 @@ function shd_admin_maint_search()
 		if ($start >= $total || empty($tickets))
 		{
 			// Make sure we flag the index as built, then leave.
-			updateSettings(
-				array(
-					'shd_new_search_index' => 0,
-				)
-			);
+			updateSettings(array('shd_new_search_index' => 0));
 
 			// You guessed it, log this.
-			shd_admin_log('admin_maint', array(
-				'action' => 'search_rebuild',
-			));
+			shd_admin_log('admin_maint', array('action' => 'search_rebuild'));
 
 			redirectexit('action=admin;area=helpdesk_maint;sa=search;rebuilddone;' . $context['session_var'] . '=' . $context['session_id']);
 		}

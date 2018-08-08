@@ -23,7 +23,6 @@
  *	@package source
  *	@since 1.0
 */
-
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
@@ -76,52 +75,7 @@ function shd_ajax()
 	if (empty($context['ajax_return']) && empty($context['ajax_raw']) && !empty($result))
 		$context['ajax_return'] = $result;
 
-	// Json support.
-	if (isset($context['ajax_type']) && $context['ajax_type'] == 'json')
-		return shd_ajax_json_response();
-	else
-		return shd_ajax_xml_response();
-}
-
-/**
- *	Handles returning a response in XML format
- *
- *  @since 2.1
-*/
-function shd_ajax_xml_response()
-{
-	global $context;
-
-	header('Content-Type: text/xml; charset=' . (empty($context['character_set']) ? 'ISO-8859-1' : $context['character_set']));
-	echo '<?xml version="1.0" encoding="', $context['character_set'], '"?' . '>';
-
-	if (empty($context['ajax_raw'])) // if something wants to do something funky, let it otherwise use the standard format
-	{
-		echo '<response>';
-
-		if (!empty($context['ajax_return']) && is_array($context['ajax_return']))
-		{
-			foreach ($context['ajax_return'] as $key => $value)
-			{
-				if (empty($value)) // for <tag>
-					echo '
-	<', $key, '>';
-				else
-				{
-					$value = (array) $value;
-					foreach ($value as $thisvalue)
-						echo '
-	<', $key, '><![CD', 'ATA[', $thisvalue, ']', ']></', $key, '>';
-				}
-			}
-		}
-
-		echo '
-</response>';
-	}
-	else
-		echo $context['ajax_raw']; // assumed to be just well formed XML sans the header
-	obExit(false);
+	return shd_ajax_json_response();
 }
 
 /**
@@ -170,9 +124,6 @@ function shd_ajax_privacy()
 {
 	global $smcFunc, $user_info, $context, $txt, $sourcedir;
 
-	// Use Json for the response.
-	$context['ajax_type'] = 'json';
-
 	$session_check = checkSession('get', '', false); // check the session but don't die fatally.
 	if (!empty($session_check))
 		return array('success' => false, 'error' => $txt[$session_check]);
@@ -193,10 +144,10 @@ function shd_ajax_privacy()
 
 	if ($row = $smcFunc['db_fetch_assoc']($query))
 	{
+		$smcFunc['db_free_result']($query);
+
 		if (in_array($row['status'], array(TICKET_STATUS_CLOSED, TICKET_STATUS_DELETED)) || !shd_allowed_to('shd_alter_privacy_any', $row['id_dept']) && (!shd_allowed_to('shd_alter_privacy_own', $row['id_dept']) || $row['id_member_started'] != $user_info['id']))
 			return array('success' => false, 'error' => $txt['shd_cannot_change_privacy']);
-
-		$smcFunc['db_free_result']($query);
 
 		$new = empty($row['private']) ? 1 : 0;
 		$action = empty($row['private']) ? 'markprivate' : 'marknotprivate';
@@ -211,20 +162,17 @@ function shd_ajax_privacy()
 
 		shd_modify_ticket_post($msgOptions, $ticketOptions, $posterOptions);
 
-		shd_log_action($action,
-			array(
-				'ticket' => $context['ticket_id'],
-				'subject' => $row['subject'],
-			)
-		);
+		shd_log_action($action, array(
+			'ticket' => $context['ticket_id'],
+			'subject' => $row['subject'],
+		));
 
 		// Make sure we recalculate the number of tickets on next page load
 		shd_clear_active_tickets($row['id_dept']);
 
 		return array('success' => true, 'message' => $new ? $txt['shd_ticket_private'] : $txt['shd_ticket_notprivate']);
 	}
-	else
-		return array('success' => false, 'error' => $txt['shd_no_ticket']);
+	return array('success' => false, 'error' => $txt['shd_no_ticket']);
 }
 
 /**
@@ -249,9 +197,6 @@ function shd_ajax_urgency()
 {
 	global $smcFunc, $user_info, $context, $txt, $scripturl, $settings, $sourcedir;
 
-	// Use Json for the response.
-	$context['ajax_type'] = 'json';
-
 	$session_check = checkSession('get', '', false); // check the session but don't die fatally.
 	if (!empty($session_check))
 		return array('success' => false, 'error' => $txt[$session_check]);
@@ -272,6 +217,8 @@ function shd_ajax_urgency()
 
 	if ($row = $smcFunc['db_fetch_assoc']($query))
 	{
+		$smcFunc['db_free_result']($query);
+
 		$can_urgency = shd_can_alter_urgency($row['urgency'], $row['id_member_started'], ($row['status'] == TICKET_STATUS_CLOSED), ($row['status'] == TICKET_STATUS_DELETED), $row['id_dept']);
 
 		if (empty($_GET['change']) || empty($can_urgency[$_GET['change']]))
@@ -290,13 +237,11 @@ function shd_ajax_urgency()
 
 		shd_modify_ticket_post($msgOptions, $ticketOptions, $posterOptions);
 
-		shd_log_action($action,
-			array(
-				'ticket' => $context['ticket_id'],
-				'subject' => $row['subject'],
-				'urgency' => $new_urgency,
-			)
-		);
+		shd_log_action($action, array(
+			'ticket' => $context['ticket_id'],
+			'subject' => $row['subject'],
+			'urgency' => $new_urgency,
+		));
 
 		$new_options = shd_can_alter_urgency($new_urgency, $row['id_member_started'], ($row['status'] == TICKET_STATUS_CLOSED), ($row['status'] == TICKET_STATUS_DELETED), $row['id_dept']);
 
@@ -316,8 +261,7 @@ function shd_ajax_urgency()
 
 		return $context['ajax_return'];
 	}
-	else
-		return array('error' => $txt['shd_no_ticket']);
+	return array('error' => $txt['shd_no_ticket']);
 }
 
 /**
@@ -339,9 +283,6 @@ function shd_ajax_quote()
 {
 	global $modSettings, $user_info, $txt, $settings, $context;
 	global $sourcedir, $smcFunc;
-
-	// Use Json for the response.
-	$context['ajax_type'] = 'json';
 
 	loadLanguage('Post');
 	checkSession('get');
@@ -367,9 +308,9 @@ function shd_ajax_quote()
 		if ($row = $smcFunc['db_fetch_assoc']($query))
 		{
 			$smcFunc['db_free_result']($query);
-			$row['body'] = un_preparsecode($row['body']);
 
 			// Censor the message!
+			$row['body'] = un_preparsecode($row['body']);
 			censorText($row['body']);
 			$row['body'] = preg_replace('~<br ?/?' . '>~i', "\n", $row['body']);
 
@@ -417,9 +358,6 @@ function shd_ajax_canned()
 	global $modSettings, $user_info, $txt, $settings, $context;
 	global $sourcedir, $smcFunc;
 
-	// Use Json for the response.
-	$context['ajax_type'] = 'json';
-
 	loadLanguage('Post');
 	checkSession('get');
 
@@ -462,16 +400,13 @@ function shd_ajax_canned()
 
 		// Now verify the per-reply visibility. Only applies to non admins anyway...
 		if (!shd_allowed_to('admin_helpdesk', $row['id_dept']) && !$user_info['is_admin'])
-		{
 			if (shd_allowed_to('shd_staff', $row['id_dept']) && empty($row['vis_staff']))
 				return array('success' => true, 'message' => $message);
 			elseif (!shd_allowed_to('shd_staff', $row['id_dept']) && empty($row['vis_user']))
 				return array('success' => true, 'message' => $message);
-		}
-
-		$message = un_preparsecode($row['body']);
 
 		// Censor the message!
+		$message = un_preparsecode($row['body']);
 		censorText($message);
 		$message = preg_replace('~<br ?/?' . '>~i', "\n", $row['body']);
 
@@ -485,7 +420,6 @@ function shd_ajax_canned()
 	}
 
 	$message = strtr($message, array('&nbsp;' => '&#160;', '<' => '&lt;', '>' => '&gt;'));
-
 	return array('success' => true, 'message' => $message);
 }
 
@@ -506,26 +440,24 @@ function shd_ajax_assign()
 {
 	global $context, $smcFunc, $txt, $sourcedir, $user_profile;
 
-	// Use Json for the response.
-	$context['ajax_type'] = 'json';
-
 	checkSession('get');
 
-	if (!empty($context['ticket_id']))
-	{
-		$query = shd_db_query('', '
-			SELECT hdt.private, hdt.id_member_started, id_member_assigned, id_dept, hdt.status, 1 AS valid
-			FROM {db_prefix}helpdesk_tickets AS hdt
-			WHERE {query_see_ticket}
-				AND hdt.id_ticket = {int:ticket}',
-			array(
-				'ticket' => $context['ticket_id'],
-			)
-		);
-		if ($smcFunc['db_num_rows']($query) != 0)
-			list($private, $ticket_starter, $ticket_assigned, $dept, $status, $valid) = $smcFunc['db_fetch_row']($query);
-		$smcFunc['db_free_result']($query);
-	}
+	if (empty($context['ticket_id']))
+		return array('success' => false, 'error' => $txt['shd_no_ticket']);
+
+	$query = shd_db_query('', '
+		SELECT hdt.private, hdt.id_member_started, id_member_assigned, id_dept, hdt.status, 1 AS valid
+		FROM {db_prefix}helpdesk_tickets AS hdt
+		WHERE {query_see_ticket}
+			AND hdt.id_ticket = {int:ticket}',
+		array(
+			'ticket' => $context['ticket_id'],
+		)
+	);
+	if ($smcFunc['db_num_rows']($query) != 0)
+		list($private, $ticket_starter, $ticket_assigned, $dept, $status, $valid) = $smcFunc['db_fetch_row']($query);
+	$smcFunc['db_free_result']($query);
+
 	if (empty($valid))
 		return array('success' => false, 'error' => $txt['shd_no_ticket']);
 
@@ -574,26 +506,24 @@ function shd_ajax_assign2()
 {
 	global $context, $smcFunc, $txt, $sourcedir, $user_profile;
 
-	// Use Json for the response.
-	$context['ajax_type'] = 'json';
-
 	checkSession('get');
 
-	if (!empty($context['ticket_id']))
-	{
-		$query = shd_db_query('', '
-			SELECT hdt.private, hdt.id_member_started, id_member_assigned, subject, id_dept, hdt.status, 1 AS valid
-			FROM {db_prefix}helpdesk_tickets AS hdt
-			WHERE {query_see_ticket}
-				AND hdt.id_ticket = {int:ticket}',
-			array(
-				'ticket' => $context['ticket_id'],
-			)
-		);
-		if ($smcFunc['db_num_rows']($query) != 0)
-			list($private, $ticket_starter, $ticket_assigned, $subject, $dept, $status, $valid) = $smcFunc['db_fetch_row']($query);
-		$smcFunc['db_free_result']($query);
-	}
+	if (empty($context['ticket_id']))
+		return array('error' => $txt['shd_no_ticket']);
+
+	$query = shd_db_query('', '
+		SELECT hdt.private, hdt.id_member_started, id_member_assigned, subject, id_dept, hdt.status, 1 AS valid
+		FROM {db_prefix}helpdesk_tickets AS hdt
+		WHERE {query_see_ticket}
+			AND hdt.id_ticket = {int:ticket}',
+		array(
+			'ticket' => $context['ticket_id'],
+		)
+	);
+	if ($smcFunc['db_num_rows']($query) != 0)
+		list($private, $ticket_starter, $ticket_assigned, $subject, $dept, $status, $valid) = $smcFunc['db_fetch_row']($query);
+	$smcFunc['db_free_result']($query);
+
 	if (empty($valid))
 		return array('error' => $txt['shd_no_ticket']);
 
@@ -643,9 +573,6 @@ function shd_ajax_notify()
 {
 	global $txt, $context, $smcFunc, $user_profile, $modSettings, $sourcedir;
 
-	// Use Json for the response.
-	$context['ajax_type'] = 'json';
-
 	$session_check = checkSession('get', '', false); // check the session but don't die fatally.
 	if (!empty($session_check))
 		return array('success' => false, 'error' => $txt[$session_check]);
@@ -653,21 +580,22 @@ function shd_ajax_notify()
 	shd_load_language('sd_language/SimpleDeskNotifications');
 	require_once($sourcedir . '/sd_source/SimpleDesk-Notifications.php');
 
-	if (!empty($context['ticket_id']))
-	{
-		$query = shd_db_query('', '
-			SELECT hdt.private, hdt.id_member_started, id_member_assigned, id_dept, status
-			FROM {db_prefix}helpdesk_tickets AS hdt
-			WHERE {query_see_ticket}
-				AND hdt.id_ticket = {int:ticket}',
-			array(
-				'ticket' => $context['ticket_id'],
-			)
-		);
-		if ($smcFunc['db_num_rows']($query) != 0)
-			$ticket = $smcFunc['db_fetch_assoc']($query);
-		$smcFunc['db_free_result']($query);
-	}
+	if (empty($context['ticket_id']))
+		return array('error' => $txt['shd_no_ticket']);
+
+	$query = shd_db_query('', '
+		SELECT hdt.private, hdt.id_member_started, id_member_assigned, id_dept, status
+		FROM {db_prefix}helpdesk_tickets AS hdt
+		WHERE {query_see_ticket}
+			AND hdt.id_ticket = {int:ticket}',
+		array(
+			'ticket' => $context['ticket_id'],
+		)
+	);
+	if ($smcFunc['db_num_rows']($query) != 0)
+		$ticket = $smcFunc['db_fetch_assoc']($query);
+	$smcFunc['db_free_result']($query);
+
 	if (empty($ticket) || !shd_allowed_to('shd_singleton_email', $ticket['id_dept']) || $ticket['status'] == TICKET_STATUS_CLOSED || $ticket['status'] == TICKET_STATUS_DELETED)
 		return array('success' => false, 'error' => $txt['shd_no_ticket']);
 
@@ -695,11 +623,9 @@ function shd_ajax_notify()
 
 	// Did we exclude admins? If we did, we would have scooped the list of admins. If they're in the 'not being notified but you can...' list, remove them.
 	if (!empty($context['list_admin_exclude']) && is_array($context['list_admin_exclude']))
-	{
 		foreach ($context['list_admin_exclude'] as $user_id)
 			if (isset($notify_list['optional_butoff'][$user_id]))
 				unset($notify_list['optional_butoff'][$user_id]);
-	}
 
 	// Now we get the list by preferences. This is where it starts to get complicated.
 	$possible_members = array();
@@ -820,12 +746,11 @@ function shd_ajax_notify()
 		foreach ($notify_list as $list_type => $list_members)
 		{
 			foreach ($list_members as $id_member => $data)
-			{
 				if (isset($people[$id_member]) && $id_member != $context['user']['id']) // We really shouldn't be in this list.
 					$list_members[$id_member] = $people[$id_member]['name'];
 				else
 					unset($list_members[$id_member]);
-			}
+
 			if (!empty($list_members))
 			{
 				asort($list_members);

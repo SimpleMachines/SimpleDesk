@@ -23,7 +23,6 @@
  *	@package subs
  *	@since 2.1
  */
-
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
@@ -41,7 +40,7 @@ function shd_profile_areas(&$profile_areas)
 
 	if ($called)
 		return;
-	if (empty($called))
+	elseif (empty($called))
 		$called = true;
 
 	// SimpleDesk sections. Added here after the initial cleaning is done, so that we can do our own permission checks without arguing with SMF's system (so much)

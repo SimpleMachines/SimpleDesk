@@ -47,7 +47,7 @@ function shd_main()
 
 	// Basic sanity stuff
 	if (!$modSettings['helpdesk_active'])
-		fatal_lang_error('shd_inactive', false);
+		return fatal_lang_error('shd_inactive', false);
 
 	// Let's be sneaky. Can they only access one department? If they can only access one department, put them there and make a note of it for later.
 	$depts = shd_allowed_to('access_helpdesk', false);
@@ -321,7 +321,7 @@ function shd_main()
 	if ($context['sub_action'][0] !== null)
 		require ($sourcedir . '/sd_source/' . $context['sub_action'][0]);
 
-	$context['sub_action'][1]();
+	call_user_func($context['sub_action'][1]);
 
 	// Maintenance mode? If it were, the helpdesk is considered inactive for the purposes of everything to all but those without admin-helpdesk rights - but we must have them if we're here!
 	if (!empty($modSettings['shd_maintenance_mode']) && $context['shd_current_subaction'] != 'ajax')
@@ -438,7 +438,7 @@ function shd_main_helpdesk()
 			if (in_array($modSettings['shd_block_order_' . $i], $context['ticket_block_order']))
 				continue;
 			// Can they see this?
-			if (empty($context['ticket_blocks'][$modSettings['shd_block_order_' . $i]]['display']))
+			elseif (empty($context['ticket_blocks'][$modSettings['shd_block_order_' . $i]]['display']))
 				continue;
 	
 			$context['ticket_block_order'][$i] = $modSettings['shd_block_order_' . $i];
@@ -626,7 +626,7 @@ function shd_closed_tickets()
 	global $context, $txt, $smcFunc, $user_profile, $scripturl, $settings, $user_info;
 
 	if (!shd_allowed_to('shd_view_closed_own', $context['shd_department']) && !shd_allowed_to('shd_view_closed_any', $context['shd_department']))
-		fatal_lang_error('shd_cannot_view_resolved', false);
+		return fatal_lang_error('shd_cannot_view_resolved', false);
 
 	// Stuff we need to add to $context, the permission we want to use, page title etc etc
 	$context += array(
@@ -1071,10 +1071,8 @@ function shd_helpdesk_listing()
 
 			// And last respondent
 			if ($ticket['respondent']['id'] == 0 || empty($user_profile[$ticket['respondent']['id']]))
-			{
 				// Didn't find the name, so reuse what we have
 				$context['ticket_blocks'][$block_id]['tickets'][$tid]['respondent']['link'] = $context['ticket_blocks'][$block_id]['tickets'][$tid]['respondent']['name'];
-			}
 			else
 			{
 				$context['ticket_blocks'][$block_id]['tickets'][$tid]['respondent']['name'] = $user_profile[$ticket['respondent']['id']]['real_name'];
@@ -1084,17 +1082,13 @@ function shd_helpdesk_listing()
 	}
 
 	foreach ($context['ticket_blocks'] as $block_id => $block)
-	{
 		if (empty($block['display']) || (empty($block['count']) && !$block['required'] && empty($block['collapsed'])))
 			unset($context['ticket_blocks'][$block_id]);
-	}
 
 	$base_url = '';
 	foreach ($context['ticket_blocks'] as $block_id => $block)
-	{
 		if ($block['sort']['add_link'])
 			$base_url .= $block['sort']['link_bits'][$block['sort']['item']];
-	}
 
 	if ($context['shd_current_subaction'] != 'viewblock')
 	{
@@ -1103,12 +1097,10 @@ function shd_helpdesk_listing()
 			$url_fragment = $base_url;
 
 			foreach ($block_list as $block_item)
-			{
 				if ($block_item == $block_id)
 					$url_fragment .= ';st_' . $block_item . '=%1$d';
 				elseif (!empty($context['ticket_blocks'][$block_item]['start']))
 					$url_fragment .= ';st_' . $block_item . '=' . $context['ticket_blocks'][$block_item]['start'];
-			}
 
 			$context['start'] = $context['ticket_blocks'][$block_id]['start'];
 			$context['ticket_blocks'][$block_id]['page_index'] = shd_no_expand_pageindex($scripturl . $primary_url . $url_fragment . $context['shd_dept_link'] . $context['filter_fragment'] . '#shd_block_' . $block_id, $context['start'], $block['count'], $block['num_per_page'], true);

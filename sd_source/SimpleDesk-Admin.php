@@ -65,7 +65,7 @@ function shd_admin_main()
 	// Create some subactions
 	$subActions = array(
 		'helpdesk_info' => array(null, 'shd_admin_info'),
-		'helpdesk_options' => array(null, 'shd_admin_options'),
+		'helpdesk_options' => array(null, 'shd_admin_options', array(false)),
 		'helpdesk_cannedreplies' => array('SimpleDesk-AdminCannedReplies.php', 'shd_admin_canned'),
 		'helpdesk_customfield' => array('SimpleDesk-AdminCustomField.php', 'shd_admin_custom'),
 		'helpdesk_depts' => array('SimpleDesk-AdminDepartments.php', 'shd_admin_departments'),
@@ -81,14 +81,10 @@ function shd_admin_main()
 	$_REQUEST['area'] = isset($_REQUEST['area']) && isset($subActions[$_REQUEST['area']]) ? $_REQUEST['area'] : 'helpdesk_info';
 	$context['sub_action'] = $_REQUEST['area'];
 
-	if (!empty($subActions[$_REQUEST['area']][0]))
-		require_once ($sourcedir . '/sd_source/' . $subActions[$_REQUEST['area']][0]);
-
 	// Call our subaction
-	if ($_REQUEST['area'] == 'helpdesk_options')
-		$subActions[$_REQUEST['area']][1](false);
-	else
-		$subActions[$_REQUEST['area']][1]();
+	if (!empty($subActions[$context['sub_action']][0]))
+		require_once($sourcedir . '/sd_source/' . $subActions[$context['sub_action']][0]);
+	call_user_func_array($subActions[$context['sub_action']][1], !empty($subActions[$context['sub_action']][2]) ? $subActions[$context['sub_action']][2] : array());
 
 	// Important ACS666 check up.
 	if (isset($_REQUEST['cookies']))
@@ -123,12 +119,10 @@ function shd_admin_main()
 	{
 		$context['linktree'][] = $linktreeitem;
 		if ($linktreeitem['url'] == $scripturl . '?action=admin')
-		{
 			$context['linktree'][] = array(
 				'url' => $scripturl . '?action=admin;area=helpdesk_info',
 				'name' => $txt['shd_helpdesk'],
 			);
-		}
 	}
 }
 
@@ -207,10 +201,7 @@ function shd_admin_info()
 
 	// Are we doing the main page, or leaving here?
 	if (!empty($subactions[$context['shd_current_subaction']]['function']))
-	{
-		$subactions[$context['shd_current_subaction']]['function']();
-		return;
-	}
+		return call_user_func($subactions[$context['shd_current_subaction']]['function']);
 
 	// Get a list of the staff members of the helpdesk.
 	$members = shd_members_allowed_to('shd_staff');
@@ -307,7 +298,7 @@ function shd_admin_options($return_config)
 	if (empty($context['post_url']))
 		$context['post_url'] = $scripturl . '?action=admin;area=helpdesk_options;save;sa=' . $context['shd_current_subaction'];
 
-	$config_vars = $context[$context['admin_menu_name']]['tab_data']['tabs'][$context['shd_current_subaction']]['function']($return_config);
+	$config_vars = call_user_func($context[$context['admin_menu_name']]['tab_data']['tabs'][$context['shd_current_subaction']]['function'], $return_config);
 
 	if ($return_config)
 		return $config_vars;
@@ -567,11 +558,10 @@ function shd_modify_standalone_options($return_config)
 			shd_switchable_item("shd_disable_mlist", state);
 		}';
 
+	call_integration_hook('shd_hook_admin_standalone', array(&$config_vars, &$return_config));
+
 	if ($return_config)
-	{
-		call_integration_hook('shd_hook_admin_standalone', array(&$config_vars, &$return_config));
 		return $config_vars;
-	}
 
 	// We saving?
 	if (isset($_GET['save']))
@@ -722,10 +712,8 @@ function shd_modify_notifications_options($return_config)
 	// Lazy way to build the master on/off switch
 	$array = array();
 	foreach ($config_vars as $var)
-	{
 		if ($var[0] == 'check')
 			$array[] = $var[1];
-	}
 	$config_vars[] = array('checkall', 'shd_notify_checkall', $array);
 
 	$context['settings_title'] = $txt['shd_admin_options_notifications'];
@@ -778,7 +766,6 @@ function shd_admin_action_log()
 	shd_load_language('sd_language/SimpleDeskLogAction');
 
 	$context['can_delete'] = allowedTo('admin_forum');
-
 	$context['displaypage'] = 30;
 	$context['hoursdisable'] = 24;
 	$context['waittime'] = time() - $context['hoursdisable'] * 3600;
@@ -821,7 +808,6 @@ function shd_admin_action_log()
 
 	// Get all action log entries
 	$context['actions'] = shd_load_action_log_entries($context['start'], $context['displaypage'], $context['sort'], $context['order']);
-
 	$context['page_index'] = shd_no_expand_pageindex($scripturl . '?action=admin;area=helpdesk_info;sa=actionlog' . $context['url_sort'] . $context['url_order'], $context['start'], shd_count_action_log_entries(), $context['displaypage']);
 
 	$context['sub_template'] = 'shd_action_log';
@@ -836,12 +822,12 @@ function shd_admin_admin_log()
 {
 	global $context, $settings, $scripturl, $txt, $sourcedir, $smcFunc, $sort_types;
 
-	shd_load_language('sd_language/SimpleDeskLogAction');
-
 	// This is for full admins only.
 	isAllowedTo('admin_forum');
-	$context['can_delete'] = true;
 
+	shd_load_language('sd_language/SimpleDeskLogAction');
+
+	$context['can_delete'] = true;
 	$context['displaypage'] = 30;
 	$context['daysdisable'] = 28;
 	$context['waittime'] = time() - $context['daysdisable'] * 24 * 3600;
@@ -884,7 +870,6 @@ function shd_admin_admin_log()
 
 	// Get all action log entries
 	$context['actions'] = shd_load_admin_log_entries($context['start'], $context['displaypage'], $context['sort'], $context['order']);
-
 	$context['page_index'] = shd_no_expand_pageindex($scripturl . '?action=admin;area=helpdesk_info;sa=adminlog' . $context['url_sort'] . $context['url_order'], $context['start'], shd_count_admin_log_entries(), $context['displaypage']);
 
 	$context['sub_template'] = 'shd_admin_log';

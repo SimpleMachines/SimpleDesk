@@ -74,19 +74,16 @@ function shd_notifications_notify_newticket(&$msgOptions, &$ticketOptions, &$pos
 			'pref' => 'notify_new_ticket',
 		)
 	);
-
 	while ($row = $smcFunc['db_fetch_assoc']($query))
 		$members[(int) $row['id_member']] = $row['value'];
 	$smcFunc['db_free_result']($query);
 
 	// OK, now figure out who we're sending to, and discard any member id's we're not sending to
 	foreach ($members as $member => $value)
-	{
 		if (!empty($value))
 			$members[$member] = 'new_ticket';
 		else
 			unset($members[$member]);
-	}
 
 	if (isset($members[$context['user']['id']]))
 		unset($members[$context['user']['id']]);
@@ -95,16 +92,14 @@ function shd_notifications_notify_newticket(&$msgOptions, &$ticketOptions, &$pos
 		return;
 
 	// Build the big ol' data set
-	$notify_data = array(
+	shd_notify_users(array(
 		'members' => $members,
 		'ticketlink' => $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $ticketOptions['id'],
 		'subject' => $ticketOptions['subject'],
 		'ticket' => $ticketOptions['id'],
 		'body' => $msgOptions['body'],
 		'poster_name' => $posterOptions['name'],
-	);
-
-	shd_notify_users($notify_data);
+	));
 }
 
 /**
@@ -122,9 +117,8 @@ function shd_notifications_notify_newreply(&$msgOptions, &$ticketOptions, &$post
 	// We did actually get a reply? Sometimes shd_modify_ticket_post() is called for other things, not just on reply.
 	if (empty($msgOptions['body']))
 		return;
-
 	// Alternatively, they might be doing a silent update.
-	if (!empty($_POST['silent_update']) && shd_allowed_to('shd_silent_update', $ticketOptions['dept']))
+	elseif (!empty($_POST['silent_update']) && shd_allowed_to('shd_silent_update', $ticketOptions['dept']))
 		return;
 
 	// We're doing various things here, so grab some general details, not just what we may have been passed before.
@@ -359,10 +353,8 @@ function shd_notifications_notify_assign(&$ticket, &$assignment)
 
 	// unset $members where member pref doesn't fit
 	foreach ($member_prefs as $id => $value)
-	{
 		if (empty($value))
 			unset($members[$id]);
-	}
 
 	// move $members to $notify_data['members']
 	$notify_data['members'] = $members;
@@ -503,7 +495,7 @@ function shd_notify_popup()
 	$email_type = isset($_GET['template']) ? preg_replace('~[^a-z_]~', '', $_GET['template']) : '';
 
 	if (empty($modSettings['shd_display_ticket_logs']) || empty($_GET['log']) || empty($email_type))
-		fatal_lang_error('no_access', false);
+		return fatal_lang_error('no_access', false);
 
 	$query = $smcFunc['db_query']('', '
 		SELECT hdla.id_member, hdla.id_ticket, hdla.id_msg, hdla.extra, COALESCE(hdtr.body, {string:empty}) AS body, COALESCE(mem.real_name, hdtr.poster_name) AS poster_name
@@ -521,7 +513,7 @@ function shd_notify_popup()
 	if ($smcFunc['db_num_rows']($query) == 0)
 	{
 		$smcFunc['db_free_result']($query);
-		fatal_lang_error('no_access');
+		return fatal_lang_error('no_access');
 	}
 	$row = $smcFunc['db_fetch_assoc']($query);
 	$smcFunc['db_free_result']($query);
@@ -530,13 +522,13 @@ function shd_notify_popup()
 
 	// Just check we did actually log an email of that type.
 	if (empty($row['extra']['emails'][$_GET['template']]))
-		fatal_lang_error('no_access', false);
+		return fatal_lang_error('no_access', false);
 
 	$ticketinfo = shd_load_ticket($row['id_ticket']);
 
 	// OK, if we're here, we can see the ticket. Can we actually see the email log at this point?
 	if (!shd_allowed_to('shd_view_ticket_logs_any', $ticketinfo['dept']) && (!shd_allowed_to('shd_view_ticket_logs_own', $ticketinfo['dept']) || !$ticketinfo['is_own']))
-		fatal_lang_error('no_access', false);
+		return fatal_lang_error('no_access', false);
 
 	// We're reusing the Help template, need its language file.
 	loadLanguage('Help');
@@ -657,7 +649,7 @@ function shd_notify_ticket_options()
 	{
 		case 'monitor_on';
 			if (!shd_allowed_to('shd_monitor_ticket_any', $ticketinfo['dept']) && (!$ticket_starter || !shd_allowed_to('shd_monitor_ticket_own', $ticketinfo['dept'])))
-				fatal_lang_error('cannot_monitor_ticket', false);
+				return fatal_lang_error('cannot_monitor_ticket', false);
 
 			// Unlike turning it off, we might be turning it on from either just off, or ignored, so log that fact.
 			if ($old_state == NOTIFY_ALWAYS)
@@ -690,7 +682,7 @@ function shd_notify_ticket_options()
 			break;
 		case 'monitor_off';
 			if (!shd_allowed_to('shd_monitor_ticket_any', $ticketinfo['dept']) && (!$ticket_starter || !shd_allowed_to('shd_monitor_ticket_own', $ticketinfo['dept'])))
-				fatal_lang_error('cannot_unmonitor_ticket', false);
+				return fatal_lang_error('cannot_unmonitor_ticket', false);
 			// Just delete the old status.
 			$smcFunc['db_query']('', '
 				DELETE FROM {db_prefix}helpdesk_notify_override
@@ -710,7 +702,7 @@ function shd_notify_ticket_options()
 			break;
 		case 'ignore_on';
 			if (!shd_allowed_to('shd_ignore_ticket_any', $ticketinfo['dept']) && (!$ticket_starter || !shd_allowed_to('shd_ignore_ticket_own', $ticketinfo['dept'])))
-				fatal_lang_error('cannot_monitor_ticket', false);
+				return fatal_lang_error('cannot_monitor_ticket', false);
 
 			// Unlike turning it off, we might be turning it on from either just off, or ignored, so log that fact.
 			if ($old_state == NOTIFY_NEVER)
@@ -743,7 +735,7 @@ function shd_notify_ticket_options()
 			break;
 		case 'ignore_off';
 			if (!shd_allowed_to('shd_ignore_ticket_any', $ticketinfo['dept']) && (!$ticket_starter || !shd_allowed_to('shd_ignore_ticket_own', $ticketinfo['dept'])))
-				fatal_lang_error('cannot_unmonitor_ticket', false);
+				return fatal_lang_error('cannot_unmonitor_ticket', false);
 
 			$smcFunc['db_query']('', '
 				DELETE FROM {db_prefix}helpdesk_notify_override
@@ -793,12 +785,10 @@ function shd_query_monitor_list($ticket_id)
 	);
 
 	while ($row = $smcFunc['db_fetch_assoc']($query))
-	{
 		if ($row['notify_state'] == NOTIFY_ALWAYS)
 			$members['always_notify'][] = $row['id_member'];
 		elseif ($row['notify_state'] == NOTIFY_NEVER)
 			$members['never_notify'][] = $row['id_member'];
-	}
 	$smcFunc['db_free_result']($query);
 
 	return $members;
