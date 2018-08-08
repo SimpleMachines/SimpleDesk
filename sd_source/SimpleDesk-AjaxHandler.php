@@ -511,21 +511,22 @@ function shd_ajax_assign()
 
 	checkSession('get');
 
-	if (!empty($context['ticket_id']))
-	{
-		$query = shd_db_query('', '
-			SELECT hdt.private, hdt.id_member_started, id_member_assigned, id_dept, hdt.status, 1 AS valid
-			FROM {db_prefix}helpdesk_tickets AS hdt
-			WHERE {query_see_ticket}
-				AND hdt.id_ticket = {int:ticket}',
-			array(
-				'ticket' => $context['ticket_id'],
-			)
-		);
-		if ($smcFunc['db_num_rows']($query) != 0)
-			list($private, $ticket_starter, $ticket_assigned, $dept, $status, $valid) = $smcFunc['db_fetch_row']($query);
-		$smcFunc['db_free_result']($query);
-	}
+	if (empty($context['ticket_id']))
+		return array('success' => false, 'error' => $txt['shd_no_ticket']);
+
+	$query = shd_db_query('', '
+		SELECT hdt.private, hdt.id_member_started, id_member_assigned, id_dept, hdt.status, 1 AS valid
+		FROM {db_prefix}helpdesk_tickets AS hdt
+		WHERE {query_see_ticket}
+			AND hdt.id_ticket = {int:ticket}',
+		array(
+			'ticket' => $context['ticket_id'],
+		)
+	);
+	if ($smcFunc['db_num_rows']($query) != 0)
+		list($private, $ticket_starter, $ticket_assigned, $dept, $status, $valid) = $smcFunc['db_fetch_row']($query);
+	$smcFunc['db_free_result']($query);
+
 	if (empty($valid))
 		return array('success' => false, 'error' => $txt['shd_no_ticket']);
 
@@ -579,21 +580,22 @@ function shd_ajax_assign2()
 
 	checkSession('get');
 
-	if (!empty($context['ticket_id']))
-	{
-		$query = shd_db_query('', '
-			SELECT hdt.private, hdt.id_member_started, id_member_assigned, subject, id_dept, hdt.status, 1 AS valid
-			FROM {db_prefix}helpdesk_tickets AS hdt
-			WHERE {query_see_ticket}
-				AND hdt.id_ticket = {int:ticket}',
-			array(
-				'ticket' => $context['ticket_id'],
-			)
-		);
-		if ($smcFunc['db_num_rows']($query) != 0)
-			list($private, $ticket_starter, $ticket_assigned, $subject, $dept, $status, $valid) = $smcFunc['db_fetch_row']($query);
-		$smcFunc['db_free_result']($query);
-	}
+	if (empty($context['ticket_id']))
+		return array('error' => $txt['shd_no_ticket']);
+
+	$query = shd_db_query('', '
+		SELECT hdt.private, hdt.id_member_started, id_member_assigned, subject, id_dept, hdt.status, 1 AS valid
+		FROM {db_prefix}helpdesk_tickets AS hdt
+		WHERE {query_see_ticket}
+			AND hdt.id_ticket = {int:ticket}',
+		array(
+			'ticket' => $context['ticket_id'],
+		)
+	);
+	if ($smcFunc['db_num_rows']($query) != 0)
+		list($private, $ticket_starter, $ticket_assigned, $subject, $dept, $status, $valid) = $smcFunc['db_fetch_row']($query);
+	$smcFunc['db_free_result']($query);
+
 	if (empty($valid))
 		return array('error' => $txt['shd_no_ticket']);
 
@@ -653,21 +655,22 @@ function shd_ajax_notify()
 	shd_load_language('sd_language/SimpleDeskNotifications');
 	require_once($sourcedir . '/sd_source/SimpleDesk-Notifications.php');
 
-	if (!empty($context['ticket_id']))
-	{
-		$query = shd_db_query('', '
-			SELECT hdt.private, hdt.id_member_started, id_member_assigned, id_dept, status
-			FROM {db_prefix}helpdesk_tickets AS hdt
-			WHERE {query_see_ticket}
-				AND hdt.id_ticket = {int:ticket}',
-			array(
-				'ticket' => $context['ticket_id'],
-			)
-		);
-		if ($smcFunc['db_num_rows']($query) != 0)
-			$ticket = $smcFunc['db_fetch_assoc']($query);
-		$smcFunc['db_free_result']($query);
-	}
+	if (empty($context['ticket_id']))
+		return array('error' => $txt['shd_no_ticket']);
+
+	$query = shd_db_query('', '
+		SELECT hdt.private, hdt.id_member_started, id_member_assigned, id_dept, status
+		FROM {db_prefix}helpdesk_tickets AS hdt
+		WHERE {query_see_ticket}
+			AND hdt.id_ticket = {int:ticket}',
+		array(
+			'ticket' => $context['ticket_id'],
+		)
+	);
+	if ($smcFunc['db_num_rows']($query) != 0)
+		$ticket = $smcFunc['db_fetch_assoc']($query);
+	$smcFunc['db_free_result']($query);
+
 	if (empty($ticket) || !shd_allowed_to('shd_singleton_email', $ticket['id_dept']) || $ticket['status'] == TICKET_STATUS_CLOSED || $ticket['status'] == TICKET_STATUS_DELETED)
 		return array('success' => false, 'error' => $txt['shd_no_ticket']);
 

@@ -359,10 +359,8 @@ function shd_notifications_notify_assign(&$ticket, &$assignment)
 
 	// unset $members where member pref doesn't fit
 	foreach ($member_prefs as $id => $value)
-	{
 		if (empty($value))
 			unset($members[$id]);
-	}
 
 	// move $members to $notify_data['members']
 	$notify_data['members'] = $members;
@@ -503,7 +501,7 @@ function shd_notify_popup()
 	$email_type = isset($_GET['template']) ? preg_replace('~[^a-z_]~', '', $_GET['template']) : '';
 
 	if (empty($modSettings['shd_display_ticket_logs']) || empty($_GET['log']) || empty($email_type))
-		fatal_lang_error('no_access', false);
+		return fatal_lang_error('no_access', false);
 
 	$query = $smcFunc['db_query']('', '
 		SELECT hdla.id_member, hdla.id_ticket, hdla.id_msg, hdla.extra, COALESCE(hdtr.body, {string:empty}) AS body, COALESCE(mem.real_name, hdtr.poster_name) AS poster_name
@@ -521,7 +519,7 @@ function shd_notify_popup()
 	if ($smcFunc['db_num_rows']($query) == 0)
 	{
 		$smcFunc['db_free_result']($query);
-		fatal_lang_error('no_access');
+		return fatal_lang_error('no_access');
 	}
 	$row = $smcFunc['db_fetch_assoc']($query);
 	$smcFunc['db_free_result']($query);
@@ -530,13 +528,13 @@ function shd_notify_popup()
 
 	// Just check we did actually log an email of that type.
 	if (empty($row['extra']['emails'][$_GET['template']]))
-		fatal_lang_error('no_access', false);
+		return fatal_lang_error('no_access', false);
 
 	$ticketinfo = shd_load_ticket($row['id_ticket']);
 
 	// OK, if we're here, we can see the ticket. Can we actually see the email log at this point?
 	if (!shd_allowed_to('shd_view_ticket_logs_any', $ticketinfo['dept']) && (!shd_allowed_to('shd_view_ticket_logs_own', $ticketinfo['dept']) || !$ticketinfo['is_own']))
-		fatal_lang_error('no_access', false);
+		return fatal_lang_error('no_access', false);
 
 	// We're reusing the Help template, need its language file.
 	loadLanguage('Help');
@@ -657,7 +655,7 @@ function shd_notify_ticket_options()
 	{
 		case 'monitor_on';
 			if (!shd_allowed_to('shd_monitor_ticket_any', $ticketinfo['dept']) && (!$ticket_starter || !shd_allowed_to('shd_monitor_ticket_own', $ticketinfo['dept'])))
-				fatal_lang_error('cannot_monitor_ticket', false);
+				return fatal_lang_error('cannot_monitor_ticket', false);
 
 			// Unlike turning it off, we might be turning it on from either just off, or ignored, so log that fact.
 			if ($old_state == NOTIFY_ALWAYS)
@@ -690,7 +688,7 @@ function shd_notify_ticket_options()
 			break;
 		case 'monitor_off';
 			if (!shd_allowed_to('shd_monitor_ticket_any', $ticketinfo['dept']) && (!$ticket_starter || !shd_allowed_to('shd_monitor_ticket_own', $ticketinfo['dept'])))
-				fatal_lang_error('cannot_unmonitor_ticket', false);
+				return fatal_lang_error('cannot_unmonitor_ticket', false);
 			// Just delete the old status.
 			$smcFunc['db_query']('', '
 				DELETE FROM {db_prefix}helpdesk_notify_override
@@ -710,7 +708,7 @@ function shd_notify_ticket_options()
 			break;
 		case 'ignore_on';
 			if (!shd_allowed_to('shd_ignore_ticket_any', $ticketinfo['dept']) && (!$ticket_starter || !shd_allowed_to('shd_ignore_ticket_own', $ticketinfo['dept'])))
-				fatal_lang_error('cannot_monitor_ticket', false);
+				return fatal_lang_error('cannot_monitor_ticket', false);
 
 			// Unlike turning it off, we might be turning it on from either just off, or ignored, so log that fact.
 			if ($old_state == NOTIFY_NEVER)
@@ -743,7 +741,7 @@ function shd_notify_ticket_options()
 			break;
 		case 'ignore_off';
 			if (!shd_allowed_to('shd_ignore_ticket_any', $ticketinfo['dept']) && (!$ticket_starter || !shd_allowed_to('shd_ignore_ticket_own', $ticketinfo['dept'])))
-				fatal_lang_error('cannot_unmonitor_ticket', false);
+				return fatal_lang_error('cannot_unmonitor_ticket', false);
 
 			$smcFunc['db_query']('', '
 				DELETE FROM {db_prefix}helpdesk_notify_override

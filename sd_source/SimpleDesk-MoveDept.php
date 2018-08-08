@@ -42,10 +42,10 @@ function shd_movedept()
 	checkSession('get');
 
 	if (empty($context['ticket_id']))
-		fatal_lang_error('shd_no_ticket', false);
+		return fatal_lang_error('shd_no_ticket', false);
 
 	if (empty($context['shd_multi_dept']))
-		fatal_lang_error('shd_cannot_move_dept', false);
+		return fatal_lang_error('shd_cannot_move_dept', false);
 
 	$context['shd_return_to'] = isset($_REQUEST['home']) ? 'home' : 'ticket';
 
@@ -67,7 +67,7 @@ function shd_movedept()
 	else
 	{
 		$smcFunc['db_free_result']($query);
-		fatal_lang_error('shd_no_ticket');
+		return fatal_lang_error('shd_no_ticket');
 	}
 
 	$smcFunc['db_free_result']($query);
@@ -176,7 +176,7 @@ function shd_movedept()
 		$context['sub_template'] = 'movedept';
 	}
 	else
-		fatal_lang_error('shd_no_perm_move_dept', false);
+		return fatal_lang_error('shd_no_perm_move_dept', false);
 }
 
 /**
@@ -196,21 +196,21 @@ function shd_movedept2()
 	checkSubmitOnce('check');
 
 	if (empty($context['ticket_id']))
-		fatal_lang_error('shd_no_ticket', false);
+		return fatal_lang_error('shd_no_ticket', false);
 
 	if ((isset($_POST['send_pm']) && (!isset($_POST['pm_content']) || trim($_POST['pm_content']) == '')) && (empty($modSettings['shd_helpdesk_only']) || empty($modSettings['shd_disable_pm'])))
-		fatal_lang_error('shd_move_no_pm', false);
+		return fatal_lang_error('shd_move_no_pm', false);
 
 	// Just in case, are they cancelling?
 	if (isset($_REQUEST['cancel']))
 		redirectexit('action=helpdesk;sa=ticket;ticket=' . $context['ticket_id']);
 
 	if (empty($context['shd_multi_dept']))
-		fatal_lang_error('shd_cannot_move_dept', false);
+		return fatal_lang_error('shd_cannot_move_dept', false);
 
 	$dest = isset($_REQUEST['to_dept']) ? (int) $_REQUEST['to_dept'] : 0;
 	if (empty($dest) || !shd_allowed_to('access_helpdesk', $dest))
-		fatal_lang_error('shd_cannot_move_dept', false);
+		return fatal_lang_error('shd_cannot_move_dept', false);
 
 	$context['shd_return_to'] = isset($_REQUEST['home']) ? 'home' : 'ticket';
 
@@ -230,13 +230,13 @@ function shd_movedept2()
 	else
 	{
 		$smcFunc['db_free_result']($query);
-		fatal_lang_error('shd_no_ticket');
+		return fatal_lang_error('shd_no_ticket');
 	}
 
 	$smcFunc['db_free_result']($query);
 
 	if ($context['current_dept'] == $dest)
-		fatal_lang_error('shd_cannot_move_dept', false);
+		return fatal_lang_error('shd_cannot_move_dept', false);
 
 	if (shd_allowed_to('shd_move_dept_any', $context['current_dept']) || (shd_allowed_to('shd_move_dept_own', $context['current_dept']) && $ticket_starter == $user_info['id']))
 	{
@@ -319,5 +319,5 @@ function shd_movedept2()
 			redirectexit('action=helpdesk;sa=ticket;ticket=' . $context['ticket_id']);
 	}
 	else
-		fatal_lang_error('shd_no_perm_move_dept', false);
+		return fatal_lang_error('shd_no_perm_move_dept', false);
 }

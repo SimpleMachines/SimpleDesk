@@ -39,7 +39,7 @@ function shd_search()
 	shd_is_allowed_to('shd_search', 0);
 
 	if (!empty($context['load_average']) && !empty($modSettings['loadavg_search']) && $context['load_average'] >= $modSettings['loadavg_search'])
-		fatal_lang_error('loadavg_search_disabled', false);
+		return fatal_lang_error('loadavg_search_disabled', false);
 
 	loadTemplate('sd_template/SimpleDesk-Search');
 
@@ -79,7 +79,7 @@ function shd_search2()
 	shd_is_allowed_to('shd_search', 0);
 
 	if (!empty($context['load_average']) && !empty($modSettings['loadavg_search']) && $context['load_average'] >= $modSettings['loadavg_search'])
-		fatal_lang_error('loadavg_search_disabled', false);
+		return fatal_lang_error('loadavg_search_disabled', false);
 
 	// No, no, no... this is a bit hard on the server, so don't you go prefetching it!
 	if (isset($_SERVER['HTTP_X_MOZ']) && $_SERVER['HTTP_X_MOZ'] == 'prefetch')

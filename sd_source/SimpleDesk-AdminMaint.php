@@ -137,7 +137,7 @@ function shd_admin_maint_reattribute()
 	$members = findMembers($_POST['to']);
 
 	if (empty($members))
-		fatal_lang_error('shd_reattribute_cannot_find_member');
+		return fatal_lang_error('shd_reattribute_cannot_find_member');
 
 	$memID = array_shift($members);
 	$memID = $memID['id'];
@@ -145,25 +145,25 @@ function shd_admin_maint_reattribute()
 	if ($_POST['type'] == 'email')
 	{
 		if (empty($_POST['from_email']))
-			fatal_lang_error('shd_reattribute_no_email');
+			return fatal_lang_error('shd_reattribute_no_email');
 		$clause = 'poster_email = {string:attribute}';
 		$attribute = $_POST['from_email'];
 	}
 	elseif ($_POST['type'] == 'name')
 	{
 		if (empty($_POST['from_name']))
-			fatal_lang_error('shd_reattribute_no_user');
+			return fatal_lang_error('shd_reattribute_no_user');
 		$clause = 'poster_name = {string:attribute}';
 		$attribute = $_POST['from_name'];
 	}
 	elseif ($_POST['type'] == 'starter')
 	{
 		if (empty($_POST['from_starter']))
-			fatal_lang_error('shd_reattribute_no_user');
+			return fatal_lang_error('shd_reattribute_no_user');
 		$from = findMembers($_POST['from_starter']);
 
 		if (empty($from))
-			fatal_lang_error('shd_reattribute_cannot_find_member_from');
+			return fatal_lang_error('shd_reattribute_cannot_find_member_from');
 
 		$fromID = array_shift($from);
 		$attribute = $fromID['id'];
@@ -174,7 +174,7 @@ function shd_admin_maint_reattribute()
 			WHERE id_member_started = {int:attribute})';
 	}
 	else
-		fatal_lang_error('shd_reattribute_no_user');
+		return fatal_lang_error('shd_reattribute_no_user');
 
 	// Now, we don't delete the user id from posts on account deletion, never have.
 	// So, get all the user ids attached to this user/email, make sure they're not in use, and then reattribute them.
@@ -193,7 +193,7 @@ function shd_admin_maint_reattribute()
 
 	// Did we find any members? If not, bail.
 	if (empty($members))
-		fatal_lang_error('shd_reattribute_no_messages', false);
+		return fatal_lang_error('shd_reattribute_no_messages', false);
 
 	// Topic starters are a bit easier.
 	if ($_POST['type'] == 'starter')
@@ -220,7 +220,7 @@ function shd_admin_maint_reattribute()
 		$members = array_diff($members, $temp_members);
 
 		if (empty($members))
-			fatal_lang_error('shd_reattribute_in_use', false);
+			return fatal_lang_error('shd_reattribute_in_use', false);
 
 		// OK, let's go!
 		$smcFunc['db_query']('', '
@@ -254,9 +254,9 @@ function shd_admin_maint_massdeptmove()
 	$_POST['id_dept_from'] = isset($_POST['id_dept_from']) ? (int) $_POST['id_dept_from'] : 0;
 	$_POST['id_dept_to'] = isset($_POST['id_dept_to']) ? (int) $_POST['id_dept_to'] : 0;
 	if ($_POST['id_dept_from'] == 0 || $_POST['id_dept_to'] == 0 || !in_array($_POST['id_dept_from'], $depts) || !in_array($_POST['id_dept_to'], $depts))
-		fatal_lang_error('shd_unknown_dept', false);
+		return fatal_lang_error('shd_unknown_dept', false);
 	elseif ($_POST['id_dept_from'] == $_POST['id_dept_to'])
-		fatal_lang_error('shd_admin_maint_massdeptmove_samedept', false);
+		return fatal_lang_error('shd_admin_maint_massdeptmove_samedept', false);
 
 	$clauses = array();
 	if (empty($_POST['moveopen']))
@@ -588,7 +588,6 @@ function shd_maint_deleted()
 		{
 			// Oh crap.
 			foreach ($tickets_modify as $id_ticket => $columns)
-			{
 				$smcFunc['db_query']('', '
 					UPDATE {db_prefix}helpdesk_tickets
 					SET num_replies = {int:num_replies},
@@ -602,18 +601,16 @@ function shd_maint_deleted()
 						'withdeleted' => $columns['withdeleted'],
 					)
 				);
-			}
+
 			$_SESSION['shd_maint']['deleted'] = count($tickets_modify);
 		}
 	}
 
 	// Another round?
 	$_REQUEST['start'] += $step_size;
+	// All done
 	if ($_REQUEST['start'] > $ticket_count)
-	{
-		// All done
 		$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . ($context['step'] + 1) . '">';
-	}
 	else
 	{
 		// More to do, call back - and provide the subtitle
@@ -685,7 +682,6 @@ function shd_maint_first_last()
 		{
 			// Oh crap.
 			foreach ($tickets_modify as $id_ticket => $columns)
-			{
 				$smcFunc['db_query']('', '
 					UPDATE {db_prefix}helpdesk_tickets
 					SET id_first_msg = {int:id_first_msg},
@@ -693,18 +689,16 @@ function shd_maint_first_last()
 					WHERE id_ticket = {int:id_ticket}',
 					$columns
 				);
-			}
+
 			$_SESSION['shd_maint']['first_last'] = count($tickets_modify);
 		}
 	}
 
 	// Another round?
 	$_REQUEST['start'] += $step_size;
+	// All done
 	if ($_REQUEST['start'] > $ticket_count)
-	{
-		// All done
 		$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . ($context['step'] + 1) . '">';
-	}
 	else
 	{
 		// More to do, call back - and provide the subtitle
@@ -776,7 +770,6 @@ function shd_maint_starter_updater()
 		{
 			// Oh crap.
 			foreach ($tickets_modify as $id_ticket => $columns)
-			{
 				$smcFunc['db_query']('', '
 					UPDATE {db_prefix}helpdesk_tickets
 					SET id_member_started = {int:id_member_started},
@@ -784,18 +777,16 @@ function shd_maint_starter_updater()
 					WHERE id_ticket = {int:id_ticket}',
 					$columns
 				);
-			}
+
 			$_SESSION['shd_maint']['starter_updater'] = count($tickets_modify);
 		}
 	}
 
 	// Another round?
 	$_REQUEST['start'] += $step_size;
+	// All done
 	if ($_REQUEST['start'] > $ticket_count)
-	{
-		// All done
 		$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . ($context['step'] + 1) . '">';
-	}
 	else
 	{
 		// More to do, call back - and provide the subtitle
@@ -861,7 +852,6 @@ function shd_maint_status()
 		{
 			// Oh crap.
 			foreach ($tickets_modify as $id_ticket => $status)
-			{
 				$smcFunc['db_query']('', '
 					UPDATE {db_prefix}helpdesk_tickets
 					SET status = {int:status}
@@ -871,18 +861,16 @@ function shd_maint_status()
 						'status' => $status,
 					)
 				);
-			}
+
 			$_SESSION['shd_maint']['status'] = count($tickets_modify);
 		}
 	}
 
 	// Another round?
 	$_REQUEST['start'] += $step_size;
+	// All done
 	if ($_REQUEST['start'] > $ticket_count)
-	{
-		// All done
 		$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . ($context['step'] + 1) . '">';
-	}
 	else
 	{
 		// More to do, call back - and provide the subtitle

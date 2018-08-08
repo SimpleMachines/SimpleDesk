@@ -131,7 +131,7 @@ function shd_profile_frontpage($memID)
 
 	// Attempt to load the member's profile data.
 	if (!loadMemberContext($memID) || !isset($memberContext[$memID]))
-		fatal_lang_error('not_a_user', false);
+		return fatal_lang_error('not_a_user', false);
 
 	$context['page_title'] = $txt['shd_profile_area'] . ' - ' . $txt['shd_profile_main'];
 	$context['sub_template'] = 'shd_profile_main';
@@ -376,7 +376,6 @@ function shd_profile_preferences($memID)
 		}
 
 		if (!empty($changes['remove']))
-		{
 			$smcFunc['db_query']('', '
 				DELETE FROM {db_prefix}helpdesk_preferences
 				WHERE id_member = {int:member}
@@ -386,7 +385,6 @@ function shd_profile_preferences($memID)
 					'prefs' => $changes['remove'],
 				)
 			);
-		}
 	}
 }
 
@@ -466,7 +464,6 @@ function shd_profile_show_tickets($memID)
 	while (true)
 	{
 		if ($context['can_haz_replies'])
-		{
 			$request = shd_db_query('', '
 				SELECT
 					hdtr.id_member, hdt.subject, hdt.id_first_msg,
@@ -481,9 +478,7 @@ function shd_profile_show_tickets($memID)
 					'user' => $memID,
 				)
 			);
-		}
 		else
-		{
 			$request = shd_db_query('', '
 				SELECT
 					hdt.id_member_started, hdt.id_first_msg, hdt.id_last_msg, hdt.subject,
@@ -498,7 +493,6 @@ function shd_profile_show_tickets($memID)
 					'user' => $memID,
 				)
 			);
-		}
 
 		// Hold it!
 		if ($smcFunc['db_num_rows']($request) === $max_index || $looped)
@@ -649,13 +643,11 @@ function shd_profile_permissions($memID)
 	);
 
 	while ($row = $smcFunc['db_fetch_assoc']($query))
-	{
 		$context['membergroups'][$row['id_group']] = array(
 			'name' => $row['group_name'],
 			'color' => $row['online_color'],
 			'link' => '<a href="' . $scripturl . '?action=groups;sa=members;group=' . $row['id_group'] . '"' . (empty($row['online_color']) ? '' : ' style="color: ' . $row['online_color'] . ';"') . '>' . $row['group_name'] . '</a>',
 		);
-	}
 
 	$smcFunc['db_free_result']($query);
 

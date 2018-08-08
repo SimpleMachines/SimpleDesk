@@ -55,7 +55,7 @@ function shd_assign()
 	checkSession('get');
 
 	if (empty($context['ticket_id']))
-		fatal_lang_error('shd_no_ticket');
+		return fatal_lang_error('shd_no_ticket');
 
 	$context['shd_return_to'] = isset($_REQUEST['home']) ? 'home' : 'ticket';
 
@@ -82,11 +82,11 @@ function shd_assign()
 	else
 	{
 		$smcFunc['db_free_result']($query);
-		fatal_lang_error('shd_no_ticket');
+		return fatal_lang_error('shd_no_ticket');
 	}
 
 	if ($status == TICKET_STATUS_CLOSED || $status == TICKET_STATUS_DELETED)
-		fatal_lang_error('shd_cannot_assign', false);
+		return fatal_lang_error('shd_cannot_assign', false);
 
 	if (shd_allowed_to('shd_assign_ticket_any', $dept)) // can regularly assign? If so, load up potential candidates and throw it at the template.
 	{
@@ -114,7 +114,7 @@ function shd_assign()
 		}
 
 		if (empty($members))
-			fatal_lang_error('shd_no_staff_assign');
+			return fatal_lang_error('shd_no_staff_assign');
 
 		if ($context['shd_multi_dept'])
 			$context['linktree'][] = array(
@@ -155,10 +155,10 @@ function shd_assign()
 			shd_commit_assignment($context['ticket_id'], 0);
 		}
 		else // oops, assigned to somebody else
-			fatal_lang_error('shd_cannot_assign_other', false);
+			return fatal_lang_error('shd_cannot_assign_other', false);
 	}
 	else
-		fatal_lang_error('shd_cannot_assign', false);
+		return fatal_lang_error('shd_cannot_assign', false);
 }
 
 /**
@@ -179,7 +179,7 @@ function shd_assign2()
 	checkSubmitOnce('check');
 
 	if (empty($context['ticket_id']))
-		fatal_lang_error('shd_no_ticket');
+		return fatal_lang_error('shd_no_ticket');
 
 	$context['shd_return_to'] = isset($_REQUEST['home']) ? 'home' : 'ticket';
 
@@ -210,7 +210,7 @@ function shd_assign2()
 	else
 	{
 		$smcFunc['db_free_result']($query);
-		fatal_lang_error('shd_no_ticket');
+		return fatal_lang_error('shd_no_ticket');
 	}
 
 	// Just in case, are they cancelling?
@@ -218,7 +218,7 @@ function shd_assign2()
 		redirectexit('action=helpdesk;sa=ticket;ticket=' . $context['ticket_id']);
 
 	if ($status == TICKET_STATUS_CLOSED || $status == TICKET_STATUS_DELETED)
-		fatal_lang_error('shd_cannot_assign', false);
+		return fatal_lang_error('shd_cannot_assign', false);
 
 	if (shd_allowed_to('shd_assign_ticket_any', $dept)) // can regularly assign? If so, see if our requested member is staff and can see the ticket
 	{
@@ -243,7 +243,7 @@ function shd_assign2()
 				shd_commit_assignment($context['ticket_id'], $assignee);
 			}
 			else
-				fatal_lang_error('shd_assigned_not_permitted', false);
+				return fatal_lang_error('shd_assigned_not_permitted', false);
 		}
 	}
 	elseif (shd_allowed_to('shd_assign_ticket_own', $dept) && shd_allowed_to('shd_staff', $dept)) // can't just randomly assign (and must be staff), so look at if it's already assigned or not.
@@ -263,10 +263,10 @@ function shd_assign2()
 			shd_commit_assignment($context['ticket_id'], 0);
 		}
 		else // oops, assigned to somebody else
-			fatal_lang_error('shd_cannot_assign_other', false);
+			return fatal_lang_error('shd_cannot_assign_other', false);
 	}
 	else
-		fatal_lang_error('shd_cannot_assign', false);
+		return fatal_lang_error('shd_cannot_assign', false);
 }
 
 /**

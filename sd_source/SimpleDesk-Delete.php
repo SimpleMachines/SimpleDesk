@@ -53,7 +53,7 @@ function shd_ticket_delete()
 	checkSession('get');
 
 	if (empty($context['ticket_id']))
-		fatal_lang_error('shd_no_ticket', false);
+		return fatal_lang_error('shd_no_ticket', false);
 
 	// Check we can actually see the ticket we're deleting, and if we can only delete our own, we are the owner
 	$query_ticket = shd_db_query('', '
@@ -70,12 +70,12 @@ function shd_ticket_delete()
 	{
 		$smcFunc['db_free_result']($query_ticket);
 		if (!shd_allowed_to('shd_delete_ticket_any', $row['id_dept']) && (!shd_allowed_to('shd_delete_ticket_own', $row['id_dept']) || $user_info['id'] != $row['id_member_started']))
-			fatal_lang_error('shd_cannot_delete_ticket', false);
+			return fatal_lang_error('shd_cannot_delete_ticket', false);
 	}
 	else
 	{
 		$smcFunc['db_free_result']($query_ticket);
-		fatal_lang_error('shd_no_ticket', false);
+		return fatal_lang_error('shd_no_ticket', false);
 	}
 
 	$subject = $row['subject'];
@@ -119,7 +119,7 @@ function shd_reply_delete()
 	$_REQUEST['reply'] = !empty($_REQUEST['reply']) ? (int) $_REQUEST['reply'] : 0;
 
 	if (empty($_REQUEST['reply']) || empty($context['ticket_id']))
-		fatal_lang_error('shd_no_ticket');
+		return fatal_lang_error('shd_no_ticket');
 
 	// Check we can actually see the ticket we're deleting, that this reply is in this ticket and that we can delete this reply
 	$query_ticket = shd_db_query('', '
@@ -141,12 +141,12 @@ function shd_reply_delete()
 	{
 		$smcFunc['db_free_result']($query_ticket);
 		if (($row['status'] == TICKET_STATUS_CLOSED || $row['status'] == TICKET_STATUS_DELETED) || (!shd_allowed_to('shd_delete_reply_any', $row['id_dept']) && (!shd_allowed_to('shd_delete_reply_own', $row['id_dept']) || $user_info['id'] != $row['id_member'])))
-			fatal_lang_error('shd_cannot_delete_reply', false);
+			return fatal_lang_error('shd_cannot_delete_reply', false);
 	}
 	else
 	{
 		$smcFunc['db_free_result']($query_ticket);
-		fatal_lang_error('shd_no_ticket', false);
+		return fatal_lang_error('shd_no_ticket', false);
 	}
 
 	$subject = $row['subject'];
@@ -208,7 +208,7 @@ function shd_perma_delete()
 
 	// We have to have either a ticket or a reply to know what to delete (Or do you want me to drop your whole database? >:D)
 	if (empty($context['ticket_id']) && empty($_REQUEST['reply']))
-		fatal_lang_error('shd_no_ticket', false);
+		return fatal_lang_error('shd_no_ticket', false);
 
 	// If we're deleting a whole ticket...
 	if (!empty($context['ticket_id']) && empty($_REQUEST['reply']))
@@ -227,7 +227,7 @@ function shd_perma_delete()
 		if ($smcFunc['db_num_rows']($query_ticket) == 0)
 		{
 			$smcFunc['db_free_result']($query_ticket);
-			fatal_lang_error('shd_no_ticket', false);
+			return fatal_lang_error('shd_no_ticket', false);
 		}
 		else
 		{
@@ -237,7 +237,7 @@ function shd_perma_delete()
 		}
 
 		if ($row['status'] != TICKET_STATUS_DELETED)
-			fatal_lang_error('shd_cannot_delete_ticket', false);
+			return fatal_lang_error('shd_cannot_delete_ticket', false);
 
 		$subject = $row['subject'];
 		// Expire the cache of count(active tickets)
@@ -261,7 +261,6 @@ function shd_perma_delete()
 		$smcFunc['db_free_result']($query);
 
 		if (!empty($msgs))
-		{
 			shd_db_query('', '
 				DELETE FROM {db_prefix}helpdesk_custom_fields_values
 				WHERE post_type = {int:type_reply}
@@ -271,7 +270,7 @@ function shd_perma_delete()
 					'msgs' => $msgs,
 				)
 			);
-		}
+
 		shd_db_query('', '
 			DELETE FROM {db_prefix}helpdesk_custom_fields_values
 			WHERE post_type = {int:type_ticket}
@@ -376,7 +375,7 @@ function shd_perma_delete()
 		if ($smcFunc['db_num_rows']($query_ticket) == 0)
 		{
 			$smcFunc['db_free_result']($query_ticket);
-			fatal_lang_error('shd_no_ticket', false);
+			return fatal_lang_error('shd_no_ticket', false);
 		}
 		else
 		{
@@ -386,7 +385,7 @@ function shd_perma_delete()
 		}
 
 		if ($row['status'] == TICKET_STATUS_DELETED || $row['message_status'] != MSG_STATUS_DELETED)
-			fatal_lang_error('shd_cannot_delete_reply', false);
+			return fatal_lang_error('shd_cannot_delete_reply', false);
 
 		$subject = $row['subject'];
 		// Expire the cache of count(active tickets)
@@ -473,7 +472,7 @@ function shd_perma_delete()
 		redirectexit('action=helpdesk;sa=ticket;ticket=' . $context['ticket_id']);
 	}
 	else
-		fatal_lang_error('shd_no_ticket');
+		return fatal_lang_error('shd_no_ticket');
 }
 
 // Delete a given attachment from the one-click interface.
@@ -482,7 +481,7 @@ function shd_attach_delete()
 	global $smcFunc, $user_info, $context, $sourcedir;
 
 	if (empty($context['ticket_id']) || empty($_GET['attach']) || (int) $_GET['attach'] == 0)
-		fatal_lang_error('no_access', false);
+		return fatal_lang_error('no_access', false);
 
 	$_GET['attach'] = (int) $_GET['attach'];
 
@@ -504,7 +503,7 @@ function shd_attach_delete()
 	if ($smcFunc['db_num_rows']($query) == 0)
 	{
 		$smcFunc['db_free_result']($query);
-		fatal_lang_error('no_access');
+		return fatal_lang_error('no_access');
 	}
 
 	list($dept, $filename, $id_msg, $subject) = $smcFunc['db_fetch_row']($query);
@@ -542,7 +541,7 @@ function shd_ticket_restore()
 	checkSession('get');
 
 	if (empty($context['ticket_id']))
-		fatal_lang_error('shd_no_ticket', false);
+		return fatal_lang_error('shd_no_ticket', false);
 
 	// Does the ticket we're trying to restore exist and can we see it?
 	$query_ticket = shd_db_query('', '
@@ -559,7 +558,7 @@ function shd_ticket_restore()
 	{
 		$smcFunc['db_free_result']($query_ticket);
 		if ($row['status'] != TICKET_STATUS_DELETED || (!shd_allowed_to('shd_restore_ticket_any', $row['id_dept']) && (!shd_allowed_to('shd_restore_ticket_own', $row['id_dept']) || $user_info['id'] != $row['id_member_started'])))
-			fatal_lang_error('shd_cannot_restore_ticket', false);
+			return fatal_lang_error('shd_cannot_restore_ticket', false);
 
 		$subject = $row['subject'];
 		$starter = $row['id_member_started'];
@@ -569,7 +568,7 @@ function shd_ticket_restore()
 	else
 	{
 		$smcFunc['db_free_result']($query_ticket);
-		fatal_lang_error('shd_no_ticket', false);
+		return fatal_lang_error('shd_no_ticket', false);
 	}
 
 	// The ticket's id is in $context['ticket_id'].
@@ -613,7 +612,7 @@ function shd_reply_restore()
 	$_REQUEST['reply'] = empty($_REQUEST['reply']) ? 0 : (int) $_REQUEST['reply'];
 
 	if (empty($_REQUEST['reply']))
-		fatal_lang_error('shd_no_ticket', false);
+		return fatal_lang_error('shd_no_ticket', false);
 
 	// Check we can actually see the ticket we're restoring from, and that we can restore this reply
 	$query_ticket = shd_db_query('', '
@@ -633,7 +632,7 @@ function shd_reply_restore()
 	{
 		$smcFunc['db_free_result']($query_ticket);
 		if (($row['status'] == TICKET_STATUS_DELETED || $row['status'] == TICKET_STATUS_CLOSED || $row['message_status'] != MSG_STATUS_DELETED) || (!shd_allowed_to('shd_restore_reply_any', $row['id_dept']) && (!shd_allowed_to('shd_restore_reply_own', $row['id_dept']) || $user_info['id'] != $row['id_member'])))
-			fatal_lang_error('shd_cannot_restore_reply', false);
+			return fatal_lang_error('shd_cannot_restore_reply', false);
 
 		$context['ticket_id'] = (int) $row['id_ticket'];
 		$subject = $row['subject'];
@@ -644,7 +643,7 @@ function shd_reply_restore()
 	else
 	{
 		$smcFunc['db_free_result']($query_ticket);
-		fatal_lang_error('shd_no_ticket', false);
+		return fatal_lang_error('shd_no_ticket', false);
 	}
 
 	// The ticket's id is in $context['ticket_id'], the reply id in $_REQUEST['reply'].

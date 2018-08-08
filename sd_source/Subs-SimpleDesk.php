@@ -741,7 +741,7 @@ function shd_load_ticket($ticket = 0)
 
 	// Make sure they set a ticket ID.
 	if ($ticket == 0 && empty($context['ticket_id']))
-		fatal_lang_error('shd_no_ticket', false);
+		return fatal_lang_error('shd_no_ticket', false);
 
 	// Get the ticket data. Note this implicitly checks perms too.
 	$query = shd_db_query('', '
@@ -766,7 +766,7 @@ function shd_load_ticket($ticket = 0)
 	if ($smcFunc['db_num_rows']($query) == 0)
 	{
 		$smcFunc['db_free_result']($query);
-		fatal_lang_error('shd_no_ticket', false);
+		return fatal_lang_error('shd_no_ticket', false);
 	}
 
 	$ticketinfo = $smcFunc['db_fetch_assoc']($query);

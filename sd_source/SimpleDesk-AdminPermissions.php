@@ -88,7 +88,7 @@ function shd_admin_create_role()
 
 	$context['role_template_id'] = isset($_REQUEST['template']) ? (int) $_REQUEST['template'] : 0;
 	if (empty($context['shd_permissions']['roles'][$context['role_template_id']]))
-		fatal_lang_error('shd_unknown_template', false);
+		return fatal_lang_error('shd_unknown_template', false);
 
 	if (empty($_REQUEST['part']))
 	{
@@ -103,9 +103,9 @@ function shd_admin_create_role()
 
 		// Boring stuff like session checks done. Were you a naughty admin and didn't set it properly?
 		if (!isset($_POST['rolename']) || $smcFunc['htmltrim']($smcFunc['htmlspecialchars']($_POST['rolename'])) === '')
-			fatal_lang_error('shd_no_role_name', false);
-		else
-			$_POST['rolename'] = strtr($smcFunc['htmlspecialchars']($_POST['rolename']), array("\r" => '', "\n" => '', "\t" => ''));
+			return fatal_lang_error('shd_no_role_name', false);
+
+		$_POST['rolename'] = strtr($smcFunc['htmlspecialchars']($_POST['rolename']), array("\r" => '', "\n" => '', "\t" => ''));
 
 		// So here we are, template id is valid, we're good little admins and specified a name, so let's create the new role in the DB.
 		$newrole = $smcFunc['db_insert']('insert',
@@ -123,7 +123,7 @@ function shd_admin_create_role()
 		);
 
 		if (empty($newrole))
-			fatal_lang_error('shd_could_not_create_role', false);
+			return fatal_lang_error('shd_could_not_create_role', false);
 
 		// Always need logs.
 		shd_admin_log('admin_permissions', array(
@@ -144,7 +144,7 @@ function shd_admin_edit_role()
 	shd_load_role($context['shd_role_id']);
 
 	if (empty($context['shd_permissions']['user_defined_roles'][$context['shd_role_id']]))
-		fatal_lang_error('shd_unknown_role', false);
+		return fatal_lang_error('shd_unknown_role', false);
 
 	// OK, figure out what groups are possible groups (including regular members), and what groups this role has.
 	// We're not interested in admin (group 1), board mod (group 3) or post count groups (min_posts != -1)
@@ -230,7 +230,7 @@ function shd_admin_save_role()
 
 	// Hah, no, you're just an extra, bye.
 	if (empty($context['shd_permissions']['user_defined_roles'][$context['shd_role_id']]))
-		fatal_lang_error('shd_unknown_role', false);
+		return fatal_lang_error('shd_unknown_role', false);
 
 	// 2b. Oh, we have actually heard of you. That's fine, we'll just refer to you by codename because we're lazy.
 	$role = &$context['shd_permissions']['user_defined_roles'][$context['shd_role_id']];
@@ -282,9 +282,9 @@ function shd_admin_save_role()
 
 	// 4. The unknown actor in a role?
 	if (!isset($_POST['rolename']) || $smcFunc['htmltrim']($smcFunc['htmlspecialchars']($_POST['rolename'])) === '')
-		fatal_lang_error('shd_no_role_name', false);
-	else
-		$_POST['rolename'] = strtr($smcFunc['htmlspecialchars']($_POST['rolename']), array("\r" => '', "\n" => '', "\t" => ''));
+		return fatal_lang_error('shd_no_role_name', false);
+
+	$_POST['rolename'] = strtr($smcFunc['htmlspecialchars']($_POST['rolename']), array("\r" => '', "\n" => '', "\t" => ''));
 
 	// 5. Is the role different to what we thought it was? If so, informer the director, our good friend Mr. Database
 	if ($role['name'] != $_POST['rolename'])
@@ -438,7 +438,6 @@ function shd_admin_save_role()
 	}
 
 	if (!empty($groups['remove']))
-	{
 		$smcFunc['db_query']('', '
 			DELETE FROM {db_prefix}helpdesk_role_groups
 			WHERE id_role = {int:role}
@@ -448,7 +447,6 @@ function shd_admin_save_role()
 				'groups' => $groups['remove'],
 			)
 		);
-	}
 
 	if (!empty($groups['add']))
 	{
@@ -523,7 +521,7 @@ function shd_admin_copy_role()
 
 	// Hah, no, you're just an extra, bye.
 	if (empty($context['shd_permissions']['user_defined_roles'][$context['shd_role_id']]))
-		fatal_lang_error('shd_unknown_role', false);
+		return fatal_lang_error('shd_unknown_role', false);
 
 	if (empty($_REQUEST['part']))
 	{
@@ -538,7 +536,7 @@ function shd_admin_copy_role()
 
 		// Boring stuff like session checks done. Were you a naughty admin and didn't set it properly?
 		if (!isset($_POST['rolename']) || $smcFunc['htmltrim']($smcFunc['htmlspecialchars']($_POST['rolename'])) === '')
-			fatal_lang_error('shd_no_role_name', false);
+			return fatal_lang_error('shd_no_role_name', false);
 		else
 			$_POST['rolename'] = strtr($smcFunc['htmlspecialchars']($_POST['rolename']), array("\r" => '', "\n" => '', "\t" => ''));
 
@@ -558,7 +556,7 @@ function shd_admin_copy_role()
 		);
 
 		if (empty($newrole))
-			fatal_lang_error('shd_could_not_create_role', false);
+			return fatal_lang_error('shd_could_not_create_role', false);
 
 		// OK, so we made the role. Now add the permissions from the existing role, first grab 'em
 		$new_perms = array();
@@ -687,12 +685,10 @@ function shd_load_role($loadrole = 0)
 	);
 
 	while ($row = $smcFunc['db_fetch_assoc']($query))
-	{
 		$context['shd_permissions']['user_defined_roles'][$row['id_role']] = array(
 			'template' => $row['template'],
 			'name' => $row['role_name'],
 		);
-	}
 	$smcFunc['db_free_result']($query);
 
 	// OK, are we done already?
