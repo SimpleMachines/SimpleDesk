@@ -445,7 +445,7 @@ function shd_main_helpdesk()
 			unset($unused[$modSettings['shd_block_order_' . $i]]);
 		}
 
-		foreach ($unused AS $u => $j)
+		foreach ($unused as $u => $j)
 			$context['ticket_block_order'][] = $u;
 	}
 	else

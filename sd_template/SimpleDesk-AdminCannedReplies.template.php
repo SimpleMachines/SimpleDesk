@@ -49,7 +49,7 @@ function template_shd_cannedreplies_home()
 					', $cat['name'], '
 					', !empty($cat['move_up']) ? ('<a href="' . $scripturl . '?action=admin;area=helpdesk_cannedreplies;sa=movecat;cat=' . $cat_id . ';direction=up;' . $context['session_var'] . '=' . $context['session_id'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/move_up.png" alt="' . $txt['shd_admin_move_up'] . '" title="' . $txt['shd_admin_move_up'] . '"></a>') : '', '
 					', !empty($cat['move_down']) ? ('<a href="' . $scripturl . '?action=admin;area=helpdesk_cannedreplies;sa=movecat;cat=' . $cat_id . ';direction=down;' . $context['session_var'] . '=' . $context['session_id'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/move_down.png" alt="' . $txt['shd_admin_move_down'] . '" title="' . $txt['shd_admin_move_down'] . '"></a>') : '', '
-					<a href="', $scripturl, '?action=admin;area=helpdesk_cannedreplies;sa=editcat;cat=' . $cat_id . ';', $context['session_var'], '=', $context['session_id'], '"><img src="', $settings['default_images_url'], '/simpledesk/edit.png" class="icon" alt="', $txt['shd_ticket_edit'],'" title="', $txt['shd_ticket_edit'], '"></a>
+					<a href="', $scripturl, '?action=admin;area=helpdesk_cannedreplies;sa=editcat;cat=' . $cat_id . ';', $context['session_var'], '=', $context['session_id'], '"><img src="', $settings['default_images_url'], '/simpledesk/edit.png" class="icon" alt="', $txt['shd_ticket_edit'], '" title="', $txt['shd_ticket_edit'], '"></a>
 				</h3>
 			</div>
 			<table class="table_grid">
@@ -74,7 +74,7 @@ function template_shd_cannedreplies_home()
 				foreach ($cat['replies'] as $reply)
 				{
 					echo '
-						<tr class="windowbg">
+						<tr class="windowbg shd_actions">
 							<td>', $reply['title'], '</td>
 							<td>', $reply['depts'], '</td>
 							<td><img src="', $settings['default_images_url'], '/simpledesk/cf_', $reply['active_string'], '.png" alt="', $txt['shd_admin_custom_fields_' . $reply['active_string']], '" title="', $txt['shd_admin_custom_fields_' . $reply['active_string']], '"></td>
@@ -86,8 +86,8 @@ function template_shd_cannedreplies_home()
 							<td>', !empty($reply['move_up']) ? ('<a href="' . $scripturl . '?action=admin;area=helpdesk_cannedreplies;sa=movereply;reply=' . $reply['id_reply'] . ';direction=up;' . $context['session_var'] . '=' . $context['session_id'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/move_up.png" alt="' . $txt['shd_admin_move_up'] . '" title="' . $txt['shd_admin_move_up'] . '"></a>') : '', '</td>
 							<td>', !empty($reply['move_down']) ? ('<a href="' . $scripturl . '?action=admin;area=helpdesk_cannedreplies;sa=movereply;reply=' . $reply['id_reply'] . ';direction=down;' . $context['session_var'] . '=' . $context['session_id'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/move_down.png" alt="' . $txt['shd_admin_move_down'] . '" title="' . $txt['shd_admin_move_down'] . '"></a>') : '', '</td>
 							<td>', $context['move_between_cats'] ? ('<a href="' . $scripturl . '?action=admin;area=helpdesk_cannedreplies;sa=movereplycat;reply=' . $reply['id_reply'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/movedept.png" alt="' . $txt['shd_admin_cannedreplies_move_between_cat'] . '" title="' . $txt['shd_admin_cannedreplies_move_between_cat'] . '"></a>') : '', '</td>
-							<td><a href="', $scripturl, '?action=admin;area=helpdesk_cannedreplies;sa=editreply;reply=' . $reply['id_reply'] . ';', $context['session_var'], '=', $context['session_id'], '"><img src="', $settings['default_images_url'], '/simpledesk/edit.png" class="icon" alt="', $txt['shd_ticket_edit'],'" title="', $txt['shd_ticket_edit'], '"></a></td>
-							<td><a href="', $scripturl, '?action=admin;area=helpdesk_cannedreplies;sa=savereply;reply=' . $reply['id_reply'] . ';delete=yes;', $context['session_var'], '=', $context['session_id'], '" onclick="return confirm(' . JavaScriptEscape($txt['shd_admin_cannedreplies_deletereply_confirm']). ');"><img src="', $settings['default_images_url'], '/simpledesk/delete.png" class="icon" alt="', $txt['shd_ticket_delete'],'" title="', $txt['shd_ticket_delete'], '"></a></td>
+							<td><a href="', $scripturl, '?action=admin;area=helpdesk_cannedreplies;sa=editreply;reply=' . $reply['id_reply'] . ';', $context['session_var'], '=', $context['session_id'], '"><img src="', $settings['default_images_url'], '/simpledesk/edit.png" class="icon" alt="', $txt['shd_ticket_edit'], '" title="', $txt['shd_ticket_edit'], '"></a></td>
+							<td><a href="', $scripturl, '?action=admin;area=helpdesk_cannedreplies;sa=savereply;reply=' . $reply['id_reply'] . ';delete=yes;', $context['session_var'], '=', $context['session_id'], '" onclick="return confirm(' . JavaScriptEscape($txt['shd_admin_cannedreplies_deletereply_confirm']) . ');"><img src="', $settings['default_images_url'], '/simpledesk/delete.png" class="icon" alt="', $txt['shd_ticket_delete'], '" title="', $txt['shd_ticket_delete'], '"></a></td>
 						</tr>';
 				}
 			}

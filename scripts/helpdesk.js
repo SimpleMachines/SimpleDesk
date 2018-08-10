@@ -124,6 +124,9 @@ shd_urgencyControl.prototype.callback = function (oRecvd)
 		var btn_set = [ "increase", "decrease" ];
 		for (var i in btn_set)
 		{
+			if (!btn_set.hasOwnProperty(i))
+				continue;
+
 			var oBtn = oRecvd[btn_set[i]];
 			var oSpan = document.getElementById('urgency_' + btn_set[i]);
 			setInnerHTML(oSpan, (oBtn ? oBtn : ''));
@@ -256,6 +259,9 @@ shd_attach_select.prototype.checkActive = function()
 	var session_attach = 0;
 	for (var i in elements)
 	{
+		if (!elements.hasOwnProperty(i))
+			continue;
+
 		if (elements[i] && elements[i].type == 'checkbox' && elements[i].name == 'attach_del[]' && elements[i].checked === true)
 			session_attach++;
 	}
@@ -509,7 +515,6 @@ shd_notifications.prototype.onReceiveNotifications = function (oRecvd)
 		subtemplate = this.opt.oNotifiedTemplate;
 
 		temphtml = '';
-		member = '';
 		for (i in oRecvd.being_notified)
 		{
 			if (!oRecvd.being_notified.hasOwnProperty(i))
@@ -529,7 +534,6 @@ shd_notifications.prototype.onReceiveNotifications = function (oRecvd)
 		subtemplate = this.opt.oOptionalTemplate;
 
 		temphtml = '';
-		member = '';
 		for (var i in oRecvd.optional)
 		{
 			if (!oRecvd.optional.hasOwnProperty(i))
@@ -559,7 +563,6 @@ shd_notifications.prototype.onReceiveNotifications = function (oRecvd)
 		subtemplate = this.opt.oOptionalOffTemplate;
 
 		temphtml = '';
-		member = '';
 		for (i in oRecvd.optional_butoff)
 		{
 			if (!oRecvd.optional_butoff.hasOwnProperty(i))

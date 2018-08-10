@@ -197,3 +197,8 @@ h3 a.permcollapse img {
 	float: right;
 	margin: 0.2em 1em 1em;
 }
+
+/* Fix Images not displaying */
+.shd_actions img {
+	max-width: initial;
+}

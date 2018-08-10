@@ -466,7 +466,7 @@ function shd_view_ticket()
 	{
 		$ticketname = '[' . $context['ticket']['display_id'] . '] ';
 		$fields = '';
-		foreach ($context['ticket']['custom_fields']['prefix'] AS $field)
+		foreach ($context['ticket']['custom_fields']['prefix'] as $field)
 		{
 			if (empty($field['value']))
 				continue;

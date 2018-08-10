@@ -1,6 +1,11 @@
 /**********************************
 * General stuff used all around the helpdesk 	*
 ***********************************/
+/* Make sure the hidden class is here */
+.hidden {
+	display: none;
+}
+
 /* SimpleDesk icons */
 .shd_smallicon {
 	width: 16px;
