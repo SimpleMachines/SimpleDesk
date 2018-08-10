@@ -581,7 +581,7 @@ function template_shd_action_log()
 					<a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=actionlog', $context['sort'] == $sort_types['ip'] && !isset($_REQUEST['asc']) ? ';sort=ip;asc' : ';sort=ip', '">
 						', $txt['shd_admin_actionlog_ip'], '
 					</a>
-					', ($context['sort'] == $sort_types['ip'] ? '<img src="' . $settings['default_images_url'] . '/' . (isset($_REQUEST['asc']) ? 'simpledesk/move_up.png' : 'simpledesk/move_down.png' ). '" alt="">' : ''), '
+					', ($context['sort'] == $sort_types['ip'] ? '<img src="' . $settings['default_images_url'] . '/' . (isset($_REQUEST['asc']) ? 'simpledesk/move_up.png' : 'simpledesk/move_down.png' ) . '" alt="">' : ''), '
 				</td>
 				<td width="2%">&nbsp;</td>
 			</tr>';
@@ -666,12 +666,12 @@ function template_shd_admin_log()
 					</a>
 					', ($context['sort'] == $sort_types['position'] ? '<img src="' . $settings['default_images_url'] . '/' . (isset($_REQUEST['asc']) ? 'simpledesk/move_up.png' : 'simpledesk/move_down.png') . '" alt="">' : ''), '
 				</td>
-				<td class="shd_10" ', $context['can_delete'] ? 'colspan="2"' : '','>
+				<td class="shd_10" ', $context['can_delete'] ? 'colspan="2"' : '', '>
 					<img src="', $settings['default_images_url'], '/simpledesk/ip.png" class="shd_smallicon" alt="">
 					<a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=adminlog', $context['sort'] == $sort_types['ip'] && !isset($_REQUEST['asc']) ? ';sort=ip;asc' : ';sort=ip', '">
 						', $txt['shd_admin_actionlog_ip'], '
 					</a>
-					', ($context['sort'] == $sort_types['ip'] ? '<img src="' . $settings['default_images_url'] . '/' . (isset($_REQUEST['asc']) ? 'simpledesk/move_up.png' : 'simpledesk/move_down.png' ). '" alt="">' : ''), '
+					', ($context['sort'] == $sort_types['ip'] ? '<img src="' . $settings['default_images_url'] . '/' . (isset($_REQUEST['asc']) ? 'simpledesk/move_up.png' : 'simpledesk/move_down.png') . '" alt="">' : ''), '
 				</td>
 				', $context['can_delete'] ? '<td class="shd_5">&nbsp;</td>' : '', '
 			</tr>';
@@ -679,7 +679,7 @@ function template_shd_admin_log()
 	if (empty($context['actions']))
 		echo '
 			<tr class="windowbg">
-				<td ', $context['can_delete'] ? 'colspan="6"' : 'colspan="5"',' class="shd_noticket">', $txt['shd_admin_actionlog_none'], '</td>
+				<td colspan="', $context['can_delete'] ? 6 : 5,'" class="shd_noticket">', $txt['shd_admin_actionlog_none'], '</td>
 			</tr>';
 	else
 		foreach ($context['actions'] as $action)
@@ -690,12 +690,12 @@ function template_shd_admin_log()
 				<td>', $action['member']['link'], '</td>
 				<td>', $action['member']['group'], '</td>
 				<td ', $action['can_remove'] && $context['can_delete'] ? 'colspan="2"' : '', '>', !empty($action['member']['ip']) ? $action['member']['ip'] : $txt['shd_admin_actionlog_hidden'], '</td>
-				', $action['can_remove'] && $context['can_delete'] ? '<td><a href="' . $scripturl . '?action=admin;area=helpdesk_info;sa=adminlog;remove='. $action['id'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/delete.png" alt="' . $txt['shd_delete_item'] . '"></a></td>' : '', '
+				', $action['can_remove'] && $context['can_delete'] ? '<td><a href="' . $scripturl . '?action=admin;area=helpdesk_info;sa=adminlog;remove=' . $action['id'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/delete.png" alt="' . $txt['shd_delete_item'] . '"></a></td>' : '', '
 			</tr>';
 
 	echo '
 			<tr class="windowbg">
-				<td ', $context['can_delete'] ? 'colspan="6"' : 'colspan="5"','>
+				<td colspan="', $context['can_delete'] ? 6 : 5, '">
 					<span class="floatright smalltext">', $context['page_index'], '</span>
 					<span class="smalltext shd_empty_log"><img src="', $settings['default_images_url'], '/simpledesk/delete.png" alt="X"> <a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=adminlog', $context['url_sort'], $context['url_order'], ';removeall" onclick="return confirm(', JavaScriptEscape(sprintf($txt['shd_admin_actionlog_removeall_confirm'], $context['daysdisable'])), ');">', $txt['shd_admin_actionlog_removeall'], '</a></span>
 				</td>
