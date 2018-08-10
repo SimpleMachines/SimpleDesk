@@ -157,7 +157,7 @@ function shd_load_action_log_entries($start = 0, $items_per_page = 10, $sort = '
 	$smcFunc['db_free_result']($request);
 
 	if (!empty($notify_members))
-		$notify_members = loadMemberData(array_unique($notify_members));
+		loadMemberData(array_unique($notify_members));
 
 	// Do some formatting of the action string.
 	foreach ($actions as $k => $action)

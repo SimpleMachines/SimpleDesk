@@ -118,7 +118,7 @@ function sd_initialize_install()
 function sd_get_bbc_tags()
 {
 	$bbc_tags = array();
-	foreach (parse_bbc(false) AS $tag)
+	foreach (parse_bbc(false) as $tag)
 		$bbc_tags[] = $tag['tag'];
 
 	return $bbc_tags;
@@ -139,7 +139,7 @@ function sd_get_install_modSettings($getAll = false)
 		'shd_attachments_mode' => 'ticket',
 		'shd_staff_badge' => 'nobadge',
 		'shd_ticketnav_style' => 'sd',
-		'shd_enabled_bbc' => implode(',', sd_get_bbc_tags()),	// By default, all available tags are enabled.
+		'shd_enabled_bbc' => implode(',', sd_get_bbc_tags()), // By default, all available tags are enabled.
 		'shd_privacy_display' => 'smart',
 		'shd_allow_wikilinks' => 1,
 		'shd_display_ticket_logs' => 1,

@@ -43,7 +43,7 @@ function template_shd_departments_home()
 	foreach ($context['shd_departments'] as $department)
 	{
 		echo '
-			<tr class="windowbg">
+			<tr class="windowbg shd_actions">
 				<td></td>
 				<td>
 					', $department['dept_name'], '
@@ -86,7 +86,7 @@ function template_shd_departments_home()
 				</td>
 				<td>', empty($department['is_first']) ? ('<a href="' . $scripturl . '?action=admin;area=helpdesk_depts;sa=move;dept=' . $department['id_dept'] . ';direction=up;' . $context['session_var'] . '=' . $context['session_id'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/move_up.png" alt="' . $txt['shd_admin_move_up'] . '" title="' . $txt['shd_admin_move_up'] . '"></a>') : '', '</td>
 				<td>', empty($department['is_last']) ? ('<a href="' . $scripturl . '?action=admin;area=helpdesk_depts;sa=move;dept=' . $department['id_dept'] . ';direction=down;' . $context['session_var'] . '=' . $context['session_id'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/move_down.png" alt="' . $txt['shd_admin_move_down'] . '" title="' . $txt['shd_admin_move_down'] . '"></a>') : '', '</td>
-				<td><a href="', $scripturl, '?action=admin;area=helpdesk_depts;sa=editdept;dept=', $department['id_dept'], '"><img src="', $settings['default_images_url'], '/simpledesk/edit.png" class="icon" alt="', $txt['shd_edit_dept'],'" title="', $txt['shd_edit_dept'], '"></a></td>';
+				<td><a href="', $scripturl, '?action=admin;area=helpdesk_depts;sa=editdept;dept=', $department['id_dept'], '"><img src="', $settings['default_images_url'], '/simpledesk/edit.png" class="icon" alt="', $txt['shd_edit_dept'], '" title="', $txt['shd_edit_dept'], '"></a></td>';
 
 		echo '
 			</tr>';
@@ -203,10 +203,8 @@ function template_shd_edit_dept()
 					<dd>';
 
 	if (empty($context['dept_theme_list']) || count($context['dept_theme_list']) == 1)
-	{
 		echo '
 						<input type="hidden" name="dept_theme" value="0">', $txt['shd_dept_theme_use_default'];
-	}
 	else
 	{
 		echo '
@@ -248,16 +246,12 @@ function template_shd_edit_dept()
 					</tr>';
 
 	if (!empty($context['shd_roles']))
-	{
 		foreach ($context['shd_roles'] as $id_role => $role)
-		{
 			echo '
 					<tr class="windowbg">
 						<td><img src="', $settings['default_images_url'], '/simpledesk/', $context['shd_permissions']['roles'][$role['template']]['icon'], '"> <a href="', $scripturl, '?action=admin;area=helpdesk_permissions;sa=editrole;role=', $role['id_role'], '">', $role['role_name'], '</a></td>
 						<td><input type="checkbox"  name="role', $id_role, '"', !empty($role['in_dept']) ? ' checked="checked"' : '', '></td>
 					</tr>';
-		}
-	}
 	else
 		echo '
 					<tr class="windowbg2">

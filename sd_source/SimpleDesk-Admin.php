@@ -866,7 +866,7 @@ function shd_admin_admin_log()
 	$context['start'] = isset($_REQUEST['start']) ? $_REQUEST['start'] : 0;
 	$context['order'] = isset($_REQUEST['asc']) ? 'ASC' : 'DESC';
 	$context['url_sort'] = isset($_REQUEST['sort']) ? ';sort=' . $_REQUEST['sort'] : '';
-	$context['url_order'] =  isset($_REQUEST['asc']) ? ';asc' : '';
+	$context['url_order'] = isset($_REQUEST['asc']) ? ';asc' : '';
 
 	// Get all action log entries
 	$context['actions'] = shd_load_admin_log_entries($context['start'], $context['displaypage'], $context['sort'], $context['order']);
