@@ -199,10 +199,10 @@ function template_shd_admin_maint_findrepairdone()
 
 		// Heh, super squeeky buns time!
 		// Each test has potentially its own feedback to give. So we'll handle each one separately.
-		foreach (array('zero_tickets', 'zero_msgs', 'deleted', 'first_last', 'status', 'starter_updater', 'invalid_dept') as $maintResult)
-			if (!empty($context['maintenance_result'][$maintResult]))
+		foreach (array('zero_tickets', 'zero_msgs', 'deleted', 'first_last', 'status', 'starter_updater', 'invalid_dept') as $maint)
+			if (!empty($context['maintenance_result'][$maint]))
 				echo '
-				<p class="padding">', sprintf($txt['shd_maint_' . $maintTxt], $context['maintenance_result'][$maintResult]), '</p>';
+				<p class="padding">', sprintf($txt['shd_maint_' . $maint], $context['maintenance_result'][$maint]), '</p>';
 
 		echo '
 				<p class="padding">

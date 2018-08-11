@@ -46,9 +46,11 @@ function template_viewticket()
 					<a href="', $button['url'], '"', (!empty($button['is_last']) ? ' id="last"' : ''), '', (!empty($button['onclick']) ? ' onclick="' . $button['onclick'] . '"' : ''), '><img src="', $settings['default_images_url'], '/simpledesk/', $button['icon'], '.png" alt="', $button['alt'], '" title="', $txt[$button['text']], '"> ', $txt[$button['text']], '</a>';
 	elseif ($modSettings['shd_ticketnav_style'] == 'sdcompact')
 		foreach ($context['ticket_navigation'] as $button)
+		{
 			if (!empty($button['display']))
 				echo '
 					<a href="', $button['url'], '"', (!empty($button['is_last']) ? ' id="last"' : ''), '', (!empty($button['onclick']) ? ' onclick="' . $button['onclick'] . '"' : ''), '><img src="', $settings['default_images_url'], '/simpledesk/', $button['icon'], '.png" alt="', $button['alt'], '" title="', $txt[$button['text']], '"></a>';
+		}
 
 	echo '
 				</span>

@@ -271,9 +271,9 @@ function QuickReply(oOptions)
 QuickReply.prototype.quote = function (e)
 {
 	e.preventDefault();
-	iMessageId = e.currentTarget.dataset.id;
+	this.iMessageId = e.currentTarget.dataset.id;
 
-	shd_getJSONDocument(smf_prepareScriptUrl(this.opt.sScriptUrl) + 'action=helpdesk;sa=ajax;op=quote;quote=' + iMessageId + ';' + this.opt.sSession + ';json' + ';mode=' + (oEditorHandle_shd_message.bRichTextEnabled ? 1 : 0), this.onQuoteReceived.bind(this));
+	shd_getJSONDocument(smf_prepareScriptUrl(this.opt.sScriptUrl) + 'action=helpdesk;sa=ajax;op=quote;quote=' + this.iMessageId + ';' + this.opt.sSession + ';json' + ';mode=' + (oEditorHandle_shd_message.bRichTextEnabled ? 1 : 0), this.onQuoteReceived.bind(this));
 
 	// Move the view to the quick reply box.
 	window.location.hash = navigator.appName == 'Microsoft Internet Explorer' ? this.opt.sJumpAnchor : '#' + this.opt.sJumpAnchor;
@@ -295,7 +295,7 @@ function CannedReply(oOptions)
 	$('#' + this.opt.sCannedRepliesContainerId + ' input.button').on('click', this.getReply.bind(this));
 }
 
-CannedReply.prototype.getReply = function (e)
+CannedReply.prototype.getReply = function ()
 {
 	var iReplyId = $('#' + this.opt.sSelectContainerId).val();
 	if (!iReplyId || parseInt(iReplyId, 10) < 1)
@@ -519,7 +519,7 @@ function goAdvanced(oOptions)
 	$(document).ready(this.init.bind(this));
 }
 
-goAdvanced.prototype.init = function(e)
+goAdvanced.prototype.init = function()
 {
 	$('#' + this.opt.sBbcContainerId +
 		', .' + this.opt.sBbcContainerEditorClass +
@@ -554,7 +554,7 @@ shd_dept_filter.prototype.startFilter = function ()
 	$(this.opt.oFields).each(this.filterDept.bind(this));
 }
 
-shd_dept_filter.prototype.filterDept = function (index, value)
+shd_dept_filter.prototype.filterDept = function (index)
 {
 	this.currentDept = $('#' + this.opt.sSelectContainerId).val();
 

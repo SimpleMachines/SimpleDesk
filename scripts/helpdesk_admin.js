@@ -9,7 +9,7 @@ $(document).ready(function(){
 	$('input[type="submit"].save').parent('form').on('submit', function(){
 		submitonce(this.currentTarget);
 	});
-	$('input[type="submit"].save').on('click', function(e){
+	$('input[type="submit"].save').on('click', function(){
 		submitThisOnce(this.currentTarget);
 	});
 });
@@ -107,7 +107,7 @@ sd_AdminIndex.prototype.checkUpdateAvailable = function ()
 // Ticket number information...
 sd_AdminIndex.prototype.TickekTotals = function ()
 {
-	var infocontainer = $('#' + this.opt.sTotalTicketsInfoContainerID).toggle();
+	$('#' + this.opt.sTotalTicketsInfoContainerID).toggle();
 }
 
 // Modified, SMF 2.0 ToggleItem
@@ -129,17 +129,17 @@ shd_plugins.prototype.setupPlugins = function (index, itemID)
 shd_plugins.prototype.togglePlugin = function (e)
 {
 	e.preventDefault();
-	itemID = e.currentTarget.dataset.plugin;
+	this.itemID = e.currentTarget.dataset.plugin;
 
 	// Toggle the hidden item.
 	this.oItemValueHandle = $('#' + this.opt.sFeatureClass.replace('%itemid%', itemID));
-	this.bItemValue = this.oItemValueHandle.val() == 0 ? 1 : 0;
+	this.bItemValue = this.oItemValueHandle.val() == '0' ? 1 : 0;
 
 	// Change the image, alternative text and the title.
-	$('#' + this.opt.sSwitchClass.replace('%itemid%', itemID)).attr('src', this.bItemValue === 1 ? this.opt.sPluginOnImg : this.opt.sPluginOffImg);
-	$('#' + this.opt.sSwitchClass.replace('%itemid%', itemID)).attr('alt', this.bItemValue === 1 ? this.opt.sPluginOnText : this.opt.sPluginOffText);
-	$('#' + this.opt.sSwitchClass.replace('%itemid%', itemID)).attr('title', this.bItemValue === 1 ? this.opt.sPluginOnText : this.opt.sPluginOffText);
-	$('#' + this.opt.sFeatureClass.replace('%itemid%', itemID)).val(this.bItemValue);
+	$('#' + this.opt.sSwitchClass.replace('%itemid%', this.itemID)).attr('src', this.bItemValue === 1 ? this.opt.sPluginOnImg : this.opt.sPluginOffImg);
+	$('#' + this.opt.sSwitchClass.replace('%itemid%', this.itemID)).attr('alt', this.bItemValue === 1 ? this.opt.sPluginOnText : this.opt.sPluginOffText);
+	$('#' + this.opt.sSwitchClass.replace('%itemid%', this.itemID)).attr('title', this.bItemValue === 1 ? this.opt.sPluginOnText : this.opt.sPluginOffText);
+	$('#' + this.opt.sFeatureClass.replace('%itemid%', this.itemID)).val(this.bItemValue);
 
 	// Don't reload.
 	return false;
@@ -309,38 +309,38 @@ shd_AttributeValidate.prototype.focusValidator = function (e)
 /* Reattribute Posts: Validate if we can start the process to reattribute */
 shd_AttributeValidate.prototype.validator = function ()
 {
-	origText = this.opt.sOrigText;
-	origTextStarter = this.opt.sOrigTextStarter;
-	valid = true;
+	this.origText = this.opt.sOrigText;
+	this.origTextStarter = this.opt.sOrigTextStarter;
+	this.valid = true;
 
 	// Do all the fields!
 	if (!$('#' + this.opt.sToContainerId).val())
-		valid = false;
+		this.valid = false;
 
-	warningMessage = origText.replace(/%member_to%/, $('#' + this.opt.sToContainerId).value);
+	warningMessage = this.origText.replace(/%member_to%/, $('#' + this.opt.sToContainerId).value);
 
 	if ($('#' + this.opt.sTypeEmailContainerId).is(":checked"))
 	{
 		$('#' + this.opt.sStarterContainerId + ', #' + this.opt.sFromContainerId).val("");
-			valid = $('#' + this.opt.sEmailContainerId).val() != '';
+			this.valid = $('#' + this.opt.sEmailContainerId).val() != '';
 		warningMessage = warningMessage.replace(/%type%/, this.opt.sEmailConfirmText).replace(/%find%/, $('#' + this.opt.sEmailContainerId).val());
 	}
 	else if ($('#' + this.opt.sTypeStarterContainerId).is(":checked"))
 	{
 		$('#' + this.opt.sEmailContainerId + ' #' + this.opt.sFromContainerId).val("");
 
-			valid = $('#' + this.opt.sStarterContainerId).val() != '';
-		warningMessage = origTextStarter.replace(/%member_to%/, $('#' + this.opt.sToContainerId).val()).replace(/%find%/, $('#' + this.opt.sStarterContainerId).val());			
+			this.valid = $('#' + this.opt.sStarterContainerId).val() != '';
+		warningMessage = this.origTextStarter.replace(/%member_to%/, $('#' + this.opt.sToContainerId).val()).replace(/%find%/, $('#' + this.opt.sStarterContainerId).val());			
 	}
 	else
 	{
 		$('#' + this.opt.sEmailContainerId + ' #' + this.opt.sStarterContainerId).val("");
 
-		valid = $('#' + this.opt.sFromContainerId).val() != '';
+		this.valid = $('#' + this.opt.sFromContainerId).val() != '';
 		warningMessage = warningMessage.replace(/%type%/, this.opt.sFromConfirmText).replace(/%find%/, $('#' + this.opt.sFromContainerId).val());
 	}
 
-	$('#' + this.opt.sDoAttributeContainerId).prop("disabled", valid ? false : true);
+	$('#' + this.opt.sDoAttributeContainerId).prop("disabled", this.valid ? false : true);
 }
 
 /* Roles Management */

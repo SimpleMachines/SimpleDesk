@@ -623,7 +623,7 @@ function template_shd_admin_log()
 	if (empty($context['actions']))
 		echo '
 			<tr class="windowbg">
-				<td colspan="', $context['can_delete'] ? 6 : 5,'" class="shd_noticket">', $txt['shd_admin_actionlog_none'], '</td>
+				<td colspan="', $context['can_delete'] ? 6 : 5, '" class="shd_noticket">', $txt['shd_admin_actionlog_none'], '</td>
 			</tr>';
 	else
 		foreach ($context['actions'] as $action)

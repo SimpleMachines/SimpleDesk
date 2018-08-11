@@ -778,7 +778,7 @@ function template_ticket_do_replies()
 
 function template_ticket_do_single_reply($reply)
 {
-	global $context, $modSettings, $settings, $txt;
+	global $context, $modSettings, $settings, $options, $scripturl, $txt;
 
 	echo '
 					<div class="windowbg" id="reply', $reply['id'], '">
