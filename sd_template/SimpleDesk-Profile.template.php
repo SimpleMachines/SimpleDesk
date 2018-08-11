@@ -26,8 +26,9 @@ function template_shd_profile_main()
 		</div>
 		<div class="windowbg noup">
 			<div class="content">
-			<img src="', $settings['default_images_url'], '/simpledesk/ticket.png" alt="" class="shd_icon_minihead"> <strong>', $txt['shd_profile_tickets'], '</strong><hr>
+			<img src="', $settings['default_images_url'], '/simpledesk/ticket.png" alt="" class="shd_icon_minihead"><strong>', $txt['shd_profile_tickets'], '</strong><hr>
 				', $txt['shd_profile_tickets_created'], ': <a href="', $scripturl, '?action=profile;u=', $context['member']['id'], ';area=hd_showtickets">', $context['shd_numtickets'], '</a>';
+
 	if (!empty($context['shd_numopentickets']))
 		echo ' <span class="smalltext">(', $context['shd_numopentickets'], ' ', $txt['shd_profile_currently_open'], ')</span>';
 
@@ -64,7 +65,7 @@ function template_shd_profile_main()
 		</div>
 		<div class="windowbg">
 			<div class="content">
-			<img src="', $settings['default_images_url'], '/simpledesk/user.png" alt="" class="shd_icon_minihead"> <strong>', $txt['shd_acct_information'], '</strong><hr>
+			<img src="', $settings['default_images_url'], '/simpledesk/user.png" alt="" class="shd_icon_minihead"><strong>', $txt['shd_acct_information'], '</strong><hr>
 				<dl>';
 
 		if ($context['user']['is_owner'] || $context['user']['is_admin'])
@@ -72,30 +73,25 @@ function template_shd_profile_main()
 					<dt>', $txt['username'], ': </dt>
 					<dd>', $context['member']['username'], '</dd>';
 
-		// Is this member requiring activation and/or banned?
-		if (!empty($context['activate_message']) || !empty($context['member']['bans']))
-		{
-
-			// If the person looking at the summary has permission, and the account isn't activated, give the viewer the ability to do it themselves.
-			if (!empty($context['activate_message']))
-				echo '
+		// If the person looking at the summary has permission, and the account isn't activated, give the viewer the ability to do it themselves.
+		if (!empty($context['activate_message']))
+			echo '
 					<dt class="clear"><span class="alert">', $context['activate_message'], '</span>&nbsp;(<a href="' . $scripturl . '?action=profile;save;area=activateaccount;u=' . $context['id_member'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '"', ($context['activate_type'] == 4 ? ' onclick="return confirm(\'' . $txt['profileConfirm'] . '\');"' : ''), '>', $context['activate_link_text'], '</a>)</dt>';
 
-			// If the current member is banned, show a message and possibly a link to the ban.
-			if (!empty($context['member']['bans']))
-			{
-				echo '
-					<dt class="clear"><span class="alert">', $txt['user_is_banned'], '</span>&nbsp;[<a href="#" onclick="document.getElementById(\'ban_info\').style.display = document.getElementById(\'ban_info\').style.display == \'none\' ? \'\' : \'none\';return false;">' . $txt['view_ban'] . '</a>]</dt>
-					<dt class="clear" id="ban_info" style="display: none;">
+		// If the current member is banned, show a message and possibly a link to the ban.
+		if (!empty($context['member']['bans']))
+		{
+			echo '
+					<dt class="clear"><span class="alert">', $txt['user_is_banned'], '</span>&nbsp;[<a href="#" onclick="$(\'#ban_info\').toggle();">' . $txt['view_ban'] . '</a>]</dt>
+					<dt class="clear hidden" id="ban_info">
 						<strong>', $txt['user_banned_by_following'], ':</strong>';
 
-				foreach ($context['member']['bans'] as $ban)
-					echo '
+			foreach ($context['member']['bans'] as $ban)
+				echo '
 						<br><span class="smalltext">', $ban['explanation'], '</span>';
 
-				echo '
+			echo '
 					</dt>';
-			}
 		}
 
 		echo '
@@ -134,7 +130,7 @@ function template_shd_profile_main()
 		if ($context['can_see_ip'])
 		{
 			if (!empty($context['member']['ip']))
-			echo '
+				echo '
 					<dt>', $txt['ip'], ': </dt>
 					<dd><a href="', $scripturl, '?action=profile;area=tracking;sa=ip;searchip=', $context['member']['ip'], ';u=', $context['member']['id'], '">', $context['member']['ip'], '</a></dd>';
 
@@ -166,8 +162,8 @@ function template_shd_profile_preferences()
 				</div>';
 
 	echo '
-				<div class="cat_bar">
-					<h3 class="catbg">
+				<div class="title_bar">
+					<h3 class="titlebg">
 						<img src="', $settings['default_images_url'], '/simpledesk/preferences.png" class="icon" alt="*">
 						', sprintf($txt['shd_profile_preferences_header'], $context['member']['name']), '
 					</h3>
@@ -194,9 +190,6 @@ function template_shd_profile_preferences()
 				<form action="', $scripturl, '?action=profile;area=hd_prefs;u=', $context['member']['id'], ';save" method="post">';
 
 	$display_save = false;
-	$displayed_groups = array();
-	$checkall_items = array();
-
 	foreach ($context['shd_preferences_options']['groups'] as $group => $details)
 	{
 		if (empty($details['groups']))
@@ -208,13 +201,9 @@ function template_shd_profile_preferences()
 		echo '<br>
 						<div class="cat_bar" id="prefheader_', $group, '">
 							<h3 class="catbg">
-								<span id="prefexpand_', $group, '" class="floatright toggle_up" onclick="shd_toggleblock(\'', $group, '\'); return false;">&nbsp;<!--
-									<a class="permcollapse" href="#" onclick="shd_toggleblock(\'', $group, '\'); return false;">
-										<img src="', $settings['images_url'], '/selected_open.png" id="prefexpandicon_', $group, '" style="display:none;">
-									</a>-->
-								</span>
+								<span class="toggle_up floatright" id="prefexpandicon_', $group, '"></span>
 								<img src="', shd_image_url($details['icon']), '" class="icon" alt="*">
-								<a class="prefcollapse" href="#prefheader_', $group, '" onclick="shd_toggleblock(\'', $group, '\'); return false;">', $txt['shd_pref_group_' . $group], '</a>
+								<a class="prefcollapse" href="#prefheader_', $group, '" id="prefexpand_', $group, '_swap_link">', $txt['shd_pref_group_' . $group], '</a>
 							</h3>
 						</div>
 						<div class="roundframe noup" id="prefgroup_', $group, '">
@@ -261,14 +250,11 @@ function template_shd_profile_preferences()
 
 		// Only display if the preference group is set to actually have said option, and if 3+ were actually being displayed, otherwise it looks stupid.
 		if (!empty($details['check_all']) && count($details['groups']) > 2)
-		{
 			echo '
-								<div id="checkall_div_', $group, '" style="display:none;">
+								<div id="checkall_div_', $group, '">
 									<input type="checkbox" name="all" id="check_all" value="" onclick="invertAll(this, this.form, \'', $group, '\');" class="floatleft">
 									<label for="check_all" class="floatleft">', $txt['check_all'], '</label>
 								</div>';
-			$checkall_items[] = $group;
-		}
 
 		echo '
 							</div>
@@ -276,37 +262,11 @@ function template_shd_profile_preferences()
 						<span id="preffooter_', $group, '"></span>';
 	}
 
-	// And the JS required to hide everything.
-	if (!empty($displayed_groups) || !empty($checkall_items))
-	{
-		echo '
-						<script type="text/javascript"><!-- // --><![CDATA[';
-
-		if (!empty($displayed_groups))
-			echo '
-						var hidden_blocks = ["', implode('","', $displayed_groups), '"];
-						for (i in hidden_blocks)
-						{
-							shd_toggleblock(hidden_blocks[i]);
-						}';
-
-		if (!empty($checkall_items))
-			echo '
-						var checkall_items = ["', implode('","', $checkall_items), '"];
-						for (i in checkall_items)
-						{
-							document.getElementById("checkall_div_" + checkall_items[i]).style.display = "";
-						}';
-
-		echo '
-						// ]', ']></script>';
-	}
-
 	if ($display_save)
 		echo '
 						<br>
 						<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">
-						<input type="submit" value="', $txt['shd_profile_save_prefs'], '" onclick="return submitThisOnce(this);" accesskey="s" class="button">';
+						<input type="submit" value="', $txt['shd_profile_save_prefs'], '" accesskey="s" class="button save">';
 	else
 		echo '
 						<br>
@@ -325,6 +285,8 @@ function template_shd_profile_preferences()
 
 	echo '
 				</form>';
+
+	template_shd_profile_js_preferences();
 }
 
 function template_shd_profile_show_tickets()
@@ -350,7 +312,7 @@ function template_shd_profile_show_tickets()
 	<div class="tborder">
 		<div class="title_bar">
 			<h3 class="titlebg">
-				<img src="', $settings['default_images_url'], '/simpledesk/', $context['can_haz_replies'] ? 'replies' : 'ticket', '.png" class="floatright shd_icon_fullhead" alt=""/>
+				<img src="', $settings['default_images_url'], '/simpledesk/', $context['can_haz_replies'] ? 'replies' : 'ticket', '.png" class="floatright shd_icon_fullhead" alt="">
 				<span class="smalltext">', $context['page_index'], '</span>
 			</h3>
 		</div>';
@@ -384,7 +346,7 @@ function template_shd_profile_show_tickets()
 	echo '
 		<div class="title_bar">
 			<h3 class="titlebg">
-				<img src="', $settings['default_images_url'], '/simpledesk/', $context['can_haz_replies'] ? 'replies' : 'ticket', '.png" class="floatright shd_icon_fullhead" alt=""/>
+				<img src="', $settings['default_images_url'], '/simpledesk/', $context['can_haz_replies'] ? 'replies' : 'ticket', '.png" class="floatright shd_icon_fullhead" alt="">
 				<span class="smalltext">', $context['page_index'], '</span>
 			</h3>
 		</div>
@@ -422,16 +384,12 @@ function template_shd_profile_show_notify_override()
 					</tr>';
 
 	if (empty($context['tickets']))
-	{
 		echo '
 					<tr class="windowbg">
 						<td colspan="7">', $txt['shd_error_no_tickets'], '</td>
 					</tr>';
-	}
 	else
-	{
 		foreach ($context['tickets'] as $ticket)
-		{
 			echo '
 						<tr class="windowbg">
 							<td width="4%" class="smalltext">', $ticket['id_ticket_display'], '</td>
@@ -442,8 +400,6 @@ function template_shd_profile_show_notify_override()
 							<td class="smalltext">', $txt['shd_urgency_' . $ticket['urgency']], '</td>
 							<td class="smalltext">', $ticket['updated'], '</td>
 						</tr>';
-		}
-	}
 
 	echo '
 					</table>';
@@ -462,9 +418,9 @@ function template_shd_profile_permissions()
 						</h3>
 					</div>';
 
+	// Whoa, this dude's special. Tidy up and BAIL!
 	if (!empty($context['member']['has_all_permissions']))
 	{
-		// Whoa, this dude's special. Tidy up and BAIL!
 		echo '
 					<p class="information">
 						', $txt['shd_profile_permissions_all_admin'], '
@@ -497,6 +453,7 @@ function template_shd_profile_permissions()
 						<input type="submit" class="button" value="', $txt['go'], '">
 					</form>
 				</div>';
+
 	// We're done?
 	if (!empty($context['dept_list_only']))
 		return;
@@ -520,12 +477,10 @@ function template_shd_profile_permissions()
 						</tr>';
 
 	if (empty($context['member_roles']))
-	{
 		echo '
 						<tr class="windowbg">
 							<td colspan="3" class="centertext">', $txt['shd_profile_no_roles'], '</td>
 						</tr>';
-	}
 	else
 	{
 		foreach ($context['member_roles'] as $role)
@@ -644,6 +599,7 @@ function template_shd_profile_permissions()
 
 			echo '
 							<td>';
+
 			$done_first = false;
 			foreach ($roles as $role)
 			{
@@ -698,9 +654,7 @@ function template_shd_profile_actionlog()
 							<td colspan="2" class="shd_noticket">', $txt['shd_profile_log_none'], '</td>
 						</tr>';
 	else
-	{
 		foreach ($context['action_log'] as $action)
-		{
 			echo '
 						<tr class="windowbg">
 							<td class="smalltext">', $action['time'], '</td>
@@ -709,13 +663,11 @@ function template_shd_profile_actionlog()
 								', $action['action_text'], '
 							</td>
 						</tr>';
-		}
-	}
 
 	echo '
 						<tr class="titlebg">
 							<td class="bot_page" colspan="2">
-								', !empty($context['action_full_log']) ? '<span class="smalltext shd_main_log"><img src="' . $settings['default_images_url'] . '/simpledesk/browse.png" alt=""> <a href="' . $scripturl . '?action=admin;area=helpdesk_info;sa=actionlog">' . $txt['shd_profile_log_full'] . '</a></span>' : '', '
+								', !empty($context['action_full_log']) ? '<span class="smalltext shd_main_log"><img src="' . $settings['default_images_url'] . '/simpledesk/browse.png" alt=""><a href="' . $scripturl . '?action=admin;area=helpdesk_info;sa=actionlog">' . $txt['shd_profile_log_full'] . '</a></span>' : '', '
 							</td>
 						</tr>
 					</table>
@@ -731,18 +683,15 @@ function template_shd_profile_navigation_above()
 			<div class="tborder shd_profile_navigation">
 				<div class="roundframe">
 					<ul class="', !empty($options['use_sidebar_menu']) ? 'shd_profile_nav_inline' : 'shd_profile_nav_list', '">';
+
 	foreach ($context['shd_profile_menu'] as $menuitem)
-	{
 		if (!empty($menuitem['show']))
-		{
 			echo '
 						<li', (!empty($menuitem['is_last']) ? ' class="shd_inline_last"' : ''), '>
 							<img src="', $settings['default_images_url'], '/simpledesk/', $menuitem['image'], '" alt="x" class="floatright">
 							<a href="', $menuitem['link'], '"><strong>', $menuitem['text'], '</strong></a>
 							', (empty($options['use_sidebar_menu']) && empty($menuitem['is_last'])) ? '<hr>' : '', '
 						</li>';
-		}
-	}
 
 	echo '
 					</ul>
@@ -777,24 +726,24 @@ function template_profile_shd_theme_settings()
 						<ul id="theme_settings">
 							<li>
 								<input type="hidden" name="default_options[use_sidebar_menu]" value="0">
-								<label for="use_sidebar_menu"><input type="checkbox" name="default_options[use_sidebar_menu]" id="use_sidebar_menu" value="1"', !empty($context['member']['options']['use_sidebar_menu']) ? ' checked="checked"' : '', ' > ', $txt['use_sidebar_menu'], '</label>
+								<label for="use_sidebar_menu"><input type="checkbox" name="default_options[use_sidebar_menu]" id="use_sidebar_menu" value="1"', !empty($context['member']['options']['use_sidebar_menu']) ? ' checked="checked"' : '', '> ', $txt['use_sidebar_menu'], '</label>
 							</li>';
 
 	if ($settings['allow_no_censored'])
 		echo '
 							<li>
 								<input type="hidden" name="default_options[show_no_censored]" value="0">
-								<label for="show_no_censored"><input type="checkbox" name="default_options[show_no_censored]" id="show_no_censored" value="1"' . (!empty($context['member']['options']['show_no_censored']) ? ' checked="checked"' : '') . ' > ' . $txt['show_no_censored'] . '</label>
+								<label for="show_no_censored"><input type="checkbox" name="default_options[show_no_censored]" id="show_no_censored" value="1"' . (!empty($context['member']['options']['show_no_censored']) ? ' checked="checked"' : '') . '> ' . $txt['show_no_censored'] . '</label>
 							</li>';
 
 	echo '
 							<li>
 								<input type="hidden" name="default_options[return_to_post]" value="0">
-								<label for="return_to_post"><input type="checkbox" name="default_options[return_to_post]" id="return_to_post" value="1"', !empty($context['member']['options']['return_to_post']) ? ' checked="checked"' : '', ' > ', $txt['return_to_post'], '</label>
+								<label for="return_to_post"><input type="checkbox" name="default_options[return_to_post]" id="return_to_post" value="1"', !empty($context['member']['options']['return_to_post']) ? ' checked="checked"' : '', '> ', $txt['return_to_post'], '</label>
 							</li>
 							<li>
 								<input type="hidden" name="default_options[no_new_reply_warning]" value="0">
-								<label for="no_new_reply_warning"><input type="checkbox" name="default_options[no_new_reply_warning]" id="no_new_reply_warning" value="1"', !empty($context['member']['options']['no_new_reply_warning']) ? ' checked="checked"' : '', ' > ', $txt['no_new_reply_warning'], '</label>
+								<label for="no_new_reply_warning"><input type="checkbox" name="default_options[no_new_reply_warning]" id="no_new_reply_warning" value="1"', !empty($context['member']['options']['no_new_reply_warning']) ? ' checked="checked"' : '', '> ', $txt['no_new_reply_warning'], '</label>
 							</li>';
 
 	// Choose WYSIWYG settings?
@@ -802,7 +751,7 @@ function template_profile_shd_theme_settings()
 		echo '
 							<li>
 								<input type="hidden" name="default_options[wysiwyg_default]" value="0">
-								<label for="wysiwyg_default"><input type="checkbox" name="default_options[wysiwyg_default]" id="wysiwyg_default" value="1"', !empty($context['member']['options']['wysiwyg_default']) ? ' checked="checked"' : '', ' > ', $txt['wysiwyg_default'], '</label>
+								<label for="wysiwyg_default"><input type="checkbox" name="default_options[wysiwyg_default]" id="wysiwyg_default" value="1"', !empty($context['member']['options']['wysiwyg_default']) ? ' checked="checked"' : '', '> ', $txt['wysiwyg_default'], '</label>
 							</li>';
 
 	if (!empty($modSettings['cal_enabled']))
@@ -841,4 +790,53 @@ function template_profile_shd_theme_settings()
 						</ul>
 						<dl>
 							<dd></dd>';
+}
+
+/**
+ *	Javascript for Preferences
+ *
+ *	@since 2.1
+*/
+function template_shd_profile_js_preferences()
+{
+	global $context, $options, $txt;
+
+	echo '
+	<script type="text/javascript"><!-- // --><![CDATA[';
+
+	foreach ($context['shd_preferences_options']['groups'] as $group => $details)
+		echo '
+		var oPreferences', $group, ' = new smc_Toggle({
+			bToggleEnabled: true,
+			bCurrentlyCollapsed: ', empty($options['collapse_shd_profile_' . $group]) ? 'false' : 'true', ',
+			aSwappableContainers: [
+				\'prefgroup_', $group, '\'
+			],
+			aSwapImages: [
+				{
+					sId: \'prefexpandicon_', $group, '\',
+				}
+			],
+			aSwapLinks: [
+				{
+					sId: \'prefexpand_', $group, '_swap_link\',
+					msgCollapsed: ', JavaScriptEscape($txt['shd_pref_group_' . $group]), ',
+					msgExpanded: ', JavaScriptEscape($txt['shd_pref_group_' . $group]), ',
+				},
+			],
+			oThemeOptions: {
+				bUseThemeSettings: ', $context['user']['is_guest'] ? 'false' : 'true', ',
+				sOptionName: \'collapse_shd_profile_', $group, '\',
+				sSessionId: smf_session_id,
+				sSessionVar: smf_session_var,
+			},
+			oCookieOptions: {
+				bUseCookie: false,
+				sCookieName: \'collapse_shd_profile_', $group, '\'
+			}
+		});';
+
+	echo '
+	// ]' . ']></script>';
+
 }

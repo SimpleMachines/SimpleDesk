@@ -218,7 +218,10 @@ function shd_tickettotopic()
 	{
 		// Didn't we have any values? If not, prune it, not interested.
 		if (empty($field['values']))
+		{
 			unset($context['custom_fields'][$field_id]);
+			continue;
+		}
 
 		// If the user is an administrator, they can always see the fields.
 		if ($is_admin)

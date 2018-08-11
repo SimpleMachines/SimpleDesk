@@ -109,6 +109,7 @@ function shd_tokeniser($string)
 		{
 			$word = $smcFunc['strtolower']($word);
 			$result[shd_hash($word)] = $i++;
+
 			if (!empty($modSettings['shd_search_prefix_size']) && $len >= $modSettings['shd_search_prefix_size'])
 			{
 				for ($j = $modSettings['shd_search_prefix_size']; $j <= $len; $j++)

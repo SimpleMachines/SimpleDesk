@@ -51,16 +51,12 @@ function template_shd_unread_below()
 						</tr>';
 
 	if (empty($context['shd_unread_info']))
-	{
 		echo '
 					<tr class="windowbg">
 							<td colspan="7">', $txt['shd_error_no_tickets'], '</td>
 						</tr>';
-	}
 	else
-	{
 		foreach ($context['shd_unread_info'] as $ticket)
-		{
 			echo '
 					<tr class="windowbg">
 							<td width="4%" class="smalltext">', $ticket['id_ticket_display'], '</td>
@@ -71,9 +67,6 @@ function template_shd_unread_below()
 							<td class="smalltext">', $txt['shd_urgency_' . $ticket['urgency']], '</td>
 							<td class="smalltext">', $ticket['updated'], '</td>
 						</tr>';
-
-		}
-	}
 
 	echo '
 				</table>';

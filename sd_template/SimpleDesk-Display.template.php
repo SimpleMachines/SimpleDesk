@@ -26,33 +26,29 @@ function template_viewticket()
 {
 	global $context, $txt, $scripturl, $settings, $modSettings, $options;
 
+	// SMF style icons go first.
+	if ($modSettings['shd_ticketnav_style'] == 'smf')
+		template_button_strip($context['ticket_navigation'], 'right');
+
 	// Back to the helpdesk.
 	template_button_strip(array($context['navigation']['back'], $context['navigation']['replies'], $context['navigation']['ticketlog']));
-
-	if ($modSettings['shd_ticketnav_style'] == 'smf')
-	{
-		template_button_strip($context['ticket_navigation'], 'right');
-	}
 
 	echo '
 		<div class="cat_bar">
 			<h3 class="catbg">
 				<span class="floatright smalltext shd_ticketlinks" id="ticket">';
 
+	// SimpleDesk style Icons go here.
 	if ($modSettings['shd_ticketnav_style'] == 'sd')
-	{
 		foreach ($context['ticket_navigation'] as $button)
 			if (!empty($button['display']))
 				echo '
 					<a href="', $button['url'], '"', (!empty($button['is_last']) ? ' id="last"' : ''), '', (!empty($button['onclick']) ? ' onclick="' . $button['onclick'] . '"' : ''), '><img src="', $settings['default_images_url'], '/simpledesk/', $button['icon'], '.png" alt="', $button['alt'], '" title="', $txt[$button['text']], '"> ', $txt[$button['text']], '</a>';
-	}
 	elseif ($modSettings['shd_ticketnav_style'] == 'sdcompact')
-	{
 		foreach ($context['ticket_navigation'] as $button)
 			if (!empty($button['display']))
 				echo '
 					<a href="', $button['url'], '"', (!empty($button['is_last']) ? ' id="last"' : ''), '', (!empty($button['onclick']) ? ' onclick="' . $button['onclick'] . '"' : ''), '><img src="', $settings['default_images_url'], '/simpledesk/', $button['icon'], '.png" alt="', $button['alt'], '" title="', $txt[$button['text']], '"></a>';
-	}
 
 	echo '
 				</span>
@@ -82,9 +78,9 @@ function template_viewticket()
 						<dt><img src="', $settings['default_images_url'], '/simpledesk/staff.png" alt="" class="shd_smallicon"> ', $txt['shd_ticket_assignedto'], ':</dt>
 						<dd><span id="assigned_to">', $context['ticket']['assigned']['link'], '</span><span id="assigned_button"></span></dd>
 						<dt class="shd_assignees_list">
-							<ul id="assigned_list" style="display:none;"></ul>
+							<ul id="assigned_list" class="hidden"></ul>
 						</dt>
-						<dt><img src="', $settings['default_images_url'], '/simpledesk/status.png" alt="" class="shd_smallicon"/> ', $txt['shd_ticket_status'], ':</dt>
+						<dt><img src="', $settings['default_images_url'], '/simpledesk/status.png" alt="" class="shd_smallicon"> ', $txt['shd_ticket_status'], ':</dt>
 						<dd>', $context['ticket']['status']['label'], '</dd>
 						<dt><img src="', $settings['default_images_url'], '/simpledesk/replies.png" alt="" class="shd_smallicon"> ', $txt['shd_ticket_num_replies'], ':</dt>
 						<dd><a href="#replies">', (empty($context['ticket']['display_recycle']) ? $context['ticket']['num_replies'] : (int) $context['ticket']['num_replies'] + (int) $context['ticket']['deleted_replies']), '</a></dd>';
@@ -128,7 +124,7 @@ function template_viewticket()
 						{
 							echo '
 								<li>
-									<dl>
+									<dl class="stats">
 										<dt>', !empty($field['icon']) ? '<img src="' . $settings['default_images_url'] . '/simpledesk/cf/' . $field['icon'] . '" alt="" class="shd_smallicon">' : '', ' ', $field['name'], ':</dt>
 										<dd>';
 
@@ -178,7 +174,7 @@ function template_viewticket()
 				if ($content)
 				{
 					echo '
-					<div class="information shd_additional_details">
+					<div class="shd_additional_details">
 						<strong><img src="', $settings['default_images_url'], '/simpledesk/additional_details.png" alt="" class="shd_smallicon shd_icon_minihead"> ', $txt['shd_ticket_additional_details'], '</strong>
 						<hr>
 							<ul>';
@@ -239,7 +235,7 @@ function template_viewticket()
 					</div>';
 
 			echo '
-					<img src="', $settings['default_images_url'], '/simpledesk/name.png" alt="" class="shd_smallicon shd_icon_minihead"> <strong>';
+					<img src="', $settings['default_images_url'], '/simpledesk/name.png" alt="" class="shd_smallicon shd_icon_minihead"><strong>';
 
 			$output = '';
 			foreach ($context['ticket']['custom_fields']['prefix'] as $field)
@@ -273,12 +269,10 @@ function template_viewticket()
 							', $context['ticket']['body'];
 
 			if (!empty($modSettings['show_modify']) && !empty($context['ticket']['modified']))
-			{
 				echo '
 						<div class="smalltext shd_modified">
 							&#171; <em>', sprintf($txt['last_edit_by'], $context['ticket']['modified']['time'], $context['ticket']['modified']['link']), '</em> &#187;
 						</div>';
-			}
 
 			echo '
 					</div>';
@@ -292,7 +286,7 @@ function template_viewticket()
 			if ($context['can_quote'])
 				echo '
 					<div class="information shd_quotebutton floatright" id="shd_quotebutton">
-						<a onclick="return oQuickReply.quote(', $context['ticket']['first_msg'], ', \'', $context['session_id'], '\', \'', $context['session_var'], '\', true);" href="', $scripturl, '?action=helpdesk;sa=reply;ticket=', $context['ticket_id'], ';quote=', $context['ticket']['first_msg'], ';num_replies=', $context['ticket']['num_replies'], ';', $context['session_var'], '=', $context['session_id'], '">', $txt['shd_ticket_quote'], '</a><br>
+						<a data-id="', $context['ticket']['first_msg'], '" href="', $scripturl, '?action=helpdesk;sa=reply;ticket=', $context['ticket_id'], ';quote=', $context['ticket']['first_msg'], ';num_replies=', $context['ticket']['num_replies'], ';', $context['session_var'], '=', $context['session_id'], '">', $txt['shd_ticket_quote'], '</a><br>
 					</div>';
 
 			template_inline_attachments($context['ticket']['first_msg']);
@@ -322,23 +316,8 @@ function template_viewticket()
 	// The ticket action log, lastly.
 	template_ticketactionlog();
 
-	// And lastly, the Javascript for AJAX assignment. Since this is onload stuff, it needs to know the HTML already exists.
-	if (!empty($context['ajax_assign']))
-		echo '
-	<script type="text/javascript"><!-- // --><![CDATA[
-	var oAjaxAssign = new AjaxAssign({
-		sSelf: "oAjaxAssign",
-		sScriptUrl: smf_scripturl,
-		iTicketId: ' . $context['ticket_id'] . ',
-		sId: "assigned_button",
-		sListId: "assigned_list",
-		sAssignedSpan: "assigned_to",
-		sImagesUrl: "' . $settings['default_images_url'] . '/simpledesk",
-		sImageCollapsed: "ajax_assign.png",
-		sImageExpanded: "ajax_assign_cancel.png"
-	});
-	// ]' . ']></script>';
-
+	// Javascript?
+	template_scripts_footer();
 }
 
 /**
@@ -368,14 +347,12 @@ function template_ticket_leftcolumn()
 	$context['leftcolumndone'] = true; // for the rest of the template later
 
 	echo '
+		<br class="clear">
 		<div class="shd_ticket_leftcolumn floatleft">
 			<div class="shd_attachmentcolumn">';
 
 	foreach ($context['leftcolumn_templates'] as $template)
-	{
-		$var = 'template_' . $template;
-		$var();
-	}
+		call_user_func('template_' . $template);
 
 	echo '
 			</div>
@@ -392,8 +369,6 @@ function template_ticket_leftcolumn()
 function template_viewticketattach()
 {
 	global $context, $settings, $txt, $scripturl;
-
-	$remove_txt = JavaScriptEscape($txt['shd_delete_attach_confirm']);
 
 	if (!empty($context['ticket_attach']['ticket']))
 	{
@@ -428,7 +403,7 @@ function template_viewticketattach()
 
 			if (!empty($attachment['can_delete']))
 				echo '
-							<a href="', $scripturl, '?action=helpdesk;sa=deleteattach;ticket=', $context['ticket_id'], ';attach=', $attachment['id'], '" onclick="return confirm(', $remove_txt, ');"><img src="', $settings['default_images_url'], '/simpledesk/delete.png" title="', $txt['shd_delete_attach'], '" alt="', $txt['shd_delete_attach'], '"></a>';
+							<a href="', $scripturl, '?action=helpdesk;sa=deleteattach;ticket=', $context['ticket_id'], ';attach=', $attachment['id'], '" onclick="return confirm(', JavaScriptEscape($txt['shd_delete_attach_confirm']), ');"><img src="', $settings['default_images_url'], '/simpledesk/delete.png" title="', $txt['shd_delete_attach'], '" alt="', $txt['shd_delete_attach'], '"></a>';
 
 			echo '
 						</span>
@@ -473,6 +448,7 @@ function template_viewnotifications()
 				echo '
 					', $txt['shd_ticket_notify_because'], '
 					<ul>';
+
 				foreach ($context['display_notifications']['preferences'] as $pref)
 					echo '
 						<li>', $txt['shd_ticket_notify_because_' . $pref], '</li>';
@@ -577,19 +553,18 @@ function template_additional_fields()
 		echo '
 			<div class="title_bar" id="additionalinfoheader">
 				<h3 class="titlebg">
-					<span class="floatright"><a href="javascript:oCustomFields.infoswap();"><img src="', $settings['images_url'], '/collapse.png" alt="+" id="shd_custom_fields_swap" class="icon"></a></span>
-					<img src="', $settings['default_images_url'], '/simpledesk/additional_information.png" alt="x">
-					<a href="javascript:oCustomFields.infoswap();">', $txt['shd_ticket_additional_information'], '</a>
+					<span class="toggle_up floatright" id="shd_custom_fields_swap"></span>
+					<a href="#" id="shd_custom_fields_swap_link">', $txt['shd_ticket_additional_information'], '</a>
 				</h3>
 			</div>
-			<div class="roundframe" id="additional_info">';
+			<div id="additional_info">';
 
 			foreach ($context['ticket']['custom_fields']['information'] as $field)
 			{
 				if ($field['display_empty'] || !empty($field['value']) || $field['type'] == CFIELD_TYPE_CHECKBOX)
 				{
 					echo '
-					<div class="information">
+					<div class="roundframe">
 						', !empty($field['icon']) ? '<img src="' . $settings['default_images_url'] . '/simpledesk/cf/' . $field['icon'] . '" alt="" class="shd_smallicon">' : '', '
 						<strong>', $field['name'], ':</strong><hr>';
 
@@ -637,41 +612,32 @@ function template_quickreply()
 {
 	global $context, $scripturl, $options, $txt, $settings;
 
-	if ($context['can_reply'] && !empty($options['display_quick_reply']))
-	{
+	echo '
+		<div class="title_bar" id="quickreplyheader">
+			<h3 class="titlebg">
+				<span class="floatright"><a href="#" onclick="oQuickReply.swap(); return false;"><img src="', $settings['images_url'], '/selected_open.png" alt="+" id="quickReplyExpand" class="icon" style="display:none;"></a></span>
+				<img src="', $settings['default_images_url'], '/simpledesk/respond.png" alt="x">
+				<a href="', $scripturl, '?action=helpdesk;sa=reply;ticket=', $context['ticket_id'], ';num_replies=', $context['ticket']['num_replies'], ';', $context['session_var'], '=', $context['session_id'], '" onclick="oQuickReply.swap(); return false;">', $txt['shd_reply_ticket'], '</a>
+			</h3>
+		</div>
+		<div class="roundframe" id="quickReplyOptions">
+			<div class="content">
+				<form action="', $scripturl, '?action=helpdesk;sa=savereply" method="post" accept-charset="', $context['character_set'], '" name="postreply" id="postreply" onsubmit="smc_saveEntities(\'postreply\', [\'shd_reply\'], \'field\');" enctype="multipart/form-data" style="margin: 0;">';
+
+	if ($context['can_go_advanced'])
 		echo '
-			<div class="title_bar" id="quickreplyheader">
-				<h3 class="titlebg">
-					<span class="floatright"><a href="#" onclick="oQuickReply.swap(); return false;"><img src="', $settings['images_url'], '/', $options['display_quick_reply'] == 2 ? 'selected_open' : 'selected', '.png" alt="+" id="quickReplyExpand" class="icon" style="display:none;"></a></span>
-					<img src="', $settings['default_images_url'], '/simpledesk/respond.png" alt="x">
-					<a href="', $scripturl, '?action=helpdesk;sa=reply;ticket=', $context['ticket_id'], ';num_replies=', $context['ticket']['num_replies'], ';', $context['session_var'], '=', $context['session_id'], '" onclick="oQuickReply.swap(); return false;">', $txt['shd_reply_ticket'], '</a>
-				</h3>
+				<div class="information shd_advancedbutton floatright" id="shd_goadvancedbutton">
+					<a href="', $scripturl, '?action=helpdesk;sa=reply;ticket=', $context['ticket_id'], ';', $context['session_var'], '=', $context['session_id'], '">', $txt['shd_go_advanced'], '</a><br>
+				</div>';
+
+	template_ticket_postbox();
+	template_ticket_meta();
+
+	echo '
+				</form>
 			</div>
-			<div class="roundframe" id="quickReplyOptions"', $options['display_quick_reply'] != 2 ? ' style="display: none"' : '', '>
-				<div class="content">
-					<form action="', $scripturl, '?action=helpdesk;sa=savereply" method="post" accept-charset="', $context['character_set'], '" name="postreply" id="postreply" onsubmit="submitonce(this);smc_saveEntities(\'postreply\', [\'shd_reply\'], \'field\');" enctype="multipart/form-data" style="margin: 0;">';
-
-		if ($context['can_go_advanced'])
-		{
-			echo '
-					<div class="information shd_advancedbutton floatright" id="shd_goadvancedbutton" style="display:none;">
-						<a onclick="goAdvanced(); return false;" href="', $scripturl, '?action=helpdesk;sa=reply;ticket=', $context['ticket_id'], ';', $context['session_var'], '=', $context['session_id'], '">', $txt['shd_go_advanced'], '</a><br>
-					</div>';
-		}
-
-		template_ticket_postbox();
-		template_ticket_meta();
-
-		echo '
-					</form>
-				</div>
-			</div>
-			<span id="quickreplyfooter" ', $options['display_quick_reply'] == 2 ? '' : ' style="display: none"', '></span>
-		<script type="text/javascript"><!-- // --><![CDATA[
-		document.getElementById("quickReplyExpand").style.display = "";
-		document.getElementById("shd_goadvancedbutton").style.display = "";
-		// ]]></script>';
-	}
+		</div>
+		<span id="quickreplyfooter"></span>';
 }
 
 /**
@@ -770,10 +736,8 @@ function template_viewreplies()
 		<div id="replies">';
 
 	if (empty($reply_request))
-	{
 		echo '
 			<div class="roundframe">', $txt['shd_no_replies'], '</div>';
-	}
 	else
 	{
 		while ($reply = $context['get_replies']())
@@ -809,9 +773,10 @@ function template_viewreplies()
 						<div class="shd_replyarea">
 							<div class="smalltext">
 								<span class="floatright shd_ticketlinks">';
+
 			if ($context['can_quote'])
 				echo '
-									<img src="', $settings['default_images_url'], '/simpledesk/quote.png" class="shd_smallicon" alt="*"><a onclick="return oQuickReply.quote(', $reply['id'], ', \'', $context['session_id'], '\', \'', $context['session_var'], '\', true);" href="', $scripturl, '?action=helpdesk;sa=reply;ticket=', $context['ticket_id'], ';quote=', $reply['id'], ';', $context['session_var'], '=', $context['session_id'], '">', $txt['shd_ticket_quote_short'], '</a>';
+									<img src="', $settings['default_images_url'], '/simpledesk/quote.png" class="shd_smallicon" alt="*"><a class="quick_reply" data-id="', $reply['id'], '" href="', $scripturl, '?action=helpdesk;sa=reply;ticket=', $context['ticket_id'], ';quote=', $reply['id'], ';', $context['session_var'], '=', $context['session_id'], '">', $txt['shd_ticket_quote_short'], '</a>';
 			if ($reply['can_edit'])
 				echo '
 									<img src="', $settings['default_images_url'], '/simpledesk/edit.png" class="shd_smallicon" alt="*"><a href="', $scripturl, '?action=helpdesk;sa=editreply;ticket=', $context['ticket_id'], ';msg=', $reply['id'], ';', $context['session_var'], '=', $context['session_id'], '">', $txt['shd_ticket_edit'], '</a>';
@@ -871,12 +836,10 @@ function template_viewreplies()
 		}
 
 			if (!empty($settings['show_modify']) && !empty($reply['modified']))
-			{
 				echo '
 							<div class="smalltext shd_modified" style="margin-top:20px;">
 								&#171; <em>', $txt['last_edit'], ': ', $reply['modified']['time'], ' ', $txt['by'], ' ', $reply['modified']['link'], '</em> &#187;
 							</div>';
-			}
 
 			template_inline_attachments($reply['id']);
 
@@ -928,7 +891,7 @@ function template_viewrelationships()
 				continue;
 
 			echo '
-					<img src="', $settings['default_images_url'], '/simpledesk/rel_', $rel_type, '.png" alt=""> <strong>', $txt['shd_ticket_reltype_' . $rel_type], ':</strong><br>';
+					<img src="', $settings['default_images_url'], '/simpledesk/rel_', $rel_type, '.png" alt=""><strong>', $txt['shd_ticket_reltype_' . $rel_type], ':</strong><br>';
 
 			foreach ($relationships as $rel)
 			{
@@ -958,10 +921,10 @@ function template_viewrelationships()
 
 			echo '
 					</select>
-					<input type="text"  name="otherticket" value="" size="5">
+					<input type="text" name="otherticket" value="" size="5">
 					<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">
 					<input type="hidden" name="ticket" value="', $context['ticket_id'], '">
-					<input type="submit" class="button" value="', $txt['shd_go'], '">
+					<input type="submit" class="button save" value="', $txt['shd_go'], '">
 				</form>';
 		}
 
@@ -982,74 +945,58 @@ function template_ticketactionlog()
 {
 	global $context, $settings, $txt, $scripturl;
 
-	if (!empty($context['display_ticket_log']))
-	{
-		echo '
-			<div class="cat_bar" id="ticket_log_header">
-				<h3 class="titlebg">
-					<span class="floatright shd_ticket_log_expand_container"> <a href="#" onclick="ActionLog.swap(); return false;"><img src="', $settings['images_url'], '/selected.png" alt="+" id="shd_ticket_log_expand" class="icon" style="display:none;"></a></span>
-					<img src="', $settings['default_images_url'], '/simpledesk/log.png" class="icon" alt="*">
-					<a href="#" onclick="ActionLog.swap(); return false;">', $txt['shd_ticket_log'], '</a>
-					<span class="smalltext">(', $context['ticket_log_count'] == 1 ? $txt['shd_ticket_log_count_one'] : sprintf($txt['shd_ticket_log_count_more'], $context['ticket_log_count']), ')</span>
-				</h3>
-			</div>
-			<table class="table_grid" id="ticket_log">
-				<tr class="title_bar">
-					<td class="quarter_table">
-						<img src="', $settings['default_images_url'], '/simpledesk/time.png" class="shd_smallicon" alt="">
-						', $txt['shd_ticket_log_date'], '
-					</td>
-					<td class="quarter_table">
-						<img src="', $settings['default_images_url'], '/simpledesk/user.png" class="shd_smallicon" alt="">
-						', $txt['shd_ticket_log_member'], '
-					</td>
-					<td class="half_table">
-						<img src="', $settings['default_images_url'], '/simpledesk/action.png" class="shd_smallicon" alt="">
-						', $txt['shd_ticket_log_action'], '
-					</td>
-				</tr>';
+	if (empty($context['display_ticket_log']))
+		return;
 
-		if (empty($context['ticket_log']))
+	echo '
+		<div class="title_bar" id="ticket_log_header">
+			<h3 class="titlebg">
+				<span class="toggle_up floatright" id="shd_ActionLogToggle"></span>
+				<span id="shd_ActionLogLink"><img src="', $settings['default_images_url'], '/simpledesk/log.png" class="icon" alt="*"> ', $txt['shd_ticket_log'], '</span>
+				<span class="smalltext">(', $context['ticket_log_count'] == 1 ? $txt['shd_ticket_log_count_one'] : sprintf($txt['shd_ticket_log_count_more'], $context['ticket_log_count']), ')</span>
+			</h3>
+		</div>
+		<table class="table_grid" id="ticket_log">
+			<tr class="title_bar">
+				<td class="quarter_table">
+					<img src="', $settings['default_images_url'], '/simpledesk/time.png" class="shd_smallicon" alt="">
+					', $txt['shd_ticket_log_date'], '
+				</td>
+				<td class="quarter_table">
+					<img src="', $settings['default_images_url'], '/simpledesk/user.png" class="shd_smallicon" alt="">
+					', $txt['shd_ticket_log_member'], '
+				</td>
+				<td class="half_table">
+					<img src="', $settings['default_images_url'], '/simpledesk/action.png" class="shd_smallicon" alt="">
+					', $txt['shd_ticket_log_action'], '
+				</td>
+			</tr>';
+
+	if (empty($context['ticket_log']))
+		echo '
+			<tr class="windowbg">
+				<td colspan="3" class="shd_noticket">', $txt['shd_ticket_log_none'], '</td>
+			</tr>';
+	else
+		foreach ($context['ticket_log'] as $action)
 			echo '
-				<tr class="windowbg">
-					<td colspan="3" class="shd_noticket">', $txt['shd_ticket_log_none'], '</td>
-				</tr>';
-		else
-		{
-			foreach ($context['ticket_log'] as $action)
-			{
-				echo '
-				<tr class="windowbg">
-					<td class="smalltext">', $action['time'], '</td>
-					<td', !empty($action['member']['ip']) ? ' title="' . $txt['shd_ticket_log_ip'] . ' ' . $action['member']['ip'] . '"' : '', '>', $action['member']['link'], ' <span class="smalltext">(', $action['member']['group'], ')</span></td>
-					<td class="smalltext">
-						<img src="', $settings['default_images_url'], '/simpledesk/', $action['action_icon'], '" alt="" class="shd_smallicon">
-						', $action['action_text'], '
-					</td>
-				</tr>';
-			}
-		}
+			<tr class="windowbg">
+				<td class="smalltext">', $action['time'], '</td>
+				<td', !empty($action['member']['ip']) ? ' title="' . $txt['shd_ticket_log_ip'] . ' ' . $action['member']['ip'] . '"' : '', '>', $action['member']['link'], ' <span class="smalltext">(', $action['member']['group'], ')</span></td>
+				<td class="smalltext">
+					<img src="', $settings['default_images_url'], '/simpledesk/', $action['action_icon'], '" alt="" class="shd_smallicon">
+					', $action['action_text'], '
+				</td>
+			</tr>';
 
-		echo '
-				<tr class="bot_page">
-					<td colspan="3">
-						<span class="floatright"><a href="#replies" title="', $txt['shd_go_to_replies_start'], '"><img src="', $settings['default_images_url'], '/simpledesk/move_up.png" alt=""><img src="', $settings['default_images_url'], '/simpledesk/replies.png" alt=""></a></span>
-						', !empty($context['ticket_full_log']) ? '<span class="smalltext shd_main_log"><img src="' . $settings['default_images_url'] . '/simpledesk/browse.png" alt=""> <a href="' . $scripturl . '?action=admin;area=helpdesk_info;sa=actionlog">' . $txt['shd_ticket_log_full'] . '</a></span>' : '', '
-					</td>
-				</tr>
-			</table>
-			<script type="text/javascript"><!-- // --><![CDATA[
-			var ActionLog = new ActionLog({
-				sImagesUrl: "', $settings['images_url'], '",
-				sContainerId: "ticket_log",
-				sImageId: "shd_ticket_log_expand",
-				sImageCollapsed: "selected_open.png",
-				sImageExpanded: "selected.png",
-				sHeaderId: "ticket_log_header",
-			});
-			ActionLog.swap();
-			// ]', ']></script>';
-	}
+	echo '
+			<tr class="bot_page">
+				<td colspan="3">
+					<span class="floatright"><a href="#replies" title="', $txt['shd_go_to_replies_start'], '"><img src="', $settings['default_images_url'], '/simpledesk/move_up.png" alt=""><img src="', $settings['default_images_url'], '/simpledesk/replies.png" alt=""></a></span>
+					', !empty($context['ticket_full_log']) ? '<span class="smalltext shd_main_log"><img src="' . $settings['default_images_url'] . '/simpledesk/browse.png" alt=""><a href="' . $scripturl . '?action=admin;area=helpdesk_info;sa=actionlog">' . $txt['shd_ticket_log_full'] . '</a></span>' : '', '
+				</td>
+			</tr>
+		</table>';
 }
 
 /**
@@ -1072,5 +1019,224 @@ function template_shd_display_nojs_above()
 */
 function template_shd_display_nojs_below()
 {
+}
 
+/**
+ *	All of the Javascript we have.
+ *
+ *	@since 2.1
+*/
+function template_scripts_footer()
+{
+	global $context;
+
+	$jsTemplates = array(
+		'privacy' => !empty($context['ticket']['privacy']['can_change']),
+		'urgency' => !empty($context['ticket']['urgency']['increase']) || !empty($context['ticket']['urgency']['decrease']),
+		'ajax_assign' => !empty($context['ajax_assign']),
+		'quickreply' => true,
+		'custom_fields_display' => true,
+		'action_log' => !empty($context['display_ticket_log']),
+		'advanced_quickreply' => !empty($context['can_go_advanced']),
+	);
+
+	echo '
+	<script type="text/javascript"><!-- // --><![CDATA[';
+
+	foreach ($jsTemplates as $template => $enabled)
+		if ($enabled)
+			call_user_func('template_shd_js_' . $template);
+
+	echo '
+	// ]' . ']></script>';
+}
+
+/**
+ *	Javascript for Privacy
+ *
+ *	@since 2.1
+*/
+function template_shd_js_privacy()
+{
+	global $context, $txt;
+
+	echo '
+		var shd_ajax_problem = ', JavaScriptEscape($txt['shd_ajax_problem']), ';
+		var privacyCtl = new shd_privacyControl({
+			ticket: ', $context['ticket_id'], ',
+			sUrl: smf_scripturl + "?action=helpdesk;sa=ajax;op=privacy;ticket=', $context['ticket_id'], '",
+			sSession: smf_session_var + "=" + smf_session_id,
+			sSrcA: "privlink",
+			sDestSpan: "privacy"
+		});';
+}
+
+/**
+ *	Javascript for Urgency
+ *
+ *	@since 2.1
+*/
+function template_shd_js_urgency()
+{
+	global $context;
+
+	echo '
+		var urgencyCtl = new shd_urgencyControl({
+			ticket: ', $context['ticket_id'], ',
+			sUrl: smf_scripturl + "?action=helpdesk;sa=ajax;op=urgency;ticket=', $context['ticket_id'], ';change=",
+			sSession: smf_session_var + "=" + smf_session_id,
+			sDestSpan: "urgency",
+			aButtons: ["up", "down"],
+			aButtonOps: { up: "increase", down: "decrease" }
+		});';
+}
+
+/**
+ *	Javascript for Quick Reply
+ *
+ *	@since 2.1
+*/
+function template_shd_js_quickreply()
+{
+	global $context, $settings;
+
+	echo '
+		var oQuickReply = new QuickReply({
+			iTicketId: ', $context['ticket_id'], ',
+			sScriptUrl: smf_scripturl,
+			sJumpAnchor: "quickReplyOptions",
+			sSession: smf_session_var + "=" + smf_session_id,
+			sRepliesSelector: "span.shd_ticketlinks a.quick_reply",
+			sFirstPostSelector: "div#shd_quotebutton a"
+		});';
+}
+
+/**
+ *	Javascript for Ajax Assign
+ *
+ *	@since 2.1
+*/
+function template_shd_js_custom_fields_display()
+{
+	global $context, $options, $txt;
+
+	echo '
+		var oCustomFields = new smc_Toggle({
+			bToggleEnabled: true,
+			bCurrentlyCollapsed: ', empty($options['collapse_shd_customFields']) ? 'false' : 'true', ',
+			aSwappableContainers: [
+				\'additional_info\'
+			],
+			aSwapImages: [
+				{
+					sId: \'shd_custom_fields_swap\',
+				}
+			],
+			aSwapLinks: [
+				{
+					sId: \'shd_custom_fields_swap_link\',
+					msgCollapsed: ', JavaScriptEscape($txt['shd_ticket_additional_information']), ',
+					msgExpanded: ', JavaScriptEscape($txt['shd_ticket_additional_information']), ',
+				},
+			],
+			oThemeOptions: {
+				bUseThemeSettings: ', $context['user']['is_guest'] ? 'false' : 'true', ',
+				sOptionName: \'collapse_shd_customFields\',
+				sSessionId: smf_session_id,
+				sSessionVar: smf_session_var,
+			},
+			oCookieOptions: {
+				bUseCookie: false,
+				sCookieName: \'shd_customFields\'
+			}
+		});';
+}
+
+/**
+ *	Javascript for Ajax Assign
+ *
+ *	@since 2.1
+*/
+function template_shd_js_ajax_assign()
+{
+	global $context, $settings;
+
+	echo '
+		var oAjaxAssign = new AjaxAssign({
+			sSelf: "oAjaxAssign",
+			sScriptUrl: smf_scripturl,
+			iTicketId: ' . $context['ticket_id'] . ',
+			sId: "assigned_button",
+			sListId: "assigned_list",
+			sAssignedSpan: "assigned_to",
+			sImagesUrl: ', JavaScriptEscape($settings['default_images_url'] . '/simpledesk'), ',
+			sImageCollapsed: ', JavaScriptEscape($settings['default_images_url'] . '/simpledesk/ajax_assign.png'), ',
+			sImageExpanded: ', JavaScriptEscape($settings['default_images_url'] . '/simpledesk/ajax_assign_cancel.png'), ',
+			sImageAdmin: ', JavaScriptEscape($settings['default_images_url'] . '/simpledesk/admin.png'), ',
+			sImageStaff: ', JavaScriptEscape($settings['default_images_url'] . '/simpledesk/staff.png'), ',
+			sSession: smf_session_var + "=" + smf_session_id,
+		});';
+}
+
+/**
+ *	Javascript for Action Log
+ *
+ *	@since 2.1
+*/
+function template_shd_js_action_log()
+{
+	global $context, $options, $settings, $txt;
+
+	echo '
+		var oActionLog = new smc_Toggle({
+			bToggleEnabled: true,
+			bCurrentlyCollapsed: ', empty($options['collapse_shd_actionLog']) ? 'false' : 'true', ',
+			aSwappableContainers: [
+				\'ticket_log\'
+			],
+			aSwapImages: [
+				{ sId: \'shd_ActionLogToggle\',},
+			],
+			aSwapLinks: [
+				{
+					sId: \'shd_ActionLogLink\',
+					msgCollapsed: ', JavaScriptEscape('<img src="' . $settings['default_images_url'] . '/simpledesk/log.png" class="icon" alt="*"> ' . $txt['shd_ticket_log']), ',
+					msgExpanded: ', JavaScriptEscape('<img src="' . $settings['default_images_url'] . '/simpledesk/log.png" class="icon" alt="*"> ' . $txt['shd_ticket_log']), ',
+				},
+			],
+			oThemeOptions: {
+				bUseThemeSettings: ', $context['user']['is_guest'] ? 'false' : 'true', ',
+				sOptionName: \'collapse_shd_actionLog\',
+				sSessionId: smf_session_id,
+				sSessionVar: smf_session_var,
+			},
+			oCookieOptions: {
+				bUseCookie: false,
+				sCookieName: \'shd_customFields\'
+			}
+		});';
+}
+
+/**
+ *	Javascript for Advanced QuickRely
+ *
+ *	@since 2.1
+*/
+function template_shd_js_advanced_quickreply()
+{
+	global $context, $modSettings;
+
+	echo '
+		var oGoAdvanced = new goAdvanced({
+			sBbcContainerId: "shd_bbcbox",
+			sBbcContainerEditorClass: "sceditor-group",
+			sSmileyContainerId: "shd_smileybox",
+			sSmileyContainerEditorClass: "sceditor-insertemoticon",
+			sAttachContainerId: "shd_attach_container",
+			sAdvancedContainerId: "shd_goadvancedbutton",
+			sAdditionalOptionsContainerId: "shd_additional_options_box",
+			bAllowBBC: ', !empty($modSettings['shd_allow_ticket_bbc']) ? 'true' : 'false', ',
+			bAllowSmileys: ', !empty($modSettings['shd_allow_ticket_smileys']) ? 'true' : 'false', ',
+			bAllowAttach: ', !empty($context['ticket_form']['do_attach']) ? 'true' : 'false', ',
+		});';
 }

@@ -51,18 +51,17 @@ function template_shd_plugin_listing()
 	foreach ($context['plugins'] as $id => $plugin)
 	{
 		echo '
-			<div class="windowbg">
+			<div class="windowbg shd_plugins">
 				<div class="features">';
 
 		if (!empty($plugin['installable']))
 			echo '
 					<div class="features_switch" id="js_feature_', $id, '" style="display: none;">
-						<a href="', $scripturl, '?action=admin;area=helpdesk_plugins;save;', $context['session_var'], '=', $context['session_id'], ';toggle=', $id, ';state=', $plugin['enabled'] ? 0 : 1, '" onclick="return toggleItem(\'', $id, '\', \'', $settings['images_url'], '\', \'', $txt['shd_admin_plugins_on'], '\',  \'', $txt['shd_admin_plugins_off'], '\');">
-							<input type="hidden" name="feature_', $id, '" id="feature_', $id, '" value="', $plugin['enabled'] ? 1 : 0, '"><img src="', $settings['images_url'], '/simpledesk/switch_', $plugin['enabled'] ? 'on' : 'off', '.png" id="switch_', $id, '" style="margin-top: 1.3em;" alt="', $txt['shd_admin_plugins_' . ($plugin['enabled'] ? 'off' : 'on')], '" title="', $txt['shd_admin_plugins_' . ($plugin['enabled'] ? 'off' : 'on')], '">
+						<a href="', $scripturl, '?action=admin;area=helpdesk_plugins;save;', $context['session_var'], '=', $context['session_id'], ';toggle=', $id, ';state=', $plugin['enabled'] ? 0 : 1, '" data-plugin="', $id, '">
+							<input type="hidden" name="feature_', $id, '" id="feature_', $id, '" value="', $plugin['enabled'] ? 1 : 0, '"><img src="', $settings['images_url'], '/simpledesk/switch_', $plugin['enabled'] ? 'on' : 'off', '.png" id="switch_', $id, '" alt="', $txt['shd_admin_plugins_' . ($plugin['enabled'] ? 'off' : 'on')], '" title="', $txt['shd_admin_plugins_' . ($plugin['enabled'] ? 'off' : 'on')], '">
 						</a>
 					</div>';
 		else
-		{
 			echo '
 					<div class="features_switch" id="js_feature_', $id, '">
 						<div class="error">', $txt['shd_admin_plugins_wrong_version'], '</div>
@@ -71,18 +70,17 @@ function template_shd_plugin_listing()
 							<li>', implode('</li><li>', $plugin['details']['compatibility']), '</li>
 						</ul>
 					</div>';
-		}
 
 		if (!empty($plugin['languages']))
 		{
 			echo '
 					<div class="langblock">', $txt['shd_admin_plugins_languages'], ':<br>';
+
 			foreach ($plugin['languages'] as $language)
-			{
 				if (!empty($txt['shd_admin_plugins_lang_' . $language]))
 					echo '
 						<img src="', $settings['default_images_url'], '/simpledesk/flags/', $language, '.png" alt="', $txt['shd_admin_plugins_lang_' . $language], '" title="', $txt['shd_admin_plugins_lang_' . $language], '">';
-			}
+
 			echo '
 					</div>';
 		}
@@ -90,6 +88,7 @@ function template_shd_plugin_listing()
 		echo '
 					<h4>', (!empty($plugin['details']['acp_url']) ? '<a href="' . $plugin['details']['acp_url'] . '">' . $plugin['details']['title'] . '</a>' : $plugin['details']['title']), '</h4>
 					<p>';
+
 		if (!empty($plugin['details']['description']))
 			echo '
 						', $plugin['details']['description'], '<br>';
@@ -100,8 +99,8 @@ function template_shd_plugin_listing()
 		if (!empty($plugin['installable']))
 			echo '
 					<div id="plain_feature_', $id, '">
-						<label for="plain_feature_', $id, '_radio_on"><input type="radio" name="feature_plain_', $id, '" id="plain_feature_', $id, '_radio_on" value="1"', $plugin['enabled'] ? ' checked="checked"' : '', ' >', $txt['shd_admin_plugins_enabled'], '</label>
-						<label for="plain_feature_', $id, '_radio_off"><input type="radio" name="feature_plain_', $id, '" id="plain_feature_', $id, '_radio_off" value="0"', !$plugin['enabled'] ? ' checked="checked"' : '', ' >', $txt['shd_admin_plugins_disabled'], '</label>
+						<label for="plain_feature_', $id, '_radio_on"><input type="radio" name="feature_plain_', $id, '" id="plain_feature_', $id, '_radio_on" value="1"', $plugin['enabled'] ? ' checked="checked"' : '', '>', $txt['shd_admin_plugins_enabled'], '</label>
+						<label for="plain_feature_', $id, '_radio_off"><input type="radio" name="feature_plain_', $id, '" id="plain_feature_', $id, '_radio_off" value="0"', !$plugin['enabled'] ? ' checked="checked"' : '', '>', $txt['shd_admin_plugins_disabled'], '</label>
 					</div>';
 
 		echo '
@@ -116,14 +115,27 @@ function template_shd_plugin_listing()
 		</form>
 	</div>
 	<script type="text/javascript"><!-- // --><![CDATA[
-		document.getElementById(\'js_worked\').value = "1";';
+		var installablePlugins = [];';
+
 		foreach ($context['plugins'] as $id => $plugin)
-		{
 			if (!empty($plugin['installable']))
 				echo '
-		document.getElementById(\'js_feature_', $id, '\').style.display = "";
-		document.getElementById(\'plain_feature_', $id, '\').style.display = "none";';
-		}
+		installablePlugins.push(', JavaScriptEscape($id), ');';
+
 	echo '
+		var oPlugins = new shd_plugins({
+			sJSworkedID: "js_worked",
+			sJSFeatureClass: "js_feature_%itemid%",
+			sJSPlainFeatureClass: "plain_feature_%itemid%",
+			oJSInstallablePlugins: installablePlugins,
+			sFeaturesSwitchClass: "features_switch",
+			sFeatureClass: "feature_%itemid%",
+			sSwitchClass: "switch_%itemid%",
+			sPluginOffText: ', JavaScriptEscape($txt['shd_admin_plugins_off']), ',
+			sPluginOnText: ', JavaScriptEscape($txt['shd_admin_plugins_on']), ',
+			sPluginOnImg: ', JavaScriptEscape($settings['images_url'] . '/simpledesk/switch_on.png'), ',
+			sPluginOffImg: ', JavaScriptEscape($settings['images_url'] . '/simpledesk/switch_off.png'), ',
+
+		});
 	// ]]></script>';
 }

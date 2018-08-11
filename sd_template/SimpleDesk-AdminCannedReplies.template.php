@@ -132,13 +132,13 @@ function template_shd_edit_canned_category()
 			<form action="', $scripturl, '?action=admin;area=helpdesk_cannedreplies;sa=savecat" method="post">
 				<dl class="settings">
 					<dt><strong>', $txt['shd_admin_cannedreplies_categoryname'], '</strong></dt>
-					<dd><input type="text" name="catname" id="catname"  size="30" value="', $context['category_name'], '"></dd>
+					<dd><input type="text" name="catname" id="catname" size="30" value="', $context['category_name'], '"></dd>
 				</dl>
-				<input type="submit" value="', $context['page_title'], '" onclick="return submitThisOnce(this);" accesskey="s" class="button">';
+				<input type="submit" value="', $context['page_title'], '" accesskey="s" class="button save">';
 
 	if ($context['canned_category'] != 'new')
 		echo '
-				<input type="submit" name="delete" value="', $txt['shd_admin_cannedreplies_deletecat'], '" onclick="return confirm(', JavaScriptEscape($txt['shd_admin_cannedreplies_delete_confirm']), ') && submitThisOnce(this);" class="button">';
+				<input type="submit" name="delete" value="', $txt['shd_admin_cannedreplies_deletecat'], '" onclick="return confirm(', JavaScriptEscape($txt['shd_admin_cannedreplies_delete_confirm']), ')" class="button save">';
 
 	echo '
 				<input type="hidden" name="cat" value="', $context['canned_category'], '">
@@ -164,7 +164,7 @@ function template_shd_edit_canned_reply()
 		<div class="information">
 			', $txt['shd_admin_cannedreplies_homedesc'], '
 		</div>
-		<form action="', $scripturl, '?action=admin;area=helpdesk_cannedreplies;sa=savereply" method="post" accept-charset="', $context['character_set'], '" name="cannedreply" id="cannedreply" onsubmit="', 'submitonce(this);smc_saveEntities(\'cannedreply\', [\'title\', \'', $context['post_box_name'], '\']);" enctype="multipart/form-data" style="margin: 0;">
+		<form action="', $scripturl, '?action=admin;area=helpdesk_cannedreplies;sa=savereply" method="post" accept-charset="', $context['character_set'], '" name="cannedreply" id="cannedreply" onsubmit="', 'smc_saveEntities(\'cannedreply\', [\'title\', \'', $context['post_box_name'], '\']);" enctype="multipart/form-data">
 			<div class="cat_bar">
 				<h3 class="catbg">
 					<img src="', $settings['default_images_url'], '/simpledesk/additional_information.png" alt="*">
@@ -174,7 +174,7 @@ function template_shd_edit_canned_reply()
 			<div class="roundframe noup">
 				<dl class="settings">
 					<dt><strong>', $txt['shd_admin_cannedreplies_replytitle'], '</strong></dt>
-					<dd><input type="text"  value="', $context['canned_reply']['title'], '" name="title" size="80"></dd>
+					<dd><input type="text" value="', $context['canned_reply']['title'], '" name="title" size="80"></dd>
 				</dl>
 				<p><strong>', $txt['shd_admin_cannedreplies_content'], '</strong></p>
 				<div class="block">
@@ -187,9 +187,9 @@ function template_shd_edit_canned_reply()
 					<dd><input type="checkbox" name="active" ', !empty($context['canned_reply']['active']) ? ' checked="checked"' : '', '>
 					<dt><strong>', $txt['shd_admin_cannedreplies_selectvisible'], '</strong></dt>
 					<dd>
-						<input type="checkbox" name="vis_user" ', !empty($context['canned_reply']['vis_user']) ? ' checked="checked"' : '', '> <img src="', $settings['default_images_url'], '/simpledesk/user.png" class="icon" alt="', $txt['shd_admin_custom_field_users'], '" title="', $txt['shd_admin_custom_field_users'], '">
-						<input type="checkbox" name="vis_staff" ', !empty($context['canned_reply']['vis_staff']) ? ' checked="checked"' : '', '> <img src="', $settings['default_images_url'], '/simpledesk/staff.png" class="icon" alt="', $txt['shd_admin_custom_field_staff'], '" title="', $txt['shd_admin_custom_field_staff'], '">
-						<input type="checkbox" name="vis_admin"  checked="checked" disabled="disabled"> <img src="', $settings['default_images_url'], '/simpledesk/admin.png" class="icon" alt="', $txt['shd_admin_custom_field_admins'], '" title="', $txt['shd_admin_custom_field_admins'], '">
+						<input type="checkbox" name="vis_user" ', !empty($context['canned_reply']['vis_user']) ? ' checked="checked"' : '', '><img src="', $settings['default_images_url'], '/simpledesk/user.png" class="icon" alt="', $txt['shd_admin_custom_field_users'], '" title="', $txt['shd_admin_custom_field_users'], '">
+						<input type="checkbox" name="vis_staff" ', !empty($context['canned_reply']['vis_staff']) ? ' checked="checked"' : '', '><img src="', $settings['default_images_url'], '/simpledesk/staff.png" class="icon" alt="', $txt['shd_admin_custom_field_staff'], '" title="', $txt['shd_admin_custom_field_staff'], '">
+						<input type="checkbox" name="vis_admin" checked="checked" disabled="disabled"><img src="', $settings['default_images_url'], '/simpledesk/admin.png" class="icon" alt="', $txt['shd_admin_custom_field_admins'], '" title="', $txt['shd_admin_custom_field_admins'], '">
 					</dd>
 				</dl>
 			</div>
@@ -204,21 +204,19 @@ function template_shd_edit_canned_reply()
 				<dl class="settings">';
 
 	foreach ($context['canned_reply']['depts_available'] as $dept_id => $dept_name)
-	{
 		echo '
 					<dt><strong>', $dept_name, '</strong></dt>
-					<dd><input type="checkbox" name="dept_', $dept_id, '"', in_array($dept_id, $context['canned_reply']['depts_selected']) ? ' checked="checked"' : '', ' ></dd>';
-	}
+					<dd><input type="checkbox" name="dept_', $dept_id, '"', in_array($dept_id, $context['canned_reply']['depts_selected']) ? ' checked="checked"' : '', '></dd>';
 
 	echo '
 				</dl>
 			</div>
 			<br>
-			<input type="submit" value="', isset($editor_context['labels']['post_button']) ? $editor_context['labels']['post_button'] : $txt['save'], '" tabindex="', $context['tabindex']++, '" accesskey="s" class="button">';
+			<input type="submit" value="', isset($editor_context['labels']['post_button']) ? $editor_context['labels']['post_button'] : $txt['save'], '" tabindex="', $context['tabindex']++, '" accesskey="s" class="button save">';
 
 	if ($context['canned_reply']['id'] != 'new')
 		echo '
-			<input type="submit" name="delete" value="', $txt['shd_admin_cannedreplies_deletereply'], '" onclick="return confirm(', JavaScriptEscape($txt['shd_admin_cannedreplies_deletereply_confirm']), ') && submitThisOnce(this);" class="button">';
+			<input type="submit" name="delete" value="', $txt['shd_admin_cannedreplies_deletereply'], '" onclick="return confirm(', JavaScriptEscape($txt['shd_admin_cannedreplies_deletereply_confirm']), ');" class="button save">';
 
 	echo '
 			<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">
@@ -264,7 +262,7 @@ function template_shd_move_reply_cat()
 						</select>
 					</dd>
 				</dl>
-				<input type="submit" value="', $txt['shd_admin_cannedreplies_movereply'], '" onclick="return submitThisOnce(this);" class="button">
+				<input type="submit" value="', $txt['shd_admin_cannedreplies_movereply'], '" class="button save">
 				<input type="hidden" name="reply" value="', $context['canned_reply_id'], '">
 				<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">
 				<input type="hidden" name="seqnum" value="', $context['form_sequence_number'], '">

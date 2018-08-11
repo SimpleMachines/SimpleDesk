@@ -35,7 +35,7 @@ function template_movedept()
 		</h3>
 	</div>
 	<div class="roundframe">
-		<form action="', $scripturl, '?action=helpdesk;sa=movedept2;ticket=', $context['ticket_id'], '" method="post" onsubmit="submitonce(this);">
+		<form action="', $scripturl, '?action=helpdesk;sa=movedept2;ticket=', $context['ticket_id'], '" method="post">
 			<dl class="settings">
 				<dt>
 					<strong>', $txt['shd_current_dept'], ':</strong>
@@ -63,7 +63,7 @@ function template_movedept()
 					<strong>', $txt['shd_move_send_pm'], ':</strong>
 				</dt>
 				<dd>
-					<input type="checkbox" name="send_pm" id="send_pm" checked="checked" onclick="document.getElementById(\'pm_message\').style.display = this.checked ? \'block\' : \'none\';" >
+					<input type="checkbox" name="send_pm" id="send_pm" checked="checked">
 				</dd>
 			</dl>
 			<fieldset id="pm_message">
@@ -84,7 +84,10 @@ function template_movedept()
 
 	echo '
 			<input type="submit" name="cancel" value="', ($context['shd_return_to'] == 'home' ? $txt['shd_cancel_home'] : $txt['shd_cancel_ticket']), '" accesskey="c" class="button">
-			<input type="submit" value="', $txt['shd_ticket_move'], '" onclick="return submitThisOnce(this);" accesskey="s" class="button">
+			<input type="submit" value="', $txt['shd_ticket_move'], '" accesskey="s" class="button save">
 		</form>
-	</div>';
+	</div>
+	<script type="text/javascript"><!-- // --><![CDATA[
+		$("#send_pm").on("change", function(){$("#pm_message").toggle();});
+	// ]' . ']></script>';
 }
