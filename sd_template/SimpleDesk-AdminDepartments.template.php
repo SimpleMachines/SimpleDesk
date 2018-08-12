@@ -125,12 +125,12 @@ function template_shd_create_dept()
 			<form action="', $scripturl, '?action=admin;area=helpdesk_depts;sa=createdept;part=2" method="post">
 				<dl class="settings">
 					<dt><strong>', $txt['shd_new_dept_name'], '</strong></dt>
-					<dd><input type="text" name="dept_name" id="dept_name" value=""  size="30"></dd>
+					<dd><input type="text" name="dept_name" id="dept_name" value="" size="30"></dd>
 					<dt><strong>', $txt['shd_dept_description'], '</strong></dt>
 					<dd><textarea name="dept_desc" rows="3" cols="35" style="width: 99%"></textarea></dd>
 					<dt><strong>', $txt['shd_dept_boardindex_cat'], '</strong></dt>
 					<dd>
-						<select name="dept_cat" id="dept_cat" onchange="document.getElementById(\'dept_beforeafter\').disabled = (this.value == 0);">';
+						<select name="dept_cat" id="dept_cat" onchange="$(\'#dept_beforeafter\').attr(\'disabled\' ? (this.value == 0));">';
 
 	foreach ($context['shd_cat_list'] as $id_cat => $cat_name)
 		echo '
@@ -178,12 +178,12 @@ function template_shd_edit_dept()
 			<div class="roundframe">
 				<dl class="settings">
 					<dt><strong>', $txt['shd_department_name'], '</strong></dt>
-					<dd><input type="text" name="dept_name" id="dept_name" value="', $context['shd_dept']['dept_name'], '"  size="30"></dd>
+					<dd><input type="text" name="dept_name" id="dept_name" value="', $context['shd_dept']['dept_name'], '" size="30"></dd>
 					<dt><strong>', $txt['shd_dept_description'], '</strong></dt>
-					<dd><textarea name="dept_desc" rows="3" cols="35" style="width: 99%">', $context['shd_dept']['description'], '</textarea></dd>
+					<dd><textarea name="dept_desc" rows="3" cols="35">', $context['shd_dept']['description'], '</textarea></dd>
 					<dt><strong>', $txt['shd_dept_boardindex_cat'], '</strong></dt>
 					<dd>
-						<select name="dept_cat" id="dept_cat" onchange="document.getElementById(\'dept_beforeafter\').disabled = (this.value == 0);">';
+						<select name="dept_cat" id="dept_cat" onchange="$(\'#dept_beforeafter\').attr(\'disabled\' ? (this.value == 0));">';
 
 	foreach ($context['shd_cat_list'] as $id_cat => $cat_name)
 		echo '
@@ -225,7 +225,7 @@ function template_shd_edit_dept()
 						<div class="smalltext">', $txt['shd_dept_autoclose_days_note'], '</div>
 					</dt>
 					<dd>
-						<input type="text" name="autoclose_days" id="autoclose_days" value="', $context['shd_dept']['autoclose_days'], '"  size="5"></dd>
+						<input type="text" name="autoclose_days" id="autoclose_days" value="', $context['shd_dept']['autoclose_days'], '" size="5"></dd>
 					</dd>
 				</dl>
 			</div>
@@ -249,8 +249,8 @@ function template_shd_edit_dept()
 		foreach ($context['shd_roles'] as $id_role => $role)
 			echo '
 					<tr class="windowbg">
-						<td><img src="', $settings['default_images_url'], '/simpledesk/', $context['shd_permissions']['roles'][$role['template']]['icon'], '"> <a href="', $scripturl, '?action=admin;area=helpdesk_permissions;sa=editrole;role=', $role['id_role'], '">', $role['role_name'], '</a></td>
-						<td><input type="checkbox"  name="role', $id_role, '"', !empty($role['in_dept']) ? ' checked="checked"' : '', '></td>
+						<td><img src="', $settings['default_images_url'], '/simpledesk/', $context['shd_permissions']['roles'][$role['template']]['icon'], '"><a href="', $scripturl, '?action=admin;area=helpdesk_permissions;sa=editrole;role=', $role['id_role'], '">', $role['role_name'], '</a></td>
+						<td><input type="checkbox" name="role', $id_role, '"', !empty($role['in_dept']) ? ' checked="checked"' : '', '></td>
 					</tr>';
 	else
 		echo '
@@ -263,7 +263,7 @@ function template_shd_edit_dept()
 				<br>
 			</div>
 			<div class="floatleft">
-				<input type="submit" value="', $txt['shd_edit_dept'], '" onclick="return submitThisOnce(this);" accesskey="s" class="button">
+				<input type="submit" value="', $txt['shd_edit_dept'], '" accesskey="s" class="button save">
 				<input type="submit" value="', $txt['shd_delete_dept'], '" onclick="return confirm(' . JavaScriptEscape($txt['shd_delete_dept_confirm']) . ');" name="delete" class="button">
 				<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">
 				<input type="hidden" name="dept" value="', $context['shd_dept']['id_dept'], '">

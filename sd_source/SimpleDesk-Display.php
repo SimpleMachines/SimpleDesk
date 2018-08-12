@@ -398,10 +398,12 @@ function shd_view_ticket()
 		);
 		if (!empty($field['options']) && empty($field['options']['inactive']))
 			$field['options']['inactive'] = array();
+		if (!empty($field['options']) && empty($field['options']['order']))
+			$field['options']['order'] = array();
 
 		if (in_array($field['type'], array(CFIELD_TYPE_RADIO, CFIELD_TYPE_SELECT, CFIELD_TYPE_MULTI)))
 			foreach ($field['options'] as $k => $v)
-				if ($k != 'inactive' && strpos($v, '[') !== false)
+				if ($k != 'inactive' && $k != 'order' && strpos($v, '[') !== false)
 					$field['options'][$k] = parse_bbc($v, false);
 
 		if (($row['field_loc'] & CFIELD_REPLY) && $field['editable'])
@@ -668,78 +670,8 @@ function shd_view_ticket()
 	$context['can_ping'] = $context['can_reply'] && shd_allowed_to('shd_singleton_email', $context['ticket']['dept']);
 
 	// Set up the fancy editor
-	shd_postbox('shd_message', '', array('post_button' => $txt['shd_reply_ticket']));
+	shd_postbox('shd_message', '', array('post_button' => $txt['shd_reply_ticket']), '100%');
 
-	// Lastly, our magic AJAX stuff ;D and we know we already made html_headers exist in SimpleDesk.php, score!
-	$context['html_headers'] .= '
-	<script type="text/javascript"><!-- // --><![CDATA[
-	var sSessI = "' . $context['session_id'] . '";
-	var sSessV = "' . $context['session_var'] . '";';
-
-	if ($context['ticket']['privacy']['can_change'])
-		$context['html_headers'] .= '
-	var shd_ajax_problem = ' . JavaScriptEscape($txt['shd_ajax_problem']) . ';
-	var privacyCtl = new shd_privacyControl({
-		ticket: ' . $context['ticket_id'] . ',
-		sUrl: smf_scripturl + "?action=helpdesk;sa=ajax;op=privacy;ticket=' . $context['ticket_id'] . '",
-		sSession: sSessV + "=" + sSessI,
-		sSrcA: "privlink",
-		sDestSpan: "privacy"
-	});';
-
-	if ($context['ticket']['urgency']['increase'] || $context['ticket']['urgency']['decrease'])
-		$context['html_headers'] .= '
-	var urgencyCtl = new shd_urgencyControl({
-		ticket: ' . $context['ticket_id'] . ',
-		sUrl: smf_scripturl + "?action=helpdesk;sa=ajax;op=urgency;ticket=' . $context['ticket_id'] . ';change=",
-		sSession: sSessV + "=" + sSessI,
-		sDestSpan: "urgency",
-		aButtons: ["up", "down"],
-		aButtonOps: { up: "increase", down: "decrease" }
-	});';
-
-	if (!empty($options['display_quick_reply']))
-		$context['html_headers'] .= '
-	var oQuickReply = new QuickReply({
-		bDefaultCollapsed: ' . (!empty($options['display_quick_reply']) && $options['display_quick_reply'] == 2 ? 'false' : 'true') . ',
-		iTicketId: ' . $context['ticket_id'] . ',
-		iStart: ' . $context['start'] . ',
-		sScriptUrl: smf_scripturl,
-		sImagesUrl: "' . $settings['images_url'] . '",
-		sContainerId: "quickReplyOptions",
-		sImageId: "quickReplyExpand",
-		sImageCollapsed: "collapse.png",
-		sImageExpanded: "expand.png",
-		sJumpAnchor: "quickreply",
-		sHeaderId: "quickreplyheader",
-		sFooterId: "quickreplyfooter"
-	});';
-
-	$context['html_headers'] .= '
-	var oCustomFields = new CustomFields({
-		sImagesUrl: "' . $settings['images_url'] . '",
-		sContainerId: "additional_info",
-		sImageId: "shd_custom_fields_swap",
-		sImageCollapsed: "collapse.png",
-		sImageExpanded: "expand.png",
-		sHeaderId: "additionalinfoheader",
-		sFooterId: "additional_info_footer",
-	});';
-
-	if (!empty($options['display_quick_reply']) && $context['can_go_advanced'])
-		$context['html_headers'] .= '
-	function goAdvanced()
-	{
-		document.getElementById("shd_bbcbox").style.display = ' . (!empty($modSettings['shd_allow_ticket_bbc']) ? '""' : '"none"') . ';
-		document.getElementById("shd_smileybox").style.display = ' . (!empty($modSettings['shd_allow_ticket_smileys']) ? '""' : '"none"') . ';
-		document.getElementById("shd_attach_container").style.display = ' . (!empty($context['ticket_form']['do_attach']) ? '""' : '"none"') . ';
-		document.getElementById("shd_goadvancedbutton").style.display = "none";' . (!empty($context['controls']['richedit']['shd_message']['rich_active']) ? '
-		oEditorHandle_shd_message.toggleView(true);' : '') . '
-	}
-	';
-
-	$context['html_headers'] .= '
-	// ]' . ']></script>';
 	$context['shd_display'] = true;
 	$context['controls']['richedit']['shd_message']['rich_active'] = 0; // we don't want it by default!
 

@@ -36,6 +36,7 @@ function shd_search()
 	global $context, $smcFunc, $txt, $modSettings, $scripturl;
 
 	shd_is_allowed_to('shd_search', 0);
+	loadJavascriptFile('suggest.js', array('defer' => false, 'minimize' => false), 'suggest');
 
 	if (!empty($context['load_average']) && !empty($modSettings['loadavg_search']) && $context['load_average'] >= $modSettings['loadavg_search'])
 		return fatal_lang_error('loadavg_search_disabled', false);

@@ -36,7 +36,7 @@ function template_assign()
 		</h3>
 	</div>
 	<div class="roundframe">
-		<form action="', $scripturl, '?action=helpdesk;sa=assign2;ticket=', $context['ticket_id'], '" method="post" onsubmit="submitonce(this);">
+		<form action="', $scripturl, '?action=helpdesk;sa=assign2;ticket=', $context['ticket_id'], '" method="post">
 			<dl class="settings">
 				<dt>
 					<strong>', $txt['shd_ticket_assignedto'], ':</strong>
@@ -58,8 +58,8 @@ function template_assign()
 					</select>
 				</dd>
 			</dl>
-			<input type="submit" name="cancel" value="', ($context['shd_return_to'] == 'home' ? $txt['shd_cancel_home'] : $txt['shd_cancel_ticket']), '" accesskey="c" class="button">
-			<input type="submit" value="', $txt['shd_ticket_assign_ticket'], '" onclick="return submitThisOnce(this);" accesskey="s" class="button">
+			<input type="submit" name="cancel" value="', ($context['shd_return_to'] == 'home' ? $txt['shd_cancel_home'] : $txt['shd_cancel_ticket']), '" accesskey="c" class="button save">
+			<input type="submit" value="', $txt['shd_ticket_assign_ticket'], '" accesskey="s" class="button save">
 			<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">';
 
 	if ($context['shd_return_to'] == 'home')

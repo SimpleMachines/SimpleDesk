@@ -528,7 +528,7 @@ function shd_ajax_assign2()
 		return array('error' => $txt['shd_no_ticket']);
 
 	if (!isset($_GET['to_user']) || !is_numeric($_GET['to_user']))
-		return array('success' => false, 'error' => $txt['shd_assigned_not_permitted'] . 'line459');
+		return array('success' => false, 'error' => $txt['shd_assigned_not_permitted']);
 
 	if (!shd_allowed_to('shd_assign_ticket_any', $dept) || $status == TICKET_STATUS_CLOSED || $status == TICKET_STATUS_DELETED)
 		return array('success' => false, 'error' => $txt['shd_cannot_assign']);

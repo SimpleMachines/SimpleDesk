@@ -43,7 +43,6 @@ function template_shd_permissions_home()
 			</tr>';
 
 	foreach ($context['shd_permissions']['roles'] as $role_id => $role_details)
-	{
 		echo '
 			<tr class="windowbg">
 				<td>', !empty($role_details['icon']) ? ('<img src="' . $settings['default_images_url'] . '/simpledesk/' . $role_details['icon'] . '" alt="">') : '', '</td>
@@ -53,7 +52,6 @@ function template_shd_permissions_home()
 				</td>
 				', template_shd_display_permission_list($role_details['permissions']), '
 			</tr>';
-	}
 
 	echo '
 		</table>
@@ -75,12 +73,10 @@ function template_shd_permissions_home()
 			</tr>';
 
 	if (empty($context['shd_permissions']['user_defined_roles']))
-	{
 		echo '
 			<tr class="windowbg">
 				<td colspan="', count($context['shd_permissions']['group_display']) + 4, '" class="centertext">', $txt['shd_no_defined_roles'], '</td>
 			</tr>';
-	}
 	else
 	{
 		foreach ($context['shd_permissions']['user_defined_roles'] as $role => $role_details)
@@ -136,13 +132,11 @@ function template_shd_display_permission_list($permissions)
 	global $context, $txt, $settings;
 	$permission_set = array();
 
-	foreach ($context['shd_permissions']['permission_list'] as $permission => $details)
+	foreach ($context['shd_permissions']['permission_list'] as $permission => list($ownany, $group, $icon))
 	{
-		list($ownany, $group, $icon) = $details;
 		if (empty($icon))
 			continue;
-
-		if (empty($permission_set[$group]))
+		elseif (empty($permission_set[$group]))
 			$permission_set[$group] = array();
 
 		$permtitle = '';
@@ -161,10 +155,8 @@ function template_shd_display_permission_list($permissions)
 			}
 		}
 		else
-		{
 			if (!empty($permissions[$permission]) && $permissions[$permission] == ROLEPERM_ALLOW)
 				$permtitle = empty($txt['permissionname_' . $permission]) ? '' : $txt['permissionname_' . $permission];
-		}
 
 		if (!empty($permtitle))
 			$permission_set[$group][] = '<img src="' . shd_image_url($icon) . '" alt="" title="' . $permtitle . '">';
@@ -176,10 +168,8 @@ function template_shd_display_permission_list($permissions)
 							<td class="shd_valign_top">';
 
 		foreach ($rows as $rowitem => $rowicon)
-		{
 			if (!empty($permission_set[$rowitem]))
 				echo $txt['shd_permgroup_short_' . $rowitem], ': ', implode(' ', $permission_set[$rowitem]), '<br>';
-		}
 
 		echo '</td>';
 	}
@@ -219,9 +209,9 @@ function template_shd_create_role()
 						', $txt[$context['shd_permissions']['roles'][$context['role_template_id']]['description']], '
 					</dd>
 					<dt><strong>', $txt['shd_create_name'], '</strong></dt>
-					<dd><input type="text" name="rolename" id="rolename" value=""  size="30"></dd>
+					<dd><input type="text" name="rolename" id="rolename" value="" size="30"></dd>
 				</dl>
-				<input type="submit" value="', $txt['shd_create_role'], '" onclick="return submitThisOnce(this);" accesskey="s" class="button">
+				<input type="submit" value="', $txt['shd_create_role'], '" accesskey="s" class="button save">
 				<input type="hidden" name="template" value="', $context['role_template_id'], '">
 				<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">
 				<input type="hidden" name="seqnum" value="', $context['form_sequence_number'], '">
@@ -253,45 +243,8 @@ function template_shd_edit_role()
 			', $txt['shd_admin_permissions_homedesc'], '
 		</div>
 		<script type="text/javascript"><!-- // --><![CDATA[
-		function shd_chicon(obj)
-		{
-			var sSelect = document.getElementById(obj.id).value;
-			var newClass = "";
-			switch(sSelect)
-			{
-				case "disallow":
-					newClass = "shd_no"; break;
-				case "allow":
-					newClass = "shd_yes"; break;
-				case "allow_own":
-					newClass = "shd_own"; break;
-				case "allow_any":
-					newClass = "shd_any"; break;
-				default:
-					newClass = ""; break;
-			}
-			document.getElementById(obj.id + "_icon").setAttribute("class", newClass);
-		}
 
-		function shd_toggleblock(block)
-		{
-			var collapsed = (document.getElementById("permheader_" + block).getAttribute("class") == "cat_bar");
-			if (collapsed)
-			{
-				document.getElementById("permheader_" + block).setAttribute("class", "cat_bar cat_collapsed");
-				document.getElementById("permcontent_" + block).style.display = "";
-				document.getElementById("permfooter_" + block).style.display = "";
-				document.getElementById("permexpandicon_" + block).src = ', JavaScriptEscape($settings['images_url'] . '/selected_open.png'), ';
-			}
-			else
-			{
-				document.getElementById("permheader_" + block).setAttribute("class", "cat_bar");
-				document.getElementById("permcontent_" + block).style.display = "none";
-				document.getElementById("permfooter_" + block).style.display = "none";
-				document.getElementById("permexpandicon_" + block).src = ', JavaScriptEscape($settings['images_url'] . '/selected.png'), ';
-			}
-			document.getElementById("permexpandicon_" + block).style.display = "";
-		}
+
 
 		// ]', ']></script>
 		<form action="', $scripturl, '?action=admin;area=helpdesk_permissions;sa=saverole" method="post">
@@ -309,7 +262,7 @@ function template_shd_edit_role()
 						', $role['template_name'], '
 					</dd>
 					<dt><strong>', $txt['shd_role_name'], ':</strong></dt>
-					<dd><input type="text" name="rolename" id="rolename" value="', $role['name'], '"  size="30"></dd>
+					<dd><input type="text" name="rolename" id="rolename" value="', $role['name'], '" size="30"></dd>
 				</dl>
 			</div>
 			<br class="clear">';
@@ -317,13 +270,10 @@ function template_shd_edit_role()
 	// Get ready to display the actual permissions
 	$permission_set = array();
 	foreach ($context['shd_permissions']['permission_list'] as $permission => $details)
-	{
 		if (!empty($details[2]))
 			$permission_set[$details[1]][] = $permission;
-	}
 
 	$displayed_sets = array();
-
 	foreach ($context['shd_permissions']['group_display'] as $cell => $rows)
 	{
 		echo '
@@ -333,19 +283,18 @@ function template_shd_edit_role()
 		{
 			if (empty($permission_set[$rowitem]))
 				continue;
-
 			$displayed_sets[] = $rowitem;
 
 			echo '
 				<div class="cat_bar" id="permheader_', $rowitem, '">
 					<h3 class="catbg">
 						<span class="floatright">
-							<a class="permcollapse" href="#" onclick="shd_toggleblock(\'', $rowitem, '\'); return false;">
+							<a class="permcollapse" href="#" data-block="', $rowitem, '">
 								<img src="', $settings['images_url'], '/selected_open.png" id="permexpandicon_', $rowitem, '" style="display:none;">
 							</a>
 						</span>
 						<img src="', $settings['default_images_url'], '/simpledesk/', $rowicon, '" alt="*">
-						<a href="#" onclick="shd_toggleblock(\'', $rowitem, '\'); return false;">', $txt['shd_permgroup_' . $rowitem], '</a>
+						<a href="#" data-block="', $rowitem, '">', $txt['shd_permgroup_' . $rowitem], '</a>
 					</h3>
 				</div>
 				<div class="roundframe" id="permcontent_', $rowitem, '">
@@ -377,20 +326,16 @@ function template_shd_edit_role()
 						<dt', (empty($txt['permissionhelp_' . $permission]) ? '' : ' title="' . $txt['permissionhelp_' . $permission] . '"') . '><img src="', shd_image_url($icon), '" alt="*">', $txt['permissionname_' . $permission], '</dt>
 						<dd>
 							<span id="perm_', $permission, '_icon" class="', $perm_class, '"></span>
-							<select name="perm_', $permission, '" id="perm_', $permission, '" onchange="javascript:shd_chicon(this);">
+							<select name="perm_', $permission, '" id="perm_', $permission, '">
 								<option value="disallow"', ($perm_value == 'disallow' ? ' selected="selected"' : ''), '>', (empty($txt['permissionname_' . $permission . '_no']) ? $txt['shd_roleperm_disallow'] : $txt['permissionname_' . $permission . '_no']), '&nbsp;</option>';
 
 				if ($ownany)
-				{
 					echo '
 								<option value="allow_own"', ($perm_value == 'allow_own' ? ' selected="selected"' : ''), '>', $txt['permissionname_' . $permission . '_own'], '&nbsp;</option>
 								<option value="allow_any"', ($perm_value == 'allow_any' ? ' selected="selected"' : ''), '>', $txt['permissionname_' . $permission . '_any'], '&nbsp;</option>';
-				}
 				else
-				{
 					echo '
 								<option value="allow"', ($perm_value == 'allow' ? ' selected="selected"' : ''), '>', (empty($txt['permissionname_' . $permission . '_yes']) ? $txt['shd_roleperm_allow'] : $txt['permissionname_' . $permission . '_yes']), '&nbsp;</option>';
-				}
 
 				echo '
 							</select>
@@ -408,25 +353,8 @@ function template_shd_edit_role()
 			</div>';
 	}
 
-	if (!empty($displayed_sets))
-	{
-		echo '
-				<script type="text/javascript"><!-- // --><![CDATA[';
-
-		if (!empty($displayed_sets))
-			echo '
-				var hidden_blocks = ["', implode('","', $displayed_sets), '"];
-				for (i in hidden_blocks)
-				{
-					shd_toggleblock(hidden_blocks[i]);
-				}';
-
-		echo '
-				// ]', ']></script>';
-	}
-
 	echo '
-		<div class="floatleft" style="width: 100%;">
+		<div class="floatleft">
 			<div class="cat_bar">
 				<h3 class="catbg">
 					<img src="', $settings['default_images_url'], '/simpledesk/roles.png" alt="*">
@@ -459,7 +387,7 @@ function template_shd_edit_role()
 
 		echo '
 					</td>
-					<td><input type="checkbox"  name="group', $id_group, '"', (in_array($id_group, $context['role_groups']) ? ' checked="checked"' : ''), '></td>
+					<td><input type="checkbox" name="group', $id_group, '"', (in_array($id_group, $context['role_groups']) ? ' checked="checked"' : ''), '></td>
 				</tr>
 			</div>';
 	}
@@ -484,22 +412,40 @@ function template_shd_edit_role()
 					</tr>';
 
 	foreach ($context['role_depts'] as $id_dept => $dept)
-	{
 		echo '
 					<tr class="windowbg">
 						<td>', $dept['dept_name'], '</td>
-						<td><input type="checkbox"  name="dept', $id_dept, '"', !empty($dept['is_role']) ? ' checked="checked"' : '', '></td>
+						<td><input type="checkbox" name="dept', $id_dept, '"', !empty($dept['is_role']) ? ' checked="checked"' : '', '></td>
 					</tr>';
-	}
 
 	echo '
 				</table>
 			</div>
 			<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">
 			<input type="hidden" name="role" value="', $context['shd_role_id'], '">
-			<input type="submit" value="', $txt['shd_edit_role'], '" onclick="return submitThisOnce(this);" accesskey="s" class="button">
-			<input type="submit" value="', $txt['shd_delete_role'], '" onclick="return confirm(' . JavaScriptEscape($txt['shd_delete_role_confirm']) . ');" name="delete" class="button">
-		</form>';
+			<input type="submit" value="', $txt['shd_edit_role'], '" accesskey="s" class="button save">
+			<input type="submit" value="', $txt['shd_delete_role'], '" name="delete" class="button" id="delete" onclick="return confirm(\"Shall\");">
+		</form>
+
+		<script type="text/javascript"><!-- // --><![CDATA[
+			var oRoles = new shd_role({
+				sPermissionDisallowClass: "shd_no",
+				sPermissionAllowClass: "shd_yes",
+				sPermissionAllowOwnClass: "shd_own",
+				sPermissionAllowAnyClass: "shd_any",
+
+				oHiddenBlocks: [', !empty($displayed_sets) ? '"' . implode('","', $displayed_sets) . '"' : '', '],
+				sBlockHeader: "permheader_%block%",
+				sBlockContent: "permcontent_%block%",
+				sBlockFooter: "permfooter_%block%",
+				sBlockIcon: "permexpandicon_%block%",
+				sBlockIconExpandedImg: ', JavaScriptEscape($settings['images_url'] . '/selected_open.png'), ',
+				sBlockIconCollapsedImg: ', JavaScriptEscape($settings['images_url'] . '/selected.png'), ',
+
+				sDeleteContainerId: "delete",
+				sDeleteConfirmText: ', JavaScriptEscape($txt['shd_delete_role_confirm']), ',
+			});
+		// ]]></script>';
 }
 
 /**
@@ -536,11 +482,11 @@ function template_shd_copy_role()
 						', $context['shd_permissions']['user_defined_roles'][$context['shd_role_id']]['name'], '
 					</dd>
 					<dt><strong>', $txt['shd_create_name'], '</strong></dt>
-					<dd><input type="text" name="rolename" id="rolename" value=""  size="30"></dd>
+					<dd><input type="text" name="rolename" id="rolename" value="" size="30"></dd>
 					<dt><strong>', $txt['shd_copy_role_groups'], '</strong></dt>
-					<dd><input type="checkbox" name="copygroups" id="copygroups" value="1" ></dd>
+					<dd><input type="checkbox" name="copygroups" id="copygroups" value="1"></dd>
 				</dl>
-				<input type="submit" value="', $txt['shd_copy_role'], '" onclick="return submitThisOnce(this);" accesskey="s" class="button">
+				<input type="submit" value="', $txt['shd_copy_role'], '" accesskey="s" class="button save">
 				<input type="hidden" name="role" value="', $context['shd_role_id'], '">
 				<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">
 				<input type="hidden" name="seqnum" value="', $context['form_sequence_number'], '">

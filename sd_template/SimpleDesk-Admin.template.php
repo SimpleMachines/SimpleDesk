@@ -32,7 +32,7 @@ function template_shd_admin()
 
 	// Update?
 	echo '
-		<div id="sd_update_section" class="tborder" style="display: none;"></div>';
+		<div id="sd_update_section" class="tborder hidden"></div>';
 
 	echo '
 		<div id="admin_main_section">';
@@ -44,7 +44,7 @@ function template_shd_admin()
 					<h3 class="catbg">
 						<img src="', $settings['default_images_url'], '/simpledesk/live.png" alt="*">
 						', $txt['shd_live_from'], '
-						<span class="righttext"><a href="', $scripturl, '?action=helpadmin;help=shd_admin_help_live" onclick="return reqWin(this.href);"><img src="', $settings['images_url'], '/helptopics.png" alt="', $txt['help'], '"></a></span>
+						<span class="righttext"><a href="', $scripturl, '?action=helpadmin;help=shd_admin_help_live" class="shd_help"><img src="', $settings['images_url'], '/helptopics.png" alt="', $txt['help'], '"></a></span>
 					</h3>
 				</div>
 				<div class="windowbg nopadding">
@@ -59,24 +59,24 @@ function template_shd_admin()
 					<h3 class="catbg">
 						<img src="', $settings['default_images_url'], '/simpledesk/modification.png" alt="*">
 						', $txt['shd_mod_information'], '
-						<span class="righttext"><a href="', $scripturl, '?action=helpadmin;help=shd_admin_help_modification" onclick="return reqWin(this.href);"><img src="', $settings['images_url'], '/helptopics.png" alt="', $txt['help'], '"></a></span>
+						<span class="righttext"><a href="', $scripturl, '?action=helpadmin;help=shd_admin_help_modification" class="shd_help"><img src="', $settings['images_url'], '/helptopics.png" alt="', $txt['help'], '"></a></span>
 					</h3>
 				</div>
 				<div class="windowbg nopadding">
 					<div class="padding">
-							<img src="', $settings['default_images_url'], '/simpledesk/support.png" alt="*" class="shd_icon_minihead"> <strong>', $txt['shd_need_support'], '</strong><br>
+							<img src="', $settings['default_images_url'], '/simpledesk/support.png" alt="*" class="shd_icon_minihead"><strong>', $txt['shd_need_support'], '</strong><br>
 							', sprintf($txt['shd_support_start_here'], $scripturl . '?action=admin;area=helpdesk_info;sa=support'), '<br>
-							<img src="', $settings['default_images_url'], '/simpledesk/versions.png" alt="*" class="shd_icon_minihead"> <strong>', $txt['support_versions'], ':</strong><br>
+							<img src="', $settings['default_images_url'], '/simpledesk/versions.png" alt="*" class="shd_icon_minihead"><strong>', $txt['support_versions'], ':</strong><br>
 							', $txt['shd_your_version'], ':
 						<em id="yourVersion">', SHD_VERSION, '</em><br>
 							', $txt['shd_current_version'], ':
 						<em id="sdVersion">??</em><br>
-							<img src="', $settings['default_images_url'], '/simpledesk/ticket.png" alt="*" class="shd_icon_minihead"> <strong>', $txt['shd_ticket_information'], ':</strong><br>
+							<img src="', $settings['default_images_url'], '/simpledesk/ticket.png" alt="*" class="shd_icon_minihead"><strong>', $txt['shd_ticket_information'], ':</strong><br>
 							', $txt['shd_total_tickets'], ':
 						<em id="totalTickets">
-								<a href="javascript: shd_ticket_total_information();" >', $context['total_tickets'], '</a>
+								<a href="#">', $context['total_tickets'], '</a>
 						</em>
-						<div id="shd_ticket_total_information" style="display: none;">
+						<div id="shd_ticket_total_information" class="hidden">
 							&nbsp;&nbsp;&nbsp;', $txt['shd_open_tickets'], ': <em>', $context['open_tickets'], '</em><br>
 							&nbsp;&nbsp;&nbsp;', $txt['shd_closed_tickets'], ': <em>', $context['closed_tickets'], '</em><br>
 							&nbsp;&nbsp;&nbsp;', $txt['shd_recycled_tickets'], ': <em>', $context['recycled_tickets'], '</em><br>
@@ -87,7 +87,7 @@ function template_shd_admin()
 	// That gets the data. Up to here how it should be displayed.
 	echo '
 						<div class="block">
-							<img src="', $settings['default_images_url'], '/simpledesk/staff.png" alt="*" class="shd_icon_minihead"> <strong>', $txt['shd_staff_list'], ':</strong>
+							<img src="', $settings['default_images_url'], '/simpledesk/staff.png" alt="*" class="shd_icon_minihead"><strong>', $txt['shd_staff_list'], ':</strong>
 							', implode(', ', $context['staff']), '
 						</div>';
 
@@ -97,14 +97,12 @@ function template_shd_admin()
 			</div>
 		</div>';
 
-
 	echo '
 		<div id="sd_credits">
 			<div class="title_bar">
 				<h3 class="titlebg">
-					<a href="', $scripturl, '?action=helpadmin;help=shd_admin_help_credits" onclick="return reqWin(this.href);"><img src="', $settings['images_url'], '/helptopics.png" alt="', $txt['help'], '"></a>
+					<a href="', $scripturl, '?action=helpadmin;help=shd_admin_help_credits" class="shd_help"><img src="', $settings['images_url'], '/helptopics.png" alt="', $txt['help'], '"></a>
 					', $txt['shd_credits'], '
-					<span class="righttext"><a href="', $scripturl, '?action=helpadmin;help=shd_admin_help_credits" onclick="return reqWin(this.href);"><img src="', $settings['images_url'], '/helptopics.png" alt="', $txt['help'], '"></a></span>
 				</h3>
 			</div>';
 
@@ -142,15 +140,15 @@ function template_shd_admin()
 					}
 
 					if (isset($group['icon']))
-					echo '
+						echo '
 						</div>';
 
 					echo '
-							</div>';
+						</div>';
 				}
 
 					echo '
-						<span class="smalltext">&nbsp;<img src="', $settings['default_images_url'], '/simpledesk/update.png" alt="*" class="shd_tinyicon"> ', $txt['shd_former_contributors'], '</span>
+						<span class="smalltext">&nbsp;<img src="', $settings['default_images_url'], '/simpledesk/update.png" alt="*" class="shd_tinyicon">', $txt['shd_former_contributors'], '</span>
 				</div>
 			</div>';
 		}
@@ -159,7 +157,7 @@ function template_shd_admin()
 		</div>';
 
 	// The below functions include all the scripts needed from the simpledesk.net site. The language and format are passed for internationalization.
-	if (empty($modSettings['disable_smf_js']))
+	if (empty($modSettings['disable_smf_js']) && empty($modSettings['disable_sd_js']))
 		echo '
 		<script type="text/javascript" src="https://www.simpledesk.net/sd/current-version.js"></script>
 		<script type="text/javascript" src="https://www.simpledesk.net/sd/latest-news.js"></script>';
@@ -167,10 +165,8 @@ function template_shd_admin()
 	// This sets the announcements and current versions themselves ;).
 	echo '
 		<script type="text/javascript"><!-- // --><![CDATA[
-
 			var oAdminIndex = new sd_AdminIndex({
 				sSelf: \'oAdminCenter\',
-
 				bLoadAnnouncements: true,
 				sAnnouncementTemplate: ', JavaScriptEscape('
 					<dl>
@@ -185,7 +181,6 @@ function template_shd_admin()
 					</dd>
 				'), ',
 				sAnnouncementContainerId: \'sdAnnouncements\',
-
 				bLoadVersions: true,
 				sSdVersionContainerId: \'sdVersion\',
 				sYourVersionContainerId: \'yourVersion\',
@@ -193,23 +188,22 @@ function template_shd_admin()
 				sVersionOutdatedTemplate: ', JavaScriptEscape('
 					<span class="alert">%currentVersion%</span>
 				'), ',
-
 				bLoadUpdateNotification: true,
 				sUpdateNotificationContainerId: \'sd_update_section\',
 				sUpdateNotificationDefaultTitle: ', JavaScriptEscape($txt['shd_update_available']), ',
 				sUpdateNotificationDefaultMessage: ', JavaScriptEscape($txt['shd_update_message']), ',
 				sUpdateNotificationTemplate: ', JavaScriptEscape('
-					<div class="cat_bar" id="update_title">
+					<div class="cat_bar hidden" id="update_title">
 						<h3 class="catbg">
 							<img src="' . $settings['default_images_url'] . '/simpledesk/update.png" alt="">
 							%title%
-							<span class="righttext"><a href="' . $scripturl . '?action=helpadmin;help=shd_admin_help_update" onclick="return reqWin(this.href);"><img src="' . $settings['images_url'] . '/helptopics.png" alt="' . $txt['help'] . '"></a></span>
+							<span class="righttext"><a href="' . $scripturl . '?action=helpadmin;help=shd_admin_help_update" class="shd_help"><img src="' . $settings['images_url'] . '/helptopics.png" alt="' . $txt['help'] . '"></a></span>
 						</h3>
 					</div>
 					<div class="windowbg" id="update_container">
 						<div class="content" id="update_content">
-							<p id="update_critical_alert" class="alert" style="display: none;">!!</p>
-							<h3 id="update_critical_title" class="alert" style="display: none;">%criticaltitle%</h3>
+							<p id="update_critical_alert" class="alert hidden">!!</p>
+							<h3 id="update_critical_title" class="alert hidden">%criticaltitle%</h3>
 							<div id="update_message" class="smalltext">
 								<p>
 									%message%
@@ -220,6 +214,8 @@ function template_shd_admin()
 				'), ',
 				sUpdateNotificationLink: ', JavaScriptEscape($scripturl . '?action=admin;area=packages;pgdownload;auto;package=%package%;' . $context['session_var'] . '=' . $context['session_id']), ',
 				sUpdateInformationLink: \'%information%\',
+				sTotalTicketsContainerId: \'totalTickets\',
+				sTotalTicketsInfoContainerID: \'shd_ticket_total_information\',
 			});
 		// ]]></script>';
 }
@@ -247,39 +243,9 @@ function template_shd_show_settings()
 		echo '
 					<div class="errorbox">', sprintf($txt['settings_not_saved'], $context['saved_failed']), '</div>';
 
-	echo '
-	<script type="text/javascript"><!-- // --><![CDATA[
-		function invertList(state, id_list)
-		{
-			for (i in id_list)
-			{
-				var chk = document.getElementById(id_list[i]);
-				if (chk && chk.disabled == false)
-					chk.checked = state;
-			}
-		}';
-
 	if (!empty($context['settings_pre_javascript']))
-		echo $context['settings_pre_javascript'];
-
-	// If we have BBC selection we have a bit of JS.
-	if (!empty($context['bbc_sections']))
-	{
 		echo '
-		function toggleBBCDisabled(section, disable)
-		{
-			for (var i = 0; i < document.forms.bbcForm.length; i++)
-			{
-				if (typeof(document.forms.bbcForm[i].name) == "undefined" || (document.forms.bbcForm[i].name.substr(0, 11) != "enabledTags") || (document.forms.bbcForm[i].name.indexOf(section) != 11))
-					continue;
-
-				document.forms.bbcForm[i].disabled = disable;
-			}
-			document.getElementById("bbc_" + section + "_select_all").disabled = disable;
-		}';
-	}
-	echo '
-	// ]]></script>';
+	<script type="text/javascript"><!-- // --><![CDATA[', $context['settings_pre_javascript'], '// ]]></script>';
 
 	if (!empty($context['settings_insert_above']))
 		echo $context['settings_insert_above'];
@@ -323,7 +289,7 @@ function template_shd_show_settings()
 				echo '
 					<div class="cat_bar">
 						<h3 class="', !empty($config_var['class']) ? $config_var['class'] : 'catbg', '"', !empty($config_var['force_div_id']) ? ' id="' . $config_var['force_div_id'] . '"' : '', '>
-							', ($config_var['help'] ? '<a href="' . $scripturl . '?action=helpadmin;help=' . $config_var['help'] . '" onclick="return reqWin(this.href);" class="help"><img src="' . $settings['images_url'] . '/helptopics.png" alt="' . $txt['help'] . '"></a>' : ''), '
+							', ($config_var['help'] ? '<a href="' . $scripturl . '?action=helpadmin;help=' . $config_var['help'] . '" class="help shd_help"><img src="' . $settings['images_url'] . '/helptopics.png" alt="' . $txt['help'] . '"></a>' : ''), '
 							', $config_var['label'], '
 						</h3>
 					</div>';
@@ -362,27 +328,6 @@ function template_shd_show_settings()
 			if ($config_var['type'] == 'hidden')
 				echo '
 						<input type="hidden" name="', $config_var['name'], '" value="', $config_var['value'], '">';
-			// A check-all option?
-			elseif ($config_var['type'] == 'checkall')
-			{
-				$array = array();
-				foreach ($config_var['data'] as $k => $v)
-					$array[] = JavaScriptEscape($v[1]);
-
-				echo '
-					<dt></dt>
-					<dd>
-						<input type="checkbox" name="all" id="', $config_var['name'], '" value="" onclick="invert_', $config_var['name'], '(this);" class="floatleft">
-						<label for="check_all" class="floatleft">', $txt['check_all'], '</label>
-					</dd>
-					<script type="text/javascript"><!-- // --><![CDATA[
-					function invert_', $config_var['name'], '(obj)
-					{
-						var checks = [' . implode(',', $array), '];
-						invertList(obj.checked, checks);
-					}
-					// ]]></script>';
-			}
 			// Is this a span like a message?
 			elseif (in_array($config_var['type'], array('message', 'warning')))
 				echo '
@@ -393,7 +338,7 @@ function template_shd_show_settings()
 			else
 			{
 				echo '
-						<dt', is_array($config_var) && !empty($config_var['force_div_id']) ? ' id="' . $config_var['force_div_id'] . '"' : '', is_array($config_var) && !empty($config_var['invisible']) ? ' style="display:none;"' : '', '>';
+						<dt', is_array($config_var) && !empty($config_var['force_div_id']) ? ' id="' . $config_var['force_div_id'] . '"' : '', is_array($config_var) && !empty($config_var['invisible']) ? ' class="hidden"' : '', '>';
 
 				// Some quick helpers...
 				$javascript = $config_var['javascript'];
@@ -403,21 +348,21 @@ function template_shd_show_settings()
 				// Show the [?] button.
 				if ($config_var['help'])
 					echo '
-							<a id="setting_', $config_var['name'], '" href="', $scripturl, '?action=helpadmin;help=', $config_var['help'], '" onclick="return reqWin(this.href);" class="help"><img src="', $settings['images_url'], '/helptopics.png" alt="', $txt['help'], '" border="0"></a><span', ($config_var['disabled'] ? ' class="disabled"' : ($config_var['invalid'] ? ' class="error"' : '')), '><label id="label_', $config_var['name'], '" for="', $config_var['name'], '">', $config_var['label'], '</label>', $subtext, ($config_var['type'] == 'password' ? '<br><em>' . $txt['admin_confirm_password'] . '</em>' : ''), '</span>
+							<a id="setting_', $config_var['name'], '" href="', $scripturl, '?action=helpadmin;help=', $config_var['help'], '" class="help shd_help"><img src="', $settings['images_url'], '/helptopics.png" alt="', $txt['help'], '" border="0"></a><span', ($config_var['disabled'] ? ' class="disabled"' : ($config_var['invalid'] ? ' class="error"' : '')), '><label id="label_', $config_var['name'], '" for="', $config_var['name'], '">', $config_var['label'], '</label>', $subtext, ($config_var['type'] == 'password' ? '<br><em>' . $txt['admin_confirm_password'] . '</em>' : ''), '</span>
 						</dt>';
 				else
 					echo '
-							<a id="setting_', $config_var['name'], '"></a> <span', ($config_var['disabled'] ? ' class="disabled"' : ($config_var['invalid'] ? ' class="error"' : '')), '><label id="label_', $config_var['name'], '" for="', $config_var['name'], '">', $config_var['label'], '</label>', $subtext, ($config_var['type'] == 'password' ? '<br><em>' . $txt['admin_confirm_password'] . '</em>' : ''), '</span>
+							<a id="setting_', $config_var['name'], '"></a><span', ($config_var['disabled'] ? ' class="disabled"' : ($config_var['invalid'] ? ' class="error"' : '')), '><label id="label_', $config_var['name'], '" for="', $config_var['name'], '">', $config_var['label'], '</label>', $subtext, ($config_var['type'] == 'password' ? '<br><em>' . $txt['admin_confirm_password'] . '</em>' : ''), '</span>
 						</dt>';
 
 				echo '
-						<dd', (!empty($config_var['force_div_id']) ? ' id="' . $config_var['force_div_id'] . '_dd"' : ''), (is_array($config_var) && !empty($config_var['invisible']) ? ' style="display:none;"' : ''), '>',
+						<dd', (!empty($config_var['force_div_id']) ? ' id="' . $config_var['force_div_id'] . '_dd"' : ''), (is_array($config_var) && !empty($config_var['invisible']) ? ' class="hidden"' : ''), '>',
 							$config_var['preinput'];
 
 				// Show a check box.
 				if ($config_var['type'] == 'check')
 					echo '
-							<input type="checkbox"', $javascript, $disabled, ' name="', $config_var['name'], '" id="', $config_var['name'], '"', ($config_var['value'] ? ' checked="checked"' : ''), ' value="1" >';
+							<input type="checkbox"', $javascript, $disabled, ' name="', $config_var['name'], '" id="', $config_var['name'], '"', ($config_var['value'] ? ' checked="checked"' : ''), ' value="1">';
 				// Escape (via htmlspecialchars.) the text box.
 				elseif ($config_var['type'] == 'password')
 					echo '
@@ -453,11 +398,11 @@ function template_shd_show_settings()
 						foreach ($bbcColumn as $bbcTag)
 							echo '
 										<li class="list_bbc align_left shd_bbc_list">
-											<input type="checkbox" name="', $config_var['name'], '_enabledTags[]" id="tag_', $config_var['name'], '_', $bbcTag['tag'], '" value="', $bbcTag['tag'], '"', in_array($bbcTag['tag'], $context['enabled_tags'][$config_var['name']]) ? ' checked="checked"' : '', ' > <label for="tag_', $config_var['name'], '_', $bbcTag['tag'], '">', $bbcTag['tag'], '</label>', $bbcTag['show_help'] ? ' (<a href="' . $scripturl . '?action=helpadmin;help=tag_' . $bbcTag['tag'] . '" onclick="return reqWin(this.href);">?</a>)' : '', '
+											<input type="checkbox" name="', $config_var['name'], '_enabledTags[]" id="tag_', $config_var['name'], '_', $bbcTag['tag'], '" value="', $bbcTag['tag'], '"', in_array($bbcTag['tag'], $context['enabled_tags'][$config_var['name']]) ? ' checked="checked"' : '', '><label for="tag_', $config_var['name'], '_', $bbcTag['tag'], '">', $bbcTag['tag'], '</label>', $bbcTag['show_help'] ? ' (<a href="' . $scripturl . '?action=helpadmin;help=tag_' . $bbcTag['tag'] . '" class="shd_help">?</a>)' : '', '
 										</li>';
 
 					echo '			</ul>
-								<br><input type="checkbox" id="select_all" onclick="invertAll(this, this.form, \'', $config_var['name'], '_enabledTags\');"', $context['all_enabled'][$config_var['name']] ? ' checked="checked"' : '', ' > <label for="select_all"><em>', $txt['bbcTagsToUse_select_all'], '</em></label>
+								<br><input type="checkbox" id="select_all" onclick="invertAll(this, this.form, \'', $config_var['name'], '_enabledTags\');"', $context['all_enabled'][$config_var['name']] ? ' checked="checked"' : '', '><label for="select_all"><em>', $txt['bbcTagsToUse_select_all'], '</em></label>
 							</fieldset>';
 				}
 				// A simple message?
@@ -467,7 +412,7 @@ function template_shd_show_settings()
 				// Assume it must be a text box.
 				else
 					echo '
-							<input type="text"', $javascript, $disabled, ' name="', $config_var['name'], '" id="', $config_var['name'], '" value="', $config_var['value'], '"', ($config_var['size'] ? ' size="' . $config_var['size'] . '"' : ''), ' >';
+							<input type="text"', $javascript, $disabled, ' name="', $config_var['name'], '" id="', $config_var['name'], '" value="', $config_var['value'], '"', ($config_var['size'] ? ' size="' . $config_var['size'] . '"' : ''), '>';
 
 				echo isset($config_var['postinput']) ? '
 							' . $config_var['postinput'] : '',
@@ -485,7 +430,7 @@ function template_shd_show_settings()
 			else
 				echo '
 						<dd>
-							<strong>' . $config_var . '</strong>
+							<strong>', $config_var, '</strong>
 						</dd>';
 		}
 	}
@@ -522,7 +467,6 @@ function template_shd_show_settings()
 
 	if (!empty($context['settings_insert_below']))
 		echo $context['settings_insert_below'];
-
 }
 
 /**
@@ -550,38 +494,38 @@ function template_shd_action_log()
 			<tr class="title_bar">
 				<td width="38%" colspan="2">
 					<img src="', $settings['default_images_url'], '/simpledesk/action.png" class="shd_smallicon" alt="">
-					<a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=actionlog', $context['sort'] == $sort_types['action'] && !isset($_REQUEST['asc']) ? ';sort=action;asc' : ';sort=action', '">
+					<a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=actionlog;sort=action', $context['sort'] == $sort_types['action'] && !isset($_REQUEST['asc']) ? ';asc' : '', '">
 						', $txt['shd_admin_actionlog_action'], '
 					</a>
-					', ($context['sort'] == $sort_types['action'] ? '<img src="' . $settings['default_images_url'] . '/' . (isset($_REQUEST['asc']) ? 'simpledesk/move_up.png' : 'simpledesk/move_down.png') . '" alt="">' : ''), '
+					', ($context['sort'] == $sort_types['action'] ? '<img src="' . $settings['default_images_url'] . '/simpledesk/move_' . (isset($_REQUEST['asc']) ? 'up' : 'down') . '.png" alt="">' : ''), '
 				</td>
 				<td width="20%">
 					<img src="', $settings['default_images_url'], '/simpledesk/time.png" class="shd_smallicon" alt="">
-					<a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=actionlog', $context['sort'] == $sort_types['time'] && !isset($_REQUEST['asc']) ? ';sort=time;asc' : ';sort=time', '">
+					<a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=actionlog;sort=time', $context['sort'] == $sort_types['time'] && !isset($_REQUEST['asc']) ? ';asc' : '', '">
 						', $txt['shd_admin_actionlog_date'], '
 					</a>
-					', ($context['sort'] == $sort_types['time'] ? '<img src="' . $settings['default_images_url'] . '/' . (isset($_REQUEST['asc']) ? 'simpledesk/move_up.png' : 'simpledesk/move_down.png') . '" alt="">' : ''), '
+					', ($context['sort'] == $sort_types['time'] ? '<img src="' . $settings['default_images_url'] . '/simpledesk/move_' . (isset($_REQUEST['asc']) ? 'up' : 'down') . '.png" alt="">' : ''), '
 				</td>
 				<td width="16%">
 					<img src="', $settings['default_images_url'], '/simpledesk/user.png" class="shd_smallicon" alt="">
-					<a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=actionlog', $context['sort'] == $sort_types['member'] && !isset($_REQUEST['asc']) ? ';sort=member;asc' : ';sort=member', '">
+					<a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=actionlog;sort=member', $context['sort'] == $sort_types['member'] && !isset($_REQUEST['asc']) ? ';asc' : '', '">
 						', $txt['shd_admin_actionlog_member'], '
 					</a>
-					', ($context['sort'] == $sort_types['member'] ? '<img src="' . $settings['default_images_url'] . '/' . (isset($_REQUEST['asc']) ? 'simpledesk/move_up.png' : 'simpledesk/move_down.png') . '" alt="">' : ''), '
+					', ($context['sort'] == $sort_types['member'] ? '<img src="' . $settings['default_images_url'] . '/simpledesk/move_' . (isset($_REQUEST['asc']) ? 'up' : 'down') . '.png" alt="">' : ''), '
 				</td>
 				<td width="16%">
 					<img src="', $settings['default_images_url'], '/simpledesk/position.png" class="shd_smallicon" alt="">
-					<a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=actionlog', $context['sort'] == $sort_types['position'] && !isset($_REQUEST['asc']) ? ';sort=position;asc' : ';sort=position', '">
+					<a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=actionlog;sort=position', $context['sort'] == $sort_types['position'] && !isset($_REQUEST['asc']) ? ';asc' : '', '">
 						', $txt['shd_admin_actionlog_position'], '
 					</a>
-					', ($context['sort'] == $sort_types['position'] ? '<img src="' . $settings['default_images_url'] . '/' . (isset($_REQUEST['asc']) ? 'simpledesk/move_up.png' : 'simpledesk/move_down.png') . '" alt="">' : ''), '
+					', ($context['sort'] == $sort_types['position'] ? '<img src="' . $settings['default_images_url'] . '/simpledesk/move_' . (isset($_REQUEST['asc']) ? 'up' : 'down') . '.png" alt="">' : ''), '
 				</td>
 				<td width="10%">
 					<img src="', $settings['default_images_url'], '/simpledesk/ip.png" class="shd_smallicon" alt="">
-					<a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=actionlog', $context['sort'] == $sort_types['ip'] && !isset($_REQUEST['asc']) ? ';sort=ip;asc' : ';sort=ip', '">
+					<a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=actionlog;sort=ip', $context['sort'] == $sort_types['ip'] && !isset($_REQUEST['asc']) ? ';asc' : '', '">
 						', $txt['shd_admin_actionlog_ip'], '
 					</a>
-					', ($context['sort'] == $sort_types['ip'] ? '<img src="' . $settings['default_images_url'] . '/' . (isset($_REQUEST['asc']) ? 'simpledesk/move_up.png' : 'simpledesk/move_down.png' ) . '" alt="">' : ''), '
+					', ($context['sort'] == $sort_types['ip'] ? '<img src="' . $settings['default_images_url'] . '/simpledesk/move_' . (isset($_REQUEST['asc']) ? 'up' : 'down') . '.png" alt="">' : ''), '
 				</td>
 				<td width="2%">&nbsp;</td>
 			</tr>';
@@ -608,7 +552,7 @@ function template_shd_action_log()
 			<tr class="titlebg">
 				<td colspan="7">
 					<span class="floatright smalltext">', $context['page_index'], '</span>
-					<span class="smalltext shd_empty_log"><img src="', $settings['default_images_url'], '/simpledesk/delete.png" alt="X"> <a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=actionlog', $context['url_sort'], $context['url_order'], ';removeall" onclick="return confirm(', JavaScriptEscape(sprintf($txt['shd_admin_actionlog_removeall_confirm'], $context['hoursdisable'])), ');">', $txt['shd_admin_actionlog_removeall'], '</a></span>
+					<span class="smalltext shd_empty_log"><img src="', $settings['default_images_url'], '/simpledesk/delete.png" alt="X"><a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=actionlog', $context['url_sort'], $context['url_order'], ';removeall" onclick="return confirm(', JavaScriptEscape(sprintf($txt['shd_admin_actionlog_removeall_confirm'], $context['hoursdisable'])), ');">', $txt['shd_admin_actionlog_removeall'], '</a></span>
 				</td>
 			</tr>
 		</table>';
@@ -640,38 +584,38 @@ function template_shd_admin_log()
 			<tr class="title_bar">
 				<td class="shd_33">
 					<img src="', $settings['default_images_url'], '/simpledesk/action.png" class="shd_smallicon" alt="">
-					<a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=adminlog', $context['sort'] == $sort_types['action'] && !isset($_REQUEST['asc']) ? ';sort=action;asc' : ';sort=action', '">
+					<a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=adminlog;sort=action', $context['sort'] == $sort_types['action'] && !isset($_REQUEST['asc']) ? ';asc' : '', '">
 						', $txt['shd_admin_actionlog_action'], '
 					</a>
-					', ($context['sort'] == $sort_types['action'] ? '<img src="' . $settings['default_images_url'] . '/' . (isset($_REQUEST['asc']) ? 'simpledesk/move_up.png' : 'simpledesk/move_down.png') . '" alt="">' : ''), '
+					', ($context['sort'] == $sort_types['action'] ? '<img src="' . $settings['default_images_url'] . '/simpledesk/move_' . (isset($_REQUEST['asc']) ? 'up' : 'down') . '.png" alt="">' : ''), '
 				</td>
 				<td class="shd_20">
 					<img src="', $settings['default_images_url'], '/simpledesk/time.png" class="shd_smallicon" alt="">
-					<a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=adminlog', $context['sort'] == $sort_types['time'] && !isset($_REQUEST['asc']) ? ';sort=time;asc' : ';sort=time', '">
+					<a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=adminlog;sort=time', $context['sort'] == $sort_types['time'] && !isset($_REQUEST['asc']) ? ';asc' : '', '">
 						', $txt['shd_admin_actionlog_date'], '
 					</a>
-					', ($context['sort'] == $sort_types['time'] ? '<img src="' . $settings['default_images_url'] . '/' . (isset($_REQUEST['asc']) ? 'simpledesk/move_up.png' : 'simpledesk/move_down.png') . '" alt="">' : ''), '
+					', ($context['sort'] == $sort_types['time'] ? '<img src="' . $settings['default_images_url'] . '/simpledesk/move_' . (isset($_REQUEST['asc']) ? 'up' : 'down') . '.png" alt="">' : ''), '
 				</td>
 				<td class="shd_20">
 					<img src="', $settings['default_images_url'], '/simpledesk/user.png" class="shd_smallicon" alt="">
-					<a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=adminlog', $context['sort'] == $sort_types['member'] && !isset($_REQUEST['asc']) ? ';sort=member;asc' : ';sort=member', '">
+					<a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=adminlog;sort=member', $context['sort'] == $sort_types['member'] && !isset($_REQUEST['asc']) ? ';asc' : '', '">
 						', $txt['shd_admin_actionlog_member'], '
 					</a>
-					', ($context['sort'] == $sort_types['member'] ? '<img src="' . $settings['default_images_url'] . '/' . (isset($_REQUEST['asc']) ? 'simpledesk/move_up.png' : 'simpledesk/move_down.png') . '" alt="">' : ''), '
+					', ($context['sort'] == $sort_types['member'] ? '<img src="' . $settings['default_images_url'] . '/simpledesk/move_' . (isset($_REQUEST['asc']) ? 'up' : 'down') . '.png" alt="">' : ''), '
 				</td>
 				<td class="shd_10">
 					<img src="', $settings['default_images_url'], '/simpledesk/position.png" class="shd_smallicon" alt="">
-					<a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=adminlog', $context['sort'] == $sort_types['position'] && !isset($_REQUEST['asc']) ? ';sort=position;asc' : ';sort=position', '">
+					<a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=adminlog;sort=position', $context['sort'] == $sort_types['position'] && !isset($_REQUEST['asc']) ? ';asc' : '', '">
 						', $txt['shd_admin_actionlog_position'], '
 					</a>
-					', ($context['sort'] == $sort_types['position'] ? '<img src="' . $settings['default_images_url'] . '/' . (isset($_REQUEST['asc']) ? 'simpledesk/move_up.png' : 'simpledesk/move_down.png') . '" alt="">' : ''), '
+					', ($context['sort'] == $sort_types['position'] ? '<img src="' . $settings['default_images_url'] . '/simpledesk/move_' . (isset($_REQUEST['asc']) ? 'up' : 'down') . '.png" alt="">' : ''), '
 				</td>
 				<td class="shd_10" ', $context['can_delete'] ? 'colspan="2"' : '', '>
 					<img src="', $settings['default_images_url'], '/simpledesk/ip.png" class="shd_smallicon" alt="">
-					<a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=adminlog', $context['sort'] == $sort_types['ip'] && !isset($_REQUEST['asc']) ? ';sort=ip;asc' : ';sort=ip', '">
+					<a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=adminlog;sort=ip', $context['sort'] == $sort_types['ip'] && !isset($_REQUEST['asc']) ? ';asc' : '', '">
 						', $txt['shd_admin_actionlog_ip'], '
 					</a>
-					', ($context['sort'] == $sort_types['ip'] ? '<img src="' . $settings['default_images_url'] . '/' . (isset($_REQUEST['asc']) ? 'simpledesk/move_up.png' : 'simpledesk/move_down.png') . '" alt="">' : ''), '
+					', ($context['sort'] == $sort_types['ip'] ? '<img src="' . $settings['default_images_url'] . '/simpledesk/move_' . (isset($_REQUEST['asc']) ? 'up' : 'down') . '.png" alt="">' : ''), '
 				</td>
 				', $context['can_delete'] ? '<td class="shd_5">&nbsp;</td>' : '', '
 			</tr>';
@@ -679,7 +623,7 @@ function template_shd_admin_log()
 	if (empty($context['actions']))
 		echo '
 			<tr class="windowbg">
-				<td colspan="', $context['can_delete'] ? 6 : 5,'" class="shd_noticket">', $txt['shd_admin_actionlog_none'], '</td>
+				<td colspan="', $context['can_delete'] ? 6 : 5, '" class="shd_noticket">', $txt['shd_admin_actionlog_none'], '</td>
 			</tr>';
 	else
 		foreach ($context['actions'] as $action)
@@ -697,7 +641,7 @@ function template_shd_admin_log()
 			<tr class="windowbg">
 				<td colspan="', $context['can_delete'] ? 6 : 5, '">
 					<span class="floatright smalltext">', $context['page_index'], '</span>
-					<span class="smalltext shd_empty_log"><img src="', $settings['default_images_url'], '/simpledesk/delete.png" alt="X"> <a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=adminlog', $context['url_sort'], $context['url_order'], ';removeall" onclick="return confirm(', JavaScriptEscape(sprintf($txt['shd_admin_actionlog_removeall_confirm'], $context['daysdisable'])), ');">', $txt['shd_admin_actionlog_removeall'], '</a></span>
+					<span class="smalltext shd_empty_log"><img src="', $settings['default_images_url'], '/simpledesk/delete.png" alt="X"><a href="', $scripturl, '?action=admin;area=helpdesk_info;sa=adminlog', $context['url_sort'], $context['url_order'], ';removeall" onclick="return confirm(', JavaScriptEscape(sprintf($txt['shd_admin_actionlog_removeall_confirm'], $context['daysdisable'])), ');">', $txt['shd_admin_actionlog_removeall'], '</a></span>
 				</td>
 			</tr>
 		</table>';
@@ -719,14 +663,14 @@ function template_shd_support()
 	<div class="shd_admin_leftcolumn floatleft">
 		<div class="cat_bar">
 			<h3 class="catbg">
-				<img src="', $settings['default_images_url'], '/simpledesk/edit.png" alt="*"> ', $txt['shd_admin_support_form_title'], '
+				<img src="', $settings['default_images_url'], '/simpledesk/edit.png" alt="*">', $txt['shd_admin_support_form_title'], '
 			</h3>
 		</div>
 		<div class="windowbg2 noup">
 			<form action="', $context['shd_support_url'], '" method="post">
 				<dl id="post_header">
 					<dt><span id="caption_subject">', $txt['subject'], '</span></dt>
-					<dd><input type="text" name="subject" tabindex="1" size="80" maxlength="80" ></dd>
+					<dd><input type="text" name="subject" tabindex="1" size="80" maxlength="80"></dd>
 				</dl>
 				<textarea class="editor" name="message" rows="12" cols="60" tabindex="2" style="width: 90%; height: 150px;"></textarea>
 				<br><br>
@@ -739,7 +683,7 @@ function template_shd_support()
 	<div class="shd_admin_rightcolumn floatleft">
 		<div class="cat_bar">
 			<h3 class="catbg">
-				<img src="', $settings['images_url'], '/helptopics.png" alt="?"> ', $txt['shd_admin_support_what_is_this'], '
+				<img src="', $settings['images_url'], '/helptopics.png" alt="?">', $txt['shd_admin_support_what_is_this'], '
 			</h3>
 		</div>
 		<div class="information smalltext">

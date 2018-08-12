@@ -7,15 +7,6 @@
 }
 
 /* SimpleDesk icons */
-.shd_smallicon {
-	width: 16px;
-	height: 20px;
-	margin-right: 4px;
-}
-.shd_icon_minihead {
-	position: relative;
-	top: 3px;
-}
 .shd_icon {
 	position: relative;
 	top: 3px;
@@ -204,9 +195,6 @@ form#postmodify .shd_ticket_roundframe {
 	position: relative;
 	left: 4px;
 }
-#shd_custom_fields_swap {
-	margin-top: 8px;
-}
 .shd_customfields input[type="text"]
 {
 	width: 85%;
@@ -253,8 +241,6 @@ form#postmodify .shd_ticket_roundframe {
 }
 /* Go advanced! */
 .shd_advancedbutton {
-	margin-top: 10px;
-	height: 15px;
 	background: url(../images/simpledesk/advanced.png) no-repeat left;
 	background-position: 10px;
 	padding: 10px;
@@ -263,6 +249,8 @@ form#postmodify .shd_ticket_roundframe {
 	font-weight: bold;
 	font-size: 100%;
 	margin-right: 10px;
+	border-top: 1px solid #ddd;
+	border-radius: 7px;
 }
 
 /* Edit settings*/
@@ -337,6 +325,10 @@ form#postmodify .shd_ticket_roundframe {
 	margin-right: 5%;
 	float: left;
 }
+dl.settings dt.shd_cust_fields_largetext, .shd_cust_fields_largetext textarea {
+	width: 100%;
+}
+
 
 /**********************************
 * Attachment stuff				  *
@@ -411,6 +403,9 @@ form#postmodify .shd_ticket_roundframe {
 }
 #canned_replies {
 	margin-top: 1em;
+}
+#canned_replies #canned_title {
+	font-weight:bold;
 }
 
 /**********************************

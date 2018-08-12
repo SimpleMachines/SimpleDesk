@@ -38,7 +38,7 @@ function template_main()
 					', $txt['shd_go_to_ticket'], ':
 					<input type="hidden" name="action" value="helpdesk">
 					<input type="hidden" name="sa" value="ticket">
-					<input type="text"  id="ticketJump" name="ticket" size="4">
+					<input type="text" id="ticketJump" name="ticket" size="4">
 					<input type="submit" class="button" value="', $txt['shd_go'], '" onclick="shd_quickTicketJump(this.parentNode.ticketJump.value);">
 				</form>
 			</div>
@@ -107,7 +107,7 @@ function template_shd_depts()
 					', $txt['shd_go_to_ticket'], ':
 					<input type="hidden" name="action" value="helpdesk">
 					<input type="hidden" name="sa" value="ticket">
-					<input type="text"  id="ticketJump" name="ticket" size="4">
+					<input type="text" id="ticketJump" name="ticket" size="4">
 					<input type="submit" class="button" value="', $txt['shd_go'], '" onclick="shd_quickTicketJump(this.parentNode.ticketJump.value);">
 				</form>
 			</div>

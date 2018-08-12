@@ -41,7 +41,7 @@ function template_search()
 						<strong>', $txt['shd_search_text'], '</strong>
 					</dt>
 					<dd>
-						<input type="text" name="search" value="" size="40" maxlength="100" >
+						<input type="text" name="search" value="" size="40" maxlength="100">
 					</dd>
 					<dt>
 						<strong>', $txt['shd_search_match'], '</strong>
@@ -59,18 +59,15 @@ function template_search()
 						<strong>', $txt['shd_search_where'], '</strong>
 					</dt>
 					<dd>
-						<input type="checkbox"  checked="checked" name="search_subjects"> ', $txt['shd_search_where_subjects'], '<br>
-						<input type="checkbox"  checked="checked" name="search_tickets"> ', $txt['shd_search_where_tickets'], '<br>
-						<input type="checkbox"  checked="checked" name="search_replies"> ', $txt['shd_search_where_replies'], '<br>
+						<input type="checkbox" checked="checked" name="search_subjects"> ', $txt['shd_search_where_subjects'], '<br>
+						<input type="checkbox" checked="checked" name="search_tickets"> ', $txt['shd_search_where_tickets'], '<br>
+						<input type="checkbox" checked="checked" name="search_replies"> ', $txt['shd_search_where_replies'], '<br>
 					</dd>
 				</dl>';
 
 	if (count($context['dept_list']) == 1)
-	{
-		$array = array_keys($context['dept_list']);
 		echo '
-					<input type="hidden" name="search_dept[]" value="', $array[0], '">';
-	}
+					<input type="hidden" name="search_dept[]" value="', array_keys($context['dept_list'])[0], '">';
 	else
 	{
 		echo '
@@ -83,7 +80,7 @@ function template_search()
 
 		foreach ($context['dept_list'] as $id => $name)
 			echo '
-							<input type="checkbox"  checked="checked" name="search_dept[]" value="', $id, '"> &nbsp;', $name, '<br>';
+							<input type="checkbox" checked="checked" name="search_dept[]" value="', $id, '"> &nbsp;', $name, '<br>';
 
 		echo '
 					</dd>
@@ -97,9 +94,9 @@ function template_search()
 						<strong>', $txt['shd_search_scope'], '</strong>
 					</dt>
 					<dd>
-						<input type="checkbox"  checked="checked" name="scope_open"> &nbsp;', $txt['shd_search_scope_open'], '<br>
-						<input type="checkbox"  checked="checked" name="scope_closed"> &nbsp;', $txt['shd_search_scope_closed'], '<br>
-						<input type="checkbox"  checked="checked" name="scope_recycle"> &nbsp;', $txt['shd_search_scope_recycle'], '<br>
+						<input type="checkbox" checked="checked" name="scope_open"> &nbsp;', $txt['shd_search_scope_open'], '<br>
+						<input type="checkbox" checked="checked" name="scope_closed"> &nbsp;', $txt['shd_search_scope_closed'], '<br>
+						<input type="checkbox" checked="checked" name="scope_recycle"> &nbsp;', $txt['shd_search_scope_recycle'], '<br>
 					</dd>
 				</dl>
 				<hr>
@@ -112,7 +109,7 @@ function template_search()
 	// All the urgency levels, currently 0-5.
 	for ($i = 0; $i <= 5; $i++)
 		echo '
-						<input type="checkbox"  checked="checked" name="urgency[]" value="', $i, '"> &nbsp;', $txt['shd_urgency_' . $i], '<br>';
+						<input type="checkbox" checked="checked" name="urgency[]" value="', $i, '"> &nbsp;', $txt['shd_urgency_' . $i], '<br>';
 
 	echo '
 					</dd>
@@ -125,7 +122,7 @@ function template_search()
 					</dt>
 					<dd>
 						<input type="hidden" name="starter" value="">
-						<input type="text" name="starter_name" id="starter_name" size="40" maxlength="100"  value="">
+						<input type="text" name="starter_name" id="starter_name" size="40" maxlength="100" value="">
 						<div id="starter_name_container"></div>
 					</dd>
 				</dl>
@@ -137,43 +134,17 @@ function template_search()
 					</dt>
 					<dd>
 						<input type="hidden" name="assignee" value="">
-						<input type="text" name="assignee_name" id="assignee_name" size="40" maxlength="100"  value="">
+						<input type="text" name="assignee_name" id="assignee_name" size="40" maxlength="100" value="">
 						<div id="assignee_name_container"></div>
 					</dd>
-				</dl>
+				</dl>';
 
-				<script type="text/javascript" src="', $settings['default_theme_url'], '/scripts/suggest.js?20fin"></script>
-				<script type="text/javascript"><!-- // --><![CDATA[
-					var oTicketStarter = new smc_AutoSuggest({
-						sSelf: \'oTicketStarter\',
-						sSessionId: \'', $context['session_id'], '\',
-						sSessionVar: \'', $context['session_var'], '\',
-						sControlId: \'starter_name\',
-						sSuggestId: \'starter\',
-						sSearchType: \'member\',
-						sPostName: \'starter_name_form\',
-						sURLMask: \'action=profile;u=%item_id%\',
-						bItemList: true,
-						sItemListContainerId: \'starter_name_container\',
-						aListItems: []
-					});
-					var oTicketAssignee = new smc_AutoSuggest({
-						sSelf: \'oTicketAssignee\',
-						sSessionId: \'', $context['session_id'], '\',
-						sSessionVar: \'', $context['session_var'], '\',
-						sControlId: \'assignee_name\',
-						sSuggestId: \'assignee\',
-						sSearchType: \'member\',
-						sPostName: \'assigned_name_form\',
-						sURLMask: \'action=profile;u=%item_id%\',
-						bItemList: true,
-						sItemListContainerId: \'assignee_name_container\',
-						aListItems: []
-					});
-				// ]', ']></script>
+	template_shd_js_search();
+
+	echo '
 				<hr>
 				<br>
-				<input type="submit" value="', $txt['shd_search'], '" onclick="return submitThisOnce(this);" accesskey="s" class="button">
+				<input type="submit" value="', $txt['shd_search'], '" accesskey="s" class="button save">
 			</div>
 		</form>
 	</div>';
@@ -319,7 +290,7 @@ function template_search_results()
 	<div class="search_results_posts">
 		<div class="windowbg core_posts">
 			<div class="content flow_auto">
-				<div class="topic_details floatleft" style="width: 94%">
+				<div class="topic_details floatleft">
 					<div class="counter">', $result['result'], '</div>
 					<h5>', $result['dept_link'], '<a href="', $scripturl, '?action=helpdesk;sa=ticket;ticket=', $result['id_ticket'], '">', sprintf($result['is_ticket'] ? $txt['shd_search_result_ticket'] : $txt['shd_search_result_reply'], $result['display_id']), '</a> - ', $result['subject'], ' (', $txt['shd_search_last_updated'], ' ', timeformat($result['last_updated']), ')</h5>
 					<span class="smalltext">&#171;&nbsp;<strong>', $result['is_ticket'] ? $txt['shd_search_ticket_opened_by'] : $txt['shd_search_ticket_replied_by'], ' ', shd_profile_link($result['poster_name'], $result['id_member']), '</strong>&nbsp;', $txt['on'], '&nbsp;<em>', timeformat($result['poster_time']), '</em>&nbsp;&#187;</span>
@@ -370,11 +341,8 @@ function template_search_navigation($page = 'next')
 
 	// Departments.
 	if (count($context['dept_list']) == 1)
-	{
-		$array = array_keys($context['dept_list']);
 		echo '
-		<input type="hidden" name="search_dept[]" value="', $array[0], '">';
-	}
+		<input type="hidden" name="search_dept[]" value="', array_keys($context['dept_list'])[0], '">';
 	elseif (isset($context['search_params']['visible_depts']))
 		foreach ($context['search_params']['visible_depts'] as $dept)
 		echo '
@@ -412,15 +380,55 @@ function template_search_navigation($page = 'next')
 	if ($page === 'prev')
 		echo '
 		<input type="hidden" name="page" value="', $context['prev_page'], '">
-		<input type="submit" value="Previous" onclick="return submitThisOnce(this);" class="button floatleft">';
+		<input type="submit" value="Previous" class="button save floatleft">';
 	elseif (is_int($page) && $page > 0)
 		echo '
 		<input type="hidden" name="page" value="', $page, '">
-		<input type="submit" value="Page ', $page, '" onclick="return submitThisOnce(this);" class="button floatleft', $context['current_page'] == $page ? ' active' : '', '">';
+		<input type="submit" value="Page ', $page, '" class="button save floatleft', $context['current_page'] == $page ? ' active' : '', '">';
 	else
 		echo '
 		<input type="hidden" name="page" value="', $context['next_page'], '">
-		<input type="submit" value="Next" onclick="return submitThisOnce(this);" class="button">';
+		<input type="submit" value="Next" class="button save">';
 
 	echo '</form>';
+}
+
+/**
+ *	Javascript for Search
+ *
+ *	@since 2.1
+*/
+function template_shd_js_search()
+{
+	global $context, $settings;
+
+	echo '
+				<script type="text/javascript"><!-- // --><![CDATA[
+					var oTicketStarter = new smc_AutoSuggest({
+						sSelf: \'oTicketStarter\',
+						sSessionId: \'', $context['session_id'], '\',
+						sSessionVar: \'', $context['session_var'], '\',
+						sControlId: \'starter_name\',
+						sSuggestId: \'starter\',
+						sSearchType: \'member\',
+						sPostName: \'starter_name_form\',
+						sURLMask: \'action=profile;u=%item_id%\',
+						bItemList: true,
+						sItemListContainerId: \'starter_name_container\',
+						aListItems: []
+					});
+					var oTicketAssignee = new smc_AutoSuggest({
+						sSelf: \'oTicketAssignee\',
+						sSessionId: \'', $context['session_id'], '\',
+						sSessionVar: \'', $context['session_var'], '\',
+						sControlId: \'assignee_name\',
+						sSuggestId: \'assignee\',
+						sSearchType: \'member\',
+						sPostName: \'assigned_name_form\',
+						sURLMask: \'action=profile;u=%item_id%\',
+						bItemList: true,
+						sItemListContainerId: \'assignee_name_container\',
+						aListItems: []
+					});
+				// ]', ']></script>';
 }

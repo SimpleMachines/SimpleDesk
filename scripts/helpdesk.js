@@ -8,7 +8,6 @@ function shd_getJSONDocument(sUrl, funcCallback, sMethod)
 	if (typeof(sMethod) == 'undefined')
 		sMethod = 'GET';
 
-	var oCaller = this;
 	var oMyDoc = $.ajax({
 		method: sMethod,
 		url: sUrl,
@@ -19,7 +18,7 @@ function shd_getJSONDocument(sUrl, funcCallback, sMethod)
 			{
 				ajax_indicator(false);
 
-				funcCallback.call(oCaller, responseJSON);
+				funcCallback.call(this, responseJSON);
 			}
 		},
 	});
@@ -35,23 +34,19 @@ function shd_sendJSONDocument(sUrl, funcCallback)
 /* The privacy toggle in AJAX */
 function shd_privacyControl(oOpts)
 {
-	shd_privacyControl.prototype.opts = oOpts; // attaches to the link, but it doesn't exist until after DOM is loaded!
-	if (window.addEventListener)
-		window.addEventListener('load', shd_privacyControl.prototype.init, false);
-	else if (window.attachEvent)
-		window.attachEvent('onload', shd_privacyControl.prototype.init);
+	this.opts = oOpts; // attaches to the link, but it doesn't exist until after DOM is loaded!
+	$(document).ready(this.init.bind(this));
 }
 
 shd_privacyControl.prototype.init = function ()
 {
-	var oDiv = document.getElementById(shd_privacyControl.prototype.opts.sSrcA);
-	if (oDiv !== null)
-		oDiv.onclick = shd_privacyControl.prototype.action;
+	$('#' + this.opts.sSrcA).on('click', this.action.bind(this));
 }
 
-shd_privacyControl.prototype.action = function ()
+shd_privacyControl.prototype.action = function (e)
 {
-	shd_getJSONDocument(shd_privacyControl.prototype.opts.sUrl + ';' + shd_privacyControl.prototype.opts.sSession, shd_privacyControl.prototype.callback);
+	e.preventDefault();
+	shd_getJSONDocument(this.opts.sUrl + ';' + this.opts.sSession, this.callback.bind(this));
 	return false;
 }
 
@@ -60,13 +55,10 @@ shd_privacyControl.prototype.callback = function (oRecvd)
 	if (oRecvd && oRecvd.success === false)
 		alert(oRecvd.error);
 	else if (oRecvd && oRecvd.message)
-	{
-		var oSpan = document.getElementById(shd_privacyControl.prototype.opts.sDestSpan);
-		oSpan.firstChild.nodeValue = oRecvd.message;
-	}
+		$('#' + this.opts.sDestSpan).html(oRecvd.message);
 	else
 		if (confirm(shd_ajax_problem))
-			window.location = smf_scripturl + '?action=helpdesk;sa=privacychange;ticket=' + shd_privacyControl.prototype.opts.ticket + ';' + shd_privacyControl.prototype.opts.sSession;
+			window.location = smf_scripturl + '?action=helpdesk;sa=privacychange;ticket=' + this.opts.ticket + ';' + this.opts.sSession;
 
 	return false;
 }
@@ -74,42 +66,41 @@ shd_privacyControl.prototype.callback = function (oRecvd)
 /* The urgency doodad */
 function shd_urgencyControl(oOpts)
 {
-	shd_urgencyControl.prototype.opts = oOpts; // attaches to the link, but it doesn't exist until after DOM is loaded!
-	if (window.addEventListener)
-		window.addEventListener('load', shd_urgencyControl.prototype.init, false);
-	else if (window.attachEvent)
-		window.attachEvent('onload', shd_urgencyControl.prototype.init);
+	this.opts = oOpts; // attaches to the link, but it doesn't exist until after DOM is loaded!
+	$(document).ready(this.init.bind(this));
 }
 
 shd_urgencyControl.prototype.init = function ()
 {
-	for (var i in shd_urgencyControl.prototype.opts.aButtonOps)
+	for (var i in this.opts.aButtonOps)
 	{
-		if (!shd_urgencyControl.prototype.opts.aButtonOps.hasOwnProperty(i))
+		if (!this.opts.aButtonOps.hasOwnProperty(i))
 			continue;
 
-		var oDiv = document.getElementById('urglink_' + shd_urgencyControl.prototype.opts.aButtonOps[i]);
+		var oDiv = $('#urglink_' + this.opts.aButtonOps[i]);
 		if (oDiv !== null && i == 'up')
-			oDiv.onclick = shd_urgencyControl.prototype.actionUp;
+			oDiv.on('click', this.actionUp.bind(this));
 		else if (oDiv !== null && i == 'down')
-			oDiv.onclick = shd_urgencyControl.prototype.actionDown; // I *did* try to make this a single parameterised function but it always fired when it wasn't supposed to
+			oDiv.on('click', this.actionDown.bind(this)); // I *did* try to make this a single parameterised function but it always fired when it wasn't supposed to
 	}
 }
 
-shd_urgencyControl.prototype.actionUp = function ()
+shd_urgencyControl.prototype.actionUp = function (e)
 {
-	return shd_urgencyControl.prototype.action('up');
+	e.preventDefault();
+	return this.action('up');
 }
 
-shd_urgencyControl.prototype.actionDown = function ()
+shd_urgencyControl.prototype.actionDown = function (e)
 {
-	return shd_urgencyControl.prototype.action('down');
+	e.preventDefault();
+	return this.action('down');
 }
 
 shd_urgencyControl.prototype.action = function (direction)
 {
-	shd_urgencyControl.prototype.opts.direction = direction;
-	shd_getJSONDocument(shd_urgencyControl.prototype.opts.sUrl + shd_urgencyControl.prototype.opts.aButtonOps[direction] + ';' + shd_urgencyControl.prototype.opts.sSession, shd_urgencyControl.prototype.callback);
+	this.direction = direction;
+	shd_getJSONDocument(this.opts.sUrl + this.opts.aButtonOps[direction] + ';' + this.opts.sSession, this.callback.bind(this));
 	return false;
 }
 
@@ -119,25 +110,24 @@ shd_urgencyControl.prototype.callback = function (oRecvd)
 		alert(oRecvd.error);
 	else if (oRecvd && oRecvd.message)
 	{
-		setInnerHTML(document.getElementById(shd_urgencyControl.prototype.opts.sDestSpan), oRecvd.message);
+		$('#' + this.opts.sDestSpan).html(oRecvd.message);
 
-		var btn_set = [ "increase", "decrease" ];
+		var btn_set = ['increase', 'decrease'];
 		for (var i in btn_set)
 		{
 			if (!btn_set.hasOwnProperty(i))
 				continue;
 
 			var oBtn = oRecvd[btn_set[i]];
-			var oSpan = document.getElementById('urgency_' + btn_set[i]);
-			setInnerHTML(oSpan, (oBtn ? oBtn : ''));
+			$('#urgency_' + btn_set[i]).html(oBtn ? oBtn : '');
 		}
 
 		// Attach JS events to new links
-		shd_urgencyControl.prototype.init();
+		this.init();
 	}
 	else
 		if (confirm(shd_ajax_problem))
-			window.location = smf_scripturl + '?action=helpdesk;sa=urgencychange;ticket=' + shd_urgencyControl.prototype.opts.ticket + ';change=' + shd_urgencyControl.prototype.opts.aButtonOps[shd_urgencyControl.prototype.opts.direction] + ';' + shd_urgencyControl.prototype.opts.sSession;
+			window.location = smf_scripturl + '?action=helpdesk;sa=urgencychange;ticket=' + this.opts.ticket + ';change=' + this.opts.aButtonOps[this.direction] + ';' + this.opts.sSession;
 
 	return false;
 }
@@ -271,30 +261,22 @@ shd_attach_select.prototype.checkActive = function()
 }
 
 /* Quick reply stuff */
-
 function QuickReply(oOptions)
 {
 	this.opt = oOptions;
-	this.bCollapsed = this.opt.bDefaultCollapsed;
+	$(this.opt.sRepliesSelector + ', ' + this.opt.sFirstPostSelector).on('click', this.quote.bind(this));
 }
 
 // When a user presses quote, put it in the quick reply box (if expanded).
-QuickReply.prototype.quote = function (iMessageId, sSessionId, sSessionVar)
+QuickReply.prototype.quote = function (e)
 {
-	if (this.bCollapsed)
-	{
-		window.location.href = smf_prepareScriptUrl(this.opt.sScriptUrl) + 'action=helpdesk;sa=reply;quote=' + iMessageId + ';ticket=' + this.opt.iTicketId + '.' + this.opt.iStart + ';' + sSessionVar + '=' + sSessionId;
-		return false;
-	}
+	e.preventDefault();
+	this.iMessageId = e.currentTarget.dataset.id;
 
-	shd_getJSONDocument(smf_prepareScriptUrl(this.opt.sScriptUrl) + 'action=helpdesk;sa=ajax;op=quote;quote=' + iMessageId + ';' + sSessionVar + '=' + sSessionId + ';json' + ';mode=' + (oEditorHandle_shd_message.bRichTextEnabled ? 1 : 0), this.onQuoteReceived);
+	shd_getJSONDocument(smf_prepareScriptUrl(this.opt.sScriptUrl) + 'action=helpdesk;sa=ajax;op=quote;quote=' + this.iMessageId + ';' + this.opt.sSession + ';json' + ';mode=' + (oEditorHandle_shd_message.bRichTextEnabled ? 1 : 0), this.onQuoteReceived.bind(this));
 
 	// Move the view to the quick reply box.
-	if (navigator.appName == 'Microsoft Internet Explorer')
-		window.location.hash = this.opt.sJumpAnchor;
-	else
-		window.location.hash = '#' + this.opt.sJumpAnchor;
-
+	window.location.hash = navigator.appName == 'Microsoft Internet Explorer' ? this.opt.sJumpAnchor : '#' + this.opt.sJumpAnchor;
 	return false;
 }
 
@@ -305,30 +287,21 @@ QuickReply.prototype.onQuoteReceived = function (oRecvd)
 		oEditorHandle_shd_message.insertText(oRecvd.message, false, true);
 }
 
-// The function handling the swapping of the quick reply.
-QuickReply.prototype.swap = function ()
-{
-	document.getElementById(this.opt.sImageId).src = this.opt.sImagesUrl + "/" + (this.bCollapsed ? this.opt.sImageCollapsed : this.opt.sImageExpanded);
-	document.getElementById(this.opt.sContainerId).style.display = this.bCollapsed ? '' : 'none';
-	document.getElementById(this.opt.sFooterId).style.display = this.bCollapsed ? '' : 'none';
-	document.getElementById(this.opt.sHeaderId).setAttribute('class', (this.bCollapsed ? 'title_bar grid_header' : 'title_bar'));
-
-	this.bCollapsed = !this.bCollapsed;
-}
 
 function CannedReply(oOptions)
 {
 	this.opt = oOptions;
-	document.getElementById("canned_replies").style.display = "";
+	$('#' + this.opt.sCannedRepliesContainerId).show();
+	$('#' + this.opt.sCannedRepliesContainerId + ' input.button').on('click', this.getReply.bind(this));
 }
 
 CannedReply.prototype.getReply = function ()
 {
-	var iReplyId = document.getElementById('canned_replies_select').value;
+	var iReplyId = $('#' + this.opt.sSelectContainerId).val();
 	if (!iReplyId || parseInt(iReplyId, 10) < 1)
 		return false;
 
-	shd_getJSONDocument(smf_prepareScriptUrl(this.opt.sScriptUrl) + 'action=helpdesk;sa=ajax;op=canned;ticket=' + this.opt.iTicketId + ';reply=' + iReplyId + ';' + this.opt.sSessionVar + '=' + this.opt.sSessionId + ';json' + ';mode=' + (oEditorHandle_shd_message.bRichTextEnabled ? 1 : 0), this.onReplyReceived);
+	shd_getJSONDocument(smf_prepareScriptUrl(this.opt.sScriptUrl) + 'action=helpdesk;sa=ajax;op=canned;ticket=' + this.opt.iTicketId + ';reply=' + iReplyId + ';' + this.opt.sSessionVar + '=' + this.opt.sSessionId + ';json' + ';mode=' + (oEditorHandle_shd_message.bRichTextEnabled ? 1 : 0), this.onReplyReceived.bind(this));
 
 	return false;
 }
@@ -347,51 +320,17 @@ function shd_quickTicketJump(id_ticket)
 	return false;
 }
 
-/* The action log in tickets - Not much. */
-
-function ActionLog(oOptions)
-{
-	this.opt = oOptions;
-	this.bCollapsed = false;
-	document.getElementById(this.opt.sImageId).style.display = '';
-	return false;
-}
-
-// The function handling the swapping of the ticket log.
-ActionLog.prototype.swap = function ()
-{
-	document.getElementById(this.opt.sImageId).src = this.opt.sImagesUrl + "/" + (this.bCollapsed ? this.opt.sImageCollapsed : this.opt.sImageExpanded);
-	document.getElementById(this.opt.sContainerId).style.display = this.bCollapsed ? '' : 'none';
-	document.getElementById(this.opt.sHeaderId).setAttribute('class', (this.bCollapsed ? 'title_bar grid_header' : 'title_bar'));
-
-	this.bCollapsed = !this.bCollapsed;
-}
-
-function CustomFields(oOptions)
-{
-	this.opt = oOptions;
-	this.bCollapsed = false;
-}
-
-// Expand and collapse the additional information block
-CustomFields.prototype.infoswap = function ()
-{
-	document.getElementById(this.opt.sImageId).src = this.opt.sImagesUrl + "/" + (this.bCollapsed ? this.opt.sImageCollapsed : this.opt.sImageExpanded);
-	document.getElementById(this.opt.sContainerId).style.display = this.bCollapsed ? '' : 'none';
-	document.getElementById(this.opt.sFooterId).style.display = this.bCollapsed ? '' : 'none';
-	document.getElementById(this.opt.sHeaderId).setAttribute('class', (this.bCollapsed ? 'title_bar grid_header' : 'title_bar'));
-
-	this.bCollapsed = !this.bCollapsed;
-}
-
 /* AJAX assignment */
 function AjaxAssign(oOptions)
 {
 	this.opt = oOptions;
 	this.bCollapsed = true;
+	this.opt.sUrlExpand = smf_prepareScriptUrl(smf_scripturl) + 'action=helpdesk;sa=ajax;op=assign;ticket=' + this.opt.iTicketId;
+	this.opt.sUrlAssign = smf_prepareScriptUrl(smf_scripturl) + 'action=helpdesk;sa=ajax;op=assign2;ticket=' + this.opt.iTicketId;
 
 	// Insert the expand/collapse button
-	document.getElementById(this.opt.sId).innerHTML = '<img src="' + this.opt.sImagesUrl + "/" + this.opt.sImageCollapsed + '" id="assign_' + this.opt.sSelf + '" class="shd_assign_button" onclick="' + this.opt.sSelf + '.click();">';
+	$('#' + this.opt.sId).html('<img src="' + this.opt.sImageCollapsed + '" id="assign_' + this.opt.sSelf + '" class="shd_assign_button">');
+	$('.shd_ticketdetails').on('click', '#assign_' + this.opt.sSelf, this.click.bind(this));
 }
 
 AjaxAssign.prototype.click = function ()
@@ -405,11 +344,10 @@ AjaxAssign.prototype.click = function ()
 AjaxAssign.prototype.expand = function ()
 {
 	this.bCollapsed = false;
-	var img = document.getElementById('assign_' + this.opt.sSelf);
-	img.setAttribute('src', this.opt.sImagesUrl + "/" + this.opt.sImageExpanded);
+	$('#assign_' + this.opt.sSelf).attr('src', this.opt.sImageExpanded);
 
 	// Fetch the list of items
-	shd_getJSONDocument.call(this, smf_prepareScriptUrl(this.opt.sScriptUrl) + 'action=helpdesk;sa=ajax;op=assign;ticket=' + this.opt.iTicketId + ';' + sSessV + '=' + sSessI, this.expand_callback);
+	shd_getJSONDocument(this.opt.sUrlExpand + ';' + this.opt.sSession, this.expand_callback.bind(this));
 }
 
 AjaxAssign.prototype.expand_callback = function (oRecvd)
@@ -418,9 +356,7 @@ AjaxAssign.prototype.expand_callback = function (oRecvd)
 		alert(oRecvd.error);
 	else if (oRecvd && oRecvd.members)
 	{
-		var assign_list = document.getElementById(this.opt.sListId);
-		assign_list.innerHTML = '';
-		assign_list.setAttribute('style', 'display:block');
+		$('#' + this.opt.sListId).show();
 
 		var newhtml = '';
 		var cur = 0;
@@ -430,23 +366,20 @@ AjaxAssign.prototype.expand_callback = function (oRecvd)
 				continue;
 
 			cur = oRecvd.members[i];
-			newhtml += '<li class="shd_assignees" onclick="' + this.opt.sSelf + '.assign(' + cur.uid + ');">';
-
-			if (cur.admin)
-				newhtml += '<img src="' + smf_default_theme_url + '/images/simpledesk/' + (cur.admin == 'yes' ? 'admin' : 'staff') + '.png" alt="" class="shd_smallicon"> ';
-
-			newhtml += cur.name + '</li>';
+			newhtml += '<li class="shd_assignees" data-uid="' + cur.uid + '"><img src="' + (cur.admin == 'yes' ? this.opt.sImageAdmin : this.opt.sImageStaff) + '" alt="" class="shd_smallicon">' + cur.name + '</li>';
 		}
 
-		assign_list.innerHTML = newhtml;
+		$('#' + this.opt.sListId).html(newhtml);
+		$('#' + this.opt.sListId).on('click', 'li.shd_assignees', this.assign.bind(this));
 	}
 }
 
-AjaxAssign.prototype.assign = function (uid)
+AjaxAssign.prototype.assign = function (e)
 {
 	// Click handler for the assignment list, to issue the assign
 	ajax_indicator(true);
-	shd_getJSONDocument.call(this, smf_prepareScriptUrl(this.opt.sScriptUrl) + 'action=helpdesk;sa=ajax;op=assign2;ticket=' + this.opt.iTicketId + ';to_user=' + uid + ';' + sSessV + '=' + sSessI, this.assign_callback);
+
+	shd_getJSONDocument(this.opt.sUrlAssign + ';to_user=' + e.currentTarget.dataset.uid + ';'+ this.opt.sSession, this.assign_callback.bind(this));
 }
 
 AjaxAssign.prototype.assign_callback = function(oRecvd)
@@ -457,20 +390,14 @@ AjaxAssign.prototype.assign_callback = function(oRecvd)
 	if (oRecvd && oRecvd.success === false)
 		alert(oRecvd.error);
 	else if (oRecvd && oRecvd.assigned)
-	{
 		document.getElementById(this.opt.sAssignedSpan).innerHTML = oRecvd.assigned;
-	}
 }
 
 AjaxAssign.prototype.collapse = function ()
 {
 	this.bCollapsed = true;
-	var assign_list = document.getElementById(this.opt.sListId);
-	assign_list.innerHTML = '';
-	assign_list.setAttribute('style', 'display:none');
-
-	var img = document.getElementById('assign_' + this.opt.sSelf);
-	img.setAttribute('src', this.opt.sImagesUrl + "/" + this.opt.sImageCollapsed);
+	$('#' + this.opt.sListId).hide().html();
+	$('#assign_' + this.opt.sSelf).attr('src', this.opt.sImageCollapsed);
 }
 
 /* Ajax Notifications List */
@@ -484,17 +411,13 @@ function shd_notifications(iTicketId, oOptions)
 
 shd_notifications.prototype.init = function ()
 {
-	var oLink = document.getElementById(this.opt.sLinkId);
-
-	oLink.instanceRef = this;
-	oLink.onclick = function (oEvent) {return this.instanceRef.receiveNotifications(oEvent);};
-
-	document.getElementById(this.opt.sContainerId).style.display = "";
+	$('#' + this.opt.sLinkId).on('click', this.receiveNotifications.bind(this));
+	$('#' + this.opt.sContainerId).show();
 }
 
 shd_notifications.prototype.receiveNotifications = function ()
 {
-	shd_getJSONDocument.call(this, smf_prepareScriptUrl(smf_scripturl) + "action=helpdesk;sa=ajax;op=notify;ticket=" + this.ticketId + ";" + this.opt.sSessionVar + '=' + this.opt.sSessionId + (this.opt.sPinglist ? ";" + this.opt.sPinglist : ''), this.onReceiveNotifications);
+	shd_getJSONDocument(smf_prepareScriptUrl(smf_scripturl) + "action=helpdesk;sa=ajax;op=notify;ticket=" + this.ticketId + ";" + this.opt.sSessionVar + '=' + this.opt.sSessionId + (this.opt.sPinglist ? ";" + this.opt.sPinglist : ''), this.onReceiveNotifications.bind(this));
 	return false;
 }
 
@@ -557,7 +480,6 @@ shd_notifications.prototype.onReceiveNotifications = function (oRecvd)
 		newhtml += template.replace('%title%', oRecvd.optional_txt).replace('%subtemplate%', temphtml);
 	}
 
-
 	if (oRecvd.optional_butoff)
 	{
 		subtemplate = this.opt.oOptionalOffTemplate;
@@ -585,5 +507,64 @@ shd_notifications.prototype.onReceiveNotifications = function (oRecvd)
 		newhtml += template.replace('%title%', oRecvd.optional_butoff_txt).replace('%subtemplate%', temphtml);
 	}
 
-	document.getElementById("shd_notifications_div").innerHTML = newhtml;
+	$('#' + this.opt.sContainerId).html(newhtml);
+}
+
+/* Go Advanced Handling */
+function goAdvanced(oOptions)
+{
+	this.opt = oOptions;
+	$('#' + this.opt.sAdvancedContainerId).on('click', this.click.bind(this));
+
+	$(document).ready(this.init.bind(this));
+}
+
+goAdvanced.prototype.init = function()
+{
+	$('#' + this.opt.sBbcContainerId +
+		', .' + this.opt.sBbcContainerEditorClass +
+		', #' + this.opt.sSmileyContainerId +
+		', .' + this.opt.sSmileyContainerEditorClass +
+		', .' + this.opt.sAttachContainerId +
+		', #' + this.opt.sAdditionalOptionsContainerId
+		).hide();
+}
+
+goAdvanced.prototype.click = function(e)
+{
+	e.preventDefault();
+
+	$('#' + this.opt.sBbcContainerId + ', .' + this.opt.sBbcContainerEditorClass).css('display', this.opt.bAllowBBC ? '' : 'none');
+	$('#' + this.opt.sSmileyContainerId + ', .' + this.opt.sSmileyContainerEditorClass).css('display', this.opt.bAllowSmileys ? '' : 'none');
+	$('#' + this.opt.sAttachContainerId).css('display', this.opt.bAllowAttach ? '' : 'none');
+	$('#' + this.opt.sAdditionalOptionsContainerId).show();
+	$('#' + this.opt.sAdvancedContainerId).hide();
+}
+
+/* Department Filters */
+function shd_dept_filter(oOptions)
+{
+	this.opt = oOptions;
+	$('#' + this.opt.sSelectContainerId).on('change', this.startFilter.bind(this));
+}
+
+shd_dept_filter.prototype.startFilter = function ()
+{
+	this.displayed = false;
+	$(this.opt.oFields).each(this.filterDept.bind(this));
+}
+
+shd_dept_filter.prototype.filterDept = function (index)
+{
+	this.currentDept = $('#' + this.opt.sSelectContainerId).val();
+
+	if (in_array(this.currentDept, this.opt.oFields[index]))
+	{
+		this.displayed = true;
+		$('#field_' + index + '_container').show();
+	}
+	else
+		$('#field_' + index + '_container').hide();
+
+	$('#' + this.opt.sCustomFieldsContainerId + ', #' + this.opt.sCustomFieldsTitleContainerId).toggle(this.displayed)
 }
