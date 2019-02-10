@@ -54,7 +54,7 @@ function template_shd_admin()
 
 	// Show the user version information from their server.
 	echo '
-			<div id="supportVersionsTable" class="floatright">
+			<div id="support_info" class="supportVersionsTable floatright">
 				<div class="cat_bar">
 					<h3 class="catbg">
 						<img src="', $settings['default_images_url'], '/simpledesk/modification.png" alt="*">
