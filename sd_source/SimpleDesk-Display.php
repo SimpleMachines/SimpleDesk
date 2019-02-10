@@ -459,7 +459,7 @@ function shd_view_ticket()
 			'{db_prefix}helpdesk_log_read',
 			array('id_ticket' => 'int', 'id_member' => 'int', 'id_msg' => 'int',),
 			array($context['ticket_id'], $user_info['id'], $ticketinfo['id_last_msg'],),
-			array('id_member', 'id_topic')
+			array('id_ticket', 'id_member')
 		);
 
 	// Template stuff
