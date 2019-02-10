@@ -70,7 +70,7 @@ function shd_admin_plugins()
 	{
 		$langfilelist = opendir($settings['default_theme_dir'] . '/languages/sd_plugins_lang/');
 		while ($langfile_entry = readdir($langfilelist))
-			if (preg_match('~([a-z0-9]+)\.([a-z\-\_]+)(-utf8)?\.php$~i', $langfile_entry, $matches))
+			if (preg_match('~([a-z0-9]+)\.([a-z\-\_]+)\.php$~i', $langfile_entry, $matches))
 				$langtemplates[$matches[1]][$matches[2]] = true;
 		closedir($langfilelist);
 	}
