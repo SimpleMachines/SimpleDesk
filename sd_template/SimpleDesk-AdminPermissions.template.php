@@ -424,7 +424,7 @@ function template_shd_edit_role()
 			<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">
 			<input type="hidden" name="role" value="', $context['shd_role_id'], '">
 			<input type="submit" value="', $txt['shd_edit_role'], '" accesskey="s" class="button save">
-			<input type="submit" value="', $txt['shd_delete_role'], '" name="delete" class="button" id="delete" onclick="return confirm(\"Shall\");">
+			<input type="submit" value="', $txt['shd_delete_role'], '" name="delete" class="button" id="delete">
 		</form>
 
 		<script type="text/javascript"><!-- // --><![CDATA[

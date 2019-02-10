@@ -415,7 +415,5 @@ shd_role.prototype.toggleBlock = function (e, block)
 
 shd_role.prototype.formConfirm = function (e)
 {
-	e.preventDefault();
-
 	return confirm(this.opt.sDeleteConfirmText);
 }
