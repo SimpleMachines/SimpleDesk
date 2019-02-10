@@ -1,21 +1,21 @@
 <?php
-###############################################################
-#          Simple Desk Project - www.simpledesk.net           #
-###############################################################
-#       An advanced help desk modification built on SMF       #
-###############################################################
-#                                                             #
-#         * Copyright 2018 - SimpleDesk.net                   #
-#                                                             #
-#   This file and its contents are subject to the license     #
-#   included with this distribution, license.txt, which       #
-#   states that this software is New BSD Licensed.            #
-#   Any questions, please contact SimpleDesk.net              #
-#                                                             #
-###############################################################
-# SimpleDesk Version: 2.1 Beta 1                              #
-# File Info: SimpleDesk-Notifications.php                     #
-###############################################################
+/**************************************************************
+*          Simple Desk Project - www.simpledesk.net           *
+***************************************************************
+*       An advanced help desk modification built on SMF       *
+***************************************************************
+*                                                             *
+*         * Copyright 2019 - SimpleDesk.net                   *
+*                                                             *
+*   This file and its contents are subject to the license     *
+*   included with this distribution, license.txt, which       *
+*   states that this software is New BSD Licensed.            *
+*   Any questions, please contact SimpleDesk.net              *
+*                                                             *
+***************************************************************
+* SimpleDesk Version: 2.1 Beta 1                              *
+* File Info: SimpleDesk-Notifications.php                     *
+**************************************************************/
 
 /**
  *	@package source
@@ -50,7 +50,7 @@ function shd_notifications_notify_newticket(&$msgOptions, &$ticketOptions, &$pos
 		$ticketOptions['subject'] = $context['ticket_form']['subject'];
 
 	// So, we're getting the list of people that are being affected by this ticket being posted. Basically, that's a list of staff on new ticket, less people who've set preferences otherwise.
-	$members = shd_get_visible_list($ticketOptions['dept'], $ticketOptions['private'], false, empty($modSettings['shd_admins_not_assignable']), false);
+	$members = shd_get_visible_list($ticketOptions['dept'], $ticketOptions['private'], 0, empty($modSettings['shd_admins_not_assignable']), false);
 	if (empty($members))
 		return;
 

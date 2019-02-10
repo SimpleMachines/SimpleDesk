@@ -1,3 +1,5 @@
+/* Javascript for the main Helpdesk Admin */
+
 // Handle the JavaScript surrounding the admin center.
 $(document).ready(function(){
 	$('.shd_help').on('click', function(e) {
@@ -415,7 +417,5 @@ shd_role.prototype.toggleBlock = function (e, block)
 
 shd_role.prototype.formConfirm = function (e)
 {
-	e.preventDefault();
-
 	return confirm(this.opt.sDeleteConfirmText);
 }

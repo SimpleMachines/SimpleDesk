@@ -1,21 +1,21 @@
 <?php
-###############################################################
-#          Simple Desk Project - www.simpledesk.net           #
-###############################################################
-#       An advanced help desk modification built on SMF       #
-###############################################################
-#                                                             #
-#         * Copyright 2018 - SimpleDesk.net                   #
-#                                                             #
-#   This file and its contents are subject to the license     #
-#   included with this distribution, license.txt, which       #
-#   states that this software is New BSD Licensed.            #
-#   Any questions, please contact SimpleDesk.net              #
-#                                                             #
-###############################################################
-# SimpleDesk Version: 2.1 Beta 1                              #
-# File Info: Subs-SimpleDeskPost.php                          #
-###############################################################
+/**************************************************************
+*          Simple Desk Project - www.simpledesk.net           *
+***************************************************************
+*       An advanced help desk modification built on SMF       *
+***************************************************************
+*                                                             *
+*         * Copyright 2019 - SimpleDesk.net                   *
+*                                                             *
+*   This file and its contents are subject to the license     *
+*   included with this distribution, license.txt, which       *
+*   states that this software is New BSD Licensed.            *
+*   Any questions, please contact SimpleDesk.net              *
+*                                                             *
+***************************************************************
+* SimpleDesk Version: 2.1 Beta 1                              *
+* File Info: Subs-SimpleDeskPost.php                          *
+**************************************************************/
 
 /**
  *	This file handles probably the two most critical functions in SimpleDesk: the one that adds new posts to the database
@@ -335,7 +335,7 @@ function shd_create_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 	$hook = $new_ticket ? 'shd_hook_newticket' : 'shd_hook_newreply';
 	call_integration_hook($hook, array(&$msgOptions, &$ticketOptions, &$posterOptions));
 
-	ignore_user_abort($previous_ignore_user_abort);
+	ignore_user_abort((bool) $previous_ignore_user_abort);
 
 	if (empty($ticketOptions['dept']) && !empty($ticketOptions['id']))
 	{
@@ -635,7 +635,7 @@ function shd_modify_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 	// Int hook
 	call_integration_hook('shd_hook_modpost', array(&$msgOptions, &$ticketOptions, &$posterOptions));
 
-	ignore_user_abort($previous_ignore_user_abort);
+	ignore_user_abort((booll) $previous_ignore_user_abort);
 
 	if (empty($ticketOptions['dept']) && !empty($ticketOptions['id']))
 	{
@@ -836,10 +836,6 @@ function shd_load_custom_fields($is_ticket = true, $ticketContext = 0, $dept = 0
 		{
 			if ($context['ticket_form']['custom_fields'][$loc][$row['id_field']]['type'] == CFIELD_TYPE_MULTI)
 				$field_values[$row['id_field']] = explode(',', $field_values[$row['id_field']]);
-
-			// Large text boxes may need fixing.
-			if ($context['ticket_form']['custom_fields'][$loc][$row['id_field']]['type'] == CFIELD_TYPE_LARGETEXT)
-				$field_values[$row['id_field']] = html_to_bbc($field_values[$row['id_field']]);
 
 			$context['ticket_form']['custom_fields'][$loc][$row['id_field']]['value'] = $field_values[$row['id_field']];
 		}

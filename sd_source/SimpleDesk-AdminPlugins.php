@@ -1,21 +1,21 @@
 <?php
-###############################################################
-#          Simple Desk Project - www.simpledesk.net           #
-###############################################################
-#       An advanced help desk modification built on SMF       #
-###############################################################
-#                                                             #
-#         * Copyright 2018 - SimpleDesk.net                   #
-#                                                             #
-#   This file and its contents are subject to the license     #
-#   included with this distribution, license.txt, which       #
-#   states that this software is New BSD Licensed.            #
-#   Any questions, please contact SimpleDesk.net              #
-#                                                             #
-###############################################################
-# SimpleDesk Version: 2.1 Beta 1                              #
-# File Info: SimpleDesk-AdminPlugins.php                      #
-###############################################################
+/**************************************************************
+*          Simple Desk Project - www.simpledesk.net           *
+***************************************************************
+*       An advanced help desk modification built on SMF       *
+***************************************************************
+*                                                             *
+*         * Copyright 2019 - SimpleDesk.net                   *
+*                                                             *
+*   This file and its contents are subject to the license     *
+*   included with this distribution, license.txt, which       *
+*   states that this software is New BSD Licensed.            *
+*   Any questions, please contact SimpleDesk.net              *
+*                                                             *
+***************************************************************
+* SimpleDesk Version: 2.1 Beta 1                              *
+* File Info: SimpleDesk-AdminPlugins.php                      *
+**************************************************************/
 
 /**
  *	This file handles the core of SimpleDesk's plugin system administration.
@@ -70,7 +70,7 @@ function shd_admin_plugins()
 	{
 		$langfilelist = opendir($settings['default_theme_dir'] . '/languages/sd_plugins_lang/');
 		while ($langfile_entry = readdir($langfilelist))
-			if (preg_match('~([a-z0-9]+)\.([a-z\-\_]+)(-utf8)?\.php$~i', $langfile_entry, $matches))
+			if (preg_match('~([a-z0-9]+)\.([a-z\-\_]+)\.php$~i', $langfile_entry, $matches))
 				$langtemplates[$matches[1]][$matches[2]] = true;
 		closedir($langfilelist);
 	}

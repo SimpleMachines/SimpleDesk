@@ -1,21 +1,21 @@
 <?php
-###############################################################
-#          Simple Desk Project - www.simpledesk.net           #
-###############################################################
-#       An advanced help desk modification built on SMF       #
-###############################################################
-#                                                             #
-#         * Copyright 2018 - SimpleDesk.net                   #
-#                                                             #
-#   This file and its contents are subject to the license     #
-#   included with this distribution, license.txt, which       #
-#   states that this software is New BSD Licensed.            #
-#   Any questions, please contact SimpleDesk.net              #
-#                                                             #
-###############################################################
-# SimpleDesk Version: 2.1 Beta 1                              #
-# File Info: Subs-SimpleDeskAdmin.php                         #
-###############################################################
+/**************************************************************
+*          Simple Desk Project - www.simpledesk.net           *
+***************************************************************
+*       An advanced help desk modification built on SMF       *
+***************************************************************
+*                                                             *
+*         * Copyright 2019 - SimpleDesk.net                   *
+*                                                             *
+*   This file and its contents are subject to the license     *
+*   included with this distribution, license.txt, which       *
+*   states that this software is New BSD Licensed.            *
+*   Any questions, please contact SimpleDesk.net              *
+*                                                             *
+***************************************************************
+* SimpleDesk Version: 2.1 Beta 1                              *
+* File Info: Subs-SimpleDeskAdmin.php                         *
+**************************************************************/
 
 /**
  *	This file deals with some of the items required by the helpdesk, but are primarily supporting
@@ -84,7 +84,7 @@ function shd_load_action_log_entries($start = 0, $items_per_page = 10, $sort = '
 	}
 
 	// Without further screaming and waving, fetch the actions.
-	$request = shd_db_query('','
+	$request = shd_db_query('', '
 		SELECT la.id_action, la.log_time, la.ip, la.action, la.id_ticket, la.id_msg, la.extra,
 		COALESCE(mem.id_member, 0) AS id_member, COALESCE(mem.real_name, {string:blank}) AS real_name, COALESCE(mg.group_name, {string:na}) AS group_name
 		FROM {db_prefix}helpdesk_log_action AS la
@@ -196,7 +196,7 @@ function shd_load_action_log_entries($start = 0, $items_per_page = 10, $sort = '
 				if (!empty($recipients['u']))
 				{
 					$first = true;
-					$users = explode(',', $recipients['u']);
+					$users = array_map('intval', explode(',', $recipients['u']));
 					$unknown_users = 0;
 					foreach ($users as $user)
 					{
@@ -313,7 +313,7 @@ function shd_count_action_log_entries($clause = '')
 	}
 
 	// Without further screaming and waving, fetch the actions.
-	$request = shd_db_query('','
+	$request = shd_db_query('', '
 		SELECT COUNT(*)
 		FROM {db_prefix}helpdesk_log_action AS la
 		LEFT JOIN {db_prefix}members AS mem ON(mem.id_member = la.id_member)
@@ -774,7 +774,7 @@ function shd_load_admin_log_entries($start = 0, $items_per_page = 10, $sort = 'l
 	shd_load_language('sd_language/SimpleDeskLogAction');
 	shd_load_language('sd_language/SimpleDeskNotifications');
 
-	$request = shd_db_query('','
+	$request = shd_db_query('', '
 		SELECT la.id_action, la.log_time, la.ip, la.action, la.extra,
 		COALESCE(mem.id_member, 0) AS id_member, COALESCE(mem.real_name, {string:blank}) AS real_name, COALESCE(mg.group_name, {string:na}) AS group_name
 		FROM {db_prefix}helpdesk_log_action AS la
@@ -917,7 +917,7 @@ function shd_load_admin_log_entries($start = 0, $items_per_page = 10, $sort = 'l
 	// Now lets try to find stuff.
 	if (!empty($ids['canned_cat']))
 	{
-		$request = shd_db_query('','
+		$request = shd_db_query('', '
 			SELECT id_cat AS id, cat_name AS name
 			FROM {db_prefix}helpdesk_cannedreplies_cats
 			WHERE id_cat IN ({array_int:cats})',
@@ -933,7 +933,7 @@ function shd_load_admin_log_entries($start = 0, $items_per_page = 10, $sort = 'l
 	}
 	if (!empty($ids['canned_reply']))
 	{
-		$request = shd_db_query('','
+		$request = shd_db_query('', '
 			SELECT id_reply AS id, title AS name
 			FROM {db_prefix}helpdesk_cannedreplies
 			WHERE id_reply IN ({array_int:replys})',
@@ -950,7 +950,7 @@ function shd_load_admin_log_entries($start = 0, $items_per_page = 10, $sort = 'l
 	if (!empty($ids['custom_field']))
 	{
 		// We do this as we just want the name really.
-		$request = shd_db_query('','
+		$request = shd_db_query('', '
 			SELECT id_field AS id, field_name AS name
 			FROM {db_prefix}helpdesk_custom_fields
 			WHERE id_field IN ({array_int:custom_fields})',
@@ -967,7 +967,7 @@ function shd_load_admin_log_entries($start = 0, $items_per_page = 10, $sort = 'l
 	if (!empty($ids['depts']))
 	{
 		// We do this as we just want the name really.
-		$request = shd_db_query('','
+		$request = shd_db_query('', '
 			SELECT id_dept AS id, dept_name AS name
 			FROM {db_prefix}helpdesk_depts
 			WHERE id_dept IN ({array_int:depts})',
@@ -982,7 +982,7 @@ function shd_load_admin_log_entries($start = 0, $items_per_page = 10, $sort = 'l
 	}
 	if (!empty($ids['members']))
 	{
-		$request = shd_db_query('','
+		$request = shd_db_query('', '
 			SELECT id_member AS id, IFNULL(real_name, {string:blank}) AS name
 			FROM {db_prefix}members
 			WHERE id_member IN ({array_int:members})',
@@ -998,7 +998,7 @@ function shd_load_admin_log_entries($start = 0, $items_per_page = 10, $sort = 'l
 	}
 	if (!empty($ids['permissions']))
 	{
-		$request = shd_db_query('','
+		$request = shd_db_query('', '
 			SELECT id_role AS id, role_name AS name
 			FROM {db_prefix}helpdesk_roles 
 			WHERE id_role IN ({array_int:roles})',
@@ -1074,7 +1074,7 @@ function shd_count_admin_log_entries()
 {
 	global $smcFunc;
 
-	$request = shd_db_query('','
+	$request = shd_db_query('', '
 		SELECT COUNT(*)
 		FROM {db_prefix}helpdesk_log_action AS la
 		WHERE id_ticket = {int:no_ticket}',

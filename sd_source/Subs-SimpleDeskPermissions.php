@@ -1,21 +1,21 @@
 <?php
-###############################################################
-#          Simple Desk Project - www.simpledesk.net           #
-###############################################################
-#       An advanced help desk modification built on SMF       #
-###############################################################
-#                                                             #
-#         * Copyright 2018 - SimpleDesk.net                   #
-#                                                             #
-#   This file and its contents are subject to the license     #
-#   included with this distribution, license.txt, which       #
-#   states that this software is New BSD Licensed.            #
-#   Any questions, please contact SimpleDesk.net              #
-#                                                             #
-###############################################################
-# SimpleDesk Version: 2.1 Beta 1                              #
-# File Info: Subs-SimpleDeskPermissions.php                   #
-###############################################################
+/**************************************************************
+*          Simple Desk Project - www.simpledesk.net           *
+***************************************************************
+*       An advanced help desk modification built on SMF       *
+***************************************************************
+*                                                             *
+*         * Copyright 2019 - SimpleDesk.net                   *
+*                                                             *
+*   This file and its contents are subject to the license     *
+*   included with this distribution, license.txt, which       *
+*   states that this software is New BSD Licensed.            *
+*   Any questions, please contact SimpleDesk.net              *
+*                                                             *
+***************************************************************
+* SimpleDesk Version: 2.1 Beta 1                              *
+* File Info: Subs-SimpleDeskPermissions.php                   *
+**************************************************************/
 
 /**
  *	This file handles the core permissions systems for SimpleDesk, including the permissions templates, loading and checking permissions.
@@ -464,7 +464,7 @@ function shd_load_user_perms()
  *
  *	@param mixed $permission A string or array of strings naming a permission or permissions that wish to be examined. Array format is only supported if $dept is not identical to false.
  *	@param int|bool $dept Normally, the department number which the permission is considered for. Can also be 0 to indicate whether the user has that permission in any department, or false to indicate that it should return a list of all the departments where that permission is available.
- *	@return bool True if any of the permission(s) outlined in $permission are true in the department(s) identified, or an array indicating the departments applicable for that permission if $dept is true boolean 'false'.
+ *	@return bool|array True if any of the permission(s) outlined in $permission are true in the department(s) identified, or an array indicating the departments applicable for that permission if $dept is true boolean 'false'.
  *	@see shd_is_allowed_to()
  *	@since 1.0
 */

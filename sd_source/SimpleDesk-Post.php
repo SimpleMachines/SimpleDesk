@@ -1,21 +1,21 @@
 <?php
-###############################################################
-#          Simple Desk Project - www.simpledesk.net           #
-###############################################################
-#       An advanced help desk modification built on SMF       #
-###############################################################
-#                                                             #
-#         * Copyright 2018 - SimpleDesk.net                   #
-#                                                             #
-#   This file and its contents are subject to the license     #
-#   included with this distribution, license.txt, which       #
-#   states that this software is New BSD Licensed.            #
-#   Any questions, please contact SimpleDesk.net              #
-#                                                             #
-###############################################################
-# SimpleDesk Version: 2.1 Beta 1                              #
-# File Info: SimpleDesk-Post.php                              #
-###############################################################
+/**************************************************************
+*          Simple Desk Project - www.simpledesk.net           *
+***************************************************************
+*       An advanced help desk modification built on SMF       *
+***************************************************************
+*                                                             *
+*         * Copyright 2019 - SimpleDesk.net                   *
+*                                                             *
+*   This file and its contents are subject to the license     *
+*   included with this distribution, license.txt, which       *
+*   states that this software is New BSD Licensed.            *
+*   Any questions, please contact SimpleDesk.net              *
+*                                                             *
+***************************************************************
+* SimpleDesk Version: 2.1 Beta 1                              *
+* File Info: SimpleDesk-Post.php                              *
+**************************************************************/
 
 /**
  *	This file is one of the cornerstones of SimpleDesk; it handles displaying the post form to users, both for tickets and replies,
@@ -1729,7 +1729,10 @@ function shd_check_attachments()
 					if (!is_dir($current_attach_dir))
 						return fatal_lang_error('cant_access_upload_path', 'critical');
 
-					$dir = opendir($current_attach_dir) or fatal_lang_error('cant_access_upload_path', 'critical');
+					$dir = opendir($current_attach_dir);
+					if (!is_resource($dir))
+						fatal_lang_error('cant_access_upload_path', 'critical');
+
 					while ($file = readdir($dir))
 					{
 						if ($file == '.' || $file == '..')

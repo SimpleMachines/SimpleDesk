@@ -1,21 +1,21 @@
 <?php
-###############################################################
-#          Simple Desk Project - www.simpledesk.net           #
-###############################################################
-#       An advanced help desk modification built on SMF       #
-###############################################################
-#                                                             #
-#         * Copyright 2018 - SimpleDesk.net                   #
-#                                                             #
-#   This file and its contents are subject to the license     #
-#   included with this distribution, license.txt, which       #
-#   states that this software is New BSD Licensed.            #
-#   Any questions, please contact SimpleDesk.net              #
-#                                                             #
-###############################################################
-# SimpleDesk Version: 2.1 Beta 1                              #
-# File Info: SimpleDesk-Display.php                           #
-###############################################################
+/**************************************************************
+*          Simple Desk Project - www.simpledesk.net           *
+***************************************************************
+*       An advanced help desk modification built on SMF       *
+***************************************************************
+*                                                             *
+*         * Copyright 2019 - SimpleDesk.net                   *
+*                                                             *
+*   This file and its contents are subject to the license     *
+*   included with this distribution, license.txt, which       *
+*   states that this software is New BSD Licensed.            *
+*   Any questions, please contact SimpleDesk.net              *
+*                                                             *
+***************************************************************
+* SimpleDesk Version: 2.1 Beta 1                              *
+* File Info: SimpleDesk-Display.php                           *
+**************************************************************/
 
 /**
  *	This file sets up the regular ticket view, including the menu of operations that can
@@ -459,7 +459,7 @@ function shd_view_ticket()
 			'{db_prefix}helpdesk_log_read',
 			array('id_ticket' => 'int', 'id_member' => 'int', 'id_msg' => 'int',),
 			array($context['ticket_id'], $user_info['id'], $ticketinfo['id_last_msg'],),
-			array('id_member', 'id_topic')
+			array('id_ticket', 'id_member')
 		);
 
 	// Template stuff
