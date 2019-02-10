@@ -37,8 +37,7 @@ function shd_search_charset()
 {
 	global $context, $modSettings, $txt;
 
-	$utf8 = (empty($modSettings['global_character_set']) ? $txt['lang_character_set'] : $modSettings['global_character_set']) === 'UTF-8' && (strpos(strtolower(PHP_OS), 'win') === false || @version_compare(PHP_VERSION, '4.2.3') != -1);
-	$charset = !empty($txt['lang_character_set']) ? $txt['lang_character_set'] : ($utf8 ? 'UTF-8' : 'ISO-8859-1');
+	$charset = !empty($txt['lang_character_set']) ? $txt['lang_character_set'] : 'UTF-8';
 
 	if (empty($modSettings['shd_search_charset']))
 		$modSettings['shd_search_charset'] = '0..9, A..Z, a..z, &, ~';

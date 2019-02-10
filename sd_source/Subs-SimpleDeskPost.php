@@ -837,10 +837,6 @@ function shd_load_custom_fields($is_ticket = true, $ticketContext = 0, $dept = 0
 			if ($context['ticket_form']['custom_fields'][$loc][$row['id_field']]['type'] == CFIELD_TYPE_MULTI)
 				$field_values[$row['id_field']] = explode(',', $field_values[$row['id_field']]);
 
-			// Large text boxes may need fixing.
-			if ($context['ticket_form']['custom_fields'][$loc][$row['id_field']]['type'] == CFIELD_TYPE_LARGETEXT)
-				$field_values[$row['id_field']] = html_to_bbc($field_values[$row['id_field']]);
-
 			$context['ticket_form']['custom_fields'][$loc][$row['id_field']]['value'] = $field_values[$row['id_field']];
 		}
 	}
