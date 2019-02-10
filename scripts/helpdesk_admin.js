@@ -1,3 +1,5 @@
+/* Javascript for the main Helpdesk Admin */
+
 // Handle the JavaScript surrounding the admin center.
 $(document).ready(function(){
 	$('.shd_help').on('click', function(e) {

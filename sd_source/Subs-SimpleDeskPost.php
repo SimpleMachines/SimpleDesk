@@ -335,7 +335,7 @@ function shd_create_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 	$hook = $new_ticket ? 'shd_hook_newticket' : 'shd_hook_newreply';
 	call_integration_hook($hook, array(&$msgOptions, &$ticketOptions, &$posterOptions));
 
-	ignore_user_abort($previous_ignore_user_abort);
+	ignore_user_abort((bool) $previous_ignore_user_abort);
 
 	if (empty($ticketOptions['dept']) && !empty($ticketOptions['id']))
 	{
@@ -635,7 +635,7 @@ function shd_modify_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 	// Int hook
 	call_integration_hook('shd_hook_modpost', array(&$msgOptions, &$ticketOptions, &$posterOptions));
 
-	ignore_user_abort($previous_ignore_user_abort);
+	ignore_user_abort((booll) $previous_ignore_user_abort);
 
 	if (empty($ticketOptions['dept']) && !empty($ticketOptions['id']))
 	{

@@ -196,7 +196,7 @@ function shd_load_action_log_entries($start = 0, $items_per_page = 10, $sort = '
 				if (!empty($recipients['u']))
 				{
 					$first = true;
-					$users = explode(',', $recipients['u']);
+					$users = array_map('intval', explode(',', $recipients['u']));
 					$unknown_users = 0;
 					foreach ($users as $user)
 					{

@@ -50,7 +50,7 @@ function shd_notifications_notify_newticket(&$msgOptions, &$ticketOptions, &$pos
 		$ticketOptions['subject'] = $context['ticket_form']['subject'];
 
 	// So, we're getting the list of people that are being affected by this ticket being posted. Basically, that's a list of staff on new ticket, less people who've set preferences otherwise.
-	$members = shd_get_visible_list($ticketOptions['dept'], $ticketOptions['private'], false, empty($modSettings['shd_admins_not_assignable']), false);
+	$members = shd_get_visible_list($ticketOptions['dept'], $ticketOptions['private'], 0, empty($modSettings['shd_admins_not_assignable']), false);
 	if (empty($members))
 		return;
 

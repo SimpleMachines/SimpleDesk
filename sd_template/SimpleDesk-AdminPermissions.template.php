@@ -382,7 +382,7 @@ function template_shd_edit_role()
 		{
 			$icons = explode('#', $group['icons']);
 			if (!empty($icons[0]) && !empty($icons[1]))
-				echo str_repeat('<img src="' . $settings['images_url'] . '/membericons/' . $icons[1] . '" alt="">', $icons[0]);
+				echo str_repeat('<img src="' . $settings['images_url'] . '/membericons/' . $icons[1] . '" alt="">', (int) $icons[0]);
 		}
 
 		echo '

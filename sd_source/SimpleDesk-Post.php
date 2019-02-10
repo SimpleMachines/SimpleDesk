@@ -1729,7 +1729,10 @@ function shd_check_attachments()
 					if (!is_dir($current_attach_dir))
 						return fatal_lang_error('cant_access_upload_path', 'critical');
 
-					$dir = opendir($current_attach_dir) or fatal_lang_error('cant_access_upload_path', 'critical');
+					$dir = opendir($current_attach_dir);
+					if (!is_resource($dir))
+						fatal_lang_error('cant_access_upload_path', 'critical');
+
 					while ($file = readdir($dir))
 					{
 						if ($file == '.' || $file == '..')
