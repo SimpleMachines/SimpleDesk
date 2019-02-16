@@ -56,17 +56,13 @@ function shd_tickettotopic()
 			'ticket' => $context['ticket_id'],
 		)
 	);
+	$row = $smcFunc['db_fetch_row']($query);
+	$smcFunc['db_free_result']($query);
 
-	if ($row = $smcFunc['db_fetch_row']($query))
-	{
-		list($subject, $deleted_replies, $dept, $dept_name) = $row;
-		$smcFunc['db_free_result']($query);
-	}
-	else
-	{
-		$smcFunc['db_free_result']($query);
+	if (empty($row))	
 		shd_fatal_lang_error('shd_no_ticket');
-	}
+
+	list($subject, $deleted_replies, $dept, $dept_name) = $row;
 
 	if (!shd_allowed_to('shd_ticket_to_topic', $dept) || !empty($modSettings['shd_helpdesk_only']) || !empty($modSettings['shd_disable_tickettotopic']))
 		shd_fatal_lang_error('shd_cannot_move_ticket', false);

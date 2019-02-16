@@ -52,8 +52,8 @@ function shd_main()
 	// Let's be sneaky. Can they only access one department? If they can only access one department, put them there and make a note of it for later.
 	$depts = shd_allowed_to('access_helpdesk', false);
 	$context['shd_multi_dept'] = true;
-	if (is_bool($dept))
-		shd_fatal_error('Bug hunters unite...', false);
+	if (is_bool($depts))
+		shd_fatal_error('Bug hunters unite...');
 	elseif (count($depts) == 1)
 	{
 		$_REQUEST['dept'] = $depts[0];

@@ -68,20 +68,17 @@ function shd_assign()
 			'ticket' => $context['ticket_id'],
 		)
 	);
+	$row = $smcFunc['db_fetch_row']($query);
+	$smcFunc['db_free_result']($query);
 
-	if ($row = $smcFunc['db_fetch_row']($query))
-	{
-		list($ticket_starter, $ticket_owner, $private, $subject, $dept, $status, $dept_name) = $row;
-		$log_params = array(
-			'subject' => $subject,
-			'ticket' => $context['ticket_id'],
-		);
-	}
-	else
-	{
-		$smcFunc['db_free_result']($query);
+	if (empty($row))
 		shd_fatal_lang_error('shd_no_ticket');
-	}
+	
+	list($ticket_starter, $ticket_owner, $private, $subject, $dept, $status, $dept_name) = $row;
+	$log_params = array(
+		'subject' => $subject,
+		'ticket' => $context['ticket_id'],
+	);
 
 	if ($status == TICKET_STATUS_CLOSED || $status == TICKET_STATUS_DELETED)
 		shd_fatal_lang_error('shd_cannot_assign', false);

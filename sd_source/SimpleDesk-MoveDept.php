@@ -58,15 +58,13 @@ function shd_movedept()
 			'ticket' => $context['ticket_id'],
 		)
 	);
-
-	if ($row = $smcFunc['db_fetch_row']($query))
-		list($ticket_starter, $subject, $context['current_dept'], $context['current_dept_name']) = $row;
-	else
-	{
-		$smcFunc['db_free_result']($query);
-		shd_fatal_lang_error('shd_no_ticket');
-	}
+	$row = $smcFunc['db_fetch_row']($query);
 	$smcFunc['db_free_result']($query);
+
+	if (empty($row))
+		shd_fatal_lang_error('shd_no_ticket');
+
+	list($ticket_starter, $subject, $context['current_dept'], $context['current_dept_name']) = $row;
 
 	if (!shd_allowed_to('shd_move_dept_any', $context['current_dept']) && !(shd_allowed_to('shd_move_dept_own', $context['current_dept']) && $ticket_starter == $user_info['id']))
 		shd_fatal_lang_error('shd_no_perm_move_dept', false);

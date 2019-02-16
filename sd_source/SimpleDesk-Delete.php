@@ -219,17 +219,15 @@ function shd_perma_delete()
 			)
 		);
 
-		if ($smcFunc['db_num_rows']($query_ticket) == 0)
+		if (empty($smcFunc['db_num_rows']($query_ticket)))
 		{
 			$smcFunc['db_free_result']($query_ticket);
 			shd_fatal_lang_error('shd_no_ticket', false);
 		}
-		else
-		{
-			$row = $smcFunc['db_fetch_assoc']($query_ticket);
-			shd_is_allowed_to('shd_delete_recycling', $row['id_dept']);
-			$smcFunc['db_free_result']($query_ticket);
-		}
+
+		$row = $smcFunc['db_fetch_assoc']($query_ticket);
+		$smcFunc['db_free_result']($query_ticket);
+		shd_is_allowed_to('shd_delete_recycling', $row['id_dept']);
 
 		if ($row['status'] != TICKET_STATUS_DELETED)
 			shd_fatal_lang_error('shd_cannot_delete_ticket', false);

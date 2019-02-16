@@ -107,6 +107,7 @@ function shd_admin_canned_list()
 	}
 
 	$context['move_between_cats'] = count($context['canned_replies']) > 1;
+	$last_cat_id = 0;
 	foreach ($context['canned_replies'] as $cat_id => $cat)
 	{
 		if (!empty($cat['replies']))

@@ -175,7 +175,7 @@ function shd_admin_maint_reattribute()
 			WHERE id_member_started = {int:attribute})';
 	}
 	else
-		shd_fatal_lang_error('shd_reattribute_no_user');
+		return shd_fatal_lang_error('shd_reattribute_no_user');
 
 	// Now, we don't delete the user id from posts on account deletion, never have.
 	// So, get all the user ids attached to this user/email, make sure they're not in use, and then reattribute them.

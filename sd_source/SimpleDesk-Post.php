@@ -79,6 +79,7 @@ function shd_post_ticket()
 			'disable_smileys' => !empty($_REQUEST['no_smileys']),
 		);
 
+		$context['can_solve'] = false;
 	}
 	else
 	{
@@ -119,6 +120,8 @@ function shd_post_ticket()
 			'return_to_ticket' => isset($_REQUEST['goback']),
 			'disable_smileys' => $ticketinfo['smileys_enabled'] == 0,
 		);
+
+		$context['can_solve'] = shd_allowed_to('shd_resolve_ticket_any', $dept) || (shd_allowed_to('shd_resolve_ticket_own', $dept) && $ticketinfo['starter_id'] == $user_info['id']);
 	}
 
 	// Things we need
@@ -129,7 +132,6 @@ function shd_post_ticket()
 
 	$context['template_layers'][] = 'shd_post_nojs';
 
-	$context['can_solve'] = !$new_ticket && (shd_allowed_to('shd_resolve_ticket_any', $dept) || (shd_allowed_to('shd_resolve_ticket_own', $dept) && $ticketinfo['starter_id'] == $user_info['id']));
 	$context['can_post_proxy'] = $new_ticket && isset($_REQUEST['proxy']) && shd_allowed_to('shd_post_proxy', $dept);
 	if ($context['can_post_proxy'] && !empty($_REQUEST['proxy']))
 	{

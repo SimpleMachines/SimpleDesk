@@ -181,8 +181,8 @@ function shd_init()
 			$depts = shd_allowed_to('access_helpdesk', false);
 
 			// Do they only have one dept? If so, that's the one.
-			if (is_bool($dept))
-				shd_fatal_error('No Bools here', false);
+			if (is_bool($depts))
+				shd_fatal_error('No Bools here');
 			elseif (count($depts) == 1)
 				$this_dept = $depts[0];
 			// They might explicitly say it on the request.
@@ -2058,7 +2058,7 @@ function shd_bbc_codes(&$codes, &$no_autolink_tags)
  *
  *	@since 2.1
  *  @param string $error The error message
- *  @param string|false $log The type of error, or false to not log it
+ *  @param string|bool $log The type of error, or false to not log it
  *  @param array $sprintf An array of data to be sprintf()'d into the specified message
  *  @param int $status = false The HTTP status code associated with this error
  *  @return mixed User error page should occur, failing that we trigger a fatal generic user error page.
@@ -2076,7 +2076,7 @@ function shd_fatal_lang_error($error, $log = 'simpledesk', $sprintf = array(), $
  *  Works the same way as SMF, but allows customizing and overriding.
  *
  * @param string $error The error message
- * @param string $log = 'general' What type of error to log this as (false to not log it))
+ * @param string|bool $log = 'general' What type of error to log this as (false to not log it))
  * @param int $status The HTTP status code associated with this error
  */
 function shd_fatal_error($error, $log = 'general', $status = 500)
@@ -2085,5 +2085,4 @@ function shd_fatal_error($error, $log = 'general', $status = 500)
 
 	trigger_error('Hacking attempt...', E_USER_ERROR);
 	return false;
-
 }

@@ -388,7 +388,7 @@ function shd_load_user_perms()
 	$tickets_own_dept = shd_allowed_to('shd_view_ticket_own', false);
 
 	if (is_bool($tickets_own_dept) || is_bool($tickets_any_dept))
-		shd_fatal_error('Silly Human, bools belong elsewhere', false);
+		shd_fatal_error('Silly Human, bools belong elsewhere');
 	elseif (!empty($tickets_any_dept) && !empty($tickets_own_dept))
 		$tickets_own_dept = array_diff($tickets_any_dept, $tickets_own_dept);
 
@@ -433,7 +433,9 @@ function shd_load_user_perms()
 		$depts_closed_own = shd_allowed_to('shd_view_closed_own', false);
 		$depts_closed_own = array_diff($depts_closed_own, $depts_closed_any);
 
-		if (empty($depts_closed_any) && empty($depts_closed_own)) // No access at all. Disable all access to closed tickets.
+		if (is_bool($tickets_own_dept) || is_bool($tickets_any_dept))
+			shd_fatal_error('Departments have no bools');
+		elseif (empty($depts_closed_any) && empty($depts_closed_own)) // No access at all. Disable all access to closed tickets.
 			$clauses[] = 'hdt.status != ' . TICKET_STATUS_CLOSED;
 		elseif (!empty($depts_closed_any) && empty($depts_closed_own)) // Only where we can access 'all closed' but not 'any of our own closed', e.g. admins
 			$clauses[] = 'hdt.status != ' . TICKET_STATUS_CLOSED . ' OR (hdt.status = ' . TICKET_STATUS_CLOSED . ' AND hdt.id_dept IN (' . implode(',', $depts_closed_any) . '))';
