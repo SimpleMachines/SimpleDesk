@@ -485,7 +485,7 @@ function template_ticket_postbox()
 		echo '
 						<div style="width: ', $width, '%;">';
 
-		template_control_richedit($context['post_box_name'], true, true)
+		template_control_richedit($context['post_box_name'], true, true);
 
 		echo '
 						</div>';
