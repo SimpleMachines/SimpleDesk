@@ -449,7 +449,7 @@ function shd_load_user_perms()
 		if (is_bool($depts_deleted) || empty($depts_deleted))
 			$clauses[] = 'hdt.status != ' . TICKET_STATUS_DELETED;
 		else
-			$clauses[] = 'hdt.status != ' . TICKET_STATUS_DELETED . ' OR (hdt.status = ' . TICKET_STATUS_DELETED .' AND hdt.id_dept IN (' . implode(',', $depts_deleted) . '))';
+			$clauses[] = 'hdt.status != ' . TICKET_STATUS_DELETED . ' OR (hdt.status = ' . TICKET_STATUS_DELETED . ' AND hdt.id_dept IN (' . implode(',', $depts_deleted) . '))';
 
 		// Finally, assemble into $user_info.
 		if (empty($clauses))

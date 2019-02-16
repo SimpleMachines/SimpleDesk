@@ -55,7 +55,7 @@ function shd_post_ticket()
 			'first_msg' => 0,
 			'message' =>  '',
 			'subject' => '',
-			'ticket' => 0 ,
+			'ticket' => 0,
 			'link' => '',
 			'msg' => 0,
 			'display_id' => '',
