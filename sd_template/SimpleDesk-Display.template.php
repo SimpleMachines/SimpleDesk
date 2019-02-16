@@ -39,18 +39,11 @@ function template_viewticket()
 				<span class="floatright smalltext shd_ticketlinks" id="ticket">';
 
 	// SimpleDesk style Icons go here.
-	if ($modSettings['shd_ticketnav_style'] == 'sd')
-		foreach ($context['ticket_navigation'] as $button)
-			if (!empty($button['display']))
+	if ($modSettings['shd_ticketnav_style'] == 'sd' || $modSettings['shd_ticketnav_style'] == 'sdcompact')
+		foreach ($context['ticket_navigation'] as $act)
+			if (!empty($act['display']))
 				echo '
-					<a href="', $button['url'], '"', (!empty($button['is_last']) ? ' id="last"' : ''), '', (!empty($button['onclick']) ? ' onclick="' . $button['onclick'] . '"' : ''), '><img src="', $settings['default_images_url'], '/simpledesk/', $button['icon'], '.png" alt="', $button['alt'], '" title="', $txt[$button['text']], '"> ', $txt[$button['text']], '</a>';
-	elseif ($modSettings['shd_ticketnav_style'] == 'sdcompact')
-		foreach ($context['ticket_navigation'] as $button)
-		{
-			if (!empty($button['display']))
-				echo '
-					<a href="', $button['url'], '"', (!empty($button['is_last']) ? ' id="last"' : ''), '', (!empty($button['onclick']) ? ' onclick="' . $button['onclick'] . '"' : ''), '><img src="', $settings['default_images_url'], '/simpledesk/', $button['icon'], '.png" alt="', $button['alt'], '" title="', $txt[$button['text']], '"></a>';
-		}
+					<a href="', $act['url'], '"', (!empty($act['is_last']) ? ' id="last"' : ''), '', (!empty($act['onclick']) ? ' onclick="' . $act['onclick'] . '"' : ''), '><img src="', $settings['default_images_url'], '/simpledesk/', $act['icon'], '.png" alt="', $act['alt'], '" title="', $txt[$act['text']], '"> ', $modSettings['shd_ticketnav_style'] == 'sd' ? $txt[$act['text']] : '', '</a>';
 
 	echo '
 				</span>

@@ -8,11 +8,12 @@ php:
   - 7.1
   - 7.2
   - 7.3
+  - 7.4
 
 matrix:
   include:
     - php: hhvm
-      dist: trusty
+      dist: xenial
 
 script:
   - sudo add-apt-repository ppa:git-core/ppa -y

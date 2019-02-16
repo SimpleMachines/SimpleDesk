@@ -72,8 +72,11 @@ function shd_repair_attachments_nomsg(&$ignore_ids, $min_substep, $max_substep)
 */
 function shd_attachment_remove(&$filesRemoved, $attachments)
 {
+	$idsRemoved = array();
+
 	if (in_array($_REQUEST['type'], array('shd_attach', 'shd_thumb')) && !empty($attachments))
 		$idsRemoved = removeAttachments(array('id_attach' => $attachments), '', true);
+
 	$filesRemoved = array_merge($filesRemoved, $idsRemoved);
 }
 

@@ -879,8 +879,7 @@ function shd_validate_custom_fields($scope, $dept)
 		// Otherwise, for each field, check it was sent in the form.
 		elseif (isset($_POST['field-' . $field_id]))
 		{
-			if ($field['type'] != CFIELD_TYPE_MULTI)
-				$value = trim($_POST['field-' . $field_id]);
+			$value = trim($_POST['field-' . $field_id]);
 
 			// Now to sanitise the individual value.
 			switch ($field['type'])

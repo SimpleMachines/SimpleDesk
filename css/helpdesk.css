@@ -466,10 +466,18 @@ dl.settings dt.shd_cust_fields_largetext, .shd_cust_fields_largetext textarea {
 
 /* Urgency stuff */
 .generic_icons.urgency_increase::before {
-	background-position: -161px -5px;
+	width: 16px;
+	height: 16px;
+	display: inline-block;
+	content: '';
+	background: url(../images/simpledesk/move_up.png) no-repeat;
 }
 .generic_icons.urgency_decrease::before {
-	background-position: -213px -5px;
+	width: 16px;
+	height: 16px;
+	display: inline-block;
+	content: '';
+	background: url(../images/simpledesk/move_down.png) no-repeat;
 }
 
 /* We need some adjustments */

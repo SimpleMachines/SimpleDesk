@@ -142,37 +142,38 @@ function shd_ajax_privacy()
 		)
 	);
 
-	if ($row = $smcFunc['db_fetch_assoc']($query))
-	{
-		$smcFunc['db_free_result']($query);
+	$row = $smcFunc['db_fetch_assoc']($query);
+	$smcFunc['db_free_result']($query);
 
-		if (in_array($row['status'], array(TICKET_STATUS_CLOSED, TICKET_STATUS_DELETED)) || !shd_allowed_to('shd_alter_privacy_any', $row['id_dept']) && (!shd_allowed_to('shd_alter_privacy_own', $row['id_dept']) || $row['id_member_started'] != $user_info['id']))
-			return array('success' => false, 'error' => $txt['shd_cannot_change_privacy']);
+	// No ticket, no luck.
+	if (empty($row))
+		return array('success' => false, 'error' => $txt['shd_no_ticket']);
+		
+	if (in_array($row['status'], array(TICKET_STATUS_CLOSED, TICKET_STATUS_DELETED)) || !shd_allowed_to('shd_alter_privacy_any', $row['id_dept']) && (!shd_allowed_to('shd_alter_privacy_own', $row['id_dept']) || $row['id_member_started'] != $user_info['id']))
+		return array('success' => false, 'error' => $txt['shd_cannot_change_privacy']);
 
-		$new = empty($row['private']) ? 1 : 0;
-		$action = empty($row['private']) ? 'markprivate' : 'marknotprivate';
+	$new = empty($row['private']) ? 1 : 0;
+	$action = empty($row['private']) ? 'markprivate' : 'marknotprivate';
 
-		require_once($sourcedir . '/sd_source/Subs-SimpleDeskPost.php');
-		$msgOptions = array();
-		$posterOptions = array();
-		$ticketOptions = array(
-			'id' => $context['ticket_id'],
-			'private' => empty($row['private']),
-		);
+	require_once($sourcedir . '/sd_source/Subs-SimpleDeskPost.php');
+	$msgOptions = array();
+	$posterOptions = array();
+	$ticketOptions = array(
+		'id' => $context['ticket_id'],
+		'private' => empty($row['private']),
+	);
 
-		shd_modify_ticket_post($msgOptions, $ticketOptions, $posterOptions);
+	shd_modify_ticket_post($msgOptions, $ticketOptions, $posterOptions);
 
-		shd_log_action($action, array(
-			'ticket' => $context['ticket_id'],
-			'subject' => $row['subject'],
-		));
+	shd_log_action($action, array(
+		'ticket' => $context['ticket_id'],
+		'subject' => $row['subject'],
+	));
 
-		// Make sure we recalculate the number of tickets on next page load
-		shd_clear_active_tickets($row['id_dept']);
+	// Make sure we recalculate the number of tickets on next page load
+	shd_clear_active_tickets($row['id_dept']);
 
-		return array('success' => true, 'message' => $new ? $txt['shd_ticket_private'] : $txt['shd_ticket_notprivate']);
-	}
-	return array('success' => false, 'error' => $txt['shd_no_ticket']);
+	return array('success' => true, 'message' => $new ? $txt['shd_ticket_private'] : $txt['shd_ticket_notprivate']);
 }
 
 /**
@@ -215,53 +216,54 @@ function shd_ajax_urgency()
 		)
 	);
 
-	if ($row = $smcFunc['db_fetch_assoc']($query))
-	{
-		$smcFunc['db_free_result']($query);
+	$row = $smcFunc['db_fetch_assoc']($query);
+	$smcFunc['db_free_result']($query);
 
-		$can_urgency = shd_can_alter_urgency($row['urgency'], $row['id_member_started'], ($row['status'] == TICKET_STATUS_CLOSED), ($row['status'] == TICKET_STATUS_DELETED), $row['id_dept']);
+	// No ticket, no luck.
+	if (empty($row))
+		return array('error' => $txt['shd_no_ticket']);
 
-		if (empty($_GET['change']) || empty($can_urgency[$_GET['change']]))
-			return array('success' => false, 'error' => $txt['shd_cannot_change_urgency']);
+	$can_urgency = shd_can_alter_urgency($row['urgency'], $row['id_member_started'], ($row['status'] == TICKET_STATUS_CLOSED), ($row['status'] == TICKET_STATUS_DELETED), $row['id_dept']);
 
-		$new_urgency = $row['urgency'] + ($_GET['change'] == 'increase' ? 1 : -1);
-		$action = 'urgency_' . $_GET['change'];
+	if (empty($_GET['change']) || empty($can_urgency[$_GET['change']]))
+		return array('success' => false, 'error' => $txt['shd_cannot_change_urgency']);
 
-		require_once($sourcedir . '/sd_source/Subs-SimpleDeskPost.php');
-		$msgOptions = array();
-		$posterOptions = array();
-		$ticketOptions = array(
-			'id' => $context['ticket_id'],
-			'urgency' => $new_urgency,
-		);
+	$new_urgency = $row['urgency'] + ($_GET['change'] == 'increase' ? 1 : -1);
+	$action = 'urgency_' . $_GET['change'];
 
-		shd_modify_ticket_post($msgOptions, $ticketOptions, $posterOptions);
+	require_once($sourcedir . '/sd_source/Subs-SimpleDeskPost.php');
+	$msgOptions = array();
+	$posterOptions = array();
+	$ticketOptions = array(
+		'id' => $context['ticket_id'],
+		'urgency' => $new_urgency,
+	);
 
-		shd_log_action($action, array(
-			'ticket' => $context['ticket_id'],
-			'subject' => $row['subject'],
-			'urgency' => $new_urgency,
-		));
+	shd_modify_ticket_post($msgOptions, $ticketOptions, $posterOptions);
 
-		$new_options = shd_can_alter_urgency($new_urgency, $row['id_member_started'], ($row['status'] == TICKET_STATUS_CLOSED), ($row['status'] == TICKET_STATUS_DELETED), $row['id_dept']);
+	shd_log_action($action, array(
+		'ticket' => $context['ticket_id'],
+		'subject' => $row['subject'],
+		'urgency' => $new_urgency,
+	));
 
-		$context['ajax_return'] = array(
-			'success' => true,
-			'message' => $new_urgency > TICKET_URGENCY_HIGH ? '<span class="error">' . $txt['shd_urgency_' . $new_urgency] . '</span>' : $txt['shd_urgency_' . $new_urgency],
-		);
+	$new_options = shd_can_alter_urgency($new_urgency, $row['id_member_started'], ($row['status'] == TICKET_STATUS_CLOSED), ($row['status'] == TICKET_STATUS_DELETED), $row['id_dept']);
 
-		$array = array(
-			'increase' => '<a id="urglink_increase" href="' . $scripturl . '?action=helpdesk;sa=urgencychange;ticket=' . $context['ticket_id'] . ';change=increase;' . $context['session_var'] . '=' . $context['session_id'] . '" title="' . $txt['shd_urgency_increase'] . '"><span class="generic_icons urgency_increase" title="' . $txt['shd_urgency_increase'] . '"></span></a>',
-			'decrease' => '<a id="urglink_decrease" href="' . $scripturl . '?action=helpdesk;sa=urgencychange;ticket=' . $context['ticket_id'] . ';change=decrease;' . $context['session_var'] . '=' . $context['session_id'] . '" title="' . $txt['shd_urgency_decrease'] . '"><span class="generic_icons urgency_decrease" title="' . $txt['shd_urgency_decrease'] . '"></span></a>',
-		);
+	$context['ajax_return'] = array(
+		'success' => true,
+		'message' => $new_urgency > TICKET_URGENCY_HIGH ? '<span class="error">' . $txt['shd_urgency_' . $new_urgency] . '</span>' : $txt['shd_urgency_' . $new_urgency],
+	);
 
-		foreach ($new_options as $button => $can)
-			if ($can)
-				$context['ajax_return'][$button] = $array[$button];
+	$array = array(
+		'increase' => '<a id="urglink_increase" href="' . $scripturl . '?action=helpdesk;sa=urgencychange;ticket=' . $context['ticket_id'] . ';change=increase;' . $context['session_var'] . '=' . $context['session_id'] . '" title="' . $txt['shd_urgency_increase'] . '"><span class="generic_icons urgency_increase" title="' . $txt['shd_urgency_increase'] . '"></span></a>',
+		'decrease' => '<a id="urglink_decrease" href="' . $scripturl . '?action=helpdesk;sa=urgencychange;ticket=' . $context['ticket_id'] . ';change=decrease;' . $context['session_var'] . '=' . $context['session_id'] . '" title="' . $txt['shd_urgency_decrease'] . '"><span class="generic_icons urgency_decrease" title="' . $txt['shd_urgency_decrease'] . '"></span></a>',
+	);
 
-		return $context['ajax_return'];
-	}
-	return array('error' => $txt['shd_no_ticket']);
+	foreach ($new_options as $button => $can)
+		if ($can)
+			$context['ajax_return'][$button] = $array[$button];
+
+	return $context['ajax_return'];
 }
 
 /**
@@ -291,51 +293,45 @@ function shd_ajax_quote()
 
 	$_REQUEST['quote'] = !empty($_REQUEST['quote']) ? (int) $_REQUEST['quote'] : 0;
 	$message = '';
-	if (!empty($_REQUEST['quote']))
-	{
-		$query = shd_db_query('', '
-			SELECT hdtr.body, COALESCE(mem.real_name, hdtr.poster_name) AS poster_name, hdtr.poster_time, hdt.id_ticket, hdt.id_first_msg
-			FROM {db_prefix}helpdesk_ticket_replies AS hdtr
-				INNER JOIN {db_prefix}helpdesk_tickets AS hdt ON (hdtr.id_ticket = hdt.id_ticket)
-				LEFT JOIN {db_prefix}members AS mem ON (hdtr.id_member = mem.id_member)
-			WHERE {query_see_ticket}
-				AND id_msg = {int:msg}',
-			array(
-				'msg' => $_REQUEST['quote'],
-			)
-		);
 
-		if ($row = $smcFunc['db_fetch_assoc']($query))
-		{
-			$smcFunc['db_free_result']($query);
+	// Nothing to quote, blank message.
+	if (empty($_REQUEST['quote']))
+		return array('success' => true, 'message' => $message);
 
-			// Censor the message!
-			$row['body'] = un_preparsecode($row['body']);
-			censorText($row['body']);
-			$row['body'] = preg_replace('~<br ?/?' . '>~i', "\n", $row['body']);
+	$query = shd_db_query('', '
+		SELECT hdtr.body, COALESCE(mem.real_name, hdtr.poster_name) AS poster_name, hdtr.poster_time, hdt.id_ticket, hdt.id_first_msg
+		FROM {db_prefix}helpdesk_ticket_replies AS hdtr
+			INNER JOIN {db_prefix}helpdesk_tickets AS hdt ON (hdtr.id_ticket = hdt.id_ticket)
+			LEFT JOIN {db_prefix}members AS mem ON (hdtr.id_member = mem.id_member)
+		WHERE {query_see_ticket}
+			AND id_msg = {int:msg}',
+		array(
+			'msg' => $_REQUEST['quote'],
+		)
+	);
 
-			if (strpos($row['poster_name'], '[') !== false || strpos($row['poster_name'], ']') !== false)
-				$row['poster_name'] = '"' . $row['poster_name'] . '"';
+	$row = $smcFunc['db_fetch_assoc']($query);
+	$smcFunc['db_free_result']($query);
 
-			// Make the body HTML if need be.
-			if (!empty($_REQUEST['mode']))
-			{
-				require_once($sourcedir . '/Subs-Editor.php');
-				$row['body'] = strtr($row['body'], array('&lt;' => '#smlt#', '&gt;' => '#smgt#', '&amp;' => '#smamp#'));
-				$row['body'] = bbc_to_html($row['body']);
-				$lb = "\n";
-			}
-			else
-				$lb = "\n";
+	// Can't find this, no quote.
+	if (empty($row))
+		return array('success' => true, 'message' => $message);
+		
+	// Censor the message!
+	$row['body'] = un_preparsecode($row['body']);
+	censorText($row['body']);
+	$row['body'] = preg_replace('~<br ?/?' . '>~i', "\n", $row['body']);
 
-			$message = '[quote author=' . $row['poster_name'] . ' link=action=helpdesk;sa=ticket;ticket=' . $row['id_ticket'];
-			if ($row['id_first_msg'] != $_REQUEST['quote']) // don't add the msg if we're quoting the ticket itself
-				$message .= '.msg' . $_REQUEST['quote'] . '#msg' . $_REQUEST['quote'];
+	if (strpos($row['poster_name'], '[') !== false || strpos($row['poster_name'], ']') !== false)
+		$row['poster_name'] = '"' . $row['poster_name'] . '"';
 
-			$message .= ' date=' . $row['poster_time'] . ']' . $lb . $row['body'] . $lb . '[/quote]';
-		}
-	}
+	$message = '[quote author=' . $row['poster_name'] . ' link=action=helpdesk;sa=ticket;ticket=' . $row['id_ticket'];
 
+	// don't add the msg if we're quoting the ticket itself
+	if ($row['id_first_msg'] != $_REQUEST['quote'])
+		$message .= '.msg' . $_REQUEST['quote'] . '#msg' . $_REQUEST['quote'];
+
+	$message .= ' date=' . $row['poster_time'] . ']' . "\n" . $row['body'] . "\n" . '[/quote]';
 	return array('success' => true, 'message' => $message);
 }
 
@@ -365,59 +361,52 @@ function shd_ajax_canned()
 
 	$_REQUEST['reply'] = !empty($_REQUEST['reply']) ? (int) $_REQUEST['reply'] : 0;
 	$message = '';
-	if (!empty($_REQUEST['reply']) && !empty($context['ticket_id']))
+	if (empty($_REQUEST['reply']) || empty($context['ticket_id']))
+		return array('success' => true, 'message' => $message);
+
+	$query = shd_db_query('', '
+		SELECT hdt.id_member_started, hdt.id_dept, hdcr.body, hdcr.vis_user, hdcr.vis_staff
+		FROM {db_prefix}helpdesk_tickets AS hdt
+			INNER JOIN {db_prefix}helpdesk_cannedreplies_depts AS hdcrd ON (hdt.id_dept = hdcrd.id_dept)
+			INNER JOIN {db_prefix}helpdesk_cannedreplies AS hdcr ON (hdcrd.id_reply = hdcr.id_reply)
+		WHERE hdt.id_ticket = {int:ticket}
+			AND hdcr.id_reply = {int:reply}
+			AND hdcr.active = 1
+			AND {query_see_ticket}',
+		array(
+			'ticket' => $context['ticket_id'],
+			'reply' => $_REQUEST['reply'],
+		)
+	);
+
+	if (empty($smcFunc['db_num_rows']($query)))
 	{
-		$query = shd_db_query('', '
-			SELECT hdt.id_member_started, hdt.id_dept, hdcr.body, hdcr.vis_user, hdcr.vis_staff
-			FROM {db_prefix}helpdesk_tickets AS hdt
-				INNER JOIN {db_prefix}helpdesk_cannedreplies_depts AS hdcrd ON (hdt.id_dept = hdcrd.id_dept)
-				INNER JOIN {db_prefix}helpdesk_cannedreplies AS hdcr ON (hdcrd.id_reply = hdcr.id_reply)
-			WHERE hdt.id_ticket = {int:ticket}
-				AND hdcr.id_reply = {int:reply}
-				AND hdcr.active = 1
-				AND {query_see_ticket}',
-			array(
-				'ticket' => $context['ticket_id'],
-				'reply' => $_REQUEST['reply'],
-			)
-		);
-		if ($smcFunc['db_num_rows']($query) == 0)
-		{
-			$smcFunc['db_free_result']($query);
-			return array('success' => true, 'message' => $message);
-		}
-
-		$row = $smcFunc['db_fetch_assoc']($query);
 		$smcFunc['db_free_result']($query);
-
-		// Check ability to reply to this ticket. No ability to reply at all, no canned reply.
-		if (!shd_allowed_to('shd_reply_ticket_own', $row['id_dept']) && !shd_allowed_to('shd_reply_ticket_any', $row['id_dept']))
-			return array('success' => true, 'message' => $message);
-
-		// Now check for can-reply-to-own (reply to any will pass this check correctly anyway)
-		if (!shd_allowed_to('shd_reply_ticket_any', $row['id_dept']) && shd_allowed_to('shd_reply_ticket_own', $row['id_dept']) && $row['id_member_started'] != $user_info['id'])
-			return array('success' => true, 'message' => $message);
-
-		// Now verify the per-reply visibility. Only applies to non admins anyway...
-		if (!shd_allowed_to('admin_helpdesk', $row['id_dept']) && !$user_info['is_admin'])
-			if (shd_allowed_to('shd_staff', $row['id_dept']) && empty($row['vis_staff']))
-				return array('success' => true, 'message' => $message);
-			elseif (!shd_allowed_to('shd_staff', $row['id_dept']) && empty($row['vis_user']))
-				return array('success' => true, 'message' => $message);
-
-		// Censor the message!
-		$message = un_preparsecode($row['body']);
-		censorText($message);
-		$message = preg_replace('~<br ?/?' . '>~i', "\n", $row['body']);
-
-		// Make the body HTML if need be.
-		if (!empty($_REQUEST['mode']))
-		{
-			require_once($sourcedir . '/Subs-Editor.php');
-			$message = strtr($message, array('&lt;' => '#smlt#', '&gt;' => '#smgt#', '&amp;' => '#smamp#'));
-			$message = bbc_to_html($message);
-		}
+		return array('success' => true, 'message' => $message);
 	}
+
+	$row = $smcFunc['db_fetch_assoc']($query);
+	$smcFunc['db_free_result']($query);
+
+	// Check ability to reply to this ticket. No ability to reply at all, no canned reply.
+	if (!shd_allowed_to('shd_reply_ticket_own', $row['id_dept']) && !shd_allowed_to('shd_reply_ticket_any', $row['id_dept']))
+		return array('success' => true, 'message' => $message);
+
+	// Now check for can-reply-to-own (reply to any will pass this check correctly anyway)
+	if (!shd_allowed_to('shd_reply_ticket_any', $row['id_dept']) && shd_allowed_to('shd_reply_ticket_own', $row['id_dept']) && $row['id_member_started'] != $user_info['id'])
+		return array('success' => true, 'message' => $message);
+
+	// Now verify the per-reply visibility. Only applies to non admins anyway...
+	if (!shd_allowed_to('admin_helpdesk', $row['id_dept']) && !$user_info['is_admin'])
+		if (shd_allowed_to('shd_staff', $row['id_dept']) && empty($row['vis_staff']))
+			return array('success' => true, 'message' => $message);
+		elseif (!shd_allowed_to('shd_staff', $row['id_dept']) && empty($row['vis_user']))
+			return array('success' => true, 'message' => $message);
+
+	// Censor the message!
+	$message = un_preparsecode($row['body']);
+	censorText($message);
+	$message = preg_replace('~<br ?/?' . '>~i', "\n", $row['body']);
 
 	$message = strtr($message, array('&nbsp;' => '&#160;', '<' => '&lt;', '>' => '&gt;'));
 	return array('success' => true, 'message' => $message);
@@ -446,7 +435,7 @@ function shd_ajax_assign()
 		return array('success' => false, 'error' => $txt['shd_no_ticket']);
 
 	$query = shd_db_query('', '
-		SELECT hdt.private, hdt.id_member_started, id_member_assigned, id_dept, hdt.status, 1 AS valid
+		SELECT hdt.private, hdt.id_member_started, id_member_assigned, id_dept, hdt.status
 		FROM {db_prefix}helpdesk_tickets AS hdt
 		WHERE {query_see_ticket}
 			AND hdt.id_ticket = {int:ticket}',
@@ -454,12 +443,11 @@ function shd_ajax_assign()
 			'ticket' => $context['ticket_id'],
 		)
 	);
-	if ($smcFunc['db_num_rows']($query) != 0)
-		list($private, $ticket_starter, $ticket_assigned, $dept, $status, $valid) = $smcFunc['db_fetch_row']($query);
-	$smcFunc['db_free_result']($query);
-
-	if (empty($valid))
+	if (empty($smcFunc['db_num_rows']($query)))
 		return array('success' => false, 'error' => $txt['shd_no_ticket']);
+
+	list($private, $ticket_starter, $ticket_assigned, $dept, $status) = $smcFunc['db_fetch_row']($query);
+	$smcFunc['db_free_result']($query);
 
 	require_once($sourcedir . '/sd_source/SimpleDesk-Assign.php');
 	$assignees = shd_get_possible_assignees($private, $ticket_starter, $dept);
@@ -512,7 +500,7 @@ function shd_ajax_assign2()
 		return array('error' => $txt['shd_no_ticket']);
 
 	$query = shd_db_query('', '
-		SELECT hdt.private, hdt.id_member_started, id_member_assigned, subject, id_dept, hdt.status, 1 AS valid
+		SELECT hdt.private, hdt.id_member_started, id_member_assigned, subject, id_dept, hdt.status
 		FROM {db_prefix}helpdesk_tickets AS hdt
 		WHERE {query_see_ticket}
 			AND hdt.id_ticket = {int:ticket}',
@@ -520,12 +508,11 @@ function shd_ajax_assign2()
 			'ticket' => $context['ticket_id'],
 		)
 	);
-	if ($smcFunc['db_num_rows']($query) != 0)
-		list($private, $ticket_starter, $ticket_assigned, $subject, $dept, $status, $valid) = $smcFunc['db_fetch_row']($query);
-	$smcFunc['db_free_result']($query);
-
-	if (empty($valid))
+	if (empty($smcFunc['db_num_rows']($query)))
 		return array('error' => $txt['shd_no_ticket']);
+
+	list($private, $ticket_starter, $ticket_assigned, $subject, $dept, $status) = $smcFunc['db_fetch_row']($query);
+	$smcFunc['db_free_result']($query);
 
 	if (!isset($_GET['to_user']) || !is_numeric($_GET['to_user']))
 		return array('success' => false, 'error' => $txt['shd_assigned_not_permitted']);

@@ -44,7 +44,7 @@ function shd_tickettotopic()
 	checkSession('get');
 
 	if (empty($context['ticket_id']))
-		return fatal_lang_error('shd_no_ticket');
+		shd_fatal_lang_error('shd_no_ticket');
 
 	// Get ticket details - and kick it out if they shouldn't be able to see it.
 	$query = shd_db_query('', '
@@ -65,11 +65,11 @@ function shd_tickettotopic()
 	else
 	{
 		$smcFunc['db_free_result']($query);
-		return fatal_lang_error('shd_no_ticket');
+		shd_fatal_lang_error('shd_no_ticket');
 	}
 
 	if (!shd_allowed_to('shd_ticket_to_topic', $dept) || !empty($modSettings['shd_helpdesk_only']) || !empty($modSettings['shd_disable_tickettotopic']))
-		return fatal_lang_error('shd_cannot_move_ticket', false);
+		shd_fatal_lang_error('shd_cannot_move_ticket', false);
 
 	// Hang on... are there any deleted replies?
 	if ($deleted_replies > 0)
@@ -77,7 +77,7 @@ function shd_tickettotopic()
 		if (shd_allowed_to('shd_access_recyclebin', $dept))
 			$context['deleted_prompt'] = true;
 		else
-			return fatal_lang_error('shd_cannot_move_ticket_with_deleted');
+			shd_fatal_lang_error('shd_cannot_move_ticket_with_deleted');
 	}
 
 	// In a department, for the linktree?
@@ -135,7 +135,7 @@ function shd_tickettotopic()
 	$smcFunc['db_free_result']($request);
 
 	if (empty($context['categories']))
-		return fatal_lang_error('shd_moveticket_noboards', false);
+		shd_fatal_lang_error('shd_moveticket_noboards', false);
 
 	// OK, now we got to check for custom fields. In any case, we need to fetch the list of fields that might be applicable to this ticket.
 	shd_load_language('sd_language/SimpleDeskAdmin');
@@ -237,7 +237,7 @@ function shd_tickettotopic()
 		{
 			// So they're staff. But the field might not be visible to them; they can't deal with it.
 			if (!$field['visible']['staff'])
-				return fatal_lang_error('cannot_shd_move_ticket_topic_hidden_cfs', false);
+				shd_fatal_lang_error('cannot_shd_move_ticket_topic_hidden_cfs', false);
 			elseif (!$field['visible']['user'])
 			{
 				// Normal mortals can't see it even if this person can, so warn them.
@@ -248,7 +248,7 @@ function shd_tickettotopic()
 		else
 			// Non staff aren't special. They should not be able to make this decision. If someone can't see it, they don't get to make the choice.
 			if (!$field['visible']['user'] || !$field['visible']['staff'])
-				return fatal_lang_error('cannot_shd_move_ticket_topic_hidden_cfs', false);
+				shd_fatal_lang_error('cannot_shd_move_ticket_topic_hidden_cfs', false);
 	}
 
 	// Store the ticket subject for the template
@@ -290,11 +290,11 @@ function shd_tickettotopic2()
 	checkSubmitOnce('check');
 
 	if (empty($context['ticket_id']))
-		return fatal_lang_error('shd_no_ticket');
+		shd_fatal_lang_error('shd_no_ticket');
 	elseif (isset($_POST['send_pm']) && (!isset($_POST['pm_content']) || trim($_POST['pm_content']) == ''))
 	{
 		checkSubmitOnce('free');
-		return fatal_lang_error('shd_move_no_pm', false);
+		shd_fatal_lang_error('shd_move_no_pm', false);
 	}
 
 	// Just in case, are they cancelling?
@@ -331,13 +331,13 @@ function shd_tickettotopic2()
 		)
 	);
 	if ($smcFunc['db_num_rows']($request) == 0)
-		return fatal_lang_error('no_board');
+		shd_fatal_lang_error('no_board');
 
 	list ($pcounter, $board_name, $subject, $owner, $body, $firstmsg, $smileys_enabled, $modified_time, $modified_name, $time, $shd_id_msg, $deleted_replies, $dept) = $smcFunc['db_fetch_row']($request);
 	$smcFunc['db_free_result']($request);
 
 	if (!shd_allowed_to('shd_ticket_to_topic', $dept) || !empty($modSettings['shd_helpdesk_only']) || !empty($modSettings['shd_disable_tickettotopic']))
-		return fatal_lang_error('shd_cannot_move_ticket', false);
+		shd_fatal_lang_error('shd_cannot_move_ticket', false);
 
 	// Are we changing the subject?
 	$old_subject = $subject;
@@ -354,7 +354,7 @@ function shd_tickettotopic2()
 			$context['deleted_prompt'] = isset($_REQUEST['deleted_replies']) && in_array($_REQUEST['deleted_replies'], $dr_opts) ? $_REQUEST['deleted_replies'] : 'abort';
 		}
 		else
-			return fatal_lang_error('shd_cannot_move_ticket_with_deleted');
+			shd_fatal_lang_error('shd_cannot_move_ticket_with_deleted');
 	}
 
 	if (!empty($context['deleted_prompt']) && $context['deleted_prompt'] == 'abort')
@@ -445,14 +445,14 @@ function shd_tickettotopic2()
 		{
 			// So they're staff. But the field might not be visible to them; they can't deal with it whatever.
 			if (!$field['visible']['staff'])
-				return fatal_lang_error('cannot_shd_move_ticket_topic_hidden_cfs', false);
+				shd_fatal_lang_error('cannot_shd_move_ticket_topic_hidden_cfs', false);
 			elseif (!$field['visible']['user'])
 				$context['custom_fields_warning'] = true;
 		}
 		else
 			// Non staff aren't special. They should not be able to make this decision. If someone can't see it, they don't get to make the choice.
 			if (!$field['visible']['user'] || !$field['visible']['staff'])
-				return fatal_lang_error('cannot_shd_move_ticket_topic_hidden_cfs', false);
+				shd_fatal_lang_error('cannot_shd_move_ticket_topic_hidden_cfs', false);
 
 		// Are we ignoring this field? If so, we can now safely get rid of it at this very point.
 		if (isset($_POST['field' . $field_id]) && $_POST['field' . $field_id] == 'lose')
@@ -463,7 +463,7 @@ function shd_tickettotopic2()
 	if (!empty($context['custom_fields_warning']) && empty($_POST['accept_move']))
 	{
 		checkSubmitOnce('free');
-		return fatal_lang_error('shd_ticket_move_reqd_nonselected', false);
+		shd_fatal_lang_error('shd_ticket_move_reqd_nonselected', false);
 	}
 
 	// Just before we do this, make sure we call any hooks. $context has lots of interesting things, as does $_POST.
@@ -741,7 +741,7 @@ function shd_tickettotopic2()
 		);
 	}
 	else
-		return fatal_lang_error('shd_move_topic_not_created', false);
+		shd_fatal_lang_error('shd_move_topic_not_created', false);
 
 	// Clear our cache
 	shd_clear_active_tickets($dept);
@@ -830,9 +830,9 @@ function shd_topictoticket()
 	checkSession('get');
 
 	if (!shd_allowed_to('shd_topic_to_ticket', 0) || !empty($modSettings['shd_helpdesk_only']) || !empty($modSettings['shd_disable_tickettotopic']))
-		return fatal_lang_error('shd_cannot_move_topic', false);
+		shd_fatal_lang_error('shd_cannot_move_topic', false);
 	elseif (empty($_REQUEST['topic']))
-		return fatal_lang_error('shd_no_topic');
+		shd_fatal_lang_error('shd_no_topic');
 
 	$context['topic_id'] = (int) $_REQUEST['topic'];
 
@@ -856,7 +856,7 @@ function shd_topictoticket()
 	else
 	{
 		$smcFunc['db_free_result']($query);
-		return fatal_lang_error('shd_no_topic');
+		shd_fatal_lang_error('shd_no_topic');
 	}
 
 	// Get the department list
@@ -995,9 +995,9 @@ function shd_topictoticket2()
 		$_REQUEST['dept'] = -1; // which is never a valid department!
 
 	if (!shd_allowed_to('shd_topic_to_ticket', $_REQUEST['dept']) || !empty($modSettings['shd_helpdesk_only']) || !empty($modSettings['shd_disable_tickettotopic']))
-		return fatal_lang_error('shd_cannot_move_topic', false);
+		shd_fatal_lang_error('shd_cannot_move_topic', false);
 	elseif (empty($_REQUEST['topic']))
-		return fatal_lang_error('shd_no_topic');
+		shd_fatal_lang_error('shd_no_topic');
 
 	$context['topic_id'] = (int) $_REQUEST['topic'];
 
@@ -1005,7 +1005,7 @@ function shd_topictoticket2()
 	if (isset($_REQUEST['cancel']))
 		return redirectexit('topic=' . $context['topic_id']);
 	elseif (isset($_POST['send_pm']) && (!isset($_POST['pm_content']) || trim($_POST['pm_content']) == ''))
-		return fatal_lang_error('shd_move_no_pm_topic', false);
+		shd_fatal_lang_error('shd_move_no_pm_topic', false);
 
 	require_once($sourcedir . '/sd_source/Subs-SimpleDeskPost.php');
 
@@ -1023,7 +1023,7 @@ function shd_topictoticket2()
 		)
 	);
 	if ($smcFunc['db_num_rows']($request) == 0)
-		return fatal_lang_error('shd_move_ticket_not_created');
+		shd_fatal_lang_error('shd_move_ticket_not_created');
 
 	list ($subject, $board, $owner, $body, $firstmsg, $smileys_enabled, $memberupdated, $numreplies, $postername, $posteremail, $posterip, $postertime, $modified_time, $modified_name, $smf_id_msg) = $smcFunc['db_fetch_row']($request);
 	$smcFunc['db_free_result']($request);
@@ -1070,7 +1070,7 @@ function shd_topictoticket2()
 
 	// Ticket created, let's dig out the replies and post them in the ticket, if there are any.
 	if (!isset($ticketOptions['id']))
-		return fatal_lang_error('shd_move_ticket_not_created', false);
+		shd_fatal_lang_error('shd_move_ticket_not_created', false);
 
 	$request = shd_db_query('', '
 		SELECT body, id_member, poster_time, poster_name, poster_email, poster_ip, smileys_enabled, id_msg

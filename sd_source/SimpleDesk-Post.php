@@ -43,16 +43,82 @@ function shd_post_ticket()
 	if ($new_ticket)
 	{
 		// Need to have a department to post in. If not, goodbye.
-		$_REQUEST['dept'] = isset($_REQUEST['dept']) ? (int) $_REQUEST['dept'] : 0;
+		$dept = isset($_REQUEST['dept']) ? (int) $_REQUEST['dept'] : 0;
 
-		shd_is_allowed_to('shd_new_ticket', $_REQUEST['dept']); // If we don't have a department, we will verify the ability in any department, and figure it out later.
+		shd_is_allowed_to('shd_new_ticket', $dept); // If we don't have a department, we will verify the ability in any department, and figure it out later.
+
+		$context['ticket_form'] = array( // yes, everything goes in here.
+			'dept' => $dept,
+			'selecting_dept' => $context['shd_multi_dept'] && empty($dept),
+			'form_title' => $txt['shd_create_ticket'],
+			'form_action' => $scripturl . '?action=helpdesk;sa=saveticket',
+			'first_msg' => 0,
+			'message' =>  '',
+			'subject' => '',
+			'ticket' => 0 ,
+			'link' => '',
+			'msg' => 0,
+			'display_id' => '',
+			'status' => TICKET_STATUS_NEW,
+			'urgency' => array(
+				'setting' => TICKET_URGENCY_LOW,
+			),
+			'private' => array(
+				'setting' => false,
+				'can_change' => shd_allowed_to('shd_alter_privacy_any', $dept) || (shd_allowed_to('shd_alter_privacy_own', $dept)),
+				'options' => array(
+					0 => 'shd_ticket_notprivate',
+					1 => 'shd_ticket_private',
+				),
+			),
+			'errors' => array(),
+			'num_replies' => 0,
+			'do_attach' => shd_allowed_to('shd_post_attachment', $dept),
+			'num_allowed_attachments' => empty($modSettings['attachmentNumPerPostLimit']) || $modSettings['shd_attachments_mode'] == 'ticket' ? -1 : $modSettings['attachmentNumPerPostLimit'],
+			'return_to_ticket' => isset($_REQUEST['goback']),
+			'disable_smileys' => !empty($_REQUEST['no_smileys']),
+		);
+
 	}
 	else
 	{
 		checkSession('get');
 		$ticketinfo = shd_load_ticket();
+		$dept = $ticketinfo['dept'];
 		if (!shd_allowed_to('shd_edit_ticket_any', $ticketinfo['dept']) && (!shd_allowed_to('shd_edit_ticket_own', $ticketinfo['dept']) || !$ticketinfo['is_own']))
-			return fatal_lang_error('cannot_shd_edit_ticket');
+			shd_fatal_lang_error('cannot_shd_edit_ticket');
+
+		$context['ticket_form'] = array( // yes, everything goes in here.
+			'dept' => $dept,
+			'selecting_dept' => $context['shd_multi_dept'] && empty($dept),
+			'form_title' => $txt['shd_edit_ticket'],
+			'form_action' => $scripturl . '?action=helpdesk;sa=saveticket',
+			'first_msg' => $ticketinfo['id_first_msg'],
+			'message' => $ticketinfo['body'],
+			'subject' => $ticketinfo['subject'],
+			'ticket' => $context['ticket_id'],
+			'link' => '<a href="' . $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $context['ticket_id'] . '">' . $ticketinfo['subject'] . '</a>',
+			'msg' => $ticketinfo['id_first_msg'],
+			'display_id' => str_pad($context['ticket_id'], $modSettings['shd_zerofill'], '0', STR_PAD_LEFT),
+			'status' => $ticketinfo['status'],
+			'urgency' => array(
+				'setting' => $ticketinfo['urgency'],
+			),
+			'private' => array(
+				'setting' => $ticketinfo['private'] == 1,
+				'can_change' => shd_allowed_to('shd_alter_privacy_any', $dept) || (shd_allowed_to('shd_alter_privacy_own', $dept) && !empty($ticketinfo['is_own'])),
+				'options' => array(
+					0 => 'shd_ticket_notprivate',
+					1 => 'shd_ticket_private',
+				),
+			),
+			'errors' => array(),
+			'num_replies' => $ticketinfo['num_replies'],
+			'do_attach' => shd_allowed_to('shd_post_attachment', $dept),
+			'num_allowed_attachments' => empty($modSettings['attachmentNumPerPostLimit']) || $modSettings['shd_attachments_mode'] == 'ticket' ? -1 : $modSettings['attachmentNumPerPostLimit'],
+			'return_to_ticket' => isset($_REQUEST['goback']),
+			'disable_smileys' => $ticketinfo['smileys_enabled'] == 0,
+		);
 	}
 
 	// Things we need
@@ -62,39 +128,7 @@ function shd_post_ticket()
 	require_once($sourcedir . '/Subs-Editor.php');
 
 	$context['template_layers'][] = 'shd_post_nojs';
-	$dept = $new_ticket ? $_REQUEST['dept'] : $ticketinfo['dept'];
 
-	$context['ticket_form'] = array( // yes, everything goes in here.
-		'dept' => $dept,
-		'selecting_dept' => $context['shd_multi_dept'] && empty($dept),
-		'form_title' => $new_ticket ? $txt['shd_create_ticket'] : $txt['shd_edit_ticket'],
-		'form_action' => $scripturl . '?action=helpdesk;sa=saveticket',
-		'first_msg' => $new_ticket ? 0 : $ticketinfo['id_first_msg'],
-		'message' => $new_ticket ? '' : $ticketinfo['body'],
-		'subject' => $new_ticket ? '' : $ticketinfo['subject'],
-		'ticket' => $new_ticket ? 0 : $context['ticket_id'],
-		'link' => $new_ticket ? '' : '<a href="' . $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $context['ticket_id'] . '">' . $ticketinfo['subject'] . '</a>',
-		'msg' => $new_ticket ? 0 : $ticketinfo['id_first_msg'],
-		'display_id' => $new_ticket ? '' : str_pad($context['ticket_id'], $modSettings['shd_zerofill'], '0', STR_PAD_LEFT),
-		'status' => $new_ticket ? TICKET_STATUS_NEW : $ticketinfo['status'],
-		'urgency' => array(
-			'setting' => $new_ticket ? TICKET_URGENCY_LOW : $ticketinfo['urgency'],
-		),
-		'private' => array(
-			'setting' => $new_ticket ? false : ($ticketinfo['private'] == 1),
-			'can_change' => shd_allowed_to('shd_alter_privacy_any', $dept) || (shd_allowed_to('shd_alter_privacy_own', $dept) && ($new_ticket || !empty($ticketinfo['is_own']))),
-			'options' => array(
-				0 => 'shd_ticket_notprivate',
-				1 => 'shd_ticket_private',
-			),
-		),
-		'errors' => array(),
-		'num_replies' => $new_ticket ? 0 : $ticketinfo['num_replies'],
-		'do_attach' => shd_allowed_to('shd_post_attachment', $dept),
-		'num_allowed_attachments' => empty($modSettings['attachmentNumPerPostLimit']) || $modSettings['shd_attachments_mode'] == 'ticket' ? -1 : $modSettings['attachmentNumPerPostLimit'],
-		'return_to_ticket' => isset($_REQUEST['goback']),
-		'disable_smileys' => $new_ticket ? !empty($_REQUEST['no_smileys']) : ($ticketinfo['smileys_enabled'] == 0),
-	);
 	$context['can_solve'] = !$new_ticket && (shd_allowed_to('shd_resolve_ticket_any', $dept) || (shd_allowed_to('shd_resolve_ticket_own', $dept) && $ticketinfo['starter_id'] == $user_info['id']));
 	$context['can_post_proxy'] = $new_ticket && isset($_REQUEST['proxy']) && shd_allowed_to('shd_post_proxy', $dept);
 	if ($context['can_post_proxy'] && !empty($_REQUEST['proxy']))
@@ -116,9 +150,9 @@ function shd_post_ticket()
 
 	// A few basic checks
 	if ($context['ticket_form']['status'] == TICKET_STATUS_CLOSED)
-		return fatal_lang_error('shd_cannot_edit_closed', false);
+		shd_fatal_lang_error('shd_cannot_edit_closed', false);
 	elseif ($context['ticket_form']['status'] == TICKET_STATUS_DELETED)
-		return fatal_lang_error('shd_cannon_edit_deleted', false);
+		shd_fatal_lang_error('shd_cannon_edit_deleted', false);
 
 	shd_load_custom_fields(true, $context['ticket_form']['ticket'], $context['ticket_form']['dept']);
 
@@ -246,7 +280,7 @@ function shd_save_post()
 	{
 		// Pfft.
 		if (isset($_POST['shd_message']) && strtolower($_POST['shd_message']) == 'this is simpledesk!')
-			fatal_error('You are not King Leonidas...', false);
+			shd_fatal_error('You are not King Leonidas...', false);
 		$_POST['shd_message'] = $smcFunc['htmlspecialchars']($_POST['shd_message'], ENT_QUOTES);
 		preparsecode($_POST['shd_message']);
 
@@ -329,7 +363,7 @@ function shd_save_ticket()
 
 		// S'pose we'd better check the permissions here
 		if (!shd_allowed_to('shd_edit_ticket_any', $dept) && (!shd_allowed_to('shd_edit_ticket_own', $dept) || !$ticketinfo['is_own']))
-			return fatal_lang_error('cannot_shd_edit_ticket', false);
+			shd_fatal_lang_error('cannot_shd_edit_ticket', false);
 
 		$msg = $ticketinfo['id_first_msg'];
 		$is_own = $ticketinfo['is_own'];
@@ -346,13 +380,13 @@ function shd_save_ticket()
 
 	$context['ticket_form'] = array(
 		'dept' => isset($newdept) ? $newdept : $dept,
-		'form_title' => $new_ticket ? $txt['shd_create_ticket'] : $txt['shd_edit_ticket'],
+		'form_title' => !$new_ticket ? $txt['shd_edit_ticket'] : $txt['shd_create_ticket'],
 		'form_action' => $scripturl . '?action=helpdesk;sa=saveticket',
-		'first_msg' => $new_ticket ? 0 : $ticketinfo['id_first_msg'],
+		'first_msg' => !$new_ticket ? $ticketinfo['id_first_msg'] : 0,
 		'message' => $_POST['shd_message'],
 		'subject' => $_POST['subject'],
 		'ticket' => $context['ticket_id'],
-		'link' => $new_ticket ? '' : '<a href="' . $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $context['ticket_id'] . '">' . $ticketinfo['subject'] . '</a>',
+		'link' => !$new_ticket ? '<a href="' . $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $context['ticket_id'] . '">' . $ticketinfo['subject'] . '</a>' : '',
 		'msg' => $msg,
 		'display_id' => empty($context['ticket_id']) ? '' : str_pad($context['ticket_id'], $modSettings['shd_zerofill'], '0', STR_PAD_LEFT),
 		'status' => $new_status,
@@ -485,9 +519,9 @@ function shd_save_ticket()
 
 	// A few basic checks
 	if ($context['ticket_form']['status'] == TICKET_STATUS_CLOSED)
-		return fatal_lang_error('shd_cannot_edit_closed', false);
+		shd_fatal_lang_error('shd_cannot_edit_closed', false);
 	elseif ($context['ticket_form']['status'] == TICKET_STATUS_DELETED)
-		return fatal_lang_error('shd_cannon_edit_deleted', false);
+		shd_fatal_lang_error('shd_cannon_edit_deleted', false);
 
 	// OK, does the user want to close this ticket? Are there any problems with that?
 	if (!empty($context['can_solve']) && !empty($_POST['resolve_ticket']))
@@ -698,10 +732,10 @@ function shd_post_reply()
 			if (shd_allowed_to('shd_reply_ticket_own', $ticketinfo['dept']))
 			{
 				if (!$ticketinfo['is_own'])
-					return fatal_lang_error('shd_cannot_reply_any_but_own', false);
+					shd_fatal_lang_error('shd_cannot_reply_any_but_own', false);
 			}
 			else
-				return fatal_lang_error('shd_cannot_reply_any', false); // can't do nuthin'
+				shd_fatal_lang_error('shd_cannot_reply_any', false); // can't do nuthin'
 		}
 	}
 	else
@@ -721,7 +755,7 @@ function shd_post_reply()
 		if ($smcFunc['db_num_rows']($query) == 0)
 		{
 			$smcFunc['db_free_result']($query);
-			return fatal_lang_error('shd_no_ticket', false);
+			shd_fatal_lang_error('shd_no_ticket', false);
 		}
 
 		$reply = $smcFunc['db_fetch_assoc']($query);
@@ -731,10 +765,10 @@ function shd_post_reply()
 			if (shd_allowed_to('shd_edit_reply_own', $ticketinfo['dept']))
 			{
 				if ($reply['id_member'] != $user_info['id'])
-					return fatal_lang_error('shd_cannot_edit_reply_any_but_own', false);
+					shd_fatal_lang_error('shd_cannot_edit_reply_any_but_own', false);
 			}
 			else
-				return fatal_lang_error('shd_cannot_edit_reply_any', false);
+				shd_fatal_lang_error('shd_cannot_edit_reply_any', false);
 		}
 
 		// Fix the body up for later
@@ -820,9 +854,9 @@ function shd_post_reply()
 
 	// A few basic checks
 	if ($context['ticket_form']['status'] == TICKET_STATUS_CLOSED)
-		return fatal_lang_error('shd_cannot_reply_closed', false);
+		shd_fatal_lang_error('shd_cannot_reply_closed', false);
 	elseif ($context['ticket_form']['status'] == TICKET_STATUS_DELETED)
-		return fatal_lang_error('shd_cannon_reply_deleted', false);
+		shd_fatal_lang_error('shd_cannon_reply_deleted', false);
 
 	shd_load_custom_fields(false, $context['ticket_form']['msg'], $context['ticket_form']['dept']);
 	shd_load_attachments();
@@ -936,10 +970,10 @@ function shd_save_reply()
 			if (shd_allowed_to('shd_reply_ticket_own', $ticketinfo['dept']))
 			{
 				if (!$ticketinfo['is_own'])
-					return fatal_lang_error('shd_cannot_reply_any_but_own', false);
+					shd_fatal_lang_error('shd_cannot_reply_any_but_own', false);
 			}
 			else
-				return fatal_lang_error('shd_cannot_reply_any', false); // can't do nuthin'
+				shd_fatal_lang_error('shd_cannot_reply_any', false); // can't do nuthin'
 		}
 	}
 	else
@@ -958,7 +992,7 @@ function shd_save_reply()
 		if ($smcFunc['db_num_rows']($query) == 0)
 		{
 			$smcFunc['db_free_result']($query);
-			return fatal_lang_error('shd_no_ticket', false);
+			shd_fatal_lang_error('shd_no_ticket', false);
 		}
 
 		$reply = $smcFunc['db_fetch_assoc']($query);
@@ -968,10 +1002,10 @@ function shd_save_reply()
 			if (shd_allowed_to('shd_edit_reply_own', $ticketinfo['dept']))
 			{
 				if ($reply['id_member'] != $user_info['id'])
-					return fatal_lang_error('shd_cannot_edit_reply_any_but_own', false);
+					shd_fatal_lang_error('shd_cannot_edit_reply_any_but_own', false);
 			}
 			else
-				return fatal_lang_error('shd_cannot_edit_reply_any', false);
+				shd_fatal_lang_error('shd_cannot_edit_reply_any', false);
 		}
 	}
 
@@ -1057,9 +1091,9 @@ function shd_save_reply()
 
 	// A few basic checks
 	if ($context['ticket_form']['status'] == TICKET_STATUS_CLOSED)
-		return fatal_lang_error('shd_cannot_edit_closed', false);
+		shd_fatal_lang_error('shd_cannot_edit_closed', false);
 	elseif ($context['ticket_form']['status'] == TICKET_STATUS_DELETED)
-		return fatal_lang_error('shd_cannon_edit_deleted', false);
+		shd_fatal_lang_error('shd_cannon_edit_deleted', false);
 
 	// Have there been any new replies that we missed?
 	if (empty($options['no_new_reply_warning']) && isset($_REQUEST['num_replies']))
@@ -1507,7 +1541,7 @@ function shd_prepare_reply_context()
 		$memberContext[$message['id_member']]['group'] = $txt['guest_title'];
 		$memberContext[$message['id_member']]['link'] = $message['poster_name'];
 		$memberContext[$message['id_member']]['email'] = $message['poster_email'];
-		$memberContext[$message['id_member']]['show_email'] = showEmailAddress(true, 0);
+		$memberContext[$message['id_member']]['show_email'] = false;
 		$memberContext[$message['id_member']]['is_guest'] = true;
 		$memberContext[$message['id_member']]['group_icons'] = '';
 	}
@@ -1689,27 +1723,27 @@ function shd_check_attachments()
 				if (!is_uploaded_file($uplfile['tmp_name']) || (@ini_get('open_basedir') == '' && !file_exists($uplfile['tmp_name'])))
 				{
 					checkSubmitOnce('free');
-					return fatal_lang_error('attach_timeout', 'critical');
+					shd_fatal_lang_error('attach_timeout', 'critical');
 				}
 
 				if (!empty($modSettings['attachmentSizeLimit']) && $uplfile['size'] > $modSettings['attachmentSizeLimit'] * 1024)
 				{
 					checkSubmitOnce('free');
-					return fatal_lang_error('file_too_big', false, array($modSettings['attachmentSizeLimit']));
+					shd_fatal_lang_error('file_too_big', false, array($modSettings['attachmentSizeLimit']));
 				}
 
 				$quantity++;
 				if (!empty($modSettings['attachmentNumPerPostLimit']) && $quantity > $modSettings['attachmentNumPerPostLimit'] && $modSettings['shd_attachments_mode'] != 'ticket')
 				{
 					checkSubmitOnce('free');
-					return fatal_lang_error('attachments_limit_per_post', false, array($modSettings['attachmentNumPerPostLimit']));
+					shd_fatal_lang_error('attachments_limit_per_post', false, array($modSettings['attachmentNumPerPostLimit']));
 				}
 
 				$total_size += $uplfile['size'];
 				if (!empty($modSettings['attachmentPostLimit']) && $total_size > $modSettings['attachmentPostLimit'] * 1024)
 				{
 					checkSubmitOnce('free');
-					return fatal_lang_error('file_too_big', false, array($modSettings['attachmentPostLimit']));
+					shd_fatal_lang_error('file_too_big', false, array($modSettings['attachmentPostLimit']));
 				}
 
 				if (!empty($modSettings['attachmentCheckExtensions']))
@@ -1727,7 +1761,7 @@ function shd_check_attachments()
 					$dirSize = 0;
 
 					if (!is_dir($current_attach_dir))
-						return fatal_lang_error('cant_access_upload_path', 'critical');
+						shd_fatal_lang_error('cant_access_upload_path', 'critical');
 
 					$dir = opendir($current_attach_dir);
 					if (!is_resource($dir))
@@ -1753,11 +1787,11 @@ function shd_check_attachments()
 
 					// Too big!  Maybe you could zip it or something...
 					if ($uplfile['size'] + $dirSize > $modSettings['attachmentDirSizeLimit'] * 1024)
-						return fatal_lang_error('ran_out_of_space');
+						shd_fatal_lang_error('ran_out_of_space');
 				}
 
 				if (!is_writable($current_attach_dir))
-					return fatal_lang_error('attachments_no_write', 'critical');
+					shd_fatal_lang_error('attachments_no_write', 'critical');
 
 				$attachID = 'post_tmp_' . $user_info['id'] . '_' . $temp_start++;
 				$_SESSION['temp_attachments'][$attachID] = basename($uplfile['name']);
@@ -1770,7 +1804,7 @@ function shd_check_attachments()
 				$destName = $current_attach_dir . '/' . $attachID;
 
 				if (!move_uploaded_file($uplfile['tmp_name'], $destName))
-					return fatal_lang_error('attach_timeout', 'critical');
+					shd_fatal_lang_error('attach_timeout', 'critical');
 
 				if (file_exists($destName) && is_writable($destName))
 					chmod($destName, 0644);
@@ -1940,7 +1974,7 @@ function shd_handle_attachments()
 			if ($quantity > $file_limit)
 			{
 				checkSubmitOnce('free');
-				return fatal_lang_error('attachments_limit_per_post', false, array($modSettings['attachmentNumPerPostLimit']));
+				shd_fatal_lang_error('attachments_limit_per_post', false, array($modSettings['attachmentNumPerPostLimit']));
 			}
 
 			// Check the total upload size for this post...
@@ -1950,7 +1984,7 @@ function shd_handle_attachments()
 			if ($total_size > $size_limit)
 			{
 				checkSubmitOnce('free');
-				return fatal_lang_error('file_too_big', false, array($modSettings['attachmentPostLimit']));
+				shd_fatal_lang_error('file_too_big', false, array($modSettings['attachmentPostLimit']));
 			}
 
 			$attachmentOptions = array(
@@ -1975,12 +2009,12 @@ function shd_handle_attachments()
 				if (in_array('could_not_upload', $attachmentOptions['errors']))
 				{
 					checkSubmitOnce('free');
-					return fatal_lang_error('attach_timeout', 'critical');
+					shd_fatal_lang_error('attach_timeout', 'critical');
 				}
 				if (in_array('too_large', $attachmentOptions['errors']))
 				{
 					checkSubmitOnce('free');
-					return fatal_lang_error('file_too_big', false, array($modSettings['attachmentSizeLimit']));
+					shd_fatal_lang_error('file_too_big', false, array($modSettings['attachmentSizeLimit']));
 				}
 				if (in_array('bad_extension', $attachmentOptions['errors']))
 				{
@@ -1990,7 +2024,7 @@ function shd_handle_attachments()
 				if (in_array('directory_full', $attachmentOptions['errors']))
 				{
 					checkSubmitOnce('free');
-					return fatal_lang_error('ran_out_of_space', 'critical');
+					shd_fatal_lang_error('ran_out_of_space', 'critical');
 				}
 				if (in_array('bad_filename', $attachmentOptions['errors']))
 				{
@@ -2000,7 +2034,7 @@ function shd_handle_attachments()
 				if (in_array('taken_filename', $attachmentOptions['errors']))
 				{
 					checkSubmitOnce('free');
-					return fatal_lang_error('filename_exists');
+					shd_fatal_lang_error('filename_exists');
 				}
 			}
 		}

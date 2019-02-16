@@ -362,7 +362,7 @@ function shd_action_log_exclusions()
 
 		// Can they see multiple departments? If not, exclude dept move notices too.
 		$dept = shd_allowed_to('access_helpdesk', false);
-		if (count($dept) == 1)
+		if (!is_bool($dept) && count($dept) == 1)
 			$exclude[] = 'move_dept';
 	}
 

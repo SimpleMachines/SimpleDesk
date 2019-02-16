@@ -179,8 +179,11 @@ function shd_init()
 			// First figure out what department they're in.
 			$this_dept = 0;
 			$depts = shd_allowed_to('access_helpdesk', false);
+
 			// Do they only have one dept? If so, that's the one.
-			if (count($depts) == 1)
+			if (is_bool($dept))
+				shd_fatal_error('No Bools here', false);
+			elseif (count($depts) == 1)
 				$this_dept = $depts[0];
 			// They might explicitly say it on the request.
 			elseif (isset($_REQUEST['dept']))
@@ -730,7 +733,7 @@ function shd_load_ticket($ticket = 0)
 
 	// Make sure they set a ticket ID.
 	if ($ticket == 0 && empty($context['ticket_id']))
-		return fatal_lang_error('shd_no_ticket', false);
+		shd_fatal_lang_error('shd_no_ticket', false);
 
 	// Get the ticket data. Note this implicitly checks perms too.
 	$query = shd_db_query('', '
@@ -755,7 +758,7 @@ function shd_load_ticket($ticket = 0)
 	if ($smcFunc['db_num_rows']($query) == 0)
 	{
 		$smcFunc['db_free_result']($query);
-		return fatal_lang_error('shd_no_ticket', false);
+		shd_fatal_lang_error('shd_no_ticket', false);
 	}
 
 	$ticketinfo = $smcFunc['db_fetch_assoc']($query);
@@ -1067,12 +1070,12 @@ function shd_no_expand_pageindex($base_url, &$start, $max_value, $num_per_page, 
 function shd_load_language($langfile, $override_lang = '')
 {
 	global $modSettings, $user_info, $language;
-	if (empty($modSettings['disable_language_fallback']))
-	{
-		$cur_language = isset($user_info['language']) ? $user_info['language'] : ($override_lang == '' ? $language : $override_lang);
-		if ($cur_language !== 'english')
-			loadLanguage($langfile, 'english', false);
-	}
+
+	$cur_language = isset($user_info['language']) ? $user_info['language'] : ($override_lang == '' ? $language : $override_lang);
+
+	if (empty($modSettings['disable_language_fallback']) && $cur_language !== 'english')
+		loadLanguage($langfile, 'english', false);
+
 	loadLanguage($langfile, $cur_language, false);
 }
 
@@ -2047,4 +2050,40 @@ function shd_bbc_codes(&$codes, &$no_autolink_tags)
 		'trim' => 'both',
 		'block_level' => true,
 	);
+}
+
+/**
+ *	SimpleDesk Fatal Language Error handler.
+ *  Works the same way as SMF, but allows customizing and overriding.
+ *
+ *	@since 2.1
+ *  @param string $error The error message
+ *  @param string|false $log The type of error, or false to not log it
+ *  @param array $sprintf An array of data to be sprintf()'d into the specified message
+ *  @param int $status = false The HTTP status code associated with this error
+ *  @return mixed User error page should occur, failing that we trigger a fatal generic user error page.
+ */
+function shd_fatal_lang_error($error, $log = 'simpledesk', $sprintf = array(), $status = 403)
+{
+	fatal_lang_error($error, $log, $sprintf, $status);
+
+	trigger_error('Hacking attempt...', E_USER_ERROR);
+	return false;
+}
+
+/**
+ *	SimpleDesk Fatal Error handler.
+ *  Works the same way as SMF, but allows customizing and overriding.
+ *
+ * @param string $error The error message
+ * @param string $log = 'general' What type of error to log this as (false to not log it))
+ * @param int $status The HTTP status code associated with this error
+ */
+function shd_fatal_error($error, $log = 'general', $status = 500)
+{
+	fatal_error($error, $log, $status);
+
+	trigger_error('Hacking attempt...', E_USER_ERROR);
+	return false;
+
 }

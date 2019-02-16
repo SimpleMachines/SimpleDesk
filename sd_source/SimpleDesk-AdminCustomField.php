@@ -235,7 +235,7 @@ function shd_admin_custom_edit()
 	else
 	{
 		$smcFunc['db_free_result']($query);
-		return fatal_lang_error('shd_admin_cannot_edit_custom_field', false);
+		shd_fatal_lang_error('shd_admin_cannot_edit_custom_field', false);
 	}
 
 	loadLanguage('ManageSettings');
@@ -326,7 +326,7 @@ function shd_admin_custom_save()
 
 	// Fix all the input
 	if (trim($_POST['field_name']) == '')
-		return fatal_lang_error('shd_admin_no_fieldname', false);
+		shd_fatal_lang_error('shd_admin_no_fieldname', false);
 	$_POST['field_name'] = $smcFunc['htmlspecialchars']($_POST['field_name']);
 	$_POST['description'] = $smcFunc['htmlspecialchars'](isset($_POST['description']) ? $_POST['description'] : '');
 	preparsecode($_POST['description']);
@@ -437,7 +437,7 @@ function shd_admin_custom_save()
 	{
 		$types = shd_admin_cf_change_types(false);
 		if (!in_array($_POST['field_type'], $types))
-			return fatal_lang_error('shd_admin_custom_field_invalid', false);
+			shd_fatal_lang_error('shd_admin_custom_field_invalid', false);
 
 		// Order??
 		$count_query = shd_db_query('', '
@@ -469,7 +469,7 @@ function shd_admin_custom_save()
 		);
 
 		if (empty($new_field))
-			return fatal_lang_error('shd_admin_could_not_create_field', false);
+			shd_fatal_lang_error('shd_admin_could_not_create_field', false);
 
 		// Also update fields
 		$smcFunc['db_query']('', '
@@ -519,12 +519,12 @@ function shd_admin_custom_save()
 			$smcFunc['db_free_result']($query);
 			$types = shd_admin_cf_change_types($row['field_type']);
 			if (!in_array($_POST['field_type'], $types))
-				return fatal_lang_error('shd_admin_custom_field_reselect_invalid', false);
+				shd_fatal_lang_error('shd_admin_custom_field_reselect_invalid', false);
 		}
 		else
 		{
 			$smcFunc['db_free_result']($query);
-			return fatal_lang_error('shd_admin_cannot_edit_custom_field', false);
+			shd_fatal_lang_error('shd_admin_cannot_edit_custom_field', false);
 		}
 
 		// Depending on the field type, we may need to be funky about overlaying things, hence grabbing the old options.
@@ -637,7 +637,7 @@ function shd_admin_custom_move()
 	if ($smcFunc['db_num_rows']($query) == 0 || empty($_REQUEST['direction']))
 	{
 		$smcFunc['db_free_result']($query);
-		return fatal_lang_error('shd_admin_cannot_move_custom_field', false);
+		shd_fatal_lang_error('shd_admin_cannot_move_custom_field', false);
 	}
 
 	$fields = array();
@@ -651,13 +651,13 @@ function shd_admin_custom_move()
 	ksort($fields);
 
 	if (!isset($fields_map[$_REQUEST['field']]))
-		return fatal_lang_error('shd_admin_cannot_move_custom_field', false);
+		shd_fatal_lang_error('shd_admin_cannot_move_custom_field', false);
 
 	$current_pos = $fields_map[$_REQUEST['field']];
 	$destination = $current_pos + ($_REQUEST['direction'] == 'up' ? -1 : 1);
 
 	if (empty($fields[$destination]))
-		return fatal_lang_error('shd_admin_cannot_move_custom_field_' . $_REQUEST['direction'], false);
+		shd_fatal_lang_error('shd_admin_cannot_move_custom_field_' . $_REQUEST['direction'], false);
 
 	$other_field = $fields[$destination];
 

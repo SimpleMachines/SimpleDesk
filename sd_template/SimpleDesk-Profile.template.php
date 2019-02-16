@@ -587,6 +587,11 @@ function template_shd_profile_permissions()
 					$roles = $context['member_permissions']['allowed'][$permission . '_own'];
 					echo $txt['permissionname_' . $permission . '_own'];
 				}
+				else
+				{
+					$roles = 'no';
+					echo $txt['permissionname_' . $permission . '_no'];
+				}
 
 				echo '</td>';
 			}

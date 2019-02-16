@@ -131,7 +131,7 @@ function shd_profile_frontpage($memID)
 
 	// Attempt to load the member's profile data.
 	if (!loadMemberContext($memID) || !isset($memberContext[$memID]))
-		return fatal_lang_error('not_a_user', false);
+		shd_fatal_lang_error('not_a_user', false);
 
 	$context['page_title'] = $txt['shd_profile_area'] . ' - ' . $txt['shd_profile_main'];
 	$context['sub_template'] = 'shd_profile_main';
@@ -589,7 +589,7 @@ function shd_profile_permissions($memID)
 	// 2. Do we have a department?
 	$_REQUEST['permdept'] = isset($_REQUEST['permdept']) ? (int) $_REQUEST['permdept'] : 0;
 	$depts = shd_allowed_to('access_helpdesk', false);
-	if (!in_array($_REQUEST['permdept'], $depts))
+	if (!is_array($depts) || !in_array($_REQUEST['permdept'], $depts))
 		$_REQUEST['permdept'] = 0; // this way we know that 0 = show list only, non-0 means to show a listing.
 
 	// 2b. We still need to get the list of departments.

@@ -44,7 +44,7 @@ function shd_add_to_boardindex($boardIndexOptions, &$categories)
 
 	// OK, so what helpdesks are we displaying?
 	$depts = shd_allowed_to('access_helpdesk', false);
-	if (empty($depts))
+	if (is_bool($depts) || empty($depts))
 		return;
 
 	$cat_list = array();
