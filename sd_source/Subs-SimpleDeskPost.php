@@ -635,7 +635,7 @@ function shd_modify_ticket_post(&$msgOptions, &$ticketOptions, &$posterOptions)
 	// Int hook
 	call_integration_hook('shd_hook_modpost', array(&$msgOptions, &$ticketOptions, &$posterOptions));
 
-	ignore_user_abort((booll) $previous_ignore_user_abort);
+	ignore_user_abort((bool) $previous_ignore_user_abort);
 
 	if (empty($ticketOptions['dept']) && !empty($ticketOptions['id']))
 	{
