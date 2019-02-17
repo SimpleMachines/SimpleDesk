@@ -363,17 +363,15 @@ function shd_perma_delete()
 			)
 		);
 
-		if ($smcFunc['db_num_rows']($query_ticket) == 0)
+		if (empty($smcFunc['db_num_rows']($query_ticket)))
 		{
 			$smcFunc['db_free_result']($query_ticket);
 			shd_fatal_lang_error('shd_no_ticket', false);
 		}
-		else
-		{
-			$row = $smcFunc['db_fetch_assoc']($query_ticket);
-			shd_is_allowed_to('shd_delete_recycling', $row['id_dept']);
-			$smcFunc['db_free_result']($query_ticket);
-		}
+
+		$row = $smcFunc['db_fetch_assoc']($query_ticket);
+		$smcFunc['db_free_result']($query_ticket);
+		shd_is_allowed_to('shd_delete_recycling', $row['id_dept']);
 
 		if ($row['status'] == TICKET_STATUS_DELETED || $row['message_status'] != MSG_STATUS_DELETED)
 			shd_fatal_lang_error('shd_cannot_delete_reply', false);
@@ -542,22 +540,19 @@ function shd_ticket_restore()
 		)
 	);
 
-	if ($row = $smcFunc['db_fetch_assoc']($query_ticket))
-	{
-		$smcFunc['db_free_result']($query_ticket);
-		if ($row['status'] != TICKET_STATUS_DELETED || (!shd_allowed_to('shd_restore_ticket_any', $row['id_dept']) && (!shd_allowed_to('shd_restore_ticket_own', $row['id_dept']) || $user_info['id'] != $row['id_member_started'])))
-			shd_fatal_lang_error('shd_cannot_restore_ticket', false);
+	$row = $smcFunc['db_fetch_assoc']($query_ticket);
+	$smcFunc['db_free_result']($query_ticket);
 
-		$subject = $row['subject'];
-		$starter = $row['id_member_started'];
-		$replier = $row['id_member_updated'];
-		$num_replies = $row['num_replies'];
-	}
-	else
-	{
-		$smcFunc['db_free_result']($query_ticket);
+	if (empty($row))
 		shd_fatal_lang_error('shd_no_ticket', false);
-	}
+
+	if ($row['status'] != TICKET_STATUS_DELETED || (!shd_allowed_to('shd_restore_ticket_any', $row['id_dept']) && (!shd_allowed_to('shd_restore_ticket_own', $row['id_dept']) || $user_info['id'] != $row['id_member_started'])))
+		shd_fatal_lang_error('shd_cannot_restore_ticket', false);
+
+	$subject = $row['subject'];
+	$starter = $row['id_member_started'];
+	$replier = $row['id_member_updated'];
+	$num_replies = $row['num_replies'];
 
 	// The ticket's id is in $context['ticket_id'].
 	call_integration_hook('shd_hook_restoreticket');

@@ -164,20 +164,7 @@ function shd_post_ticket()
 	else
 		$context['display_private'] = true;
 
-	if ($new_ticket)
-		$context['ticket_form'] += array(
-			'member' => array(
-				'name' => $context['user']['name'],
-				'id' => $context['user']['id'],
-				'link' => shd_profile_link($context['user']['name'], $context['user']['id']),
-			),
-			'assigned' => array(
-				'id' => 0,
-				'name' => $txt['shd_unassigned'],
-				'link' => '<span class="error">' . $txt['shd_unassigned'] . '</span>',
-			),
-		);
-	else
+	if (!$new_ticket && !empty($ticketinfo))
 	{
 		$context['ticket_form'] += array(
 			'member' => array(
@@ -213,6 +200,19 @@ function shd_post_ticket()
 		censorText($context['ticket_form']['subject']);
 		censorText($context['ticket_form']['message']);
 	}
+	else
+		$context['ticket_form'] += array(
+			'member' => array(
+				'name' => $context['user']['name'],
+				'id' => $context['user']['id'],
+				'link' => shd_profile_link($context['user']['name'], $context['user']['id']),
+			),
+			'assigned' => array(
+				'id' => 0,
+				'name' => $txt['shd_unassigned'],
+				'link' => '<span class="error">' . $txt['shd_unassigned'] . '</span>',
+			),
+		);
 
 	shd_get_urgency_options($new_ticket || $ticketinfo['is_own'], $context['ticket_form']['dept']);
 

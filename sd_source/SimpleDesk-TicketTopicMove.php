@@ -737,7 +737,7 @@ function shd_tickettotopic2()
 		);
 	}
 	else
-		shd_fatal_lang_error('shd_move_topic_not_created', false);
+		return shd_fatal_lang_error('shd_move_topic_not_created', false);
 
 	// Clear our cache
 	shd_clear_active_tickets($dept);

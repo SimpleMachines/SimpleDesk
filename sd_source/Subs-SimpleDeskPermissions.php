@@ -431,11 +431,12 @@ function shd_load_user_perms()
 		// That's the core stuff done. We also need to ensure that closed tickets aren't visible either.
 		$depts_closed_any = shd_allowed_to('shd_view_closed_any', false);
 		$depts_closed_own = shd_allowed_to('shd_view_closed_own', false);
-		$depts_closed_own = array_diff($depts_closed_own, $depts_closed_any);
 
 		if (is_bool($tickets_own_dept) || is_bool($tickets_any_dept))
 			shd_fatal_error('Departments have no bools');
-		elseif (empty($depts_closed_any) && empty($depts_closed_own)) // No access at all. Disable all access to closed tickets.
+		$depts_closed_own = array_diff($depts_closed_own, $depts_closed_any);
+
+		if (empty($depts_closed_any) && empty($depts_closed_own)) // No access at all. Disable all access to closed tickets.
 			$clauses[] = 'hdt.status != ' . TICKET_STATUS_CLOSED;
 		elseif (!empty($depts_closed_any) && empty($depts_closed_own)) // Only where we can access 'all closed' but not 'any of our own closed', e.g. admins
 			$clauses[] = 'hdt.status != ' . TICKET_STATUS_CLOSED . ' OR (hdt.status = ' . TICKET_STATUS_CLOSED . ' AND hdt.id_dept IN (' . implode(',', $depts_closed_any) . '))';

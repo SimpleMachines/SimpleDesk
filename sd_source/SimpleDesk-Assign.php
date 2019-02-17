@@ -190,21 +190,19 @@ function shd_assign2()
 		)
 	);
 
-	if ($row = $smcFunc['db_fetch_row']($query))
-	{
-		list($ticket_starter, $ticket_owner, $private, $subject, $status, $dept) = $row;
+	$row = $smcFunc['db_fetch_row']($query);
+	$smcFunc['db_free_result']($query);
 
-		// The core details that we'll be logging
-		$log_params = array(
-			'subject' => $subject,
-			'ticket' => $context['ticket_id'],
-		);
-	}
-	else
-	{
-		$smcFunc['db_free_result']($query);
+	if (empty($row))
 		shd_fatal_lang_error('shd_no_ticket');
-	}
+	
+	list($ticket_starter, $ticket_owner, $private, $subject, $status, $dept) = $row;
+
+	// The core details that we'll be logging
+	$log_params = array(
+		'subject' => $subject,
+		'ticket' => $context['ticket_id'],
+	);
 
 	// Just in case, are they cancelling?
 	if (isset($_REQUEST['cancel']))
