@@ -43,15 +43,20 @@ function template_shd_permissions_home()
 			</tr>';
 
 	foreach ($context['shd_permissions']['roles'] as $role_id => $role_details)
+	{
 		echo '
 			<tr class="windowbg">
 				<td>', !empty($role_details['icon']) ? ('<img src="' . $settings['default_images_url'] . '/simpledesk/' . $role_details['icon'] . '" alt="">') : '', '</td>
 				<td>
 					', $txt[$role_details['description']], '
 					<div class="smalltext">[<a href="', $scripturl, '?action=admin;area=helpdesk_permissions;sa=createrole;template=', $role_id, '">', $txt['shd_create_role'], '</a>]</div>
-				</td>
-				', template_shd_display_permission_list($role_details['permissions']), '
+				</td>';
+
+		template_shd_display_permission_list($role_details['permissions']);
+
+		echo '
 			</tr>';
+	}
 
 	echo '
 		</table>
@@ -91,7 +96,9 @@ function template_shd_permissions_home()
 						[<a href="', $scripturl, '?action=admin;area=helpdesk_permissions;sa=copyrole;role=', $role, '">', $txt['shd_copy_role'], '</a>]
 					</div>
 				</td>
-				', template_shd_display_permission_list($role_details['permissions']);
+				';
+
+			template_shd_display_permission_list($role_details['permissions']);
 
 			if (empty($role_details['groups']))
 				echo '
@@ -314,13 +321,10 @@ function template_shd_edit_role()
 					else
 						list($perm_class, $perm_value) = array('shd_no', 'disallow');
 				}
+				elseif (!empty($role['permissions'][$permission]) && $role['permissions'][$permission] == ROLEPERM_ALLOW)
+					list($perm_class, $perm_value) = array('shd_yes', 'allow');
 				else
-				{
-					if (empty($role['permissions'][$permission]))
-						list($perm_class, $perm_value) = array('shd_no', 'disallow');
-					elseif ($role['permissions'][$permission] == ROLEPERM_ALLOW)
-						list($perm_class, $perm_value) = array('shd_yes', 'allow');
-				}
+					list($perm_class, $perm_value) = array('shd_no', 'disallow');
 
 				echo '
 						<dt', (empty($txt['permissionhelp_' . $permission]) ? '' : ' title="' . $txt['permissionhelp_' . $permission] . '"') . '><img src="', shd_image_url($icon), '" alt="*">', $txt['permissionname_' . $permission], '</dt>

@@ -110,7 +110,7 @@ function shd_admin_dept_move()
 	if ($smcFunc['db_num_rows']($query) == 0 || empty($_REQUEST['direction']))
 	{
 		$smcFunc['db_free_result']($query);
-		return fatal_lang_error('shd_admin_cannot_move_dept', false);
+		shd_fatal_lang_error('shd_admin_cannot_move_dept', false);
 	}
 
 	$depts = array();
@@ -120,13 +120,13 @@ function shd_admin_dept_move()
 
 	$depts_map = array_flip($depts);
 	if (empty($depts_map[$_REQUEST['dept']]))
-		return fatal_lang_error('shd_admin_cannot_move_dept', false);
+		shd_fatal_lang_error('shd_admin_cannot_move_dept', false);
 
 	$current_pos = $depts_map[$_REQUEST['dept']];
 	$destination = $current_pos + ($_REQUEST['direction'] == 'up' ? -1 : 1);
 
 	if (empty($depts[$destination]))
-		return fatal_lang_error('shd_admin_cannot_move_dept_' . $_REQUEST['direction'], false);
+		shd_fatal_lang_error('shd_admin_cannot_move_dept_' . $_REQUEST['direction'], false);
 
 	$other_dept = $depts[$destination];
 
@@ -180,13 +180,13 @@ function shd_admin_create_dept()
 
 		// Boring stuff like session checks done. Were you a naughty admin and didn't set it properly?
 		if (!isset($_POST['dept_name']) || $smcFunc['htmltrim']($smcFunc['htmlspecialchars']($_POST['dept_name'])) === '')
-			return fatal_lang_error('shd_no_dept_name', false);
+			shd_fatal_lang_error('shd_no_dept_name', false);
 		else
 			$_POST['dept_name'] = strtr($smcFunc['htmlspecialchars']($_POST['dept_name']), array("\r" => '', "\n" => '', "\t" => ''));
 
 		// Now to check the category.
 		if (!isset($_POST['dept_cat']) || !isset($context['shd_cat_list'][$_POST['dept_cat']]))
-			return fatal_lang_error('shd_invalid_category', false);
+			shd_fatal_lang_error('shd_invalid_category', false);
 
 		$_POST['dept_cat'] = (int) $_POST['dept_cat'];
 		$_POST['dept_beforeafter'] = empty($_POST['dept_beforeafter']) || empty($_POST['dept_cat']) ? 0 : 1;
@@ -210,7 +210,7 @@ function shd_admin_create_dept()
 		);
 
 		if (empty($newdept))
-			return fatal_lang_error('shd_could_not_create_dept', false);
+			shd_fatal_lang_error('shd_could_not_create_dept', false);
 
 		// Log this.
 		shd_admin_log('admin_dept', array(
@@ -243,7 +243,7 @@ function shd_admin_edit_dept()
 	if ($smcFunc['db_num_rows']($query) == 0)
 	{
 		$smcFunc['db_free_result']($query);
-		return fatal_lang_error('shd_unknown_dept', false);
+		shd_fatal_lang_error('shd_unknown_dept', false);
 	}
 	$context['shd_dept'] = $smcFunc['db_fetch_assoc']($query);
 	$context['shd_dept']['description'] = htmlspecialchars($context['shd_dept']['description']);
@@ -309,7 +309,7 @@ function shd_admin_save_dept()
 	if ($smcFunc['db_num_rows']($query) == 0)
 	{
 		$smcFunc['db_free_result']($query);
-		return fatal_lang_error('shd_unknown_dept', false);
+		shd_fatal_lang_error('shd_unknown_dept', false);
 	}
 	$context['shd_dept'] = $smcFunc['db_fetch_assoc']($query);
 	$smcFunc['db_free_result']($query);
@@ -323,7 +323,7 @@ function shd_admin_save_dept()
 			FROM {db_prefix}helpdesk_depts');
 		list($count) = $smcFunc['db_fetch_row']($query);
 		if ($count == 1)
-			return fatal_lang_error('shd_must_have_dept', false);
+			shd_fatal_lang_error('shd_must_have_dept', false);
 
 		// What about it having tickets in it?
 		$query = $smcFunc['db_query']('', '
@@ -337,7 +337,7 @@ function shd_admin_save_dept()
 		list($count) = $smcFunc['db_fetch_row']($query);
 		$smcFunc['db_free_result']($query);
 		if (!empty($count))
-			return fatal_lang_error('shd_dept_not_empty', false);
+			shd_fatal_lang_error('shd_dept_not_empty', false);
 
 		// Before we kill it, get its order position.
 		$query = $smcFunc['db_query']('', '
@@ -351,7 +351,7 @@ function shd_admin_save_dept()
 		if ($smcFunc['db_num_rows']($query) == 0)
 		{
 			$smcFunc['db_free_result']($query);
-			return fatal_lang_error(shd_unknown_dept, false);
+			shd_fatal_lang_error(shd_unknown_dept, false);
 		}
 		list($dept_order) = $smcFunc['db_fetch_row']($query);
 		$smcFunc['db_free_result']($query);
@@ -408,10 +408,10 @@ function shd_admin_save_dept()
 	// 5. Get the stuff in the form.
 	// 5a. That there's something in the dept. name
 	if (!isset($_POST['dept_name']) || $smcFunc['htmltrim']($smcFunc['htmlspecialchars']($_POST['dept_name'])) === '')
-		return fatal_lang_error('shd_no_dept_name', false);
+		shd_fatal_lang_error('shd_no_dept_name', false);
 	// 5b. Now to check the category exists and where we're putting it in the category.
 	elseif (!isset($_POST['dept_cat']) || !isset($context['shd_cat_list'][$_POST['dept_cat']]))
-		return fatal_lang_error('shd_invalid_category', false);
+		shd_fatal_lang_error('shd_invalid_category', false);
 
 	$_POST['dept_name'] = strtr($smcFunc['htmlspecialchars']($_POST['dept_name']), array("\r" => '', "\n" => '', "\t" => ''));
 	$_POST['dept_cat'] = (int) $_POST['dept_cat'];

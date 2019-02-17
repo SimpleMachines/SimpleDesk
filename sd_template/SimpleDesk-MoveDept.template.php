@@ -24,8 +24,7 @@ function template_movedept()
 		$context['shd_return_to'] = 'ticket';
 
 	// Back to the helpdesk.
-	echo '
-		', template_button_strip(array($context['navigation']['back']), 'bottom'), '';
+	template_button_strip(array($context['navigation']['back']), 'bottom');
 
 	echo '
 	<div class="cat_bar">

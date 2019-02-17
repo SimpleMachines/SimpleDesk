@@ -74,6 +74,8 @@ function template_ticket_option($option)
 	}
 	else
 		echo $txt[$context['ticket_form'][$option]['options'][$context['ticket_form'][$option]['setting']]];
+
+	return '';
 }
 
 function template_ticket_info()
@@ -481,11 +483,16 @@ function template_ticket_postbox()
 	{
 		$width = round(((int) $editor_context['width']) / 0.988, 1);
 		echo '
-						<div style="width: ', $width, '%;">', template_control_richedit($context['post_box_name'], 'shd_smileybox', 'shd_bbcbox'), '</div>';
+						<div style="width: ', $width, '%;">';
+
+		template_control_richedit($context['post_box_name'], true, true);
+
+		echo '
+						</div>';
 	}
 	// Editor width isn't proportional, presumably we don't care.
 	else
-		echo template_control_richedit($context['post_box_name'], 'shd_smileybox', 'shd_bbcbox');
+		template_control_richedit($context['post_box_name'], true, true);
 
 	// Custom fields
 	template_ticket_custom_fields();

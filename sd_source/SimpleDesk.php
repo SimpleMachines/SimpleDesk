@@ -47,12 +47,14 @@ function shd_main()
 
 	// Basic sanity stuff
 	if (!$modSettings['helpdesk_active'])
-		return fatal_lang_error('shd_inactive', false);
+		shd_fatal_lang_error('shd_inactive', false);
 
 	// Let's be sneaky. Can they only access one department? If they can only access one department, put them there and make a note of it for later.
 	$depts = shd_allowed_to('access_helpdesk', false);
 	$context['shd_multi_dept'] = true;
-	if (count($depts) == 1)
+	if (is_bool($depts))
+		shd_fatal_error('Bug hunters unite...');
+	elseif (count($depts) == 1)
 	{
 		$_REQUEST['dept'] = $depts[0];
 		$context['shd_multi_dept'] = false;
@@ -626,7 +628,7 @@ function shd_closed_tickets()
 	global $context, $txt, $smcFunc, $user_profile, $scripturl, $settings, $user_info;
 
 	if (!shd_allowed_to('shd_view_closed_own', $context['shd_department']) && !shd_allowed_to('shd_view_closed_any', $context['shd_department']))
-		return fatal_lang_error('shd_cannot_view_resolved', false);
+		shd_fatal_lang_error('shd_cannot_view_resolved', false);
 
 	// Stuff we need to add to $context, the permission we want to use, page title etc etc
 	$context += array(

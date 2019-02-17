@@ -138,7 +138,7 @@ function shd_admin_maint_reattribute()
 	$members = findMembers($_POST['to']);
 
 	if (empty($members))
-		return fatal_lang_error('shd_reattribute_cannot_find_member');
+		shd_fatal_lang_error('shd_reattribute_cannot_find_member');
 
 	$memID = array_shift($members);
 	$memID = $memID['id'];
@@ -146,25 +146,25 @@ function shd_admin_maint_reattribute()
 	if ($_POST['type'] == 'email')
 	{
 		if (empty($_POST['from_email']))
-			return fatal_lang_error('shd_reattribute_no_email');
+			shd_fatal_lang_error('shd_reattribute_no_email');
 		$clause = 'poster_email = {string:attribute}';
 		$attribute = $_POST['from_email'];
 	}
 	elseif ($_POST['type'] == 'name')
 	{
 		if (empty($_POST['from_name']))
-			return fatal_lang_error('shd_reattribute_no_user');
+			shd_fatal_lang_error('shd_reattribute_no_user');
 		$clause = 'poster_name = {string:attribute}';
 		$attribute = $_POST['from_name'];
 	}
 	elseif ($_POST['type'] == 'starter')
 	{
 		if (empty($_POST['from_starter']))
-			return fatal_lang_error('shd_reattribute_no_user');
+			shd_fatal_lang_error('shd_reattribute_no_user');
 		$from = findMembers($_POST['from_starter']);
 
 		if (empty($from))
-			return fatal_lang_error('shd_reattribute_cannot_find_member_from');
+			shd_fatal_lang_error('shd_reattribute_cannot_find_member_from');
 
 		$fromID = array_shift($from);
 		$attribute = $fromID['id'];
@@ -175,7 +175,7 @@ function shd_admin_maint_reattribute()
 			WHERE id_member_started = {int:attribute})';
 	}
 	else
-		return fatal_lang_error('shd_reattribute_no_user');
+		return shd_fatal_lang_error('shd_reattribute_no_user');
 
 	// Now, we don't delete the user id from posts on account deletion, never have.
 	// So, get all the user ids attached to this user/email, make sure they're not in use, and then reattribute them.
@@ -194,7 +194,7 @@ function shd_admin_maint_reattribute()
 
 	// Did we find any members? If not, bail.
 	if (empty($members))
-		return fatal_lang_error('shd_reattribute_no_messages', false);
+		shd_fatal_lang_error('shd_reattribute_no_messages', false);
 
 	// Topic starters are a bit easier.
 	if ($_POST['type'] == 'starter')
@@ -221,7 +221,7 @@ function shd_admin_maint_reattribute()
 		$members = array_diff($members, $temp_members);
 
 		if (empty($members))
-			return fatal_lang_error('shd_reattribute_in_use', false);
+			shd_fatal_lang_error('shd_reattribute_in_use', false);
 
 		// OK, let's go!
 		$smcFunc['db_query']('', '
@@ -255,9 +255,9 @@ function shd_admin_maint_massdeptmove()
 	$_POST['id_dept_from'] = isset($_POST['id_dept_from']) ? (int) $_POST['id_dept_from'] : 0;
 	$_POST['id_dept_to'] = isset($_POST['id_dept_to']) ? (int) $_POST['id_dept_to'] : 0;
 	if ($_POST['id_dept_from'] == 0 || $_POST['id_dept_to'] == 0 || !in_array($_POST['id_dept_from'], $depts) || !in_array($_POST['id_dept_to'], $depts))
-		return fatal_lang_error('shd_unknown_dept', false);
+		shd_fatal_lang_error('shd_unknown_dept', false);
 	elseif ($_POST['id_dept_from'] == $_POST['id_dept_to'])
-		return fatal_lang_error('shd_admin_maint_massdeptmove_samedept', false);
+		shd_fatal_lang_error('shd_admin_maint_massdeptmove_samedept', false);
 
 	$clauses = array();
 	if (empty($_POST['moveopen']))

@@ -177,10 +177,11 @@ function template_shd_edit_canned_reply()
 					<dd><input type="text" value="', $context['canned_reply']['title'], '" name="title" size="80"></dd>
 				</dl>
 				<p><strong>', $txt['shd_admin_cannedreplies_content'], '</strong></p>
-				<div class="block">
-					<div id="bbcbox"></div>
-					<div id="smileybox"></div>',
-					template_control_richedit($context['post_box_name'], 'smileybox', 'bbcbox'), '
+				<div class="block">';
+
+	template_control_richedit($context['post_box_name'], true, true);
+
+	echo '
 				</div>
 				<dl class="settings">
 					<dt><strong>', $txt['shd_admin_cannedreplies_active'], '</strong></dt>

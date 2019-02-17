@@ -107,6 +107,7 @@ function shd_admin_canned_list()
 	}
 
 	$context['move_between_cats'] = count($context['canned_replies']) > 1;
+	$last_cat_id = 0;
 	foreach ($context['canned_replies'] as $cat_id => $cat)
 	{
 		if (!empty($cat['replies']))
@@ -116,13 +117,15 @@ function shd_admin_canned_list()
 		}
 		$context['canned_replies'][$cat_id]['move_up'] &= $context['move_between_cats'];
 		$context['canned_replies'][$cat_id]['move_down'] &= $context['move_between_cats'];
+
+		$last_cat_id = $cat_id;
 	}
 
-	if (!isset($cat_id))
+	if (!isset($last_cat_id))
 		return;
 
 	$context['canned_replies'][key($context['canned_replies'])]['move_up'] = false;
-	$context['canned_replies'][$cat_id]['move_down'] = false;
+	$context['canned_replies'][$last_cat_id]['move_down'] = false;
 }
 
 /**
@@ -148,7 +151,7 @@ function shd_admin_canned_movecat()
 	if ($smcFunc['db_num_rows']($query) == 0 || empty($_REQUEST['direction']))
 	{
 		$smcFunc['db_free_result']($query);
-		return fatal_lang_error('shd_admin_cannedreplies_cannot_move_cat', false);
+		shd_fatal_lang_error('shd_admin_cannedreplies_cannot_move_cat', false);
 	}
 
 	$cats = array();
@@ -158,13 +161,13 @@ function shd_admin_canned_movecat()
 
 	$cats_map = array_flip($cats);
 	if (empty($cats_map[$context['canned_category']]))
-		return fatal_lang_error('shd_admin_cannedreplies_cannot_move_cat', false);
+		shd_fatal_lang_error('shd_admin_cannedreplies_cannot_move_cat', false);
 
 	$current_pos = $cats_map[$context['canned_category']];
 	$destination = $current_pos + ($_REQUEST['direction'] == 'up' ? -1 : 1);
 
 	if (empty($cats[$destination]))
-		return fatal_lang_error('shd_admin_cannedreplies_cannot_move_cat_' . $_REQUEST['direction'], false);
+		shd_fatal_lang_error('shd_admin_cannedreplies_cannot_move_cat_' . $_REQUEST['direction'], false);
 
 	$other_cat = $cats[$destination];
 
@@ -214,7 +217,7 @@ function shd_admin_canned_movereply()
 	if ($smcFunc['db_num_rows']($query) == 0 || empty($_REQUEST['direction']))
 	{
 		$smcFunc['db_free_result']($query);
-		return fatal_lang_error('shd_admin_cannedreplies_cannot_move_reply', false);
+		shd_fatal_lang_error('shd_admin_cannedreplies_cannot_move_reply', false);
 	}
 
 	$replies = array();
@@ -224,13 +227,13 @@ function shd_admin_canned_movereply()
 
 	$replies_map = array_flip($replies);
 	if (empty($replies_map[$context['canned_reply_id']]))
-		return fatal_lang_error('shd_admin_cannedreplies_cannot_move_reply', false);
+		shd_fatal_lang_error('shd_admin_cannedreplies_cannot_move_reply', false);
 
 	$current_pos = $replies_map[$context['canned_reply_id']];
 	$destination = $current_pos + ($_REQUEST['direction'] == 'up' ? -1 : 1);
 
 	if (empty($replies[$destination]))
-		return fatal_lang_error('shd_admin_cannedreplies_cannot_move_reply_' . $_REQUEST['direction'], false);
+		shd_fatal_lang_error('shd_admin_cannedreplies_cannot_move_reply_' . $_REQUEST['direction'], false);
 
 	$other_reply = $replies[$destination];
 
@@ -293,7 +296,7 @@ function shd_admin_canned_editcat()
 	if ($smcFunc['db_num_rows']($query) == 0)
 	{
 		$smcFunc['db_free_result']($query);
-		return fatal_lang_error('shd_admin_cannedreplies_thecatisalie', false);
+		shd_fatal_lang_error('shd_admin_cannedreplies_thecatisalie', false);
 	}
 
 	list($context['category_name']) = $smcFunc['db_fetch_row']($query);
@@ -392,9 +395,9 @@ function shd_admin_canned_savecat()
 
 	// There are two things we could be doing here. $_POST['cat'] should be set, and it should be set to 'new' for new categories, or a number of an existing category otherwise.
 	if (empty($_POST['cat']))
-		return fatal_lang_error('shd_admin_cannedreplies_thecatisalie', false);
+		shd_fatal_lang_error('shd_admin_cannedreplies_thecatisalie', false);
 	elseif (empty($_POST['catname']))
-		return fatal_lang_error('shd_admin_cannedreplies_nocatname', false);
+		shd_fatal_lang_error('shd_admin_cannedreplies_nocatname', false);
 
 	checkSubmitOnce('check');
 
@@ -436,7 +439,7 @@ function shd_admin_canned_savecat()
 		);
 
 		if ($smcFunc['db_affected_rows']() == 0)
-			return fatal_lang_error('shd_admin_cannedreplies_thecatisalie', false);
+			shd_fatal_lang_error('shd_admin_cannedreplies_thecatisalie', false);
 
 		// Log this action.
 		shd_admin_log('admin_canned', array(
@@ -473,7 +476,7 @@ function shd_admin_canned_createreply()
 	if ($smcFunc['db_num_rows']($query) == 0)
 	{
 		$smcFunc['db_free_result']($query);
-		return fatal_lang_error('shd_admin_cannedreplies_thecatisalie', false);
+		shd_fatal_lang_error('shd_admin_cannedreplies_thecatisalie', false);
 	}
 	$smcFunc['db_free_result']($query);
 
@@ -538,7 +541,7 @@ function shd_admin_canned_editreply()
 	if ($smcFunc['db_num_rows']($query) == 0)
 	{
 		$smcFunc['db_free_result']($query);
-		return fatal_lang_error('shd_admin_cannedreplies_thereplyisalie', false);
+		shd_fatal_lang_error('shd_admin_cannedreplies_thereplyisalie', false);
 	}
 
 	$row = $smcFunc['db_fetch_assoc']($query);
@@ -658,11 +661,11 @@ function shd_admin_canned_savereply()
 	}
 
 	if (empty($context['canned_reply_id']))
-		return fatal_lang_error('shd_admin_cannedreplies_thereplyisalie', false);
+		shd_fatal_lang_error('shd_admin_cannedreplies_thereplyisalie', false);
 
 	$_POST['title'] = isset($_POST['title']) ? strtr($smcFunc['htmlspecialchars']($_POST['title']), array("\r" => '', "\n" => '', "\t" => '')) : '';
 	if (empty($_POST['title']))
-		return fatal_lang_error('shd_admin_cannedreplies_notitle', false);
+		shd_fatal_lang_error('shd_admin_cannedreplies_notitle', false);
 
 	$_REQUEST['shd_canned_reply'] = isset($_POST['shd_canned_reply']) ? $_POST['shd_canned_reply'] : '';
 
@@ -674,7 +677,7 @@ function shd_admin_canned_savereply()
 	}
 
 	if ($smcFunc['htmltrim']($smcFunc['htmlspecialchars']($_POST['shd_canned_reply']), ENT_QUOTES) === '')
-		return fatal_lang_error('shd_admin_cannedreplies_nobody', false);
+		shd_fatal_lang_error('shd_admin_cannedreplies_nobody', false);
 
 	$_POST['shd_canned_reply'] = $smcFunc['htmlspecialchars']($_POST['shd_canned_reply'], ENT_QUOTES);
 	preparsecode($_POST['shd_canned_reply']);
@@ -686,7 +689,7 @@ function shd_admin_canned_savereply()
 
 	// Verify the destination category exists.
 	if (!isset($_POST['cat']))
-		return fatal_lang_error('shd_admin_cannedreplies_thecatisalie', false);
+		shd_fatal_lang_error('shd_admin_cannedreplies_thecatisalie', false);
 
 	$query = $smcFunc['db_query']('', '
 		SELECT cat_name
@@ -699,7 +702,7 @@ function shd_admin_canned_savereply()
 	if ($smcFunc['db_num_rows']($query) == 0)
 	{
 		$smcFunc['db_free_result']($query);
-		return fatal_lang_error('shd_admin_cannedreplies_thecatisalie', false);
+		shd_fatal_lang_error('shd_admin_cannedreplies_thecatisalie', false);
 	}
 	$smcFunc['db_free_result']($query);
 
@@ -742,7 +745,7 @@ function shd_admin_canned_savereply()
 
 		// 3. Insert the departments.
 		if (empty($reply_id))
-			return fatal_lang_error('shd_admin_cannedreplies_notcreated', false);
+			shd_fatal_lang_error('shd_admin_cannedreplies_notcreated', false);
 
 		$inserts = array();
 		foreach ($depts_insert as $dept)
@@ -772,7 +775,7 @@ function shd_admin_canned_savereply()
 			)
 		);
 		if ($smcFunc['db_num_rows']($query) == 0)
-			return fatal_lang_error('shd_admin_cannedreplies_thereplyisalie', false);
+			shd_fatal_lang_error('shd_admin_cannedreplies_thereplyisalie', false);
 		$smcFunc['db_free_result']($query);
 
 		// We're updating, apparently.
@@ -830,7 +833,7 @@ function shd_admin_canned_movereplycat()
 	// Before we go any further, establish that the user specified a reply to move and that there is at least one category not including the one the reply is in.
 	$context['canned_reply_id'] = isset($_REQUEST['reply']) ? (int) $_REQUEST['reply'] : 0;
 	if (empty($context['canned_reply_id']) || $context['canned_reply_id'] < 0)
-		return fatal_lang_error('shd_admin_cannedreplies_thereplyisalie', false);
+		shd_fatal_lang_error('shd_admin_cannedreplies_thereplyisalie', false);
 
 	$query = $smcFunc['db_query']('', '
 		SELECT id_cat, reply_order
@@ -841,7 +844,7 @@ function shd_admin_canned_movereplycat()
 		)
 	);
 	if ($smcFunc['db_num_rows']($query) == 0)
-		return fatal_lang_error('shd_admin_cannedreplies_thereplyisalie', false);
+		shd_fatal_lang_error('shd_admin_cannedreplies_thereplyisalie', false);
 
 	list($current_cat, $current_reply_pos) = $smcFunc['db_fetch_row']($query);
 	$smcFunc['db_free_result']($query);
@@ -858,7 +861,7 @@ function shd_admin_canned_movereplycat()
 		)
 	);
 	if ($smcFunc['db_num_rows']($query) == 0)
-		return fatal_lang_error('shd_admin_cannedreplies_onlyonecat', false);
+		shd_fatal_lang_error('shd_admin_cannedreplies_onlyonecat', false);
 	while ($row = $smcFunc['db_fetch_assoc']($query))
 		$context['cannedreply_cats'][$row['id_cat']] = $row['cat_name'];
 	$smcFunc['db_free_result']($query);
@@ -877,7 +880,7 @@ function shd_admin_canned_movereplycat()
 		// 1. Is the new department valid?
 		$_REQUEST['newcat'] = isset($_REQUEST['newcat']) ? (int) $_REQUEST['newcat'] : 0;
 		if (!isset($context['cannedreply_cats'][$_REQUEST['newcat']]))
-			return fatal_lang_error('shd_admin_cannedreplies_destnoexist', false);
+			shd_fatal_lang_error('shd_admin_cannedreplies_destnoexist', false);
 
 		// 1a. Everything is valid, just double check it's not a random double submission.
 		checkSubmitOnce('check');

@@ -386,7 +386,10 @@ function shd_load_user_perms()
 
 	$tickets_any_dept = shd_allowed_to('shd_view_ticket_any', false);
 	$tickets_own_dept = shd_allowed_to('shd_view_ticket_own', false);
-	if (!empty($tickets_any_dept) && !empty($tickets_own_dept))
+
+	if (is_bool($tickets_own_dept) || is_bool($tickets_any_dept))
+		shd_fatal_error('Silly Human, bools belong elsewhere');
+	elseif (!empty($tickets_any_dept) && !empty($tickets_own_dept))
 		$tickets_own_dept = array_diff($tickets_any_dept, $tickets_own_dept);
 
 	if ($user_info['is_admin'])
@@ -428,23 +431,26 @@ function shd_load_user_perms()
 		// That's the core stuff done. We also need to ensure that closed tickets aren't visible either.
 		$depts_closed_any = shd_allowed_to('shd_view_closed_any', false);
 		$depts_closed_own = shd_allowed_to('shd_view_closed_own', false);
+
+		if (is_bool($depts_closed_own) || is_bool($depts_closed_any))
+			return shd_fatal_error('Departments have no bools');
 		$depts_closed_own = array_diff($depts_closed_own, $depts_closed_any);
 
 		if (empty($depts_closed_any) && empty($depts_closed_own)) // No access at all. Disable all access to closed tickets.
-			$clauses[] = 'hdt.status != 3';
+			$clauses[] = 'hdt.status != ' . TICKET_STATUS_CLOSED;
 		elseif (!empty($depts_closed_any) && empty($depts_closed_own)) // Only where we can access 'all closed' but not 'any of our own closed', e.g. admins
-			$clauses[] = 'hdt.status != 3 OR (hdt.status = 3 AND hdt.id_dept IN (' . implode(',', $depts_closed_any) . '))';
+			$clauses[] = 'hdt.status != ' . TICKET_STATUS_CLOSED . ' OR (hdt.status = ' . TICKET_STATUS_CLOSED . ' AND hdt.id_dept IN (' . implode(',', $depts_closed_any) . '))';
 		elseif (!empty($depts_closed_any) && !empty($depts_closed_own)) // So we have a mixture
-			$clauses[] = 'hdt.status != 3 OR (hdt.status = 3 AND (hdt.id_dept IN (' . implode(',', $depts_closed_any) . ') OR (hdt.id_member_started = {int:user_info_id} AND hdt.id_dept IN (' . implode(',', $depts_closed_own) . '))))';
+			$clauses[] = 'hdt.status != ' . TICKET_STATUS_CLOSED . ' OR (hdt.status = ' . TICKET_STATUS_CLOSED . ' AND (hdt.id_dept IN (' . implode(',', $depts_closed_any) . ') OR (hdt.id_member_started = {int:user_info_id} AND hdt.id_dept IN (' . implode(',', $depts_closed_own) . '))))';
 		elseif (empty($depts_closed_any) && !empty($depts_closed_own)) // We can't ever see 'any', but we can see our own
-			$clauses[] = 'hdt.status != 3 OR (hdt.status = 3 AND hdt.id_dept IN (' . implode(',', $depts_closed_own) . ') AND hdt.id_member_started = {int:user_info_id})';
+			$clauses[] = 'hdt.status != ' . TICKET_STATUS_CLOSED . ' OR (hdt.status = ' . TICKET_STATUS_CLOSED . ' AND hdt.id_dept IN (' . implode(',', $depts_closed_own) . ') AND hdt.id_member_started = {int:user_info_id})';
 
 		// And finally, deleted tickets.
 		$depts_deleted = shd_allowed_to('shd_access_recyclebin', false);
-		if (empty($depts_deleted))
-			$clauses[] = 'hdt.status != 6';
+		if (is_bool($depts_deleted) || empty($depts_deleted))
+			$clauses[] = 'hdt.status != ' . TICKET_STATUS_DELETED;
 		else
-			$clauses[] = 'hdt.status != 6 OR (hdt.status = 6 AND hdt.id_dept IN (' . implode(',', $depts_deleted) . '))';
+			$clauses[] = 'hdt.status != ' . TICKET_STATUS_DELETED . ' OR (hdt.status = ' . TICKET_STATUS_DELETED . ' AND hdt.id_dept IN (' . implode(',', $depts_deleted) . '))';
 
 		// Finally, assemble into $user_info.
 		if (empty($clauses))
