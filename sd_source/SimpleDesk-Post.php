@@ -216,7 +216,7 @@ function shd_post_ticket()
 
 	shd_get_urgency_options($new_ticket || (!empty($ticketinfo) && $ticketinfo['is_own']), $context['ticket_form']['dept']);
 
-	if ($context['ticket_form']['num_replies'])
+	if ($context['ticket_form']['num_replies'] && !empty($ticketinfo['id_first_msg']))
 		shd_setup_replies($ticketinfo['id_first_msg']);
 
 	shd_check_attachments();
