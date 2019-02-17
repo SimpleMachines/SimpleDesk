@@ -844,16 +844,14 @@ function shd_topictoticket()
 		)
 	);
 
-	if ($row = $smcFunc['db_fetch_row']($query))
-	{
-		list($subject, $topic_starter) = $row;
-		$smcFunc['db_free_result']($query);
-	}
-	else
-	{
-		$smcFunc['db_free_result']($query);
+	$row = $smcFunc['db_fetch_row']($query);
+	$smcFunc['db_free_result']($query);
+
+	if (empty($row))	
 		shd_fatal_lang_error('shd_no_topic');
-	}
+
+	list($subject, $topic_starter) = $row;
+	$smcFunc['db_free_result']($query);
 
 	// Get the department list
 	$depts = shd_allowed_to('access_helpdesk', false);

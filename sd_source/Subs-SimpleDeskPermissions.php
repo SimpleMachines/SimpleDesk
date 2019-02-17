@@ -433,7 +433,7 @@ function shd_load_user_perms()
 		$depts_closed_own = shd_allowed_to('shd_view_closed_own', false);
 
 		if (is_bool($tickets_own_dept) || is_bool($tickets_any_dept))
-			shd_fatal_error('Departments have no bools');
+			return shd_fatal_error('Departments have no bools');
 		$depts_closed_own = array_diff($depts_closed_own, $depts_closed_any);
 
 		if (empty($depts_closed_any) && empty($depts_closed_own)) // No access at all. Disable all access to closed tickets.
