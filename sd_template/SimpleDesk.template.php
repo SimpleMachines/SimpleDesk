@@ -71,6 +71,10 @@ function template_main()
 	// Start the ticket listing
 	foreach ($context['ticket_block_order'] as $block)
 	{
+		// Nothing for this block.
+		if (empty($context['ticket_blocks'][$block]))
+			continue;
+
 		$context['current_block'] = $block;
 		if (!empty($context['ticket_blocks'][$block]['count']) && $context['ticket_blocks'][$block]['count'] > 10)
 			$context['block_link'] = $context['shd_current_subaction'] == 'viewblock' ? $scripturl . '?' . $context['shd_home'] . $context['shd_dept_link'] : $scripturl . '?action=helpdesk;sa=viewblock;block=' . $block . $context['shd_dept_link'] . '#shd_block_' . $block;
@@ -121,8 +125,8 @@ function template_shd_depts()
 					', $txt['shd_departments'], '
 				</h3>
 			</div>
-			<table class="table_grid">
-				<tbody class="content">';
+
+			<div id="category_helpdesk" class="boardindex_table">';
 
 	foreach ($context['dept_list'] as $dept)
 	{
@@ -133,17 +137,27 @@ function template_shd_depts()
 			$icon = $settings['default_theme_url'] . '/images/simpledesk/helpdesk_' . $state . '.png';
 
 		echo '
-					<tr class="windowbg2">
-						<td class="icon windowbg"><img src="', $icon, '" alt="*"></td>
-						<td class="info"><a href="', $scripturl, '?', $context['shd_home'], ';dept=', $dept['id_dept'], '">', $dept['dept_name'], '</a></td>
-						<td class="stats windowbg">', $dept['tickets']['open'], ' open<br>', $dept['tickets']['closed'], ' closed</td>
-						<td class="lastpost"></td>
-					</tr>';
+				<div id="board_shd', $dept['id_dept'], '" class="up_contain">
+					<div class="board_icon">
+						<img src="', $icon, '"/>
+					</div>
+					<div class="info">
+						<a class="subject mobile_subject" href="', $scripturl, '?', $context['shd_home'], ';dept=', $dept['id_dept'], '">', $dept['dept_name'], '</a>
+						<div class="board_description">', $dept['description'], '</div>
+					</div>
+					<div class="board_stats">
+						<p>
+							', $dept['tickets']['open'], ' ', $txt['shd_tickets_open'], '<br>
+							', $dept['tickets']['closed'], ' ', $txt['shd_tickets_closed'], '
+						</p>
+					</div>
+					<div class="lastpost hidden">
+					</div>
+				</div>';
 	}
 
 	echo '
-				</tbody>
-			</table>
+			</div>
 		</div>';
 }
 

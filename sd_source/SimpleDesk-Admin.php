@@ -567,11 +567,9 @@ function shd_modify_standalone_options($return_config)
 	if (isset($_GET['save']))
 	{
 		// SMF 2.1 has a hook for the default action. Lets trigger it.
-		if (isset($_POST['shd_helpdesk_only']))
-		{
-			add_integration_function('integrate_default_action', 'shd_main', true, '$sourcedir/sd_source/SimpleDesk.php');		
-			add_integration_function('integrate_fallback_action', 'shd_main', true, '$sourcedir/sd_source/SimpleDesk.php');		
-		}
+		$integrate_function = !empty($_POST['shd_helpdesk_only']) ? 'add_integration_function' : 'remove_integration_function';
+		$integrate_function('integrate_default_action', 'shd_main', true, '$sourcedir/sd_source/SimpleDesk.php');		
+		$integrate_function('integrate_fallback_action', 'shd_main', true, '$sourcedir/sd_source/SimpleDesk.php');		
 	}
 
 	return $config_vars;

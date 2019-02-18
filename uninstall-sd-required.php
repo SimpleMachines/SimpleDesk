@@ -80,3 +80,7 @@ $smcFunc['db_query']('', '
 		'hooks' => $shd_hooks,
 	)
 );
+
+// Remove the integrate actions.
+remove_integration_function('integrate_default_action', 'shd_main', true, '$sourcedir/sd_source/SimpleDesk.php');		
+remove_integration_function('integrate_fallback_action', 'shd_main', true, '$sourcedir/sd_source/SimpleDesk.php');		
