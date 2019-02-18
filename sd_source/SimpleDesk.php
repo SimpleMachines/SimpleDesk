@@ -493,7 +493,7 @@ function shd_main_dept()
 	// Get the departments and order them in the same order they would be on the board index.
 	$context['dept_list'] = array();
 	$query = $smcFunc['db_query']('', '
-		SELECT hdd.id_dept, hdd.dept_name
+		SELECT hdd.id_dept, hdd.dept_name, hdd.description
 		FROM {db_prefix}helpdesk_depts AS hdd
 		WHERE hdd.id_dept IN ({array_int:depts})
 		ORDER BY hdd.dept_order',
@@ -506,6 +506,7 @@ function shd_main_dept()
 		$context['dept_list'][$row['id_dept']] = array(
 			'id_dept' => $row['id_dept'],
 			'dept_name' => $row['dept_name'],
+			'description' => !empty($row['description']) ? parse_bbc($row['description']) : '',
 			'tickets' => array(
 				'open' => 0,
 				'closed' => 0,

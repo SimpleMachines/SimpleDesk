@@ -697,7 +697,7 @@ function shd_admin_log_configvar($save_vars)
 			'action' => 'update',
 			'setting' => $var[1],
 			'type' => $var[0],
-			'from' => $modSettings[$var[1]],
+			'from' => isset($modSettings[$var[1]]) ? $modSettings[$var[1]] : null,
 			'to' => $newValue,
 		));
 	}

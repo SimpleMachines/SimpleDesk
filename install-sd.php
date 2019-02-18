@@ -80,6 +80,7 @@ sd_upgrade_create_depts();
 sd_upgrade_recreate_search();
 sd_upgrade_fix_last_updated();
 sd_upgrade_convert_serialize();
+sd_reconfigure_integrate();
 
 // Are we done?
 if (SMF == 'SSI')
@@ -897,5 +898,18 @@ function sd_upgrade_convert_serialize()
 		}
 		$smcFunc['db_free_result']($request);
 
+	}
+}
+
+// Reconfigure stuff that we disable during uninstall.
+function sd_reconfigure_integrate()
+{
+	global $modSettings;
+
+	// Add the integrate actions, if its still there.
+	if (!empty($modSettings['shd_helpdesk_only']))
+	{
+		add_integration_function('integrate_default_action', 'shd_main', true, '$sourcedir/sd_source/SimpleDesk.php');		
+		add_integration_function('integrate_fallback_action', 'shd_main', true, '$sourcedir/sd_source/SimpleDesk.php');		
 	}
 }
