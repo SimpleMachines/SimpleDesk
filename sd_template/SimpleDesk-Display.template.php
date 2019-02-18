@@ -61,22 +61,32 @@ function template_viewticket()
 					<dl class="stats nobb">
 						<dt><span class="generic_icons inbox" title="', $txt['shd_ticket_id'], '"></span> ', $txt['shd_ticket_id'], ':</dt>
 						<dd>', $context['ticket']['display_id'], '</dd>
+
 						<dt><span class="generic_icons members" title="', $txt['shd_ticket_user'], '"></span> ', $txt['shd_ticket_user'], ':</dt>
 						<dd>', $context['ticket']['member']['link'], '</dd>
+
 						<dt><span class="generic_icons calendar" title="', $txt['shd_ticket_date'], '"></span> ', $txt['shd_ticket_date'], ':</dt>
 						<dd>', $context['ticket']['poster_time'], '</dd>
+
 						<dt><img src="', $settings['default_images_url'], '/simpledesk/urgency.png" alt="" class="shd_smallicon"> ', $txt['shd_ticket_urgency'], ':</dt>
 						<dd id="item_urgency"><span id="urgency">', $context['ticket']['urgency']['label'], '</span>
 							<span id="urgency_increase">', (!empty($context['ticket']['urgency']['increase']) ? '<a id="urglink_increase" href="' . $scripturl . '?action=helpdesk;sa=urgencychange;ticket=' . $context['ticket']['id'] . ';change=increase;' . $context['session_var'] . '=' . $context['session_id'] . '" title="' . $txt['shd_urgency_increase'] . '"><span class="generic_icons urgency_increase" title="' . $txt['shd_urgency_increase'] . '"></span></a>' : ''), '</span>
 							<span id="urgency_decrease">', (!empty($context['ticket']['urgency']['decrease']) ? '<a id="urglink_decrease" href="' . $scripturl . '?action=helpdesk;sa=urgencychange;ticket=' . $context['ticket']['id'] . ';change=decrease;' . $context['session_var'] . '=' . $context['session_id'] . '" title="' . $txt['shd_urgency_decrease'] . '"><span class="generic_icons urgency_decrease" title="' . $txt['shd_urgency_decrease'] . '"></span></a>' : ''), '</span>
+							<span id="urgency_button"></span>
 						</dd>
+						<dd class="shd_urgency_list">
+							<select id="urgency_list" class="hidden"></select>
+						</dd>
+
 						<dt><img src="', $settings['default_images_url'], '/simpledesk/staff.png" alt="" class="shd_smallicon"> ', $txt['shd_ticket_assignedto'], ':</dt>
 						<dd><span id="assigned_to">', $context['ticket']['assigned']['link'], '</span><span id="assigned_button"></span></dd>
 						<dt class="shd_assignees_list">
 							<ul id="assigned_list" class="hidden"></ul>
 						</dt>
+
 						<dt><img src="', $settings['default_images_url'], '/simpledesk/status.png" alt="" class="shd_smallicon"> ', $txt['shd_ticket_status'], ':</dt>
 						<dd>', $context['ticket']['status']['label'], '</dd>
+
 						<dt><img src="', $settings['default_images_url'], '/simpledesk/replies.png" alt="" class="shd_smallicon"> ', $txt['shd_ticket_num_replies'], ':</dt>
 						<dd><a href="#replies">', (empty($context['ticket']['display_recycle']) ? $context['ticket']['num_replies'] : (int) $context['ticket']['num_replies'] + (int) $context['ticket']['deleted_replies']), '</a></dd>';
 
@@ -1073,16 +1083,21 @@ function template_shd_js_privacy()
 */
 function template_shd_js_urgency()
 {
-	global $context;
+	global $context, $settings;
 
 	echo '
 		var urgencyCtl = new shd_urgencyControl({
-			ticket: ', $context['ticket_id'], ',
+			sSelf: "urgencyCtl",
+			iTicketId: ' . $context['ticket_id'] . ',
 			sUrl: smf_scripturl + "?action=helpdesk;sa=ajax;op=urgency;ticket=', $context['ticket_id'], ';change=",
 			sSession: smf_session_var + "=" + smf_session_id,
 			sDestSpan: "urgency",
 			aButtons: ["up", "down"],
-			aButtonOps: { up: "increase", down: "decrease" }
+			aButtonOps: {up:"increase", down:"decrease"},
+			sSelectButtonId: "urgency_button",
+			sSelectListId: "urgency_list",
+			sImageCollapsed: ', JavaScriptEscape($settings['default_images_url'] . '/simpledesk/ajax_assign.png'), ',
+			sImageExpanded: ', JavaScriptEscape($settings['default_images_url'] . '/simpledesk/ajax_assign_cancel.png'), ',
 		});';
 }
 

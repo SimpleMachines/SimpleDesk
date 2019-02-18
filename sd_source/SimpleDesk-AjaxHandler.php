@@ -59,6 +59,7 @@ function shd_ajax()
 	$subactions = array(
 		'privacy' => 'shd_ajax_privacy',
 		'urgency' => 'shd_ajax_urgency',
+		'urgencylist' => 'shd_ajax_urgencylist',
 		'quote' => 'shd_ajax_quote',
 		'assign' => 'shd_ajax_assign',
 		'assign2' => 'shd_ajax_assign2',
@@ -223,15 +224,32 @@ function shd_ajax_urgency()
 	if (empty($row))
 		return array('error' => $txt['shd_no_ticket']);
 
-	$can_urgency = shd_can_alter_urgency($row['urgency'], $row['id_member_started'], ($row['status'] == TICKET_STATUS_CLOSED), ($row['status'] == TICKET_STATUS_DELETED), $row['id_dept']);
-
-	if (empty($_GET['change']) || empty($can_urgency[$_GET['change']]))
-		return array('success' => false, 'error' => $txt['shd_cannot_change_urgency']);
-
-	$new_urgency = $row['urgency'] + ($_GET['change'] == 'increase' ? 1 : -1);
-	$action = 'urgency_' . $_GET['change'];
-
+	// We will need this later.
 	require_once($sourcedir . '/sd_source/Subs-SimpleDeskPost.php');
+
+	// If being assigned from the list, we do it differently.
+	if (isset($_GET['assign']) && isset($_GET['urgency']) && ctype_digit($_GET['urgency']))
+	{
+		shd_get_urgency_options($row['id_member_started'] == $user_info['id'], $row['id_dept']);
+
+		if (empty($context['ticket_form']['urgency']['options'][$_GET['urgency']]))
+			return array('success' => false, 'error' => $txt['shd_cannot_change_urgency']);
+
+		$new_urgency = (int) $_GET['urgency'];
+		$action = 'urgency_change';
+	}
+	else
+	{
+		$can_urgency = shd_can_alter_urgency($row['urgency'], $row['id_member_started'], ($row['status'] == TICKET_STATUS_CLOSED), ($row['status'] == TICKET_STATUS_DELETED), $row['id_dept']);
+
+		if (empty($_GET['change']) || empty($can_urgency[$_GET['change']]))
+			return array('success' => false, 'error' => $txt['shd_cannot_change_urgency']);
+
+		$new_urgency = $row['urgency'] + ($_GET['change'] == 'increase' ? 1 : -1);
+		$action = 'urgency_' . $_GET['change'];
+	}
+
+	// Build the modify information.
 	$msgOptions = array();
 	$posterOptions = array();
 	$ticketOptions = array(
@@ -263,6 +281,79 @@ function shd_ajax_urgency()
 		if ($can)
 			$context['ajax_return'][$button] = $array[$button];
 
+	return $context['ajax_return'];
+}
+
+/**
+ *	Handles AJAX updates to ticket urgency list.
+ *
+ *	Operations:
+ *	- silent session check; if fail, add to $context['ajax_return']['error']
+ *	- ticket id check; if fail, add to $context['ajax_return']['error']
+ *	- get enough ticket data to do this
+ *	- check permissions with {@link shd_can_alter_urgency()} and permissions; if fail, add to $context['ajax_return']['error']
+ *	- identify whether the new urgency needs 'urgent' styling or not and put the new urgency in $context['ajax_return']['message']
+ *	- update the database with the new urgency
+ *	- identify whether the new urgency continues to allow the current user to change urgency or not
+ *	- put the button links if appropriate into $context['ajax_return']['increase'] and $context['ajax_return']['decrease'] and return
+ *
+ *	@return array Response data for Ajax.
+ *  @since 2.1
+*/
+function shd_ajax_urgencylist()
+{
+	global $smcFunc, $user_info, $context, $txt, $scripturl, $settings, $sourcedir;
+
+	$session_check = checkSession('get', '', false); // check the session but don't die fatally.
+	if (!empty($session_check))
+		return array('success' => false, 'error' => $txt[$session_check]);
+
+	// First, figure out the state of the ticket - is it private or not? Can we even see it?
+	if (empty($context['ticket_id']))
+		return array('success' => false, 'error' => $txt['shd_no_ticket']);
+
+	$query = shd_db_query('', '
+		SELECT id_member_started, subject, urgency, status, id_dept
+		FROM {db_prefix}helpdesk_tickets AS hdt
+		WHERE {query_see_ticket}
+			AND id_ticket = {int:current_ticket}',
+		array(
+			'current_ticket' => $context['ticket_id'],
+		)
+	);
+
+	$row = $smcFunc['db_fetch_assoc']($query);
+	$smcFunc['db_free_result']($query);
+
+	// No ticket, no luck.
+	if (empty($row))
+		return array('error' => $txt['shd_no_ticket']);
+
+	// Build the list.
+	$context['ajax_return'] = array(
+		'success' => true,
+		'urgencies' => array(),
+	);
+
+	// Get the options.
+	require_once($sourcedir . '/sd_source/Subs-SimpleDeskPost.php');
+	shd_get_urgency_options($row['id_member_started'] == $user_info['id'], $row['id_dept']);
+
+	foreach ($context['ticket_form']['urgency']['options'] as $urgency => $urgency_txt)
+	{
+		$can_urgency = shd_can_alter_urgency($urgency, $row['id_member_started'], ($row['status'] == TICKET_STATUS_CLOSED), ($row['status'] == TICKET_STATUS_DELETED), $row['id_dept']);
+
+		// Can't do this either way? Don't show this as a option.
+		if (empty($can_urgency['increase']) && empty($can_urgency['decrease']))
+			continue;
+
+		$context['ajax_return']['urgencies'][$urgency] = array(
+			'id' => $urgency,
+			'name' => $txt[$urgency_txt],
+			'selected' => $row['urgency'] == $urgency,
+		);
+	}
+	
 	return $context['ajax_return'];
 }
 

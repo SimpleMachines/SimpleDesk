@@ -57,6 +57,7 @@ $txt['shd_log_marknotprivate'] = '&quot;<a href="{scripturl}?action=helpdesk;sa=
 //@{
 $txt['shd_log_urgency_increase'] = '&quot;<a href="{scripturl}?action=helpdesk;sa=ticket;ticket={ticket}">{subject}</a>&quot; increased to <strong>{urgency}</strong>.';
 $txt['shd_log_urgency_decrease'] = '&quot;<a href="{scripturl}?action=helpdesk;sa=ticket;ticket={ticket}">{subject}</a>&quot; decreased to <strong>{urgency}</strong>.';
+$txt['shd_log_urgency_change'] = '&quot;<a href="{scripturl}?action=helpdesk;sa=ticket;ticket={ticket}">{subject}</a>&quot; changed to <strong>{urgency}</strong>.';
 //@}
 
 //! @name Ticket/topic, topic/ticket moves
