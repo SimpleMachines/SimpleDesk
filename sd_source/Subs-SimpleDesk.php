@@ -451,6 +451,7 @@ function shd_log_action($action, $params, $do_last_update = true)
 		'marknotprivate' => 'shd_logopt_privacy',
 		'urgency_increase' => 'shd_logopt_urgency',
 		'urgency_decrease' => 'shd_logopt_urgency',
+		'urgency_change' => 'shd_logopt_urgency',
 		'tickettotopic' => 'shd_logopt_tickettopicmove',
 		'topictoticket' => 'shd_logopt_tickettopicmove',
 		'delete' => 'shd_logopt_delete',

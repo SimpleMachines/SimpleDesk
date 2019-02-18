@@ -34,19 +34,19 @@ function shd_sendJSONDocument(sUrl, funcCallback)
 /* The privacy toggle in AJAX */
 function shd_privacyControl(oOpts)
 {
-	this.opts = oOpts; // attaches to the link, but it doesn't exist until after DOM is loaded!
+	this.opt = oOpts; // attaches to the link, but it doesn't exist until after DOM is loaded!
 	$(document).ready(this.init.bind(this));
 }
 
 shd_privacyControl.prototype.init = function ()
 {
-	$('#' + this.opts.sSrcA).on('click', this.action.bind(this));
+	$('#' + this.opt.sSrcA).on('click', this.action.bind(this));
 }
 
 shd_privacyControl.prototype.action = function (e)
 {
 	e.preventDefault();
-	shd_getJSONDocument(this.opts.sUrl + ';' + this.opts.sSession, this.callback.bind(this));
+	shd_getJSONDocument(this.opt.sUrl + ';' + this.opt.sSession, this.callback.bind(this));
 	return false;
 }
 
@@ -55,10 +55,10 @@ shd_privacyControl.prototype.callback = function (oRecvd)
 	if (oRecvd && oRecvd.success === false)
 		alert(oRecvd.error);
 	else if (oRecvd && oRecvd.message)
-		$('#' + this.opts.sDestSpan).html(oRecvd.message);
+		$('#' + this.opt.sDestSpan).html(oRecvd.message);
 	else
 		if (confirm(shd_ajax_problem))
-			window.location = smf_scripturl + '?action=helpdesk;sa=privacychange;ticket=' + this.opts.ticket + ';' + this.opts.sSession;
+			window.location = smf_scripturl + '?action=helpdesk;sa=privacychange;ticket=' + this.opt.ticket + ';' + this.opt.sSession;
 
 	return false;
 }
@@ -66,23 +66,31 @@ shd_privacyControl.prototype.callback = function (oRecvd)
 /* The urgency doodad */
 function shd_urgencyControl(oOpts)
 {
-	this.opts = oOpts; // attaches to the link, but it doesn't exist until after DOM is loaded!
+	this.opt = oOpts; // attaches to the link, but it doesn't exist until after DOM is loaded!
 	$(document).ready(this.init.bind(this));
 }
 
 shd_urgencyControl.prototype.init = function ()
 {
-	for (var i in this.opts.aButtonOps)
+	for (var i in this.opt.aButtonOps)
 	{
-		if (!this.opts.aButtonOps.hasOwnProperty(i))
+		if (!this.opt.aButtonOps.hasOwnProperty(i))
 			continue;
 
-		var oDiv = $('#urglink_' + this.opts.aButtonOps[i]);
+		var oDiv = $('#urglink_' + this.opt.aButtonOps[i]);
 		if (oDiv !== null && i == 'up')
 			oDiv.on('click', this.actionUp.bind(this));
 		else if (oDiv !== null && i == 'down')
 			oDiv.on('click', this.actionDown.bind(this)); // I *did* try to make this a single parameterised function but it always fired when it wasn't supposed to
 	}
+
+	// Setup the assign by list option.
+	this.bCollapsed = true;
+	this.opt.sUrlExpand = smf_prepareScriptUrl(smf_scripturl) + 'action=helpdesk;sa=ajax;op=urgencylist;ticket=' + this.opt.iTicketId;
+	this.opt.sUrlAssign = smf_prepareScriptUrl(smf_scripturl) + 'action=helpdesk;sa=ajax;op=urgency;assign;ticket=' + this.opt.iTicketId;
+	$('#' + this.opt.sSelectButtonId).html('<img src="' + this.opt.sImageCollapsed + '" id="urgency_' + this.opt.sSelf + '" class="shd_urgency_button">');
+	$('.shd_ticketdetails').on('click', '#urgency_' + this.opt.sSelf, this.clickList.bind(this));
+
 }
 
 shd_urgencyControl.prototype.actionUp = function (e)
@@ -100,7 +108,7 @@ shd_urgencyControl.prototype.actionDown = function (e)
 shd_urgencyControl.prototype.action = function (direction)
 {
 	this.direction = direction;
-	shd_getJSONDocument(this.opts.sUrl + this.opts.aButtonOps[direction] + ';' + this.opts.sSession, this.callback.bind(this));
+	shd_getJSONDocument(this.opt.sUrl + this.opt.aButtonOps[direction] + ';' + this.opt.sSession, this.callback.bind(this));
 	return false;
 }
 
@@ -110,7 +118,7 @@ shd_urgencyControl.prototype.callback = function (oRecvd)
 		alert(oRecvd.error);
 	else if (oRecvd && oRecvd.message)
 	{
-		$('#' + this.opts.sDestSpan).html(oRecvd.message);
+		$('#' + this.opt.sDestSpan).html(oRecvd.message);
 
 		var btn_set = ['increase', 'decrease'];
 		for (var i in btn_set)
@@ -127,10 +135,81 @@ shd_urgencyControl.prototype.callback = function (oRecvd)
 	}
 	else
 		if (confirm(shd_ajax_problem))
-			window.location = smf_scripturl + '?action=helpdesk;sa=urgencychange;ticket=' + this.opts.ticket + ';change=' + this.opts.aButtonOps[this.direction] + ';' + this.opts.sSession;
+			window.location = smf_scripturl + '?action=helpdesk;sa=urgencychange;ticket=' + this.opt.iTicketId + ';change=' + this.opt.aButtonOps[this.direction] + ';' + this.opt.sSession;
 
 	return false;
 }
+
+shd_urgencyControl.prototype.clickList = function ()
+{
+	if (this.bCollapsed)
+		this.expandList();
+	else
+		this.collapseList();
+}
+
+shd_urgencyControl.prototype.expandList = function ()
+{
+	this.bCollapsed = false;
+console.log('shd_urgencyControl.prototype.expandList:', this.opt.sSelectButtonId, $('#' + this.opt.sSelectButtonId), this.opt.sImageExpanded);
+	$('#urgency_' + this.opt.sSelf).attr('src', this.opt.sImageExpanded);
+
+	// Fetch the list of items
+	shd_getJSONDocument(this.opt.sUrlExpand + ';' + this.opt.sSession, this.expandList_callback.bind(this));
+}
+
+shd_urgencyControl.prototype.expandList_callback = function (oRecvd)
+{
+	if (oRecvd && oRecvd.success === false)
+		alert(oRecvd.error);
+	else if (oRecvd && oRecvd.urgencies)
+	{
+		$('#' + this.opt.sSelectListId).show();
+
+		var newhtml = '';
+		var cur = 0;
+		for (var i in oRecvd.urgencies)
+		{
+			if (!oRecvd.urgencies.hasOwnProperty(i))
+				continue;
+
+			cur = oRecvd.urgencies[i];
+			selected = cur.selected ? ' selected="selected"' : '';
+			newhtml += '<option class="shd_urgencies" data-id="' + cur.id + '"' + selected + '>' + cur.name + '</option>';
+		}
+
+		$('#' + this.opt.sSelectListId).html(newhtml);
+		$('#' + this.opt.sSelectListId).on('change', this.assignUrgency.bind(this));
+	}
+}
+
+shd_urgencyControl.prototype.assignUrgency = function (e)
+{
+	// Click handler for the assignment list, to issue the assign
+	ajax_indicator(true);
+
+	var selectedIndex = e.currentTarget.selectedIndex;	
+	shd_getJSONDocument(this.opt.sUrlAssign + ';urgency=' + e.currentTarget[selectedIndex].dataset.id + ';'+ this.opt.sSession, this.assignUrgencyCallback.bind(this));
+}
+
+shd_urgencyControl.prototype.assignUrgencyCallback = function(oRecvd)
+{
+	// Click handler callback for assignment, to handle once the request has been made
+	this.collapseList();
+
+	if (oRecvd && oRecvd.success === false)
+		alert(oRecvd.error);
+	else if (oRecvd && oRecvd.message)
+		document.getElementById(this.opt.sDestSpan).innerHTML = oRecvd.message;
+}
+
+shd_urgencyControl.prototype.collapseList = function ()
+{
+	this.bCollapsed = true;
+	$('#' + this.opt.sSelectListId).hide().html();
+	$('#urgency_' + this.opt.sSelf).attr('src', this.opt.sImageCollapsed);
+}
+
 
 /* Attachment selector, based on http://the-stickman.com/web-development/javascript/upload-multiple-files-with-a-single-file-element/
 * The code below is modified under the MIT licence, http://the-stickman.com/using-code-from-this-site-ie-licence/ not reproduced here for
@@ -224,7 +303,7 @@ shd_attach_select.prototype.addListRow = function (element)
 	var new_row = document.createElement('div');
 	var new_row_button = document.createElement('input');
 	new_row_button.type = 'button';
-	new_row_button.value = this.opts.message_txt_delete;
+	new_row_button.value = this.opt.message_txt_delete;
 	new_row_button.className = 'button';
 	new_row.element = element;
 
@@ -240,7 +319,7 @@ shd_attach_select.prototype.addListRow = function (element)
 
 	new_row.innerHTML = element.value + '&nbsp; &nbsp;';
 	new_row.appendChild(new_row_button);
-	document.getElementById(this.opts.file_container).appendChild(new_row);
+	document.getElementById(this.opt.file_container).appendChild(new_row);
 };
 
 shd_attach_select.prototype.checkActive = function()

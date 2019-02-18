@@ -72,7 +72,7 @@
 	padding: 0 4px 0 7px;
 }
 
-dd#assigned_button {
+dd#urgency_button, dd#assigned_button {
 	padding: 1px 0;
 }
 
@@ -104,7 +104,7 @@ h3.ticketheader img {
 /* Ticket details (Left-floated box) */
 .shd_ticket_side_column {
 	float: left;
-	width: 20%;
+	width: 23%;
 	padding: 0 5px 5px 5px;
 }
 .shd_ticketdetails {
@@ -137,7 +137,7 @@ form#postmodify .shd_ticket_roundframe {
 	min-height: 250px;
 }
 .shd_ticket_description {
-	margin-left: 260px;
+	margin-left: 23%;
 }
 
 #shd_ticket_text {
