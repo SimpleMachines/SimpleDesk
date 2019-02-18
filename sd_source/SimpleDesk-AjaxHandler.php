@@ -339,7 +339,7 @@ function shd_ajax_urgencylist()
 	require_once($sourcedir . '/sd_source/Subs-SimpleDeskPost.php');
 	shd_get_urgency_options($row['id_member_started'] == $user_info['id'], $row['id_dept']);
 
-	foreach($context['ticket_form']['urgency']['options'] as $urgency => $urgency_txt)
+	foreach ($context['ticket_form']['urgency']['options'] as $urgency => $urgency_txt)
 	{
 		$can_urgency = shd_can_alter_urgency($urgency, $row['id_member_started'], ($row['status'] == TICKET_STATUS_CLOSED), ($row['status'] == TICKET_STATUS_DELETED), $row['id_dept']);
 
