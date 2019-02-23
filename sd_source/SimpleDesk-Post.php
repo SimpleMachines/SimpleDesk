@@ -371,6 +371,8 @@ function shd_save_ticket()
 			'last_msg' => 0,
 			'link' => '',
 		);
+
+		$context['can_solve'] = false;
 	}
 	else
 	{
@@ -401,6 +403,8 @@ function shd_save_ticket()
 			'last_msg' => $ticketinfo['id_last_msg'],
 			'link' => '<a href="' . $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $context['ticket_id'] . '">' . $ticketinfo['subject'] . '</a>',
 		);
+	
+		$context['can_solve'] = !$new_ticket && (shd_allowed_to('shd_resolve_ticket_any', $dept) || (shd_allowed_to('shd_resolve_ticket_own', $dept) && $ticketinfo['starter_id'] == $user_info['id']));
 	}
 
 	$context['ticket_form'] += array(
@@ -434,7 +438,6 @@ function shd_save_ticket()
 	if (!empty($context['ticket_form']['selecting_dept']))
 		shd_get_postable_depts();
 
-	$context['can_solve'] = !$new_ticket && (shd_allowed_to('shd_resolve_ticket_any', $dept) || (shd_allowed_to('shd_resolve_ticket_own', $dept) && $ticketinfo['starter_id'] == $user_info['id']));
 	$context['log_action'] = $new_ticket ? 'newticket' : 'editticket';
 	$context['log_params']['subject'] = $context['ticket_form']['subject'];
 

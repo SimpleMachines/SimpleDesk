@@ -83,14 +83,12 @@ function template_shd_frontpage_admin()
 						</dt>
 						<dd style="width: 68%;">';
 
-	$editor_context = &$context['controls']['richedit'][$context['post_box_name']];
-
 	// The postbox
 	echo '
 							<div id="shd_bbcbox"', ($modSettings['shdp_frontpage_type'] == 'php' ? ' style="display:none;"' : ''), '></div>
 							<div id="shd_smileybox"', ($modSettings['shdp_frontpage_type'] == 'php' ? ' style="display:none;"' : ''), '></div>';
 
-	echo template_control_richedit($context['post_box_name'], 'shd_smileybox', 'shd_bbcbox');
+	template_control_richedit($context['post_box_name'], true, true);
 
 	echo '
 							</dd>
