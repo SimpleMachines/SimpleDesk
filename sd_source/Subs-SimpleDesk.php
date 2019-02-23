@@ -60,6 +60,7 @@ function shd_init()
 	define('TICKET_STATUS_WITH_SUPERVISOR', 4);
 	define('TICKET_STATUS_ESCALATED', 5);
 	define('TICKET_STATUS_DELETED', 6);
+	define('TICKET_STATUS_HOLD', 7);
 
 	define('TICKET_URGENCY_LOW', 0);
 	define('TICKET_URGENCY_MEDIUM', 1);
@@ -695,7 +696,8 @@ function shd_count_helpdesk_tickets($status = '', $is_staff = false)
 				$context['ticket_count'][TICKET_STATUS_PENDING_USER] +
 				$context['ticket_count'][TICKET_STATUS_WITH_SUPERVISOR] +
 				$context['ticket_count'][TICKET_STATUS_ESCALATED] +
-				$context['ticket_count']['assigned']
+				$context['ticket_count']['assigned'] +
+				($is_staff ? 0 : $context['ticket_count'][TICKET_STATUS_HOLD])
 			);
 		case 'assigned':
 			return $context['ticket_count']['assigned'];
@@ -711,6 +713,8 @@ function shd_count_helpdesk_tickets($status = '', $is_staff = false)
 			return $context['ticket_count'][TICKET_STATUS_DELETED];
 		case 'withdeleted':
 			return $context['ticket_count']['withdeleted'];
+		case 'hold':
+			return $context['ticket_count'][TICKET_STATUS_HOLD];
 		default:
 			return array_sum($context['ticket_count']) - $context['ticket_count']['withdeleted']; // since withdeleted is the only duplicate information, all the rest is naturally self-exclusive
 	}

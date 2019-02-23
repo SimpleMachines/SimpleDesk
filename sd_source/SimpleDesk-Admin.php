@@ -400,10 +400,11 @@ function shd_modify_display_options($return_config)
 		array('check', 'shd_disable_unread', 'subtext' => $txt['shd_disable_unread_note']),
 		array('check', 'shd_disable_boardint', 'subtext' => $txt['shd_disable_boardint_note']),
 		'',
-		array('select', 'shd_block_order_1', array('assigned' => $txt['shd_status_assigned_heading'], 'new' => $txt['shd_status_' . TICKET_STATUS_NEW . '_heading'], 'staff' => $txt['shd_status_' . TICKET_STATUS_PENDING_STAFF . '_heading'], 'user' => $txt['shd_status_' . TICKET_STATUS_PENDING_USER . '_heading']), 'subtext' => $txt['shd_block_order_note']),
-		array('select', 'shd_block_order_2', array('new' => $txt['shd_status_' . TICKET_STATUS_NEW . '_heading'], 'staff' => $txt['shd_status_' . TICKET_STATUS_PENDING_STAFF . '_heading'], 'user' => $txt['shd_status_' . TICKET_STATUS_PENDING_USER . '_heading'], 'assigned' => $txt['shd_status_assigned_heading']), 'subtext' => $txt['shd_block_order_note']),
-		array('select', 'shd_block_order_3', array('staff' => $txt['shd_status_' . TICKET_STATUS_PENDING_STAFF . '_heading'], 'user' => $txt['shd_status_' . TICKET_STATUS_PENDING_USER . '_heading'], 'assigned' => $txt['shd_status_assigned_heading'], 'new' => $txt['shd_status_' . TICKET_STATUS_NEW . '_heading']), 'subtext' => $txt['shd_block_order_note']),
-		array('select', 'shd_block_order_4', array('user' => $txt['shd_status_' . TICKET_STATUS_PENDING_USER . '_heading'], 'assigned' => $txt['shd_status_assigned_heading'], 'new' => $txt['shd_status_' . TICKET_STATUS_NEW . '_heading'], 'staff' => $txt['shd_status_' . TICKET_STATUS_PENDING_STAFF . '_heading']), 'subtext' => $txt['shd_block_order_note']),
+		array('select', 'shd_block_order_1', shd_block_order_options('assigned'), 'subtext' => $txt['shd_block_order_note']),
+		array('select', 'shd_block_order_2', shd_block_order_options('new'), 'subtext' => $txt['shd_block_order_note']),
+		array('select', 'shd_block_order_3', shd_block_order_options('staff'), 'subtext' => $txt['shd_block_order_note']),
+		array('select', 'shd_block_order_4', shd_block_order_options('user'), 'subtext' => $txt['shd_block_order_note']),
+		array('select', 'shd_block_order_5', shd_block_order_options('hold'), 'subtext' => $txt['shd_block_order_note']),
 
 	);
 	$context['settings_title'] = $txt['shd_admin_options_display'];
@@ -411,6 +412,37 @@ function shd_modify_display_options($return_config)
 
 	call_integration_hook('shd_hook_admin_display', array(&$config_vars, &$return_config));
 	return $config_vars;
+}
+
+/**
+ * Show the block order options, allowing us to specify a option in the first order
+ *
+ *	@param string $first First option
+*/
+function shd_block_order_options($first_option = 'assigned')
+{
+	global $txt;
+
+	// All the possible block options.
+	$all_options = array(
+		'assigned' => $txt['shd_status_assigned_heading'],
+		'new' => $txt['shd_status_' . TICKET_STATUS_NEW . '_heading'],
+		'staff' => $txt['shd_status_' . TICKET_STATUS_PENDING_STAFF . '_heading'],
+		'user' => $txt['shd_status_' . TICKET_STATUS_PENDING_USER . '_heading'],
+		'hold' => $txt['shd_status_' . TICKET_STATUS_HOLD . '_heading']
+	);
+
+	call_integration_hook('shd_hook_block_order_options', array(&$all_options));
+
+	// Assign the first one.
+	$options = array();
+	$options[$first_option] = $all_options[$first_option];
+	unset($all_options[$first_option]);
+
+	foreach ($all_options as $id_opt => $opt_txt)
+		$options[$id_opt] = $opt_txt;
+
+	return $options;
 }
 
 /**

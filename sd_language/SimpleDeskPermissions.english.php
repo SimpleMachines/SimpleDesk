@@ -95,6 +95,11 @@ $txt['permissionname_shd_assign_ticket_own'] = 'To themselves';
 $txt['permissionname_shd_assign_ticket_any'] = 'Any staff member';
 //@}
 
+//! @name Ticket modification: Ticket Hold
+//@{
+$txt['permissionname_shd_alter_hold'] = 'Alter Ticket Hold';
+//@}
+
 //! @name Ticket emails: monitoring/ignoring
 //@{
 $txt['permissionname_shd_monitor_ticket'] = 'Monitor a ticket';
