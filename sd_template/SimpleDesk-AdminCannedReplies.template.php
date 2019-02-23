@@ -163,7 +163,11 @@ function template_shd_edit_canned_reply()
 		</div>
 		<div class="information">
 			', $txt['shd_admin_cannedreplies_homedesc'], '
-		</div>
+		</div>';
+
+	template_canned_preview();
+
+	echo '
 		<form action="', $scripturl, '?action=admin;area=helpdesk_cannedreplies;sa=savereply" method="post" accept-charset="', $context['character_set'], '" name="cannedreply" id="cannedreply" onsubmit="', 'smc_saveEntities(\'cannedreply\', [\'title\', \'', $context['post_box_name'], '\']);" enctype="multipart/form-data">
 			<div class="cat_bar">
 				<h3 class="catbg">
@@ -174,7 +178,7 @@ function template_shd_edit_canned_reply()
 			<div class="roundframe noup">
 				<dl class="settings">
 					<dt><strong>', $txt['shd_admin_cannedreplies_replytitle'], '</strong></dt>
-					<dd><input type="text" value="', $context['canned_reply']['title'], '" name="title" size="80"></dd>
+					<dd><input type="text" value="', $context['canned_reply']['title'], '" id="title" name="title" size="80"></dd>
 				</dl>
 				<p><strong>', $txt['shd_admin_cannedreplies_content'], '</strong></p>
 				<div class="block">';
@@ -213,7 +217,8 @@ function template_shd_edit_canned_reply()
 				</dl>
 			</div>
 			<br>
-			<input type="submit" value="', isset($editor_context['labels']['post_button']) ? $editor_context['labels']['post_button'] : $txt['save'], '" tabindex="', $context['tabindex']++, '" accesskey="s" class="button save">';
+			<input type="submit" value="', isset($editor_context['labels']['post_button']) ? $editor_context['labels']['post_button'] : $txt['save'], '" tabindex="', $context['tabindex']++, '" accesskey="s" class="button save">
+			<input class="button" type="button" id="preview_reply" name="preview" value="', $txt['preview'], '" accesskey="p" tabindex="', $context['tabindex']++, '">';
 
 	if ($context['canned_reply']['id'] != 'new')
 		echo '
@@ -225,6 +230,8 @@ function template_shd_edit_canned_reply()
 			<input type="hidden" name="reply" value="', $context['canned_reply']['id'], '">
 			<input type="hidden" name="cat" value="', $context['canned_reply']['cat'], '">
 		</form>';
+
+	template_shd_adminjs_canned_reply();
 }
 
 function template_shd_move_reply_cat()
@@ -268,5 +275,53 @@ function template_shd_move_reply_cat()
 				<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">
 				<input type="hidden" name="seqnum" value="', $context['form_sequence_number'], '">
 			</form>
+		</div>';
+}
+
+/**
+ *	Javascript for Admin Canned Replies
+ *
+ *	@since 2.1
+*/
+function template_shd_adminjs_canned_reply()
+{
+	global $context;
+
+	echo '
+		<script type="text/javascript"><!-- // --><![CDATA[
+		var oCannedReplies = new shd_cannedReplies({
+			sTitleID: "title",
+			sBodyID: "', $context['post_box_name'], '",
+			sPreviewButtonID: "preview_reply",
+			sPreviewBoxID: "preview_box",
+			sPreviewResponseID: "preview_response",
+			sReply: "' . $context['canned_reply']['id'] . '",
+			iCat: "' . $context['canned_reply']['cat'] . '",
+			sUrlBase: smf_scripturl + "?action=admin;area=helpdesk_cannedreplies;sa=savereply;preview",
+			sSessionVar: "', $context['session_var'], '",
+			sSessionId: "', $context['session_id'], '",
+		});
+		// ]]></script>';
+}
+
+function template_canned_preview()
+{
+	global $context, $txt, $settings;
+
+	echo '
+		<div id="preview_box">
+			<div class="tborder">
+			<div class="title_bar">
+				<h3 class="titlebg">
+					<img src="', $settings['default_images_url'], '/simpledesk/preview.png" alt="x">
+					', $txt['preview'], '
+				</h3>
+			</div>
+			<div class="roundframe">
+				<div class="content" id="preview_response">
+				</div>
+			</div>
+			</div>
+			<br>
 		</div>';
 }

@@ -419,3 +419,60 @@ shd_role.prototype.formConfirm = function (e)
 {
 	return confirm(this.opt.sDeleteConfirmText);
 }
+
+/* The Canned Replies Admin Handler */
+function shd_cannedReplies(oOpts)
+{
+	this.opt = oOpts; // attaches to the link, but it doesn't exist until after DOM is loaded!
+	$(document).ready(this.init.bind(this));
+
+	// Build our URL.
+	this.opt.sUrl = this.opt.sUrlBase +
+		';' + this.opt.sSessionVar + '=' + this.opt.sSessionId;
+
+console.log('shd_cannedReplies:', this.opt.sUrl);
+}
+
+shd_cannedReplies.prototype.init = function ()
+{
+	$('#' + this.opt.sPreviewButtonID).on('click', this.action.bind(this));
+}
+
+shd_cannedReplies.prototype.action = function (e)
+{
+	e.preventDefault();
+
+	// Get SC Editor stuff setup.
+	var scEditorBox = $('#' + this.opt.sBodyID).get(0);
+
+	// Find the body.
+	var body = '';
+	if (sceditor.instance(scEditorBox) != undefined && typeof sceditor.instance(scEditorBox).getText().html !== 'undefined')
+		body = sceditor.instance(scEditorBox).getText().html();
+	else if (sceditor.instance(scEditorBox) != undefined)
+		body = sceditor.instance(scEditorBox).getText();
+	else
+		body = $('#' + this.opt.sBodyID).val();
+
+	// Send this off.
+	shd_sendJSONDocument(this.opt.sUrl, {
+		reply: this.opt.sReply,
+		cat: this.opt.iCat,
+		title: $('#' + this.opt.sTitleID).val(),
+		shd_canned_reply: body,
+	}, this.callback.bind(this));
+	return false;
+}
+
+shd_cannedReplies.prototype.callback = function (oRecvd)
+{
+	if (oRecvd && oRecvd.success === false)
+		alert(oRecvd.error);
+	else if (oRecvd && oRecvd.preview)
+	{
+		$('#' + this.opt.sPreviewBoxID).show();
+		$('#' + this.opt.sPreviewResponseID).html(oRecvd.preview);
+	}
+
+	return false;
+}

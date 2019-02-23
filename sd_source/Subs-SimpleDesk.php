@@ -2070,7 +2070,24 @@ function shd_bbc_codes(&$codes, &$no_autolink_tags)
  */
 function shd_fatal_lang_error($error, $log = 'simpledesk', $sprintf = array(), $status = 403)
 {
-	fatal_lang_error($error, $log, $sprintf, $status);
+	global $context, $txt;
+
+	// Ajax, is handled a special way.
+	if (!empty($context['is_ajax_resonse']))
+	{
+		$error_message = empty($sprintf) ? $txt[$error] : vsprintf($txt[$error], $sprintf);
+		log_error($error_message, $log);
+
+		header('Content-Type: application/json; charset=UTF8');
+		echo json_encode(array(
+			'success' => false,
+			'error' => $error_message,
+		));
+
+		obExit(false);
+	}
+	else
+		fatal_lang_error($error, $log, $sprintf, $status);
 
 	trigger_error('Hacking attempt...', E_USER_ERROR);
 	return false;
@@ -2086,7 +2103,23 @@ function shd_fatal_lang_error($error, $log = 'simpledesk', $sprintf = array(), $
  */
 function shd_fatal_error($error, $log = 'general', $status = 500)
 {
-	fatal_error($error, $log, $status);
+	global $context;
+
+	// Ajax, is handled a special way.
+	if (!empty($context['is_ajax_resonse']))
+	{
+		log_error($error, $log);
+
+		header('Content-Type: application/json; charset=UTF8');
+		echo json_encode(array(
+			'success' => false,
+			'error' => $error,
+		));
+
+		obExit(false);
+	}
+	else
+		fatal_error($error, $log, $status);
 
 	trigger_error('Hacking attempt...', E_USER_ERROR);
 	return false;
