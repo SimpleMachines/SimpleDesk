@@ -101,12 +101,13 @@ function shd_admin_maint_home()
 {
 	global $context, $txt, $smcFunc;
 
+	$context['dept_list'] = array(
+		0 => $txt['shd_admin_maint_massdeptmove_select'],
+	);
+
 	$depts = shd_allowed_to('access_helpdesk', false);
-	if (count($depts) > 1)
+	if (!is_bool($depts) && count($depts) > 1)
 	{
-		$context['dept_list'] = array(
-			0 => $txt['shd_admin_maint_massdeptmove_select'],
-		);
 		$query = $smcFunc['db_query']('', '
 			SELECT id_dept, dept_name
 			FROM {db_prefix}helpdesk_depts

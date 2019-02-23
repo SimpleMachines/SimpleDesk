@@ -351,7 +351,7 @@ function shd_admin_save_dept()
 		if ($smcFunc['db_num_rows']($query) == 0)
 		{
 			$smcFunc['db_free_result']($query);
-			shd_fatal_lang_error(shd_unknown_dept, false);
+			shd_fatal_lang_error('shd_unknown_dept', false);
 		}
 		list($dept_order) = $smcFunc['db_fetch_row']($query);
 		$smcFunc['db_free_result']($query);

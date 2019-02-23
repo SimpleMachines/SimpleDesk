@@ -365,6 +365,11 @@ function shd_save_ticket()
 			'link' => '<span class="error">' . $txt['shd_unassigned'] . '</span>',
 		);
 		$num_replies = 0;
+
+		$context['ticket_form'] = array(
+			'first_msg' => 0,
+			'last_msg' => 0,
+		);
 	}
 	else
 	{
@@ -389,16 +394,19 @@ function shd_save_ticket()
 			'link' => !empty($ticketinfo['assigned_id']) ? shd_profile_link($ticketinfo['assigned_name'], $ticketinfo['assigned_id']) : '<span class="error">' . $txt['shd_unassigned'] . '</span>',
 		);
 		$num_replies = $ticketinfo['num_replies'];
+
+		$context['ticket_form'] = array(
+			'first_msg' => $ticketinfo['id_first_msg'],
+			'last_msg' => $ticketinfo['id_last_msg'],
+		);
 	}
 
-	$context['ticket_form'] = array(
+	$context['ticket_form'] += array(
 		'is_new' => $new_ticket,
 		'is_reply' => false,
 		'dept' => isset($newdept) ? $newdept : $dept,
 		'form_title' => !$new_ticket ? $txt['shd_edit_ticket'] : $txt['shd_create_ticket'],
 		'form_action' => $scripturl . '?action=helpdesk;sa=saveticket',
-		'first_msg' => !$new_ticket ? $ticketinfo['id_first_msg'] : 0,
-		'last_msg' => !$new_ticket ? $ticketinfo['id_last_msg'] : 0,
 		'message' => $_POST['shd_message'],
 		'subject' => $_POST['subject'],
 		'ticket' => $context['ticket_id'],
@@ -940,7 +948,6 @@ function shd_post_reply()
 			{
 				require_once($sourcedir . '/Subs-Editor.php');
 				$row['body'] = strtr($row['body'], array('&lt;' => '#smlt#', '&gt;' => '#smgt#', '&amp;' => '#smamp#'));
-				$row['body'] = bbc_to_html($row['body']);
 				$lb = '<br>';
 			}
 			else
@@ -1787,7 +1794,7 @@ function shd_check_attachments()
 					if (!in_array(strtolower(substr(strrchr($uplfile['name'], '.'), 1)), explode(',', strtolower($modSettings['attachmentExtensions']))))
 					{
 						checkSubmitOnce('free');
-						fatal_error($uplfile['name'] . '.<br>' . $txt['cant_upload_type'] . ' ' . $modSettings['attachmentExtensions'] . '.', false);
+						shd_fatal_error($uplfile['name'] . '.<br>' . $txt['cant_upload_type'] . ' ' . $modSettings['attachmentExtensions'] . '.', false);
 					}
 				}
 
@@ -1801,7 +1808,7 @@ function shd_check_attachments()
 
 					$dir = opendir($current_attach_dir);
 					if (!is_resource($dir))
-						fatal_lang_error('cant_access_upload_path', 'critical');
+						shd_fatal_lang_error('cant_access_upload_path', 'critical');
 
 					while ($file = readdir($dir))
 					{

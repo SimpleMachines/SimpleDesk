@@ -714,7 +714,7 @@ function shd_admin_cf_icons()
 	$dir = dir($settings['default_theme_dir'] . '/images/simpledesk/cf/');
 	$files = array();
 
-	if (!is_resource($dir))
+	if (!is_object($dir) || is_null($dir))
 		return $iconlist;
 
 	while ($line = $dir->read())

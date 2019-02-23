@@ -28,6 +28,12 @@
 if (!defined('SMF'))
 	die('If only you could draw like a drunken monkey...');
 
+/**
+ *	Sets up the main profile data
+ *
+ *	@since 1.0
+ *	@param int $memID The member ID
+*/
 function shd_profile_main($memID)
 {
 	global $context, $txt, $scripturl, $sourcedir, $user_info, $settings, $user_profile, $modSettings;
@@ -125,6 +131,12 @@ function shd_profile_main($memID)
 	$context['template_layers'][] = 'shd_profile_navigation';
 }
 
+/**
+ *	The frontpage profile
+ *
+ *	@since 1.0
+ *	@param int $memID The member ID
+*/
 function shd_profile_frontpage($memID)
 {
 	global $context, $memberContext, $txt, $modSettings, $user_info, $user_profile, $sourcedir, $scripturl, $smcFunc;
@@ -263,6 +275,12 @@ function shd_profile_frontpage($memID)
 	}
 }
 
+/**
+ *	Prefernces for a helpdesk member
+ *
+ *	@since 1.0
+ *	@param int $memID The member ID
+*/
 function shd_profile_preferences($memID)
 {
 	global $context, $txt, $scripturl, $sourcedir, $user_info, $smcFunc;
@@ -355,6 +373,12 @@ function shd_profile_preferences($memID)
 	}
 }
 
+/**
+ *	Show all the ticket information.
+ *
+ *	@since 1.0
+ *	@param int $memID The member ID
+*/
 function shd_profile_show_tickets($memID)
 {
 	global $txt, $user_info, $scripturl, $modSettings, $smcFunc, $board, $user_profile, $context;
@@ -501,6 +525,12 @@ function shd_profile_show_tickets($memID)
 		$context['items'] = array_reverse($context['items'], true);
 }
 
+/**
+ *	Show the notifications for a helpdesk member
+ *
+ *	@since 1.0
+ *	@param int $memID The member ID
+*/
 function shd_profile_show_notify_override($memID)
 {
 	global $txt, $user_info, $scripturl, $modSettings, $smcFunc, $board, $user_profile, $context;
@@ -541,8 +571,16 @@ function shd_profile_show_notify_override($memID)
 		);
 		$context['tickets'][] = $row;
 	}
+
+	return true;
 }
 
+/**
+ *	Profile Permissions for a member
+ *
+ *	@since 1.0
+ *	@param int $memID The member ID
+*/
 function shd_profile_permissions($memID)
 {
 	global $context, $txt, $scripturl, $sourcedir, $user_info, $smcFunc, $user_profile, $settings;
@@ -682,6 +720,12 @@ function shd_profile_permissions($memID)
 				$context['member_permissions']['denied'][$permission][] = $role_id;
 }
 
+/**
+ *	This members action log information.
+ *
+ *	@since 1.0
+ *	@param int $memID The member ID
+*/
 function shd_profile_actionlog($memID)
 {
 	global $context, $txt, $scripturl, $sourcedir, $user_info, $settings;
@@ -699,6 +743,12 @@ function shd_profile_actionlog($memID)
 
 }
 
+/**
+ *	Shows the theme options for SimpleDesk.
+ *
+ *	@since 1.0
+ *	@param int $memID The member ID
+*/
 function shd_profile_theme_wrapper($memID)
 {
 	global $txt, $context, $user_profile, $modSettings, $settings, $user_info, $smcFunc, $sourcedir, $profile_fields;
