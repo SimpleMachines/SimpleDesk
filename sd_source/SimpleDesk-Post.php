@@ -369,6 +369,7 @@ function shd_save_ticket()
 		$context['ticket_form'] = array(
 			'first_msg' => 0,
 			'last_msg' => 0,
+			'link' => '',
 		);
 	}
 	else
@@ -398,6 +399,7 @@ function shd_save_ticket()
 		$context['ticket_form'] = array(
 			'first_msg' => $ticketinfo['id_first_msg'],
 			'last_msg' => $ticketinfo['id_last_msg'],
+			'link' => '<a href="' . $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $context['ticket_id'] . '">' . $ticketinfo['subject'] . '</a>',
 		);
 	}
 
@@ -410,7 +412,6 @@ function shd_save_ticket()
 		'message' => $_POST['shd_message'],
 		'subject' => $_POST['subject'],
 		'ticket' => $context['ticket_id'],
-		'link' => !$new_ticket ? '<a href="' . $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $context['ticket_id'] . '">' . $ticketinfo['subject'] . '</a>' : '',
 		'msg' => $msg,
 		'display_id' => empty($context['ticket_id']) ? '' : str_pad($context['ticket_id'], $modSettings['shd_zerofill'], '0', STR_PAD_LEFT),
 		'status' => $new_status,

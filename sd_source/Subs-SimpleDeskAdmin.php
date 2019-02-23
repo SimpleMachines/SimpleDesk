@@ -517,7 +517,7 @@ function shd_admin_smf_perms(&$permissionGroups, &$permissionList, &$leftPermiss
 {
 	global $modSettings;
 
-	if (!$modSettings['helpdesk_active'] || empty($modSettings['shd_helpdesk_only']))
+	if (!$modSettings['helpdesk_active'] || empty($modSettings['shd_helpdesk_only']) || empty($permissionGroups) || empty($permissionList) || empty($leftPermissionGroups) || empty($relabelPermissions))
 		return;
 
 	$perms_disable = array(
@@ -590,8 +590,11 @@ function shd_admin_smf_perms(&$permissionGroups, &$permissionList, &$leftPermiss
 function shd_admin_search(&$language_files, &$include_files, &$settings_search)
 {
 	// Add in language files.
-	shd_load_language('sd_language/SimpleDeskAdmin');
+	$language_files = array_merge($language_files, array(
+		'sd_language/SimpleDeskAdmin',
+	));
 
+	// Extra files.
 	$include_files = array_merge($include_files, array(
 		'sd_source/SimpleDesk-Admin',
 	));
@@ -635,9 +638,9 @@ function shd_remove_attachments($attach)
  *	Converts helpdesk body length to match SMF's.
  *
  *	@since 2.1
- *	@param array &$body_type Either text or other.
+ *	@param array $body_type Either text or other.
 */
-function shd_convert_msgbody($body_type)
+function shd_convert_msgbody($body_type = 'null')
 {
 	global $smcFunc;
 
@@ -765,7 +768,7 @@ function shd_admin_log($action, $extra)
  *	@see shd_count_action_log_entries()
  *	@since 1.0
 */
-function shd_load_admin_log_entries($start = 0, $items_per_page = 10, $sort = 'la.log_time', $order = 'DESC', $clause = '')
+function shd_load_admin_log_entries($start = 0, $items_per_page = 10, $sort = 'la.log_time', $order = 'DESC')
 {
 	global $smcFunc, $txt, $scripturl, $context, $user_info, $user_profile;
 

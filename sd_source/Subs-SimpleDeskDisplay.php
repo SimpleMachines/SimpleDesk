@@ -38,7 +38,7 @@ function shd_download_request(&$attachRequest)
 	global $smcFunc;
 
 	// Is this already a resource?  Then another hook has claimed the attachment as theirs.
-	if (is_resource($attachRequest))
+	if (is_resource($attachRequest) && empty($_REQUEST['ticket']))
 		return;
 	// If we don't have a ticket present, it is not our attachment.
 	elseif (empty($_REQUEST['ticket']))
