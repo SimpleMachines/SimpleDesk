@@ -804,7 +804,7 @@ function shd_post_reply()
 	// So it's either our ticket and we can reply to our own, or we can reply to any because we're awesome
 	// or we're editing and we can haz such powarz
 	$context['ticket_form'] = array( // yes, everything goes in here.
-		'is_new' => $new_rely,
+		'is_new' => $new_reply,
 		'is_reply' => true,
 		'dept' => $ticketinfo['dept'],
 		'form_title' => !empty($reply['id_msg']) ? $txt['shd_ticket_edit_reply'] : $txt['shd_reply_ticket'],
@@ -860,7 +860,7 @@ function shd_post_reply()
 		$context['display_private'] = true;
 
 	// Can they alter the hold?
-	$context['can_alter_hold'] = !$context['ticket_form']['is_new'] && empty($ticketinfo['is_own']) && shd_allowed_to('shd_alter_hold', $dept);
+	$context['can_alter_hold'] = !$context['ticket_form']['is_new'] && empty($ticketinfo['is_own']) && shd_allowed_to('shd_alter_hold', $context['ticket_form']['dept']);
 
 	loadMemberData($ticketinfo['starter_id']);
 	if (loadMemberContext($ticketinfo['starter_id']))
@@ -1096,7 +1096,7 @@ function shd_save_reply()
 		$context['display_private'] = true;
 
 	// Can they alter the hold?
-	$context['can_alter_hold'] = !$context['ticket_form']['is_new'] && empty($ticketinfo['is_own']) && shd_allowed_to('shd_alter_hold', $dept);
+	$context['can_alter_hold'] = !$context['ticket_form']['is_new'] && empty($ticketinfo['is_own']) && shd_allowed_to('shd_alter_hold', $context['ticket_form']['dept']);
 
 	loadMemberData($ticketinfo['starter_id']);
 	if (loadMemberContext($ticketinfo['starter_id']))

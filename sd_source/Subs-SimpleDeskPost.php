@@ -1038,11 +1038,13 @@ function shd_ticket_on_hold($on_hold = false, &$ticketOptions)
 		$new_status = TICKET_STATUS_PENDING_USER;
 	elseif (!empty($row['id_member']) && $context['ticket_form']['member']['id'] == $row['id_member'])
 		$new_status = TICKET_STATUS_PENDING_STAFF;
-	else
-		return false;
 
 	// Hook may want to do something different here.
 	call_integration_hook('shd_ticket_on_hold', array($current_status, &$new_status));
+
+	// Do nothing.
+	if ($current_status == $new_status)
+		return false;
 
 	$ticketOptions['status'] = $new_status;
 	return true;
