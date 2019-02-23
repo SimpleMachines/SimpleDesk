@@ -343,55 +343,55 @@ function template_ticket_block()
 			<tr class="title_bar">';
 
 	$block_width = 0;
-	foreach ($context['ticket_blocks'][$context['current_block']]['columns'] as $column)
+	foreach ($context['ticket_blocks'][$context['current_block']]['columns'] as $column => $width)
 	{
 		$block_width++;
 		switch ($column)
 		{
 			case 'ticket_id':
 				echo '
-							<td width="8%" colspan="2"><img src="', $settings['default_images_url'], '/simpledesk/ticket.png" class="shd_smallicon" alt=""> ', template_shd_menu_header('ticketid', $txt['shd_ticket']), '</td>';
+							<td', !empty($width) ? ' width="' . $width . '%"' : '', ' colspan="2"><img src="', $settings['default_images_url'], '/simpledesk/ticket.png" class="shd_smallicon" alt=""> ', template_shd_menu_header('ticketid', $txt['shd_ticket']), '</td>';
 				$block_width++; // is 2 blocks wide
 				break;
 			case 'ticket_name':
 				echo '
-							<td width="15%">', template_shd_menu_header('ticketname', $txt['shd_ticket_name']), '</td>';
+							<td', !empty($width) ? ' width="' . $width . '%"' : '', '>', template_shd_menu_header('ticketname', $txt['shd_ticket_name']), '</td>';
 				break;
 			case 'starting_user':
 				echo '
-							<td width="12%"><img src="', $settings['default_images_url'], '/simpledesk/user.png" class="shd_smallicon" alt=""> ', template_shd_menu_header('starter', $txt['shd_ticket_started_by']), '</td>';
+							<td', !empty($width) ? ' width="' . $width . '%"' : '', '><img src="', $settings['default_images_url'], '/simpledesk/user.png" class="shd_smallicon" alt=""> ', template_shd_menu_header('starter', $txt['shd_ticket_started_by']), '</td>';
 				break;
 			case 'last_reply':
 				echo '
-							<td width="20%"><img src="', $settings['default_images_url'], '/simpledesk/staff.png" class="shd_smallicon" alt=""> ', template_shd_menu_header('lastreply', $txt['shd_ticket_updated_by']), '</td>';
+							<td', !empty($width) ? ' width="' . $width . '%"' : '', '><img src="', $settings['default_images_url'], '/simpledesk/staff.png" class="shd_smallicon" alt=""> ', template_shd_menu_header('lastreply', $txt['shd_ticket_updated_by']), '</td>';
 				break;
 			case 'assigned':
 				echo '
-							<td width="12%"><img src="', $settings['default_images_url'], '/simpledesk/staff.png" class="shd_smallicon" alt=""> ', template_shd_menu_header('assigned', $txt['shd_ticket_assigned']), '</td>';
+							<td', !empty($width) ? ' width="' . $width . '%"' : '', '><img src="', $settings['default_images_url'], '/simpledesk/staff.png" class="shd_smallicon" alt=""> ', template_shd_menu_header('assigned', $txt['shd_ticket_assigned']), '</td>';
 				break;
 			case 'status':
 				echo '
-							<td width="17%"><img src="', $settings['default_images_url'], '/simpledesk/status.png" class="shd_smallicon" alt=""> ', template_shd_menu_header('status', $txt['shd_ticket_status']), '</td>';
+							<td', !empty($width) ? ' width="' . $width . '%"' : '', '><img src="', $settings['default_images_url'], '/simpledesk/status.png" class="shd_smallicon" alt=""> ', template_shd_menu_header('status', $txt['shd_ticket_status']), '</td>';
 				break;
 			case 'urgency':
 				echo '
-							<td width="8%"><img src="', $settings['default_images_url'], '/simpledesk/urgency.png" class="shd_smallicon" alt=""> ', template_shd_menu_header('urgency', $txt['shd_ticket_urgency']), '</td>';
+							<td', !empty($width) ? ' width="' . $width . '%"' : '', '><img src="', $settings['default_images_url'], '/simpledesk/urgency.png" class="shd_smallicon" alt=""> ', template_shd_menu_header('urgency', $txt['shd_ticket_urgency']), '</td>';
 				break;
 			case 'updated':
 				echo '
-							<td width="22%"><img src="', $settings['default_images_url'], '/simpledesk/time.png" class="shd_smallicon" alt=""> ', template_shd_menu_header('updated', $txt['shd_ticket_updated']), '</td>';
+							<td', !empty($width) ? ' width="' . $width . '%"' : '', '><img src="', $settings['default_images_url'], '/simpledesk/time.png" class="shd_smallicon" alt=""> ', template_shd_menu_header('updated', $txt['shd_ticket_updated']), '</td>';
 				break;
 			case 'replies':
 				echo '
-							<td width="7%">', template_shd_menu_header('replies', $txt['shd_ticket_num_replies']), '</td>';
+							<td', !empty($width) ? ' width="' . $width . '%"' : '', '>', template_shd_menu_header('replies', $txt['shd_ticket_num_replies']), '</td>';
 				break;
 			case 'allreplies':
 				echo '
-							<td width="7%">', template_shd_menu_header('allreplies', $txt['shd_ticket_num_replies']), '</td>';
+							<td', !empty($width) ? ' width="' . $width . '%"' : '', '>', template_shd_menu_header('allreplies', $txt['shd_ticket_num_replies']), '</td>';
 				break;
 			case 'actions':
 				echo '
-							<td width="5%">', $txt['shd_actions'], '</td>';
+							<td', !empty($width) ? ' width="' . $width . '%"' : '', '>', $txt['shd_actions'], '</td>';
 				break;
 			default:
 				echo '
@@ -417,7 +417,7 @@ function template_ticket_block()
 			echo '
 			<tr class="windowbg">';
 
-			foreach ($context['ticket_blocks'][$context['current_block']]['columns'] as $column)
+			foreach ($context['ticket_blocks'][$context['current_block']]['columns'] as $column => $width)
 			{
 				switch ($column)
 				{

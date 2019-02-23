@@ -54,6 +54,7 @@ function shd_ajax()
 	global $context;
 
 	// Just in case
+	$context['is_ajax_resonse'] = true;
 	loadLanguage('Errors');
 
 	$subactions = array(

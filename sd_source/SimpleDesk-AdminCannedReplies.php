@@ -602,6 +602,7 @@ function shd_admin_canned_savereply()
 	global $context, $smcFunc, $sourcedir, $txt;
 
 	checkSession('request');
+	$context['is_ajax_resonse'] = isset($_REQUEST['preview']);
 
 	require_once($sourcedir . '/Subs-Editor.php');
 	require_once($sourcedir . '/Subs-Post.php');
@@ -718,6 +719,18 @@ function shd_admin_canned_savereply()
 	$smcFunc['db_free_result']($query);
 
 	checkSubmitOnce('check');
+
+	// Preview?
+	if (isset($_REQUEST['preview']))
+	{
+		require_once($sourcedir . '/sd_source/SimpleDesk-AjaxHandler.php');
+
+		$context['ajax_return'] = array(
+			'success' => true,
+			'preview' => shd_format_text($_POST['shd_canned_reply']),
+		);
+		shd_ajax_json_response();
+	}
 
 	if ($context['canned_reply_id'] == 'new')
 	{

@@ -329,6 +329,7 @@ function template_shd_profile_show_tickets()
 				<div class="counter">', $item['counter'], '</div>
 				<div class="topic_details">
 					<h5><strong>', !$item['is_ticket'] ? sprintf($txt['shd_profile_reply_to_ticket'], $item_link) : sprintf($txt['shd_profile_a_ticket'], $item_link), '</strong></h5>
+					<span class="smalltext floatright">[', $txt['shd_status_' . $item['status']], ']</span>
 					<span class="smalltext">&#171;&nbsp;<strong>', $txt['on'], ':</strong> ', $item['time'], '&nbsp;&#187;</span>
 				</div>
 				<div class="list_posts">

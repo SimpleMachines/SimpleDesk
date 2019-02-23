@@ -161,6 +161,7 @@ $txt['shd_block_order_1'] = 'Tickets Block: 1st position';
 $txt['shd_block_order_2'] = 'Tickets Block: 2nd position';
 $txt['shd_block_order_3'] = 'Tickets Block: 3rd position';
 $txt['shd_block_order_4'] = 'Tickets Block: 4th position';
+$txt['shd_block_order_5'] = 'Tickets Block: 5th position';
 $txt['shd_block_order_note'] = 'Specify the default order of blocks';
 //@}
 

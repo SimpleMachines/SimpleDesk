@@ -48,11 +48,14 @@ function shd_post_ticket()
 		shd_is_allowed_to('shd_new_ticket', $dept); // If we don't have a department, we will verify the ability in any department, and figure it out later.
 
 		$context['ticket_form'] = array( // yes, everything goes in here.
+			'is_new' => true,
+			'is_reply' => false,
 			'dept' => $dept,
 			'selecting_dept' => $context['shd_multi_dept'] && empty($dept),
 			'form_title' => $txt['shd_create_ticket'],
 			'form_action' => $scripturl . '?action=helpdesk;sa=saveticket',
 			'first_msg' => 0,
+			'last_msg' => 0,
 			'message' =>  '',
 			'subject' => '',
 			'ticket' => 0,
@@ -77,6 +80,7 @@ function shd_post_ticket()
 			'num_allowed_attachments' => empty($modSettings['attachmentNumPerPostLimit']) || $modSettings['shd_attachments_mode'] == 'ticket' ? -1 : $modSettings['attachmentNumPerPostLimit'],
 			'return_to_ticket' => isset($_REQUEST['goback']),
 			'disable_smileys' => !empty($_REQUEST['no_smileys']),
+			'on_hold' => false,
 		);
 
 		$context['can_solve'] = false;
@@ -90,11 +94,14 @@ function shd_post_ticket()
 			shd_fatal_lang_error('cannot_shd_edit_ticket');
 
 		$context['ticket_form'] = array( // yes, everything goes in here.
+			'is_new' => false,
+			'is_reply' => false,
 			'dept' => $dept,
 			'selecting_dept' => $context['shd_multi_dept'] && empty($dept),
 			'form_title' => $txt['shd_edit_ticket'],
 			'form_action' => $scripturl . '?action=helpdesk;sa=saveticket',
 			'first_msg' => $ticketinfo['id_first_msg'],
+			'last_msg' => $ticketinfo['id_last_msg'],
 			'message' => $ticketinfo['body'],
 			'subject' => $ticketinfo['subject'],
 			'ticket' => $context['ticket_id'],
@@ -119,6 +126,7 @@ function shd_post_ticket()
 			'num_allowed_attachments' => empty($modSettings['attachmentNumPerPostLimit']) || $modSettings['shd_attachments_mode'] == 'ticket' ? -1 : $modSettings['attachmentNumPerPostLimit'],
 			'return_to_ticket' => isset($_REQUEST['goback']),
 			'disable_smileys' => $ticketinfo['smileys_enabled'] == 0,
+			'on_hold' => $ticketinfo['status'] == TICKET_STATUS_HOLD,
 		);
 
 		$context['can_solve'] = shd_allowed_to('shd_resolve_ticket_any', $dept) || (shd_allowed_to('shd_resolve_ticket_own', $dept) && $ticketinfo['starter_id'] == $user_info['id']);
@@ -163,6 +171,9 @@ function shd_post_ticket()
 		$context['display_private'] = shd_allowed_to('shd_view_ticket_private_any', $dept) || shd_allowed_to('shd_alter_privacy_own', $dept) || shd_allowed_to('shd_alter_privacy_any', $dept) || $context['ticket_form']['private']['setting'];
 	else
 		$context['display_private'] = true;
+
+	// Can they alter the hold?
+	$context['can_alter_hold'] = !$context['ticket_form']['is_new'] && empty($ticketinfo['is_own']) && shd_allowed_to('shd_alter_hold', $dept);
 
 	if (!$new_ticket && !empty($ticketinfo))
 	{
@@ -381,10 +392,13 @@ function shd_save_ticket()
 	}
 
 	$context['ticket_form'] = array(
+		'is_new' => $new_ticket,
+		'is_reply' => false,
 		'dept' => isset($newdept) ? $newdept : $dept,
 		'form_title' => !$new_ticket ? $txt['shd_edit_ticket'] : $txt['shd_create_ticket'],
 		'form_action' => $scripturl . '?action=helpdesk;sa=saveticket',
 		'first_msg' => !$new_ticket ? $ticketinfo['id_first_msg'] : 0,
+		'last_msg' => !$new_ticket ? $ticketinfo['id_last_msg'] : 0,
 		'message' => $_POST['shd_message'],
 		'subject' => $_POST['subject'],
 		'ticket' => $context['ticket_id'],
@@ -444,6 +458,9 @@ function shd_save_ticket()
 		$context['display_private'] = shd_allowed_to('shd_view_ticket_private_any', $dept) || shd_allowed_to('shd_alter_privacy_own', $dept) || shd_allowed_to('shd_alter_privacy_any', $dept) || $context['ticket_form']['private']['setting'];
 	else
 		$context['display_private'] = true;
+
+	// Can they alter the hold?
+	$context['can_alter_hold'] = !$context['ticket_form']['is_new'] && empty($ticketinfo['is_own']) && shd_allowed_to('shd_alter_hold', $dept);
 
 	// Custom fields?
 	shd_load_custom_fields(true, $context['ticket_form']['ticket'], $context['ticket_form']['dept']);
@@ -603,6 +620,9 @@ function shd_save_ticket()
 				$context['log_params']['user_name'] = $context['ticket_form']['proxy'];
 			}
 
+			// Is the ticket on hold?
+			shd_ticket_on_hold(isset($_POST['ticket_hold']), $ticketOptions);
+
 			shd_create_ticket_post($msgOptions, $ticketOptions, $posterOptions);
 
 			// Update our nice ticket store with the ticket id
@@ -678,6 +698,9 @@ function shd_save_ticket()
 					'subject' => $ticketinfo['subject'],
 				));
 			}
+
+			// Is the ticket on hold?
+			shd_ticket_on_hold(isset($_POST['ticket_hold']), $ticketOptions);
 
 			// DOOOOOOOO EEEEEEEEEEET NAO!
 			shd_modify_ticket_post($msgOptions, $ticketOptions, $posterOptions);
@@ -781,6 +804,8 @@ function shd_post_reply()
 	// So it's either our ticket and we can reply to our own, or we can reply to any because we're awesome
 	// or we're editing and we can haz such powarz
 	$context['ticket_form'] = array( // yes, everything goes in here.
+		'is_new' => $new_reply,
+		'is_reply' => true,
 		'dept' => $ticketinfo['dept'],
 		'form_title' => !empty($reply['id_msg']) ? $txt['shd_ticket_edit_reply'] : $txt['shd_reply_ticket'],
 		'form_action' => $scripturl . '?action=helpdesk;sa=savereply',
@@ -833,6 +858,9 @@ function shd_post_reply()
 		$context['display_private'] = shd_allowed_to('shd_view_ticket_private_any', $ticketinfo['dept']) || shd_allowed_to('shd_alter_privacy_own', $ticketinfo['dept']) || shd_allowed_to('shd_alter_privacy_any', $ticketinfo['dept']) || $context['ticket_form']['private']['setting'];
 	else
 		$context['display_private'] = true;
+
+	// Can they alter the hold?
+	$context['can_alter_hold'] = !$context['ticket_form']['is_new'] && empty($ticketinfo['is_own']) && shd_allowed_to('shd_alter_hold', $context['ticket_form']['dept']);
 
 	loadMemberData($ticketinfo['starter_id']);
 	if (loadMemberContext($ticketinfo['starter_id']))
@@ -1012,6 +1040,8 @@ function shd_save_reply()
 	}
 
 	$context['ticket_form'] = array(
+		'is_new' => $new_reply,
+		'is_reply' => true,
 		'dept' => $ticketinfo['dept'],
 		'form_title' => $new_reply ? $txt['shd_reply_ticket'] : $txt['shd_ticket_edit_reply'],
 		'form_action' => $scripturl . '?action=helpdesk;sa=savereply',
@@ -1048,6 +1078,7 @@ function shd_save_reply()
 		'reply' => $_POST['shd_message'],
 		'return_to_ticket' => isset($_REQUEST['goback']),
 		'disable_smileys' => !empty($_REQUEST['no_smileys']),
+		'on_hold' => $ticketinfo['status'] == TICKET_STATUS_HOLD,
 	);
 	$context['can_solve'] = (shd_allowed_to('shd_resolve_ticket_any', $ticketinfo['dept']) || (shd_allowed_to('shd_resolve_ticket_own', $ticketinfo['dept']) && $ticketinfo['starter_id'] == $user_info['id']));
 	$context['can_silent_update'] = $new_reply && shd_allowed_to('shd_silent_update', $ticketinfo['dept']);
@@ -1063,6 +1094,9 @@ function shd_save_reply()
 		$context['display_private'] = shd_allowed_to('shd_view_ticket_private_any', $ticketinfo['dept']) || shd_allowed_to('shd_alter_privacy_own', $ticketinfo['dept']) || shd_allowed_to('shd_alter_privacy_any', $ticketinfo['dept']) || $context['ticket_form']['private']['setting'];
 	else
 		$context['display_private'] = true;
+
+	// Can they alter the hold?
+	$context['can_alter_hold'] = !$context['ticket_form']['is_new'] && empty($ticketinfo['is_own']) && shd_allowed_to('shd_alter_hold', $context['ticket_form']['dept']);
 
 	loadMemberData($ticketinfo['starter_id']);
 	if (loadMemberContext($ticketinfo['starter_id']))

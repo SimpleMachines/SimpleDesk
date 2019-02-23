@@ -26,9 +26,27 @@ function shd_getJSONDocument(sUrl, funcCallback, sMethod)
 	return oMyDoc;
 }
 
-function shd_sendJSONDocument(sUrl, funcCallback)
+function shd_sendJSONDocument(sUrl, oData, funcCallback)
 {
-	return shd_getJSONDocument(sUrl, funcCallback, 'POST');
+	ajax_indicator(true);
+
+	var oMyDoc = $.ajax({
+		method: 'POST',
+		url: sUrl,
+		cache: false,
+		dataType: 'json',
+		data: oData,
+		success: function(responseJSON) {
+			if (typeof(funcCallback) != 'undefined')
+			{
+				ajax_indicator(false);
+
+				funcCallback.call(this, responseJSON);
+			}
+		},
+	});
+
+	return oMyDoc;
 }
 
 /* The privacy toggle in AJAX */

@@ -127,7 +127,15 @@ function template_ticket_info()
 							<li>
 								<img src="', $settings['default_images_url'], '/simpledesk/private.png" alt="" class="shd_smallicon">
 								', $txt['shd_ticket_privacy'], ': ', template_ticket_option('private'), '
-							</li>
+							</li>';
+
+	if (!empty($context['can_alter_hold']) && empty($context['ticket_form']['is_reply']))
+	echo '
+							<li>
+								<input name="ticket_hold" type="checkbox"', !empty($context['ticket_form']['on_hold']) ? ' checked="checked"' : '', '>', $txt['shd_ticket_hold'], '
+							</li>';
+
+	echo '
 						</ul>';
 
 	// Display ticket poster avatar?

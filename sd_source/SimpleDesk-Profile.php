@@ -433,7 +433,7 @@ function shd_profile_show_tickets($memID)
 			$request = shd_db_query('', '
 				SELECT
 					hdtr.id_member, hdt.subject, hdt.id_first_msg,
-					hdtr.body, hdtr.smileys_enabled, hdtr.poster_time, hdtr.id_ticket, hdtr.id_msg
+					hdtr.body, hdtr.smileys_enabled, hdtr.poster_time, hdtr.id_ticket, hdtr.id_msg, hdt.status
 				FROM {db_prefix}helpdesk_ticket_replies AS hdtr
 					INNER JOIN {db_prefix}helpdesk_tickets AS hdt ON (hdt.id_ticket = hdtr.id_ticket)
 				WHERE hdtr.id_member = {int:user}
@@ -448,7 +448,7 @@ function shd_profile_show_tickets($memID)
 			$request = shd_db_query('', '
 				SELECT
 					hdt.id_member_started, hdt.id_first_msg, hdt.id_last_msg, hdt.subject,
-					hdtr.body, hdtr.smileys_enabled, hdtr.poster_time, hdtr.id_ticket, hdtr.id_msg
+					hdtr.body, hdtr.smileys_enabled, hdtr.poster_time, hdtr.id_ticket, hdtr.id_msg, hdt.status
 				FROM {db_prefix}helpdesk_tickets AS hdt
 					INNER JOIN {db_prefix}helpdesk_ticket_replies AS hdtr ON (hdtr.id_msg = hdt.id_first_msg)
 				WHERE hdt.id_member_started = {int:user}
@@ -490,6 +490,7 @@ function shd_profile_show_tickets($memID)
 			'timestamp' => forum_time(true, $row['poster_time']),
 			'msg' => $row['id_msg'],
 			'is_ticket' => empty($context['can_haz_replies']) ? true : ($row['id_msg'] == $row['id_first_msg']),
+			'status' => $row['status'],
 		);
 	}
 	// Freedom.

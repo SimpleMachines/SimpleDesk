@@ -977,3 +977,75 @@ function shd_get_postable_depts()
 		}
 	}
 }
+
+/**
+ *	Set a ticket to on hold or restore to the proper status.
+ *
+ *	@param bool $on_hold (default true) Whether this ticket should be on hold or not.
+ *	@param array &$ticketOptions - a hash array by reference, stating one or more details necessary to change on a ticket:
+ *	<ul>
+ *	<li>id: Required in all cases, numeric ticket id that the edit relates to</li>
+ *	<li>subject: Optional string with the new subject in; if omitted no change will occur. If set, assumed to have been cleaned already (with $smcFunc['htmlspecialchars'] and strtr)</li>
+ *	<li>urgency: Optional integer with the new urgency in; if omitted no change will occur</li>
+ *	<li>status: Optional integer with the new status in; if omitted no change will occur</li>
+ *	<li>ssigned: Optional integer with the user id of assigned user; if omitted no change will occur (note, you would declare this as 0 to unassign a ticket - set to 0 is not omitted)</li>
+ *	<li>private: Optional boolean as to privacy of ticket: true = private, false = not private (note, you still declare this to change it)</li>
+ *	</ul>
+ *
+ *	@return bool True on success, false on failure.
+ *	@since 2.1
+*/
+function shd_ticket_on_hold($on_hold = false, &$ticketOptions)
+{
+	global $context, $smcFunc;
+
+	$current_status = !isset($context['ticket_form']['status']) ? 0 : $context['ticket_form']['status'];
+	$new_status = $current_status;
+
+	// If this is deleted or closed, you can't change the hold.  You also need to be staff.
+	if ($current_status == TICKET_STATUS_DELETED || $current_status == TICKET_STATUS_CLOSED)
+		return false;
+
+	// This is a issue.
+	if (!isset($context['ticket_form']['last_msg']))
+		shd_fatal_lang_error('Unable to find last_msg');
+
+	// Find the id_member of the last reply.
+	$query = shd_db_query('', '
+		SELECT id_msg, id_member
+		FROM {db_prefix}helpdesk_ticket_replies
+		WHERE id_ticket = {int:ticket}
+			AND message_status = {int:msg_normal}
+			AND id_msg = {int:last_msg}
+		LIMIT 10',
+		array(
+			'ticket' => $context['ticket_id'],
+			'msg_normal' => MSG_STATUS_NORMAL,
+			'last_msg' => $context['ticket_form']['last_msg'],
+		)
+	);
+
+	$row = $smcFunc['db_fetch_assoc']($query);
+	$smcFunc['db_free_result']($query);
+
+	// We want to make this on hold, this is simple.
+	if ($on_hold)
+		$new_status = TICKET_STATUS_HOLD;
+	// No replies? It has to be NEW.
+	elseif (empty($context['ticket_form']['num_replies']))
+		$new_status = TICKET_STATUS_NEW;
+	elseif (!empty($row['id_member']) && $context['ticket_form']['member']['id'] != $row['id_member'])
+		$new_status = TICKET_STATUS_PENDING_USER;
+	elseif (!empty($row['id_member']) && $context['ticket_form']['member']['id'] == $row['id_member'])
+		$new_status = TICKET_STATUS_PENDING_STAFF;
+
+	// Hook may want to do something different here.
+	call_integration_hook('shd_ticket_on_hold', array($current_status, &$new_status));
+
+	// Do nothing.
+	if ($current_status == $new_status)
+		return false;
+
+	$ticketOptions['status'] = $new_status;
+	return true;
+}

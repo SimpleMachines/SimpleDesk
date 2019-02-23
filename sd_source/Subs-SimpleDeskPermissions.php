@@ -77,6 +77,7 @@ function shd_load_all_permission_sets()
 		'shd_alter_urgency_higher' => array(true, 'ticketactions', 'log_urgency_increase.png'),
 		'shd_alter_privacy' => array(true, 'ticketactions', 'log_markprivate.png'),
 		'shd_assign_ticket' => array(true, 'ticketactions', 'log_assign.png'),
+		'shd_alter_hold' => array(false, 'ticketactions', 'ticket_hold.png'),
 
 		'shd_access_recyclebin' => array(false, 'deletion', 'access_recyclebin.png'),
 		'shd_delete_ticket' => array(true, 'deletion', 'log_delete.png'),
@@ -182,6 +183,7 @@ function shd_load_role_templates()
 				'shd_alter_urgency_any' => ROLEPERM_ALLOW,
 				'shd_alter_privacy_any' => ROLEPERM_ALLOW,
 				'shd_assign_ticket_own' => ROLEPERM_ALLOW,
+				'shd_alter_hold' => ROLEPERM_ALLOW,
 				'shd_view_profile_any' => ROLEPERM_ALLOW,
 				'shd_view_profile_log_any' => ROLEPERM_ALLOW,
 				'shd_view_preferences_own' => ROLEPERM_ALLOW,

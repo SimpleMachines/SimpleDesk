@@ -69,6 +69,7 @@ $txt['shd_status_3'] = 'Resolved/Closed';
 $txt['shd_status_4'] = 'Referred to Supervisor';
 $txt['shd_status_5'] = 'Escalated - Urgent';
 $txt['shd_status_6'] = 'Deleted';
+$txt['shd_status_7'] = 'On Hold';
 //@}
 
 //! @name Headings, for the helpdesk listing pages
@@ -80,6 +81,7 @@ $txt['shd_status_3_heading'] = 'Closed Tickets';
 $txt['shd_status_4_heading'] = 'Tickets Referred to Supervisor';
 $txt['shd_status_5_heading'] = 'Urgent Tickets';
 $txt['shd_status_6_heading'] = 'Recycled Tickets';
+$txt['shd_status_7_heading'] = 'On Hold Tickets';
 $txt['shd_status_assigned_heading'] = 'Assigned to Me';
 $txt['shd_status_withdeleted_heading'] = 'Tickets with Deleted Replies';
 //@}
@@ -229,6 +231,7 @@ $txt['shd_ticket_replies'] = 'Replies';
 $txt['shd_ticket_staff'] = 'Staff member';
 $txt['shd_ticket_attachments'] = 'Attachments';
 $txt['shd_ticket_reply_number'] = 'Reply <strong>#%s</strong>'; // 'Reply #34'
+$txt['shd_ticket_hold'] = 'Ticket On-Hold';
 $txt['shd_ticket'] = 'Ticket';
 $txt['shd_reply_written'] = 'Reply written %s'; // 'Reply written Today at 04:12:29 pm',  'Reply written January 5 2009 04:12:29 pm'
 $txt['shd_never'] = 'Never';

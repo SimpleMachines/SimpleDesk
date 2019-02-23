@@ -424,6 +424,16 @@ function shd_main_helpdesk()
 				'required' => true,
 				'collapsed' => false,
 			),
+			'hold' => array(
+				'block_icon' => 'ticket_hold.png',
+				'title' => $txt['shd_status_' . TICKET_STATUS_HOLD . '_heading'],
+				'where' => 'hdt.id_member_assigned != ' . $user_info['id'] . ' AND hdt.status = ' . TICKET_STATUS_HOLD,
+				'display' => $is_staff,
+				'count' => shd_count_helpdesk_tickets('hold', $is_staff),
+				'columns' => shd_get_block_columns('hold'),
+				'required' => true,
+				'collapsed' => false,
+			),
 		),
 		'shd_home_view' => $is_staff ? 'staff' : 'user',
 	);
@@ -432,17 +442,20 @@ function shd_main_helpdesk()
 	if (isset($modSettings['shd_block_order_1'], $modSettings['shd_block_order_2'], $modSettings['shd_block_order_3'], $modSettings['shd_block_order_4']))
 	{
 		$context['ticket_block_order'] = array();
-		$unused = array('assigned' => 0, 'new' => 0, 'staff' => 0, 'user' => 0);
+		$unused = array('assigned' => 0, 'new' => 0, 'staff' => 0, 'user' => 0, 'hold' => 0);
 
-		for ($i = 1; $i <= 4; $i++)
+		for ($i = 1; $i <= 5; $i++)
 		{
+			// Is anything even set for this block?
+			if (!isset($modSettings['shd_block_order_' . $i]))
+				continue;
 			// Did we already use this?
 			if (in_array($modSettings['shd_block_order_' . $i], $context['ticket_block_order']))
 				continue;
 			// Can they see this?
 			elseif (empty($context['ticket_blocks'][$modSettings['shd_block_order_' . $i]]['display']))
 				continue;
-	
+
 			$context['ticket_block_order'][$i] = $modSettings['shd_block_order_' . $i];
 			unset($unused[$modSettings['shd_block_order_' . $i]]);
 		}
@@ -451,7 +464,7 @@ function shd_main_helpdesk()
 			$context['ticket_block_order'][] = $u;
 	}
 	else
-		$context['ticket_block_order'] = array(1 => 'assigned', 2 => 'new', 3 => 'staff', 4 => 'user');
+		$context['ticket_block_order'] = array(1 => 'assigned', 2 => 'new', 3 => 'staff', 4 => 'user', 5 => 'hold');
 
 	if (!empty($context['shd_dept_name']) && $context['shd_multi_dept'])
 		$context['linktree'][] = array(
@@ -581,6 +594,16 @@ function shd_view_block()
 				'display' => true,
 				'count' => shd_count_helpdesk_tickets('with_user'),
 				'columns' => shd_get_block_columns($is_staff ? 'user_staff' : 'user_user'),
+				'required' => true,
+				'collapsed' => false,
+			),
+			'hold' => array(
+				'block_icon' => 'ticket_hold.png',
+				'title' => $txt['shd_status_' . TICKET_STATUS_HOLD . '_heading'],
+				'where' => 'hdt.id_member_assigned != ' . $user_info['id'] . ' AND hdt.status = ' . TICKET_STATUS_HOLD,
+				'display' => $is_staff,
+				'count' => shd_count_helpdesk_tickets('hold', $is_staff),
+				'columns' => shd_get_block_columns('hold'),
 				'required' => true,
 				'collapsed' => false,
 			),
@@ -1298,7 +1321,7 @@ function shd_helpdesk_listing()
  *	- recycled: deleted tickets
  *	- withdeleted: tickets with deleted replies
  *
- *	@return array An indexed array of the columns in the order they should be displayed.
+ *	@return array An indexed array of the columns in the order they should be displayed as the key. Value contains the width of the column.
  *	@see shd_main_helpdesk()
  *	@see shd_closed_tickets()
  *	@see shd_recycle_bin()
@@ -1310,85 +1333,87 @@ function shd_get_block_columns($block)
 	{
 		case 'assigned':
 			return array(
-					'ticket_id',
-					'ticket_name',
-					'starting_user',
-					'replies',
-					'status',
-					'urgency',
-					'updated',
-					'actions',
+				'ticket_id' => 8,
+				'ticket_name' => 15,
+				'starting_user' => 12,
+				'replies' => 7,
+				'status' => 17,
+				'urgency' => 8,
+				'updated' => 22,
+				'actions' => 5,
 				);
 		case 'new':
 			return array(
-				'ticket_id',
-				'ticket_name',
-				'starting_user',
-				'assigned',
-				'urgency',
-				'updated',
-				'actions',
+				'ticket_id' => 8,
+				'ticket_name' => 15,
+				'starting_user' => 12,
+				'assigned' => 12,
+				'urgency' => 8,
+				'updated' => 22,
+				'actions' => 5,
 			);
+		case 'hold':
 		case 'staff':
 			return array(
-				'ticket_id',
-				'ticket_name',
-				'starting_user',
-				'replies',
-				'assigned',
-				'urgency',
-				'updated',
-				'actions',
+				'ticket_id' => 8,
+				'ticket_name' => 15,
+				'starting_user' => 12,
+				'replies' => 7,
+				'assigned' => 12,
+				'urgency' => 8,
+				'updated' => 22,
+				'actions' => 5,
 			);
 		case 'user_staff':
 			return array(
-				'ticket_id',
-				'ticket_name',
-				'starting_user',
-				'last_reply',
-				'replies',
-				'urgency',
-				'updated',
-				'actions',
+				'ticket_id' => 8,
+				'ticket_name' => 15,
+				'starting_user' => 12,
+				'last_reply' => 11,
+				'replies' => 7,
+				'assigned' => 12,
+				'urgency' => 8,
+				'updated' => 22,
+				'actions' => 5,
 			);
 		case 'user_user':
 			return array(
-				'ticket_id',
-				'ticket_name',
-				'last_reply',
-				'replies',
-				'urgency',
-				'updated',
-				'actions',
+				'ticket_id' => 8,
+				'ticket_name' => 15,
+				'last_reply' => 22,
+				'replies' => 7,
+				'urgency' => 8,
+				'updated' => 22,
+				'actions' => 5,
 			);
 		case 'closed':
 			return array(
-				'ticket_id',
-				'ticket_name',
-				'starting_user',
-				'replies',
-				'updated',
-				'actions',
+				'ticket_id' => 8,
+				'ticket_name' => 15,
+				'starting_user' => 12,
+				'replies' => 7,
+				'updated' => 22,
+				'actions' => 5,
 			);
 		case 'recycled':
 			return array(
-				'ticket_id',
-				'ticket_name',
-				'starting_user',
-				'allreplies',
-				'assigned',
-				'updated',
-				'actions',
+				'ticket_id' => 8,
+				'ticket_name' => 15,
+				'starting_user' => 12,
+				'allreplies' => 7,
+				'assigned' => 12,
+				'updated' => 22,
+				'actions' => 5,
 			);
 		case 'withdeleted':
 			return array(
-				'ticket_id',
-				'ticket_name',
-				'starting_user',
-				'allreplies',
-				'assigned',
-				'updated',
-				'actions',
+				'ticket_id' => 8,
+				'ticket_name' => 15,
+				'starting_user' => 12,
+				'allreplies' => 7,
+				'assigned' => 12,
+				'updated' => 22,
+				'actions' => 5,
 			);
 		default:
 			return array();
