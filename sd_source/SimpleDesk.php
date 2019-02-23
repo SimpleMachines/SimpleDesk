@@ -1298,7 +1298,7 @@ function shd_helpdesk_listing()
  *	- recycled: deleted tickets
  *	- withdeleted: tickets with deleted replies
  *
- *	@return array An indexed array of the columns in the order they should be displayed.
+ *	@return array An indexed array of the columns in the order they should be displayed as the key. Value contains the width of the column.
  *	@see shd_main_helpdesk()
  *	@see shd_closed_tickets()
  *	@see shd_recycle_bin()
@@ -1310,85 +1310,86 @@ function shd_get_block_columns($block)
 	{
 		case 'assigned':
 			return array(
-					'ticket_id',
-					'ticket_name',
-					'starting_user',
-					'replies',
-					'status',
-					'urgency',
-					'updated',
-					'actions',
+				'ticket_id' => 8,
+				'ticket_name' => 15,
+				'starting_user' => 12,
+				'replies' => 7,
+				'status' => 17,
+				'urgency' => 8,
+				'updated' => 22,
+				'actions' => 5,
 				);
 		case 'new':
 			return array(
-				'ticket_id',
-				'ticket_name',
-				'starting_user',
-				'assigned',
-				'urgency',
-				'updated',
-				'actions',
+				'ticket_id' => 8,
+				'ticket_name' => 15,
+				'starting_user' => 12,
+				'assigned' => 12,
+				'urgency' => 8,
+				'updated' => 22,
+				'actions' => 5,
 			);
 		case 'staff':
 			return array(
-				'ticket_id',
-				'ticket_name',
-				'starting_user',
-				'replies',
-				'assigned',
-				'urgency',
-				'updated',
-				'actions',
+				'ticket_id' => 8,
+				'ticket_name' => 15,
+				'starting_user' => 12,
+				'replies' => 7,
+				'assigned' => 12,
+				'urgency' => 8,
+				'updated' => 22,
+				'actions' => 5,
 			);
 		case 'user_staff':
 			return array(
-				'ticket_id',
-				'ticket_name',
-				'starting_user',
-				'last_reply',
-				'replies',
-				'urgency',
-				'updated',
-				'actions',
+				'ticket_id' => 8,
+				'ticket_name' => 15,
+				'starting_user' => 12,
+				'last_reply' => 11,
+				'replies' => 7,
+				'assigned' => 12,
+				'urgency' => 8,
+				'updated' => 22,
+				'actions' => 5,
 			);
 		case 'user_user':
 			return array(
-				'ticket_id',
-				'ticket_name',
-				'last_reply',
-				'replies',
-				'urgency',
-				'updated',
-				'actions',
+				'ticket_id' => 8,
+				'ticket_name' => 15,
+				'last_reply' => 22,
+				'replies' => 7,
+				'urgency' => 8,
+				'updated' => 22,
+				'actions' => 5,
 			);
 		case 'closed':
 			return array(
-				'ticket_id',
-				'ticket_name',
-				'starting_user',
-				'replies',
-				'updated',
-				'actions',
+				'ticket_id' => 8,
+				'ticket_name' => 15,
+				'starting_user' => 12,
+				'replies' => 7,
+				'updated' => 22,
+				'actions' => 5,
 			);
 		case 'recycled':
 			return array(
-				'ticket_id',
-				'ticket_name',
-				'starting_user',
-				'allreplies',
-				'assigned',
-				'updated',
-				'actions',
+				'ticket_id' => 8,
+				'ticket_name' => 15,
+				'starting_user' => 12,
+				'allreplies' => 7,
+				'assigned' => 12,
+				'updated' => 22,
+				'actions' => 5,
 			);
 		case 'withdeleted':
 			return array(
-				'ticket_id',
-				'ticket_name',
-				'starting_user',
-				'allreplies',
-				'assigned',
-				'updated',
-				'actions',
+				'ticket_id' => 8,
+				'ticket_name' => 15,
+				'starting_user' => 12,
+				'allreplies' => 7,
+				'assigned' => 12,
+				'updated' => 22,
+				'actions' => 5,
 			);
 		default:
 			return array();
