@@ -517,7 +517,7 @@ function shd_save_ticket()
 			),
 		);
 
-	if (!empty($context['ticket_id']))
+	if (!empty($context['ticket_id']) && !empty($ticketinfo))
 	{
 		loadMemberData($ticketinfo['starter_id']);
 		if (loadMemberContext($ticketinfo['starter_id']))
