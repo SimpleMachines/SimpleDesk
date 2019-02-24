@@ -404,7 +404,7 @@ function shd_save_ticket()
 			'link' => '<a href="' . $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $context['ticket_id'] . '">' . $ticketinfo['subject'] . '</a>',
 		);
 	
-		$context['can_solve'] = !$new_ticket && (shd_allowed_to('shd_resolve_ticket_any', $dept) || (shd_allowed_to('shd_resolve_ticket_own', $dept) && $ticketinfo['starter_id'] == $user_info['id']));
+		$context['can_solve'] = shd_allowed_to('shd_resolve_ticket_any', $dept) || (shd_allowed_to('shd_resolve_ticket_own', $dept) && $ticketinfo['starter_id'] == $user_info['id']);
 	}
 
 	$context['ticket_form'] += array(
@@ -517,7 +517,7 @@ function shd_save_ticket()
 			),
 		);
 
-	if (!$new_ticket)
+	if (!empty($context['ticket_id']))
 	{
 		loadMemberData($ticketinfo['starter_id']);
 		if (loadMemberContext($ticketinfo['starter_id']))
