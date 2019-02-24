@@ -671,8 +671,13 @@ function shd_ajax_notify()
 			'ticket' => $context['ticket_id'],
 		)
 	);
-	if ($smcFunc['db_num_rows']($query) != 0)
-		$ticket = $smcFunc['db_fetch_assoc']($query);
+	if (empty($smcFunc['db_num_rows']($query)))
+	{
+		$smcFunc['db_free_result']($query);
+		return array('success' => false, 'error' => $txt['shd_no_ticket']);
+	}
+
+	$ticket = $smcFunc['db_fetch_assoc']($query);
 	$smcFunc['db_free_result']($query);
 
 	if (empty($ticket) || !shd_allowed_to('shd_singleton_email', $ticket['id_dept']) || $ticket['status'] == TICKET_STATUS_CLOSED || $ticket['status'] == TICKET_STATUS_DELETED)

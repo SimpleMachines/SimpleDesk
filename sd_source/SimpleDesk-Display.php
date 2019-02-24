@@ -381,6 +381,7 @@ function shd_view_ticket()
 			continue;
 
 		// If this is going to be displayed for the individual ticket, we need to figure out where it should go.
+		$pos = CFIELD_PLACE_DETAILS;
 		if ($row['field_loc'] & CFIELD_TICKET)
 			$pos = $placements[$row['placement']];
 
@@ -833,7 +834,7 @@ function shd_prepare_ticket_context()
 		$memberContext[$message['id_member']]['group'] = $txt['guest_title'];
 		$memberContext[$message['id_member']]['link'] = $message['poster_name'];
 		$memberContext[$message['id_member']]['email'] = $message['poster_email'];
-		$memberContext[$message['id_member']]['show_email'] = showEmailAddress(true, 0);
+		$memberContext[$message['id_member']]['show_email'] = false;
 		$memberContext[$message['id_member']]['is_guest'] = true;
 		$memberContext[$message['id_member']]['group_icons'] = '';
 	}
@@ -1027,7 +1028,7 @@ function shd_attachment_info($attach_info)
 						$thumb_mime = 'image/' . $thumb_ext;
 
 					$thumb_filename = $attach_info['filename'] . '_thumb';
-					$thumb_hash = getAttachmentFilename($thumb_filename, false, null, true);
+					$thumb_hash = getAttachmentFilename($thumb_filename, 0, null, true);
 
 					$old_id_thumb = $attach_info['id_thumb'];
 					// Add this beauty to the database.

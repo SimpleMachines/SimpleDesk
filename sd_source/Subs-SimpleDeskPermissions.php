@@ -404,6 +404,9 @@ function shd_load_user_perms()
 		$tickets_private_any_dept = shd_allowed_to('shd_view_ticket_private_any', false);
 		$tickets_private_own_dept = shd_allowed_to('shd_view_ticket_private_own', false);
 
+		if (is_bool($tickets_private_any_dept) || is_bool($tickets_private_own_dept))
+			return shd_fatal_error('Tickets have no bools');
+
 		$clauses = array();
 		$privacy_clauses = array();
 
