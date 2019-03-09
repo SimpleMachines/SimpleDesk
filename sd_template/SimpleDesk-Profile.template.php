@@ -305,7 +305,7 @@ function template_shd_profile_show_tickets()
 				</div>';
 
 	// The navigation.
-	template_button_strip($context['show_tickets_navigation']);
+	template_shd_button_strip($context['show_tickets_navigation']);
 
 	// Pagination
 	echo '
@@ -370,7 +370,7 @@ function template_shd_profile_show_notify_override()
 				</div>';
 
 	// The navigation.
-	template_button_strip($context['show_tickets_navigation']);
+	template_shd_button_strip($context['show_tickets_navigation']);
 
 	echo '
 				<table class="table_grid">

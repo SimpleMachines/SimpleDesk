@@ -19,7 +19,7 @@ function template_search()
 	global $context, $txt, $scripturl, $settings, $modSettings;
 
 	// Back to the helpdesk.
-	template_button_strip(array($context['navigation']['back']));
+	template_shd_button_strip(array($context['navigation']['back']));
 
 	if (!empty($modSettings['shd_new_search_index']))
 		echo '
@@ -155,7 +155,7 @@ function template_search_no_results()
 	global $context, $txt, $scripturl, $settings, $modSettings;
 
 	// Back to the helpdesk.
-	template_button_strip(array($context['navigation']['back'], $context['navigation']['search']));
+	template_shd_button_strip(array($context['navigation']['back'], $context['navigation']['search']));
 
 	echo '
 	<div class="cat_bar">
@@ -268,7 +268,7 @@ function template_search_results()
 	global $context, $txt, $scripturl, $settings, $modSettings, $smcFunc;
 
 	// Back to the helpdesk.
-	template_button_strip(array($context['navigation']['back'], $context['navigation']['search']));
+	template_shd_button_strip(array($context['navigation']['back'], $context['navigation']['search']));
 
 	echo '
 	<div class="cat_bar">

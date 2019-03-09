@@ -26,7 +26,7 @@ function template_shd_tickettotopic()
 {
 	global $txt, $settings, $context, $scripturl, $modSettings;
 
-	template_button_strip(array($context['navigation']['back']));
+	template_shd_button_strip(array($context['navigation']['back']));
 
 	echo '
 		<div class="cat_bar">

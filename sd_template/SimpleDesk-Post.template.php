@@ -19,7 +19,7 @@ function template_ticket_post()
 {
 	global $context;
 
-	template_button_strip(array($context['navigation']['back']));
+	template_shd_button_strip(array($context['navigation']['back']));
 	template_preview();
 	template_ticket_info();
 	template_ticket_subjectbox();
