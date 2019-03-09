@@ -714,7 +714,7 @@ function shd_count_helpdesk_tickets($status = '', $is_staff = false)
 		case 'withdeleted':
 			return $context['ticket_count']['withdeleted'];
 		case 'hold':
-			return $context['ticket_count'][TICKET_STATUS_HOLD];
+			return !empty($context['ticket_count'][TICKET_STATUS_HOLD]) ? $context['ticket_count'][TICKET_STATUS_HOLD] : 0;
 		default:
 			return array_sum($context['ticket_count']) - $context['ticket_count']['withdeleted']; // since withdeleted is the only duplicate information, all the rest is naturally self-exclusive
 	}
