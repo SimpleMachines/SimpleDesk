@@ -175,7 +175,7 @@ function shd_post_ticket()
 	// Can they alter the hold?
 	$context['can_alter_hold'] = !$context['ticket_form']['is_new'] && empty($ticketinfo['is_own']) && shd_allowed_to('shd_alter_hold', $dept);
 
-	if (!$new_ticket && !empty($ticketinfo))
+	if (!$context['ticket_form']['is_new'] && !empty($ticketinfo))
 	{
 		$context['ticket_form'] += array(
 			'member' => array(
@@ -194,7 +194,7 @@ function shd_post_ticket()
 		if (loadMemberContext($ticketinfo['starter_id']))
 			$context['ticket_form']['member']['avatar'] = $memberContext[$ticketinfo['starter_id']]['avatar'];
 
-		if (!$new_ticket && !empty($ticketinfo['modified_time']))
+		if (!$context['ticket_form']['is_new'] && !empty($ticketinfo['modified_time']))
 			$context['ticket_form'] += array(
 				'modified' => array(
 					'name' => $ticketinfo['modified_name'],
@@ -225,7 +225,7 @@ function shd_post_ticket()
 			),
 		);
 
-	shd_get_urgency_options($new_ticket || (!empty($ticketinfo) && $ticketinfo['is_own']), $context['ticket_form']['dept']);
+	shd_get_urgency_options($context['ticket_form']['is_new'] || (!empty($ticketinfo) && $ticketinfo['is_own']), $context['ticket_form']['dept']);
 
 	if ($context['ticket_form']['num_replies'] && !empty($ticketinfo['id_first_msg']))
 		shd_setup_replies($ticketinfo['id_first_msg']);
@@ -237,7 +237,7 @@ function shd_post_ticket()
 
 	// Build the link tree and navigation
 	$context['linktree'][] = array(
-		'name' => $new_ticket ? $txt['shd_create_ticket'] : sprintf($txt['shd_edit_ticket_linktree'], $context['ticket_form']['link']),
+		'name' => $context['ticket_form']['is_new'] ? $txt['shd_create_ticket'] : sprintf($txt['shd_edit_ticket_linktree'], $context['ticket_form']['link']),
 	);
 
 	$context['page_title'] = $txt['shd_helpdesk'];
@@ -438,10 +438,10 @@ function shd_save_ticket()
 	if (!empty($context['ticket_form']['selecting_dept']))
 		shd_get_postable_depts();
 
-	$context['log_action'] = $new_ticket ? 'newticket' : 'editticket';
+	$context['log_action'] = $context['ticket_form']['is_new'] ? 'newticket' : 'editticket';
 	$context['log_params']['subject'] = $context['ticket_form']['subject'];
 
-	$context['can_post_proxy'] = $new_ticket && isset($_REQUEST['proxy']) && shd_allowed_to('shd_post_proxy', $dept);
+	$context['can_post_proxy'] = $context['ticket_form']['is_new'] && isset($_REQUEST['proxy']) && shd_allowed_to('shd_post_proxy', $dept);
 	if ($context['can_post_proxy'] && !empty($_REQUEST['proxy_author']))
 	{
 		// OK, so we have a name... do we know this person?
@@ -507,7 +507,7 @@ function shd_save_ticket()
 			'body' => shd_format_text($_POST['shd_message']),
 		);
 
-	if (!$new_ticket && !empty($ticketinfo['modified_time']))
+	if (!$context['ticket_form']['is_new'] && !empty($ticketinfo['modified_time']))
 		$context['ticket_form'] += array(
 			'modified' => array(
 				'name' => $ticketinfo['modified_name'],
@@ -585,7 +585,7 @@ function shd_save_ticket()
 
 		// Build the link tree and navigation
 		$context['linktree'][] = array(
-			'name' => $new_ticket ? $txt['shd_create_ticket'] : sprintf($txt['shd_edit_ticket_linktree'], $context['ticket_form']['link']),
+			'name' => $context['ticket_form']['is_new'] ? $txt['shd_create_ticket'] : sprintf($txt['shd_edit_ticket_linktree'], $context['ticket_form']['link']),
 		);
 
 		checkSubmitOnce('register');
@@ -595,7 +595,7 @@ function shd_save_ticket()
 		// It all worked, w00t, so let's get ready to rumble
 		$attachIDs = shd_handle_attachments();
 
-		if ($new_ticket)
+		if ($context['ticket_form']['is_new'])
 		{
 			// Now to add the ticket details
 			$posterOptions = array(
@@ -663,7 +663,7 @@ function shd_save_ticket()
 				'custom_fields' => !empty($context['ticket_form']['custom_fields']['ticket']) ? $context['ticket_form']['custom_fields']['ticket'] : array(),
 			);
 
-			if ((bool) $ticketinfo['smileys_enabled'] == $context['ticket_form']['disable_smileys']) // since one is enabled, one is 'now disable'...
+			if (isset($ticketinfo['smileys_enabled']) && (bool) $ticketinfo['smileys_enabled'] == $context['ticket_form']['disable_smileys']) // since one is enabled, one is 'now disable'...
 				$msgOptions['smileys_enabled'] = !$context['ticket_form']['disable_smileys'];
 
 			// This things don't trigger modified time
@@ -2099,7 +2099,7 @@ function shd_handle_attachments()
 */
 function shd_posting_additional_options()
 {
-	global $context, $modSettings, $txt, $options, $settings, $new_ticket;
+	global $context, $modSettings, $txt, $options, $settings;
 
 	$context['ticket_form']['additional_opts'] = array(
 		'goback' => array(
