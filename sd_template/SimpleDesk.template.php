@@ -581,7 +581,7 @@ function template_shd_maintenance_below()
 // Provide a placeholder in the event template_button_strip isn't defined (like in the mobile templates)
 if (!function_exists('template_button_strip'))
 {
-	function template_button_strip($navigation, $direction = '', $strip_options = array())
+	function template_button_strip()
 	{
 	}
 }

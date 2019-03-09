@@ -26,9 +26,8 @@ function template_bi_shd_icon($board)
 /**
  *	Board Index Integration for SimpleDesk Stats.
  *
- *	@param array $board Current board information.
  *	@since 2.1
  */
-function template_bi_shd_stats($board)
+function template_bi_shd_stats()
 {
 }

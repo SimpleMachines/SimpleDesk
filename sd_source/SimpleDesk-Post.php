@@ -517,10 +517,10 @@ function shd_save_ticket()
 			),
 		);
 
-	if (!empty($context['ticket_id']) && !empty($ticketinfo))
+	if (!empty($context['ticket_id']) && !empty($ticketinfo) && !empty($ticketinfo['starter_id']))
 	{
 		loadMemberData($ticketinfo['starter_id']);
-		if (loadMemberContext($ticketinfo['starter_id']))
+		if (isset($memberContext[$ticketinfo['starter_id']]) && loadMemberContext($ticketinfo['starter_id']))
 			$context['ticket_form']['member'] = array(
 				'name' => $ticketinfo['starter_name'],
 				'id' => $ticketinfo['starter_id'],
@@ -2066,7 +2066,7 @@ function shd_handle_attachments()
 				if (in_array('bad_extension', $attachmentOptions['errors']))
 				{
 					checkSubmitOnce('free');
-					return fatal_error($attachmentOptions['name'] . '.<br>' . $txt['cant_upload_type'] . ' ' . strtr($modSettings['attachmentExtensions'], array(',' => ', ')) . '.', false);
+					shd_fatal_lang_error($attachmentOptions['name'] . '.<br>' . $txt['cant_upload_type'] . ' ' . strtr($modSettings['attachmentExtensions'], array(',' => ', ')) . '.', false);
 				}
 				if (in_array('directory_full', $attachmentOptions['errors']))
 				{
@@ -2076,7 +2076,7 @@ function shd_handle_attachments()
 				if (in_array('bad_filename', $attachmentOptions['errors']))
 				{
 					checkSubmitOnce('free');
-					return fatal_error(basename($attachmentOptions['name']) . '.<br>' . $txt['restricted_filename'] . '.', 'critical');
+					shd_fatal_lang_error(basename($attachmentOptions['name']) . '.<br>' . $txt['restricted_filename'] . '.', 'critical');
 				}
 				if (in_array('taken_filename', $attachmentOptions['errors']))
 				{
