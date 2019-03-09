@@ -520,7 +520,9 @@ function shd_save_ticket()
 	if (!empty($context['ticket_id']) && !empty($ticketinfo) && !empty($ticketinfo['starter_id']))
 	{
 		loadMemberData($ticketinfo['starter_id']);
-		if (isset($ticketinfo, $memberContext[$ticketinfo['starter_id']]) && loadMemberContext($ticketinfo['starter_id']))
+		$member_loaded = loadMemberContext($ticketinfo['starter_id']);
+
+		if (!empty($member_loaded))
 			$context['ticket_form']['member'] = array(
 				'name' => $ticketinfo['starter_name'],
 				'id' => $ticketinfo['starter_id'],

@@ -586,5 +586,5 @@ function template_shd_button_strip($button_strip, $direction = '', $strip_option
 {
 	// If SMF version exists, use it.
 	if (function_exists('template_button_strip'))
-		template_button_strip($button_strip, $direction = '', $strip_options = array());
+		template_button_strip($button_strip, $direction, $strip_options);
 }
