@@ -28,10 +28,10 @@ function template_viewticket()
 
 	// SMF style icons go first.
 	if ($modSettings['shd_ticketnav_style'] == 'smf')
-		template_button_strip($context['ticket_navigation'], 'right');
+		template_shd_button_strip($context['ticket_navigation'], 'right');
 
 	// Back to the helpdesk.
-	template_button_strip(array($context['navigation']['back'], $context['navigation']['replies'], $context['navigation']['ticketlog']));
+	template_shd_button_strip(array($context['navigation']['back'], $context['navigation']['replies'], $context['navigation']['ticketlog']));
 
 	echo '
 		<div class="cat_bar">

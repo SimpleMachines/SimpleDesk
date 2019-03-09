@@ -131,6 +131,7 @@ $txt['shd_pref_block_order_user_block'] = 'Normal ordering of tickets in the "Ti
 $txt['shd_pref_block_order_closed_block'] = 'Normal ordering of tickets in the "Closed Tickets" block';
 $txt['shd_pref_block_order_recycle_block'] = 'Normal ordering of tickets in the "Recycled Tickets" block';
 $txt['shd_pref_block_order_withdeleted_block'] = 'Normal ordering of tickets in the "Tickets with Deleted Replies" block';
+$txt['shd_pref_block_order_hold_block'] = 'Normal ordering of tickets in the "Tickets On Hold" block';
 
 $txt['shd_pref_block_order_ticketid_asc'] = 'Ticket number - lowest first';
 $txt['shd_pref_block_order_ticketid_desc'] = 'Ticket number - highest first';

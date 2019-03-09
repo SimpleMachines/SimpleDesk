@@ -1412,12 +1412,23 @@ function shd_load_user_prefs($user = 0)
 				'permission' => 'shd_access_recyclebin',
 				'show' => true,
 			),
+			'block_order_hold_block' => array(
+				'default' => 'updated_asc',
+				'type' => 'select',
+				'icon' => 'ticket_hold.png',
+				'group' => 'block_order',
+				'permission' => 'access_helpdesk',
+				'show' => true,
+			),
 		);
 
 		// We want to add the preferences per block. Because we already know what options there are per block elsewhere, let's reuse that.
 		if (!function_exists('shd_get_block_columns'))
 			require_once($sourcedir . '/sd_source/SimpleDesk.php');
 		$blocks = array('assigned', 'new', 'staff', shd_allowed_to('shd_staff', 0) ? 'user_staff' : 'user_user', 'closed', 'recycled', 'withdeleted');
+		if (shd_allowed_to('shd_staff', 0))
+			$blocks[] = 'hold';
+
 		foreach ($blocks as $block)
 		{
 			$items = shd_get_block_columns($block);
@@ -1430,7 +1441,7 @@ function shd_load_user_prefs($user = 0)
 				$block = 'recycle';
 			$block_id = 'block_order_' . $block . '_block';
 			$base_prefs[$block_id]['options'] = array();
-			foreach ($items as $item)
+			foreach ($items as $item => $width)
 			{
 				if ($item != 'actions')
 				{

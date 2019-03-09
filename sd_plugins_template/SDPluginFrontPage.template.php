@@ -20,7 +20,7 @@ function template_shd_frontpage()
 	echo '
 		<div class="modbuttons clearfix margintop">';
 
-	template_button_strip($context['navigation'], 'bottom');
+	template_shd_button_strip($context['navigation'], 'bottom');
 
 	echo '
 		</div>

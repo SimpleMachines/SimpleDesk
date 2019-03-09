@@ -26,7 +26,7 @@ function template_assign()
 	if (empty($context['shd_return_to']))
 		$context['shd_return_to'] = 'ticket';
 
-		template_button_strip(array($context['navigation']['back']));
+		template_shd_button_strip(array($context['navigation']['back']));
 
 	echo '
 	<div class="cat_bar">

@@ -24,7 +24,7 @@ function template_main()
 {
 	global $context, $txt, $settings, $scripturl;
 
-	template_button_strip($context['navigation'], 'bottom');
+	template_shd_button_strip($context['navigation'], 'bottom');
 
 	echo '
 		<div class="title_bar">
@@ -97,7 +97,7 @@ function template_shd_depts()
 {
 	global $context, $txt, $settings, $scripturl;
 
-	template_button_strip($context['navigation'], 'bottom');
+	template_shd_button_strip($context['navigation'], 'bottom');
 
 	echo '
 		<div class="title_bar">
@@ -175,7 +175,7 @@ function template_closedtickets()
 {
 	global $context, $txt, $settings, $scripturl;
 
-	template_button_strip($context['navigation'], 'bottom');
+	template_shd_button_strip($context['navigation'], 'bottom');
 
 	echo '
 		<div class="title_bar">
@@ -241,7 +241,7 @@ function template_recyclebin()
 {
 	global $context, $txt, $settings, $scripturl;
 
-	template_button_strip($context['navigation'], 'bottom');
+	template_shd_button_strip($context['navigation'], 'bottom');
 
 	echo '
 		<div class="title_bar">
@@ -575,13 +575,16 @@ function template_shd_maintenance_above()
 */
 function template_shd_maintenance_below()
 {
-
 }
 
-// Provide a placeholder in the event template_button_strip isn't defined (like in the mobile templates)
-if (!function_exists('template_button_strip'))
+/**
+ *	Wrapper for the button_strip.
+ *
+ *	@since 2.1
+*/
+function template_shd_button_strip($button_strip, $direction = '', $strip_options = array())
 {
-	function template_button_strip()
-	{
-	}
+	// If SMF version exists, use it.
+	if (function_exists('template_button_strip'))
+		template_button_strip($button_strip, $direction = '', $strip_options = array());
 }
