@@ -354,6 +354,7 @@ function shd_save_ticket()
 		// some healthy defaults
 		$context['ticket_id'] = 0;
 		$new_ticket = true;
+		$ticketinfo = array();
 		$msg = 0;
 		$is_own = true;
 		$new_status = TICKET_STATUS_NEW;
