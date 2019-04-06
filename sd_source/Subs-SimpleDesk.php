@@ -611,7 +611,7 @@ function shd_count_helpdesk_tickets($status = '', $is_staff = false)
 	if (empty($context['ticket_count']))
 	{
 		$context['ticket_count'] = array();
-		for ($i = 0; $i <= 6; $i++)
+		for ($i = 0; $i <= 7; $i++)
 			$context['ticket_count'][$i] = 0; // set the count to zero for all known states
 
 		$cache_id = 'shd_ticket_count_' . (!empty($context['shd_department']) ? 'dept' . $context['shd_department'] . '_' : '') . $user_info['id'];
