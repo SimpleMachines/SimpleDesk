@@ -42,7 +42,8 @@ function template_shd_cannedreplies_home()
 	{
 		foreach ($context['canned_replies'] as $cat_id => $cat)
 		{
-			echo '
+			if (!empty($cat['name'])) {
+				echo '
 			<br>
 			<div class="cat_bar">
 				<h3 class="catbg">
@@ -62,18 +63,18 @@ function template_shd_cannedreplies_home()
 					<td colspan="2" width="1%">', $txt['shd_actions'], '</td>
 				</tr>';
 
-			if (empty($cat['replies']))
-			{
-				echo '
+				if (empty($cat['replies']))
+				{
+					echo '
 				<tr class="windowbg">
 					<td colspan="9" class="centertext">', $txt['shd_admin_cannedreplies_emptycat'], '</td>
 				</tr>';
-			}
-			else
-			{
-				foreach ($cat['replies'] as $reply)
+				}
+				else
 				{
-					echo '
+					foreach ($cat['replies'] as $reply)
+					{
+						echo '
 						<tr class="windowbg shd_actions">
 							<td>', $reply['title'], '</td>
 							<td>', $reply['depts'], '</td>
@@ -89,14 +90,15 @@ function template_shd_cannedreplies_home()
 							<td><a href="', $scripturl, '?action=admin;area=helpdesk_cannedreplies;sa=editreply;reply=' . $reply['id_reply'] . ';', $context['session_var'], '=', $context['session_id'], '"><img src="', $settings['default_images_url'], '/simpledesk/edit.png" class="icon" alt="', $txt['shd_ticket_edit'], '" title="', $txt['shd_ticket_edit'], '"></a></td>
 							<td><a href="', $scripturl, '?action=admin;area=helpdesk_cannedreplies;sa=savereply;reply=' . $reply['id_reply'] . ';delete=yes;', $context['session_var'], '=', $context['session_id'], '" onclick="return confirm(' . JavaScriptEscape($txt['shd_admin_cannedreplies_deletereply_confirm']) . ');"><img src="', $settings['default_images_url'], '/simpledesk/delete.png" class="icon" alt="', $txt['shd_ticket_delete'], '" title="', $txt['shd_ticket_delete'], '"></a></td>
 						</tr>';
+					}
 				}
-			}
 
-	echo '
+			echo '
 			<tr class="windowbg">
 				<td colspan="9" class="righttext">[<a href="', $scripturl, '?action=admin;area=helpdesk_cannedreplies;sa=createreply;cat=', $cat_id, '">', $txt['shd_admin_cannedreplies_addreply'], '</a>]</td>
 			</tr>
 		</table>';
+			}
 		}
 	}
 

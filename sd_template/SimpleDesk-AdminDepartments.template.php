@@ -254,7 +254,7 @@ function template_shd_edit_dept()
 					</tr>';
 	else
 		echo '
-					<tr class="windowbg2">
+					<tr class="windowbg">
 						<td colspan="2">', $txt['shd_no_defined_roles'], '</td>
 					</tr>';
 

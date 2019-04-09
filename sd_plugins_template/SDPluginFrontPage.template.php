@@ -53,7 +53,7 @@ function template_shd_frontpage_admin()
 					<img src="', shd_image_url('frontpage.png'), '" class="icon" alt="*"/> ', $txt['shdp_frontpage'], '
 				</h3>
 			</div>
-			<div class="windowbg2">
+			<div class="windowbg">
 				<div class="content">
 					<dl class="permsettings">
 						<dt style="width: 30%;">

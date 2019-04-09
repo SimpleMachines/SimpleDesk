@@ -309,7 +309,7 @@ function template_shd_show_settings()
 			$is_open = true;
 
 			echo '
-			<div class="windowbg2">
+			<div class="windowbg">
 				<dl class="settings">';
 		}
 
@@ -532,7 +532,7 @@ function template_shd_action_log()
 
 	if (empty($context['actions']))
 		echo '
-			<tr class="windowbg2">
+			<tr class="windowbg">
 				<td colspan="7" class="shd_noticket">', $txt['shd_admin_actionlog_none'], '</td>
 			</tr>';
 	else
@@ -666,7 +666,7 @@ function template_shd_support()
 				<img src="', $settings['default_images_url'], '/simpledesk/edit.png" alt="*">', $txt['shd_admin_support_form_title'], '
 			</h3>
 		</div>
-		<div class="windowbg2 noup">
+		<div class="windowbg noup">
 			<form action="', $context['shd_support_url'], '" method="post">
 				<dl id="post_header">
 					<dt><span id="caption_subject">', $txt['subject'], '</span></dt>

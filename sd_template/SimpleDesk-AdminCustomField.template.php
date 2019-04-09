@@ -41,7 +41,7 @@ function template_shd_custom_field_home()
 
 	if (empty($context['custom_fields']))
 		echo '
-			<tr class="windowbg2">
+			<tr class="windowbg">
 				<td colspan="10">', $txt['shd_admin_no_custom_fields'], '</td>
 			</tr>';
 	else
@@ -310,7 +310,7 @@ function template_shd_custom_field_edit()
 									<span id="cf_options_multi_default"', $context['field_type_value'] == CFIELD_TYPE_MULTI ? '' : ' class="hidden"', '>', $txt['shd_admin_custom_field_options_multi'], '</span>
 								</div>
 							</dt>
-							<dd id="options_dd"', in_array($context['field_type_value'], array(CFIELD_TYPE_SELECT, CFIELD_TYPE_RADIO, CFIELD_TYPE_MULTI)) ? '' : ' class="hidden"', '>								
+							<dd id="options_dd"', in_array($context['field_type_value'], array(CFIELD_TYPE_SELECT, CFIELD_TYPE_RADIO, CFIELD_TYPE_MULTI)) ? '' : ' class="hidden"', '>
 								<input type="radio" id="radio_0" name="default_select" value="0"', $context['custom_field']['default_value'] == 0 ? ' checked="checked"' : '', $context['field_type_value'] != CFIELD_TYPE_MULTI ? '' : ' class="hidden"', '>
 								<span id="radio_text_0"', $context['field_type_value'] != CFIELD_TYPE_MULTI ? '' : ' class="hidden"', '>', $txt['shd_admin_custom_field_no_selected_default'], '</span>
 								<div id="custom_fields_list">';

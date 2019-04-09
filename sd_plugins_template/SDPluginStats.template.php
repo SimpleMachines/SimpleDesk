@@ -17,7 +17,7 @@ function template_main()
 {
 	global $context, $txt, $settings, $scripturl;
 
-$txt['general_stats'] = 'General Statistics'; 
+$txt['general_stats'] = 'General Statistics';
 $txt['new_tickets_today'] = 'New Tickets Today';
 $txt['closed_tickets_today'] = 'Closed Tickets Today';
 $txt['total_open_tickets'] = 'Total Open Tickets';
@@ -61,7 +61,7 @@ $txt['closed_tickets'] = 'Closed Tickets';
 		</div>
 		<div class="flow_hidden">
 			<div id="stats_left">
-				<div class="windowbg2">
+				<div class="windowbg">
 					<span class="topslice"><span></span></span>
 					<div class="content top_row">
 						<dl class="stats">
@@ -86,7 +86,7 @@ $txt['closed_tickets'] = 'Closed Tickets';
 				</div>
 			</div>
 			<div id="stats_right">
-				<div class="windowbg2">
+				<div class="windowbg">
 					<span class="topslice"><span></span></span>
 					<div class="content top_row">
 						<dl class="stats">
@@ -121,7 +121,7 @@ $txt['closed_tickets'] = 'Closed Tickets';
 		</div>
 		<div class="flow_hidden">
 			<div id="stats_left">
-				<div class="windowbg2">
+				<div class="windowbg">
 					<span class="topslice"><span></span></span>
 					<div class="content top_row">
 						<dl class="stats">';
@@ -139,7 +139,7 @@ $txt['closed_tickets'] = 'Closed Tickets';
 				</div>
 			</div>
 			<div id="stats_right">
-				<div class="windowbg2">
+				<div class="windowbg">
 					<span class="topslice"><span></span></span>
 					<div class="content top_row">
 						<dl class="stats">';
@@ -179,7 +179,7 @@ $txt['closed_tickets'] = 'Closed Tickets';
 		foreach ($context['shd_stats']['history'] as $year_id => $year)
 		{
 			echo '
-				<tr class="windowbg2" valign="middle" align="center" id="year_', $year_id, '">
+				<tr class="windowbg" valign="middle" align="center" id="year_', $year_id, '">
 					<th class="lefttext" width="25%">', $year_id, '</th>
 					<th width="15%">', $year['open'], '</th>
 					<th width="15%">', $year['assigned'], '</th>
@@ -190,7 +190,7 @@ $txt['closed_tickets'] = 'Closed Tickets';
 			foreach ($year['child'] as $month_id => $month)
 			{
 				echo '
-				<tr class="windowbg2" valign="middle" align="center" id="tr_month_', $month_id, '">
+				<tr class="windowbg" valign="middle" align="center" id="tr_month_', $month_id, '">
 					<th class="stats_month">', $txt['months_titles'][$month_id], ' ', $year_id, '</th>
 					<th width="15%">', $month['open'], '</th>
 					<th width="15%">', $month['assigned'], '</th>
@@ -200,7 +200,7 @@ $txt['closed_tickets'] = 'Closed Tickets';
 
 				foreach ($month['child'] as $day_id => $day)
 					echo '
-				<tr class="windowbg2" valign="middle" align="center" id="tr_day_', $year_id, '-', $month_id, '-', $day_id, '">
+				<tr class="windowbg" valign="middle" align="center" id="tr_day_', $year_id, '-', $month_id, '-', $day_id, '">
 					<td class="stats_day">', $year_id, '-', $month_id, '-', $day_id, '</td>
 					<th width="15%">', $day['open'], '</th>
 					<th width="15%">', $day['assigned'], '</th>
