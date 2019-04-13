@@ -384,6 +384,7 @@ function shd_profile_show_tickets($memID)
 	global $txt, $user_info, $scripturl, $modSettings, $smcFunc, $board, $user_profile, $context;
 
 	// Navigation
+	loadTemplate('sd_template/SimpleDesk', array('helpdesk'));
 	$context['show_tickets_navigation'] = array(
 		'tickets' => array('text' => 'shd_profile_show_tickets', 'lang' => true, 'url' => $scripturl . '?action=profile;u=' . $memID . ';area=hd_showtickets;sa=tickets'),
 		'replies' => array('text' => 'shd_profile_show_replies', 'lang' => true, 'url' => $scripturl . '?action=profile;u=' . $memID . ';area=hd_showtickets;sa=replies'),
