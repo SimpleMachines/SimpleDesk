@@ -391,10 +391,10 @@ function template_shd_show_settings()
 				{
 					echo '
 							<fieldset id="', $config_var['name'], '">
-								<legend><strong>', $txt['bbcTagsToUse_select'], '</strong></legend>
+								<legend><strong>', $txt['enabled_bbc_select'], '</strong></legend>
 									<ul class="reset">';
 
-					foreach ($context['bbc_columns'] as $bbcColumn)
+					foreach ($context['bbc_sections'][$config_var['name']]['columns'] as $bbcColumn)
 						foreach ($bbcColumn as $bbcTag)
 							echo '
 										<li class="list_bbc align_left shd_bbc_list">
@@ -402,7 +402,7 @@ function template_shd_show_settings()
 										</li>';
 
 					echo '			</ul>
-								<br><input type="checkbox" id="select_all" onclick="invertAll(this, this.form, \'', $config_var['name'], '_enabledTags\');"', $context['all_enabled'][$config_var['name']] ? ' checked="checked"' : '', '><label for="select_all"><em>', $txt['bbcTagsToUse_select_all'], '</em></label>
+								<br><input type="checkbox" id="select_all" onclick="invertAll(this, this.form, \'', $config_var['name'], '_enabledTags\');"', $context['all_enabled'][$config_var['name']] ? ' checked="checked"' : '', '><label for="select_all"><em>', $txt['enabled_bbc_select_all'], '</em></label>
 							</fieldset>';
 				}
 				// A simple message?
