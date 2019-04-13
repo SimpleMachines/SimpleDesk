@@ -545,7 +545,7 @@ function template_shd_action_log()
 				<td>', $action['member']['link'], '</td>
 				<td>', $action['member']['group'], '</td>
 				<td>', !empty($action['member']['ip']) ? $action['member']['ip'] : $txt['shd_admin_actionlog_hidden'], '</td>
-				<td>', $action['can_remove'] && $context['can_delete'] ? '<a href="' . $scripturl . '?action=admin;area=helpdesk_info;sa=actionlog;remove=' . $action['id'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/delete.png" alt="' . $txt['shd_delete_item'] . '"></a>' : '', '</td>
+				<td>', $action['can_remove'] && $context['can_delete'] ? '<a href="' . $scripturl . '?action=admin;area=helpdesk_info;sa=actionlog;remove=' . $action['id'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/delete.png" class="shd_smallicon" alt="' . $txt['shd_delete_item'] . '"></a>' : '', '</td>
 			</tr>';
 
 	echo '
