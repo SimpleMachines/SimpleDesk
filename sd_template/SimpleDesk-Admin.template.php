@@ -391,10 +391,10 @@ function template_shd_show_settings()
 				{
 					echo '
 							<fieldset id="', $config_var['name'], '">
-								<legend><strong>', $txt['bbcTagsToUse_select'], '</strong></legend>
+								<legend><strong>', $txt['enabled_bbc_select'], '</strong></legend>
 									<ul class="reset">';
 
-					foreach ($context['bbc_columns'] as $bbcColumn)
+					foreach ($context['bbc_sections'][$config_var['name']]['columns'] as $bbcColumn)
 						foreach ($bbcColumn as $bbcTag)
 							echo '
 										<li class="list_bbc align_left shd_bbc_list">
@@ -402,7 +402,7 @@ function template_shd_show_settings()
 										</li>';
 
 					echo '			</ul>
-								<br><input type="checkbox" id="select_all" onclick="invertAll(this, this.form, \'', $config_var['name'], '_enabledTags\');"', $context['all_enabled'][$config_var['name']] ? ' checked="checked"' : '', '><label for="select_all"><em>', $txt['bbcTagsToUse_select_all'], '</em></label>
+								<br><input type="checkbox" id="select_all" onclick="invertAll(this, this.form, \'', $config_var['name'], '_enabledTags\');"', $context['all_enabled'][$config_var['name']] ? ' checked="checked"' : '', '><label for="select_all"><em>', $txt['enabled_bbc_select_all'], '</em></label>
 							</fieldset>';
 				}
 				// A simple message?
@@ -545,7 +545,7 @@ function template_shd_action_log()
 				<td>', $action['member']['link'], '</td>
 				<td>', $action['member']['group'], '</td>
 				<td>', !empty($action['member']['ip']) ? $action['member']['ip'] : $txt['shd_admin_actionlog_hidden'], '</td>
-				<td>', $action['can_remove'] && $context['can_delete'] ? '<a href="' . $scripturl . '?action=admin;area=helpdesk_info;sa=actionlog;remove=' . $action['id'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/delete.png" alt="' . $txt['shd_delete_item'] . '"></a>' : '', '</td>
+				<td>', $action['can_remove'] && $context['can_delete'] ? '<a href="' . $scripturl . '?action=admin;area=helpdesk_info;sa=actionlog;remove=' . $action['id'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/delete.png" class="shd_smallicon" alt="' . $txt['shd_delete_item'] . '"></a>' : '', '</td>
 			</tr>';
 
 	echo '
