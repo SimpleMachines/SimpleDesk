@@ -38,6 +38,8 @@ function shd_profile_main($memID)
 {
 	global $context, $txt, $scripturl, $sourcedir, $user_info, $settings, $user_profile, $modSettings;
 
+	loadTemplate('sd_template/SimpleDesk');
+
 	// Load the profile details
 	loadTemplate('sd_template/SimpleDesk-Profile', array('helpdesk'));
 	loadJavascriptFile('helpdesk.js', array('defer' => false, 'minimize' => false), 'helpdesk');
