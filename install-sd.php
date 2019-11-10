@@ -58,15 +58,6 @@ foreach (sd_get_install_tables() as $table)
 		);
 }
 
-// Another row we might want to add is package server. Except we may have to remove a pre-existing plugins one, because the version may be wrong.
-$query = $smcFunc['db_query']('', '
-	DELETE FROM {db_prefix}package_servers
-	WHERE url LIKE {string:plugins}',
-	array(
-		'plugins' => 'http://www.simpledesk.net/download%',
-	)
-);
-
 // Create new rows, if any
 foreach (sd_get_install_rows() as $row)
 	$smcFunc['db_insert']($row['method'], $row['table_name'], $row['columns'], $row['data'], $row['keys']);
@@ -189,6 +180,9 @@ function sd_get_install_modSettings($getAll = false)
 */
 function sd_get_install_rows()
 {
+	global $smcFunc;
+	static $current_package_server_url = 'https://www.simpledesk.net/download/plugins/2.0';
+
 	$rows = array();
 	$rows[] = array(
 		'method' => 'replace',
@@ -212,19 +206,66 @@ function sd_get_install_rows()
 		'keys' => array('task'),
 	);
 
-	$rows[] = array(
-		'method' => 'insert',
-		'table_name' => '{db_prefix}package_servers',
-		'columns' => array(
-			'name' => 'string',
-			'url' => 'string',
-		),
-		'data' => array(
-			'SimpleDesk Plugins',
-			'https://www.simpledesk.net/download/plugins/2.0', // !!! This should be updated in later releases!
-		),
-		'keys' => array('id_server'),
+
+	// Another row we might want to add is package server. Except we may have to remove a pre-existing plugins one, because the version may be wrong.
+	$query = $smcFunc['db_query']('', '
+		DELETE FROM {db_prefix}package_servers
+		WHERE
+			(
+				url LIKE {string:plugins_http_wild}
+				OR url LIKE {string:plugins_https_wild}
+			)
+			AND URL != {string:plugins}',
+		array(
+			'plugins' => $current_package_server_url,
+			'plugins_http_wild' => 'http://www.simpledesk.net/download%',
+			'plugins_https_wild' => 'https://www.simpledesk.net/download%',
+		)
 	);
+
+	// Do we have lots of extras?
+	$request = $smcFunc['db_query']('', '
+		SELECT
+			COUNT(url) as total,
+			MAX(id_server) AS lastID
+		FROM {db_prefix}package_servers
+		WHERE url LIKE {string:plugins}',
+		array(
+			'plugins' => $current_package_server_url,
+		)
+	);
+	$results = $smcFunc['db_fetch_assoc']($request);
+	$smcFunc['db_free_result']($request);
+
+	// Get rid of any duplicates.
+	if ($results['total'] > 1 && !empty($results['lastID']))
+		$query = $smcFunc['db_query']('', '
+			DELETE FROM {db_prefix}package_servers
+			WHERE
+				url LIKE {string:plugins_wild}
+				OR url LIKE {string:plugins_https_wild}
+				AND id_server != {int:current_server}',
+			array(
+				'current_server' => $results['lastID'],
+				'plugins_wild' => 'http://www.simpledesk.net/download%',
+				'plugins_https_wild' => 'https://www.simpledesk.net/download%',
+			)
+		);
+	// No results, need to add a entry.
+	elseif (empty($results) || empty($results['total']))
+		$rows[] = array(
+			'method' => 'insert',
+			'table_name' => '{db_prefix}package_servers',
+			'columns' => array(
+				'name' => 'string',
+				'url' => 'string',
+			),
+			'data' => array(
+				'SimpleDesk Plugins',
+				$current_package_server_url, // !!! This should be updated in later releases!
+			),
+			'keys' => array('id_server'),
+		);
 
 	return $rows;
 }

@@ -134,7 +134,7 @@ shd_plugins.prototype.togglePlugin = function (e)
 	this.itemID = e.currentTarget.dataset.plugin;
 
 	// Toggle the hidden item.
-	this.oItemValueHandle = $('#' + this.opt.sFeatureClass.replace('%itemid%', itemID));
+	this.oItemValueHandle = $('#' + this.opt.sFeatureClass.replace('%itemid%', this.itemID));
 	this.bItemValue = this.oItemValueHandle.val() == '0' ? 1 : 0;
 
 	// Change the image, alternative text and the title.
