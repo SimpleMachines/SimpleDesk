@@ -6,11 +6,11 @@
 	<version>2.1</version>
 	<type>modification</type>
 
-	<install for="1.1.*, 2.0.*, 2.1 Beta 1, 2.1 Beta 2, 2.1 Beta 3">
-		<readme lang="english" parsebbc="true" type="inline">This mod is [b]not compatible[/b] with your version of SMF, it requires 2.1 or later.</readme>
+	<install for="1.1.*, 2.0.*, 2.1 Beta 1, 2.1 Beta 2, Beta 3, 2.1 Beta 4, 2.1 RC1, 2.1 RC2">
+		<readme lang="english" parsebbc="true" type="inline">This mod is [b]not compatible[/b] with your version of SMF, it requires 2.1 RC3 or later.</readme>
 	</install>
 
-	<install for="2.1 RC1, 2.1 RC2">
+	<install for="2.1 RC3, 2.1 RC4, 2.1.0-2.1.99">
 		<!-- readme files -->
 		<readme lang="english" parsebbc="true" type="file">language-readme/readme.english.txt</readme>
 
@@ -98,7 +98,7 @@
 		<redirect url="?action=admin;area=helpdesk_info" />
 	</install>
 
-	<uninstall for="2.1 RC1">
+	<uninstall for="2.1 RC3, 2.1 RC4, 2.1.0-2.1.99">
 		<!-- database changes, undone -->
 		<database>uninstall-sd-optional.php</database>
 		<code type="file">uninstall-sd-required.php</code>
