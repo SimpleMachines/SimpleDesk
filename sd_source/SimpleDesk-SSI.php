@@ -1,21 +1,21 @@
 <?php
-###############################################################
-#         Simple Desk Project - www.simpledesk.net            #
-###############################################################
-#       An advanced help desk modifcation built on SMF        #
-###############################################################
-#                                                             #
-#         * Copyright 2010 - SimpleDesk.net                   #
-#                                                             #
-#   This file and its contents are subject to the license     #
-#   included with this distribution, license.txt, which       #
-#   states that this software is New BSD Licensed.            #
-#   Any questions, please contact SimpleDesk.net              #
-#                                                             #
-###############################################################
-# SimpleDesk Version: 2.0 Anatidae                            #
-# File Info: SimpleDesk-SSI.php / 2.0 Anatidae                #
-###############################################################
+/**************************************************************
+*          Simple Desk Project - www.simpledesk.net           *
+***************************************************************
+*       An advanced help desk modification built on SMF       *
+***************************************************************
+*                                                             *
+*         * Copyright 2020 - SimpleDesk.net                   *
+*                                                             *
+*   This file and its contents are subject to the license     *
+*   included with this distribution, license.txt, which       *
+*   states that this software is New BSD Licensed.            *
+*   Any questions, please contact SimpleDesk.net              *
+*                                                             *
+***************************************************************
+* SimpleDesk Version: 2.1 Beta 1                              *
+* File Info: SimpleDesk-SSI.php                               *
+**************************************************************/
 
 /**
  *	This file handles data gathering primarily for SSI.php purposes. It expects Subs-SimpleDesk.php to have been required as this
@@ -32,22 +32,32 @@
  *	@package source
  *	@since 2.0
  */
-
 if (!defined('SMF'))
 	die('Hacking attempt...');
+
+/**
+ *	Makes SMF hook system happy that it has a function to call for SSI.
+ *	@since 2.1
+*/
+function ssi_shd_called()
+{
+	return true;
+}
 
 /**
  *	Gets a list of the tickets currently open that are a given user's (subject to ticket visibility).
  *
  *	@param int $started_by The user id whose tickets you want to examine, defaults to the current user.
+ *	@param array|int $dept An array of department ids whose tickets you want to examine, defaults to all departments.
  *	@param int $limit The number of tickets to limit to, default 10.
  *	@param string $output_method Set to 'echo' for displaying content, set to 'array' to simply return data.
- *	@return array An array of data, more details under the underlying function {@link ssi_getSDTickets()}
+ *	@return null|array An array of data, more details under the underlying function {@link ssi_getSDTickets()}
  *	@since 2.0
 */
-function ssi_userTickets($started_by = 0, $limit = 10, $output_method = 'echo')
+function ssi_userTickets($started_by = 0, $dept = array(), $limit = 10, $output_method = 'echo')
 {
 	global $user_info;
+
 	if (empty($started_by))
 		$started_by = $user_info['id'];
 
@@ -56,10 +66,27 @@ function ssi_userTickets($started_by = 0, $limit = 10, $output_method = 'echo')
 		return;
 
 	$query_where = 'hdt.id_member_started = {int:started}';
-
 	$query_where_params = array(
 		'started' => $started_by,
 	);
+
+	$dept_ids = array();
+
+	if (!empty($dept))
+	{
+		// Did they perhaps just put an integer of some sort?
+		if (!is_array($dept))
+			$dept = array(0 => $dept);
+
+		foreach ($dept as $id)
+			$dept_ids[] = (int) $id;
+
+		if (!empty($dept_ids))
+		{
+			$query_where .= ' AND hdt.dept IN ({array_int:dept})';
+			$query_where_params['dept'] = $dept_ids;
+		}
+	}
 
 	return ssi_getSDTickets($query_where, $query_where_params, $limit, 'hdt.id_ticket ASC', $output_method);
 }
@@ -68,12 +95,13 @@ function ssi_userTickets($started_by = 0, $limit = 10, $output_method = 'echo')
  *	Gets a list of the tickets currently open that are assigned to the current user (presumably staff, subject to ticket visibility).
  *
  *	@param int $assignee The user id whose tickets whose assigned tickets you want to examine, defaults to the current user.
+ *	@param int|array $dept An array of department ids whose tickets you want to examine, defaults to all departments.
  *	@param int $limit The number of tickets to limit to, default 10.
  *	@param string $output_method Set to 'echo' for displaying content, set to 'array' to simply return data.
- *	@return array An array of data, more details under the underlying function {@link ssi_getSDTickets()}
+ *	@return null|array An array of data, more details under the underlying function {@link ssi_getSDTickets()}
  *	@since 2.0
 */
-function ssi_staffAssignedTickets($assignee = 0, $limit = 10, $output_method = 'echo')
+function ssi_staffAssignedTickets($assignee = 0, $dept = array(), $limit = 10, $output_method = 'echo')
 {
 	global $user_info;
 	if (empty($assignee))
@@ -84,32 +112,65 @@ function ssi_staffAssignedTickets($assignee = 0, $limit = 10, $output_method = '
 		return;
 
 	$query_where = 'hdt.id_member_assigned = {int:assigned}';
-
 	$query_where_params = array(
 		'assigned' => $assignee,
 	);
 
-	return ssi_getSDTickets($query_where, $query_where_params, '', 'hdt.id_ticket ASC', $output_method);
+	$dept_ids = array();
+	if (!empty($dept))
+	{
+		// Did they perhaps just put an integer of some sort?
+		if (!is_array($dept))
+			$dept = array(0 => $dept);
+
+		foreach ($dept as $id)
+			$dept_ids[] = (int) $id;
+
+		if (!empty($dept_ids))
+		{
+			$query_where .= ' AND hdt.dept IN ({array_int:dept})';
+			$query_where_params['dept'] = $dept_ids;
+		}
+	}
+
+	return ssi_getSDTickets($query_where, $query_where_params, $limit, 'hdt.id_ticket ASC', $output_method);
 }
 
 /**
  *	Gets a list of all tickets based on urgency criteria given (subject to ticket visibility)
  *
  *	@param int $urgency The urgency of tickets you want to get.
+ *	@param int|array $dept An array of department ids whose tickets you want to examine, defaults to all departments.
  *	@param int $limit The number of tickets to limit to, default 10.
  *	@param string $output_method Set to 'echo' for displaying content, set to 'array' to simply return data.
- *	@return array An array of data, more details under the underlying function {@link ssi_getSDTickets()}
+ *	@return null|array An array of data, more details under the underlying function {@link ssi_getSDTickets()}
  *	@since 2.0
 */
-function ssi_staffTicketsUrgency($urgency, $limit = 10, $output_method = 'echo')
+function ssi_staffTicketsUrgency($urgency, $dept = array(), $limit = 10, $output_method = 'echo')
 {
 	$query_where = 'hdt.urgency = {int:urgency}';
-
 	$query_where_params = array(
 		'urgency' => $urgency,
 	);
 
-	return ssi_getSDTickets($query_where, $query_where_params, '', 'hdt.id_ticket ASC', $output_method);
+	$dept_ids = array();
+	if (!empty($dept))
+	{
+		// Did they perhaps just put an integer of some sort?
+		if (!is_array($dept))
+			$dept = array(0 => $dept);
+
+		foreach ($dept as $id)
+			$dept_ids[] = (int) $id;
+
+		if (!empty($dept_ids))
+		{
+			$query_where .= ' AND hdt.dept IN ({array_int:dept})';
+			$query_where_params['dept'] = $dept_ids;
+		}
+	}
+
+	return ssi_getSDTickets($query_where, $query_where_params, $limit, 'hdt.id_ticket ASC', $output_method);
 }
 
 /**
@@ -120,7 +181,7 @@ function ssi_staffTicketsUrgency($urgency, $limit = 10, $output_method = 'echo')
  *	@param array $query_where_params Key/value associative array to be injected into the query, related to $query_where.
  *	@param int $query_limit Number of items to limit the query to.
  *	@param string $query_order The clause to order tickets by, defaults to tickets by order of creation.
- *	@return array An array of arrays, each primary item containing the following:
+ *	@return null|array An array of arrays, each primary item containing the following:
  *	<ul>
  *	<li>id: Main ticket id</li>
  *	<li>display_id: Formatted ticket id in [0000x] format</li>
@@ -141,7 +202,7 @@ function ssi_staffTicketsUrgency($urgency, $limit = 10, $output_method = 'echo')
  *			<li>link: link to the profile of the last person to reply to the ticket</li>
  *		</ul>
  *	</li>
- *	<li>opener: array of details about the person who the ticket is assigned to:
+ *	<li>assigned: array of details about the person who the ticket is assigned to:
  *		<ul>
  *			<li>id: user id of the person who the ticket is assigned to</li>
  *			<li>name: username of the person who the ticket is assigned to or 'Unassigned' otherwise</li>
@@ -155,9 +216,10 @@ function ssi_staffTicketsUrgency($urgency, $limit = 10, $output_method = 'echo')
  *	<li>last_timestamp: Raw timestamp (adjusted for timezones) of ticket's last reply</li>
  *	<li>private: Whether the ticket is private or not</li>
  *	<li>urgency_id: Number representing ticket urgency</li>
- *	<li>urgency_text: String representing ticket urgency</li>
+ *	<li>urgency_string: String representing ticket urgency</li>
  *	<li>status_id: Number representing ticket status</li>
  *	<li>status_text: String representing ticket status</li>
+ *  <li>department: Number representing ticket department ID</li>
  *	</ul>
  *	@since 2.0
 */
@@ -168,11 +230,11 @@ function ssi_getSDTickets($query_where, $query_where_params = array(), $query_li
 	$query_limit = (int) $query_limit;
 
 	$query = shd_db_query('', '
-		SELECT hdt.id_ticket, hdt.subject, hdt.num_replies, hdt.private, hdt.urgency, hdt.status,
+		SELECT hdt.id_ticket, hdt.subject, hdt.num_replies, hdt.private, hdt.urgency, hdt.status, hdt.dept,
 			hdtr_first.poster_time AS start_time, hdt.last_updated AS last_time,
-			IFNULL(mem.real_name, hdtr_first.poster_name) AS starter_name, IFNULL(mem.id_member, 0) AS starter_id,
-			IFNULL(ma.real_name, 0) AS assigned_name, IFNULL(ma.id_member, 0) AS assigned_id,
-			IFNULL(mm.real_name, hdtr_last.modified_name) AS modified_name, IFNULL(mm.id_member, 0) AS modified_id
+			COALESCE(mem.real_name, hdtr_first.poster_name) AS starter_name, COALESCE(mem.id_member, 0) AS starter_id,
+			COALESCE(ma.real_name, 0) AS assigned_name, COALESCE(ma.id_member, 0) AS assigned_id,
+			COALESCE(mm.real_name, hdtr_last.modified_name) AS modified_name, COALESCE(mm.id_member, 0) AS modified_id
 		FROM {db_prefix}helpdesk_tickets AS hdt
 			INNER JOIN {db_prefix}helpdesk_ticket_replies AS hdtr_first ON (hdt.id_first_msg = hdtr_first.id_msg)
 			INNER JOIN {db_prefix}helpdesk_ticket_replies AS hdtr_last ON (hdt.id_last_msg = hdtr_last.id_msg)
@@ -222,6 +284,7 @@ function ssi_getSDTickets($query_where, $query_where_params = array(), $query_li
 			'urgency_string' => $txt['shd_urgency_' . $row['urgency']],
 			'status_id' => $row['status'],
 			'status_text' => $txt['shd_status_' . $row['status']],
+			'department' => $row['dept'],
 		);
 	}
 
@@ -308,8 +371,8 @@ function ssi_staffMembers($honour_admin_setting = true, $output_method = 'echo')
 			<tr>
 				<td align="right" valign="top" nowrap="nowrap">
 					', $query_members[$member]['link'], '
-					<br />', $query_members[$member]['blurb'], '
-					<br />', $query_members[$member]['avatar']['image'], '
+					<br>', $query_members[$member]['blurb'], '
+					<br>', $query_members[$member]['avatar']['image'], '
 				</td>
 			</tr>';
 	}
@@ -322,4 +385,3 @@ function ssi_staffMembers($honour_admin_setting = true, $output_method = 'echo')
 	// Send back the data.
 	return $query_members;
 }
-

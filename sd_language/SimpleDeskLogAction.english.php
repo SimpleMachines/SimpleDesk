@@ -1,22 +1,22 @@
 <?php
-###############################################################
-#         Simple Desk Project - www.simpledesk.net            #
-###############################################################
-#       An advanced help desk modifcation built on SMF        #
-###############################################################
-#                                                             #
-#         * Copyright 2010 - SimpleDesk.net                   #
-#                                                             #
-#   This file and its contents are subject to the license     #
-#   included with this distribution, license.txt, which       #
-#   states that this software is New BSD Licensed.            #
-#   Any questions, please contact SimpleDesk.net              #
-#                                                             #
-###############################################################
-# SimpleDesk Version: 2.0 Anatidae                            #
-# File Info: SimpleDeskLogAction.english.php / 2.0 Anatidae   #
-###############################################################
-// Version: 2.0 Anatidae; SimpleDesk action log
+/**************************************************************
+*          Simple Desk Project - www.simpledesk.net           *
+***************************************************************
+*       An advanced help desk modification built on SMF       *
+***************************************************************
+*                                                             *
+*         * Copyright 2020 - SimpleDesk.net                   *
+*                                                             *
+*   This file and its contents are subject to the license     *
+*   included with this distribution, license.txt, which       *
+*   states that this software is New BSD Licensed.            *
+*   Any questions, please contact SimpleDesk.net              *
+*                                                             *
+***************************************************************
+* SimpleDesk Version: 2.1 Beta 1                              *
+* File Info: SimpleDeskLogAction.english.php                  *
+**************************************************************/
+// Version: 2.1; SimpleDesk action log
 
 // Important! Before editing these language files please read the text at the top of index.english.php.
 
@@ -57,6 +57,7 @@ $txt['shd_log_marknotprivate'] = '&quot;<a href="{scripturl}?action=helpdesk;sa=
 //@{
 $txt['shd_log_urgency_increase'] = '&quot;<a href="{scripturl}?action=helpdesk;sa=ticket;ticket={ticket}">{subject}</a>&quot; increased to <strong>{urgency}</strong>.';
 $txt['shd_log_urgency_decrease'] = '&quot;<a href="{scripturl}?action=helpdesk;sa=ticket;ticket={ticket}">{subject}</a>&quot; decreased to <strong>{urgency}</strong>.';
+$txt['shd_log_urgency_change'] = '&quot;<a href="{scripturl}?action=helpdesk;sa=ticket;ticket={ticket}">{subject}</a>&quot; changed to <strong>{urgency}</strong>.';
 //@}
 
 //! @name Ticket/topic, topic/ticket moves

@@ -1,5 +1,5 @@
 <?php
-// Version: 2.0 Anatidae; SimpleDesk front page template
+// Version: 2.1; SimpleDesk front page template
 
 /**
  *	This file handles displaying the blocks of tickets for the front page, as well as the slightly
@@ -24,45 +24,36 @@ function template_main()
 {
 	global $context, $txt, $settings, $scripturl;
 
-	echo '
-		<div class="modbuttons clearfix margintop">';
-
-	template_button_strip($context['navigation'], 'bottom');
+	template_shd_button_strip($context['navigation'], 'bottom');
 
 	echo '
+		<div class="title_bar">
+			<h3 class="titlebg">
+					', $txt['shd_helpdesk'], !empty($context['shd_dept_name']) && $context['shd_multi_dept'] ? ' - ' . $context['shd_dept_name'] : '', '
+			</h3>
 		</div>
-		<div id="admin_content">
-		<table width="100%" class="shd_main_hd">
-			<tr>
-				<td valign="top">
-					<div class="title_bar">
-						<h3 class="titlebg">
-							', $txt['shd_helpdesk'], !empty($context['shd_dept_name']) && $context['shd_multi_dept'] ? ' - ' . $context['shd_dept_name'] : '', '
-						</h3>
-					</div>
-					<span class="upperframe"><span></span></span>
-					<div class="roundframe">
-						<div class="shd_gototicket smalltext">
-							<form action="', $scripturl, '?action=helpdesk;sa=ticket" method="get">
-								', $txt['shd_go_to_ticket'], ':
-								<input type="hidden" name="action" value="helpdesk" />
-								<input type="hidden" name="sa" value="ticket" />
-								<input type="text" class="input_text" id="ticketJump" name="ticket" size="4" />
-								<input type="submit" class="button_submit" value="', $txt['shd_go'], '" onclick="shd_quickTicketJump(this.parentNode.ticketJump.value);" />
-							</form>
-						</div>
-						<div id="welcome">
-							<strong>', sprintf($txt['shd_welcome'], $context['user']['name']), '</strong><br />
-							', $txt['shd_' . $context['shd_home_view'] . '_greeting'];
+		<div class="information">
+			<div class="floatright smalltext">
+				<form action="', $scripturl, '?action=helpdesk;sa=ticket" method="get">
+					', $txt['shd_go_to_ticket'], ':
+					<input type="hidden" name="action" value="helpdesk">
+					<input type="hidden" name="sa" value="ticket">
+					<input type="text" id="ticketJump" name="ticket" size="4">
+					<input type="submit" class="button" value="', $txt['shd_go'], '" onclick="shd_quickTicketJump(this.parentNode.ticketJump.value);">
+				</form>
+			</div>
+			<div class="floatleft">
+			<span class="block">', sprintf($txt['shd_welcome'], $context['user']['name']), '</span>
+				', $txt['shd_' . $context['shd_home_view'] . '_greeting'];
 
 	if (!empty($context['shd_filter_fields']))
 	{
 		echo '
-			<br /><br /><strong>', $txt['shd_category_filter'], ':</strong>';
+			<strong>', $txt['shd_category_filter'], ':</strong>';
 		foreach ($context['shd_filter_fields'] as $id_field => $field)
 		{
 			echo '
-			<br />', $field['name'], ':';
+				', $field['name'], ':';
 			foreach ($field['options'] as $key => $opt)
 			{
 				if (!empty($context['filter_fragment']) && $_REQUEST['field'] == $id_field && $_REQUEST['filter'] == $key)
@@ -74,18 +65,19 @@ function template_main()
 	}
 
 	echo '
-						</div>
-					</div>
-					<span class="lowerframe"><span></span></span>
-					<br />';
+			</div>
+		</div>';
 
 	// Start the ticket listing
-	$blocks = array_keys($context['ticket_blocks']);
-	foreach ($blocks as $block)
+	foreach ($context['ticket_block_order'] as $block)
 	{
+		// Nothing for this block.
+		if (empty($context['ticket_blocks'][$block]))
+			continue;
+
 		$context['current_block'] = $block;
 		if (!empty($context['ticket_blocks'][$block]['count']) && $context['ticket_blocks'][$block]['count'] > 10)
-			$context['block_link'] = $_REQUEST['sa'] == 'viewblock' ? $scripturl . '?' . $context['shd_home'] . $context['shd_dept_link'] : $scripturl . '?action=helpdesk;sa=viewblock;block=' . $block . $context['shd_dept_link'] . '#shd_block_' . $block;
+			$context['block_link'] = $context['shd_current_subaction'] == 'viewblock' ? $scripturl . '?' . $context['shd_home'] . $context['shd_dept_link'] : $scripturl . '?action=helpdesk;sa=viewblock;block=' . $block . $context['shd_dept_link'] . '#shd_block_' . $block;
 		else
 			$context['block_link'] = '';
 
@@ -96,9 +88,6 @@ function template_main()
 	}
 
 	echo '
-				</td>
-			</tr>
-			</table>
 		</div>';
 
 	//echo 'I\'m alive!!!!!!!!!!1111oneone'; 	- I had to save this :P
@@ -108,49 +97,36 @@ function template_shd_depts()
 {
 	global $context, $txt, $settings, $scripturl;
 
-	echo '
-		<div class="modbuttons clearfix margintop">';
-
-	template_button_strip($context['navigation'], 'bottom');
+	template_shd_button_strip($context['navigation'], 'bottom');
 
 	echo '
+		<div class="title_bar">
+			<h3 class="titlebg">
+				', $txt['shd_helpdesk'], '
+			</h3>
 		</div>
-		<div id="admin_content">
-		<table width="100%" class="shd_main_hd">
-			<tr>
-				<td valign="top">
-					<div class="title_bar">
-						<h3 class="titlebg">
-							', $txt['shd_helpdesk'], '
-						</h3>
-					</div>
-					<span class="upperframe"><span></span></span>
-					<div class="roundframe">
-						<div class="shd_gototicket smalltext">
-							<form action="', $scripturl, '?action=helpdesk;sa=ticket" method="get">
-								', $txt['shd_go_to_ticket'], ':
-								<input type="hidden" name="action" value="helpdesk" />
-								<input type="hidden" name="sa" value="ticket" />
-								<input type="text" class="input_text" id="ticketJump" name="ticket" size="4" />
-								<input type="submit" class="button_submit" value="', $txt['shd_go'], '" onclick="shd_quickTicketJump(this.parentNode.ticketJump.value);" />
-							</form>
-						</div>
-						<div id="welcome">
-							<strong>', sprintf($txt['shd_welcome'], $context['user']['name']), '</strong><br />
-							', $txt['shd_' . $context['shd_home_view'] . '_greeting'], '
-						</div>
-					</div>
-					<span class="lowerframe"><span></span></span>
-					<br />
-					<div class="tborder">
-						<div class="cat_bar grid_header">
-							<h3 class="catbg grid_header">
-								<img src="', $settings['default_images_url'], '/simpledesk/departments.png" alt="*" />
-								', $txt['shd_departments'], '
-							</h3>
-						</div>
-						<table class="shd_ticketlist table_list" cellspacing="0" width="100%">
-							<tbody class="content">';
+		<div class="roundframe">
+			<div class="shd_gototicket smalltext">
+				<form action="', $scripturl, '?action=helpdesk;sa=ticket" method="get">
+					', $txt['shd_go_to_ticket'], ':
+					<input type="hidden" name="action" value="helpdesk">
+					<input type="hidden" name="sa" value="ticket">
+					<input type="text" id="ticketJump" name="ticket" size="4">
+					<input type="submit" class="button" value="', $txt['shd_go'], '" onclick="shd_quickTicketJump(this.parentNode.ticketJump.value);">
+				</form>
+			</div>
+			<div id="welcome">
+				<strong>', sprintf($txt['shd_welcome'], $context['user']['name']), '</strong><br>
+				', $txt['shd_' . $context['shd_home_view'] . '_greeting'], '
+			</div>
+			<div class="cat_bar">
+				<h3 class="catbg">
+					<img src="', $settings['default_images_url'], '/simpledesk/departments.png" alt="*">
+					', $txt['shd_departments'], '
+				</h3>
+			</div>
+
+			<div id="category_helpdesk" class="boardindex_table">';
 
 	foreach ($context['dept_list'] as $dept)
 	{
@@ -161,21 +137,27 @@ function template_shd_depts()
 			$icon = $settings['default_theme_url'] . '/images/simpledesk/helpdesk_' . $state . '.png';
 
 		echo '
-								<tr class="windowbg2">
-									<td class="icon windowbg"><img src="', $icon, '" alt="*" /></td>
-									<td class="info"><a href="', $scripturl, '?', $context['shd_home'], ';dept=', $dept['id_dept'], '">', $dept['dept_name'], '</a></td>
-									<td class="stats windowbg">', $dept['tickets']['open'], ' open<br />', $dept['tickets']['closed'], ' closed</td>
-									<td class="lastpost"></td>
-								</tr>';
+				<div id="board_shd', $dept['id_dept'], '" class="up_contain">
+					<div class="board_icon">
+						<img src="', $icon, '"/>
+					</div>
+					<div class="info">
+						<a class="subject mobile_subject" href="', $scripturl, '?', $context['shd_home'], ';dept=', $dept['id_dept'], '">', $dept['dept_name'], '</a>
+						<div class="board_description">', $dept['description'], '</div>
+					</div>
+					<div class="board_stats">
+						<p>
+							', $dept['tickets']['open'], ' ', $txt['shd_tickets_open'], '<br>
+							', $dept['tickets']['closed'], ' ', $txt['shd_tickets_closed'], '
+						</p>
+					</div>
+					<div class="lastpost hidden">
+					</div>
+				</div>';
 	}
 
 	echo '
-							</tbody>
-						</table>
-					</div>
-				</td>
-			</tr>
-			</table>
+			</div>
 		</div>';
 }
 
@@ -193,46 +175,35 @@ function template_closedtickets()
 {
 	global $context, $txt, $settings, $scripturl;
 
-	echo '
-		<div class="modbuttons clearfix margintop">';
-
-	template_button_strip($context['navigation'], 'bottom');
+	template_shd_button_strip($context['navigation'], 'bottom');
 
 	echo '
+		<div class="title_bar">
+			<h3 class="titlebg">
+				', $txt['shd_helpdesk'], '
+			</h3>
 		</div>
-		<div id="admin_content">
-		<table width="100%" class="shd_main_hd">
-			<tr>';
-
-	echo '
-				<td valign="top">
-					<div class="title_bar">
-						<h3 class="titlebg">
-							', $txt['shd_helpdesk'], '
-						</h3>
-					</div>
-					<span class="upperframe"><span></span></span>
-					<div class="roundframe">
-						<div class="shd_gototicket smalltext">
-							<form action="', $scripturl, '?action=helpdesk" method="post">
-								', $txt['shd_go_to_ticket'], ':
-								<input type="text" name="ticket" size="4" />
-								<input type="submit" value="', $txt['shd_go'], '" />
-								<input type="hidden" name="sa" value="ticket" />
-							</form>
-						</div>
-						<div id="welcome">
-							<strong>', sprintf($txt['shd_welcome'], $context['user']['name']), '</strong><br />
-							', $txt['shd_closed_' . $context['shd_home_view'] . '_greeting'];
+		<div class="roundframe">
+			<div class="shd_gototicket smalltext">
+				<form action="', $scripturl, '?action=helpdesk" method="post">
+					', $txt['shd_go_to_ticket'], ':
+					<input type="text" name="ticket" size="4">
+					<input type="submit" value="', $txt['shd_go'], '">
+					<input type="hidden" name="sa" value="ticket">
+				</form>
+			</div>
+			<div id="welcome">
+				<strong>', sprintf($txt['shd_welcome'], $context['user']['name']), '</strong><br>
+				', $txt['shd_closed_' . $context['shd_home_view'] . '_greeting'];
 
 	if (!empty($context['shd_filter_fields']))
 	{
 		echo '
-			<br /><br /><strong>', $txt['shd_category_filter'], ':</strong>';
+				<br><br><strong>', $txt['shd_category_filter'], ':</strong>';
 		foreach ($context['shd_filter_fields'] as $id_field => $field)
 		{
 			echo '
-			<br />', $field['name'], ':';
+				<br>', $field['name'], ':';
 			foreach ($field['options'] as $key => $opt)
 			{
 				if (!empty($context['filter_fragment']) && $_REQUEST['field'] == $id_field && $_REQUEST['filter'] == $key)
@@ -244,10 +215,8 @@ function template_closedtickets()
 	}
 
 	echo '
-						</div>
-					</div>
-					<span class="lowerframe"><span></span></span>
-					<br />';
+			</div>
+		</div>';
 
 	// Start the ticket listing
 	$blocks = array_keys($context['ticket_blocks']);
@@ -256,12 +225,6 @@ function template_closedtickets()
 		$context['current_block'] = $block;
 		template_ticket_block();
 	}
-
-	echo '
-				</td>
-			</tr>
-			</table>
-		</div>';
 }
 
 /**
@@ -278,46 +241,35 @@ function template_recyclebin()
 {
 	global $context, $txt, $settings, $scripturl;
 
-	echo '
-		<div class="modbuttons clearfix margintop">';
-
-	template_button_strip($context['navigation'], 'bottom');
+	template_shd_button_strip($context['navigation'], 'bottom');
 
 	echo '
+		<div class="title_bar">
+			<h3 class="titlebg">
+				', $txt['shd_helpdesk'], '
+			</h3>
 		</div>
-		<div id="admin_content">
-		<table width="100%" class="shd_main_hd">
-			<tr>';
-
-	echo '
-				<td valign="top">
-					<div class="title_bar">
-						<h3 class="titlebg">
-							', $txt['shd_helpdesk'], '
-						</h3>
-					</div>
-					<span class="upperframe"><span></span></span>
-					<div class="roundframe">
-						<div class="shd_gototicket smalltext">
-							<form action="', $scripturl, '?action=helpdesk" method="post">
-								', $txt['shd_go_to_ticket'], ':
-								<input type="text" name="ticket" size="4" />
-								<input type="submit" value="', $txt['shd_go'], '" />
-								<input type="hidden" name="sa" value="ticket" />
-							</form>
-						</div>
-						<div id="welcome">
-							<strong>', sprintf($txt['shd_welcome'], $context['user']['name']), '</strong><br />
-							', $txt['shd_recycle_greeting'];
+		<div class="roundframe">
+			<div class="shd_gototicket smalltext">
+				<form action="', $scripturl, '?action=helpdesk" method="post">
+					', $txt['shd_go_to_ticket'], ':
+					<input type="text" name="ticket" size="4">
+					<input type="submit" value="', $txt['shd_go'], '">
+					<input type="hidden" name="sa" value="ticket">
+				</form>
+			</div>
+			<div id="welcome">
+				<strong>', sprintf($txt['shd_welcome'], $context['user']['name']), '</strong><br>
+				', $txt['shd_recycle_greeting'];
 
 	if (!empty($context['shd_filter_fields']))
 	{
 		echo '
-			<br /><br /><strong>', $txt['shd_category_filter'], ':</strong>';
+				<br><br><strong>', $txt['shd_category_filter'], ':</strong>';
 		foreach ($context['shd_filter_fields'] as $id_field => $field)
 		{
 			echo '
-			<br />', $field['name'], ':';
+				<br>', $field['name'], ':';
 			foreach ($field['options'] as $key => $opt)
 			{
 				if (!empty($context['filter_fragment']) && $_REQUEST['field'] == $id_field && $_REQUEST['filter'] == $key)
@@ -329,10 +281,8 @@ function template_recyclebin()
 	}
 
 	echo '
-						</div>
-					</div>
-					<span class="lowerframe"><span></span></span>
-					<br />';
+			</div>
+		</div>';
 
 	// Loop through the crap... Uh, I mean the tickets! :)
 	$blocks = array_keys($context['ticket_blocks']);
@@ -341,12 +291,6 @@ function template_recyclebin()
 		$context['current_block'] = $block;
 		template_ticket_block();
 	}
-
-	echo '
-				</td>
-			</tr>
-			</table>
-		</div>';
 }
 
 /**
@@ -362,17 +306,13 @@ function template_collapsed_ticket_block()
 	global $context, $txt, $settings, $scripturl;
 
 	echo '
-					<div class="tborder">
-						<div class="cat_bar">
-							<h3 class="catbg">
-								<img src="', $settings['default_images_url'], '/simpledesk/', $context['ticket_blocks'][$context['current_block']]['block_icon'], '" alt="*" />
-								', (empty($context['block_link']) ? '' : '<a href="' . $context['block_link'] . '">'), $context['ticket_blocks'][$context['current_block']]['title'], '
-								<span class="smalltext">(', $context['ticket_blocks'][$context['current_block']]['count'], ' ', ($context['ticket_blocks'][$context['current_block']]['count'] == 1 ? $txt['shd_count_ticket_1'] : $txt['shd_count_tickets']), ')</span>', (empty($context['block_link']) ? '' : '</a>'), '
-							</h3>
-						</div>
-					</div>
-					<br />
-					<br />';
+		<div class="cat_bar">
+			<h3 class="catbg">
+				<img src="', $settings['default_images_url'], '/simpledesk/', $context['ticket_blocks'][$context['current_block']]['block_icon'], '" alt="*">
+				', (empty($context['block_link']) ? '' : '<a href="' . $context['block_link'] . '">'), $context['ticket_blocks'][$context['current_block']]['title'], '
+				<span class="smalltext">(', $context['ticket_blocks'][$context['current_block']]['count'], ' ', ($context['ticket_blocks'][$context['current_block']]['count'] == 1 ? $txt['shd_count_ticket_1'] : $txt['shd_count_tickets']), ')</span>', (empty($context['block_link']) ? '' : '</a>'), '
+			</h3>
+		</div>';
 }
 
 /**
@@ -391,69 +331,67 @@ function template_ticket_block()
 	// $context['current_block'] = the block to display now
 
 	echo '
-					<div class="tborder">
-						<div class="cat_bar grid_header">
-							<h3 id="shd_block_', $context['current_block'], '" class="catbg grid_header">
-								', !empty($context['ticket_blocks'][$context['current_block']]['page_index']) ? '<span class="floatright smalltext">'. $txt['pages'] . ': ' . $context['ticket_blocks'][$context['current_block']]['page_index'] . '</span>' : '', '
-								<img src="', $settings['default_images_url'], '/simpledesk/', $context['ticket_blocks'][$context['current_block']]['block_icon'], '" alt="*" />
-								', (empty($context['block_link']) ? '' : '<a href="' . $context['block_link'] . '">'), $context['ticket_blocks'][$context['current_block']]['title'], '
-								<span class="smalltext">(', $context['ticket_blocks'][$context['current_block']]['count'], ' ', ($context['ticket_blocks'][$context['current_block']]['count'] == 1 ? $txt['shd_count_ticket_1'] : $txt['shd_count_tickets']), ')</span>', (empty($context['block_link']) ? '' : '</a>'), '
-							</h3>
-						</div>
-
-					<table class="shd_ticketlist" cellspacing="0" width="100%">
-						<tr class="titlebg">';
+		<div class="cat_bar">
+			<h3 id="shd_block_', $context['current_block'], '" class="catbg">
+				', !empty($context['ticket_blocks'][$context['current_block']]['page_index']) ? '<span class="floatright smalltext">' . $context['ticket_blocks'][$context['current_block']]['page_index'] . '</span>' : '', '
+				<img src="', $settings['default_images_url'], '/simpledesk/', $context['ticket_blocks'][$context['current_block']]['block_icon'], '" alt="*">
+				', (empty($context['block_link']) ? '' : '<a href="' . $context['block_link'] . '">'), $context['ticket_blocks'][$context['current_block']]['title'], '
+				<span class="smalltext">(', $context['ticket_blocks'][$context['current_block']]['count'], ' ', ($context['ticket_blocks'][$context['current_block']]['count'] == 1 ? $txt['shd_count_ticket_1'] : $txt['shd_count_tickets']), ')</span>', (empty($context['block_link']) ? '' : '</a>'), '
+			</h3>
+		</div>
+		<table class="table_grid">
+			<tr class="title_bar">';
 
 	$block_width = 0;
-	foreach ($context['ticket_blocks'][$context['current_block']]['columns'] as $column)
+	foreach ($context['ticket_blocks'][$context['current_block']]['columns'] as $column => $width)
 	{
 		$block_width++;
 		switch ($column)
 		{
 			case 'ticket_id':
 				echo '
-							<td width="8%" colspan="2" class="shd_nowrap"><img src="', $settings['default_images_url'], '/simpledesk/ticket.png" class="shd_smallicon" alt="" /> ', template_shd_menu_header('ticketid', $txt['shd_ticket']), '</td>';
+							<td', !empty($width) ? ' width="' . $width . '%"' : '', ' colspan="2"><img src="', $settings['default_images_url'], '/simpledesk/ticket.png" class="shd_smallicon" alt=""> ', template_shd_menu_header('ticketid', $txt['shd_ticket']), '</td>';
 				$block_width++; // is 2 blocks wide
 				break;
 			case 'ticket_name':
 				echo '
-							<td width="15%" class="shd_nowrap">', template_shd_menu_header('ticketname', $txt['shd_ticket_name']), '</td>';
+							<td', !empty($width) ? ' width="' . $width . '%"' : '', '>', template_shd_menu_header('ticketname', $txt['shd_ticket_name']), '</td>';
 				break;
 			case 'starting_user':
 				echo '
-							<td width="12%" class="shd_nowrap"><img src="', $settings['default_images_url'], '/simpledesk/user.png" class="shd_smallicon" alt="" /> ', template_shd_menu_header('starter', $txt['shd_ticket_started_by']), '</td>';
+							<td', !empty($width) ? ' width="' . $width . '%"' : '', '><img src="', $settings['default_images_url'], '/simpledesk/user.png" class="shd_smallicon" alt=""> ', template_shd_menu_header('starter', $txt['shd_ticket_started_by']), '</td>';
 				break;
 			case 'last_reply':
 				echo '
-							<td width="20%" class="shd_nowrap"><img src="', $settings['default_images_url'], '/simpledesk/staff.png" class="shd_smallicon" alt="" /> ', template_shd_menu_header('lastreply', $txt['shd_ticket_updated_by']), '</td>';
+							<td', !empty($width) ? ' width="' . $width . '%"' : '', '><img src="', $settings['default_images_url'], '/simpledesk/staff.png" class="shd_smallicon" alt=""> ', template_shd_menu_header('lastreply', $txt['shd_ticket_updated_by']), '</td>';
 				break;
 			case 'assigned':
 				echo '
-							<td width="12%" class="shd_nowrap"><img src="', $settings['default_images_url'], '/simpledesk/staff.png" class="shd_smallicon" alt="" /> ', template_shd_menu_header('assigned', $txt['shd_ticket_assigned']), '</td>';
+							<td', !empty($width) ? ' width="' . $width . '%"' : '', '><img src="', $settings['default_images_url'], '/simpledesk/staff.png" class="shd_smallicon" alt=""> ', template_shd_menu_header('assigned', $txt['shd_ticket_assigned']), '</td>';
 				break;
 			case 'status':
 				echo '
-							<td width="17%" class="shd_nowrap"><img src="', $settings['default_images_url'], '/simpledesk/status.png" class="shd_smallicon" alt="" /> ', template_shd_menu_header('status', $txt['shd_ticket_status']), '</td>';
+							<td', !empty($width) ? ' width="' . $width . '%"' : '', '><img src="', $settings['default_images_url'], '/simpledesk/status.png" class="shd_smallicon" alt=""> ', template_shd_menu_header('status', $txt['shd_ticket_status']), '</td>';
 				break;
 			case 'urgency':
 				echo '
-							<td width="8%" class="shd_nowrap"><img src="', $settings['default_images_url'], '/simpledesk/urgency.png" class="shd_smallicon" alt="" /> ', template_shd_menu_header('urgency', $txt['shd_ticket_urgency']), '</td>';
+							<td', !empty($width) ? ' width="' . $width . '%"' : '', '><img src="', $settings['default_images_url'], '/simpledesk/urgency.png" class="shd_smallicon" alt=""> ', template_shd_menu_header('urgency', $txt['shd_ticket_urgency']), '</td>';
 				break;
 			case 'updated':
 				echo '
-							<td width="22%" class="shd_nowrap"><img src="', $settings['default_images_url'], '/simpledesk/time.png" class="shd_smallicon" alt="" /> ', template_shd_menu_header('updated', $txt['shd_ticket_updated']), '</td>';
+							<td', !empty($width) ? ' width="' . $width . '%"' : '', '><img src="', $settings['default_images_url'], '/simpledesk/time.png" class="shd_smallicon" alt=""> ', template_shd_menu_header('updated', $txt['shd_ticket_updated']), '</td>';
 				break;
 			case 'replies':
 				echo '
-							<td width="7%" class="shd_nowrap">', template_shd_menu_header('replies', $txt['shd_ticket_num_replies']), '</td>';
+							<td', !empty($width) ? ' width="' . $width . '%"' : '', '>', template_shd_menu_header('replies', $txt['shd_ticket_num_replies']), '</td>';
 				break;
 			case 'allreplies':
 				echo '
-							<td width="7%" class="shd_nowrap">', template_shd_menu_header('allreplies', $txt['shd_ticket_num_replies']), '</td>';
+							<td', !empty($width) ? ' width="' . $width . '%"' : '', '>', template_shd_menu_header('allreplies', $txt['shd_ticket_num_replies']), '</td>';
 				break;
 			case 'actions':
 				echo '
-							<td width="5%" class="shd_nowrap">', $txt['shd_actions'] , '</td>';
+							<td', !empty($width) ? ' width="' . $width . '%"' : '', '>', $txt['shd_actions'], '</td>';
 				break;
 			default:
 				echo '
@@ -463,24 +401,23 @@ function template_ticket_block()
 	}
 
 	echo '
-						</tr>';
+			</tr>';
 
 	if (empty($context['ticket_blocks'][$context['current_block']]['tickets']))
 	{
 		echo '
-						<tr class="windowbg2">
-							<td colspan="', $block_width, '" class="shd_noticket">', $txt['shd_error_no_tickets'], '</td>
-						</tr>';
+			<tr class="windowbg">
+				<td colspan="', $block_width, '" class="shd_noticket">', $txt['shd_error_no_tickets'], '</td>
+			</tr>';
 	}
 	else
 	{
-		$use_bg2 = true; // start with windowbg2 to differentiate between that and titlebg
 		foreach ($context['ticket_blocks'][$context['current_block']]['tickets'] as $ticket)
 		{
 			echo '
-						<tr class="', ($use_bg2 ? 'windowbg2' : 'windowbg'), '">';
+			<tr class="windowbg">';
 
-			foreach ($context['ticket_blocks'][$context['current_block']]['columns'] as $column)
+			foreach ($context['ticket_blocks'][$context['current_block']]['columns'] as $column => $width)
 			{
 				switch ($column)
 				{
@@ -490,18 +427,18 @@ function template_ticket_block()
 						$unread_image = $ticket['is_unread'] ? 'unread.png' : 'read.png';
 						$unread_txt = $ticket['is_unread'] ? $txt['shd_ticket_new'] : $txt['shd_ticket_notnew'];
 						echo '
-							<td width="1%" class="shd_nowrap">
-								<img src="', $settings['default_images_url'], '/simpledesk/', $unread_image, '" alt="', $unread_txt, '" title="', $unread_txt, '" />
-								<img src="', $settings['default_images_url'], '/simpledesk/', $private_image, '" alt="', $private_txt, '" title="', $private_txt, '" />
+							<td width="3%">
+								<img src="', $settings['default_images_url'], '/simpledesk/', $unread_image, '" alt="', $unread_txt, '" title="', $unread_txt, '">
+								<img src="', $settings['default_images_url'], '/simpledesk/', $private_image, '" alt="', $private_txt, '" title="', $private_txt, '">
 							</td>
-							<td width="4%" class="smalltext">', $ticket['display_id'], '</td>';
+							<td class="smalltext">', $ticket['display_id'], '</td>';
 						break;
 					case 'ticket_name':
 						echo '
 							<td class="smalltext">', $ticket['dept_link'], $ticket['link'];
 
 						if ($ticket['is_unread'] && !empty($ticket['new_href']))
-							echo ' <a href="', $ticket['new_href'], '"><img src="', $context['new_posts_image'], '" class="new_posts" alt="', $txt['new'], '" /></a>';
+							echo ' <a href="', $ticket['new_href'], '"><span class="new_posts shd_new_tickets">', $txt['new'], '</span></a>';
 
 						echo '</td>';
 						break;
@@ -539,7 +476,7 @@ function template_ticket_block()
 						break;
 					case 'actions':
 						echo '
-							<td class="shd_nowrap">';
+							<td>';
 
 						foreach ($ticket['actions'] as $action)
 							echo '
@@ -557,22 +494,18 @@ function template_ticket_block()
 			}
 
 			echo '
-						</tr>';
-
-			$use_bg2 = !$use_bg2;
+			</tr>';
 		}
 	}
 
 	if (!empty($context['ticket_blocks'][$context['current_block']]['page_index']))
 		echo '
-					<tr class="titlebg">
-						<td colspan="', $block_width, '"><span class="floatright smalltext">', $txt['pages'], ': ', $context['ticket_blocks'][$context['current_block']]['page_index'], '</span></td>
-					</tr>';
+			<tr class="bot_page">
+				<td colspan="', $block_width, '"><span class="floatright smalltext">', $context['ticket_blocks'][$context['current_block']]['page_index'], '</span></td>
+			</tr>';
 
 	echo '
-					</table>
-					</div>
-					<br /><br />';
+		</table>';
 }
 
 /**
@@ -597,12 +530,9 @@ function template_shd_menu_header($header, $string)
 	$link = '';
 	// Get the pages of existing items first
 	foreach ($context['ticket_blocks'] as $block_key => $block)
-	{
 		if (isset($_REQUEST['st_' . $block_key]))
 			$link .= ';st_' . $block_key . '=' . $block['start'];
-	}
 
-	$direction = 'down';
 	// Now for sorting direction per block
 	foreach ($context['ticket_blocks'] as $block_key => $block)
 	{
@@ -614,12 +544,10 @@ function template_shd_menu_header($header, $string)
 		$link .= ';so_' . $block_key . '=' . ($block_key != $context['current_block'] ? $block['sort']['item'] : $header) . '_' . $link_direction;
 	}
 
-	$html = '<a href="' . $scripturl . '?action=helpdesk;sa=' . $_REQUEST['sa'] . ($_REQUEST['sa'] == 'viewblock' ? ';block=' . $_REQUEST['block'] : '') . $link . $context['shd_dept_link'] . '">' . $string . '</a> ';
+	$html = '<a href="' . $scripturl . '?action=helpdesk;sa=' . $context['shd_current_subaction'] . ($context['shd_current_subaction'] == 'viewblock' ? ';block=' . $context['shd_current_block'] : '') . $link . $context['shd_dept_link'] . '">' . $string . '</a> ';
 
 	if ($context['ticket_blocks'][$context['current_block']]['sort']['item'] == $header)
-	{
-		$html .= '<img src="' . $settings['images_url']  . '/sort_' . ($context['ticket_blocks'][$context['current_block']]['sort']['direction'] == 'asc' ? 'down' : 'up') . '.png" alt="" />';
-	}
+		$html .= '<img src="' . $settings['images_url'] . '/simpledesk/move_' . ($context['ticket_blocks'][$context['current_block']]['sort']['direction'] == 'asc' ? 'down' : 'up') . '.png" alt="">';
 
 	return $html;
 }
@@ -633,7 +561,10 @@ function template_shd_menu_header($header, $string)
 function template_shd_maintenance_above()
 {
 	global $txt, $settings;
-	echo '<div class="errorbox"><img src="', $settings['default_images_url'], '/simpledesk/update.png" alt="*" class="shd_icon_minihead" /> &nbsp;', $txt['shd_helpdesk_maintenance'], '</div>';
+	echo '
+		<div class="errorbox">
+			<img src="', $settings['default_images_url'], '/simpledesk/update.png" alt="*" class="shd_icon_minihead"> &nbsp;', $txt['shd_helpdesk_maintenance'], '
+		</div>';
 }
 
 /**
@@ -644,13 +575,16 @@ function template_shd_maintenance_above()
 */
 function template_shd_maintenance_below()
 {
-
 }
 
-// Provide a placeholder in the event template_button_strip isn't defined (like in the mobile templates)
-if (!function_exists('template_button_strip'))
+/**
+ *	Wrapper for the button_strip.
+ *
+ *	@since 2.1
+*/
+function template_shd_button_strip($button_strip, $direction = '', $strip_options = array())
 {
-	function template_button_strip($navigation, $direction)
-	{
-	}
+	// If SMF version exists, use it.
+	if (function_exists('template_button_strip'))
+		template_button_strip($button_strip, $direction, $strip_options);
 }

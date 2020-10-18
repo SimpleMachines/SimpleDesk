@@ -1,21 +1,21 @@
 <?php
-###############################################################
-#         Simple Desk Project - www.simpledesk.net            #
-###############################################################
-#       An advanced help desk modifcation built on SMF        #
-###############################################################
-#                                                             #
-#         * Copyright 2010 - SimpleDesk.net                   #
-#                                                             #
-#   This file and its contents are subject to the license     #
-#   included with this distribution, license.txt, which       #
-#   states that this software is New BSD Licensed.            #
-#   Any questions, please contact SimpleDesk.net              #
-#                                                             #
-###############################################################
-# SimpleDesk Version: 2.0 Anatidae                            #
-# File Info: SDPluginFrontPage.php / 2.0 Anatidae             #
-###############################################################
+/**************************************************************
+*          Simple Desk Project - www.simpledesk.net           *
+***************************************************************
+*       An advanced help desk modification built on SMF       *
+***************************************************************
+*                                                             *
+*         * Copyright 2020 - SimpleDesk.net                   *
+*                                                             *
+*   This file and its contents are subject to the license     *
+*   included with this distribution, license.txt, which       *
+*   states that this software is New BSD Licensed.            *
+*   Any questions, please contact SimpleDesk.net              *
+*                                                             *
+***************************************************************
+* SimpleDesk Version: 2.1 Beta 1                              *
+* File Info: SDPluginStats.php                                *
+**************************************************************/
 
 /**
  *	This file handles the replacement front page.
@@ -167,7 +167,7 @@ function shd_stats_today()
 			INNER JOIN {db_prefix}helpdesk_tickets AS t ON (la.id_ticket = t.id_ticket)
 		WHERE la.action IN ({array_string:actions})
 			AND la.log_time > {int:today}
-		GROUP BY la.action',
+		GROUP BY la.action, t.status',
 		array(
 			'actions' => array_keys($actions),
 			// we could use strtotime from a date(n j Y), but this seems safer calculations
@@ -237,20 +237,22 @@ function shd_stats_average()
 	);
 
 	foreach ($actions as $action)
+	{
 		$request = $smcFunc['db_query']('', '
 			SELECT AVG(la.id_ticket) AS count, t.status
 			FROM {db_prefix}helpdesk_log_action AS la
 				INNER JOIN {db_prefix}helpdesk_tickets AS t ON (la.id_ticket = t.id_ticket)
 			WHERE la.action IN ({array_string:actions})
-			GROUP BY (la.id_ticket)',
+			GROUP BY t.status',
 			array(
 				'actions' => $action,
 				'24hrs' => 86400,
 		));
 
-	while ($row = $smcFunc['db_fetch_assoc']($request))
-		$average[$row['status']] = $row['count'];
-	$smcFunc['db_free_result']($request);
+		while ($row = $smcFunc['db_fetch_assoc']($request))
+			$average[$row['status']] = $row['count'];
+		$smcFunc['db_free_result']($request);
+	}
 
 	return $average;
 }
@@ -262,21 +264,17 @@ function shd_stats_totals()
 
 	// Count Admins separately for now.!
 	$admins = array();
-	if (empty($totals[ROLE_ADMIN]))
-	{
-		$request = $smcFunc['db_query']('', '
-			SELECT id_member
-			FROM {db_prefix}members
-			WHERE id_group = {int:admin} OR FIND_IN_SET({int:admin}, additional_groups)',
-			array(
-				'admin' => 1
-		));
+	$request = $smcFunc['db_query']('', '
+		SELECT id_member
+		FROM {db_prefix}members
+		WHERE id_group = {int:admin} OR FIND_IN_SET({int:admin}, additional_groups)',
+		array(
+			'admin' => 1
+	));
 
-		while ($row = $smcFunc['db_fetch_assoc']($request))
-			$admins[] = $row['id_member'];
-
-		$smcFunc['db_free_result']($request);
-	}
+	while ($row = $smcFunc['db_fetch_assoc']($request))
+		$admins[] = $row['id_member'];
+	$smcFunc['db_free_result']($request);
 
 	// @TODO: This most likely will filesort and be slow on large helpdesks.
 	$request = $smcFunc['db_query']('', '
@@ -302,7 +300,8 @@ function shd_stats_totals()
 	$smcFunc['db_free_result']($request);
 
 	// Add in the admins.
-	$totals[ROLE_ADMIN] += count($admins);
+	if (empty($totals[ROLE_ADMIN]))
+		$totals[ROLE_ADMIN] += count($admins);
 
 	return $totals;
 }

@@ -1,21 +1,21 @@
 <?php
-###############################################################
-#         Simple Desk Project - www.simpledesk.net            #
-###############################################################
-#       An advanced help desk modifcation built on SMF        #
-###############################################################
-#                                                             #
-#         * Copyright 2010 - SimpleDesk.net                   #
-#                                                             #
-#   This file and its contents are subject to the license     #
-#   included with this distribution, license.txt, which       #
-#   states that this software is New BSD Licensed.            #
-#   Any questions, please contact SimpleDesk.net              #
-#                                                             #
-###############################################################
-# SimpleDesk Version: 2.0 Anatidae                            #
-# File Info: SimpleDesk-Unread.php / 2.0 Anatidae             #
-###############################################################
+/**************************************************************
+*          Simple Desk Project - www.simpledesk.net           *
+***************************************************************
+*       An advanced help desk modification built on SMF       *
+***************************************************************
+*                                                             *
+*         * Copyright 2020 - SimpleDesk.net                   *
+*                                                             *
+*   This file and its contents are subject to the license     *
+*   included with this distribution, license.txt, which       *
+*   states that this software is New BSD Licensed.            *
+*   Any questions, please contact SimpleDesk.net              *
+*                                                             *
+***************************************************************
+* SimpleDesk Version: 2.1 Beta 1                              *
+* File Info: SimpleDesk-Unread.php                            *
+**************************************************************/
 
 /**
  *	This file handles displaying ticket information in the 'unread' and 'unreadreplies' pages.
@@ -23,7 +23,6 @@
  *	@package source
  *	@since 2.0
 */
-
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
@@ -39,7 +38,7 @@ function shd_unread_posts()
 	global $smcFunc, $context, $user_info, $sourcedir, $txt, $scripturl, $user_profile, $modSettings;
 
 	// Are we using Dragooon's very swish mobile theme, or other wireless? If so, disable this.
-	if (WIRELESS || (isset($_REQUEST['thememode']) && $_REQUEST['thememode'] == 'mobile') || (isset($_COOKIE['smf4m_cookie']) && $_COOKIE['smf4m_cookie'] == 'mobile'))
+	if ((isset($_REQUEST['thememode']) && $_REQUEST['thememode'] == 'mobile') || (isset($_COOKIE['smf4m_cookie']) && $_COOKIE['smf4m_cookie'] == 'mobile'))
 		$modSettings['shd_disable_unread'] = true;
 
 	// We're only displaying this to staff. We didn't do this check on bootstrapping, no sense doing it every page load.
@@ -72,7 +71,7 @@ function shd_unread_posts()
 			$context['block_title'] = $txt['shd_unread_tickets'];
 			$request = shd_db_query('', '
 				SELECT hdt.id_ticket, hdt.subject, hdt.id_ticket, hdt.num_replies, hdt.last_updated,
-					hdtr_first.poster_name, hdt.urgency, hdt.status, hdt.id_member_started, hdt.id_member_assigned, IFNULL(hdlr.id_msg, 0) AS log_read
+					hdtr_first.poster_name, hdt.urgency, hdt.status, hdt.id_member_started, hdt.id_member_assigned, COALESCE(hdlr.id_msg, 0) AS log_read
 				FROM {db_prefix}helpdesk_tickets AS hdt
 					INNER JOIN {db_prefix}helpdesk_ticket_replies AS hdtr_first ON (hdt.id_first_msg = hdtr_first.id_msg)
 					INNER JOIN {db_prefix}helpdesk_ticket_replies AS hdtr_last ON (hdt.id_last_msg = hdtr_last.id_msg)
@@ -105,12 +104,12 @@ function shd_unread_posts()
 			foreach ($context['shd_unread_info'] as $key => $ticket)
 			{
 				if (!empty($user_profile[$ticket['id_member_started']]))
-					$context['shd_unread_info'][$key]['ticket_starter'] = shd_profile_link($user_profile[$ticket['id_member_started']]['member_name'], $ticket['id_member_started']);
+					$context['shd_unread_info'][$key]['ticket_starter'] = shd_profile_link($user_profile[$ticket['id_member_started']]['real_name'], $ticket['id_member_started']);
 				else
 					$context['shd_unread_info'][$key]['ticket_starter'] = $ticket['poster_name'];
 
 				if (!empty($user_profile[$ticket['id_member_assigned']]))
-					$context['shd_unread_info'][$key]['ticket_assigned'] = shd_profile_link($user_profile[$ticket['id_member_assigned']]['member_name'], $ticket['id_member_assigned']);
+					$context['shd_unread_info'][$key]['ticket_assigned'] = shd_profile_link($user_profile[$ticket['id_member_assigned']]['real_name'], $ticket['id_member_assigned']);
 				else
 					$context['shd_unread_info'][$key]['ticket_assigned'] = '<span class="error">' . $txt['shd_unassigned'] . '</span>';
 			}
@@ -126,4 +125,3 @@ function shd_unread_posts()
 	require_once($sourcedir . '/' . $context['shd_unread_actions'][$_REQUEST['action']][0]);
 	$context['shd_unread_actions'][$_REQUEST['action']][1]();
 }
-

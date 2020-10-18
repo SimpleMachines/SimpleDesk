@@ -1,21 +1,21 @@
 <?php
-###############################################################
-#         Simple Desk Project - www.simpledesk.net            #
-###############################################################
-#       An advanced help desk modifcation built on SMF        #
-###############################################################
-#                                                             #
-#         * Copyright 2010 - SimpleDesk.net                   #
-#                                                             #
-#   This file and its contents are subject to the license     #
-#   included with this distribution, license.txt, which       #
-#   states that this software is New BSD Licensed.            #
-#   Any questions, please contact SimpleDesk.net              #
-#                                                             #
-###############################################################
-# SimpleDesk Version: 2.0 Anatidae                            #
-# File Info: Subs-SimpleDesk.php / 2.0 Anatidae               #
-###############################################################
+/**************************************************************
+*          Simple Desk Project - www.simpledesk.net           *
+***************************************************************
+*       An advanced help desk modification built on SMF       *
+***************************************************************
+*                                                             *
+*         * Copyright 2020 - SimpleDesk.net                   *
+*                                                             *
+*   This file and its contents are subject to the license     *
+*   included with this distribution, license.txt, which       *
+*   states that this software is New BSD Licensed.            *
+*   Any questions, please contact SimpleDesk.net              *
+*                                                             *
+***************************************************************
+* SimpleDesk Version: 2.1 Beta 1                              *
+* File Info: Subs-SimpleDesk.php                              *
+**************************************************************/
 
 /**
  *	This file handles key functions for SimpleDesk that can be called on every page load, such as the
@@ -24,7 +24,6 @@
  *	@package subs
  *	@since 1.0
  */
-
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
@@ -51,7 +50,7 @@ function shd_init()
 	$context['shd_home'] = 'action=helpdesk;sa=main';
 
 	// What SD version are we on? It's now here!
-	define('SHD_VERSION', 'SimpleDesk 2.0 Anatidae');
+	define('SHD_VERSION', 'SimpleDesk 2.1 Beta 1');
 
 	// This isn't the SMF way. But for something like this, it's way way more logical and readable.
 	define('TICKET_STATUS_NEW', 0);
@@ -61,6 +60,7 @@ function shd_init()
 	define('TICKET_STATUS_WITH_SUPERVISOR', 4);
 	define('TICKET_STATUS_ESCALATED', 5);
 	define('TICKET_STATUS_DELETED', 6);
+	define('TICKET_STATUS_HOLD', 7);
 
 	define('TICKET_URGENCY_LOW', 0);
 	define('TICKET_URGENCY_MEDIUM', 1);
@@ -111,6 +111,14 @@ function shd_init()
 	define('ROLEPERM_ALLOW', 1);
 	define('ROLEPERM_DENY', 2);
 
+	$context['shd_scripts_version'] = 'beta1';
+	$context['shd_css_version'] = 'beta1';
+
+	// Load up developer stuff if we need to.
+	$context['shd_developer_mode'] = isset($modSettings['shd_developer_mode']);
+	if ($context['shd_developer_mode'])
+		$context['shd_scripts_version'] = $context['shd_css_version'] = 'dev' . time();
+
 	// How many digits should we show for ticket numbers? Normally we pad to 5 digits, e.g. 00001 - this is how we set that width.
 	if (empty($modSettings['shd_zerofill']) || $modSettings['shd_zerofill'] < 0)
 		$modSettings['shd_zerofill'] = 0;
@@ -128,12 +136,10 @@ function shd_init()
 	);
 
 	foreach ($defaults as $var => $val)
-	{
 		if (empty($modSettings[$var]))
 			$modSettings[$var] = $val;
-	}
 
-	$modSettings['helpdesk_active'] = isset($modSettings['admin_features']) ? in_array('shd', explode(',', $modSettings['admin_features'])) : false;
+	$modSettings['helpdesk_active'] = true;
 
 	if ($modSettings['helpdesk_active'])
 	{
@@ -150,8 +156,7 @@ function shd_init()
 			// You can only login.... otherwise, you're getting the "maintenance mode" display. Except we have to boot up a decent amount of SMF.
 			if (empty($_REQUEST['action']) || ($_REQUEST['action'] != 'login2' && $_REQUEST['action'] != 'logout'))
 			{
-				$_GET['action'] = '';
-				$_REQUEST['action'] = '';
+				$_GET['action'] = $_REQUEST['action'] = '';
 				$context['shd_maintenance_mode'] = true;
 				loadBoard();
 				loadPermissions();
@@ -175,8 +180,11 @@ function shd_init()
 			// First figure out what department they're in.
 			$this_dept = 0;
 			$depts = shd_allowed_to('access_helpdesk', false);
+
 			// Do they only have one dept? If so, that's the one.
-			if (count($depts) == 1)
+			if (is_bool($depts))
+				shd_fatal_error('No Bools here');
+			elseif (count($depts) == 1)
 				$this_dept = $depts[0];
 			// They might explicitly say it on the request.
 			elseif (isset($_REQUEST['dept']))
@@ -259,7 +267,7 @@ function shd_init()
  *	@param string $identifier SMF-style query identifier for database backend-specific replacements
  *	@param string $db_string Standard SMF 2.0 style database query, including {query_see_ticket} if appropriate
  *	@param array $db_values Standard SMF 2.0 style hash map of parameters to inject into the query
- *	@param resource $connection A database connection variable, if supplied, to override the one used by SMF by default
+ *	@param resource|null $connection A database connection variable, if supplied, to override the one used by SMF by default
  *	@return resource Standard database query resource, suitable for processing with other $smcFunc['db_*'] functions
  *
  *	@see shd_load_user_perms()
@@ -328,10 +336,10 @@ function shd_get_active_tickets()
 			'status' => $status,
 		)
 	);
+	$row = $smcFunc['db_fetch_row']($query);
+	$smcFunc['db_free_result']($query);
 
 	$context['active_tickets_raw'] = 0;
-
-	$row = $smcFunc['db_fetch_row']($query);
 	if (!empty($row[0]))
 	{
 		$context['menu_buttons']['helpdesk']['alttitle'] = $txt['shd_helpdesk'] . ' [' . $row[0] . ']';
@@ -384,16 +392,12 @@ function shd_clear_active_tickets($dept = 0)
 	}
 	// Not so much?
 	else
-	{
 		foreach ($members as $member)
 			cache_put_data('shd_ticket_count_dept' . $dept . '_' . $member, null, 120);
-	}
 
 	// If we've updated this count, and the menu's cached, which it will be under the following conditions, update the 'settings'.
 	if (!empty($modSettings['cache_enable']) && $modSettings['cache_enable'] >= 2)
-		updateSettings(
-			array('settings_updated' => time())
-		);
+		updateSettings(array('settings_updated' => time()));
 }
 
 /**
@@ -448,6 +452,7 @@ function shd_log_action($action, $params, $do_last_update = true)
 		'marknotprivate' => 'shd_logopt_privacy',
 		'urgency_increase' => 'shd_logopt_urgency',
 		'urgency_decrease' => 'shd_logopt_urgency',
+		'urgency_change' => 'shd_logopt_urgency',
 		'tickettotopic' => 'shd_logopt_tickettopicmove',
 		'topictoticket' => 'shd_logopt_tickettopicmove',
 		'delete' => 'shd_logopt_delete',
@@ -520,7 +525,7 @@ function shd_log_action($action, $params, $do_last_update = true)
 			'log_time' => 'int', 'id_member' => 'int', 'ip' => 'string-16', 'action' => 'string', 'id_ticket' => 'int', 'id_msg' => 'int', 'extra' => 'string-65534',
 		),
 		array(
-			time(), $user_info['id'], $user_info['ip'], $action, $ticket_id, $msg_id, serialize($params),
+			time(), $user_info['id'], $user_info['ip'], $action, $ticket_id, $msg_id, json_encode($params),
 		),
 		array('id_action')
 	);
@@ -606,16 +611,14 @@ function shd_count_helpdesk_tickets($status = '', $is_staff = false)
 	if (empty($context['ticket_count']))
 	{
 		$context['ticket_count'] = array();
-		for ($i = 0; $i <= 6; $i++)
+		for ($i = 0; $i <= 7; $i++)
 			$context['ticket_count'][$i] = 0; // set the count to zero for all known states
 
 		$cache_id = 'shd_ticket_count_' . (!empty($context['shd_department']) ? 'dept' . $context['shd_department'] . '_' : '') . $user_info['id'];
 
 		$temp = cache_get_data($cache_id, 180);
 		if ($temp !== null)
-		{
 			$context['ticket_count'] = $temp;
-		}
 		else
 		{
 			$query = shd_db_query('', '
@@ -623,8 +626,7 @@ function shd_count_helpdesk_tickets($status = '', $is_staff = false)
 				FROM {db_prefix}helpdesk_tickets AS hdt
 				WHERE {query_see_ticket}' . (!empty($context['shd_department']) ? '
 					AND id_dept = ' . $context['shd_department'] : '') . '
-				GROUP BY status
-				ORDER BY null',
+				GROUP BY status',
 				array()
 			);
 
@@ -642,8 +644,7 @@ function shd_count_helpdesk_tickets($status = '', $is_staff = false)
 					WHERE {query_see_ticket}
 						AND id_member_assigned = {int:user}' . (!empty($context['shd_department']) ? '
 						AND id_dept = ' . $context['shd_department'] : '') . '
-					GROUP BY status
-					ORDER BY null',
+					GROUP BY status',
 					array(
 						'user' => $context['user']['id'],
 					)
@@ -657,7 +658,6 @@ function shd_count_helpdesk_tickets($status = '', $is_staff = false)
 						$context['ticket_count'][$row['status']] -= $row['tickets'];
 					}
 				}
-
 				$smcFunc['db_free_result']($query);
 			}
 
@@ -687,7 +687,7 @@ function shd_count_helpdesk_tickets($status = '', $is_staff = false)
 		}
 	}
 
-	switch($status)
+	switch ($status)
 	{
 		case 'open':
 			return (
@@ -696,7 +696,8 @@ function shd_count_helpdesk_tickets($status = '', $is_staff = false)
 				$context['ticket_count'][TICKET_STATUS_PENDING_USER] +
 				$context['ticket_count'][TICKET_STATUS_WITH_SUPERVISOR] +
 				$context['ticket_count'][TICKET_STATUS_ESCALATED] +
-				$context['ticket_count']['assigned']
+				$context['ticket_count']['assigned'] +
+				($is_staff ? 0 : $context['ticket_count'][TICKET_STATUS_HOLD])
 			);
 		case 'assigned':
 			return $context['ticket_count']['assigned'];
@@ -712,6 +713,8 @@ function shd_count_helpdesk_tickets($status = '', $is_staff = false)
 			return $context['ticket_count'][TICKET_STATUS_DELETED];
 		case 'withdeleted':
 			return $context['ticket_count']['withdeleted'];
+		case 'hold':
+			return !empty($context['ticket_count'][TICKET_STATUS_HOLD]) ? $context['ticket_count'][TICKET_STATUS_HOLD] : 0;
 		default:
 			return array_sum($context['ticket_count']) - $context['ticket_count']['withdeleted']; // since withdeleted is the only duplicate information, all the rest is naturally self-exclusive
 	}
@@ -735,16 +738,16 @@ function shd_load_ticket($ticket = 0)
 
 	// Make sure they set a ticket ID.
 	if ($ticket == 0 && empty($context['ticket_id']))
-		fatal_lang_error('shd_no_ticket', false);
+		shd_fatal_lang_error('shd_no_ticket', false);
 
 	// Get the ticket data. Note this implicitly checks perms too.
 	$query = shd_db_query('', '
 		SELECT hdt.id_first_msg, hdt.id_last_msg, hdt.id_member_started, hdt.subject, hdt.urgency, hdt.status,
 			hdt.num_replies, hdt.deleted_replies, hdt.private, hdtr.body, hdtr.id_member, hdtr.poster_time,
 			hdtr.modified_time, hdtr.smileys_enabled, hdt.id_dept AS dept, hdd.dept_name,
-			IFNULL(mem.real_name, hdtr.poster_name) AS starter_name, IFNULL(mem.id_member, 0) AS starter_id, hdtr.poster_ip AS starter_ip,
-			IFNULL(ma.real_name, 0) AS assigned_name, IFNULL(ma.id_member, 0) AS assigned_id,
-			IFNULL(mm.real_name, hdtr.modified_name) AS modified_name, IFNULL(mm.id_member, 0) AS modified_id
+			COALESCE(mem.real_name, hdtr.poster_name) AS starter_name, COALESCE(mem.id_member, 0) AS starter_id, hdtr.poster_ip AS starter_ip,
+			COALESCE(ma.real_name, 0) AS assigned_name, COALESCE(ma.id_member, 0) AS assigned_id,
+			COALESCE(mm.real_name, hdtr.modified_name) AS modified_name, COALESCE(mm.id_member, 0) AS modified_id
 		FROM {db_prefix}helpdesk_tickets AS hdt
 			INNER JOIN {db_prefix}helpdesk_ticket_replies AS hdtr ON (hdt.id_first_msg = hdtr.id_msg)
 			INNER JOIN {db_prefix}helpdesk_depts AS hdd ON (hdt.id_dept = hdd.id_dept)
@@ -760,7 +763,7 @@ function shd_load_ticket($ticket = 0)
 	if ($smcFunc['db_num_rows']($query) == 0)
 	{
 		$smcFunc['db_free_result']($query);
-		fatal_lang_error('shd_no_ticket', false);
+		shd_fatal_lang_error('shd_no_ticket', false);
 	}
 
 	$ticketinfo = $smcFunc['db_fetch_assoc']($query);
@@ -808,10 +811,8 @@ function shd_format_text($text, $smileys = true, $cache = '')
 			$original_tags = parse_bbc(false);
 			$tags = array();
 			foreach ($original_tags as $smf_tag)
-			{
 				if (!isset($tags[$smf_tag['tag']]))
 					$tags[$smf_tag['tag']] = true;
-			}
 
 			// See what tagz we can haz.
 			if (!empty($modSettings['shd_enabled_bbc']))
@@ -823,15 +824,12 @@ function shd_format_text($text, $smileys = true, $cache = '')
 			$disabled_tags[] = '_SHD_DUMMY_TAG';
 			$smf_disabled = isset($modSettings['disabledBBC']) ? $modSettings['disabledBBC'] . ',_SHD_DUMMY_TAG' : '_SHD_DUMMY_TAG';
 			$shd_disabled = implode(',', $disabled_tags);
-
 		}
 
 		// wecanhazbbc
 		if ($shd_disabled == $smf_disabled)
-		{
 			// What SMF and SD have is the same, yay
 			$text = parse_bbc($text, (!empty($modSettings['shd_allow_ticket_smileys']) ? $smileys : false), $cache);
-		}
 		else
 		{
 			// first override SMF's disabled set with ours
@@ -852,12 +850,19 @@ function shd_format_text($text, $smileys = true, $cache = '')
  *	Processes the incoming message for wiki-links.
  *
  *	@param string &$message The message to be parsed.
+ *	@param string &$smileys The Smileys sets.
+ *	@param array $cache_id Cache ids used by messages, currently not used.
+ *	@param array $parse_tags Tags to parse, currently not used.
  *	@since 2.0
 */
-function shd_parse_wikilinks(&$message)
+function shd_parse_wikilinks(&$message, &$smileys = array(), &$cache_id = array(), &$parse_tags = array())
 {
 	global $modSettings, $smcFunc, $scripturl;
 	static $wikilinks = array();
+
+	// Avoid this if we are not active or running wikilinks.
+	if (empty($modSettings['helpdesk_active']) || empty($modSettings['shd_allow_wikilinks']))
+		return;
 
 	// We need to check we're not coming from the convert-to-WYSIWYG context. If we are, we must not parse wikilinks.
 	// If we're doing the WYSIWYG thing, bbc_to_html() will be in the backtrace somewhere.
@@ -944,8 +949,7 @@ function shd_profile_link($name, $id = 0)
 		return $name;
 	elseif ($any || ($own && $id == $user_info['id']))
 		return '<a href="' . $scripturl . '?action=profile;u=' . $id . '">' . $name . '</a>';
-	else
-		return $name;
+	return $name;
 }
 
 /**
@@ -963,10 +967,10 @@ function shd_profile_link($name, $id = 0)
 function shd_image_url($filename)
 {
 	global $settings;
+
 	if (file_exists($settings['default_theme_dir'] . '/images/sd_plugins/' . $filename))
 		return $settings['default_theme_url'] . '/images/sd_plugins/' . $filename;
-	else
-		return $settings['default_theme_url'] . '/images/simpledesk/' . $filename;
+	return $settings['default_theme_url'] . '/images/simpledesk/' . $filename;
 }
 
 /**
@@ -1011,6 +1015,7 @@ function shd_determine_status($action, $starter_id = 0, $replier_id = 0, $replie
 
 	switch ($action)
 	{
+		default:
 		case 'new':
 			return TICKET_STATUS_NEW; // it's a new ticket, what more can I say?
 		case 'resolve':
@@ -1055,7 +1060,7 @@ function shd_determine_status($action, $starter_id = 0, $replier_id = 0, $replie
 */
 function shd_no_expand_pageindex($base_url, &$start, $max_value, $num_per_page, $flexible_start = false)
 {
-	return preg_replace('~<span([^<]+)~i', '<span style="font-weight: bold;"> ... ', constructPageIndex($base_url, $start, $max_value, $num_per_page, $flexible_start));
+	return preg_replace('~<span class="expand_pages"([^<]+)~i', '<span style="font-weight: bold;"> ... ', constructPageIndex($base_url, $start, $max_value, $num_per_page, $flexible_start));
 }
 
 /**
@@ -1070,12 +1075,12 @@ function shd_no_expand_pageindex($base_url, &$start, $max_value, $num_per_page, 
 function shd_load_language($langfile, $override_lang = '')
 {
 	global $modSettings, $user_info, $language;
-	if (empty($modSettings['disable_language_fallback']))
-	{
-		$cur_language = isset($user_info['language']) ? $user_info['language'] : ($override_lang == '' ? $language : $override_lang);
-		if ($cur_language !== 'english')
-			loadLanguage($langfile, 'english', false);
-	}
+
+	$cur_language = isset($user_info['language']) ? $user_info['language'] : ($override_lang == '' ? $language : $override_lang);
+
+	if (empty($modSettings['disable_language_fallback']) && $cur_language !== 'english')
+		loadLanguage($langfile, 'english', false);
+
 	loadLanguage($langfile, $cur_language, false);
 }
 
@@ -1110,24 +1115,23 @@ function shd_recalc_ids($ticket)
 	list($first_msg) = $smcFunc['db_fetch_row']($query);
 	$smcFunc['db_free_result']($query);
 
+	$messages = array(
+		MSG_STATUS_NORMAL => 0, // message_status = 0
+		MSG_STATUS_DELETED => 0, // message_status = 1
+	);
+	$last_msg = 0;
+
 	$query = shd_db_query('', '
 		SELECT hdtr.message_status, COUNT(hdtr.message_status) AS messages, hdt.id_first_msg, MAX(hdtr.id_msg) AS id_last_msg
 		FROM {db_prefix}helpdesk_ticket_replies AS hdtr
 			INNER JOIN {db_prefix}helpdesk_tickets AS hdt ON (hdt.id_ticket = hdtr.id_ticket)
 		WHERE hdtr.id_msg > hdt.id_first_msg
 			AND hdt.id_ticket = {int:ticket}
-		GROUP BY hdtr.message_status',
+		GROUP BY hdtr.message_status, hdt.id_first_msg',
 		array(
 			'ticket' => $ticket,
 		)
 	);
-
-	$messages = array(
-		MSG_STATUS_NORMAL => 0, // message_status = 0
-		MSG_STATUS_DELETED => 0, // message_status = 1
-	);
-
-	$last_msg = 0;
 	while ($row = $smcFunc['db_fetch_assoc']($query))
 	{
 		$first_msg = $row['id_first_msg'];
@@ -1135,7 +1139,6 @@ function shd_recalc_ids($ticket)
 		if ($row['message_status'] == MSG_STATUS_NORMAL)
 			$last_msg = $row['id_last_msg'];
 	}
-
 	$smcFunc['db_free_result']($query);
 
 	if (empty($last_msg))
@@ -1183,7 +1186,7 @@ function shd_recalc_ids($ticket)
 /**
  *	Load the user preferences for the given user.
  *
- *	@param mixed $user Normally, an int being the user id of the user whose preferences should be attempted to be loaded. If === false, return the list of default prefs (for the pref UI), or if 0 or omitted, load the current user.
+ *	@param int|bool $user Normally, an int being the user id of the user whose preferences should be attempted to be loaded. If === false, return the list of default prefs (for the pref UI), or if 0 or omitted, load the current user.
  *
  *	@return array If $user === false, the list of options, their types and default values is returned. Otherwise, return an array of prefs (adjusted for this user)
  *	@since 2.0
@@ -1409,12 +1412,23 @@ function shd_load_user_prefs($user = 0)
 				'permission' => 'shd_access_recyclebin',
 				'show' => true,
 			),
+			'block_order_hold_block' => array(
+				'default' => 'updated_asc',
+				'type' => 'select',
+				'icon' => 'ticket_hold.png',
+				'group' => 'block_order',
+				'permission' => 'access_helpdesk',
+				'show' => true,
+			),
 		);
 
 		// We want to add the preferences per block. Because we already know what options there are per block elsewhere, let's reuse that.
 		if (!function_exists('shd_get_block_columns'))
 			require_once($sourcedir . '/sd_source/SimpleDesk.php');
 		$blocks = array('assigned', 'new', 'staff', shd_allowed_to('shd_staff', 0) ? 'user_staff' : 'user_user', 'closed', 'recycled', 'withdeleted');
+		if (shd_allowed_to('shd_staff', 0))
+			$blocks[] = 'hold';
+
 		foreach ($blocks as $block)
 		{
 			$items = shd_get_block_columns($block);
@@ -1427,7 +1441,7 @@ function shd_load_user_prefs($user = 0)
 				$block = 'recycle';
 			$block_id = 'block_order_' . $block . '_block';
 			$base_prefs[$block_id]['options'] = array();
-			foreach ($items as $item)
+			foreach ($items as $item => $width)
 			{
 				if ($item != 'actions')
 				{
@@ -1442,10 +1456,8 @@ function shd_load_user_prefs($user = 0)
 		call_integration_hook('shd_hook_prefs', array(&$pref_groups, &$base_prefs));
 
 		foreach ($base_prefs as $pref => $details)
-		{
 			if (empty($pref_groups[$details['group']]['enabled']) || empty($details['show']))
 				unset($base_prefs[$pref]);
-		}
 	}
 
 	// Do we just want the prefs list?
@@ -1462,10 +1474,8 @@ function shd_load_user_prefs($user = 0)
 
 		// Start with the defaults, but dealing with permissions as we go
 		foreach ($base_prefs as $pref => $details)
-		{
 			if (empty($details['permission']) || shd_allowed_to($details['permission'], 0))
 				$prefs[$pref] = $details['default'];
-		}
 	}
 	else
 	{
@@ -1484,10 +1494,8 @@ function shd_load_user_prefs($user = 0)
 					}
 			}
 			else
-			{
 				if (in_array($user, shd_members_allowed_to($details['permission'])))
 					$prefs[$pref] = $details['default'];
-			}
 		}
 	}
 
@@ -1500,12 +1508,10 @@ function shd_load_user_prefs($user = 0)
 			'user' => (int) $user,
 		)
 	);
-
 	while ($row = $smcFunc['db_fetch_assoc']($query))
-	{
 		if (isset($prefs[$row['variable']]))
 			$prefs[$row['variable']] = $row['value'];
-	}
+	$smcFunc['db_free_result']($query);
 
 	return $prefs;
 }
@@ -1524,10 +1530,8 @@ function shd_load_plugin_files($hook = '')
 
 	$filelist = explode(',', $modSettings['shd_include_' . $hook]);
 	foreach ($filelist as $file)
-	{
 		if (file_exists($sourcedir . '/sd_plugins_source/' . $file))
 			require_once($sourcedir . '/sd_plugins_source/' . $file);
-	}
 }
 
 /**
@@ -1652,9 +1656,10 @@ function shd_init_actions(&$actionArray)
 /**
  *	Last-minute buffer replacements to be made, e.g. removing unwanted content in helpdesk-only mode.
  *
+ *	@return string Modified output buffer.
  *	@since 2.0
 */
-function shd_buffer_replace(&$buffer)
+function shd_buffer_replace($buffer)
 {
 	global $modSettings, $context;
 
@@ -1665,12 +1670,10 @@ function shd_buffer_replace(&$buffer)
 
 		// If we're in helpdesk standalone mode, purge unread type links
 		if (!empty($modSettings['shd_helpdesk_only']))
-		{
 			$shd_preg_replacements += array(
 				'~<a(.+)action=unread(.+)</a>~iuU' => '',
 				'~<form([^<]+)action=search2(.+)</form>~iuUs' => '',
 			);
-		}
 
 		if (!empty($context['shd_buffer_replacements']))
 			$shd_replacements += $context['shd_buffer_replacements'];
@@ -1697,272 +1700,272 @@ function shd_buffer_replace(&$buffer)
 */
 function shd_main_menu(&$menu_buttons)
 {
-	global $context, $txt, $scripturl, $modSettings;
+	global $context, $txt, $scripturl, $settings, $modSettings;
 
-	if (!empty($modSettings['helpdesk_active']))
+	if (empty($modSettings['helpdesk_active']))
+		return;
+
+	// Load some extra CSS
+	loadCSSFile('helpdesk_icons.css', array('minimize' => empty($context['shd_developer_mode']), 'seed' => $context['shd_css_version']), 'helpdesk_icons');
+
+	// Stuff we'll always do in SD if active
+	$helpdesk_admin = $context['user']['is_admin'] || shd_allowed_to('admin_helpdesk', 0);
+
+	// 1. Add the main menu if we can.
+	if (shd_allowed_to(array('access_helpdesk', 'admin_helpdesk'), 0) && empty($modSettings['shd_hidemenuitem']))
 	{
-		// Stuff we'll always do in SD if active
-		$helpdesk_admin = $context['user']['is_admin'] || shd_allowed_to('admin_helpdesk', 0);
-
-		// 1. Add the main menu if we can.
-		if (shd_allowed_to(array('access_helpdesk', 'admin_helpdesk'), 0) && empty($modSettings['shd_hidemenuitem']))
-		{
-			// Because some items may have been removed at this point, let's try a list of possible places after which we can add the button.
-			$order = array('search', 'profile', 'forum', 'pm', 'help', 'home');
-			$pos = null;
-			foreach ($order as $item)
-				if (isset($menu_buttons[$item]))
-				{
-					$pos = $item;
-					break;
-				}
-
-			if ($pos === null)
-				$menu_buttons['helpdesk'] = array();
-			else
+		// Because some items may have been removed at this point, let's try a list of possible places after which we can add the button.
+		$order = array('search', 'profile', 'forum', 'pm', 'help', 'home');
+		$pos = null;
+		foreach ($order as $item)
+			if (isset($menu_buttons[$item]))
 			{
-				// OK, we're adding it after something.
-				$temp = $menu_buttons;
-				$menu_buttons = array();
-				foreach ($temp as $k => $v)
-				{
-					$menu_buttons[$k] = $v;
-					if ($k == $pos)
-						$menu_buttons['helpdesk'] = array();
-				}
+				$pos = $item;
+				break;
 			}
 
-			$menu_buttons['helpdesk'] += array(
-				'title' => $modSettings['helpdesk_active'] && SMF != 'SSI' ? shd_get_active_tickets() : $txt['shd_helpdesk'],
-				'href' => $scripturl . '?action=helpdesk;sa=main',
+		if ($pos === null)
+			$menu_buttons['helpdesk'] = array();
+		else
+		{
+			// OK, we're adding it after something.
+			$temp = $menu_buttons;
+			$menu_buttons = array();
+			foreach ($temp as $k => $v)
+			{
+				$menu_buttons[$k] = $v;
+				if ($k == $pos)
+					$menu_buttons['helpdesk'] = array();
+			}
+		}
+
+		$menu_buttons['helpdesk'] += array(
+			'title' => $modSettings['helpdesk_active'] && SMF != 'SSI' ? shd_get_active_tickets() : $txt['shd_helpdesk'],
+			'href' => $scripturl . '?action=helpdesk;sa=main',
+			'show' => true,
+			'active_button' => false,
+			'sub_buttons' => array(
+				'newticket' => array(
+					'title' => $txt['shd_new_ticket'],
+					'href' => $scripturl . '?action=helpdesk;sa=newticket',
+					'show' => SMF == 'SSI' ? false : shd_allowed_to('shd_new_ticket', 0),
+				),
+				'newproxyticket' => array(
+					'title' => $txt['shd_new_ticket_proxy'],
+					'href' => $scripturl . '?action=helpdesk;sa=newticket;proxy',
+					'show' => SMF == 'SSI' ? false : shd_allowed_to('shd_new_ticket', 0) && shd_allowed_to('shd_post_proxy', 0),
+				),
+				'closedtickets' => array(
+					'title' => $txt['shd_tickets_closed'],
+					'href' => $scripturl . '?action=helpdesk;sa=closedtickets',
+					'show' => SMF == 'SSI' ? false : shd_allowed_to(array('shd_view_closed_own', 'shd_view_closed_any'), 0),
+				),
+				'recyclebin' => array(
+					'title' => $txt['shd_recycle_bin'],
+					'href' => $scripturl . '?action=helpdesk;sa=recyclebin',
+					'show' => SMF == 'SSI' ? false : shd_allowed_to('shd_access_recyclebin', 0),
+				),
+			),
+		);
+
+		if ($helpdesk_admin)
+			$menu_buttons['helpdesk']['sub_buttons']['admin'] = array(
+				'title' => $txt['admin'],
+				'href' => $scripturl . '?action=admin;area=helpdesk_info',
+				'show' => SMF == 'SSI' ? false : empty($modSettings['shd_hidemenuitem']) && $helpdesk_admin,
+				'sub_buttons' => shd_main_menu_admin($helpdesk_admin),
+			);
+
+		$item = false;
+		foreach ($menu_buttons['helpdesk']['sub_buttons'] as $key => $value)
+			if (!empty($value['show']))
+				$item = $key;
+			else
+				unset($menu_buttons['helpdesk']['sub_buttons'][$key]);
+
+		if (!empty($item))
+			$menu_buttons['helpdesk']['sub_buttons'][$item]['is_last'] = true;
+	}
+
+	// Add the helpdesk admin option to the admin menu, if board integration is disabled.
+	if (!empty($modSettings['shd_hidemenuitem']) && $helpdesk_admin)
+	{
+		// It's possible the admin button got eaten already, so we may have to recreate it.
+		if (empty($menu_buttons['admin']))
+		{
+			$admin_menu = array(
+				'title' => $txt['admin'],
+				'href' => $scripturl . '?action=admin',
 				'show' => true,
 				'active_button' => false,
 				'sub_buttons' => array(
-					'newticket' => array(
-						'title' => $txt['shd_new_ticket'],
-						'href' => $scripturl . '?action=helpdesk;sa=newticket',
-						'show' => SMF == 'SSI' ? false : shd_allowed_to('shd_new_ticket', 0),
-					),
-					'newproxyticket' => array(
-						'title' => $txt['shd_new_ticket_proxy'],
-						'href' => $scripturl . '?action=helpdesk;sa=newticket;proxy',
-						'show' => SMF == 'SSI' ? false : shd_allowed_to('shd_new_ticket', 0) && shd_allowed_to('shd_post_proxy', 0),
-					),
-					'closedtickets' => array(
-						'title' => $txt['shd_tickets_closed'],
-						'href' => $scripturl . '?action=helpdesk;sa=closedtickets',
-						'show' => SMF == 'SSI' ? false : shd_allowed_to(array('shd_view_closed_own', 'shd_view_closed_any'), 0),
-					),
-					'recyclebin' => array(
-						'title' => $txt['shd_recycle_bin'],
-						'href' => $scripturl . '?action=helpdesk;sa=recyclebin',
-						'show' => SMF == 'SSI' ? false : shd_allowed_to('shd_access_recyclebin', 0),
-					),
 				),
 			);
 
-			if ($helpdesk_admin)
-				$menu_buttons['helpdesk']['sub_buttons']['admin'] = array(
-					'title' => $txt['admin'],
-					'href' => $scripturl . '?action=admin;area=helpdesk_info',
-					'show' => SMF == 'SSI' ? false : empty($modSettings['shd_hidemenuitem']) && $helpdesk_admin,
-					'sub_buttons' => shd_main_menu_admin($helpdesk_admin),
-				);
+			// Trouble is, now we've done that, it's in the wrong damn place. So step through and insert our menu into just after the SD menu
+			$old_menu_buttons = $menu_buttons;
+			$menu_buttons = array();
 
-			$item = false;
-			foreach ($menu_buttons['helpdesk']['sub_buttons'] as $key => $value)
-				if (!empty($value['show']))
-					$item = $key;
-				else
-					unset($menu_buttons['helpdesk']['sub_buttons'][$key]);
+			$added = false;
+			foreach ($old_menu_buttons as $area => $detail)
+			{
+				if (!$added && ($area == 'moderate' || $area == 'profile'))
+				{
+					$menu_buttons['admin'] = $admin_menu;
+					$added = true;
+				}
 
-			if (!empty($item))
-				$menu_buttons['helpdesk']['sub_buttons'][$item]['is_last'] = true;
+				$menu_buttons[$area] = $detail;
+			}
 		}
 
-		// Add the helpdesk admin option to the admin menu, if board integration is disabled.
-		if (!empty($modSettings['shd_hidemenuitem']) && $helpdesk_admin)
+		// Make sure the button is visible if you can admin forum
+		$menu_buttons['admin']['show'] = true;
+
+		// Remove the is_last item
+		foreach ($menu_buttons['admin']['sub_buttons'] as $key => $value)
+			if (!empty($value['is_last']))
+				unset($menu_buttons['admin']['sub_buttons'][$key]['is_last']);
+
+		// Add the new button
+		$menu_buttons['admin']['sub_buttons']['helpdesk_admin'] = array(
+			'title' => $txt['shd_helpdesk'],
+			'href' => $scripturl . '?action=admin;area=helpdesk_info',
+			'show' => true,
+			'is_last' => true,
+			'sub_buttons' => shd_main_menu_admin($helpdesk_admin),
+		);
+	}
+
+	if (shd_allowed_to(array('shd_view_profile_own', 'shd_view_profile_any'), 0))
+	{
+		// Hmm, this could be tricky. It's possible the main menu has been eaten by permissions at this point, so just in case, reconstruct what's missing.
+		if (empty($menu_buttons['profile']))
 		{
-			// It's possible the admin button got eaten already, so we may have to recreate it.
-			if (empty($menu_buttons['admin']))
+			$profile_menu = array(
+				'title' => $txt['profile'],
+				'href' => $scripturl . '?action=profile',
+				'active_button' => false,
+				'sub_buttons' => array(
+				),
+			);
+
+			// Trouble is, now we've done that, it's in the wrong damn place. So step through and insert our menu into just after the SD menu
+			$old_menu_buttons = $menu_buttons;
+			$menu_buttons = array();
+
+			$added = false;
+			foreach ($old_menu_buttons as $area => $detail)
 			{
-				$admin_menu = array(
-					'title' => $txt['admin'],
-					'href' => $scripturl . '?action=admin',
-					'show' => true,
-					'active_button' => false,
-					'sub_buttons' => array(
-					),
-				);
+				$menu_buttons[$area] = $detail;
 
-				// Trouble is, now we've done that, it's in the wrong damn place. So step through and insert our menu into just after the SD menu
-				$old_menu_buttons = $menu_buttons;
-				$menu_buttons = array();
-
-				$added = false;
-				foreach ($old_menu_buttons as $area => $detail)
+				if ($area == 'helpdesk')
 				{
-					if (!$added && ($area == 'moderate' || $area == 'profile'))
-					{
-						$menu_buttons['admin'] = $admin_menu;
-						$added = true;
-					}
-
-					$menu_buttons[$area] = $detail;
+					$menu_buttons['profile'] = $profile_menu;
+					$added = true;
 				}
 			}
+			if (!$added)
+				$menu_buttons['profile'] = $profile_menu;
+		}
 
-			// Make sure the button is visible if you can admin forum
-			$menu_buttons['admin']['show'] = true;
+		// Remove the is_last item
+		foreach ($menu_buttons['profile']['sub_buttons'] as $key => $value)
+		{
+			if (!empty($value['is_last']))
+				unset($menu_buttons['profile']['sub_buttons'][$key]['is_last']);
+		}
 
-			// Remove the is_last item
-			foreach ($menu_buttons['admin']['sub_buttons'] as $key => $value)
-				if (!empty($value['is_last']))
-					unset($menu_buttons['admin']['sub_buttons'][$key]['is_last']);
+		// If we're in HD only mode, we definitely don't want the regular forum profile item.
+		if (!empty($modSettings['shd_helpdesk_only']))
+			unset($menu_buttons['profile']['sub_buttons']['profile'], $menu_buttons['profile']['sub_buttons']['summary']);
 
-			// Add the new button
-			$menu_buttons['admin']['sub_buttons']['helpdesk_admin'] = array(
-				'title' => $txt['shd_helpdesk'],
+		// Add the helpdesk profile to the profile menu (either the original or our reconstituted one)
+		$menu_buttons['profile']['show'] = true;
+		$menu_buttons['profile']['sub_buttons']['hd_profile'] = array(
+			'title' => $txt['shd_helpdesk_profile'],
+			'href' => $scripturl . '?action=profile;area=hd_profile',
+			'show' => true,
+			'is_last' => true,
+		);
+	}
+
+	// Stuff we'll only do if in standalone mode
+	if (!empty($modSettings['shd_helpdesk_only']))
+	{
+		$menu_buttons['home'] = array(
+			'title' => $modSettings['helpdesk_active'] && SMF != 'SSI' ? shd_get_active_tickets() : $txt['shd_helpdesk'],
+			'href' => $scripturl . '?action=helpdesk;sa=main',
+			'show' => $modSettings['helpdesk_active'],
+			'sub_buttons' => array(
+				'newticket' => array(
+					'title' => $txt['shd_new_ticket'],
+					'href' => $scripturl . '?action=helpdesk;sa=newticket',
+					'show' => SMF == 'SSI' ? false : shd_allowed_to('shd_new_ticket', 0),
+				),
+				'newproxyticket' => array(
+					'title' => $txt['shd_new_ticket_proxy'],
+					'href' => $scripturl . '?action=helpdesk;sa=newticket;proxy',
+					'show' => SMF == 'SSI' ? false : shd_allowed_to('shd_new_ticket', 0) && shd_allowed_to('shd_post_proxy', 0),
+				),
+				'closedtickets' => array(
+					'title' => $txt['shd_tickets_closed'],
+					'href' => $scripturl . '?action=helpdesk;sa=closedtickets',
+					'show' => SMF == 'SSI' ? false : shd_allowed_to(array('shd_view_closed_own', 'shd_view_closed_any'), 0),
+				),
+				'recyclebin' => array(
+					'title' => $txt['shd_recycle_bin'],
+					'href' => $scripturl . '?action=helpdesk;sa=recyclebin',
+					'show' => SMF == 'SSI' ? false : shd_allowed_to('shd_access_recyclebin', 0),
+				),
+			),
+			'active_button' => false,
+		);
+		if ($helpdesk_admin)
+			$menu_buttons['home']['sub_buttons']['admin'] = array(
+				'title' => $txt['admin'],
 				'href' => $scripturl . '?action=admin;area=helpdesk_info',
-				'show' => true,
+				'show' => SMF == 'SSI' ? false : empty($modSettings['shd_hidemenuitem']) && $helpdesk_admin,
 				'is_last' => true,
 				'sub_buttons' => shd_main_menu_admin($helpdesk_admin),
 			);
-		}
 
-		if (shd_allowed_to(array('shd_view_profile_own', 'shd_view_profile_any'), 0))
+		$item = false;
+		foreach ($menu_buttons['home']['sub_buttons'] as $key => $value)
+			if (!empty($value['show']))
+				$item = $key;
+			else
+				unset($menu_buttons['home']['sub_buttons'][$key]);
+
+		if (!empty($item))
+			$menu_buttons['home']['sub_buttons'][$item]['is_last'] = true;
+
+		// Disable help, search, calendar, moderation center
+		unset($menu_buttons['helpdesk'], $menu_buttons['help'], $menu_buttons['search'], $menu_buttons['calendar'], $menu_buttons['moderate']);
+		$context['allow_search'] = $context['allow_calendar'] = $context['allow_moderation_center'] = false;
+
+		// Disable PMs
+		if (!empty($modSettings['shd_disable_pm']))
 		{
-			// Hmm, this could be tricky. It's possible the main menu has been eaten by permissions at this point, so just in case, reconstruct what's missing.
-			if (empty($menu_buttons['profile']))
-			{
-				$profile_menu = array(
-					'title' => $txt['profile'],
-					'href' => $scripturl . '?action=profile',
-					'active_button' => false,
-					'sub_buttons' => array(
-					),
-				);
-
-				// Trouble is, now we've done that, it's in the wrong damn place. So step through and insert our menu into just after the SD menu
-				$old_menu_buttons = $menu_buttons;
-				$menu_buttons = array();
-
-				$added = false;
-				foreach ($old_menu_buttons as $area => $detail)
-				{
-					$menu_buttons[$area] = $detail;
-
-					if ($area == 'helpdesk')
-					{
-						$menu_buttons['profile'] = $profile_menu;
-						$added = true;
-					}
-				}
-				if (!$added)
-					$menu_buttons['profile'] = $profile_menu;
-			}
-
-			// Remove the is_last item
-			foreach ($menu_buttons['profile']['sub_buttons'] as $key => $value)
-			{
-				if (!empty($value['is_last']))
-					unset($menu_buttons['profile']['sub_buttons'][$key]['is_last']);
-			}
-
-			// If we're in HD only mode, we definitely don't want the regular forum profile item.
-			if (!empty($modSettings['shd_helpdesk_only']))
-				unset($menu_buttons['profile']['sub_buttons']['profile'], $menu_buttons['profile']['sub_buttons']['summary']);
-
-			// Add the helpdesk profile to the profile menu (either the original or our reconstituted one)
-			$menu_buttons['profile']['show'] = true;
-			$menu_buttons['profile']['sub_buttons']['hd_profile'] = array(
-				'title' => $txt['shd_helpdesk_profile'],
-				'href' => $scripturl . '?action=profile;area=helpdesk',
-				'show' => true,
-				'is_last' => true,
-			);
+			$context['allow_pm'] = $menu_buttons['pm']['show'] = false;
+			$context['user']['unread_messages'] = 0; // to disable it trying to add to the menu item
 		}
 
-		// Stuff we'll only do if in standalone mode
-		if (!empty($modSettings['shd_helpdesk_only']))
-		{
-			$menu_buttons['home'] = array(
-				'title' => $modSettings['helpdesk_active'] && SMF != 'SSI' ? shd_get_active_tickets() : $txt['shd_helpdesk'],
-				'href' => $scripturl . '?action=helpdesk;sa=main',
-				'show' => $modSettings['helpdesk_active'],
-				'sub_buttons' => array(
-					'newticket' => array(
-						'title' => $txt['shd_new_ticket'],
-						'href' => $scripturl . '?action=helpdesk;sa=newticket',
-						'show' => SMF == 'SSI' ? false : shd_allowed_to('shd_new_ticket', 0),
-					),
-					'newproxyticket' => array(
-						'title' => $txt['shd_new_ticket_proxy'],
-						'href' => $scripturl . '?action=helpdesk;sa=newticket;proxy',
-						'show' => SMF == 'SSI' ? false : shd_allowed_to('shd_new_ticket', 0) && shd_allowed_to('shd_post_proxy', 0),
-					),
-					'closedtickets' => array(
-						'title' => $txt['shd_tickets_closed'],
-						'href' => $scripturl . '?action=helpdesk;sa=closedtickets',
-						'show' => SMF == 'SSI' ? false : shd_allowed_to(array('shd_view_closed_own', 'shd_view_closed_any'), 0),
-					),
-					'recyclebin' => array(
-						'title' => $txt['shd_recycle_bin'],
-						'href' => $scripturl . '?action=helpdesk;sa=recyclebin',
-						'show' => SMF == 'SSI' ? false : shd_allowed_to('shd_access_recyclebin', 0),
-					),
-				),
-				'active_button' => false,
-			);
-			if ($helpdesk_admin)
-				$menu_buttons['home']['sub_buttons']['admin'] = array(
-					'title' => $txt['admin'],
-					'href' => $scripturl . '?action=admin;area=helpdesk_info',
-					'show' => SMF == 'SSI' ? false : empty($modSettings['shd_hidemenuitem']) && $helpdesk_admin,
-					'is_last' => true,
-					'sub_buttons' => shd_main_menu_admin($helpdesk_admin),
-				);
-
-			$item = false;
-			foreach ($menu_buttons['home']['sub_buttons'] as $key => $value)
-				if (!empty($value['show']))
-					$item = $key;
-				else
-					unset($menu_buttons['home']['sub_buttons'][$key]);
-
-			if (!empty($item))
-				$menu_buttons['home']['sub_buttons'][$item]['is_last'] = true;
-
-			unset($menu_buttons['helpdesk']);
-
-			// Disable help, search, calendar, moderation center
-			unset($menu_buttons['help'], $menu_buttons['search'], $menu_buttons['calendar'], $menu_buttons['moderate']);
-
-			$context['allow_search'] = false;
-			$context['allow_calendar'] = false;
-			$context['allow_moderation_center'] = false;
-
-			// Disable PMs
-			if (!empty($modSettings['shd_disable_pm']))
-			{
-				$context['allow_pm'] = false;
-				$menu_buttons['pm']['show'] = false;
-				$context['user']['unread_messages'] = 0; // to disable it trying to add to the menu item
-			}
-
-			// Disable memberlist
-			if (!empty($modSettings['shd_disable_mlist']))
-			{
-				$context['allow_memberlist'] = false;
-				$menu_buttons['mlist']['show'] = false;
-			}
-		}
-
-		// Now engage any hooks.
-		call_integration_hook('shd_hook_mainmenu', array(&$menu_buttons));
+		// Disable memberlist
+		if (!empty($modSettings['shd_disable_mlist']))
+			$context['allow_memberlist'] = $menu_buttons['mlist']['show'] = false;
 	}
+
+	// Now engage any hooks.
+	call_integration_hook('shd_hook_mainmenu', array(&$menu_buttons));
 }
 
+/**
+ *	Adds to the Admin Center menu the helpdesk section buttons.
+ *
+ *	@since 2.1
+ *  @param bool $helpdesk_admin If they are a helpdesk admin or not.
+*/
 function shd_main_menu_admin($helpdesk_admin)
 {
 	global $txt, $scripturl;
@@ -2015,3 +2018,120 @@ function shd_main_menu_admin($helpdesk_admin)
 	);
 }
 // Cause IE is being mean to meeee again...!
+
+/**
+ *	Detect a SHD error and move it to the proper error type.
+ *
+ *	@since 2.1
+ *	@param array &$other_error_types Additional error types.
+ *  @param string $error_type The type of error
+ *  @param string $error_message The message to log
+ *  @param string $file The name of the file where this error occurred
+ *  @param int $line The line where the error occurred
+*/
+function shd_error_types(&$other_error_types, &$error_type, $error_message, $file, $line)
+{
+	$other_error_types = array_merge($other_error_types, array(
+		'simpledesk',
+		'sdplugin'
+	));
+
+	// Is this a SimpleDesk error?
+	if (stripos($file, 'sdplugin') !== false || stripos($error_message, 'shdp_') !== false)
+		$error_type = 'sdplugin';
+	elseif (stripos($file, 'simpledesk') !== false || stripos($error_message, 'shd_') !== false || stripos($error_message, 'simpledesk') !== false)
+		$error_type = 'simpledesk';
+}
+
+/**
+ *	Add our Quote BBC in.
+ *
+ *	@since 2.1
+ *	@param array &$codes Current BBCodes list.
+ *  @param array $no_autolink_tags Tags we should not autolink
+*/
+function shd_bbc_codes(&$codes, &$no_autolink_tags)
+{
+	global $scripturl, $txt;
+
+	$codes[] = array(
+		'tag' => 'quote',
+		'parameters' => array(
+			'author' => array('match' => '([^<>]{1,192}?)'),
+			'link' => array('match' => '(?:board=\d+;)?((?:topic|threadid)=[\dmsg#\./]{1,40}(?:;start=[\dmsg#\./]{1,40})?|action=helpdesk;sa=ticket;ticket=[\dmsg#\./]{1,40}(?:;start=[\dmsg#\./]{1,40})?|msg=\d+?|action=profile;u=\d+)'),
+			'date' => array('match' => '(\d+)', 'validate' => 'timeformat'),
+		),
+		'before' => '<div class="quoteheader"><a href="' . $scripturl . '?{link}">' . $txt['quote_from'] . ': {author} ' . $txt['search_on'] . ' {date}</a></div><blockquote>',
+		'after' => '</blockquote>',
+		'trim' => 'both',
+		'block_level' => true,
+	);
+}
+
+/**
+ *	SimpleDesk Fatal Language Error handler.
+ *  Works the same way as SMF, but allows customizing and overriding.
+ *
+ *	@since 2.1
+ *  @param string $error The error message
+ *  @param string|bool $log The type of error, or false to not log it
+ *  @param array $sprintf An array of data to be sprintf()'d into the specified message
+ *  @param int $status = false The HTTP status code associated with this error
+ *  @return mixed User error page should occur, failing that we trigger a fatal generic user error page.
+ */
+function shd_fatal_lang_error($error, $log = 'simpledesk', $sprintf = array(), $status = 403)
+{
+	global $context, $txt;
+
+	// Ajax, is handled a special way.
+	if (!empty($context['is_ajax_resonse']))
+	{
+		$error_message = empty($sprintf) ? $txt[$error] : vsprintf($txt[$error], $sprintf);
+		log_error($error_message, $log);
+
+		header('Content-Type: application/json; charset=UTF8');
+		echo json_encode(array(
+			'success' => false,
+			'error' => $error_message,
+		));
+
+		obExit(false);
+	}
+	else
+		fatal_lang_error($error, $log, $sprintf, $status);
+
+	trigger_error('Hacking attempt...', E_USER_ERROR);
+	return false;
+}
+
+/**
+ *	SimpleDesk Fatal Error handler.
+ *  Works the same way as SMF, but allows customizing and overriding.
+ *
+ * @param string $error The error message
+ * @param string|bool $log = 'general' What type of error to log this as (false to not log it))
+ * @param int $status The HTTP status code associated with this error
+ */
+function shd_fatal_error($error, $log = 'general', $status = 500)
+{
+	global $context;
+
+	// Ajax, is handled a special way.
+	if (!empty($context['is_ajax_resonse']))
+	{
+		log_error($error, $log);
+
+		header('Content-Type: application/json; charset=UTF8');
+		echo json_encode(array(
+			'success' => false,
+			'error' => $error,
+		));
+
+		obExit(false);
+	}
+	else
+		fatal_error($error, $log, $status);
+
+	trigger_error('Hacking attempt...', E_USER_ERROR);
+	return false;
+}

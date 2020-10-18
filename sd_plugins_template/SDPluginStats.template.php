@@ -1,5 +1,5 @@
 <?php
-// Version: 2.0 Anatidae; SimpleDesk alternate front page template
+// Version: 2.1; SimpleDesk alternate front page template
 
 /**
  *	This file handles the replacement front page.
@@ -55,7 +55,7 @@ $txt['closed_tickets'] = 'Closed Tickets';
 		<div class="title_bar">
 			<h4 class="titlebg">
 				<span class="ie6_header floatleft">
-					<img src="', $settings['images_url'], '/stats_info.png" class="icon" alt="" /> ', $txt['general_stats'], '
+					<img src="', $settings['images_url'], '/stats_info.png" class="icon" alt=""> ', $txt['general_stats'], '
 				</span>
 			</h4>
 		</div>
@@ -115,7 +115,7 @@ $txt['closed_tickets'] = 'Closed Tickets';
 		<div class="title_bar">
 			<h4 class="titlebg">
 				<span class="ie6_header floatleft">
-					<img src="', $settings['images_url'], '/stats_posters.png" class="icon" alt="" /> ', $txt['urgency_stats'], '
+					<img src="', $settings['images_url'], '/stats_posters.png" class="icon" alt=""> ', $txt['urgency_stats'], '
 				</span>
 			</h4>
 		</div>
@@ -128,7 +128,7 @@ $txt['closed_tickets'] = 'Closed Tickets';
 
 	foreach ($context['shd_stats']['urgency']['open'] as $type => $count)
 		echo '
-							<dt>', $txt['urgency_type_' . $type ], ' (', $txt['urgency_open'], ')</dt>
+							<dt>', $txt['urgency_type_' . $type], ' (', $txt['urgency_open'], ')</dt>
 							<dd>', $count, '</dd>';
 
 	echo '
@@ -146,7 +146,7 @@ $txt['closed_tickets'] = 'Closed Tickets';
 
 	foreach ($context['shd_stats']['urgency']['closed'] as $type => $count)
 		echo '
-							<dt>', $txt['urgency_type_' . $type ], ' (', $txt['urgency_closed'], ')</dt>
+							<dt>', $txt['urgency_type_' . $type], ' (', $txt['urgency_closed'], ')</dt>
 							<dd>', $count, '</dd>';
 
 	echo '
@@ -160,7 +160,7 @@ $txt['closed_tickets'] = 'Closed Tickets';
 		<div class="cat_bar">
 			<h3 class="catbg">
 				<span class="ie6_header floatleft">
-					<img src="', $settings['images_url'], '/stats_history.png" class="icon" alt="" /> ', $txt['ticket_history'], '
+					<img src="', $settings['images_url'], '/stats_history.png" class="icon" alt=""> ', $txt['ticket_history'], '
 				</span>
 			</h3>
 		</div>
@@ -179,7 +179,7 @@ $txt['closed_tickets'] = 'Closed Tickets';
 		foreach ($context['shd_stats']['history'] as $year_id => $year)
 		{
 			echo '
-				<tr class="windowbg2" valign="middle" align="center" id="year_', $id, '">
+				<tr class="windowbg2" valign="middle" align="center" id="year_', $year_id, '">
 					<th class="lefttext" width="25%">', $year_id, '</th>
 					<th width="15%">', $year['open'], '</th>
 					<th width="15%">', $year['assigned'], '</th>

@@ -1,21 +1,21 @@
 <?php
-###############################################################
-#         Simple Desk Project - www.simpledesk.net            #
-###############################################################
-#       An advanced help desk modifcation built on SMF        #
-###############################################################
-#                                                             #
-#         * Copyright 2010 - SimpleDesk.net                   #
-#                                                             #
-#   This file and its contents are subject to the license     #
-#   included with this distribution, license.txt, which       #
-#   states that this software is New BSD Licensed.            #
-#   Any questions, please contact SimpleDesk.net              #
-#                                                             #
-###############################################################
-# SimpleDesk Version: 2.0 Anatidae                            #
-# File Info: SimpleDesk-Display.php / 2.0 Anatidae            #
-###############################################################
+/**************************************************************
+*          Simple Desk Project - www.simpledesk.net           *
+***************************************************************
+*       An advanced help desk modification built on SMF       *
+***************************************************************
+*                                                             *
+*         * Copyright 2020 - SimpleDesk.net                   *
+*                                                             *
+*   This file and its contents are subject to the license     *
+*   included with this distribution, license.txt, which       *
+*   states that this software is New BSD Licensed.            *
+*   Any questions, please contact SimpleDesk.net              *
+*                                                             *
+***************************************************************
+* SimpleDesk Version: 2.1 Beta 1                              *
+* File Info: SimpleDesk-Display.php                           *
+**************************************************************/
 
 /**
  *	This file sets up the regular ticket view, including the menu of operations that can
@@ -25,7 +25,6 @@
  *	@package source
  *	@since 1.0
 */
-
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
@@ -127,7 +126,7 @@ function shd_view_ticket()
 	$ticketinfo = shd_load_ticket();
 
 	// How much are we sticking on each page?
-	$context['messages_per_page'] = empty($modSettings['disableCustomPerPage']) && !empty($options['messages_per_page']) && !WIRELESS ? $options['messages_per_page'] : $modSettings['defaultMaxMessages'];
+	$context['messages_per_page'] = empty($modSettings['disableCustomPerPage']) && !empty($options['messages_per_page']) ? $options['messages_per_page'] : $modSettings['defaultMaxMessages'];
 
 	censorText($ticketinfo['subject']);
 	censorText($ticketinfo['body']);
@@ -218,7 +217,6 @@ function shd_view_ticket()
 		$context['display_private'] = true;
 
 	if ($ticketinfo['modified_time'] > 0)
-	{
 		$context['ticket']['modified'] = array(
 			'id' => $ticketinfo['modified_id'],
 			'name' => $ticketinfo['modified_name'],
@@ -226,7 +224,6 @@ function shd_view_ticket()
 			'timestamp' => $ticketinfo['modified_time'],
 			'time' => timeformat($ticketinfo['modified_time']),
 		);
-	}
 
 	$context['ticket']['urgency'] += shd_can_alter_urgency($ticketinfo['urgency'], $ticketinfo['starter_id'], $ticketinfo['closed'], $ticketinfo['deleted'], $context['ticket']['dept']);
 	$context['total_visible_posts'] = empty($context['display_recycle']) ? $context['ticket']['num_replies'] : (int) $context['ticket']['num_replies'] + (int) $context['ticket']['deleted_replies'];
@@ -247,7 +244,6 @@ function shd_view_ticket()
 	}
 
 	$context['page_index'] = shd_no_expand_pageindex($scripturl . '?action=helpdesk;sa=ticket;ticket=' . $context['ticket_id'] . '.%1$d' . (isset($_REQUEST['recycle']) ? ';recycle' : '') . '#replies', $context['ticket_start_from'], $context['total_visible_posts'], $context['messages_per_page'], true);
-
 	$context['get_replies'] = 'shd_prepare_ticket_context';
 
 	$query = shd_db_query('', '
@@ -272,7 +268,6 @@ function shd_view_ticket()
 	{
 		if (!empty($row['id_member']))
 			$posters[] = $row['id_member'];
-
 		if (!empty($row['modified_member']))
 			$posters[] = $row['modified_member'];
 
@@ -282,7 +277,6 @@ function shd_view_ticket()
 
 	// We might want the OP's avatar, add 'em to the list -- just in case.
 	$posters[] = $context['ticket']['id_member'];
-
 	$posters = array_unique($posters);
 
 	$context['shd_is_staff'] = array();
@@ -293,13 +287,11 @@ function shd_view_ticket()
 
 		// Are they current team members?
 		$team = array_intersect($posters, shd_members_allowed_to('shd_staff', $context['ticket']['dept']));
-
 		foreach ($team as $member)
 			$context['shd_is_staff'][$member] = true;
 	}
 
 	if (!empty($context['ticket_messages']))
-	{
 		$reply_request = shd_db_query('', '
 			SELECT
 				id_msg, poster_time, poster_ip, id_member, modified_time, modified_name, modified_member, body,
@@ -314,7 +306,6 @@ function shd_view_ticket()
 				'sort' => $context['ticket_sort'],
 			)
 		);
-	}
 	else
 	{
 		$reply_request = false;
@@ -335,7 +326,7 @@ function shd_view_ticket()
 		)
 	);
 	$field_values = array();
-	while($row = $smcFunc['db_fetch_assoc']($query))
+	while ($row = $smcFunc['db_fetch_assoc']($query))
 		$field_values[$row['post_type'] == CFIELD_TICKET ? 'ticket' : $row['id_post']][$row['id_field']] = $row;
 	$smcFunc['db_free_result']($query);
 
@@ -390,6 +381,7 @@ function shd_view_ticket()
 			continue;
 
 		// If this is going to be displayed for the individual ticket, we need to figure out where it should go.
+		$pos = CFIELD_PLACE_DETAILS;
 		if ($row['field_loc'] & CFIELD_TICKET)
 			$pos = $placements[$row['placement']];
 
@@ -400,20 +392,20 @@ function shd_view_ticket()
 			'icon' => $row['icon'],
 			'type' => $row['field_type'],
 			'default_value' => $row['field_type'] == CFIELD_TYPE_LARGETEXT ? explode(',', $row['default_value']) : $row['default_value'],
-			'options' => !empty($row['field_options']) ? unserialize($row['field_options']) : array(),
+			'options' => !empty($row['field_options']) ? smf_json_decode($row['field_options'], true) : array(),
 			'display_empty' => !empty($row['required']) ? true : !empty($row['display_empty']), // Required and "selection" fields will always be displayed.
 			'bbc' => !empty($row['bbc']) && ($row['field_type'] == CFIELD_TYPE_TEXT || $row['field_type'] == CFIELD_TYPE_LARGETEXT) && $row['placement'] != CFIELD_PLACE_PREFIX,
 			'editable' => !empty($editable),
 		);
 		if (!empty($field['options']) && empty($field['options']['inactive']))
 			$field['options']['inactive'] = array();
+		if (!empty($field['options']) && empty($field['options']['order']))
+			$field['options']['order'] = array();
 
 		if (in_array($field['type'], array(CFIELD_TYPE_RADIO, CFIELD_TYPE_SELECT, CFIELD_TYPE_MULTI)))
-		{
 			foreach ($field['options'] as $k => $v)
-				if ($k != 'inactive' && strpos($v, '[') !== false)
+				if ($k != 'inactive' && $k != 'order' && strpos($v, '[') !== false)
 					$field['options'][$k] = parse_bbc($v, false);
-		}
 
 		if (($row['field_loc'] & CFIELD_REPLY) && $field['editable'])
 			$context['ticket_form']['custom_fields']['reply'][$field['id']] = $field;
@@ -424,7 +416,7 @@ function shd_view_ticket()
 			if (isset($field_values['ticket'][$row['id_field']]))
 				$field['value'] = $field['bbc'] ? shd_format_text($field_values['ticket'][$row['id_field']]['value']) : $field_values['ticket'][$row['id_field']]['value'];
 
-			$context['ticket']['custom_fields'][$pos][$row['id_field']]	= $field;
+			$context['ticket']['custom_fields'][$pos][$row['id_field']] = $field;
 		}
 
 		if ($row['field_loc'] & CFIELD_REPLY)
@@ -464,27 +456,20 @@ function shd_view_ticket()
 
 	// Mark read goes here
 	if (!empty($user_info['id']))
-	{
 		$smcFunc['db_insert']('replace',
 			'{db_prefix}helpdesk_log_read',
-			array(
-				'id_ticket' => 'int', 'id_member' => 'int', 'id_msg' => 'int',
-			),
-			array(
-				$context['ticket_id'], $user_info['id'], $ticketinfo['id_last_msg'],
-			),
-			array('id_member', 'id_topic')
+			array('id_ticket' => 'int', 'id_member' => 'int', 'id_msg' => 'int',),
+			array($context['ticket_id'], $user_info['id'], $ticketinfo['id_last_msg'],),
+			array('id_ticket', 'id_member')
 		);
-	}
 
 	// Template stuff
 	$context['sub_template'] = 'viewticket';
-	$ticketname = '';
 	if (!empty($context['ticket']['custom_fields']['prefix']))
 	{
 		$ticketname = '[' . $context['ticket']['display_id'] . '] ';
 		$fields = '';
-		foreach ($context['ticket']['custom_fields']['prefix'] AS $field)
+		foreach ($context['ticket']['custom_fields']['prefix'] as $field)
 		{
 			if (empty($field['value']))
 				continue;
@@ -686,84 +671,7 @@ function shd_view_ticket()
 	$context['can_ping'] = $context['can_reply'] && shd_allowed_to('shd_singleton_email', $context['ticket']['dept']);
 
 	// Set up the fancy editor
-	shd_postbox(
-		'shd_message',
-		'',
-		array(
-			'post_button' => $txt['shd_reply_ticket'],
-		)
-	);
-
-	// Lastly, our magic AJAX stuff ;D and we know we already made html_headers exist in SimpleDesk.php, score!
-	$context['html_headers'] .= '
-	<script type="text/javascript"><!-- // --><![CDATA[
-	var sSessI = "' . $context['session_id'] . '";
-	var sSessV = "' . $context['session_var'] . '";';
-
-	if ($context['ticket']['privacy']['can_change'])
-		$context['html_headers'] .= '
-	var shd_ajax_problem = ' . JavaScriptEscape($txt['shd_ajax_problem']) . ';
-	var privacyCtl = new shd_privacyControl({
-		ticket: ' . $context['ticket_id'] . ',
-		sUrl: smf_scripturl + "?action=helpdesk;sa=ajax;op=privacy;ticket=' . $context['ticket_id'] . '",
-		sSession: sSessV + "=" + sSessI,
-		sSrcA: "privlink",
-		sDestSpan: "privacy"
-	});';
-
-	if ($context['ticket']['urgency']['increase'] || $context['ticket']['urgency']['decrease'])
-		$context['html_headers'] .= '
-	var urgencyCtl = new shd_urgencyControl({
-		ticket: ' . $context['ticket_id'] . ',
-		sUrl: smf_scripturl + "?action=helpdesk;sa=ajax;op=urgency;ticket=' . $context['ticket_id'] . ';change=",
-		sSession: sSessV + "=" + sSessI,
-		sDestSpan: "urgency",
-		aButtons: ["up", "down"],
-		aButtonOps: { up: "increase", down: "decrease" }
-	});';
-
-	if (!empty($options['display_quick_reply']))
-		$context['html_headers'] .= '
-	var oQuickReply = new QuickReply({
-		bDefaultCollapsed: ' . (!empty($options['display_quick_reply']) && $options['display_quick_reply'] == 2 ? 'false' : 'true') .  ',
-		iTicketId: ' . $context['ticket_id'] . ',
-		iStart: ' . $context['start'] . ',
-		sScriptUrl: smf_scripturl,
-		sImagesUrl: "' . $settings['images_url'] . '",
-		sContainerId: "quickReplyOptions",
-		sImageId: "quickReplyExpand",
-		sImageCollapsed: "collapse.png",
-		sImageExpanded: "expand.png",
-		sJumpAnchor: "quickreply",
-		sHeaderId: "quickreplyheader",
-		sFooterId: "quickreplyfooter"
-	});';
-
-	$context['html_headers'] .= '
-	var oCustomFields = new CustomFields({
-		sImagesUrl: "' . $settings['images_url'] . '",
-		sContainerId: "additional_info",
-		sImageId: "shd_custom_fields_swap",
-		sImageCollapsed: "collapse.png",
-		sImageExpanded: "expand.png",
-		sHeaderId: "additionalinfoheader",
-		sFooterId: "additional_info_footer",
-	});';
-
-	if (!empty($options['display_quick_reply']) && $context['can_go_advanced'])
-		$context['html_headers'] .= '
-	function goAdvanced()
-	{
-		document.getElementById("shd_bbcbox").style.display = ' . (!empty($modSettings['shd_allow_ticket_bbc']) ? '""' : '"none"') . ';
-		document.getElementById("shd_smileybox").style.display = ' . (!empty($modSettings['shd_allow_ticket_smileys']) ? '""' : '"none"') . ';
-		document.getElementById("shd_attach_container").style.display = ' . (!empty($context['ticket_form']['do_attach']) ? '""' : '"none"') . ';
-		document.getElementById("shd_goadvancedbutton").style.display = "none";' . (!empty($context['controls']['richedit']['shd_message']['rich_active']) ? '
-		oEditorHandle_shd_message.toggleView(true);' : '') . '
-	}
-	';
-
-	$context['html_headers'] .= '
-	// ]' . ']></script>';
+	shd_postbox('shd_message', '', array('post_button' => $txt['shd_reply_ticket']), '100%');
 
 	$context['shd_display'] = true;
 	$context['controls']['richedit']['shd_message']['rich_active'] = 0; // we don't want it by default!
@@ -926,9 +834,9 @@ function shd_prepare_ticket_context()
 		$memberContext[$message['id_member']]['group'] = $txt['guest_title'];
 		$memberContext[$message['id_member']]['link'] = $message['poster_name'];
 		$memberContext[$message['id_member']]['email'] = $message['poster_email'];
-		$memberContext[$message['id_member']]['show_email'] = showEmailAddress(true, 0);
+		$memberContext[$message['id_member']]['show_email'] = false;
 		$memberContext[$message['id_member']]['is_guest'] = true;
-		$memberContext[$message['id_member']]['group_stars'] = '';
+		$memberContext[$message['id_member']]['group_icons'] = '';
 	}
 	$memberContext[$message['id_member']]['ip'] = $message['poster_ip'];
 
@@ -966,7 +874,6 @@ function shd_prepare_ticket_context()
 
 	if (!empty($context['ticket_start_newfrom']) && $context['ticket_start_newfrom'] == $message['id_msg'])
 		$output['is_new'] = true;
-
 	return $output;
 }
 
@@ -979,7 +886,7 @@ function shd_prepare_ticket_context()
  *	"attach to ticket" is simply loaded into an indexed array stored in $context['ticket_attach']['ticket'], while "attach
  *	to reply" is loaded into an indexed array subset in $context['ticket_attach']['reply'][msg_id] to retain the association.
  *
- *	@return array Builds an array within $contxt['ticket_attach'], as noted above. The individual data items per attachment are:
+ *	@return null|array Builds an array within $contxt['ticket_attach'], as noted above. The individual data items per attachment are:
  *	- id: Numeric id for attachment itself
  *	- name: HTML sanitised name of the attachment's filename
  *	- size: string listing the size of the attachment, converted to kilobytes and rounded to two decimal places
@@ -1000,9 +907,9 @@ function shd_display_load_attachments()
 	if ($modSettings['shd_attachments_mode'] == 'ticket')
 	{
 		$query = shd_db_query('', '
-			SELECT hda.id_attach, hda.id_msg, hda.id_ticket, a.filename, a.id_folder, a.file_hash, IFNULL(a.size, 0) AS filesize,
+			SELECT hda.id_attach, hda.id_msg, hda.id_ticket, a.filename, a.id_folder, a.file_hash, COALESCE(a.size, 0) AS filesize,
 				a.width, a.height' . (empty($modSettings['attachmentShowImages']) || empty($modSettings['attachmentThumbnails']) ? '' : ',
-				IFNULL(thumb.id_attach, 0) AS id_thumb, thumb.width AS thumb_width, thumb.height AS thumb_height') . '
+				COALESCE(thumb.id_attach, 0) AS id_thumb, thumb.width AS thumb_width, thumb.height AS thumb_height') . '
 			FROM {db_prefix}helpdesk_attachments AS hda
 				INNER JOIN {db_prefix}attachments AS a ON (hda.id_attach = a.id_attach)' . (empty($modSettings['attachmentShowImages']) || empty($modSettings['attachmentThumbnails']) ? '' : '
 				LEFT JOIN {db_prefix}attachments AS thumb ON (thumb.id_attach = a.id_thumb)') . '
@@ -1014,7 +921,6 @@ function shd_display_load_attachments()
 				'attachment_type' => 0,
 			)
 		);
-
 		// Ticket ones can just be added on, they're nice and straightforward
 		while ($row = $smcFunc['db_fetch_assoc']($query))
 			$context['ticket_attach'][$modSettings['shd_attachments_mode']][$row['id_attach']] = shd_attachment_info($row);
@@ -1030,9 +936,9 @@ function shd_display_load_attachments()
 			return;
 
 		$query = shd_db_query('', '
-			SELECT hda.id_attach, hda.id_msg, hda.id_ticket, a.filename, a.id_folder, a.file_hash, IFNULL(a.size, 0) AS filesize,
+			SELECT hda.id_attach, hda.id_msg, hda.id_ticket, a.filename, a.id_folder, a.file_hash, COALESCE(a.size, 0) AS filesize,
 				a.width, a.height' . (empty($modSettings['attachmentShowImages']) || empty($modSettings['attachmentThumbnails']) ? '' : ',
-				IFNULL(thumb.id_attach, 0) AS id_thumb, thumb.width AS thumb_width, thumb.height AS thumb_height') . '
+				COALESCE(thumb.id_attach, 0) AS id_thumb, thumb.width AS thumb_width, thumb.height AS thumb_height') . '
 			FROM {db_prefix}helpdesk_attachments AS hda
 				INNER JOIN {db_prefix}attachments AS a ON (hda.id_attach = a.id_attach)' . (empty($modSettings['attachmentShowImages']) || empty($modSettings['attachmentThumbnails']) ? '' : '
 				LEFT JOIN {db_prefix}attachments AS thumb ON (thumb.id_attach = a.id_thumb)') . '
@@ -1044,7 +950,6 @@ function shd_display_load_attachments()
 				'attachment_type' => 0,
 			)
 		);
-
 		// Message ones are a little trickier since we actually need to tie them to msg ids
 		while ($row = $smcFunc['db_fetch_assoc']($query))
 			$context['ticket_attach'][$modSettings['shd_attachments_mode']][$row['id_msg']][$row['id_attach']] = shd_attachment_info($row);
@@ -1101,17 +1006,9 @@ function shd_attachment_info($attach_info)
 				{
 					// So what folder are we putting this image in?
 					if (!empty($modSettings['currentAttachmentUploadDir']))
-					{
-						if (!is_array($modSettings['attachmentUploadDir']))
-							$modSettings['attachmentUploadDir'] = @unserialize($modSettings['attachmentUploadDir']);
-						$path = $modSettings['attachmentUploadDir'][$modSettings['currentAttachmentUploadDir']];
 						$id_folder_thumb = $modSettings['currentAttachmentUploadDir'];
-					}
 					else
-					{
-						$path = $modSettings['attachmentUploadDir'];
 						$id_folder_thumb = 1;
-					}
 
 					// Calculate the size of the created thumbnail.
 					$size = @getimagesize($filename . '_thumb');
@@ -1131,17 +1028,17 @@ function shd_attachment_info($attach_info)
 						$thumb_mime = 'image/' . $thumb_ext;
 
 					$thumb_filename = $attach_info['filename'] . '_thumb';
-					$thumb_hash = getAttachmentFilename($thumb_filename, false, null, true);
+					$thumb_hash = getAttachmentFilename($thumb_filename, 0, null, true);
 
+					$old_id_thumb = $attach_info['id_thumb'];
 					// Add this beauty to the database.
-					$smcFunc['db_insert']('',
+					$attach_info['id_thumb'] = $smcFunc['db_insert']('',
 						'{db_prefix}attachments',
 						array('id_folder' => 'int', 'id_msg' => 'int', 'attachment_type' => 'int', 'filename' => 'string', 'file_hash' => 'string', 'size' => 'int', 'width' => 'int', 'height' => 'int', 'fileext' => 'string', 'mime_type' => 'string'),
 						array($id_folder_thumb, 0, 3, $thumb_filename, $thumb_hash, (int) $thumb_size, (int) $attach_info['thumb_width'], (int) $attach_info['thumb_height'], $thumb_ext, $thumb_mime),
-						array('id_attach')
+						array('id_attach'),
+						1
 					);
-					$old_id_thumb = $attach_info['id_thumb'];
-					$attach_info['id_thumb'] = $smcFunc['db_insert_id']('{db_prefix}attachments', 'id_attach');
 					if (!empty($attach_info['id_thumb']))
 					{
 						// Update the tables to notify that we has us a thumbnail
@@ -1273,9 +1170,9 @@ function shd_attach_icon($filename)
 	$extension = ($filename != '') ? strtolower(substr(strrchr($filename, '.'), 1)) : '';
 
 	if (isset($extension_map[$extension]))
-		$image = '<img src="' . $settings['default_images_url'] . '/simpledesk/attach/' . $extension_map[$extension] . '"' . (!empty($txt['shd_attachtype_' . $extension]) ? ' alt="' . $txt['shd_attachtype_' . $extension] . '" title="' . $txt['shd_attachtype_' . $extension] . '"' : ' alt=""') . ' />';
+		$image = '<img src="' . $settings['default_images_url'] . '/simpledesk/attach/' . $extension_map[$extension] . '"' . (!empty($txt['shd_attachtype_' . $extension]) ? ' alt="' . $txt['shd_attachtype_' . $extension] . '" title="' . $txt['shd_attachtype_' . $extension] . '"' : ' alt=""') . '>';
 	else
-		$image = '<img src="' . $settings['default_images_url'] . '/simpledesk/attach/blank.png" alt="" />';
+		$image = '<img src="' . $settings['default_images_url'] . '/simpledesk/attach/blank.png" alt="">';
 
 	return $image;
 }
@@ -1343,4 +1240,3 @@ function shd_load_relationships($ticket = 0)
 
 	$smcFunc['db_free_result']($query);
 }
-

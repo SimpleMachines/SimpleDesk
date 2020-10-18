@@ -1,21 +1,21 @@
 <?php
-###############################################################
-#         Simple Desk Project - www.simpledesk.net            #
-###############################################################
-#       An advanced help desk modifcation built on SMF        #
-###############################################################
-#                                                             #
-#         * Copyright 2010 - SimpleDesk.net                   #
-#                                                             #
-#   This file and its contents are subject to the license     #
-#   included with this distribution, license.txt, which       #
-#   states that this software is New BSD Licensed.            #
-#   Any questions, please contact SimpleDesk.net              #
-#                                                             #
-###############################################################
-# SimpleDesk Version: 2.0 Anatidae                            #
-# File Info: SimpleDesk-Delete.php / 2.0 Anatidae             #
-###############################################################
+/**************************************************************
+*          Simple Desk Project - www.simpledesk.net           *
+***************************************************************
+*       An advanced help desk modification built on SMF       *
+***************************************************************
+*                                                             *
+*         * Copyright 2020 - SimpleDesk.net                   *
+*                                                             *
+*   This file and its contents are subject to the license     *
+*   included with this distribution, license.txt, which       *
+*   states that this software is New BSD Licensed.            *
+*   Any questions, please contact SimpleDesk.net              *
+*                                                             *
+***************************************************************
+* SimpleDesk Version: 2.1 Beta 1                              *
+* File Info: SimpleDesk-Delete.php                            *
+**************************************************************/
 
 /**
  *	This file deals with deletion/recycling of tickets and replies, subsequent restoration back to
@@ -25,7 +25,6 @@
  *	@todo Finish documenting this file.
  *	@since 1.0
 */
-
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
@@ -53,7 +52,7 @@ function shd_ticket_delete()
 	checkSession('get');
 
 	if (empty($context['ticket_id']))
-		fatal_lang_error('shd_no_ticket', false);
+		shd_fatal_lang_error('shd_no_ticket', false);
 
 	// Check we can actually see the ticket we're deleting, and if we can only delete our own, we are the owner
 	$query_ticket = shd_db_query('', '
@@ -70,12 +69,12 @@ function shd_ticket_delete()
 	{
 		$smcFunc['db_free_result']($query_ticket);
 		if (!shd_allowed_to('shd_delete_ticket_any', $row['id_dept']) && (!shd_allowed_to('shd_delete_ticket_own', $row['id_dept']) || $user_info['id'] != $row['id_member_started']))
-			fatal_lang_error('shd_cannot_delete_ticket', false);
+			shd_fatal_lang_error('shd_cannot_delete_ticket', false);
 	}
 	else
 	{
 		$smcFunc['db_free_result']($query_ticket);
-		fatal_lang_error('shd_no_ticket', false);
+		shd_fatal_lang_error('shd_no_ticket', false);
 	}
 
 	$subject = $row['subject'];
@@ -84,7 +83,7 @@ function shd_ticket_delete()
 	call_integration_hook('shd_hook_deleteticket');
 
 	// Move it to deleted status
-	$query_ticket = shd_db_query('', '
+	shd_db_query('', '
 		UPDATE {db_prefix}helpdesk_tickets AS hdt
 		SET status = {int:status_deleted},
 		id_member_assigned = 0
@@ -96,12 +95,10 @@ function shd_ticket_delete()
 		)
 	);
 
-	shd_log_action('delete',
-		array(
-			'ticket' => $context['ticket_id'],
-			'subject' => $subject,
-		)
-	);
+	shd_log_action('delete', array(
+		'ticket' => $context['ticket_id'],
+		'subject' => $subject,
+	));
 
 	// Expire the cache of count(active tickets)
 	shd_clear_active_tickets($row['id_dept']);
@@ -119,7 +116,7 @@ function shd_reply_delete()
 	$_REQUEST['reply'] = !empty($_REQUEST['reply']) ? (int) $_REQUEST['reply'] : 0;
 
 	if (empty($_REQUEST['reply']) || empty($context['ticket_id']))
-		fatal_lang_error('shd_no_ticket');
+		shd_fatal_lang_error('shd_no_ticket');
 
 	// Check we can actually see the ticket we're deleting, that this reply is in this ticket and that we can delete this reply
 	$query_ticket = shd_db_query('', '
@@ -141,12 +138,12 @@ function shd_reply_delete()
 	{
 		$smcFunc['db_free_result']($query_ticket);
 		if (($row['status'] == TICKET_STATUS_CLOSED || $row['status'] == TICKET_STATUS_DELETED) || (!shd_allowed_to('shd_delete_reply_any', $row['id_dept']) && (!shd_allowed_to('shd_delete_reply_own', $row['id_dept']) || $user_info['id'] != $row['id_member'])))
-			fatal_lang_error('shd_cannot_delete_reply', false);
+			shd_fatal_lang_error('shd_cannot_delete_reply', false);
 	}
 	else
 	{
 		$smcFunc['db_free_result']($query_ticket);
-		fatal_lang_error('shd_no_ticket', false);
+		shd_fatal_lang_error('shd_no_ticket', false);
 	}
 
 	$subject = $row['subject'];
@@ -166,17 +163,15 @@ function shd_reply_delete()
 	);
 
 	// Logtastic!
-	shd_log_action('delete_reply',
-		array(
-			'ticket' => $context['ticket_id'],
-			'subject' => $subject,
-			'msg' => $_REQUEST['reply'],
-		)
-	);
+	shd_log_action('delete_reply', array(
+		'ticket' => $context['ticket_id'],
+		'subject' => $subject,
+		'msg' => $_REQUEST['reply'],
+	));
 
 	// OK, last but definitely not least, update num_replies and id_last_msg on the old ticket, and fix the old ticket's status
 	list($starter, $replier, $num_replies) = shd_recalc_ids($context['ticket_id']);
-	$query_reply = shd_db_query('', '
+	shd_db_query('', '
 		UPDATE {db_prefix}helpdesk_tickets
 		SET status = {int:status}
 		WHERE id_ticket = {int:ticket}',
@@ -201,13 +196,14 @@ function shd_perma_delete()
 	checkSession('get');
 
 	// This is heavy duty stuff.
-	@set_time_limit(0);
+	if (function_exists('set_time_limit'))
+		set_time_limit(0);
 	if (is_callable('apache_reset_timeout'))
 		apache_reset_timeout();
 
 	// We have to have either a ticket or a reply to know what to delete (Or do you want me to drop your whole database? >:D)
 	if (empty($context['ticket_id']) && empty($_REQUEST['reply']))
-		fatal_lang_error('shd_no_ticket', false);
+		shd_fatal_lang_error('shd_no_ticket', false);
 
 	// If we're deleting a whole ticket...
 	if (!empty($context['ticket_id']) && empty($_REQUEST['reply']))
@@ -223,20 +219,18 @@ function shd_perma_delete()
 			)
 		);
 
-		if ($smcFunc['db_num_rows']($query_ticket) == 0)
+		if (empty($smcFunc['db_num_rows']($query_ticket)))
 		{
 			$smcFunc['db_free_result']($query_ticket);
-			fatal_lang_error('shd_no_ticket', false);
-		}
-		else
-		{
-			$row = $smcFunc['db_fetch_assoc']($query_ticket);
-			shd_is_allowed_to('shd_delete_recycling', $row['id_dept']);
-			$smcFunc['db_free_result']($query_ticket);
+			shd_fatal_lang_error('shd_no_ticket', false);
 		}
 
+		$row = $smcFunc['db_fetch_assoc']($query_ticket);
+		$smcFunc['db_free_result']($query_ticket);
+		shd_is_allowed_to('shd_delete_recycling', $row['id_dept']);
+
 		if ($row['status'] != TICKET_STATUS_DELETED)
-			fatal_lang_error('shd_cannot_delete_ticket', false);
+			shd_fatal_lang_error('shd_cannot_delete_ticket', false);
 
 		$subject = $row['subject'];
 		// Expire the cache of count(active tickets)
@@ -260,7 +254,6 @@ function shd_perma_delete()
 		$smcFunc['db_free_result']($query);
 
 		if (!empty($msgs))
-		{
 			shd_db_query('', '
 				DELETE FROM {db_prefix}helpdesk_custom_fields_values
 				WHERE post_type = {int:type_reply}
@@ -270,7 +263,7 @@ function shd_perma_delete()
 					'msgs' => $msgs,
 				)
 			);
-		}
+
 		shd_db_query('', '
 			DELETE FROM {db_prefix}helpdesk_custom_fields_values
 			WHERE post_type = {int:type_ticket}
@@ -344,12 +337,10 @@ function shd_perma_delete()
 			removeAttachments($attachmentQuery);
 		}
 
-		shd_log_action('permadelete',
-			array(
-				'ticket' => $context['ticket_id'],
-				'subject' => $subject,
-			)
-		);
+		shd_log_action('permadelete', array(
+			'ticket' => $context['ticket_id'],
+			'subject' => $subject,
+		));
 
 		redirectexit('action=helpdesk;sa=recyclebin');
 	}
@@ -372,20 +363,18 @@ function shd_perma_delete()
 			)
 		);
 
-		if ($smcFunc['db_num_rows']($query_ticket) == 0)
+		if (empty($smcFunc['db_num_rows']($query_ticket)))
 		{
 			$smcFunc['db_free_result']($query_ticket);
-			fatal_lang_error('shd_no_ticket', false);
-		}
-		else
-		{
-			$row = $smcFunc['db_fetch_assoc']($query_ticket);
-			shd_is_allowed_to('shd_delete_recycling', $row['id_dept']);
-			$smcFunc['db_free_result']($query_ticket);
+			shd_fatal_lang_error('shd_no_ticket', false);
 		}
 
+		$row = $smcFunc['db_fetch_assoc']($query_ticket);
+		$smcFunc['db_free_result']($query_ticket);
+		shd_is_allowed_to('shd_delete_recycling', $row['id_dept']);
+
 		if ($row['status'] == TICKET_STATUS_DELETED || $row['message_status'] != MSG_STATUS_DELETED)
-			fatal_lang_error('shd_cannot_delete_reply', false);
+			shd_fatal_lang_error('shd_cannot_delete_reply', false);
 
 		$subject = $row['subject'];
 		// Expire the cache of count(active tickets)
@@ -451,15 +440,13 @@ function shd_perma_delete()
 			removeAttachments($attachmentQuery);
 		}
 
-		shd_log_action('permadelete_reply',
-			array(
-				'ticket' => $context['ticket_id'],
-				'subject' => $subject,
-			)
-		);
+		shd_log_action('permadelete_reply', array(
+			'ticket' => $context['ticket_id'],
+			'subject' => $subject,
+		));
 
 		list($starter, $replier, $num_replies) = shd_recalc_ids($context['ticket_id']);
-		$query_reply = shd_db_query('', '
+		shd_db_query('', '
 			UPDATE {db_prefix}helpdesk_tickets
 			SET status = {int:status}
 			WHERE id_ticket = {int:ticket}',
@@ -472,7 +459,7 @@ function shd_perma_delete()
 		redirectexit('action=helpdesk;sa=ticket;ticket=' . $context['ticket_id']);
 	}
 	else
-		fatal_lang_error('shd_no_ticket');
+		shd_fatal_lang_error('shd_no_ticket');
 }
 
 // Delete a given attachment from the one-click interface.
@@ -481,7 +468,7 @@ function shd_attach_delete()
 	global $smcFunc, $user_info, $context, $sourcedir;
 
 	if (empty($context['ticket_id']) || empty($_GET['attach']) || (int) $_GET['attach'] == 0)
-		fatal_lang_error('no_access', false);
+		shd_fatal_lang_error('no_access', false);
 
 	$_GET['attach'] = (int) $_GET['attach'];
 
@@ -503,7 +490,7 @@ function shd_attach_delete()
 	if ($smcFunc['db_num_rows']($query) == 0)
 	{
 		$smcFunc['db_free_result']($query);
-		fatal_lang_error('no_access');
+		shd_fatal_lang_error('no_access');
 	}
 
 	list($dept, $filename, $id_msg, $subject) = $smcFunc['db_fetch_row']($query);
@@ -518,7 +505,6 @@ function shd_attach_delete()
 		'msg' => $id_msg,
 		'att_removed' => array(htmlspecialchars($filename)),
 	);
-
 	shd_log_action('editticket', $log_params);
 
 	// Now you can delete
@@ -541,7 +527,7 @@ function shd_ticket_restore()
 	checkSession('get');
 
 	if (empty($context['ticket_id']))
-		fatal_lang_error('shd_no_ticket', false);
+		shd_fatal_lang_error('shd_no_ticket', false);
 
 	// Does the ticket we're trying to restore exist and can we see it?
 	$query_ticket = shd_db_query('', '
@@ -554,22 +540,19 @@ function shd_ticket_restore()
 		)
 	);
 
-	if ($row = $smcFunc['db_fetch_assoc']($query_ticket))
-	{
-		$smcFunc['db_free_result']($query_ticket);
-		if ($row['status'] != TICKET_STATUS_DELETED || (!shd_allowed_to('shd_restore_ticket_any', $row['id_dept']) && (!shd_allowed_to('shd_restore_ticket_own', $row['id_dept']) || $user_info['id'] != $row['id_member_started'])))
-			fatal_lang_error('shd_cannot_restore_ticket', false);
+	$row = $smcFunc['db_fetch_assoc']($query_ticket);
+	$smcFunc['db_free_result']($query_ticket);
 
-		$subject = $row['subject'];
-		$starter = $row['id_member_started'];
-		$replier = $row['id_member_updated'];
-		$num_replies = $row['num_replies'];
-	}
-	else
-	{
-		$smcFunc['db_free_result']($query_ticket);
-		fatal_lang_error('shd_no_ticket', false);
-	}
+	if (empty($row))
+		shd_fatal_lang_error('shd_no_ticket', false);
+
+	if ($row['status'] != TICKET_STATUS_DELETED || (!shd_allowed_to('shd_restore_ticket_any', $row['id_dept']) && (!shd_allowed_to('shd_restore_ticket_own', $row['id_dept']) || $user_info['id'] != $row['id_member_started'])))
+		shd_fatal_lang_error('shd_cannot_restore_ticket', false);
+
+	$subject = $row['subject'];
+	$starter = $row['id_member_started'];
+	$replier = $row['id_member_updated'];
+	$num_replies = $row['num_replies'];
 
 	// The ticket's id is in $context['ticket_id'].
 	call_integration_hook('shd_hook_restoreticket');
@@ -588,18 +571,15 @@ function shd_ticket_restore()
 	// Expire the cache of count(active tickets)
 	shd_clear_active_tickets($row['id_dept']);
 
-	shd_log_action('restore',
-		array(
-			'ticket' => $context['ticket_id'],
-			'subject' => $subject,
-		)
-	);
+	shd_log_action('restore', array(
+		'ticket' => $context['ticket_id'],
+		'subject' => $subject,
+	));
 
 	// And home.
 	if (isset($_REQUEST['home']))
 		redirectexit($context['shd_home'] . $context['shd_dept_link']);
-	else
-		redirectexit('action=helpdesk;sa=ticket;ticket=' . $context['ticket_id']);
+	redirectexit('action=helpdesk;sa=ticket;ticket=' . $context['ticket_id']);
 }
 
 // Restore the given reply from the recycling bin.
@@ -612,7 +592,7 @@ function shd_reply_restore()
 	$_REQUEST['reply'] = empty($_REQUEST['reply']) ? 0 : (int) $_REQUEST['reply'];
 
 	if (empty($_REQUEST['reply']))
-		fatal_lang_error('shd_no_ticket', false);
+		shd_fatal_lang_error('shd_no_ticket', false);
 
 	// Check we can actually see the ticket we're restoring from, and that we can restore this reply
 	$query_ticket = shd_db_query('', '
@@ -632,7 +612,7 @@ function shd_reply_restore()
 	{
 		$smcFunc['db_free_result']($query_ticket);
 		if (($row['status'] == TICKET_STATUS_DELETED || $row['status'] == TICKET_STATUS_CLOSED || $row['message_status'] != MSG_STATUS_DELETED) || (!shd_allowed_to('shd_restore_reply_any', $row['id_dept']) && (!shd_allowed_to('shd_restore_reply_own', $row['id_dept']) || $user_info['id'] != $row['id_member'])))
-			fatal_lang_error('shd_cannot_restore_reply', false);
+			shd_fatal_lang_error('shd_cannot_restore_reply', false);
 
 		$context['ticket_id'] = (int) $row['id_ticket'];
 		$subject = $row['subject'];
@@ -643,7 +623,7 @@ function shd_reply_restore()
 	else
 	{
 		$smcFunc['db_free_result']($query_ticket);
-		fatal_lang_error('shd_no_ticket', false);
+		shd_fatal_lang_error('shd_no_ticket', false);
 	}
 
 	// The ticket's id is in $context['ticket_id'], the reply id in $_REQUEST['reply'].
@@ -661,17 +641,15 @@ function shd_reply_restore()
 	);
 
 	// Captain's Log, stardate 18.3.10.1010
-	shd_log_action('restore_reply',
-		array(
-			'ticket' => $context['ticket_id'],
-			'subject' => $subject,
-			'msg' => $_REQUEST['reply'],
-		)
-	);
+	shd_log_action('restore_reply', array(
+		'ticket' => $context['ticket_id'],
+		'subject' => $subject,
+		'msg' => $_REQUEST['reply'],
+	));
 
 	// Fix the topic data
 	list($starter, $replier, $num_replies) = shd_recalc_ids($context['ticket_id']);
-	$query_reply = shd_db_query('', '
+	shd_db_query('', '
 		UPDATE {db_prefix}helpdesk_tickets
 		SET status = {int:status}
 		WHERE id_ticket = {int:ticket}',
@@ -686,4 +664,3 @@ function shd_reply_restore()
 
 	redirectexit('action=helpdesk;sa=ticket;ticket=' . $context['ticket_id']);
 }
-

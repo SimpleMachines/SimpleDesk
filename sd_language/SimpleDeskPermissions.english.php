@@ -1,22 +1,22 @@
 <?php
-###############################################################
-#         Simple Desk Project - www.simpledesk.net            #
-###############################################################
-#       An advanced help desk modifcation built on SMF        #
-###############################################################
-#                                                             #
-#         * Copyright 2010 - SimpleDesk.net                   #
-#                                                             #
-#   This file and its contents are subject to the license     #
-#   included with this distribution, license.txt, which       #
-#   states that this software is New BSD Licensed.            #
-#   Any questions, please contact SimpleDesk.net              #
-#                                                             #
-###############################################################
-# SimpleDesk Version: 2.0 Anatidae                            #
-# File Info: SimpleDeskPermissions.english.php / 2.0 Anatidae #
-###############################################################
-// Version: 2.0 Anatidae; SimpleDesk permissions
+/**************************************************************
+*          Simple Desk Project - www.simpledesk.net           *
+***************************************************************
+*       An advanced help desk modification built on SMF       *
+***************************************************************
+*                                                             *
+*         * Copyright 2020 - SimpleDesk.net                   *
+*                                                             *
+*   This file and its contents are subject to the license     *
+*   included with this distribution, license.txt, which       *
+*   states that this software is New BSD Licensed.            *
+*   Any questions, please contact SimpleDesk.net              *
+*                                                             *
+***************************************************************
+* SimpleDesk Version: 2.1 Beta 1                              *
+* File Info: SimpleDeskPermissions.english.php                *
+**************************************************************/
+// Version: 2.1; SimpleDesk permissions
 
 // Important! Before editing these language files please read the text at the top of index.english.php.
 
@@ -93,6 +93,11 @@ $txt['permissionname_shd_assign_ticket'] = 'Assign a ticket';
 $txt['permissionhelp_shd_assign_ticket'] = 'This permission allows users to assign tickets to staff to be dealt with; normally would be given to staff to assign tickets to themselves, or to managers to assign to other users';
 $txt['permissionname_shd_assign_ticket_own'] = 'To themselves';
 $txt['permissionname_shd_assign_ticket_any'] = 'Any staff member';
+//@}
+
+//! @name Ticket modification: Ticket Hold
+//@{
+$txt['permissionname_shd_alter_hold'] = 'Alter Ticket Hold';
 //@}
 
 //! @name Ticket emails: monitoring/ignoring

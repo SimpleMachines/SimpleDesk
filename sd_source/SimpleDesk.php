@@ -1,21 +1,21 @@
 <?php
-###############################################################
-#         Simple Desk Project - www.simpledesk.net            #
-###############################################################
-#       An advanced help desk modifcation built on SMF        #
-###############################################################
-#                                                             #
-#         * Copyright 2010 - SimpleDesk.net                   #
-#                                                             #
-#   This file and its contents are subject to the license     #
-#   included with this distribution, license.txt, which       #
-#   states that this software is New BSD Licensed.            #
-#   Any questions, please contact SimpleDesk.net              #
-#                                                             #
-###############################################################
-# SimpleDesk Version: 2.0 Anatidae                            #
-# File Info: SimpleDesk.php / 2.0 Anatidae                    #
-###############################################################
+/**************************************************************
+*          Simple Desk Project - www.simpledesk.net           *
+***************************************************************
+*       An advanced help desk modification built on SMF       *
+***************************************************************
+*                                                             *
+*         * Copyright 2020 - SimpleDesk.net                   *
+*                                                             *
+*   This file and its contents are subject to the license     *
+*   included with this distribution, license.txt, which       *
+*   states that this software is New BSD Licensed.            *
+*   Any questions, please contact SimpleDesk.net              *
+*                                                             *
+***************************************************************
+* SimpleDesk Version: 2.1 Beta 1                              *
+* File Info: SimpleDesk.php                                   *
+**************************************************************/
 
 /**
  *	This file serves as the entry point for SimpleDesk generally, as well as the home of the ticket listing
@@ -47,12 +47,14 @@ function shd_main()
 
 	// Basic sanity stuff
 	if (!$modSettings['helpdesk_active'])
-		fatal_lang_error('shd_inactive', false);
+		shd_fatal_lang_error('shd_inactive', false);
 
 	// Let's be sneaky. Can they only access one department? If they can only access one department, put them there and make a note of it for later.
 	$depts = shd_allowed_to('access_helpdesk', false);
 	$context['shd_multi_dept'] = true;
-	if (count($depts) == 1)
+	if (is_bool($depts))
+		shd_fatal_error('Bug hunters unite...');
+	elseif (count($depts) == 1)
 	{
 		$_REQUEST['dept'] = $depts[0];
 		$context['shd_multi_dept'] = false;
@@ -215,7 +217,7 @@ function shd_main()
 				if (substr($context['ticket_start'], 0, 3) == 'new')
 				{
 					$query = shd_db_query('', '
-						SELECT IFNULL(hdlr.id_msg, -1) + 1 AS new_from
+						SELECT COALESCE(hdlr.id_msg, -1) + 1 AS new_from
 						FROM {db_prefix}helpdesk_tickets AS hdt
 							LEFT JOIN {db_prefix}helpdesk_log_read AS hdlr ON (hdlr.id_ticket = {int:ticket} AND hdlr.id_member = {int:member})
 						WHERE {query_see_ticket}
@@ -288,47 +290,43 @@ function shd_main()
 	$context['items_per_page'] = 10;
 	$context['start'] = isset($_REQUEST['start']) ? $_REQUEST['start'] : 0;
 
-	// Load the custom CSS.
-	if (empty($context['html_headers']))
-		$context['html_headers'] = '';
+	loadCSSFile('helpdesk.css', array('minimize' => false, 'seed' => $context['shd_css_version']), 'helpdesk');
+	loadJavascriptFile('helpdesk.js', array('defer' => false, 'minimize' => false), 'helpdesk');
 
-	$context['html_headers'] .= '
-	<link rel="stylesheet" type="text/css" href="' . (file_exists($settings['theme_dir'] . '/css/helpdesk.css') ? $settings['theme_url'] . '/css/helpdesk.css' : $settings['default_theme_url'] . '/css/helpdesk.css') . '" />
-	<script type="text/javascript" src="' . $settings['default_theme_url'] . '/scripts/helpdesk.js?rc2"></script>';
-
-	// Darn IE6. Die, already :(
-	if ($context['browser']['is_ie6'])
-		$context['html_headers'] .= '
-		<!-- Fall back, dark force, for we shall thy evil powers not endorse -->
-		<link rel="stylesheet" type="text/css" href="' . $settings['default_theme_url'] . '/css/helpdesk_ie6.css" />';
+	// Custom settings?
+	if (file_exists($settings['default_theme_url'] . '/css/helpdesk_custom.css'))
+		loadCSSFile('helpdesk_def_custom.css', array('minimize' => false, 'seed' => $context['shd_css_version'], 'default_theme' => true), 'helpdesk_def_custom');
+	if (file_exists($settings['theme_dir'] . '/css/helpdesk_custom.css'))
+		loadCSSFile('helpdesk_custom.css', array('minimize' => false, 'seed' => $context['shd_css_version']), 'helpdesk_custom');
 
 	// Int hooks - after we basically set everything up (so it's manipulatable by the hook, but before we do the last bits of finalisation)
 	call_integration_hook('shd_hook_helpdesk', array(&$subactions));
 
-	// What are we doing?
+	// What are we doing?, We shouldn't use $_REQUEST anywhere, but clean it just incase.
 	$_REQUEST['sa'] = (!empty($_REQUEST['sa']) && isset($subactions[$_REQUEST['sa']])) ? $_REQUEST['sa'] : 'main';
-	$context['sub_action'] = $subactions[$_REQUEST['sa']];
+	$context['shd_current_subaction'] = $_REQUEST['sa'];
+	$context['sub_action'] = $subactions[$context['shd_current_subaction']];
 
 	$context['can_new_ticket'] = shd_allowed_to('shd_new_ticket', $context['shd_department']);
 	$context['can_proxy_ticket'] = $context['can_new_ticket'] && shd_allowed_to('shd_post_proxy', $context['shd_department']);
 	$context['can_view_closed'] = shd_allowed_to(array('shd_view_closed_own', 'shd_view_closed_any'), $context['shd_department']);
 	$context['can_view_recycle'] = shd_allowed_to('shd_access_recyclebin', $context['shd_department']);
-	$context['display_back_to_hd'] = !in_array($_REQUEST['sa'], array('main', 'viewblock', 'recyclebin', 'closedtickets', 'dept'));
+	$context['display_back_to_hd'] = !in_array($context['shd_current_subaction'], array('main', 'viewblock', 'recyclebin', 'closedtickets', 'dept'));
 	$context['can_shd_search'] = shd_allowed_to('shd_search', 0);
 	$context['can_view_options'] = shd_allowed_to(array('shd_view_preferences_own', 'shd_view_preferences_any'), 0);
 
 	// Highlight the correct button.
-	if (isset($context['navigation'][$_REQUEST['sa']]))
-		$context['navigation'][$_REQUEST['sa']]['active'] = true;
+	if (isset($context['navigation'][$context['shd_current_subaction']]))
+		$context['navigation'][$context['shd_current_subaction']]['active'] = true;
 
 	// Send them away.
 	if ($context['sub_action'][0] !== null)
 		require ($sourcedir . '/sd_source/' . $context['sub_action'][0]);
 
-	$context['sub_action'][1]();
+	call_user_func($context['sub_action'][1]);
 
 	// Maintenance mode? If it were, the helpdesk is considered inactive for the purposes of everything to all but those without admin-helpdesk rights - but we must have them if we're here!
-	if (!empty($modSettings['shd_maintenance_mode']) && $_REQUEST['sa'] != 'ajax')
+	if (!empty($modSettings['shd_maintenance_mode']) && $context['shd_current_subaction'] != 'ajax')
 		$context['template_layers'][] = 'shd_maintenance';
 
 	call_integration_hook('shd_hook_after_main');
@@ -378,7 +376,7 @@ function shd_main()
 */
 function shd_main_helpdesk()
 {
-	global $context, $txt, $smcFunc, $user_profile, $scripturl, $user_info;
+	global $context, $modSettings, $txt, $smcFunc, $user_profile, $scripturl, $user_info;
 
 	$is_staff = shd_allowed_to('shd_staff', 0);
 	// Stuff we need to add to $context, page title etc etc
@@ -426,9 +424,47 @@ function shd_main_helpdesk()
 				'required' => true,
 				'collapsed' => false,
 			),
+			'hold' => array(
+				'block_icon' => 'ticket_hold.png',
+				'title' => $txt['shd_status_' . TICKET_STATUS_HOLD . '_heading'],
+				'where' => 'hdt.id_member_assigned != ' . $user_info['id'] . ' AND hdt.status = ' . TICKET_STATUS_HOLD,
+				'display' => $is_staff,
+				'count' => shd_count_helpdesk_tickets('hold', $is_staff),
+				'columns' => shd_get_block_columns('hold'),
+				'required' => true,
+				'collapsed' => false,
+			),
 		),
 		'shd_home_view' => $is_staff ? 'staff' : 'user',
 	);
+
+	// Are we going to reorder these?
+	if (isset($modSettings['shd_block_order_1'], $modSettings['shd_block_order_2'], $modSettings['shd_block_order_3'], $modSettings['shd_block_order_4']))
+	{
+		$context['ticket_block_order'] = array();
+		$unused = array('assigned' => 0, 'new' => 0, 'staff' => 0, 'user' => 0, 'hold' => 0);
+
+		for ($i = 1; $i <= 5; $i++)
+		{
+			// Is anything even set for this block?
+			if (!isset($modSettings['shd_block_order_' . $i]))
+				continue;
+			// Did we already use this?
+			if (in_array($modSettings['shd_block_order_' . $i], $context['ticket_block_order']))
+				continue;
+			// Can they see this?
+			elseif (empty($context['ticket_blocks'][$modSettings['shd_block_order_' . $i]]['display']))
+				continue;
+
+			$context['ticket_block_order'][$i] = $modSettings['shd_block_order_' . $i];
+			unset($unused[$modSettings['shd_block_order_' . $i]]);
+		}
+
+		foreach ($unused as $u => $j)
+			$context['ticket_block_order'][] = $u;
+	}
+	else
+		$context['ticket_block_order'] = array(1 => 'assigned', 2 => 'new', 3 => 'staff', 4 => 'user', 5 => 'hold');
 
 	if (!empty($context['shd_dept_name']) && $context['shd_multi_dept'])
 		$context['linktree'][] = array(
@@ -470,7 +506,7 @@ function shd_main_dept()
 	// Get the departments and order them in the same order they would be on the board index.
 	$context['dept_list'] = array();
 	$query = $smcFunc['db_query']('', '
-		SELECT hdd.id_dept, hdd.dept_name
+		SELECT hdd.id_dept, hdd.dept_name, hdd.description
 		FROM {db_prefix}helpdesk_depts AS hdd
 		WHERE hdd.id_dept IN ({array_int:depts})
 		ORDER BY hdd.dept_order',
@@ -483,6 +519,7 @@ function shd_main_dept()
 		$context['dept_list'][$row['id_dept']] = array(
 			'id_dept' => $row['id_dept'],
 			'dept_name' => $row['dept_name'],
+			'description' => !empty($row['description']) ? parse_bbc($row['description']) : '',
 			'tickets' => array(
 				'open' => 0,
 				'closed' => 0,
@@ -560,12 +597,25 @@ function shd_view_block()
 				'required' => true,
 				'collapsed' => false,
 			),
+			'hold' => array(
+				'block_icon' => 'ticket_hold.png',
+				'title' => $txt['shd_status_' . TICKET_STATUS_HOLD . '_heading'],
+				'where' => 'hdt.id_member_assigned != ' . $user_info['id'] . ' AND hdt.status = ' . TICKET_STATUS_HOLD,
+				'display' => $is_staff,
+				'count' => shd_count_helpdesk_tickets('hold', $is_staff),
+				'columns' => shd_get_block_columns('hold'),
+				'required' => true,
+				'collapsed' => false,
+			),
 		),
 		'shd_home_view' => $is_staff ? 'staff' : 'user',
 	);
 
 	if (empty($_REQUEST['block']) || empty($context['ticket_blocks'][$_REQUEST['block']]) || empty($context['ticket_blocks'][$_REQUEST['block']]['count']))
 		redirectexit($context['shd_home'] . $context['shd_dept_link']);
+
+	// At this point we have validated the block and kicked out the bad ones.
+	$context['shd_current_block'] = $_REQUEST['block'];
 
 	$context['items_per_page'] = 10;
 	foreach ($context['ticket_blocks'] as $block => $details)
@@ -602,7 +652,7 @@ function shd_closed_tickets()
 	global $context, $txt, $smcFunc, $user_profile, $scripturl, $settings, $user_info;
 
 	if (!shd_allowed_to('shd_view_closed_own', $context['shd_department']) && !shd_allowed_to('shd_view_closed_any', $context['shd_department']))
-		fatal_lang_error('shd_cannot_view_resolved', false);
+		shd_fatal_lang_error('shd_cannot_view_resolved', false);
 
 	// Stuff we need to add to $context, the permission we want to use, page title etc etc
 	$context += array(
@@ -716,28 +766,8 @@ function shd_helpdesk_listing()
 	if (!empty($context['shd_permission']))
 		shd_is_allowed_to($context['shd_permission']);
 
-	// So, we want the [new] icon. Where is it?
-	$newimgpaths = array(
-		$settings['theme_dir'] . '/images/' . $language => $settings['lang_images_url'],
-		$settings['theme_dir'] . '/images/english' => $settings['images_url'] . '/english',
-		$settings['default_theme_dir'] . '/images/' . $language => $settings['default_images_url'] . '/' . $language,
-	);
-	$files = array('new.gif', 'new.png');
-	$context['new_posts_image'] = $settings['default_images_url'] . '/english/new.gif'; // likely default, but we'll check the theme etc first just in case.
-	foreach ($newimgpaths as $physicalpath => $urlpath)
-	{
-		foreach ($files as $file)
-		{
-			if (file_exists($physicalpath . '/' . $file))
-			{
-				$context['new_posts_image'] = $urlpath . '/' . $file;
-				break 2;
-			}
-		}
-	}
-
 	$block_list = array_keys($context['ticket_blocks']);
-	$primary_url = '?action=helpdesk;sa=' . $_REQUEST['sa'];
+	$primary_url = '?action=helpdesk;sa=' . $context['shd_current_subaction'];
 
 	// First figure out the start positions of each item and sanitise them
 	foreach ($context['ticket_blocks'] as $block_key => $block)
@@ -793,7 +823,7 @@ function shd_helpdesk_listing()
 		),
 		'assigned' => array(
 			'sql' => 'assigned_name',
-			'sql_select' => 'IFNULL(mem.real_name, 0) AS assigned_name',
+			'sql_select' => 'COALESCE(mem.real_name, 0) AS assigned_name',
 			'sql_join' => 'LEFT JOIN {db_prefix}members AS mem ON (hdt.id_member_assigned = mem.id_member)',
 		),
 		'status' => array(
@@ -801,12 +831,12 @@ function shd_helpdesk_listing()
 		),
 		'starter' => array(
 			'sql' => 'starter_name',
-			'sql_select' => 'IFNULL(mem.real_name, 0) AS starter_name',
+			'sql_select' => 'COALESCE(mem.real_name, 0) AS starter_name',
 			'sql_join' => 'LEFT JOIN {db_prefix}members AS mem ON (hdt.id_member_started = mem.id_member)',
 		),
 		'lastreply' => array(
 			'sql' => 'last_reply',
-			'sql_select' => 'IFNULL(mem.real_name, 0) AS last_reply',
+			'sql_select' => 'COALESCE(mem.real_name, 0) AS last_reply',
 			'sql_join' => 'LEFT JOIN {db_prefix}members AS mem ON (hdtr_last.id_member = mem.id_member)',
 		),
 	);
@@ -835,7 +865,7 @@ function shd_helpdesk_listing()
 		{
 			$sort = '';
 			$sort_item = 'updated';
-			$sort_dir = $_REQUEST['sa'] == 'closedtickets' || $_REQUEST['sa'] == 'recyclebin' ? 'desc' : 'asc'; // default to newest first if on recyclebin or closed tickets, otherwise oldest first
+			$sort_dir = $context['shd_current_subaction'] == 'closedtickets' || $context['shd_current_subaction'] == 'recyclebin' ? 'desc' : 'asc'; // default to newest first if on recyclebin or closed tickets, otherwise oldest first
 		}
 
 		if ($sort != '')
@@ -926,7 +956,7 @@ function shd_helpdesk_listing()
 			SELECT hdt.id_ticket, hdt.id_dept, hdd.dept_name, hdt.id_last_msg, hdt.id_member_started, hdt.id_member_updated,
 				hdt.id_member_assigned, hdt.subject, hdt.status, hdt.num_replies, hdt.deleted_replies, hdt.private, hdt.urgency,
 				hdt.last_updated, hdtr_first.poster_name AS ticket_opener, hdtr_last.poster_name AS respondent, hdtr_last.poster_time,
-				IFNULL(hdlr.id_msg, 0) AS log_read' . (!empty($block['sort']['sql']['select']) ? ', ' . $block['sort']['sql']['select'] : '') . '
+				COALESCE(hdlr.id_msg, 0) AS log_read' . (!empty($block['sort']['sql']['select']) ? ', ' . $block['sort']['sql']['select'] : '') . '
 			FROM {db_prefix}helpdesk_tickets AS hdt
 				INNER JOIN {db_prefix}helpdesk_ticket_replies AS hdtr_first ON (hdt.id_first_msg = hdtr_first.id_msg)
 				INNER JOIN {db_prefix}helpdesk_ticket_replies AS hdtr_last ON (hdt.id_last_msg = hdtr_last.id_msg)
@@ -957,7 +987,7 @@ function shd_helpdesk_listing()
 				'id' => $row['id_ticket'],
 				'display_id' => str_pad($row['id_ticket'], $modSettings['shd_zerofill'], '0', STR_PAD_LEFT),
 				'dept_link' => empty($context['shd_department']) && $context['shd_multi_dept'] ? '[<a href="' . $scripturl . '?' . $context['shd_home'] . ';dept=' . $row['id_dept'] . '">' . $row['dept_name'] . '</a>] ' : '',
-				'link' => '<a href="' . $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $row['id_ticket'] . ($_REQUEST['sa'] == 'recyclebin' ? ';recycle' : '') . '">' . $row['subject'] . '</a>',
+				'link' => '<a href="' . $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $row['id_ticket'] . ($context['shd_current_subaction'] == 'recyclebin' ? ';recycle' : '') . '">' . $row['subject'] . '</a>',
 				'subject' => $row['subject'],
 				'status' => array(
 					'level' => $row['status'],
@@ -980,27 +1010,27 @@ function shd_helpdesk_listing()
 					'label' => $row['urgency'] > TICKET_URGENCY_HIGH ? '<span class="error">' . $txt['shd_urgency_' . $row['urgency']] . '</span>' : $txt['shd_urgency_' . $row['urgency']],
 				),
 				'is_unread' => ($row['id_last_msg'] > $row['log_read']),
-				'new_href' => ($row['id_last_msg'] <= $row['log_read']) ? '' : ($scripturl . '?action=helpdesk;sa=ticket;ticket=' . $row['id_ticket'] . '.new' . ($_REQUEST['sa'] == 'recyclebin' ? ';recycle' : '') . '#new'),
+				'new_href' => ($row['id_last_msg'] <= $row['log_read']) ? '' : ($scripturl . '?action=helpdesk;sa=ticket;ticket=' . $row['id_ticket'] . '.new' . ($context['shd_current_subaction'] == 'recyclebin' ? ';recycle' : '') . '#new'),
 				'private' => $row['private'],
 				'actions' => array(
-					'movedept' => !empty($context['shd_multi_dept']) && (shd_allowed_to('shd_move_dept_any', $context['shd_department']) || ($is_own && shd_allowed_to('shd_move_dept_own', $context['shd_department']))) ? '<a href="' . $scripturl . '?action=helpdesk;sa=movedept;ticket=' . $row['id_ticket'] . ';home;' . $context['session_var'] . '=' . $context['session_id'] . '" title="' . $txt['shd_move_dept'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/movedept.png" alt="' . $txt['shd_move_dept'] . '" /></a>' : '',
+					'movedept' => !empty($context['shd_multi_dept']) && (shd_allowed_to('shd_move_dept_any', $context['shd_department']) || ($is_own && shd_allowed_to('shd_move_dept_own', $context['shd_department']))) ? '<a href="' . $scripturl . '?action=helpdesk;sa=movedept;ticket=' . $row['id_ticket'] . ';home;' . $context['session_var'] . '=' . $context['session_id'] . '" title="' . $txt['shd_move_dept'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/movedept.png" alt="' . $txt['shd_move_dept'] . '"></a>' : '',
 				),
 				'num_replies' => $row['num_replies'],
-				'replies_href' => $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $row['id_ticket'] . '.msg' . $row['id_last_msg'] . '#msg' . $row['id_last_msg'] . ($_REQUEST['sa'] == 'recyclebin' ? ';recycle' : ''),
+				'replies_href' => $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $row['id_ticket'] . '.msg' . $row['id_last_msg'] . '#msg' . $row['id_last_msg'] . ($context['shd_current_subaction'] == 'recyclebin' ? ';recycle' : ''),
 				'all_replies' => (int) $row['num_replies'] + (int) $row['deleted_replies'],
 			);
 
 			if ($row['status'] == TICKET_STATUS_CLOSED)
 			{
 				$new_block['actions'] += array(
-					'resolve' => shd_allowed_to('shd_unresolve_ticket_any', $context['shd_department']) || ($is_own && shd_allowed_to('shd_unresolve_ticket_own', $context['shd_department'])) ? '<a href="' . $scripturl . '?action=helpdesk;sa=resolveticket;ticket=' . $row['id_ticket'] . ';home;' . $context['shd_dept_link'] . $context['session_var'] . '=' . $context['session_id'] . '" title="' . $txt['shd_ticket_unresolved'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/unresolved.png" alt="' . $txt['shd_ticket_unresolved'] . '" /></a>' : '',
+					'resolve' => shd_allowed_to('shd_unresolve_ticket_any', $context['shd_department']) || ($is_own && shd_allowed_to('shd_unresolve_ticket_own', $context['shd_department'])) ? '<a href="' . $scripturl . '?action=helpdesk;sa=resolveticket;ticket=' . $row['id_ticket'] . ';home;' . $context['shd_dept_link'] . $context['session_var'] . '=' . $context['session_id'] . '" title="' . $txt['shd_ticket_unresolved'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/unresolved.png" alt="' . $txt['shd_ticket_unresolved'] . '"></a>' : '',
 				);
 			}
 			elseif ($row['status'] == TICKET_STATUS_DELETED) // and thus, we're in the recycle bin
 			{
 				$new_block['actions'] += array(
-					'restore' => shd_allowed_to('shd_restore_ticket_any', $context['shd_department']) || ($is_own && shd_allowed_to('shd_restore_ticket_own', $context['shd_department'])) ? '<a href="' . $scripturl . '?action=helpdesk;sa=restoreticket;ticket=' . $row['id_ticket'] . ';home;' . $context['shd_dept_link'] . $context['session_var'] . '=' . $context['session_id'] . '" title="' . $txt['shd_ticket_restore'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/restore.png" alt="' . $txt['shd_ticket_restore'] . '" /></a>' : '',
-					'permadelete' => shd_allowed_to('shd_delete_recycling', $context['shd_department']) ? '<a href="' . $scripturl . '?action=helpdesk;sa=permadelete;ticket=' . $row['id_ticket'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '" title="' . $txt['shd_delete_permanently'] . '" onclick="return confirm(' . JavaScriptEscape($txt['shd_delete_permanently_confirm']) . ');"><img src="' . $settings['default_images_url'] . '/simpledesk/delete.png" alt="' . $txt['shd_delete_permanently'] . '" /></a>' : '',
+					'restore' => shd_allowed_to('shd_restore_ticket_any', $context['shd_department']) || ($is_own && shd_allowed_to('shd_restore_ticket_own', $context['shd_department'])) ? '<a href="' . $scripturl . '?action=helpdesk;sa=restoreticket;ticket=' . $row['id_ticket'] . ';home;' . $context['shd_dept_link'] . $context['session_var'] . '=' . $context['session_id'] . '" title="' . $txt['shd_ticket_restore'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/restore.png" alt="' . $txt['shd_ticket_restore'] . '"></a>' : '',
+					'permadelete' => shd_allowed_to('shd_delete_recycling', $context['shd_department']) ? '<a href="' . $scripturl . '?action=helpdesk;sa=permadelete;ticket=' . $row['id_ticket'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '" title="' . $txt['shd_delete_permanently'] . '" onclick="return confirm(' . JavaScriptEscape($txt['shd_delete_permanently_confirm']) . ');"><img src="' . $settings['default_images_url'] . '/simpledesk/delete.png" alt="' . $txt['shd_delete_permanently'] . '"></a>' : '',
 				);
 			}
 			else
@@ -1012,12 +1042,12 @@ function shd_helpdesk_listing()
 					$langstring = $row['id_member_assigned'] == $context['user']['id'] ? $txt['shd_ticket_unassign'] : $txt['shd_ticket_assign_self'];
 
 				if (!empty($langstring))
-					$new_block['actions']['assign'] = '<a href="' . $scripturl . '?action=helpdesk;sa=assign;ticket=' . $row['id_ticket'] . ';home;' . $context['session_var'] . '=' . $context['session_id'] . '" title="' . $langstring . '"><img src="' . $settings['default_images_url'] . '/simpledesk/assign.png" alt="' . $langstring . '" /></a>';
+					$new_block['actions']['assign'] = '<a href="' . $scripturl . '?action=helpdesk;sa=assign;ticket=' . $row['id_ticket'] . ';home;' . $context['session_var'] . '=' . $context['session_id'] . '" title="' . $langstring . '"><img src="' . $settings['default_images_url'] . '/simpledesk/assign.png" alt="' . $langstring . '"></a>';
 
 				$new_block['actions'] += array(
-					'resolve' => shd_allowed_to('shd_resolve_ticket_any', $context['shd_department']) || ($is_own && shd_allowed_to('shd_resolve_ticket_own', $context['shd_department'])) ? '<a href="' . $scripturl . '?action=helpdesk;sa=resolveticket;ticket=' . $row['id_ticket'] . ';home;' . $context['shd_dept_link'] . $context['session_var'] . '=' . $context['session_id'] . '" title="' . $txt['shd_ticket_resolved'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/resolved.png" alt="' . $txt['shd_ticket_resolved'] . '" /></a>' : '',
-					'tickettotopic' => empty($modSettings['shd_helpdesk_only']) && shd_allowed_to('shd_ticket_to_topic', $context['shd_department']) && ($row['deleted_replies'] == 0 || shd_allowed_to('shd_access_recyclebin')) ? '<a href="' . $scripturl . '?action=helpdesk;sa=tickettotopic;ticket=' . $row['id_ticket'] . ';' . $context['shd_dept_link'] . $context['session_var'] . '=' . $context['session_id'] . '" title="' . $txt['shd_ticket_move_to_topic'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/tickettotopic.png" alt="' . $txt['shd_ticket_move_to_topic'] . '" /></a>' : '',
-					'delete' => shd_allowed_to('shd_delete_ticket_any', $context['shd_department']) || ($is_own && shd_allowed_to('shd_delete_ticket_own')) ? '<a href="' . $scripturl . '?action=helpdesk;sa=deleteticket;ticket=' . $row['id_ticket'] . ';' . $context['shd_dept_link'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '" title="' . $txt['shd_ticket_delete'] . '" onclick="return confirm(' . JavaScriptEscape($txt['shd_delete_confirm']) . ');"><img src="' . $settings['default_images_url'] . '/simpledesk/delete.png" alt="' . $txt['shd_ticket_delete'] . '" /></a>' : '',
+					'resolve' => shd_allowed_to('shd_resolve_ticket_any', $context['shd_department']) || ($is_own && shd_allowed_to('shd_resolve_ticket_own', $context['shd_department'])) ? '<a href="' . $scripturl . '?action=helpdesk;sa=resolveticket;ticket=' . $row['id_ticket'] . ';home;' . $context['shd_dept_link'] . $context['session_var'] . '=' . $context['session_id'] . '" title="' . $txt['shd_ticket_resolved'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/resolved.png" alt="' . $txt['shd_ticket_resolved'] . '"></a>' : '',
+					'tickettotopic' => empty($modSettings['shd_helpdesk_only']) && shd_allowed_to('shd_ticket_to_topic', $context['shd_department']) && ($row['deleted_replies'] == 0 || shd_allowed_to('shd_access_recyclebin')) ? '<a href="' . $scripturl . '?action=helpdesk;sa=tickettotopic;ticket=' . $row['id_ticket'] . ';' . $context['shd_dept_link'] . $context['session_var'] . '=' . $context['session_id'] . '" title="' . $txt['shd_ticket_move_to_topic'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/tickettotopic.png" alt="' . $txt['shd_ticket_move_to_topic'] . '"></a>' : '',
+					'delete' => shd_allowed_to('shd_delete_ticket_any', $context['shd_department']) || ($is_own && shd_allowed_to('shd_delete_ticket_own')) ? '<a href="' . $scripturl . '?action=helpdesk;sa=deleteticket;ticket=' . $row['id_ticket'] . ';' . $context['shd_dept_link'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '" title="' . $txt['shd_ticket_delete'] . '" onclick="return confirm(' . JavaScriptEscape($txt['shd_delete_confirm']) . ');"><img src="' . $settings['default_images_url'] . '/simpledesk/delete.png" alt="' . $txt['shd_ticket_delete'] . '"></a>' : '',
 				);
 			}
 
@@ -1067,10 +1097,8 @@ function shd_helpdesk_listing()
 
 			// And last respondent
 			if ($ticket['respondent']['id'] == 0 || empty($user_profile[$ticket['respondent']['id']]))
-			{
 				// Didn't find the name, so reuse what we have
 				$context['ticket_blocks'][$block_id]['tickets'][$tid]['respondent']['link'] = $context['ticket_blocks'][$block_id]['tickets'][$tid]['respondent']['name'];
-			}
 			else
 			{
 				$context['ticket_blocks'][$block_id]['tickets'][$tid]['respondent']['name'] = $user_profile[$ticket['respondent']['id']]['real_name'];
@@ -1080,32 +1108,25 @@ function shd_helpdesk_listing()
 	}
 
 	foreach ($context['ticket_blocks'] as $block_id => $block)
-	{
 		if (empty($block['display']) || (empty($block['count']) && !$block['required'] && empty($block['collapsed'])))
 			unset($context['ticket_blocks'][$block_id]);
-	}
 
 	$base_url = '';
 	foreach ($context['ticket_blocks'] as $block_id => $block)
-	{
 		if ($block['sort']['add_link'])
 			$base_url .= $block['sort']['link_bits'][$block['sort']['item']];
-	}
 
-	if ($_REQUEST['sa'] != 'viewblock')
+	if ($context['shd_current_subaction'] != 'viewblock')
 	{
 		foreach ($context['ticket_blocks'] as $block_id => $block)
 		{
-			$num_per_page = !empty($context['shd_preferences']['blocks_' . $block_key . '_count']) ? $context['shd_preferences']['blocks_' . $block_key . '_count'] : $context['items_per_page'];
 			$url_fragment = $base_url;
 
 			foreach ($block_list as $block_item)
-			{
 				if ($block_item == $block_id)
 					$url_fragment .= ';st_' . $block_item . '=%1$d';
 				elseif (!empty($context['ticket_blocks'][$block_item]['start']))
 					$url_fragment .= ';st_' . $block_item . '=' . $context['ticket_blocks'][$block_item]['start'];
-			}
 
 			$context['start'] = $context['ticket_blocks'][$block_id]['start'];
 			$context['ticket_blocks'][$block_id]['page_index'] = shd_no_expand_pageindex($scripturl . $primary_url . $url_fragment . $context['shd_dept_link'] . $context['filter_fragment'] . '#shd_block_' . $block_id, $context['start'], $block['count'], $block['num_per_page'], true);
@@ -1131,7 +1152,6 @@ function shd_helpdesk_listing()
 			AND field_loc IN ({array_int:locations})
 			AND hdcfd.id_dept IN ({array_int:dept_list})
 			AND active = {int:active}
-		GROUP BY hdcf.id_field
 		ORDER BY field_order',
 		array(
 			'locations' => array(CFIELD_TICKET, CFIELD_TICKET | CFIELD_REPLY),
@@ -1150,9 +1170,8 @@ function shd_helpdesk_listing()
 		{
 			if (!empty($row['field_options']))
 			{
-				$row['field_options'] = unserialize($row['field_options']);
-				if (isset($row['field_options']['inactive']))
-					unset($row['field_options']['inactive']);
+				$row['field_options'] = smf_json_decode($row['field_options'], true);
+				unset($row['field_options']['inactive'], $row['field_options']['order']);
 				foreach ($row['field_options'] as $k => $v)
 					if (strpos($v, '[') !== false)
 						$row['field_options'][$k] = parse_bbc($v);
@@ -1189,9 +1208,9 @@ function shd_helpdesk_listing()
 		$tickets[$row['id_post']][$row['id_field']] = $row['value'];
 
 	// 3. Apply the values into the tickets.
-	if ($_REQUEST['sa'] == 'closedtickets')
+	if ($context['shd_current_subaction'] == 'closedtickets')
 		$context['filterbase'] = $scripturl . '?action=helpdesk;sa=closedtickets';
-	elseif ($_REQUEST['sa'] == 'recyclebin')
+	elseif ($context['shd_current_subaction'] == 'recyclebin')
 		$context['filterbase'] = $scripturl . '?action=helpdesk;sa=recyclebin';
 	else
 		$context['filterbase'] = $scripturl . '?' . $context['shd_home'];
@@ -1248,7 +1267,7 @@ function shd_helpdesk_listing()
 				if (!empty($prefix))
 				{
 					$context['ticket_blocks'][$block_id]['tickets'][$ticket_id]['subject'] = $prefix . $subject;
-					$context['ticket_blocks'][$block_id]['tickets'][$ticket_id]['link'] = $prefix . '<a href="' . $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $ticket_id . ($_REQUEST['sa'] == 'recyclebin' ? ';recycle' : '') . '">' . $subject . '</a>';
+					$context['ticket_blocks'][$block_id]['tickets'][$ticket_id]['link'] = $prefix . '<a href="' . $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $ticket_id . ($context['shd_current_subaction'] == 'recyclebin' ? ';recycle' : '') . '">' . $subject . '</a>';
 				}
 			}
 		}
@@ -1302,7 +1321,7 @@ function shd_helpdesk_listing()
  *	- recycled: deleted tickets
  *	- withdeleted: tickets with deleted replies
  *
- *	@return array An indexed array of the columns in the order they should be displayed.
+ *	@return array An indexed array of the columns in the order they should be displayed as the key. Value contains the width of the column.
  *	@see shd_main_helpdesk()
  *	@see shd_closed_tickets()
  *	@see shd_recycle_bin()
@@ -1314,85 +1333,87 @@ function shd_get_block_columns($block)
 	{
 		case 'assigned':
 			return array(
-					'ticket_id',
-					'ticket_name',
-					'starting_user',
-					'replies',
-					'status',
-					'urgency',
-					'updated',
-					'actions',
+				'ticket_id' => 8,
+				'ticket_name' => 15,
+				'starting_user' => 12,
+				'replies' => 7,
+				'status' => 17,
+				'urgency' => 8,
+				'updated' => 22,
+				'actions' => 5,
 				);
 		case 'new':
 			return array(
-				'ticket_id',
-				'ticket_name',
-				'starting_user',
-				'assigned',
-				'urgency',
-				'updated',
-				'actions',
+				'ticket_id' => 8,
+				'ticket_name' => 15,
+				'starting_user' => 12,
+				'assigned' => 12,
+				'urgency' => 8,
+				'updated' => 22,
+				'actions' => 5,
 			);
+		case 'hold':
 		case 'staff':
 			return array(
-				'ticket_id',
-				'ticket_name',
-				'starting_user',
-				'replies',
-				'assigned',
-				'urgency',
-				'updated',
-				'actions',
+				'ticket_id' => 8,
+				'ticket_name' => 15,
+				'starting_user' => 12,
+				'replies' => 7,
+				'assigned' => 12,
+				'urgency' => 8,
+				'updated' => 22,
+				'actions' => 5,
 			);
 		case 'user_staff':
 			return array(
-				'ticket_id',
-				'ticket_name',
-				'starting_user',
-				'last_reply',
-				'replies',
-				'urgency',
-				'updated',
-				'actions',
+				'ticket_id' => 8,
+				'ticket_name' => 15,
+				'starting_user' => 12,
+				'last_reply' => 11,
+				'replies' => 7,
+				'assigned' => 12,
+				'urgency' => 8,
+				'updated' => 22,
+				'actions' => 5,
 			);
 		case 'user_user':
 			return array(
-				'ticket_id',
-				'ticket_name',
-				'last_reply',
-				'replies',
-				'urgency',
-				'updated',
-				'actions',
+				'ticket_id' => 8,
+				'ticket_name' => 15,
+				'last_reply' => 22,
+				'replies' => 7,
+				'urgency' => 8,
+				'updated' => 22,
+				'actions' => 5,
 			);
 		case 'closed':
 			return array(
-				'ticket_id',
-				'ticket_name',
-				'starting_user',
-				'replies',
-				'updated',
-				'actions',
+				'ticket_id' => 8,
+				'ticket_name' => 15,
+				'starting_user' => 12,
+				'replies' => 7,
+				'updated' => 22,
+				'actions' => 5,
 			);
 		case 'recycled':
 			return array(
-				'ticket_id',
-				'ticket_name',
-				'starting_user',
-				'allreplies',
-				'assigned',
-				'updated',
-				'actions',
+				'ticket_id' => 8,
+				'ticket_name' => 15,
+				'starting_user' => 12,
+				'allreplies' => 7,
+				'assigned' => 12,
+				'updated' => 22,
+				'actions' => 5,
 			);
 		case 'withdeleted':
 			return array(
-				'ticket_id',
-				'ticket_name',
-				'starting_user',
-				'allreplies',
-				'assigned',
-				'updated',
-				'actions',
+				'ticket_id' => 8,
+				'ticket_name' => 15,
+				'starting_user' => 12,
+				'allreplies' => 7,
+				'assigned' => 12,
+				'updated' => 22,
+				'actions' => 5,
 			);
 		default:
 			return array();

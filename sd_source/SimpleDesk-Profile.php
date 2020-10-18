@@ -1,21 +1,21 @@
 <?php
-###############################################################
-#         Simple Desk Project - www.simpledesk.net            #
-###############################################################
-#       An advanced help desk modifcation built on SMF        #
-###############################################################
-#                                                             #
-#         * Copyright 2010 - SimpleDesk.net                   #
-#                                                             #
-#   This file and its contents are subject to the license     #
-#   included with this distribution, license.txt, which       #
-#   states that this software is New BSD Licensed.            #
-#   Any questions, please contact SimpleDesk.net              #
-#                                                             #
-###############################################################
-# SimpleDesk Version: 2.0 Anatidae                            #
-# File Info: SimpleDesk-Profile.php / 2.0 Anatidae            #
-###############################################################
+/**************************************************************
+*          Simple Desk Project - www.simpledesk.net           *
+***************************************************************
+*       An advanced help desk modification built on SMF       *
+***************************************************************
+*                                                             *
+*         * Copyright 2020 - SimpleDesk.net                   *
+*                                                             *
+*   This file and its contents are subject to the license     *
+*   included with this distribution, license.txt, which       *
+*   states that this software is New BSD Licensed.            *
+*   Any questions, please contact SimpleDesk.net              *
+*                                                             *
+***************************************************************
+* SimpleDesk Version: 2.1 Beta 1                              *
+* File Info: SimpleDesk-Profile.php                           *
+**************************************************************/
 
 /**
  *	This file handles all aspects of the SimpleDesk profile section. Everything from user preferences
@@ -28,12 +28,20 @@
 if (!defined('SMF'))
 	die('If only you could draw like a drunken monkey...');
 
+/**
+ *	Sets up the main profile data
+ *
+ *	@since 1.0
+ *	@param int $memID The member ID
+*/
 function shd_profile_main($memID)
 {
 	global $context, $txt, $scripturl, $sourcedir, $user_info, $settings, $user_profile, $modSettings;
 
 	// Load the profile details
-	loadTemplate('sd_template/SimpleDesk-Profile', array('helpdesk', 'helpdesk_admin'));
+	loadTemplate('sd_template/SimpleDesk-Profile', array('helpdesk'));
+	loadJavascriptFile('helpdesk.js', array('defer' => false, 'minimize' => false), 'helpdesk');
+
 	shd_load_language('sd_language/SimpleDeskProfile');
 	$context['shd_preferences'] = shd_load_user_prefs();
 	shd_load_plugin_files('hdprofile');
@@ -53,7 +61,7 @@ function shd_profile_main($memID)
 	$context['shd_profile_menu'] = array(
 		array(
 			'image' => 'user.png',
-			'link' => $scripturl . '?action=profile;u=' . $context['member']['id'] . ';area=helpdesk',
+			'link' => $scripturl . '?action=profile;u=' . $context['member']['id'] . ';area=hd_profile',
 			'text' => $txt['shd_profile_home'],
 			'show' => true,
 		),
@@ -93,12 +101,10 @@ function shd_profile_main($memID)
 	call_integration_hook('shd_hook_hdprofile', array(&$subActions, &$memID));
 
 	// Make sure the menu is configured appropriately
-	$context['shd_profile_menu'][count($context['shd_profile_menu'])-1]['is_last'] = true;
+	$context['shd_profile_menu'][count($context['shd_profile_menu']) - 1]['is_last'] = true;
+	$context['sub_action'] = isset($_REQUEST['area']) && isset($subActions[$_REQUEST['area']]) ? $_REQUEST['area'] : 'helpdesk';
 
-	$_REQUEST['area'] = isset($_REQUEST['area']) && isset($subActions[$_REQUEST['area']]) ? $_REQUEST['area'] : 'helpdesk';
-	$context['sub_action'] = $_REQUEST['area'];
-
-	$subActions[$_REQUEST['area']]($memID);
+	call_user_func($subActions[$context['sub_action']], $memID);
 
 	// Maintenance mode? If it were, the helpdesk is considered inactive for the purposes of everything to all but those without admin-helpdesk rights - but we must have them if we're here!
 	if (!empty($modSettings['shd_maintenance_mode']))
@@ -125,16 +131,23 @@ function shd_profile_main($memID)
 	$context['template_layers'][] = 'shd_profile_navigation';
 }
 
+/**
+ *	The frontpage profile
+ *
+ *	@since 1.0
+ *	@param int $memID The member ID
+*/
 function shd_profile_frontpage($memID)
 {
 	global $context, $memberContext, $txt, $modSettings, $user_info, $user_profile, $sourcedir, $scripturl, $smcFunc;
 
 	// Attempt to load the member's profile data.
 	if (!loadMemberContext($memID) || !isset($memberContext[$memID]))
-		fatal_lang_error('not_a_user', false);
+		shd_fatal_lang_error('not_a_user', false);
 
 	$context['page_title'] = $txt['shd_profile_area'] . ' - ' . $txt['shd_profile_main'];
 	$context['sub_template'] = 'shd_profile_main';
+	$context['shd_numtickets'] = $context['shd_numopentickets'] = 0;
 
 	$query = shd_db_query('', '
 		SELECT COUNT(id_ticket) AS count, status
@@ -145,20 +158,16 @@ function shd_profile_frontpage($memID)
 			'member' => $memID,
 		)
 	);
-
-	$context['shd_numtickets'] = 0;
-	$context['shd_numopentickets'] = 0;
 	while ($row = $smcFunc['db_fetch_assoc']($query))
 	{
 		$context['shd_numtickets'] += $row['count'];
 		if ($row['status'] != TICKET_STATUS_CLOSED && $row['status'] != TICKET_STATUS_DELETED)
 			$context['shd_numopentickets'] += $row['count'];
 	}
+	$smcFunc['db_free_result']($query);
 
 	$context['shd_numtickets'] = comma_format($context['shd_numtickets']);
 	$context['shd_numopentickets'] = comma_format($context['shd_numopentickets']);
-
-	$smcFunc['db_free_result']($query);
 
 	$query = shd_db_query('', '
 		SELECT COUNT(id_ticket)
@@ -168,11 +177,10 @@ function shd_profile_frontpage($memID)
 			'member' => $memID,
 		)
 	);
-
 	list($context['shd_numassigned']) = $smcFunc['db_fetch_row']($query);
 	$smcFunc['db_free_result']($query);
-	$context['shd_numassigned'] = comma_format($context['shd_numassigned']);
 
+	$context['shd_numassigned'] = comma_format($context['shd_numassigned']);
 	$context['can_post_ticket'] = shd_allowed_to('shd_new_ticket', 0) && $memID == $context['user']['id'];
 	$context['can_post_proxy'] = shd_allowed_to('shd_new_ticket', 0) && shd_allowed_to('shd_post_proxy', 0) && $memID != $context['user']['id']; // since it's YOUR permissions, whether you can post on behalf of this user and this user isn't you!
 
@@ -215,32 +223,11 @@ function shd_profile_frontpage($memID)
 		$context['can_edit_ban'] = allowedTo('manage_bans');
 
 		$ban_query = array();
-		$ban_query_vars = array(
-			'time' => time(),
-		);
+		$ban_query_vars = array('time' => time());
 		$ban_query[] = 'id_member = ' . $context['member']['id'];
 
-		// Valid IP?
-		if (preg_match('/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/', $memberContext[$memID]['ip'], $ip_parts) == 1)
-		{
-			$ban_query[] = '((' . $ip_parts[1] . ' BETWEEN bi.ip_low1 AND bi.ip_high1)
-						AND (' . $ip_parts[2] . ' BETWEEN bi.ip_low2 AND bi.ip_high2)
-						AND (' . $ip_parts[3] . ' BETWEEN bi.ip_low3 AND bi.ip_high3)
-						AND (' . $ip_parts[4] . ' BETWEEN bi.ip_low4 AND bi.ip_high4))';
-
-			// Do we have a hostname already?
-			if (!empty($context['member']['hostname']))
-			{
-				$ban_query[] = '({string:hostname} LIKE hostname)';
-				$ban_query_vars['hostname'] = $context['member']['hostname'];
-			}
-		}
-		// Use '255.255.255.255' for 'unknown' - it's not valid anyway.
-		elseif ($memberContext[$memID]['ip'] == 'unknown')
-			$ban_query[] = '(bi.ip_low1 = 255 AND bi.ip_high1 = 255
-						AND bi.ip_low2 = 255 AND bi.ip_high2 = 255
-						AND bi.ip_low3 = 255 AND bi.ip_high3 = 255
-						AND bi.ip_low4 = 255 AND bi.ip_high4 = 255)';
+		$ban_query[] = ' {inet:ip} BETWEEN bi.ip_low and bi.ip_high';
+		$ban_query_vars['ip'] = $memberContext[$memID]['ip'];
 
 		// Check their email as well...
 		if (strlen($context['member']['email']) != 0)
@@ -274,7 +261,7 @@ function shd_profile_frontpage($memID)
 			$ban_explanation = sprintf($txt['user_cannot_due_to'], implode(', ', $ban_restrictions), '<a href="' . $scripturl . '?action=admin;area=ban;sa=edit;bg=' . $row['id_ban_group'] . '">' . $row['name'] . '</a>');
 
 			$context['member']['bans'][$row['id_ban_group']] = array(
-				'reason' => empty($row['reason']) ? '' : '<br /><br /><strong>' . $txt['ban_reason'] . ':</strong> ' . $row['reason'],
+				'reason' => empty($row['reason']) ? '' : '<br><br><strong>' . $txt['ban_reason'] . ':</strong> ' . $row['reason'],
 				'cannot' => array(
 					'access' => !empty($row['cannot_access']),
 					'register' => !empty($row['cannot_register']),
@@ -288,6 +275,12 @@ function shd_profile_frontpage($memID)
 	}
 }
 
+/**
+ *	Prefernces for a helpdesk member
+ *
+ *	@since 1.0
+ *	@param int $memID The member ID
+*/
 function shd_profile_preferences($memID)
 {
 	global $context, $txt, $scripturl, $sourcedir, $user_info, $smcFunc;
@@ -312,10 +305,8 @@ function shd_profile_preferences($memID)
 	}
 
 	foreach ($context['shd_preferences_options']['groups'] as $group => $groupinfo)
-	{
 		if (empty($groupinfo))
 			unset($context['shd_preferences_options']['groups'][$group]);
-	}
 
 	// Are we saving any options?
 	if (isset($_GET['save']))
@@ -351,10 +342,8 @@ function shd_profile_preferences($memID)
 					$changes['remove'][] = $pref;
 			}
 			else
-			{
 				if ($new_value != $current_value)
 					$changes['add'][] = array($memID, $pref, (string) $new_value);
-			}
 
 			// Finally, make sure whatever's in the array is actually what we've asked for
 			$context['member']['shd_preferences'][$pref] = $new_value;
@@ -365,18 +354,13 @@ function shd_profile_preferences($memID)
 		{
 			$smcFunc['db_insert']('replace',
 				'{db_prefix}helpdesk_preferences',
-				array(
-					'id_member' => 'int', 'variable' => 'string', 'value' => 'string',
-				),
+				array('id_member' => 'int', 'variable' => 'string', 'value' => 'string',),
 				$changes['add'],
-				array(
-					'id_member', 'variable',
-				)
+				array('id_member', 'variable',)
 			);
 		}
 
 		if (!empty($changes['remove']))
-		{
 			$smcFunc['db_query']('', '
 				DELETE FROM {db_prefix}helpdesk_preferences
 				WHERE id_member = {int:member}
@@ -386,15 +370,21 @@ function shd_profile_preferences($memID)
 					'prefs' => $changes['remove'],
 				)
 			);
-		}
 	}
 }
 
+/**
+ *	Show all the ticket information.
+ *
+ *	@since 1.0
+ *	@param int $memID The member ID
+*/
 function shd_profile_show_tickets($memID)
 {
 	global $txt, $user_info, $scripturl, $modSettings, $smcFunc, $board, $user_profile, $context;
 
 	// Navigation
+	loadTemplate('sd_template/SimpleDesk', array('helpdesk'));
 	$context['show_tickets_navigation'] = array(
 		'tickets' => array('text' => 'shd_profile_show_tickets', 'lang' => true, 'url' => $scripturl . '?action=profile;u=' . $memID . ';area=hd_showtickets;sa=tickets'),
 		'replies' => array('text' => 'shd_profile_show_replies', 'lang' => true, 'url' => $scripturl . '?action=profile;u=' . $memID . ';area=hd_showtickets;sa=replies'),
@@ -446,24 +436,8 @@ function shd_profile_show_tickets($memID)
 	list ($item_count) = $smcFunc['db_fetch_row']($request);
 	$smcFunc['db_free_result']($request);
 
-	// Max? Max? Where are you?
-	$request = shd_db_query('', '
-		SELECT MIN(hdtr.id_msg), MAX(hdtr.id_msg)
-		FROM {db_prefix}helpdesk_ticket_replies AS hdtr
-			LEFT JOIN {db_prefix}helpdesk_tickets AS hdt ON(hdtr.id_ticket = hdt.id_ticket)
-		WHERE hdtr.id_member = {int:user}
-			AND {query_see_ticket}',
-		array(
-			'user' => $memID,
-		)
-	);
-	list ($min_msg_member, $max_msg_member) = $smcFunc['db_fetch_row']($request);
-	$smcFunc['db_free_result']($request);
-
-	$reverse = false;
-	$max_index = (int) $modSettings['defaultMaxMessages'];
-
 	// A little page index to help us along the way!
+	$max_index = (int) $modSettings['defaultMaxMessages'];
 	$context['page_index'] = shd_no_expand_pageindex($scripturl . '?action=profile;u=' . $memID . ';area=hd_showtickets' . ($context['can_haz_replies'] ? ';sa=replies' : ''), $context['start'], $item_count, $max_index);
 	$context['current_page'] = $context['start'] / $max_index;
 
@@ -481,11 +455,10 @@ function shd_profile_show_tickets($memID)
 	while (true)
 	{
 		if ($context['can_haz_replies'])
-		{
 			$request = shd_db_query('', '
 				SELECT
 					hdtr.id_member, hdt.subject, hdt.id_first_msg,
-					hdtr.body, hdtr.smileys_enabled, hdtr.poster_time, hdtr.id_ticket, hdtr.id_msg
+					hdtr.body, hdtr.smileys_enabled, hdtr.poster_time, hdtr.id_ticket, hdtr.id_msg, hdt.status
 				FROM {db_prefix}helpdesk_ticket_replies AS hdtr
 					INNER JOIN {db_prefix}helpdesk_tickets AS hdt ON (hdt.id_ticket = hdtr.id_ticket)
 				WHERE hdtr.id_member = {int:user}
@@ -496,13 +469,11 @@ function shd_profile_show_tickets($memID)
 					'user' => $memID,
 				)
 			);
-		}
 		else
-		{
 			$request = shd_db_query('', '
 				SELECT
 					hdt.id_member_started, hdt.id_first_msg, hdt.id_last_msg, hdt.subject,
-					hdtr.body, hdtr.smileys_enabled, hdtr.poster_time, hdtr.id_ticket, hdtr.id_msg
+					hdtr.body, hdtr.smileys_enabled, hdtr.poster_time, hdtr.id_ticket, hdtr.id_msg, hdt.status
 				FROM {db_prefix}helpdesk_tickets AS hdt
 					INNER JOIN {db_prefix}helpdesk_ticket_replies AS hdtr ON (hdtr.id_msg = hdt.id_first_msg)
 				WHERE hdt.id_member_started = {int:user}
@@ -513,7 +484,6 @@ function shd_profile_show_tickets($memID)
 					'user' => $memID,
 				)
 			);
-		}
 
 		// Hold it!
 		if ($smcFunc['db_num_rows']($request) === $max_index || $looped)
@@ -545,6 +515,7 @@ function shd_profile_show_tickets($memID)
 			'timestamp' => forum_time(true, $row['poster_time']),
 			'msg' => $row['id_msg'],
 			'is_ticket' => empty($context['can_haz_replies']) ? true : ($row['id_msg'] == $row['id_first_msg']),
+			'status' => $row['status'],
 		);
 	}
 	// Freedom.
@@ -555,12 +526,17 @@ function shd_profile_show_tickets($memID)
 		$context['items'] = array_reverse($context['items'], true);
 }
 
+/**
+ *	Show the notifications for a helpdesk member
+ *
+ *	@since 1.0
+ *	@param int $memID The member ID
+*/
 function shd_profile_show_notify_override($memID)
 {
 	global $txt, $user_info, $scripturl, $modSettings, $smcFunc, $board, $user_profile, $context;
 
 	$context['notify_type'] = $_GET['sa']; // We already checked it's monitor or ignore, if we didn't, we wouldn't be here!
-
 	$context['page_title'] = $txt['shd_profile_show_' . $context['notify_type'] . '_title'] . ' - ' . $user_profile[$memID]['real_name'];
 	$context['sub_template'] = 'shd_profile_show_notify_override';
 
@@ -572,7 +548,7 @@ function shd_profile_show_notify_override($memID)
 	// Ticket, Name, Started By, Replies, Status, Urgency, Updated (+ Updated By?)
 	$context['tickets'] = array();
 	$query = shd_db_query('', '
-		SELECT hdt.id_ticket, hdt.subject, IFNULL(mem.id_member, 0) AS starter_id, IFNULL(mem.real_name, hdtr.poster_name) AS starter_name,
+		SELECT hdt.id_ticket, hdt.subject, COALESCE(mem.id_member, 0) AS starter_id, COALESCE(mem.real_name, hdtr.poster_name) AS starter_name,
 			hdt.num_replies, hdt.status, hdt.urgency, hdt.last_updated
 		FROM {db_prefix}helpdesk_notify_override AS hdno
 			INNER JOIN {db_prefix}helpdesk_tickets AS hdt ON (hdno.id_ticket = hdt.id_ticket)
@@ -596,8 +572,16 @@ function shd_profile_show_notify_override($memID)
 		);
 		$context['tickets'][] = $row;
 	}
+
+	return true;
 }
 
+/**
+ *	Profile Permissions for a member
+ *
+ *	@since 1.0
+ *	@param int $memID The member ID
+*/
 function shd_profile_permissions($memID)
 {
 	global $context, $txt, $scripturl, $sourcedir, $user_info, $smcFunc, $user_profile, $settings;
@@ -611,7 +595,7 @@ function shd_profile_permissions($memID)
 	shd_load_all_permission_sets();
 
 	// 1. What groups is this user in? And we need all their groups, which in 'profile' mode, SMF helpfully puts into $user_profile[$memID] for us.
-	$groups = empty($user_profile[$memID]['additional_groups']) ? array() :  explode(',', $user_profile[$memID]['additional_groups']);
+	$groups = empty($user_profile[$memID]['additional_groups']) ? array() : explode(',', $user_profile[$memID]['additional_groups']);
 	$groups[] = $user_profile[$memID]['id_group'];
 
 	// Sanitise this little lot
@@ -626,7 +610,7 @@ function shd_profile_permissions($memID)
 	// 2. Do we have a department?
 	$_REQUEST['permdept'] = isset($_REQUEST['permdept']) ? (int) $_REQUEST['permdept'] : 0;
 	$depts = shd_allowed_to('access_helpdesk', false);
-	if (!in_array($_REQUEST['permdept'], $depts))
+	if (!is_array($depts) || !in_array($_REQUEST['permdept'], $depts))
 		$_REQUEST['permdept'] = 0; // this way we know that 0 = show list only, non-0 means to show a listing.
 
 	// 2b. We still need to get the list of departments.
@@ -664,13 +648,11 @@ function shd_profile_permissions($memID)
 	);
 
 	while ($row = $smcFunc['db_fetch_assoc']($query))
-	{
 		$context['membergroups'][$row['id_group']] = array(
 			'name' => $row['group_name'],
 			'color' => $row['online_color'],
 			'link' => '<a href="' . $scripturl . '?action=groups;sa=members;group=' . $row['id_group'] . '"' . (empty($row['online_color']) ? '' : ' style="color: ' . $row['online_color'] . ';"') . '>' . $row['group_name'] . '</a>',
 		);
-	}
 
 	$smcFunc['db_free_result']($query);
 
@@ -727,22 +709,24 @@ function shd_profile_permissions($memID)
 			)
 		);
 
-		while($row = $smcFunc['db_fetch_assoc']($query))
+		while ($row = $smcFunc['db_fetch_assoc']($query))
 			$role_permissions[$row['id_role']][$row['permission']] = $row['add_type']; // if it's defined in the DB it's somehow different to what the template so replace the template
 	}
 
 	foreach ($role_permissions as $role_id => $permission_set)
-	{
 		foreach ($permission_set as $permission => $state)
-		{
 			if ($state == ROLEPERM_ALLOW)
 				$context['member_permissions']['allowed'][$permission][] = $role_id;
 			elseif ($state == ROLEPERM_DENY)
 				$context['member_permissions']['denied'][$permission][] = $role_id;
-		}
-	}
 }
 
+/**
+ *	This members action log information.
+ *
+ *	@since 1.0
+ *	@param int $memID The member ID
+*/
 function shd_profile_actionlog($memID)
 {
 	global $context, $txt, $scripturl, $sourcedir, $user_info, $settings;
@@ -760,6 +744,12 @@ function shd_profile_actionlog($memID)
 
 }
 
+/**
+ *	Shows the theme options for SimpleDesk.
+ *
+ *	@since 1.0
+ *	@param int $memID The member ID
+*/
 function shd_profile_theme_wrapper($memID)
 {
 	global $txt, $context, $user_profile, $modSettings, $settings, $user_info, $smcFunc, $sourcedir, $profile_fields;
@@ -795,4 +785,3 @@ function shd_profile_theme_wrapper($memID)
 
 	$context['profile_fields']['theme_settings']['callback_func'] = 'shd_theme_settings';
 }
-

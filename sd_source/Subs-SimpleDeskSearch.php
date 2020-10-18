@@ -1,21 +1,21 @@
 <?php
-###############################################################
-#         Simple Desk Project - www.simpledesk.net            #
-###############################################################
-#       An advanced help desk modifcation built on SMF        #
-###############################################################
-#                                                             #
-#         * Copyright 2010 - SimpleDesk.net                   #
-#                                                             #
-#   This file and its contents are subject to the license     #
-#   included with this distribution, license.txt, which       #
-#   states that this software is New BSD Licensed.            #
-#   Any questions, please contact SimpleDesk.net              #
-#                                                             #
-###############################################################
-# SimpleDesk Version: 2.0 Anatidae                            #
-# File Info: Subs-SimpleDeskSearch.php / 2.0 Anatidae         #
-###############################################################
+/**************************************************************
+*          Simple Desk Project - www.simpledesk.net           *
+***************************************************************
+*       An advanced help desk modification built on SMF       *
+***************************************************************
+*                                                             *
+*         * Copyright 2020 - SimpleDesk.net                   *
+*                                                             *
+*   This file and its contents are subject to the license     *
+*   included with this distribution, license.txt, which       *
+*   states that this software is New BSD Licensed.            *
+*   Any questions, please contact SimpleDesk.net              *
+*                                                             *
+***************************************************************
+* SimpleDesk Version: 2.1 Beta 1                              *
+* File Info: Subs-SimpleDeskSearch.php                        *
+**************************************************************/
 
 /**
  *	This file handles the backbone of searches, such as the tokeniser and manages getting the tables actually maintained.
@@ -30,15 +30,14 @@ if (!defined('SMF'))
 /**
  *	Identify and return the character set parameters for searching.
  *
- *	@return An array of two items, the overall character set currently in use and the list of characters to be permitted in searches in the form of a regular expression character class.
+ *	@return array An array of two items, the overall character set currently in use and the list of characters to be permitted in searches in the form of a regular expression character class.
  *	@see shd_return_exclude_regex()
 */
 function shd_search_charset()
 {
 	global $context, $modSettings, $txt;
 
-	$utf8 = (empty($modSettings['global_character_set']) ? $txt['lang_character_set'] : $modSettings['global_character_set']) === 'UTF-8' && (strpos(strtolower(PHP_OS), 'win') === false || @version_compare(PHP_VERSION, '4.2.3') != -1);
-	$charset = !empty($txt['lang_character_set']) ? $txt['lang_character_set'] : ($utf8 ? 'UTF-8' : 'ISO-8859-1');
+	$charset = !empty($txt['lang_character_set']) ? $txt['lang_character_set'] : 'UTF-8';
 
 	if (empty($modSettings['shd_search_charset']))
 		$modSettings['shd_search_charset'] = '0..9, A..Z, a..z, &, ~';
@@ -109,6 +108,7 @@ function shd_tokeniser($string)
 		{
 			$word = $smcFunc['strtolower']($word);
 			$result[shd_hash($word)] = $i++;
+
 			if (!empty($modSettings['shd_search_prefix_size']) && $len >= $modSettings['shd_search_prefix_size'])
 			{
 				for ($j = $modSettings['shd_search_prefix_size']; $j <= $len; $j++)
@@ -136,4 +136,3 @@ function shd_hash($string)
 {
 	return sprintf('%0.0f', hexdec(substr(sha1($string), -13)));
 }
-

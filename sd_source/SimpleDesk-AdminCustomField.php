@@ -1,21 +1,21 @@
 <?php
-###############################################################
-#         Simple Desk Project - www.simpledesk.net            #
-###############################################################
-#       An advanced help desk modifcation built on SMF        #
-###############################################################
-#                                                             #
-#         * Copyright 2010 - SimpleDesk.net                   #
-#                                                             #
-#   This file and its contents are subject to the license     #
-#   included with this distribution, license.txt, which       #
-#   states that this software is New BSD Licensed.            #
-#   Any questions, please contact SimpleDesk.net              #
-#                                                             #
-###############################################################
-# SimpleDesk Version: 2.0 Anatidae                            #
-# File Info: SimpleDesk-AdminCustomField.php / 2.0 Anatidae   #
-###############################################################
+/**************************************************************
+*          Simple Desk Project - www.simpledesk.net           *
+***************************************************************
+*       An advanced help desk modification built on SMF       *
+***************************************************************
+*                                                             *
+*         * Copyright 2020 - SimpleDesk.net                   *
+*                                                             *
+*   This file and its contents are subject to the license     *
+*   included with this distribution, license.txt, which       *
+*   states that this software is New BSD Licensed.            *
+*   Any questions, please contact SimpleDesk.net              *
+*                                                             *
+***************************************************************
+* SimpleDesk Version: 2.1 Beta 1                              *
+* File Info: SimpleDesk-AdminCustomField.php                  *
+**************************************************************/
 
 /**
  *	This file handles the core of SimpleDesk's custom ticket fields interface and code.
@@ -47,7 +47,7 @@ function shd_admin_custom()
 		'save' => 'shd_admin_custom_save',
 	);
 
-	$_REQUEST['sa'] = isset($_REQUEST['sa']) && isset($subactions[$_REQUEST['sa']]) ? $_REQUEST['sa'] : 'main';
+	$context['shd_current_subaction'] = isset($_REQUEST['sa']) && isset($subactions[$_REQUEST['sa']]) ? $_REQUEST['sa'] : 'main';
 
 	$context['field_types'] = array(
 		CFIELD_TYPE_TEXT => array($txt['shd_admin_custom_fields_ui_text'], 'text'),
@@ -60,7 +60,7 @@ function shd_admin_custom()
 		CFIELD_TYPE_MULTI => array($txt['shd_admin_custom_fields_ui_multi'], 'multi'),
 	);
 
-	$subactions[$_REQUEST['sa']]();
+	$subactions[$context['shd_current_subaction']]();
 }
 
 /**
@@ -125,7 +125,7 @@ function shd_admin_custom_new()
 		'placement' => CFIELD_PLACE_DETAILS,
 	));
 
-	$context['custom_field']['options'] = array(1 => '', '', '', 'inactive' => array());
+	$context['custom_field']['options'] = array(1 => '', '', '', 'inactive' => array(), 'order' => array());
 	$context['custom_field']['default_value'] = false;
 
 	// Get the list of departments, and whether a field is required in each department.
@@ -139,6 +139,8 @@ function shd_admin_custom_new()
 	while ($row = $smcFunc['db_fetch_assoc']($query))
 		$context['dept_fields'][$row['id_dept']] = $row;
 	$smcFunc['db_free_result']($query);
+
+	loadLanguage('ManageSettings');
 }
 
 /**
@@ -154,7 +156,8 @@ function shd_admin_custom_edit()
 
 	$query = shd_db_query('', '
 		SELECT id_field, active, field_order, field_name, field_desc, field_loc, icon, field_type,
-		field_length, field_options, bbc, default_value, can_see, can_edit, display_empty, placement
+		field_length, field_options, bbc, default_value, can_see, can_edit,
+		display_empty, placement
 		FROM {db_prefix}helpdesk_custom_fields
 		WHERE id_field = {int:field}',
 		array(
@@ -170,9 +173,27 @@ function shd_admin_custom_edit()
 		$context['section_desc'] = $txt['shd_admin_edit_custom_field_desc'];
 		$context['page_title'] = $txt['shd_admin_edit_custom_field'];
 		$context['sub_template'] = 'shd_custom_field_edit';
-		$context['custom_field']['options'] = !empty($row['field_options']) ? unserialize($row['field_options']) : array(1 => '', '', '');
+		$context['custom_field']['options'] = !empty($row['field_options']) ? smf_json_decode($row['field_options'], true) : array(1 => '', '', '');
+
 		if (empty($context['custom_field']['options']['inactive']))
 			$context['custom_field']['options']['inactive'] = array();
+
+		if (!isset($context['custom_field']['options']['order']))
+			$context['custom_field']['options']['order'] = array();
+
+		// If this option isn't in the order, make it so!
+		foreach ($context['custom_field']['options'] as $key => $val)
+			if (!in_array($key, array('inactive', 'order')) && !in_array($key, $context['custom_field']['options']['order']))
+				$context['custom_field']['options']['order'][] = $key;
+
+		// Make sure it exists in the order.
+		foreach ($context['custom_field']['options']['order'] as $key => $val)
+			if (!isset($context['custom_field']['options'][$val]))
+				unset($context['custom_field']['options']['order'][$val]);
+
+		// first and last order.
+		$context['custom_field']['order_first'] = current($context['custom_field']['options']['order']);
+		$context['custom_field']['order_last'] = end($context['custom_field']['options']['order']);
 
 		// If this is a textarea, we need to get its dimensions too.
 		if ($context['custom_field']['field_type'] == CFIELD_TYPE_LARGETEXT)
@@ -214,8 +235,10 @@ function shd_admin_custom_edit()
 	else
 	{
 		$smcFunc['db_free_result']($query);
-		fatal_lang_error('shd_admin_cannot_edit_custom_field', false);
+		shd_fatal_lang_error('shd_admin_cannot_edit_custom_field', false);
 	}
+
+	loadLanguage('ManageSettings');
 }
 
 /**
@@ -284,6 +307,12 @@ function shd_admin_custom_save()
 			)
 		);
 
+		// Do the needfull.
+		shd_admin_log('admin_customfield', array(
+			'action' => 'delete',
+			'id' => $_REQUEST['field'],
+		));
+
 		// End of the road
 		redirectexit('action=admin;area=helpdesk_customfield;' . $context['session_var'] . '=' . $context['session_id']);
 	}
@@ -297,7 +326,7 @@ function shd_admin_custom_save()
 
 	// Fix all the input
 	if (trim($_POST['field_name']) == '')
-		fatal_lang_error('shd_admin_no_fieldname', false);
+		shd_fatal_lang_error('shd_admin_no_fieldname', false);
 	$_POST['field_name'] = $smcFunc['htmlspecialchars']($_POST['field_name']);
 	$_POST['description'] = $smcFunc['htmlspecialchars'](isset($_POST['description']) ? $_POST['description'] : '');
 	preparsecode($_POST['description']);
@@ -363,8 +392,7 @@ function shd_admin_custom_save()
 	$smcFunc['db_free_result']($query);
 
 	// Select options?
-	$newOptions = array();
-	$defaultOptions = array();
+	$newOptions = $defaultOptions = $optionsOrder = array();
 	if (!empty($_POST['select_option']) && ($_POST['field_type'] == CFIELD_TYPE_SELECT || $_POST['field_type'] == CFIELD_TYPE_RADIO || $_POST['field_type'] == CFIELD_TYPE_MULTI))
 	{
 		foreach ($_POST['select_option'] as $k => $v)
@@ -385,8 +413,13 @@ function shd_admin_custom_save()
 			// Is it default?
 			if (isset($_POST['default_select']) && $_POST['default_select'] == $k)
 				$_POST['default_check'] = $k;
+
+			// Our order.
+			$optionsOrder[$_POST['order'][$k]] = $k;
 		}
-		$options = serialize($newOptions);
+
+		$newOptions['order'] = $optionsOrder;
+		$options = json_encode($newOptions);
 	}
 
 	// Sort out the default selection if it's a multi-select, as well as required amounts
@@ -404,7 +437,7 @@ function shd_admin_custom_save()
 	{
 		$types = shd_admin_cf_change_types(false);
 		if (!in_array($_POST['field_type'], $types))
-			fatal_lang_error('shd_admin_custom_field_invalid', false);
+			shd_fatal_lang_error('shd_admin_custom_field_invalid', false);
 
 		// Order??
 		$count_query = shd_db_query('', '
@@ -415,7 +448,7 @@ function shd_admin_custom_save()
 
 		$row = $smcFunc['db_fetch_assoc']($count_query);
 
-		$smcFunc['db_insert']('insert',
+		$new_field = $smcFunc['db_insert']('insert',
 			'{db_prefix}helpdesk_custom_fields',
 			array(
 				'active' => 'int', 'field_order' => 'int', 'field_name' => 'string', 'field_desc' => 'string',
@@ -431,12 +464,12 @@ function shd_admin_custom_save()
 			),
 			array(
 				'id_field',
-			)
+			),
+			1
 		);
 
-		$new_field = $smcFunc['db_insert_id']('{db_prefix}helpdesk_custom_fields', 'id_field');
 		if (empty($new_field))
-			fatal_lang_error('shd_admin_could_not_create_field', false);
+			shd_fatal_lang_error('shd_admin_could_not_create_field', false);
 
 		// Also update fields
 		$smcFunc['db_query']('', '
@@ -461,6 +494,12 @@ function shd_admin_custom_save()
 			)
 		);
 
+		// Log this action.
+		shd_admin_log('admin_customfield', array(
+			'action' => 'add',
+			'id' => $new_field,
+		));
+
 		redirectexit('action=admin;area=helpdesk_customfield;' . $context['session_var'] . '=' . $context['session_id']);
 	}
 	// No? Meh. Update it is then.
@@ -480,18 +519,18 @@ function shd_admin_custom_save()
 			$smcFunc['db_free_result']($query);
 			$types = shd_admin_cf_change_types($row['field_type']);
 			if (!in_array($_POST['field_type'], $types))
-				fatal_lang_error('shd_admin_custom_field_reselect_invalid', false);
+				shd_fatal_lang_error('shd_admin_custom_field_reselect_invalid', false);
 		}
 		else
 		{
 			$smcFunc['db_free_result']($query);
-			fatal_lang_error('shd_admin_cannot_edit_custom_field', false);
+			shd_fatal_lang_error('shd_admin_cannot_edit_custom_field', false);
 		}
 
 		// Depending on the field type, we may need to be funky about overlaying things, hence grabbing the old options.
 		if (!empty($row['field_options']) && in_array($row['field_type'], array(CFIELD_TYPE_SELECT, CFIELD_TYPE_RADIO, CFIELD_TYPE_MULTI)))
 		{
-			$row['field_options'] = unserialize($row['field_options']);
+			$row['field_options'] = smf_json_decode($row['field_options'], true);
 			ksort($row['field_options']);
 			ksort($newOptions);
 			$inactive = array();
@@ -499,7 +538,7 @@ function shd_admin_custom_save()
 			// First, figure out what fields we had before.
 			foreach ($row['field_options'] as $k => $v)
 			{
-				if ($k == 'inactive')
+				if ($k == 'inactive' || $k == 'order')
 					continue;
 				if (!isset($newOptions[$k]))
 					$inactive[] = $k;
@@ -509,7 +548,8 @@ function shd_admin_custom_save()
 			foreach ($newOptions as $k => $v)
 				$new_fields[$k] = $v;
 			$new_fields['inactive'] = $inactive;
-			$options = serialize($new_fields);
+			$new_fields['order'] = $optionsOrder;
+			$options = json_encode($new_fields);
 		}
 
 		shd_db_query('', '
@@ -564,6 +604,12 @@ function shd_admin_custom_save()
 			)
 		);
 
+		// Log this action.
+		shd_admin_log('admin_customfield', array(
+			'action' => 'update',
+			'id' => $_REQUEST['field'],
+		));
+
 		redirectexit('action=admin;area=helpdesk_customfield;' . $context['session_var'] . '=' . $context['session_id']);
 	}
 }
@@ -591,10 +637,11 @@ function shd_admin_custom_move()
 	if ($smcFunc['db_num_rows']($query) == 0 || empty($_REQUEST['direction']))
 	{
 		$smcFunc['db_free_result']($query);
-		fatal_lang_error('shd_admin_cannot_move_custom_field', false);
+		shd_fatal_lang_error('shd_admin_cannot_move_custom_field', false);
 	}
 
 	$fields = array();
+	$fields_map = array();
 	while ($row = $smcFunc['db_fetch_assoc']($query))
 	{
 		$fields[$row['field_order']] = $row['id_field'];
@@ -603,14 +650,14 @@ function shd_admin_custom_move()
 
 	ksort($fields);
 
-	if (empty($fields_map[$_REQUEST['field']]))
-		fatal_lang_error('shd_admin_cannot_move_custom_field', false);
+	if (!isset($fields_map[$_REQUEST['field']]))
+		shd_fatal_lang_error('shd_admin_cannot_move_custom_field', false);
 
 	$current_pos = $fields_map[$_REQUEST['field']];
 	$destination = $current_pos + ($_REQUEST['direction'] == 'up' ? -1 : 1);
 
 	if (empty($fields[$destination]))
-		fatal_lang_error('shd_admin_cannot_move_custom_field_' . $_REQUEST['direction'], false);
+		shd_fatal_lang_error('shd_admin_cannot_move_custom_field_' . $_REQUEST['direction'], false);
 
 	$other_field = $fields[$destination];
 
@@ -634,6 +681,13 @@ function shd_admin_custom_move()
 		)
 	);
 
+	// Log this as well.
+	shd_admin_log('admin_customfield', array(
+		'action' => 'move',
+		'id' => $_REQUEST['field'],
+		'direction' => $_REQUEST['direction']
+	));
+
 	redirectexit('action=admin;area=helpdesk_customfield;' . $context['session_var'] . '=' . $context['session_id']);
 }
 
@@ -647,9 +701,9 @@ function shd_admin_cf_icons()
 {
 	global $context, $settings, $txt;
 
-	static $iconlist = null;
+	static $iconlist = array();
 
-	if ($iconlist !== null)
+	if (!empty($iconlist))
 		return $iconlist;
 
 	$iconlist = array(
@@ -660,7 +714,7 @@ function shd_admin_cf_icons()
 	$dir = dir($settings['default_theme_dir'] . '/images/simpledesk/cf/');
 	$files = array();
 
-	if (!$dir)
+	if (!is_object($dir) || is_null($dir))
 		return $iconlist;
 
 	while ($line = $dir->read())
@@ -679,7 +733,7 @@ function shd_admin_cf_icons()
 		if (strcasecmp($extension, 'gif') != 0 && strcasecmp($extension, 'jpg') != 0 && strcasecmp($extension, 'jpeg') != 0 && strcasecmp($extension, 'png') != 0 && strcasecmp($extension, 'bmp') != 0)
 			continue;
 
-		$iconlist[] = array(htmlspecialchars($filename. '.' .$extension),htmlspecialchars(str_replace('_', ' ', $filename)));
+		$iconlist[] = array(htmlspecialchars($filename . '.' . $extension), htmlspecialchars(str_replace('_', ' ', $filename)));
 	}
 
 	return $iconlist;
@@ -715,4 +769,3 @@ function shd_admin_cf_change_types($from_type)
 			return array();
 	}
 }
-

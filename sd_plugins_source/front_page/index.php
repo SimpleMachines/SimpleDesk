@@ -1,21 +1,21 @@
 <?php
-###########################################################
-#       Simple Desk Project - www.simpledesk.net          #
-###########################################################
-#     An advanced help desk modifcation built on SMF      #
-###########################################################
-#                                                         #
-#       * Copyright 2010 - SimpleDesk.net                 #
-#                                                         #
-# This file and its contents are subject to the license   #
-# included with this distribution, license.txt, which     #
-# states that this software is New BSD Licensed.          #
-# Any questions, please contact SimpleDesk.net            #
-#                                                         #
-###########################################################
-# SimpleDesk Version: 2.0 Anatidae                        #
-# File Info: index.php / 2.0 Anatidae                     #
-###########################################################
+/**************************************************************
+*          Simple Desk Project - www.simpledesk.net           *
+***************************************************************
+*       An advanced help desk modification built on SMF       *
+***************************************************************
+*                                                             *
+*         * Copyright 2020 - SimpleDesk.net                   *
+*                                                             *
+*   This file and its contents are subject to the license     *
+*   included with this distribution, license.txt, which       *
+*   states that this software is New BSD Licensed.            *
+*   Any questions, please contact SimpleDesk.net              *
+*                                                             *
+***************************************************************
+* SimpleDesk Version: 2.1 Beta 1                              *
+* File Info: index.php                                        *
+**************************************************************/
 
 /**
  *	@package plugin-frontpage
@@ -52,10 +52,10 @@ function shdplugin_front_page()
 			'title' => 'shdp_frontpage',
 			'description' => 'shdp_frontpage_desc',
 			'author' => 'SimpleDesk Team',
-			'website' => 'http://www.simpledesk.net/',
-			'version' => '1.0',
+			'website' => 'https://www.simpledesk.net/',
+			'version' => '1.0.1',
 			'compatibility' => array(
-				'SimpleDesk 2.0 Anatidae', // should tie up with the SHD_VERSION constants
+				'SimpleDesk 2.1 Beta 1', // should tie up with the SHD_VERSION constants
 			),
 			'acp_url' => 'action=admin;area=helpdesk_options;sa=frontpage',
 		),
@@ -79,5 +79,3 @@ function shdplugin_front_page()
 		),
 	);
 }
-
-

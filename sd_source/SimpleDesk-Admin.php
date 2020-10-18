@@ -1,21 +1,21 @@
 <?php
-###############################################################
-#         Simple Desk Project - www.simpledesk.net            #
-###############################################################
-#       An advanced help desk modifcation built on SMF        #
-###############################################################
-#                                                             #
-#         * Copyright 2010 - SimpleDesk.net                   #
-#                                                             #
-#   This file and its contents are subject to the license     #
-#   included with this distribution, license.txt, which       #
-#   states that this software is New BSD Licensed.            #
-#   Any questions, please contact SimpleDesk.net              #
-#                                                             #
-###############################################################
-# SimpleDesk Version: 2.0 Anatidae                            #
-# File Info: SimpleDesk-Admin.php / 2.0 Anatidae              #
-###############################################################
+/**************************************************************
+*          Simple Desk Project - www.simpledesk.net           *
+***************************************************************
+*       An advanced help desk modification built on SMF       *
+***************************************************************
+*                                                             *
+*         * Copyright 2020 - SimpleDesk.net                   *
+*                                                             *
+*   This file and its contents are subject to the license     *
+*   included with this distribution, license.txt, which       *
+*   states that this software is New BSD Licensed.            *
+*   Any questions, please contact SimpleDesk.net              *
+*                                                             *
+***************************************************************
+* SimpleDesk Version: 2.1 Beta 1                              *
+* File Info: SimpleDesk-Admin.php                             *
+**************************************************************/
 
 /**
  *	This file handles the core of SimpleDesk's administrative information and options from within SMF's own admin panel.
@@ -53,10 +53,11 @@ function shd_admin_main()
 	shd_load_plugin_langfiles('hdadmin');
 
 	// Load some extra CSS
-	$context['html_headers'] .= '
-	<link rel="stylesheet" type="text/css" href="' . $settings['default_theme_url'] . '/css/helpdesk_admin.css" />
-	<link rel="stylesheet" type="text/css" href="' . $settings['default_theme_url'] . '/css/helpdesk.css" />
-	<script type="text/javascript" src="' . $settings['default_theme_url'] . '/scripts/helpdesk_admin.js?rc2"></script>';
+	loadCSSFile('helpdesk_admin.css', array('minimize' => false, 'seed' => $context['shd_css_version']), 'helpdesk_admin');
+	loadCSSFile('helpdesk.css', array('minimize' => false, 'seed' => $context['shd_css_version']), 'helpdesk');
+	loadJavascriptFile('helpdesk.js', array('defer' => false, 'minimize' => false), 'helpdesk');
+	loadJavascriptFile('helpdesk_admin.js', array('defer' => false, 'minimize' => false), 'helpdesk_admin');
+
 	$context['page_title'] = $txt['shd_admin_title'];
 
 	// We need this for later
@@ -65,7 +66,7 @@ function shd_admin_main()
 	// Create some subactions
 	$subActions = array(
 		'helpdesk_info' => array(null, 'shd_admin_info'),
-		'helpdesk_options' => array(null, 'shd_admin_options'),
+		'helpdesk_options' => array(null, 'shd_admin_options', array(false)),
 		'helpdesk_cannedreplies' => array('SimpleDesk-AdminCannedReplies.php', 'shd_admin_canned'),
 		'helpdesk_customfield' => array('SimpleDesk-AdminCustomField.php', 'shd_admin_custom'),
 		'helpdesk_depts' => array('SimpleDesk-AdminDepartments.php', 'shd_admin_departments'),
@@ -81,14 +82,10 @@ function shd_admin_main()
 	$_REQUEST['area'] = isset($_REQUEST['area']) && isset($subActions[$_REQUEST['area']]) ? $_REQUEST['area'] : 'helpdesk_info';
 	$context['sub_action'] = $_REQUEST['area'];
 
-	if (!empty($subActions[$_REQUEST['area']][0]))
-		require_once ($sourcedir . '/sd_source/' . $subActions[$_REQUEST['area']][0]);
-
 	// Call our subaction
-	if ($_REQUEST['area'] == 'helpdesk_options')
-		$subActions[$_REQUEST['area']][1](false);
-	else
-		$subActions[$_REQUEST['area']][1]();
+	if (!empty($subActions[$context['sub_action']][0]))
+		require_once($sourcedir . '/sd_source/' . $subActions[$context['sub_action']][0]);
+	call_user_func_array($subActions[$context['sub_action']][1], !empty($subActions[$context['sub_action']][2]) ? $subActions[$context['sub_action']][2] : array());
 
 	// Important ACS666 check up.
 	if (isset($_REQUEST['cookies']))
@@ -123,12 +120,10 @@ function shd_admin_main()
 	{
 		$context['linktree'][] = $linktreeitem;
 		if ($linktreeitem['url'] == $scripturl . '?action=admin')
-		{
 			$context['linktree'][] = array(
 				'url' => $scripturl . '?action=admin;area=helpdesk_info',
 				'name' => $txt['shd_helpdesk'],
 			);
-		}
 	}
 }
 
@@ -152,7 +147,7 @@ function shd_admin_main()
 */
 function shd_admin_info()
 {
-	global $context, $settings, $scripturl, $txt, $sourcedir, $smcFunc;
+	global $context, $settings, $scripturl, $txt, $sourcedir, $smcFunc, $modSettings;
 
 	$subactions = array(
 		'main' => array(
@@ -165,6 +160,11 @@ function shd_admin_info()
 			'icon' => 'log.png',
 			'title' => $txt['shd_admin_actionlog_title'],
 		),
+		'adminlog' => array(
+			'function' => 'shd_admin_admin_log',
+			'icon' => 'log.png',
+			'title' => $txt['shd_admin_adminlog_title'],
+		),
 		'support' => array(
 			'function' => 'shd_admin_support',
 			'icon' => 'support.png',
@@ -172,14 +172,21 @@ function shd_admin_info()
 		),
 	);
 
+	// Can't do this?
+	if (!allowedTo('admin_forum'))
+		unset($subactions['adminlog']);
+
 	$context[$context['admin_menu_name']]['tab_data'] = array(
 		'description' => $txt['shd_admin_options_desc'],
 		'tabs' => array(
 			'main' => array(
-				'description' => '<strong>' . $txt['hello_guest'] . ' ' . $context['user']['name'] . '!</strong><br />' . $txt['shd_admin_info_desc'],
+				'description' => '<strong>' . $txt['hello_guest'] . ' ' . $context['user']['name'] . '!</strong><br>' . $txt['shd_admin_info_desc'],
 			),
 			'actionlog' => array(
-				'description' => $txt['shd_admin_actionlog_desc'] . '<br />' . (!empty($modSettings['shd_disable_action_log']) ? '<span class="smalltext">' . $txt['shd_action_log_disabled'] . '</span>' : ''),
+				'description' => $txt['shd_admin_actionlog_desc'] . '<br>' . (!empty($modSettings['shd_disable_action_log']) ? '<span class="smalltext">' . $txt['shd_action_log_disabled'] . '</span>' : ''),
+			),
+			'adminlog' => array(
+				'description' => $txt['shd_admin_adminlog_desc'],
 			),
 			'support' => array(
 				'description' => $txt['shd_admin_support_desc'],
@@ -188,17 +195,14 @@ function shd_admin_info()
 	);
 
 	call_integration_hook('shd_hook_hdadmininfo', array(&$subactions));
-	$_REQUEST['sa'] = isset($_REQUEST['sa']) && isset($subactions[$_REQUEST['sa']]) ? $_REQUEST['sa'] : 'main';
+	$context['shd_current_subaction'] = isset($_REQUEST['sa']) && isset($subactions[$_REQUEST['sa']]) ? $_REQUEST['sa'] : 'main';
 
 	// Now that we have validated the subaction.	
-	$context[$context['admin_menu_name']]['tab_data']['title'] = '<img src="' . $settings['images_url'] . '/admin/shd/' . $subactions[$_REQUEST['sa']]['icon'] . '" class="icon" alt="*" />' . $subactions[$_REQUEST['sa']]['title'];
+	$context[$context['admin_menu_name']]['tab_data']['title'] = '<img src="' . $settings['images_url'] . '/admin/shd/' . $subactions[$context['shd_current_subaction']]['icon'] . '" class="icon" alt="*">' . $subactions[$context['shd_current_subaction']]['title'];
 
 	// Are we doing the main page, or leaving here?
-	if (!empty($subactions[$_REQUEST['sa']]['function']))
-	{
-		$subactions[$_REQUEST['sa']]['function']();
-		return;
-	}
+	if (!empty($subactions[$context['shd_current_subaction']]['function']))
+		return call_user_func($subactions[$context['shd_current_subaction']]['function']);
 
 	// Get a list of the staff members of the helpdesk.
 	$members = shd_members_allowed_to('shd_staff');
@@ -237,6 +241,9 @@ function shd_admin_info()
  *
  *	This function handles all the sub areas under General Options, and adds the options listed in the relevant functions. In 1.0, all the options were stored in here, but in 1.1 they have been moved into their own functions.
  *
+ *	@param bool $return_config Whether to return configuration items or not
+ *
+ *	@return null|array If $return_config is true, An array of options, otherwise this falls into to SMF's generic settings handler.
  *	@since 1.0
 */
 function shd_admin_options($return_config)
@@ -252,7 +259,7 @@ function shd_admin_options($return_config)
 	';
 
 	$context[$context['admin_menu_name']]['tab_data'] = array(
-		'title' => '<img src="' . $settings['default_images_url'] . '/simpledesk/status.png" class="icon" alt="*" />' . $txt['shd_admin_options'],
+		'title' => '<img src="' . $settings['default_images_url'] . '/simpledesk/status.png" class="icon" alt="*">' . $txt['shd_admin_options'],
 		'description' => $txt['shd_admin_options_desc'],
 		'tabs' => array(
 			'display' => array(
@@ -288,11 +295,11 @@ function shd_admin_options($return_config)
 	// Int hooks - after we basically set everything up (so it's manipulatable by the hook, but before we do the last bits of finalisation)
 	call_integration_hook('shd_hook_hdadminopts');
 
-	$_REQUEST['sa'] = isset($_REQUEST['sa']) && isset($context[$context['admin_menu_name']]['tab_data']['tabs'][$_REQUEST['sa']]) ? $_REQUEST['sa'] : 'display';
+	$context['shd_current_subaction'] = isset($_REQUEST['sa']) && isset($context[$context['admin_menu_name']]['tab_data']['tabs'][$_REQUEST['sa']]) ? $_REQUEST['sa'] : 'display';
 	if (empty($context['post_url']))
-		$context['post_url'] = $scripturl . '?action=admin;area=helpdesk_options;save;sa=' . $_REQUEST['sa'];
+		$context['post_url'] = $scripturl . '?action=admin;area=helpdesk_options;save;sa=' . $context['shd_current_subaction'];
 
-	$config_vars = $context[$context['admin_menu_name']]['tab_data']['tabs'][$_REQUEST['sa']]['function']($return_config);
+	$config_vars = call_user_func($context[$context['admin_menu_name']]['tab_data']['tabs'][$context['shd_current_subaction']]['function'], $return_config);
 
 	if ($return_config)
 		return $config_vars;
@@ -304,7 +311,7 @@ function shd_admin_options($return_config)
 		$save_vars = $config_vars;
 
 		// If we're saving the posting options, we need to process the BBC tags.
-		if ($_REQUEST['sa'] == 'posting')
+		if ($context['shd_current_subaction'] == 'posting')
 		{
 			if (!isset($_POST['shd_bbc_enabledTags']))
 				$_POST['shd_bbc_enabledTags'] = array();
@@ -319,8 +326,10 @@ function shd_admin_options($return_config)
 			$save_vars[] = array('text', 'shd_enabled_bbc');
 		}
 
+		shd_admin_log_configvar($save_vars);
 		saveDBSettings($save_vars);
-		redirectexit('action=admin;area=helpdesk_options;sa=' . $_REQUEST['sa']);
+		$_SESSION['adm-save'] = true;
+		redirectexit('action=admin;area=helpdesk_options;sa=' . $context['shd_current_subaction']);
 	}
 
 	createToken('admin-dbsc');
@@ -387,16 +396,54 @@ function shd_modify_display_options($return_config)
 		array('select', 'shd_theme', $theme_list, 'subtext' => $txt['shd_theme_note']),
 		array('int', 'shd_zerofill', 'subtext' => $txt['shd_zerofill_note']),
 		'',
-		array('check', 'shd_hidemenuitem'),
+		array('check', 'shd_hidemenuitem', 'subtext' => $txt['shd_hidemenuitem_note']),
 		'',
-		array('check', 'shd_disable_unread'),
-		array('check' , 'shd_disable_boardint', 'subtext' => $txt['shd_disable_boardint_note']),
+		array('check', 'shd_disable_unread', 'subtext' => $txt['shd_disable_unread_note']),
+		array('check', 'shd_disable_boardint', 'subtext' => $txt['shd_disable_boardint_note']),
+		'',
+		array('select', 'shd_block_order_1', shd_block_order_options('assigned'), 'subtext' => $txt['shd_block_order_note']),
+		array('select', 'shd_block_order_2', shd_block_order_options('new'), 'subtext' => $txt['shd_block_order_note']),
+		array('select', 'shd_block_order_3', shd_block_order_options('staff'), 'subtext' => $txt['shd_block_order_note']),
+		array('select', 'shd_block_order_4', shd_block_order_options('user'), 'subtext' => $txt['shd_block_order_note']),
+		array('select', 'shd_block_order_5', shd_block_order_options('hold'), 'subtext' => $txt['shd_block_order_note']),
+
 	);
 	$context['settings_title'] = $txt['shd_admin_options_display'];
 	$context['settings_icon'] = 'details.png';
 
 	call_integration_hook('shd_hook_admin_display', array(&$config_vars, &$return_config));
 	return $config_vars;
+}
+
+/**
+ * Show the block order options, allowing us to specify a option in the first order
+ *
+ *	@param string $first First option
+*/
+function shd_block_order_options($first_option = 'assigned')
+{
+	global $txt;
+
+	// All the possible block options.
+	$all_options = array(
+		'assigned' => $txt['shd_status_assigned_heading'],
+		'new' => $txt['shd_status_' . TICKET_STATUS_NEW . '_heading'],
+		'staff' => $txt['shd_status_' . TICKET_STATUS_PENDING_STAFF . '_heading'],
+		'user' => $txt['shd_status_' . TICKET_STATUS_PENDING_USER . '_heading'],
+		'hold' => $txt['shd_status_' . TICKET_STATUS_HOLD . '_heading']
+	);
+
+	call_integration_hook('shd_hook_block_order_options', array(&$all_options));
+
+	// Assign the first one.
+	$options = array();
+	$options[$first_option] = $all_options[$first_option];
+	unset($all_options[$first_option]);
+
+	foreach ($all_options as $id_opt => $opt_txt)
+		$options[$id_opt] = $opt_txt;
+
+	return $options;
 }
 
 /**
@@ -496,8 +543,8 @@ function shd_modify_admin_options($return_config)
 		array('check', 'shd_staff_ticket_self'),
 		array('check', 'shd_admins_not_assignable', 'subtext' => $txt['shd_admins_not_assignable_note']),
 		array('select', 'shd_privacy_display', array('smart' => $txt['shd_privacy_display_smart'], 'always' => $txt['shd_privacy_display_always']), 'subtext' => $txt['shd_privacy_display_note']),
-		array('check' , 'shd_disable_tickettotopic', 'subtext' => $txt['shd_disable_tickettotopic_note'], 'disabled' => !empty($modSettings['shd_helpdesk_only'])),
-		array('check' , 'shd_disable_relationships', 'subtext' => $txt['shd_disable_relationships_note']),
+		array('check', 'shd_disable_tickettotopic', 'subtext' => $txt['shd_disable_tickettotopic_note'], 'disabled' => !empty($modSettings['shd_helpdesk_only'])),
+		array('check', 'shd_disable_relationships', 'subtext' => $txt['shd_disable_relationships_note']),
 	);
 	$context['settings_title'] = $txt['shd_admin_options_admin'];
 	$context['settings_icon'] = 'admin.png';
@@ -545,6 +592,19 @@ function shd_modify_standalone_options($return_config)
 		}';
 
 	call_integration_hook('shd_hook_admin_standalone', array(&$config_vars, &$return_config));
+
+	if ($return_config)
+		return $config_vars;
+
+	// We saving?
+	if (isset($_GET['save']))
+	{
+		// SMF 2.1 has a hook for the default action. Lets trigger it.
+		$integrate_function = !empty($_POST['shd_helpdesk_only']) ? 'add_integration_function' : 'remove_integration_function';
+		$integrate_function('integrate_default_action', 'shd_main', true, '$sourcedir/sd_source/SimpleDesk.php');		
+		$integrate_function('integrate_fallback_action', 'shd_main', true, '$sourcedir/sd_source/SimpleDesk.php');		
+	}
+
 	return $config_vars;
 }
 
@@ -683,10 +743,8 @@ function shd_modify_notifications_options($return_config)
 	// Lazy way to build the master on/off switch
 	$array = array();
 	foreach ($config_vars as $var)
-	{
 		if ($var[0] == 'check')
 			$array[] = $var[1];
-	}
 	$config_vars[] = array('checkall', 'shd_notify_checkall', $array);
 
 	$context['settings_title'] = $txt['shd_admin_options_notifications'];
@@ -739,7 +797,6 @@ function shd_admin_action_log()
 	shd_load_language('sd_language/SimpleDeskLogAction');
 
 	$context['can_delete'] = allowedTo('admin_forum');
-
 	$context['displaypage'] = 30;
 	$context['hoursdisable'] = 24;
 	$context['waittime'] = time() - $context['hoursdisable'] * 3600;
@@ -778,14 +835,75 @@ function shd_admin_action_log()
 	$context['start'] = isset($_REQUEST['start']) ? $_REQUEST['start'] : 0;
 	$context['order'] = isset($_REQUEST['asc']) ? 'ASC' : 'DESC';
 	$context['url_sort'] = isset($_REQUEST['sort']) ? ';sort=' . $_REQUEST['sort'] : '';
-	$context['url_order'] =  isset($_REQUEST['asc']) ? ';asc' : '';
+	$context['url_order'] = isset($_REQUEST['asc']) ? ';asc' : '';
 
 	// Get all action log entries
 	$context['actions'] = shd_load_action_log_entries($context['start'], $context['displaypage'], $context['sort'], $context['order']);
-
 	$context['page_index'] = shd_no_expand_pageindex($scripturl . '?action=admin;area=helpdesk_info;sa=actionlog' . $context['url_sort'] . $context['url_order'], $context['start'], shd_count_action_log_entries(), $context['displaypage']);
 
 	$context['sub_template'] = 'shd_action_log';
+}
+
+/**
+ *	Initialises the helpdesk admin log.
+ *
+ *	@since 2.1
+*/
+function shd_admin_admin_log()
+{
+	global $context, $settings, $scripturl, $txt, $sourcedir, $smcFunc, $sort_types;
+
+	// This is for full admins only.
+	isAllowedTo('admin_forum');
+
+	shd_load_language('sd_language/SimpleDeskLogAction');
+
+	$context['can_delete'] = true;
+	$context['displaypage'] = 30;
+	$context['daysdisable'] = 28;
+	$context['waittime'] = time() - $context['daysdisable'] * 24 * 3600;
+
+	// Handle deletion...
+	if (isset($_REQUEST['removeall']))
+		shd_db_query('', '
+			DELETE FROM {db_prefix}helpdesk_log_action
+			WHERE log_time < {int:twenty_four_hours_wait}',
+			array(
+				'twenty_four_hours_wait' => $context['waittime'],
+			)
+		);
+	elseif (!empty($_REQUEST['remove']) && $context['can_delete'])
+		shd_db_query('', '
+			DELETE FROM {db_prefix}helpdesk_log_action
+			WHERE id_action = {int:gtfo}
+			AND log_time < {int:twenty_four_hours_wait}',
+			array(
+				'twenty_four_hours_wait' => $context['waittime'],
+				'gtfo' => (int) $_REQUEST['remove'],
+			)
+		);
+
+	// Do the column stuff!
+	$sort_types = array(
+		'action' =>'la.action',
+		'time' => 'la.log_time',
+		'member' => 'mem.real_name',
+		'position' => 'mg.group_name',
+		'ip' => 'la.ip',
+	);
+
+	// Setup the direction stuff...
+	$context['sort'] = isset($_REQUEST['sort']) && isset($sort_types[$_REQUEST['sort']]) ? $sort_types[$_REQUEST['sort']] : $sort_types['time'];
+	$context['start'] = isset($_REQUEST['start']) ? $_REQUEST['start'] : 0;
+	$context['order'] = isset($_REQUEST['asc']) ? 'ASC' : 'DESC';
+	$context['url_sort'] = isset($_REQUEST['sort']) ? ';sort=' . $_REQUEST['sort'] : '';
+	$context['url_order'] = isset($_REQUEST['asc']) ? ';asc' : '';
+
+	// Get all action log entries
+	$context['actions'] = shd_load_admin_log_entries($context['start'], $context['displaypage'], $context['sort'], $context['order']);
+	$context['page_index'] = shd_no_expand_pageindex($scripturl . '?action=admin;area=helpdesk_info;sa=adminlog' . $context['url_sort'] . $context['url_order'], $context['start'], shd_count_admin_log_entries(), $context['displaypage']);
+
+	$context['sub_template'] = 'shd_admin_log';
 }
 
 /**
@@ -799,7 +917,7 @@ function shd_admin_support()
 {
 	global $context;
 
-	$context['shd_support_url'] = 'http://www.simpledesk.net/support/post.php';
+	$context['shd_support_url'] = 'https://www.simpledesk.net/support/post.php';
 	$context['sub_template'] = 'shd_support';
 }
 
@@ -825,7 +943,8 @@ function shd_credits()
 					'desc' => $txt['shd_credits_devs_desc'],
 					'icon' => 'devs.png',
 					'members' => array(
-						array('Peter &quot;Arantor&quot; Spicer', false),
+						array('Jeremy &quot;SleePy&quot; Darwood', false),
+						array('Peter &quot;Arantor&quot; Spicer', true),
 						array('Jason &quot;JBlaze&quot; Clemons', true),
 						array('Marcus &quot;c&#963;&#963;&#1082;&#953;&#1108; &#1084;&#963;&#951;&#1109;&#1090;&#1108;&#1103;&quot; Forsberg', true),
 					),
@@ -835,8 +954,7 @@ function shd_credits()
 					'desc' => $txt['shd_credits_projectsupport_desc'],
 					'icon' => 'managers.png',
 					'members' => array(
-						array('Graeme &quot;Trekkie101&quot; Spence', false),
-						array('Jeremy &quot;SleePy&quot; Darwood', false),
+						array('Graeme &quot;Trekkie101&quot; Spence', true),
 					),
 				),
 				array(
@@ -844,7 +962,7 @@ function shd_credits()
 					'desc' => $txt['shd_credits_marketing_desc'],
 					'icon' => 'marketers.png',
 					'members' => array(
-						array('Brannon &quot;B&ordf;&quot; Hall', false),
+						array('Brannon &quot;B&ordf;&quot; Hall', true),
 					),
 				),
 				array(
@@ -870,9 +988,9 @@ function shd_credits()
 					'desc' => $txt['shd_credits_qualityassurance_desc'],
 					'icon' => 'qa.png',
 					'members' => array(
-						array('Sinan &quot;[SiNaN]&quot; &Ccedil;evik', false),
-						array('Paul &quot;tfs&quot; Laufer', false),
-						array('Shomari &quot;spoogs&quot; Scott', false),
+						array('Sinan &quot;[SiNaN]&quot; &Ccedil;evik', true),
+						array('Paul &quot;tfs&quot; Laufer', true),
+						array('Shomari &quot;spoogs&quot; Scott', true),
 						array('Alex &quot;Cleo&quot; Tokar', true),
 					),
 				),
@@ -881,21 +999,21 @@ function shd_credits()
 					'desc' => $txt['shd_credits_beta_desc'],
 					'icon' => 'testers.png',
 					'members' => array(
-						array('Chris &quot;ccbtimewiz&quot; Batista', false),
-						array('Wade &quot;&#1109;&#951;&#963;&#969;&quot; Poulsen', false),
-						array('Edwin &quot;Dismal Shadow&quot; Mendez', false),
-						array('Treznax', false),
-						array('Mark &quot;KiLLuMiNaTi&minus;7&minus;&quot; Longworth', false),
-						array('NIBOGO', false),
-						array('Robert &quot;Robbo&quot; Clancy', false),
-						array('Ya&#x11F;izcan Arslan', false),
-						array('MultiformeIngegno', false),
-						array('flapjack', false),
-						array('feline',	false),
-						array('Sordell Media', false),
-						array('[FailSafe]', false),
-						array('chilly', false),
-						array('Tah Zonemaster', false),
+						array('Chris &quot;ccbtimewiz&quot; Batista', true),
+						array('Wade &quot;&#1109;&#951;&#963;&#969;&quot; Poulsen', true),
+						array('Edwin &quot;Dismal Shadow&quot; Mendez', true),
+						array('Treznax', true),
+						array('Mark &quot;KiLLuMiNaTi&minus;7&minus;&quot; Longworth', true),
+						array('NIBOGO', true),
+						array('Robert &quot;Robbo&quot; Clancy', true),
+						array('Ya&#x11F;izcan Arslan', true),
+						array('MultiformeIngegno', true),
+						array('flapjack', true),
+						array('feline', true),
+						array('Sordell Media', true),
+						array('[FailSafe]', true),
+						array('chilly', true),
+						array('Tah Zonemaster', true),
 					),
 				),
 				array(
@@ -903,10 +1021,10 @@ function shd_credits()
 					'desc' => '', // This group has its description included in the title.
 					'icon' => 'others.png',
 					'members' => array(
-						array('Fluffy - ' . sprintf($txt['shd_fluffy'],'onclick="window.location.href=\'' . $scripturl . '?action=admin;area=helpdesk_info;cookies\'"'),false),
-						array('<br />' . $txt['shd_credits_translators'],false),
-						array('<br />' . sprintf($txt['shd_credits_icons'], 'http://p.yusukekamiyamane.com/', 'http://wefunction.com/2008/07/function-free-icon-set/', 'http://www.famfamfam.com/lab/icons/flags/', 'http://www.everaldo.com/crystal/'),false),
-						array('<br />' . $txt['shd_credits_user'],false),
+						array('Fluffy - ' . sprintf($txt['shd_fluffy'], 'onclick="window.location.href=\'' . $scripturl . '?action=admin;area=helpdesk_info;cookies\'"'), false),
+						array('<br>' . $txt['shd_credits_translators'], false),
+						array('<br>' . sprintf($txt['shd_credits_icons'], 'http://p.yusukekamiyamane.com/', 'http://wefunction.com/2008/07/function-free-icon-set/', 'http://www.famfamfam.com/lab/icons/flags/', 'http://www.everaldo.com/crystal/'), false),
+						array('<br>' . $txt['shd_credits_user'], false),
 					),
 				),
 			),

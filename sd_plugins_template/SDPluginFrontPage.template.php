@@ -1,5 +1,5 @@
 <?php
-// Version: 2.0 Anatidae; SimpleDesk alternate front page template
+// Version: 2.1; SimpleDesk alternate front page template
 
 /**
  *	This file handles the replacement front page.
@@ -20,7 +20,7 @@ function template_shd_frontpage()
 	echo '
 		<div class="modbuttons clearfix margintop">';
 
-	template_button_strip($context['navigation'], 'bottom');
+	template_shd_button_strip($context['navigation'], 'bottom');
 
 	echo '
 		</div>
@@ -48,7 +48,7 @@ function template_shd_frontpage_admin()
 	<div id="admincenter">
 		<form name="adminform" action="', $context['post_url'], '" method="post" accept-charset="', $context['character_set'], '"', !empty($context['force_form_onsubmit']) ? ' onsubmit="' . $context['force_form_onsubmit'] . '"' : '', '>
 		<div class="tborder">
-			<div class="cat_bar grid_header">
+			<div class="cat_bar">
 				<h3 class="catbg">
 					<img src="', shd_image_url('frontpage.png'), '" class="icon" alt="*"/> ', $txt['shdp_frontpage'], '
 				</h3>
@@ -67,7 +67,7 @@ function template_shd_frontpage_admin()
 							</select>
 							</dd>
 					</dl>
-					<hr class="hrcolor" />
+					<hr>
 					<dl class="permsettings">
 						<dt style="width: 30%;">
 							<a id="setting_shdp_frontpage_type"></a> <span><label id="label_shdp_frontpage_type" for="shdp_frontpage_type">', $txt['shdp_frontpage_type'], '</label></span>
@@ -83,29 +83,42 @@ function template_shd_frontpage_admin()
 						</dt>
 						<dd style="width: 68%;">';
 
-	$editor_context = &$context['controls']['richedit'][$context['post_box_name']];
-
 	// The postbox
 	echo '
 							<div id="shd_bbcbox"', ($modSettings['shdp_frontpage_type'] == 'php' ? ' style="display:none;"' : ''), '></div>
 							<div id="shd_smileybox"', ($modSettings['shdp_frontpage_type'] == 'php' ? ' style="display:none;"' : ''), '></div>';
 
-	echo template_control_richedit($context['post_box_name'], 'shd_smileybox', 'shd_bbcbox');
+	template_control_richedit($context['post_box_name'], true, true);
 
 	echo '
 							</dd>
 						</dl>
-						<hr class="hrcolor" />
+						<hr>
 						<div class="righttext">
-							<input type="submit" value="', isset($editor_context['labels']['post_button']) ? $editor_context['labels']['post_button'] : $txt['save'], '" tabindex="', $context['tabindex']++, '" accesskey="s" class="button_submit" />
+							<input type="submit" value="', $txt['save'], '"', (!empty($context['save_disabled']) ? ' disabled="disabled"' : ''), (!empty($context['settings_save_onclick']) ? ' onclick="' . $context['settings_save_onclick'] . '"' : ''), ' class="button">
 						</div>
+
 					</div>
 				<span class="botslice"><span></span></span>
 			</div>
-			</div>
-		<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
+			</div>';
+	if (isset($context['admin-dbsc_token']))
+		echo '
+		<input type="hidden" name="', $context['admin-dbsc_token_var'], '" value="', $context['admin-dbsc_token'], '">';
+	echo '
+		<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">
 		</form>
 	</div>
+	<br>';
+	if (!empty($context['settings_post_javascript']))
+		echo '
+	<script type="text/javascript"><!-- // --><![CDATA[
+	', $context['settings_post_javascript'], '
+	// ]]></script>';
+	if (!empty($context['settings_insert_below']))
+		echo $context['settings_insert_below'];
+
+	echo '
 	<script type="text/javascript"><!-- // --><![CDATA[
 	function invertBBC()
 	{
@@ -115,4 +128,3 @@ function template_shd_frontpage_admin()
 	}
 	// ]]></script>';
 }
-

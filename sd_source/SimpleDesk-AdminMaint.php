@@ -1,21 +1,21 @@
 <?php
-###############################################################
-#         Simple Desk Project - www.simpledesk.net            #
-###############################################################
-#       An advanced help desk modifcation built on SMF        #
-###############################################################
-#                                                             #
-#         * Copyright 2010 - SimpleDesk.net                   #
-#                                                             #
-#   This file and its contents are subject to the license     #
-#   included with this distribution, license.txt, which       #
-#   states that this software is New BSD Licensed.            #
-#   Any questions, please contact SimpleDesk.net              #
-#                                                             #
-###############################################################
-# SimpleDesk Version: 2.0 Anatidae                            #
-# File Info: SimpleDesk-AdminMaint.php / 2.0 Anatidae         #
-###############################################################
+/**************************************************************
+*          Simple Desk Project - www.simpledesk.net           *
+***************************************************************
+*       An advanced help desk modification built on SMF       *
+***************************************************************
+*                                                             *
+*         * Copyright 2020 - SimpleDesk.net                   *
+*                                                             *
+*   This file and its contents are subject to the license     *
+*   included with this distribution, license.txt, which       *
+*   states that this software is New BSD Licensed.            *
+*   Any questions, please contact SimpleDesk.net              *
+*                                                             *
+***************************************************************
+* SimpleDesk Version: 2.1 Beta 1                              *
+* File Info: SimpleDesk-AdminMaint.php                        *
+**************************************************************/
 
 /**
  *	This file handles the core of SimpleDesk's administrative maintenance.
@@ -75,10 +75,10 @@ function shd_admin_maint()
 		),
 	);
 
-	$_REQUEST['sa'] = isset($_REQUEST['sa']) && isset($subactions[$_REQUEST['sa']]) ? $_REQUEST['sa'] : 'main';
+	$context['shd_current_subaction'] = isset($_REQUEST['sa']) && isset($subactions[$_REQUEST['sa']]) ? $_REQUEST['sa'] : 'main';
 
 	$context[$context['admin_menu_name']]['tab_data'] = array(
-		'title' => '<img src="' . $settings['default_theme_url'] . '/images/simpledesk/' . $subactions[$_REQUEST['sa']]['icon'] . '" class="icon" alt="*" />' . $subactions[$_REQUEST['sa']]['title'],
+		'title' => '<img src="' . $settings['default_theme_url'] . '/images/simpledesk/' . $subactions[$context['shd_current_subaction']]['icon'] . '" class="icon" alt="*">' . $subactions[$context['shd_current_subaction']]['title'],
 		'description' => $txt['shd_admin_options_desc'],
 		'tabs' => array(
 			'main' => array(
@@ -91,21 +91,23 @@ function shd_admin_maint()
 	);
 
 	// We need to fix the descriptions just in case.
-	if (isset($subactions[$_REQUEST['sa']]['description']))
-		$context[$context['admin_menu_name']]['tab_data']['tabs']['main']['description'] = $subactions[$_REQUEST['sa']]['description'];
-	$subactions[$_REQUEST['sa']]['function']();
+	if (isset($subactions[$context['shd_current_subaction']]['description']))
+		$context[$context['admin_menu_name']]['tab_data']['tabs']['main']['description'] = $subactions[$context['shd_current_subaction']]['description'];
+
+	call_user_func($subactions[$context['shd_current_subaction']]['function']);
 }
 
 function shd_admin_maint_home()
 {
 	global $context, $txt, $smcFunc;
 
+	$context['dept_list'] = array(
+		0 => $txt['shd_admin_maint_massdeptmove_select'],
+	);
+
 	$depts = shd_allowed_to('access_helpdesk', false);
-	if (count($depts) > 1)
+	if (!is_bool($depts) && count($depts) > 1)
 	{
-		$context['dept_list'] = array(
-			0 => $txt['shd_admin_maint_massdeptmove_select'],
-		);
 		$query = $smcFunc['db_query']('', '
 			SELECT id_dept, dept_name
 			FROM {db_prefix}helpdesk_depts
@@ -137,7 +139,7 @@ function shd_admin_maint_reattribute()
 	$members = findMembers($_POST['to']);
 
 	if (empty($members))
-		fatal_lang_error('shd_reattribute_cannot_find_member');
+		shd_fatal_lang_error('shd_reattribute_cannot_find_member');
 
 	$memID = array_shift($members);
 	$memID = $memID['id'];
@@ -145,19 +147,36 @@ function shd_admin_maint_reattribute()
 	if ($_POST['type'] == 'email')
 	{
 		if (empty($_POST['from_email']))
-			fatal_lang_error('shd_reattribute_no_email');
+			shd_fatal_lang_error('shd_reattribute_no_email');
 		$clause = 'poster_email = {string:attribute}';
 		$attribute = $_POST['from_email'];
 	}
 	elseif ($_POST['type'] == 'name')
 	{
 		if (empty($_POST['from_name']))
-			fatal_lang_error('shd_reattribute_no_user');
+			shd_fatal_lang_error('shd_reattribute_no_user');
 		$clause = 'poster_name = {string:attribute}';
 		$attribute = $_POST['from_name'];
 	}
+	elseif ($_POST['type'] == 'starter')
+	{
+		if (empty($_POST['from_starter']))
+			shd_fatal_lang_error('shd_reattribute_no_user');
+		$from = findMembers($_POST['from_starter']);
+
+		if (empty($from))
+			shd_fatal_lang_error('shd_reattribute_cannot_find_member_from');
+
+		$fromID = array_shift($from);
+		$attribute = $fromID['id'];
+
+		$clause = 'id_msg in (
+			SELECT id_first_msg
+			FROM {db_prefix}helpdesk_tickets
+			WHERE id_member_started = {int:attribute})';
+	}
 	else
-		fatal_lang_error('shd_reattribute_no_user');
+		return shd_fatal_lang_error('shd_reattribute_no_user');
 
 	// Now, we don't delete the user id from posts on account deletion, never have.
 	// So, get all the user ids attached to this user/email, make sure they're not in use, and then reattribute them.
@@ -176,27 +195,54 @@ function shd_admin_maint_reattribute()
 
 	// Did we find any members? If not, bail.
 	if (empty($members))
-		fatal_lang_error('shd_reattribute_no_messages', false);
+		shd_fatal_lang_error('shd_reattribute_no_messages', false);
 
-	// So we found some old member ids. Are any of them still in use?
-	$temp_members = loadMemberData($members, false, 'minimal');
-	if (empty($temp_members))
-		$temp_members = array();
-	$members = array_diff($members, $temp_members);
+	// Topic starters are a bit easier.
+	if ($_POST['type'] == 'starter')
+	{
+		$smcFunc['db_query']('', '
+			UPDATE {db_prefix}helpdesk_ticket_replies
+			SET id_member = {int:new_id}
+			WHERE id_msg IN (
+				SELECT id_first_msg
+				FROM {db_prefix}helpdesk_tickets
+				WHERE id_member_started = {int:from_id})',
+			array(
+				'new_id' => $memID,
+				'from_id' => $attribute,
+			)
+		);
+	}
+	else
+	{
+		// So we found some old member ids. Are any of them still in use?
+		$temp_members = loadMemberData($members, false, 'minimal');
+		if (empty($temp_members))
+			$temp_members = array();
+		$members = array_diff($members, $temp_members);
 
-	if (empty($members))
-		fatal_lang_error('shd_reattribute_in_use', false);
+		if (empty($members))
+			shd_fatal_lang_error('shd_reattribute_in_use', false);
 
-	// OK, let's go!
-	$smcFunc['db_query']('', '
-		UPDATE {db_prefix}helpdesk_ticket_replies
-		SET id_member = {int:new_id}
-		WHERE id_member IN ({array_int:old_ids})',
-		array(
-			'new_id' => $memID,
-			'old_ids' => $members,
-		)
-	);
+		// OK, let's go!
+		$smcFunc['db_query']('', '
+			UPDATE {db_prefix}helpdesk_ticket_replies
+			SET id_member = {int:new_id}
+			WHERE id_member IN ({array_int:old_ids})',
+			array(
+				'new_id' => $memID,
+				'old_ids' => $members,
+			)
+		);
+	}
+
+	// Log this.
+	shd_admin_log('admin_maint', array(
+		'action' => 'reattribute',
+		'type' => $_POST['type'],
+		'to' => $memID,
+		'from' => $attribute
+	));
 }
 
 function shd_admin_maint_massdeptmove()
@@ -210,9 +256,9 @@ function shd_admin_maint_massdeptmove()
 	$_POST['id_dept_from'] = isset($_POST['id_dept_from']) ? (int) $_POST['id_dept_from'] : 0;
 	$_POST['id_dept_to'] = isset($_POST['id_dept_to']) ? (int) $_POST['id_dept_to'] : 0;
 	if ($_POST['id_dept_from'] == 0 || $_POST['id_dept_to'] == 0 || !in_array($_POST['id_dept_from'], $depts) || !in_array($_POST['id_dept_to'], $depts))
-		fatal_lang_error('shd_unknown_dept', false);
+		shd_fatal_lang_error('shd_unknown_dept', false);
 	elseif ($_POST['id_dept_from'] == $_POST['id_dept_to'])
-		fatal_lang_error('shd_admin_maint_massdeptmove_samedept', false);
+		shd_fatal_lang_error('shd_admin_maint_massdeptmove_samedept', false);
 
 	$clauses = array();
 	if (empty($_POST['moveopen']))
@@ -255,6 +301,13 @@ function shd_admin_maint_massdeptmove()
 
 	if (isset($_GET['done']) || $_POST['tickets_done'] >= $_POST['massdeptmove'])
 	{
+		// Log this.
+		shd_admin_log('admin_maint', array(
+			'action' => 'move_dept',
+			'to' => $_POST['id_dept_to'],
+			'from' => $_POST['id_dept_from']
+		));
+
 		$context['sub_template'] = 'shd_admin_maint_massdeptmovedone';
 		return;
 	}
@@ -330,27 +383,27 @@ function shd_admin_maint_massdeptmove()
 	$context['continue_countdown'] = 3;
 	$context['continue_get_data'] = '?action=admin;area=helpdesk_maint;sa=massdeptmove;' . $context['session_var'] . '=' . $context['session_id'];
 	$context['continue_post_data'] = '
-		<input type="hidden" name="id_dept_from" value="' . $_POST['id_dept_from'] . '" />
-		<input type="hidden" name="id_dept_to" value="' . $_POST['id_dept_to'] . '" />
-		<input type="hidden" name="tickets_done" value="' . $_POST['tickets_done'] . '" />
-		<input type="hidden" name="massdeptmove" value="' . $_POST['massdeptmove'] . '" />';
+		<input type="hidden" name="id_dept_from" value="' . $_POST['id_dept_from'] . '">
+		<input type="hidden" name="id_dept_to" value="' . $_POST['id_dept_to'] . '">
+		<input type="hidden" name="tickets_done" value="' . $_POST['tickets_done'] . '">
+		<input type="hidden" name="massdeptmove" value="' . $_POST['massdeptmove'] . '">';
 	if (!empty($_POST['moveopen']))
 		$context['continue_post_data'] .= '
-		<input type="hidden" name="moveopen" value="' . $_POST['moveopen'] . '" />';
+		<input type="hidden" name="moveopen" value="' . $_POST['moveopen'] . '">';
 	if (!empty($_POST['moveclosed']))
 		$context['continue_post_data'] .= '
-		<input type="hidden" name="moveclosed" value="' . $_POST['moveclosed'] . '" />';
+		<input type="hidden" name="moveclosed" value="' . $_POST['moveclosed'] . '">';
 	if (!empty($_POST['movedeleted']))
 		$context['continue_post_data'] .= '
-		<input type="hidden" name="movedeleted" value="' . $_POST['movedeleted'] . '" />';
+		<input type="hidden" name="movedeleted" value="' . $_POST['movedeleted'] . '">';
 	if ($_POST['movelast_less_days'] > 0)
 		$context['continue_post_data'] .= '
-		<input type="hidden" name="movelast_less" value="1" />
-		<input type="hidden" name="movelast_less_days" value="' . $_POST['movelast_less_days'] . '" />';
+		<input type="hidden" name="movelast_less" value="1">
+		<input type="hidden" name="movelast_less_days" value="' . $_POST['movelast_less_days'] . '">';
 	if ($_POST['movelast_more_days'] > 0)
 		$context['continue_post_data'] .= '
-		<input type="hidden" name="movelast_more" value="1" />
-		<input type="hidden" name="movelast_more_days" value="' . $_POST['movelast_more_days'] . '" />';
+		<input type="hidden" name="movelast_more" value="1">
+		<input type="hidden" name="movelast_more_days" value="' . $_POST['movelast_more_days'] . '">';
 
 	$context['sub_template'] = 'not_done';
 	$context['continue_percent'] = $_POST['tickets_done'] > $_POST['massdeptmove'] ? 100 : floor($_POST['tickets_done'] / $_POST['massdeptmove'] * 100);
@@ -362,8 +415,6 @@ function shd_admin_maint_findrepair()
 	checkSession('request');
 
 	$context['page_title'] = $txt['shd_admin_maint_findrepair'];
-
-	$context['maint_steps'] = array();
 	$context['maint_steps'] = array(
 		array(
 			'name' => 'zero_entries',
@@ -397,6 +448,9 @@ function shd_admin_maint_findrepair()
 
 	if (isset($_GET['done']))
 	{
+		// Log this.
+		shd_admin_log('admin_maint', array('action' => 'findrepair'));
+
 		$context['sub_template'] = 'shd_admin_maint_findrepairdone';
 		$context['maintenance_result'] = !empty($_SESSION['shd_maint']) ? $_SESSION['shd_maint'] : array();
 		unset($_SESSION['shd_maint']);
@@ -416,8 +470,7 @@ function shd_admin_maint_findrepair()
 	for ($i = 0; $i <= $context['step']; $i++)
 		$context['continue_percent'] += $context['maint_steps'][$i]['pc'];
 
-	$function = 'shd_maint_' . $context['maint_steps'][$context['step']]['name'];
-	$function();
+	call_user_func('shd_maint_' . $context['maint_steps'][$context['step']]['name']);
 }
 
 // Validate that all tickets and messages have a valid id number
@@ -439,6 +492,7 @@ function shd_maint_zero_entries()
 			WHERE id_ticket = 0');
 		$_SESSION['shd_maint']['zero_tickets'] = $smcFunc['db_affected_rows']();
 	}
+	$smcFunc['db_free_result']($query);
 
 	// And ticket replies with an id-msg 0
 	$query = $smcFunc['db_query']('', '
@@ -454,9 +508,10 @@ function shd_maint_zero_entries()
 			WHERE id_msg = 0');
 		$_SESSION['shd_maint']['zero_msgs'] = $smcFunc['db_affected_rows']();
 	}
+	$smcFunc['db_free_result']($query);
 
 	// This is a short operation, no suboperation, so just tell it to go onto the next step.
-	$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . ($context['step'] + 1) . '" />';
+	$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . ($context['step'] + 1) . '">';
 }
 
 // Ensure that the count of number of replies/deleted replies/whether ticket contains deleted replies are all correct.
@@ -532,7 +587,6 @@ function shd_maint_deleted()
 		{
 			// Oh crap.
 			foreach ($tickets_modify as $id_ticket => $columns)
-			{
 				$smcFunc['db_query']('', '
 					UPDATE {db_prefix}helpdesk_tickets
 					SET num_replies = {int:num_replies},
@@ -546,23 +600,21 @@ function shd_maint_deleted()
 						'withdeleted' => $columns['withdeleted'],
 					)
 				);
-			}
+
 			$_SESSION['shd_maint']['deleted'] = count($tickets_modify);
 		}
 	}
 
 	// Another round?
 	$_REQUEST['start'] += $step_size;
+	// All done
 	if ($_REQUEST['start'] > $ticket_count)
-	{
-		// All done
-		$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . ($context['step'] + 1) . '" />';
-	}
+		$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . ($context['step'] + 1) . '">';
 	else
 	{
 		// More to do, call back - and provide the subtitle
-		$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . $context['step'] . '" />
-		<input type="hidden" name="start" value="' . $_REQUEST['start'] . '" />';
+		$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . $context['step'] . '">
+		<input type="hidden" name="start" value="' . $_REQUEST['start'] . '">';
 		$context['substep_enabled'] = true;
 		$context['substep_title'] = $txt['shd_admin_maint_findrepair_status'];
 		$context['substep_continue_percent'] = round(100 * $_REQUEST['start'] / $ticket_count);
@@ -629,7 +681,6 @@ function shd_maint_first_last()
 		{
 			// Oh crap.
 			foreach ($tickets_modify as $id_ticket => $columns)
-			{
 				$smcFunc['db_query']('', '
 					UPDATE {db_prefix}helpdesk_tickets
 					SET id_first_msg = {int:id_first_msg},
@@ -637,23 +688,21 @@ function shd_maint_first_last()
 					WHERE id_ticket = {int:id_ticket}',
 					$columns
 				);
-			}
+
 			$_SESSION['shd_maint']['first_last'] = count($tickets_modify);
 		}
 	}
 
 	// Another round?
 	$_REQUEST['start'] += $step_size;
+	// All done
 	if ($_REQUEST['start'] > $ticket_count)
-	{
-		// All done
-		$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . ($context['step'] + 1) . '" />';
-	}
+		$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . ($context['step'] + 1) . '">';
 	else
 	{
 		// More to do, call back - and provide the subtitle
-		$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . $context['step'] . '" />
-		<input type="hidden" name="start" value="' . $_REQUEST['start'] . '" />';
+		$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . $context['step'] . '">
+		<input type="hidden" name="start" value="' . $_REQUEST['start'] . '">';
 		$context['substep_enabled'] = true;
 		$context['substep_title'] = $txt['shd_admin_maint_findrepair_firstlast'];
 		$context['substep_continue_percent'] = round(100 * $_REQUEST['start'] / $ticket_count);
@@ -700,7 +749,7 @@ function shd_maint_starter_updater()
 				LEFT JOIN {db_prefix}helpdesk_ticket_replies AS hdtr_first ON (hdt.id_first_msg = hdtr_first.id_msg)
 				LEFT JOIN {db_prefix}helpdesk_ticket_replies AS hdtr_last ON (hdt.id_last_msg = hdtr_last.id_msg)
 			WHERE hdt.id_ticket IN ({array_int:tickets})
-			GROUP BY hdt.id_ticket',
+			GROUP BY 1, 2, 3',
 			array(
 				'tickets' => array_keys($tickets),
 			)
@@ -720,7 +769,6 @@ function shd_maint_starter_updater()
 		{
 			// Oh crap.
 			foreach ($tickets_modify as $id_ticket => $columns)
-			{
 				$smcFunc['db_query']('', '
 					UPDATE {db_prefix}helpdesk_tickets
 					SET id_member_started = {int:id_member_started},
@@ -728,23 +776,21 @@ function shd_maint_starter_updater()
 					WHERE id_ticket = {int:id_ticket}',
 					$columns
 				);
-			}
+
 			$_SESSION['shd_maint']['starter_updater'] = count($tickets_modify);
 		}
 	}
 
 	// Another round?
 	$_REQUEST['start'] += $step_size;
+	// All done
 	if ($_REQUEST['start'] > $ticket_count)
-	{
-		// All done
-		$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . ($context['step'] + 1) . '" />';
-	}
+		$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . ($context['step'] + 1) . '">';
 	else
 	{
 		// More to do, call back - and provide the subtitle
-		$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . $context['step'] . '" />
-		<input type="hidden" name="start" value="' . $_REQUEST['start'] . '" />';
+		$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . $context['step'] . '">
+		<input type="hidden" name="start" value="' . $_REQUEST['start'] . '">';
 		$context['substep_enabled'] = true;
 		$context['substep_title'] = $txt['shd_admin_maint_findrepair_starterupdater'];
 		$context['substep_continue_percent'] = round(100 * $_REQUEST['start'] / $ticket_count);
@@ -805,7 +851,6 @@ function shd_maint_status()
 		{
 			// Oh crap.
 			foreach ($tickets_modify as $id_ticket => $status)
-			{
 				$smcFunc['db_query']('', '
 					UPDATE {db_prefix}helpdesk_tickets
 					SET status = {int:status}
@@ -815,23 +860,21 @@ function shd_maint_status()
 						'status' => $status,
 					)
 				);
-			}
+
 			$_SESSION['shd_maint']['status'] = count($tickets_modify);
 		}
 	}
 
 	// Another round?
 	$_REQUEST['start'] += $step_size;
+	// All done
 	if ($_REQUEST['start'] > $ticket_count)
-	{
-		// All done
-		$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . ($context['step'] + 1) . '" />';
-	}
+		$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . ($context['step'] + 1) . '">';
 	else
 	{
 		// More to do, call back - and provide the subtitle
-		$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . $context['step'] . '" />
-		<input type="hidden" name="start" value="' . $_REQUEST['start'] . '" />';
+		$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . $context['step'] . '">
+		<input type="hidden" name="start" value="' . $_REQUEST['start'] . '">';
 		$context['substep_enabled'] = true;
 		$context['substep_title'] = $txt['shd_admin_maint_findrepair_firstlast'];
 		$context['substep_continue_percent'] = round(100 * $_REQUEST['start'] / $ticket_count);
@@ -849,7 +892,6 @@ function shd_maint_invalid_dept()
 		FROM {db_prefix}helpdesk_tickets AS hdt
 			LEFT JOIN {db_prefix}helpdesk_depts AS hdd ON (hdt.id_dept = hdd.id_dept)
 		WHERE hdd.id_dept IS NULL');
-
 	while ($row = $smcFunc['db_fetch_assoc']($query))
 		$tickets[] = $row['id_ticket'];
 	$smcFunc['db_free_result']($query);
@@ -866,18 +908,14 @@ function shd_maint_invalid_dept()
 
 		$dept_order++;
 
-		$smcFunc['db_insert']('replace',
+		$last_dept = $smcFunc['db_insert']('replace',
 			'{db_prefix}helpdesk_depts',
-			array(
-				'dept_name' => 'string', 'description' => 'string', 'board_cat' => 'int', 'before_after' => 'int', 'dept_order' => 'int',
-			),
-			array(
-				$txt['shd_admin_recovered_dept'], $txt['shd_admin_recovered_dept_desc'], 0, 0, $dept_order,
-			),
-			array('id_dept')
+			array('dept_name' => 'string', 'description' => 'string', 'board_cat' => 'int', 'before_after' => 'int', 'dept_order' => 'int',),
+			array($txt['shd_admin_recovered_dept'], $txt['shd_admin_recovered_dept_desc'], 0, 0, $dept_order,),
+			array('id_dept'),
+			1
 		);
 
-		$last_dept = $smcFunc['db_insert_id']('{db_prefix}hepldesk_depts', 'id_dept');
 		$smcFunc['db_query']('', '
 			UPDATE {db_prefix}helpdesk_tickets
 			SET id_dept = {int:new_dept}
@@ -891,7 +929,7 @@ function shd_maint_invalid_dept()
 	}
 
 	// This is a simple operation, no suboperation, so just tell it to go onto the next step.
-	$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . ($context['step'] + 1) . '" />';
+	$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . ($context['step'] + 1) . '">';
 }
 
 // Make sure all SimpleDesk cache items are forcibly flushed.
@@ -899,6 +937,11 @@ function shd_maint_clean_cache()
 {
 	global $context;
 	clean_cache();
+
+	// Log this.
+	shd_admin_log('admin_maint', array(
+		'action' => 'clean_cache',
+	));
 
 	// Normally, we'd update $context['continue_post_data'] to indicate our next port of call. But here, we don't have to.
 	redirectexit('action=admin;area=helpdesk_maint;sa=findrepair;done;' . $context['session_var'] . '=' . $context['session_id']);
@@ -955,11 +998,11 @@ function shd_admin_maint_search()
 		if ($start >= $total || empty($tickets))
 		{
 			// Make sure we flag the index as built, then leave.
-			updateSettings(
-				array(
-					'shd_new_search_index' => 0,
-				)
-			);
+			updateSettings(array('shd_new_search_index' => 0));
+
+			// You guessed it, log this.
+			shd_admin_log('admin_maint', array('action' => 'search_rebuild'));
+
 			redirectexit('action=admin;area=helpdesk_maint;sa=search;rebuilddone;' . $context['session_var'] . '=' . $context['session_id']);
 		}
 
@@ -1042,8 +1085,8 @@ function shd_admin_maint_search()
 		$context['sub_template'] = 'not_done';
 		$context['continue_percent'] = $pc_done;
 		$context['continue_get_data'] = '?action=admin;area=helpdesk_maint;sa=search;' . $context['session_var'] . '=' . $context['session_id'];
-		$context['continue_post_data'] = '<input type="hidden" name="start" value="' . $start . '" />
-		<input type="hidden" name="rebuild" value="1" />';
+		$context['continue_post_data'] = '<input type="hidden" name="start" value="' . $start . '">
+		<input type="hidden" name="rebuild" value="1">';
 
 		// Make SURE we never mess with the other settings.
 		unset($_REQUEST['save']);

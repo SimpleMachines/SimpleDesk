@@ -1,21 +1,21 @@
 <?php
-###############################################################
-#         Simple Desk Project - www.simpledesk.net            #
-###############################################################
-#       An advanced help desk modifcation built on SMF        #
-###############################################################
-#                                                             #
-#         * Copyright 2010 - SimpleDesk.net                   #
-#                                                             #
-#   This file and its contents are subject to the license     #
-#   included with this distribution, license.txt, which       #
-#   states that this software is New BSD Licensed.            #
-#   Any questions, please contact SimpleDesk.net              #
-#                                                             #
-###############################################################
-# SimpleDesk Version: 2.0 Anatidae                            #
-# File Info: SimpleDesk-AdminPlugins.php / 2.0 Anatidae       #
-###############################################################
+/**************************************************************
+*          Simple Desk Project - www.simpledesk.net           *
+***************************************************************
+*       An advanced help desk modification built on SMF       *
+***************************************************************
+*                                                             *
+*         * Copyright 2020 - SimpleDesk.net                   *
+*                                                             *
+*   This file and its contents are subject to the license     *
+*   included with this distribution, license.txt, which       *
+*   states that this software is New BSD Licensed.            *
+*   Any questions, please contact SimpleDesk.net              *
+*                                                             *
+***************************************************************
+* SimpleDesk Version: 2.1 Beta 1                              *
+* File Info: SimpleDesk-AdminPlugins.php                      *
+**************************************************************/
 
 /**
  *	This file handles the core of SimpleDesk's plugin system administration.
@@ -46,78 +46,34 @@ function shd_admin_plugins()
 	// 1. Look at the plugin directory and figure out whether or not there are some plugins.
 	$plugins = array();
 	$plugindir = $sourcedir . '/sd_plugins_source';
-	$handle = @opendir($plugindir);
-	while ($dir_entry = readdir($handle))
+
+	if (is_dir($plugindir))
 	{
-		if (is_dir($plugindir . '/' . $dir_entry) && $dir_entry != '.' && $dir_entry != '..' && file_exists($plugindir . '/' . $dir_entry . '/index.php'))
+		$handle = opendir($plugindir);
+		while ($dir_entry = readdir($handle))
 		{
-			include_once($plugindir . '/' . $dir_entry . '/index.php');
-			$function = 'shdplugin_' . $dir_entry;
-			if (function_exists($function))
+			if (is_dir($plugindir . '/' . $dir_entry) && $dir_entry != '.' && $dir_entry != '..' && file_exists($plugindir . '/' . $dir_entry . '/index.php'))
 			{
-				$plugins[$dir_entry] = $function();
+				include_once($plugindir . '/' . $dir_entry . '/index.php');
+				$function = 'shdplugin_' . $dir_entry;
+				if (function_exists($function))
+					$plugins[$dir_entry] = $function();
 			}
 		}
+		closedir($handle);
 	}
-	@closedir($handle);
 
 	// 2. Figure out what language stuff is going on
-	$master_langlist = array(
-		'albanian',
-		'arabic',
-		'bangla',
-		'bulgarian',
-		'catalan',
-		'chinese_simplified',
-		'chinese_traditional',
-		'croatian',
-		'czech',
-		'danish',
-		'dutch',
-		'english',
-		'english_british',
-		'finnish',
-		'french',
-		'galician',
-		'german',
-		'hebrew',
-		'hindi',
-		'hungarian',
-		'indonesian',
-		'italian',
-		'japanese',
-		'kurdish_kurmanji',
-		'kurdish_sorani',
-		'macedonian',
-		'malay',
-		'norwegian',
-		'persian',
-		'polish',
-		'portuguese_brazilian',
-		'portuguese_pt',
-		'romanian',
-		'russian',
-		'serbian_cyrillic',
-		'serbian_latin',
-		'slovak',
-		'spanish_es',
-		'spanish_latin',
-		'swedish',
-		'thai',
-		'turkish',
-		'ukrainian',
-		'urdu',
-		'uzbek_latin',
-		'vietnamese',
-	);
 	$langtemplates = array();
-	$langfilelist = @opendir($settings['default_theme_dir'] . '/languages/sd_plugins_lang/');
-	while ($langfile_entry = readdir($langfilelist))
+
+	if (is_dir($settings['default_theme_dir'] . '/languages/sd_plugins_lang/'))
 	{
-		if (preg_match('~([a-z0-9]+)\.([a-z\-\_]+)(-utf8)?\.php$~i', $langfile_entry, $matches))
-			$langtemplates[$matches[1]][$matches[2]] = true;
+		$langfilelist = opendir($settings['default_theme_dir'] . '/languages/sd_plugins_lang/');
+		while ($langfile_entry = readdir($langfilelist))
+			if (preg_match('~([a-z0-9]+)\.([a-z\-\_]+)\.php$~i', $langfile_entry, $matches))
+				$langtemplates[$matches[1]][$matches[2]] = true;
+		closedir($langfilelist);
 	}
-	@closedir($langfilelist);
 
 	// 3. Figure out what shape the plugins are in
 	foreach ($plugins as $id => $plugin)
@@ -178,20 +134,14 @@ function shd_admin_plugins()
 			{
 				$setting_changes['shd_enabled_plugins'][] = $id;
 				foreach ($plugin['includes']['source'] as $include_point => $include_file)
-				{
 					if (isset($setting_changes['shd_include_' . $include_point]) && file_exists($sourcedir . '/sd_plugins_source/' . $id . '/' . $include_file))
 						$setting_changes['shd_include_' . $include_point][] = $id . '/' . $include_file;
-				}
 				foreach ($plugin['includes']['language'] as $include_point => $include_file)
-				{
 					if (isset($setting_changes['shd_includelang_' . $include_point]))
 						$setting_changes['shd_includelang_' . $include_point][] = $include_file;
-				}
 				foreach ($plugin['hooks'] as $include_point => $function)
-				{
 					if (isset($setting_changes['shd_hook_' . $include_point]))
 						$setting_changes['shd_hook_' . $include_point][] = $function;
-				}
 			}
 
 			// Is there a call back for settings?
@@ -215,11 +165,12 @@ function shd_admin_plugins()
 
 		// Any post save things?
 		foreach ($plugins as $id => $plugin)
-		{
 			// Standard save callback?
 			if (isset($plugin['save_callback']))
 				$plugin['save_callback'](!empty($_POST[$post_var_prefix . $id]));
-		}
+
+		// We know we did something.
+		shd_admin_log('admin_plugins', array('action' => 'update'));
 
 		redirectexit('action=admin;area=helpdesk_plugins;' . $context['session_var'] . '=' . $context['session_id']);
 	}
@@ -289,6 +240,9 @@ function shd_unregister_plugin()
 				break;
 		}
 	}
+
+	// Keep track of this.
+	shd_admin_log('admin_plugins', array('action' => 'remove'));
 
 	updateSettings($changes, true);
 }

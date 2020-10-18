@@ -1,5 +1,5 @@
 <?php
-// Version: 2.0 Anatidae; SimpleDesk unread posts layout
+// Version: 2.1; SimpleDesk unread posts layout
 
 /**
  *	Displays the ticket information in the unread posts page
@@ -32,41 +32,33 @@ function template_shd_unread_below()
 	global $context, $txt, $scripturl, $settings;
 
 	echo '
-				<br />
-				<div class="tborder">
-					<div class="cat_bar grid_header">
-						<h3 id="shd_block_assigned" class="catbg grid_header">
+					<div class="cat_bar">
+						<h3 id="shd_block_assigned" class="catbg">
 							<img src="', $settings['default_images_url'], '/simpledesk/ticket.png" alt="*">
 							', $context['block_title'], '
 							<span class="smalltext">(', count($context['shd_unread_info']) == 1 ? '1 ' . $txt['shd_count_ticket_1'] : count($context['shd_unread_info']) . ' ' . $txt['shd_count_tickets'], ')</span>
 						</h3>
 					</div>
-
-					<table class="shd_ticketlist" cellspacing="0" width="100%">
-						<tr class="titlebg">
-							<td width="8%" class="shd_nowrap"><img src="', $settings['default_images_url'], '/simpledesk/ticket.png" class="shd_smallicon" alt=""> ', $txt['shd_ticket'], '</td>
-							<td width="15%" class="shd_nowrap">', $txt['shd_ticket_name'], '</td>
-							<td width="12%" class="shd_nowrap"><img src="', $settings['default_images_url'], '/simpledesk/user.png" class="shd_smallicon" alt=""> ', $txt['shd_ticket_started_by'], '</td>
-							<td width="7%" class="shd_nowrap">', $txt['shd_ticket_replies'], '</td>
-							<td width="17%" class="shd_nowrap"><img src="', $settings['default_images_url'], '/simpledesk/status.png" class="shd_smallicon" alt=""> ', $txt['shd_ticket_status'], '</td>
-							<td width="8%" class="shd_nowrap"><img src="', $settings['default_images_url'], '/simpledesk/urgency.png" class="shd_smallicon" alt=""> ', $txt['shd_ticket_urgency'], '</td>
-							<td width="22%" class="shd_nowrap"><img src="', $settings['default_images_url'], '/simpledesk/time.png" class="shd_smallicon" alt=""> ', $txt['shd_ticket_updated'], '</td>
+				<table class="table_grid">
+					<tr class="title_bar">
+						<td width="8%"><img src="', $settings['default_images_url'], '/simpledesk/ticket.png" class="shd_smallicon" alt=""> ', $txt['shd_ticket'], '</td>
+						<td width="15%">', $txt['shd_ticket_name'], '</td>
+						<td width="12%"><img src="', $settings['default_images_url'], '/simpledesk/user.png" class="shd_smallicon" alt=""> ', $txt['shd_ticket_started_by'], '</td>
+						<td width="7%">', $txt['shd_ticket_replies'], '</td>
+						<td width="17%"><img src="', $settings['default_images_url'], '/simpledesk/status.png" class="shd_smallicon" alt=""> ', $txt['shd_ticket_status'], '</td>
+						<td width="8%"><img src="', $settings['default_images_url'], '/simpledesk/urgency.png" class="shd_smallicon" alt=""> ', $txt['shd_ticket_urgency'], '</td>
+						<td width="22%"><img src="', $settings['default_images_url'], '/simpledesk/time.png" class="shd_smallicon" alt=""> ', $txt['shd_ticket_updated'], '</td>
 						</tr>';
 
 	if (empty($context['shd_unread_info']))
-	{
 		echo '
-						<tr class="windowbg2">
+					<tr class="windowbg">
 							<td colspan="7">', $txt['shd_error_no_tickets'], '</td>
 						</tr>';
-	}
 	else
-	{
-		$use_bg2 = true;
 		foreach ($context['shd_unread_info'] as $ticket)
-		{
 			echo '
-						<tr class="windowbg', $use_bg2 ? '2' : '', '">
+					<tr class="windowbg">
 							<td width="4%" class="smalltext">', $ticket['id_ticket_display'], '</td>
 							<td class="smalltext"><a href="', $scripturl, '?action=helpdesk;sa=ticket;ticket=', $ticket['id_ticket'], '">', $ticket['subject'], '</a></td>
 							<td class="smalltext">', $ticket['ticket_starter'], '</td>
@@ -76,12 +68,6 @@ function template_shd_unread_below()
 							<td class="smalltext">', $ticket['updated'], '</td>
 						</tr>';
 
-			$use_bg2 = !$use_bg2;
-		}
-	}
-
 	echo '
-					</table>
-				</div>';
+				</table>';
 }
-

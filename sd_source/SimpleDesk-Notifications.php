@@ -1,22 +1,21 @@
 <?php
-###################################################################
-#           Simple Desk Project - www.simpledesk.net              #
-#                  Email Notifications Plugin                     #
-###################################################################
-#         An advanced help desk modifcation built on SMF          #
-###################################################################
-#                                                                 #
-#           * Copyright 2010 - SimpleDesk.net                     #
-#                                                                 #
-#     This file and its contents are subject to the license       #
-#     included with this distribution, license.txt, which         #
-#     states that this software is New BSD Licensed.              #
-#     Any questions, please contact SimpleDesk.net                #
-#                                                                 #
-###################################################################
-# SimpleDesk Version: 2.0 Anatidae                                #
-# File Info: SimpleDesk-Notifications.php / 2.0 Anatidae          #
-###################################################################
+/**************************************************************
+*          Simple Desk Project - www.simpledesk.net           *
+***************************************************************
+*       An advanced help desk modification built on SMF       *
+***************************************************************
+*                                                             *
+*         * Copyright 2020 - SimpleDesk.net                   *
+*                                                             *
+*   This file and its contents are subject to the license     *
+*   included with this distribution, license.txt, which       *
+*   states that this software is New BSD Licensed.            *
+*   Any questions, please contact SimpleDesk.net              *
+*                                                             *
+***************************************************************
+* SimpleDesk Version: 2.1 Beta 1                              *
+* File Info: SimpleDesk-Notifications.php                     *
+**************************************************************/
 
 /**
  *	@package source
@@ -26,6 +25,14 @@
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
+/**
+ *	Notification for new tickets
+ *
+ *	@since 2.0
+ *	@param int &$msgOptions The message options, similar to the createPost in Subs-Post.php
+ *	@param int &$ticketOptions The ticket options, similar to the createPost topicOptions in Subs-Post.php
+ *	@param int &$posterOptions The poster options, similar to the createPost in Subs-Post.php
+*/
 function shd_notifications_notify_newticket(&$msgOptions, &$ticketOptions, &$posterOptions)
 {
 	global $smcFunc, $context, $modSettings, $scripturl;
@@ -43,13 +50,12 @@ function shd_notifications_notify_newticket(&$msgOptions, &$ticketOptions, &$pos
 		$ticketOptions['subject'] = $context['ticket_form']['subject'];
 
 	// So, we're getting the list of people that are being affected by this ticket being posted. Basically, that's a list of staff on new ticket, less people who've set preferences otherwise.
-	$members = shd_get_visible_list($ticketOptions['dept'], $ticketOptions['private'], false, empty($modSettings['shd_admins_not_assignable']), false);
+	$members = shd_get_visible_list($ticketOptions['dept'], $ticketOptions['private'], 0, empty($modSettings['shd_admins_not_assignable']), false);
 	if (empty($members))
 		return;
 
 	// Get the default preferences
 	$prefs = shd_load_user_prefs(false);
-	$pref_groups = $prefs['groups'];
 	$base_prefs = $prefs['prefs'];
 
 	// Apply the default preference
@@ -68,19 +74,16 @@ function shd_notifications_notify_newticket(&$msgOptions, &$ticketOptions, &$pos
 			'pref' => 'notify_new_ticket',
 		)
 	);
-
 	while ($row = $smcFunc['db_fetch_assoc']($query))
 		$members[(int) $row['id_member']] = $row['value'];
 	$smcFunc['db_free_result']($query);
 
 	// OK, now figure out who we're sending to, and discard any member id's we're not sending to
 	foreach ($members as $member => $value)
-	{
 		if (!empty($value))
 			$members[$member] = 'new_ticket';
 		else
 			unset($members[$member]);
-	}
 
 	if (isset($members[$context['user']['id']]))
 		unset($members[$context['user']['id']]);
@@ -89,18 +92,24 @@ function shd_notifications_notify_newticket(&$msgOptions, &$ticketOptions, &$pos
 		return;
 
 	// Build the big ol' data set
-	$notify_data = array(
+	shd_notify_users(array(
 		'members' => $members,
 		'ticketlink' => $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $ticketOptions['id'],
 		'subject' => $ticketOptions['subject'],
 		'ticket' => $ticketOptions['id'],
 		'body' => $msgOptions['body'],
 		'poster_name' => $posterOptions['name'],
-	);
-
-	shd_notify_users($notify_data);
+	));
 }
 
+/**
+ *	Notifications for new replies
+ *
+ *	@since 2.0
+ *	@param int &$msgOptions The message options, similar to the createPost in Subs-Post.php
+ *	@param int &$ticketOptions The ticket options, similar to the createPost topicOptions in Subs-Post.php
+ *	@param int &$posterOptions The poster options, similar to the createPost in Subs-Post.php
+*/
 function shd_notifications_notify_newreply(&$msgOptions, &$ticketOptions, &$posterOptions)
 {
 	global $smcFunc, $context, $modSettings, $scripturl;
@@ -108,9 +117,8 @@ function shd_notifications_notify_newreply(&$msgOptions, &$ticketOptions, &$post
 	// We did actually get a reply? Sometimes shd_modify_ticket_post() is called for other things, not just on reply.
 	if (empty($msgOptions['body']))
 		return;
-
 	// Alternatively, they might be doing a silent update.
-	if (!empty($_POST['silent_update']) && shd_allowed_to('shd_silent_update', $ticketOptions['dept']))
+	elseif (!empty($_POST['silent_update']) && shd_allowed_to('shd_silent_update', $ticketOptions['dept']))
 		return;
 
 	// We're doing various things here, so grab some general details, not just what we may have been passed before.
@@ -172,7 +180,6 @@ function shd_notifications_notify_newreply(&$msgOptions, &$ticketOptions, &$post
 
 	// Get the default preferences
 	$prefs = shd_load_user_prefs(false);
-	$pref_groups = $prefs['groups'];
 	$base_prefs = $prefs['prefs'];
 
 	// Build a list of users -> default prefs
@@ -273,6 +280,13 @@ function shd_notifications_notify_newreply(&$msgOptions, &$ticketOptions, &$post
 		shd_notify_users($notify_data);
 }
 
+/**
+ *	Notificaiton for assignments
+ *
+ *	@since 2.0
+ *	@param int &$ticket The ticket id
+ *	@param int &$assignment Who the ticket is being assigned to.
+*/
 function shd_notifications_notify_assign(&$ticket, &$assignment)
 {
 	global $smcFunc, $context, $modSettings, $scripturl;
@@ -293,7 +307,6 @@ function shd_notifications_notify_assign(&$ticket, &$assignment)
 
 	// Get the default preferences
 	$prefs = shd_load_user_prefs(false);
-	$pref_groups = $prefs['groups'];
 	$base_prefs = $prefs['prefs'];
 
 	$members = array();
@@ -340,10 +353,8 @@ function shd_notifications_notify_assign(&$ticket, &$assignment)
 
 	// unset $members where member pref doesn't fit
 	foreach ($member_prefs as $id => $value)
-	{
 		if (empty($value))
 			unset($members[$id]);
-	}
 
 	// move $members to $notify_data['members']
 	$notify_data['members'] = $members;
@@ -357,7 +368,7 @@ function shd_notifications_notify_assign(&$ticket, &$assignment)
  *	Handle email notifications
  *
  *	@todo Finish documenting
- *	@since 2.0
+ *	@param mixed $notify_data Array of data containing notification informationt o be sent out.
 */
 function shd_notify_users($notify_data)
 {
@@ -377,6 +388,7 @@ function shd_notify_users($notify_data)
 		)
 	);
 
+	$emails = array();
 	while ($row = $smcFunc['db_fetch_assoc']($query))
 	{
 		$needed_language = empty($row['lngfile']) || empty($modSettings['userLanguage']) ? $language : $row['lngfile'];
@@ -398,7 +410,7 @@ function shd_notify_users($notify_data)
 	if (isset($notify_data['poster_name']))
 		$replacements['{poster_name}'] = $notify_data['poster_name'];
 	if (isset($notify_data['body']))
-		$replacements['{body}'] = trim(un_htmlspecialchars(strip_tags(strtr(shd_format_text($notify_data['body'], false), array('<br />' => "\n", '</div>' => "\n", '</li>' => "\n", '&#91;' => '[', '&#93;' => ']')))));
+		$replacements['{body}'] = trim(un_htmlspecialchars(strip_tags(strtr(shd_format_text($notify_data['body'], false), array('<br>' => "\n", '</div>' => "\n", '</li>' => "\n", '&#91;' => '[', '&#93;' => ']')))));
 	$withbody = isset($notify_data['body']) && !empty($modSettings['shd_notify_with_body']) ? 'bodyfull' : 'body';
 
 	// Also note, we may not be coming from the post code... so make sure sendmail() is available
@@ -461,7 +473,7 @@ function shd_notify_users($notify_data)
 				'log_time' => 'int', 'id_member' => 'int', 'ip' => 'string-16', 'action' => 'string', 'id_ticket' => 'int', 'id_msg' => 'int', 'extra' => 'string-65534',
 			),
 			array(
-				time(), 0, '', 'notify', $notify_data['ticket'], !empty($notify_data['msg']) ? $notify_data['msg'] : 0, serialize($log),
+				time(), 0, '', 'notify', $notify_data['ticket'], !empty($notify_data['msg']) ? $notify_data['msg'] : 0, json_encode($log),
 			),
 			array('id_action')
 		);
@@ -483,10 +495,10 @@ function shd_notify_popup()
 	$email_type = isset($_GET['template']) ? preg_replace('~[^a-z_]~', '', $_GET['template']) : '';
 
 	if (empty($modSettings['shd_display_ticket_logs']) || empty($_GET['log']) || empty($email_type))
-		fatal_lang_error('no_access', false);
+		shd_fatal_lang_error('no_access', false);
 
 	$query = $smcFunc['db_query']('', '
-		SELECT hdla.id_member, hdla.id_ticket, hdla.id_msg, hdla.extra, IFNULL(hdtr.body, {string:empty}) AS body, IFNULL(mem.real_name, hdtr.poster_name) AS poster_name
+		SELECT hdla.id_member, hdla.id_ticket, hdla.id_msg, hdla.extra, COALESCE(hdtr.body, {string:empty}) AS body, COALESCE(mem.real_name, hdtr.poster_name) AS poster_name
 		FROM {db_prefix}helpdesk_log_action AS hdla
 			LEFT JOIN {db_prefix}helpdesk_ticket_replies AS hdtr ON (hdla.id_msg = hdtr.id_msg)
 			LEFT JOIN {db_prefix}members AS mem ON (hdtr.id_member = mem.id_member)
@@ -501,22 +513,22 @@ function shd_notify_popup()
 	if ($smcFunc['db_num_rows']($query) == 0)
 	{
 		$smcFunc['db_free_result']($query);
-		fatal_lang_error('no_access');
+		shd_fatal_lang_error('no_access');
 	}
 	$row = $smcFunc['db_fetch_assoc']($query);
 	$smcFunc['db_free_result']($query);
 
-	$row['extra'] = unserialize($row['extra']);
+	$row['extra'] = smf_json_decode($row['extra'], true);
 
 	// Just check we did actually log an email of that type.
 	if (empty($row['extra']['emails'][$_GET['template']]))
-		fatal_lang_error('no_access', false);
+		shd_fatal_lang_error('no_access', false);
 
 	$ticketinfo = shd_load_ticket($row['id_ticket']);
 
 	// OK, if we're here, we can see the ticket. Can we actually see the email log at this point?
 	if (!shd_allowed_to('shd_view_ticket_logs_any', $ticketinfo['dept']) && (!shd_allowed_to('shd_view_ticket_logs_own', $ticketinfo['dept']) || !$ticketinfo['is_own']))
-		fatal_lang_error('no_access', false);
+		shd_fatal_lang_error('no_access', false);
 
 	// We're reusing the Help template, need its language file.
 	loadLanguage('Help');
@@ -542,7 +554,7 @@ function shd_notify_popup()
 	}
 
 	// Now we have all the usernames for this instance, let's go and build this entry.
-	$context['help_text'] = $txt['shd_log_notify_to'] . '<br />';
+	$context['help_text'] = $txt['shd_log_notify_to'] . '<br>';
 
 	$new_content = '';
 	if (!empty($users))
@@ -553,7 +565,7 @@ function shd_notify_popup()
 			if (empty($user_profile[$user]))
 				continue;
 
-			$new_content .= ($first ? '<img src="' . shd_image_url('user.png') . '" alt="" /> ' : ', ') . shd_profile_link($user_profile[$user]['real_name'], $user);
+			$new_content .= ($first ? '<img src="' . shd_image_url('user.png') . '" alt=""> ' : ', ') . shd_profile_link($user_profile[$user]['real_name'], $user);
 			$first = false;
 		}
 	}
@@ -566,25 +578,25 @@ function shd_notify_popup()
 		{
 			foreach ($emails as $key => $value)
 				$emails[$key] = '<a href="mailto:' . $value . '">' . $value . '</a>';
-			$new_content .= '<img src="' . shd_image_url('log_notify.png') . '" alt="" /> ' . implode(', ', $emails);
+			$new_content .= '<img src="' . shd_image_url('log_notify.png') . '" alt=""> ' . implode(', ', $emails);
 		}
 		// No-one else can at the moment.
 		else
-			$new_content .= '<img src="' . shd_image_url('log_notify.png') . '" alt="" /> ' . (count($emails) == 1 ? $txt['shd_log_notify_hiddenemail_1'] : sprintf($txt['shd_log_notify_hiddenemail'], count($emails)));
+			$new_content .= '<img src="' . shd_image_url('log_notify.png') . '" alt=""> ' . (count($emails) == 1 ? $txt['shd_log_notify_hiddenemail_1'] : sprintf($txt['shd_log_notify_hiddenemail'], count($emails)));
 	}
 	if (!empty($new_content))
 		$context['help_text'] .= $new_content;
 
-	$context['help_text'] .= '<hr />';
+	$context['help_text'] .= '<hr>';
 
 	// So the general prep is done. Now let's rebuild the email contents.
 	if (empty($row['extra']['withbody']) || empty($row['body']))
 		$body = '';
 	else
-		$body = trim(un_htmlspecialchars(strip_tags(strtr(shd_format_text($row['body'], false), array('<br />' => "\n", '</div>' => "\n", '</li>' => "\n", '&#91;' => '[', '&#93;' => ']')))));
+		$body = trim(un_htmlspecialchars(strip_tags(strtr(shd_format_text($row['body'], false), array('<br>' => "\n", '</div>' => "\n", '</li>' => "\n", '&#91;' => '[', '&#93;' => ']')))));
 
 	$replacements = array(
-		"\n" => '<br />',
+		"\n" => '<br>',
 		'{ticket_id}' => str_pad($row['id_ticket'], $modSettings['shd_zerofill'], '0', STR_PAD_LEFT),
 		'{subject}' => empty($row['extra']['subject']) ? $txt['no_subject'] : $row['extra']['subject'],
 		'{ticketlink}' => $scripturl . '?action=helpdesk;sa=ticket;ticket=' . $row['id_ticket'] . (empty($row['id_msg']) ? '.0' : '.msg' . $row['id_msg'] . '#msg' . $row['id_msg']),
@@ -595,9 +607,15 @@ function shd_notify_popup()
 	$email_subject = str_replace(array_keys($replacements), array_values($replacements), $txt['template_subject_notify_' . $email_type]);
 	$email_body = str_replace(array_keys($replacements), array_values($replacements), $txt['template_' . (empty($row['extra']['withbody']) || empty($row['body']) ? 'body' : 'bodyfull') . '_notify_' . $email_type]);
 
-	$context['help_text'] .= '<strong>' . $txt['subject'] . ':</strong> ' . $email_subject . '<br /><br />' . $email_body;
+	$context['help_text'] .= '<strong>' . $txt['subject'] . ':</strong> ' . $email_subject . '<br><br>' . $email_body;
 }
 
+/**
+ *	Notification ticket options..
+ *
+ *	@todo Finish documenting
+ *	@since 2.0
+*/
 function shd_notify_ticket_options()
 {
 	global $context, $txt, $smcFunc;
@@ -631,7 +649,7 @@ function shd_notify_ticket_options()
 	{
 		case 'monitor_on';
 			if (!shd_allowed_to('shd_monitor_ticket_any', $ticketinfo['dept']) && (!$ticket_starter || !shd_allowed_to('shd_monitor_ticket_own', $ticketinfo['dept'])))
-				fatal_lang_error('cannot_monitor_ticket', false);
+				shd_fatal_lang_error('cannot_monitor_ticket', false);
 
 			// Unlike turning it off, we might be turning it on from either just off, or ignored, so log that fact.
 			if ($old_state == NOTIFY_ALWAYS)
@@ -664,7 +682,7 @@ function shd_notify_ticket_options()
 			break;
 		case 'monitor_off';
 			if (!shd_allowed_to('shd_monitor_ticket_any', $ticketinfo['dept']) && (!$ticket_starter || !shd_allowed_to('shd_monitor_ticket_own', $ticketinfo['dept'])))
-				fatal_lang_error('cannot_unmonitor_ticket', false);
+				shd_fatal_lang_error('cannot_unmonitor_ticket', false);
 			// Just delete the old status.
 			$smcFunc['db_query']('', '
 				DELETE FROM {db_prefix}helpdesk_notify_override
@@ -684,7 +702,7 @@ function shd_notify_ticket_options()
 			break;
 		case 'ignore_on';
 			if (!shd_allowed_to('shd_ignore_ticket_any', $ticketinfo['dept']) && (!$ticket_starter || !shd_allowed_to('shd_ignore_ticket_own', $ticketinfo['dept'])))
-				fatal_lang_error('cannot_monitor_ticket', false);
+				shd_fatal_lang_error('cannot_monitor_ticket', false);
 
 			// Unlike turning it off, we might be turning it on from either just off, or ignored, so log that fact.
 			if ($old_state == NOTIFY_NEVER)
@@ -717,7 +735,7 @@ function shd_notify_ticket_options()
 			break;
 		case 'ignore_off';
 			if (!shd_allowed_to('shd_ignore_ticket_any', $ticketinfo['dept']) && (!$ticket_starter || !shd_allowed_to('shd_ignore_ticket_own', $ticketinfo['dept'])))
-				fatal_lang_error('cannot_unmonitor_ticket', false);
+				shd_fatal_lang_error('cannot_unmonitor_ticket', false);
 
 			$smcFunc['db_query']('', '
 				DELETE FROM {db_prefix}helpdesk_notify_override
@@ -742,6 +760,12 @@ function shd_notify_ticket_options()
 	redirectexit('action=helpdesk;sa=ticket;ticket=' . $context['ticket_id']);
 }
 
+/**
+ *	Builds a list of who should be notified or not.
+ *
+ *	@todo Finish documenting
+ *	@since 2.0
+*/
 function shd_query_monitor_list($ticket_id)
 {
 	global $smcFunc;
@@ -761,12 +785,10 @@ function shd_query_monitor_list($ticket_id)
 	);
 
 	while ($row = $smcFunc['db_fetch_assoc']($query))
-	{
 		if ($row['notify_state'] == NOTIFY_ALWAYS)
 			$members['always_notify'][] = $row['id_member'];
 		elseif ($row['notify_state'] == NOTIFY_NEVER)
 			$members['never_notify'][] = $row['id_member'];
-	}
 	$smcFunc['db_free_result']($query);
 
 	return $members;
@@ -778,7 +800,8 @@ function shd_query_monitor_list($ticket_id)
  *	@param int $dept The department the given ticket is in.
  *	@param bool $private Whether the given ticket is private or not.
  *	@param int $ticket_starter User id of the ticket starter.
- *	@param bool $exclude_admin If true, exclude forum admins from the list of possible candidates.
+ *	@param bool $include_admin If false, exclude forum admins from the list of possible candidates.
+ *	@param bool $include_current_user If true, exclude the current user from the list of possible candidates.
  *	@return array An array of user ids of the staff members (and ticket starter) that can see tickets, matching the given criteria of department, privacy and permissions.
 */
 function shd_get_visible_list($dept, $private, $ticket_starter = 0, $include_admin = true, $include_current_user = false)
@@ -837,4 +860,3 @@ function shd_get_visible_list($dept, $private, $ticket_starter = 0, $include_adm
 
 	return $people;
 }
-

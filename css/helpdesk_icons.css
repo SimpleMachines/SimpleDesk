@@ -1,0 +1,98 @@
+/* Admin Menu. */
+.admin_menu_icon .shd_simpledesk::before {
+	background: url(../images/simpledesk/icons/shd_generic_icons.png) no-repeat;
+	background-position: -65px -116px;
+}
+
+.admin_menu_icon .shd_options::before {
+	background: url(../images/simpledesk/icons/shd_generic_icons.png) no-repeat;
+	background-position: -118px -64px;
+}
+
+.admin_menu_icon .shd_cannedreplies::before {
+	background: url(../images/simpledesk/icons/shd_generic_icons.png) no-repeat;
+	background-position: -18px -22px;
+}
+
+.admin_menu_icon .shd_custom_fields::before {
+	background: url(../images/simpledesk/icons/shd_generic_icons.png) no-repeat;
+	background-position: -71px -22px;
+}
+
+.admin_menu_icon .shd_departments::before {
+	background: url(../images/simpledesk/icons/shd_generic_icons.png) no-repeat;
+	background-position: -124px -22px;
+}
+
+.admin_menu_icon .shd_permissions::before {
+	background: url(../images/simpledesk/icons/shd_generic_icons.png) no-repeat;
+	background-position: -166px -65px;
+}
+
+.admin_menu_icon .shd_plugins::before {
+	background: url(../images/simpledesk/icons/shd_generic_icons.png) no-repeat;
+	background-position: -16px -116px;
+}
+
+.admin_menu_icon .shd_maintenance::before {
+	background: url(../images/simpledesk/icons/shd_generic_icons.png) no-repeat;
+	background-position: -66px -64px;
+}
+
+/* Special Admin Icons */
+.admin_menu_icon .shd_log::before {
+	background: url(../images/simpledesk/icons/shd_generic_icons.png) no-repeat;
+	background-position: -167px -22px;
+}
+
+.admin_menu_icon .shd_mail::before {
+	background: url(../images/simpledesk/icons/shd_generic_icons.png) no-repeat;
+	background-position: -18px -64px;
+}
+
+.admin_menu_icon .shd_support::before {
+	background: url(../images/simpledesk/icons/shd_generic_icons.png) no-repeat;
+	background-position: -119px -116px;
+}
+
+/* Main Menu */
+#main_menu .main_icons.helpdesk::before {
+	background: url(../images/simpledesk/icons/shd_generic_icons.png) no-repeat;
+	background-position: -65px -116px;
+}
+
+#main_menu .main_icons.profile::before {
+	background: url(../images/simpledesk/icons/shd_generic_icons.png) no-repeat;
+	background-position: -167px -117px;
+}
+
+/* Profile Menu */
+.profile_menu_icon .hd_profile::before {
+	background: url(../images/simpledesk/icons/shd_generic_icons.png) no-repeat;
+	background-position: -167px -117px;
+}
+
+.profile_menu_icon .hd_prefs::before {
+	background: url(../images/simpledesk/icons/shd_generic_icons.png) no-repeat;
+	background-position: -218px -25px;
+}
+
+.profile_menu_icon .hd_showtickets::before {
+	background: url(../images/simpledesk/icons/shd_generic_icons.png) no-repeat;
+	background-position: -217px -68px;
+}
+
+.profile_menu_icon .hd_permissions::before {
+	background: url(../images/simpledesk/icons/shd_generic_icons.png) no-repeat;
+	background-position: -218px -117px;
+}
+
+.profile_menu_icon .hd_actionlog::before {
+	background: url(../images/simpledesk/icons/shd_generic_icons.png) no-repeat;
+	background-position: -267px -25px;
+}
+
+/* Board Index */
+.board_icon a.board_helpdesk {
+	background: url(../images/simpledesk/helpdesk_on.png) no-repeat;
+}

@@ -1,5 +1,5 @@
 <?php
-// Version: 2.0 Anatidae; SimpleDesk ticket assignment
+// Version: 2.1; SimpleDesk ticket assignment
 
 /**
  *	Handles ticket assignment.
@@ -26,59 +26,47 @@ function template_assign()
 	if (empty($context['shd_return_to']))
 		$context['shd_return_to'] = 'ticket';
 
-	// Back to the helpdesk.
-	echo '
-		<div class="floatleft">
-			', template_button_strip(array($context['navigation']['back']), 'bottom'), '
-		</div><br class="clear" /><br />';
+		template_shd_button_strip(array($context['navigation']['back']));
 
 	echo '
-	<div class="cat_bar grid_header">
+	<div class="cat_bar">
 		<h3 class="catbg">
-			<img src="', $settings['default_images_url'], '/simpledesk/assign.png" alt="*" />
+			<img src="', $settings['default_images_url'], '/simpledesk/assign.png" alt="*">
 			', $txt['shd_ticket_assign_ticket'], '
 		</h3>
 	</div>
 	<div class="roundframe">
-		<form action="', $scripturl, '?action=helpdesk;sa=assign2;ticket=', $context['ticket_id'], '" method="post" onsubmit="submitonce(this);">
-			<div class="content">
-				<dl class="settings">
-					<dt>
-						<strong>', $txt['shd_ticket_assignedto'], ':</strong>
-					</dt>
-					<dd>
-						', $context['member_list'][$context['ticket_assigned']], '
-					</dd>
-					<dt>
-						<strong>', $txt['shd_ticket_assign_to'], ':</strong>
-					</dt>
-					<dd>
-						<select name="to_user">';
+		<form action="', $scripturl, '?action=helpdesk;sa=assign2;ticket=', $context['ticket_id'], '" method="post">
+			<dl class="settings">
+				<dt>
+					<strong>', $txt['shd_ticket_assignedto'], ':</strong>
+				</dt>
+				<dd>
+					', $context['member_list'][$context['ticket_assigned']], '
+				</dd>
+				<dt>
+					<strong>', $txt['shd_ticket_assign_to'], ':</strong>
+				</dt>
+				<dd>
+					<select name="to_user">';
 
 	foreach ($context['member_list'] as $id => $name)
 		echo '
-							<option value="', $id, '"', ($id == $context['ticket_assigned'] ? ' selected="selected"' : ''), '>', $name, '</option>';
+						<option value="', $id, '"', ($id == $context['ticket_assigned'] ? ' selected="selected"' : ''), '>', $name, '</option>';
 
 	echo '
-						</select>
-					</dd>
-					<dt>
-						<input type="submit" name="cancel" value="', ($context['shd_return_to'] == 'home' ? $txt['shd_cancel_home'] : $txt['shd_cancel_ticket']), '" accesskey="c" class="button_submit" />
-					</dt>
-					<dd>
-						<input type="submit" value="', $txt['shd_ticket_assign_ticket'], '" onclick="return submitThisOnce(this);" accesskey="s" class="button_submit" />
-					</dd>
-				</dl>
-				<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />';
+					</select>
+				</dd>
+			</dl>
+			<input type="submit" name="cancel" value="', ($context['shd_return_to'] == 'home' ? $txt['shd_cancel_home'] : $txt['shd_cancel_ticket']), '" accesskey="c" class="button save">
+			<input type="submit" value="', $txt['shd_ticket_assign_ticket'], '" accesskey="s" class="button save">
+			<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">';
 
 	if ($context['shd_return_to'] == 'home')
 		echo '
-				<input type="hidden" name="home" value="1" />';
+			<input type="hidden" name="home" value="1">';
 
 	echo '
-			</div>
 		</form>
-	</div>
-	<span class="lowerframe"><span></span></span>';
+	</div>';
 }
-

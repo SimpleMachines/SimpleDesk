@@ -1,21 +1,21 @@
 <?php
-###############################################################
-#         Simple Desk Project - www.simpledesk.net            #
-###############################################################
-#       An advanced help desk modifcation built on SMF        #
-###############################################################
-#                                                             #
-#         * Copyright 2010 - SimpleDesk.net                   #
-#                                                             #
-#   This file and its contents are subject to the license     #
-#   included with this distribution, license.txt, which       #
-#   states that this software is New BSD Licensed.            #
-#   Any questions, please contact SimpleDesk.net              #
-#                                                             #
-###############################################################
-# SimpleDesk Version: 2.0 Anatidae                            #
-# File Info: uninstall-optional.php / 2.0 Anatidae            #
-###############################################################
+/**************************************************************
+*          Simple Desk Project - www.simpledesk.net           *
+***************************************************************
+*       An advanced help desk modification built on SMF       *
+***************************************************************
+*                                                             *
+*         * Copyright 2020 - SimpleDesk.net                   *
+*                                                             *
+*   This file and its contents are subject to the license     *
+*   included with this distribution, license.txt, which       *
+*   states that this software is New BSD Licensed.            *
+*   Any questions, please contact SimpleDesk.net              *
+*                                                             *
+***************************************************************
+* SimpleDesk Version: 2.1 Beta 1                              *
+* File Info: uninstall-optional.php                           *
+**************************************************************/
 
 /**
  *	This script removes all the extraneous data if the user requests it be removed on uninstall.
@@ -104,6 +104,11 @@ $to_remove = array(
 	// Scheduled tasks
 	'shd_autopurge_tickets',
 	'shd_autopurge_tickets_days',
+	// Display Options
+	'shd_block_order_1',
+	'shd_block_order_2',
+	'shd_block_order_3',
+	'shd_block_order_4',
 );
 
 global $modSettings;
@@ -125,9 +130,10 @@ $smcFunc['db_query']('', '
 // Also remove the plugins package server.
 $query = $smcFunc['db_query']('', '
 	DELETE FROM {db_prefix}package_servers
-	WHERE url LIKE {string:plugins}',
+	WHERE url LIKE {string:plugins_http} OR url LIKE {string:plugins_https}',
 	array(
-		'plugins' => 'http://www.simpledesk.net/downloads/plugins/%',
+		'plugins_http' => 'http://www.simpledesk.net/downloads/plugins/%',
+		'plugins_https' => 'https://www.simpledesk.net/downloads/plugins/%',
 	)
 );
 
@@ -135,4 +141,3 @@ $query = $smcFunc['db_query']('', '
 updateSettings(array(
 	'settings_updated' => time(),
 ));
-

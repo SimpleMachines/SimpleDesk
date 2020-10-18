@@ -1,21 +1,21 @@
 <?php
-###############################################################
-#         Simple Desk Project - www.simpledesk.net            #
-###############################################################
-#       An advanced help desk modifcation built on SMF        #
-###############################################################
-#                                                             #
-#         * Copyright 2010 - SimpleDesk.net                   #
-#                                                             #
-#   This file and its contents are subject to the license     #
-#   included with this distribution, license.txt, which       #
-#   states that this software is New BSD Licensed.            #
-#   Any questions, please contact SimpleDesk.net              #
-#                                                             #
-###############################################################
-# SimpleDesk Version: 2.0 Anatidae                            #
-# File Info: Subs-SimpleDeskPermissions.php / 2.0 Anatidae    #
-###############################################################
+/**************************************************************
+*          Simple Desk Project - www.simpledesk.net           *
+***************************************************************
+*       An advanced help desk modification built on SMF       *
+***************************************************************
+*                                                             *
+*         * Copyright 2020 - SimpleDesk.net                   *
+*                                                             *
+*   This file and its contents are subject to the license     *
+*   included with this distribution, license.txt, which       *
+*   states that this software is New BSD Licensed.            *
+*   Any questions, please contact SimpleDesk.net              *
+*                                                             *
+***************************************************************
+* SimpleDesk Version: 2.1 Beta 1                              *
+* File Info: Subs-SimpleDeskPermissions.php                   *
+**************************************************************/
 
 /**
  *	This file handles the core permissions systems for SimpleDesk, including the permissions templates, loading and checking permissions.
@@ -23,7 +23,6 @@
  *	@package subs
  *	@since 2.0
  */
-
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
@@ -78,6 +77,7 @@ function shd_load_all_permission_sets()
 		'shd_alter_urgency_higher' => array(true, 'ticketactions', 'log_urgency_increase.png'),
 		'shd_alter_privacy' => array(true, 'ticketactions', 'log_markprivate.png'),
 		'shd_assign_ticket' => array(true, 'ticketactions', 'log_assign.png'),
+		'shd_alter_hold' => array(false, 'ticketactions', 'ticket_hold.png'),
 
 		'shd_access_recyclebin' => array(false, 'deletion', 'access_recyclebin.png'),
 		'shd_delete_ticket' => array(true, 'deletion', 'log_delete.png'),
@@ -183,6 +183,7 @@ function shd_load_role_templates()
 				'shd_alter_urgency_any' => ROLEPERM_ALLOW,
 				'shd_alter_privacy_any' => ROLEPERM_ALLOW,
 				'shd_assign_ticket_own' => ROLEPERM_ALLOW,
+				'shd_alter_hold' => ROLEPERM_ALLOW,
 				'shd_view_profile_any' => ROLEPERM_ALLOW,
 				'shd_view_profile_log_any' => ROLEPERM_ALLOW,
 				'shd_view_preferences_own' => ROLEPERM_ALLOW,
@@ -302,14 +303,12 @@ function shd_load_user_perms()
 					'groups' => $user_info['groups'],
 				)
 			);
-
 			$roles = array();
 			while ($row = $smcFunc['db_fetch_assoc']($query))
 			{
 				$role_permissions[$row['id_role']] = $context['shd_permissions']['roles'][$row['template']]['permissions'];
 				$roles[$row['id_role']] = true;
 			}
-
 			$smcFunc['db_free_result']($query);
 
 			// 1a. Get all the departments these roles are in.
@@ -342,14 +341,11 @@ function shd_load_user_perms()
 						'roles' => array_keys($roles),
 					)
 				);
-
 				while ($row = $smcFunc['db_fetch_assoc']($query))
-				{
 					if ($row['add_type'] == ROLEPERM_DENY)
 						$denied[$row['permission']] = true;
 					else
 						$role_permissions[$row['id_role']][$row['permission']] = $row['add_type'];
-				}
 				$smcFunc['db_free_result']($query);
 			}
 
@@ -362,21 +358,15 @@ function shd_load_user_perms()
 						continue;
 
 					foreach ($perm_list as $perm => $value)
-					{
 						if ($value == ROLEPERM_ALLOW)
 							$user_info['shd_permissions'][$perm] = isset($user_info['shd_permissions'][$perm]) ? array_merge($user_info['shd_permissions'][$perm], $depts[$role]) : $depts[$role];
-					}
 				}
 
 			// 2.3 Apply any deny restrictions
 			if (!empty($denied))
-			{
 				foreach ($denied as $perm => $value)
-				{
 					if (isset($user_info['shd_permissions'][$perm]))
 						unset($user_info['shd_permissions'][$perm]);
-				}
-			}
 
 			cache_put_data($permissions_cache, $user_info['shd_permissions'], $perm_cache_time);
 		}
@@ -398,7 +388,10 @@ function shd_load_user_perms()
 
 	$tickets_any_dept = shd_allowed_to('shd_view_ticket_any', false);
 	$tickets_own_dept = shd_allowed_to('shd_view_ticket_own', false);
-	if (!empty($tickets_any_dept) && !empty($tickets_own_dept))
+
+	if (is_bool($tickets_own_dept) || is_bool($tickets_any_dept))
+		shd_fatal_error('Silly Human, bools belong elsewhere');
+	elseif (!empty($tickets_any_dept) && !empty($tickets_own_dept))
 		$tickets_own_dept = array_diff($tickets_any_dept, $tickets_own_dept);
 
 	if ($user_info['is_admin'])
@@ -410,6 +403,9 @@ function shd_load_user_perms()
 		// What departments can we see private tickets in?
 		$tickets_private_any_dept = shd_allowed_to('shd_view_ticket_private_any', false);
 		$tickets_private_own_dept = shd_allowed_to('shd_view_ticket_private_own', false);
+
+		if (is_bool($tickets_private_any_dept) || is_bool($tickets_private_own_dept))
+			return shd_fatal_error('Tickets have no bools');
 
 		$clauses = array();
 		$privacy_clauses = array();
@@ -440,23 +436,26 @@ function shd_load_user_perms()
 		// That's the core stuff done. We also need to ensure that closed tickets aren't visible either.
 		$depts_closed_any = shd_allowed_to('shd_view_closed_any', false);
 		$depts_closed_own = shd_allowed_to('shd_view_closed_own', false);
+
+		if (is_bool($depts_closed_own) || is_bool($depts_closed_any))
+			return shd_fatal_error('Departments have no bools');
 		$depts_closed_own = array_diff($depts_closed_own, $depts_closed_any);
 
 		if (empty($depts_closed_any) && empty($depts_closed_own)) // No access at all. Disable all access to closed tickets.
-			$clauses[] = 'hdt.status != 3';
+			$clauses[] = 'hdt.status != ' . TICKET_STATUS_CLOSED;
 		elseif (!empty($depts_closed_any) && empty($depts_closed_own)) // Only where we can access 'all closed' but not 'any of our own closed', e.g. admins
-			$clauses[] = 'hdt.status != 3 OR (hdt.status = 3 AND hdt.id_dept IN (' . implode(',', $depts_closed_any) . '))';
+			$clauses[] = 'hdt.status != ' . TICKET_STATUS_CLOSED . ' OR (hdt.status = ' . TICKET_STATUS_CLOSED . ' AND hdt.id_dept IN (' . implode(',', $depts_closed_any) . '))';
 		elseif (!empty($depts_closed_any) && !empty($depts_closed_own)) // So we have a mixture
-			$clauses[] = 'hdt.status != 3 OR (hdt.status = 3 AND (hdt.id_dept IN (' . implode(',', $depts_closed_any) . ') OR (hdt.id_member_started = {int:user_info_id} AND hdt.id_dept IN (' . implode(',', $depts_closed_own) . '))))';
+			$clauses[] = 'hdt.status != ' . TICKET_STATUS_CLOSED . ' OR (hdt.status = ' . TICKET_STATUS_CLOSED . ' AND (hdt.id_dept IN (' . implode(',', $depts_closed_any) . ') OR (hdt.id_member_started = {int:user_info_id} AND hdt.id_dept IN (' . implode(',', $depts_closed_own) . '))))';
 		elseif (empty($depts_closed_any) && !empty($depts_closed_own)) // We can't ever see 'any', but we can see our own
-			$clauses[] = 'hdt.status != 3 OR (hdt.status = 3 AND hdt.id_dept IN (' . implode(',', $depts_closed_own) . ') AND hdt.id_member_started = {int:user_info_id})';
+			$clauses[] = 'hdt.status != ' . TICKET_STATUS_CLOSED . ' OR (hdt.status = ' . TICKET_STATUS_CLOSED . ' AND hdt.id_dept IN (' . implode(',', $depts_closed_own) . ') AND hdt.id_member_started = {int:user_info_id})';
 
 		// And finally, deleted tickets.
 		$depts_deleted = shd_allowed_to('shd_access_recyclebin', false);
-		if (empty($depts_deleted))
-			$clauses[] = 'hdt.status != 6';
+		if (is_bool($depts_deleted) || empty($depts_deleted))
+			$clauses[] = 'hdt.status != ' . TICKET_STATUS_DELETED;
 		else
-			$clauses[] = 'hdt.status != 6 OR (hdt.status = 6 AND hdt.id_dept IN (' . implode(',', $depts_deleted) . '))';
+			$clauses[] = 'hdt.status != ' . TICKET_STATUS_DELETED . ' OR (hdt.status = ' . TICKET_STATUS_DELETED . ' AND hdt.id_dept IN (' . implode(',', $depts_deleted) . '))';
 
 		// Finally, assemble into $user_info.
 		if (empty($clauses))
@@ -475,8 +474,8 @@ function shd_load_user_perms()
  *	Prior to 1.0, this function was in Subs-SimpleDesk.php
  *
  *	@param mixed $permission A string or array of strings naming a permission or permissions that wish to be examined. Array format is only supported if $dept is not identical to false.
- *	@param mixed $dept Normally, the department number which the permission is considered for. Can also be 0 to indicate whether the user has that permission in any department, or false to indicate that it should return a list of all the departments where that permission is available.
- *	@return bool True if any of the permission(s) outlined in $permission are true in the department(s) identified, or an array indicating the departments applicable for that permission if $dept is true boolean 'false'.
+ *	@param int|bool $dept Normally, the department number which the permission is considered for. Can also be 0 to indicate whether the user has that permission in any department, or false to indicate that it should return a list of all the departments where that permission is available.
+ *	@return bool|array True if any of the permission(s) outlined in $permission are true in the department(s) identified, or an array indicating the departments applicable for that permission if $dept is true boolean 'false'.
  *	@see shd_is_allowed_to()
  *	@since 1.0
 */
@@ -502,7 +501,6 @@ function shd_allowed_to($permission, $dept = 0)
 			foreach ($permission as $perm)
 				if (!empty($user_info['shd_permissions'][$perm]))
 					return true;
-
 			return false;
 		}
 		else
@@ -517,7 +515,6 @@ function shd_allowed_to($permission, $dept = 0)
 		foreach ($permission as $perm)
 			if (!empty($user_info['shd_permissions'][$perm]) && in_array($dept, $user_info['shd_permissions'][$perm]))
 				return true;
-
 		return false;
 	}
 }
@@ -647,10 +644,8 @@ function shd_groups_allowed_to($permission, $dept = 0)
 				'dept' => $dept,
 			)
 		);
-
 		while ($row = $smcFunc['db_fetch_assoc']($query))
 			$roles[$row['id_role']] = ROLEPERM_ALLOW; // See above. We know we have the permission present if we find it here.
-
 		$smcFunc['db_free_result']($query);
 	}
 
@@ -663,10 +658,8 @@ function shd_groups_allowed_to($permission, $dept = 0)
 			'permission' => $permission,
 		)
 	);
-
 	while ($row = $smcFunc['db_fetch_assoc']($query))
 		$roles[$row['id_role']] = $row['add_type'];
-
 	$smcFunc['db_free_result']($query);
 
 	// 3. Tie roles to groups
@@ -680,15 +673,13 @@ function shd_groups_allowed_to($permission, $dept = 0)
 				'roles' => array_keys($roles),
 			)
 		);
-
 		while ($row = $smcFunc['db_fetch_assoc']($query))
-		{
 			if ($roles[$row['id_role']] == ROLEPERM_ALLOW)
 				$member_groups['allowed'][] = $row['id_group'];
 			elseif ($roles[$row['id_role']] == ROLEPERM_DENY)
 				$member_groups['denied'][] = $row['id_group'];
 			// We don't have to do anything for ROLEPERM_DISALLOW
-		}
+		$smcFunc['db_free_result']($query);
 	}
 
 	// 4. All done, just clear up groups and send 'em home

@@ -1,21 +1,21 @@
 <?php
-###############################################################
-#         Simple Desk Project - www.simpledesk.net            #
-###############################################################
-#       An advanced help desk modifcation built on SMF        #
-###############################################################
-#                                                             #
-#         * Copyright 2010 - SimpleDesk.net                   #
-#                                                             #
-#   This file and its contents are subject to the license     #
-#   included with this distribution, license.txt, which       #
-#   states that this software is New BSD Licensed.            #
-#   Any questions, please contact SimpleDesk.net              #
-#                                                             #
-###############################################################
-# SimpleDesk Version: 2.0 Anatidae                            #
-# File Info: SimpleDesk-Scheduled.php / 2.0 Anatidae          #
-###############################################################
+/**************************************************************
+*          Simple Desk Project - www.simpledesk.net           *
+***************************************************************
+*       An advanced help desk modification built on SMF       *
+***************************************************************
+*                                                             *
+*         * Copyright 2020 - SimpleDesk.net                   *
+*                                                             *
+*   This file and its contents are subject to the license     *
+*   included with this distribution, license.txt, which       *
+*   states that this software is New BSD Licensed.            *
+*   Any questions, please contact SimpleDesk.net              *
+*                                                             *
+***************************************************************
+* SimpleDesk Version: 2.1 Beta 1                              *
+* File Info: SimpleDesk-Scheduled.php                         *
+**************************************************************/
 
 /**
  *	This file handles the scheduled tasks that can come along.
@@ -23,7 +23,6 @@
  *	@package source
  *	@since 2.0
 */
-
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
@@ -49,7 +48,9 @@ function shd_scheduled_close_tickets()
 {
 	global $modSettings, $smcFunc, $txt;
 
-	@set_time_limit(600); // Ten minutes. Is a big job, possibly.
+	// Ten minutes. Is a big job, possibly.
+	if (function_exists('set_time_limit'))
+		set_time_limit(600);
 
 	// 1. Get the list of tickets.
 	$query = $smcFunc['db_query']('', '
@@ -101,7 +102,6 @@ function shd_scheduled_close_tickets()
 		{
 			$rows = array();
 			foreach ($tickets as $ticket)
-			{
 				$rows[] = array(
 					$time, // log_time
 					0, // id_member
@@ -109,12 +109,11 @@ function shd_scheduled_close_tickets()
 					'autoclose', // action
 					$ticket, // id_ticket
 					0, // id_msg
-					serialize(array(
+					json_encode(array(
 						'subject' => $subjects[$ticket],
 						'auto' => true, // indicate to the action log that this is the case
 					)),
 				);
-			}
 
 			$smcFunc['db_insert']('',
 				'{db_prefix}helpdesk_log_action',
@@ -141,7 +140,9 @@ function shd_scheduled_purge_tickets()
 	if (empty($modSettings['shd_autopurge_tickets']) || empty($modSettings['shd_autopurge_tickets_days']))
 		return;
 
-	@set_time_limit(600); // Ten minutes. Is a big job, possibly.
+	// Ten minutes. Is a big job, possibly.
+	if (function_exists('set_time_limit'))
+		set_time_limit(600);
 
 	// 1. Get the list of deleted tickets.
 	$query = $smcFunc['db_query']('', '
@@ -182,10 +183,8 @@ function shd_scheduled_purge_tickets()
 	// 3. Purge that list of threads too new to be deleted
 	$del_time = time() - (86400 * $modSettings['shd_autopurge_tickets_days']);
 	foreach ($tickets as $k => $v)
-	{
 		if ($v == 0 || $v > $del_time)
 			unset($tickets[$k], $subjects[$k]);
-	}
 
 	// Last chance to abort!
 	if (empty($tickets))
@@ -235,4 +234,3 @@ function shd_scheduled_purge_tickets()
 	);
 	// 4.6. Log everything.
 }
-

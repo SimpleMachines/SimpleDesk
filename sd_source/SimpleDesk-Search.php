@@ -1,21 +1,21 @@
 <?php
-###############################################################
-#         Simple Desk Project - www.simpledesk.net            #
-###############################################################
-#       An advanced help desk modifcation built on SMF        #
-###############################################################
-#                                                             #
-#         * Copyright 2010 - SimpleDesk.net                   #
-#                                                             #
-#   This file and its contents are subject to the license     #
-#   included with this distribution, license.txt, which       #
-#   states that this software is New BSD Licensed.            #
-#   Any questions, please contact SimpleDesk.net              #
-#                                                             #
-###############################################################
-# SimpleDesk Version: 2.0 Anatidae                            #
-# File Info: SimpleDesk-Search.php / 2.0 Anatidae             #
-###############################################################
+/**************************************************************
+*          Simple Desk Project - www.simpledesk.net           *
+***************************************************************
+*       An advanced help desk modification built on SMF       *
+***************************************************************
+*                                                             *
+*         * Copyright 2020 - SimpleDesk.net                   *
+*                                                             *
+*   This file and its contents are subject to the license     *
+*   included with this distribution, license.txt, which       *
+*   states that this software is New BSD Licensed.            *
+*   Any questions, please contact SimpleDesk.net              *
+*                                                             *
+***************************************************************
+* SimpleDesk Version: 2.1 Beta 1                              *
+* File Info: SimpleDesk-Search.php                            *
+**************************************************************/
 
 /**
  *	This file handles searching, providing the interface and handling.
@@ -23,18 +23,23 @@
  *	@package source
  *	@since 2.0
 */
-
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
+/**
+ *	The main search handling for tickets, just sets up stuff.
+ *
+ *	@since 1.0
+*/
 function shd_search()
 {
 	global $context, $smcFunc, $txt, $modSettings, $scripturl;
 
 	shd_is_allowed_to('shd_search', 0);
+	loadJavascriptFile('suggest.js', array('defer' => false, 'minimize' => false), 'suggest');
 
 	if (!empty($context['load_average']) && !empty($modSettings['loadavg_search']) && $context['load_average'] >= $modSettings['loadavg_search'])
-		fatal_lang_error('loadavg_search_disabled', false);
+		shd_fatal_lang_error('loadavg_search_disabled', false);
 
 	loadTemplate('sd_template/SimpleDesk-Search');
 
@@ -55,13 +60,17 @@ function shd_search()
 
 	$context['sub_template'] = 'search';
 	$context['page_title'] = $txt['shd_search'];
-
 	$context['linktree'][] = array(
 		'url' => $scripturl . '?action=helpdesk;sa=search',
 		'name' => $txt['shd_search'],
 	);
 }
 
+/**
+ *	All the heavy lifting for search is handled here.
+ *
+ *	@since 1.0
+*/
 function shd_search2()
 {
 	global $context, $smcFunc, $txt, $modSettings, $scripturl, $sourcedir;
@@ -69,7 +78,7 @@ function shd_search2()
 	shd_is_allowed_to('shd_search', 0);
 
 	if (!empty($context['load_average']) && !empty($modSettings['loadavg_search']) && $context['load_average'] >= $modSettings['loadavg_search'])
-		fatal_lang_error('loadavg_search_disabled', false);
+		shd_fatal_lang_error('loadavg_search_disabled', false);
 
 	// No, no, no... this is a bit hard on the server, so don't you go prefetching it!
 	if (isset($_SERVER['HTTP_X_MOZ']) && $_SERVER['HTTP_X_MOZ'] == 'prefetch')
@@ -129,6 +138,23 @@ function shd_search2()
 			$smcFunc['db_free_result']($query);
 		}
 	}
+	else
+	{
+		$visible_depts = shd_allowed_to('access_helpdesk', false);
+		$context['dept_list'] = array();
+		$query = $smcFunc['db_query']('', '
+			SELECT id_dept, dept_name
+			FROM {db_prefix}helpdesk_depts
+			WHERE id_dept IN ({array_int:depts})
+			ORDER BY dept_order',
+			array(
+				'depts' => $visible_depts,
+			)
+		);
+		while ($row = $smcFunc['db_fetch_assoc']($query))
+			$context['dept_list'][$row['id_dept']] = $row['dept_name'];
+		$smcFunc['db_free_result']($query);
+	}
 
 	// Ticket urgency
 	$using_urgency = array();
@@ -161,11 +187,20 @@ function shd_search2()
 	{
 		$status = array();
 		if (!empty($_POST['scope_open']))
+		{
 			$status = array_merge($status, array(TICKET_STATUS_NEW, TICKET_STATUS_PENDING_STAFF, TICKET_STATUS_PENDING_USER, TICKET_STATUS_WITH_SUPERVISOR, TICKET_STATUS_ESCALATED));
+			$context['search_params']['scope_open'] = true;
+		}
 		if (!empty($_POST['scope_closed']))
+		{
 			$status = array_merge($status, array(TICKET_STATUS_CLOSED));
+			$context['search_params']['scope_closed'] = true;
+		}
 		if (!empty($_POST['scope_recycle']))
+		{
 			$status = array_merge($status, array(TICKET_STATUS_DELETED));
+			$context['search_params']['scope_recycle'] = true;
+		}
 
 		$context['search_clauses'][] = 'hdt.status IN ({array_int:status})';
 		$context['search_params']['status'] = $status;
@@ -182,7 +217,7 @@ function shd_search2()
 	}
 
 	// Ticket assigned to
-	$assignees = shd_get_named_people('assignee');
+	$assignees = shd_get_named_people('assigned');
 	if (!empty($assignees))
 	{
 		$context['search_clauses'][] = 'hdt.id_member_assigned IN ({array_int:member_assigned})';
@@ -195,7 +230,13 @@ function shd_search2()
 	if (empty($context['pagenum']) || $context['pagenum'] < 1)
 		$context['pagenum'] = 1;
 
+	// Pages.
+	$context['current_page'] = $context['pagenum'];
+	$context['next_page'] = $context['pagenum'] + 1;
+	$context['prev_page'] = $context['pagenum'] < 2 ? 0 : $context['pagenum'] - 1;
+
 	$number_per_page = 20;
+	$context['num_pages'] = 1;
 
 	// OK, so are there any words? If not, execute this sucker the quick way and get out to the template quick.
 	$context['search_terms'] = !empty($_POST['search']) ? trim($_POST['search']) : '';
@@ -223,21 +264,24 @@ function shd_search2()
 		}
 	}
 
+	// Search type.
+	$context['search_params']['searchtype'] = in_array($_POST['searchtype'], array('any', 'all')) ? $_POST['searchtype'] : 'all';
+
 	// Spam me not!
 	if (empty($_SESSION['lastsearch']))
 		spamProtection('search');
 	else
 	{
-		list($temp_clauses, $temp_params, $temp_terms) = unserialize($_SESSION['lastsearch']);
+		list($temp_clauses, $temp_params, $temp_terms) = smf_json_decode($_SESSION['lastsearch'], true);
 		if ($temp_clauses != $context['search_clauses'] || $temp_params != $context['search_params'] || $temp_terms != $context['search_terms'])
 			spamProtection('search');
 	}
-	$_SESSION['lastsearch'] = serialize(array($context['search_clauses'], $context['search_params'], $context['search_terms']));
+	$_SESSION['lastsearch'] = json_encode(array($context['search_clauses'], $context['search_params'], $context['search_terms']));
 
 	$context['search_params']['start'] = ($context['pagenum'] - 1) * $number_per_page;
 	$context['search_params']['limit'] = $number_per_page;
 
-	if (empty($context['search_terms']))
+	if (empty($context['search_terms']) || empty($tokens) || empty($count_tokens))
 	{
 		// This is where it starts to get expensive, *sob*. We first have to query to get the number of applicable rows.
 		$query = shd_db_query('', '
@@ -246,23 +290,27 @@ function shd_search2()
 			WHERE ' . implode(' AND ', $context['search_clauses']) . ' LIMIT 1000',
 			$context['search_params']
 		);
-		list($count) = $smcFunc['db_fetch_row']($query);
-		if ($count == 0)
+		list($context['num_results']) = $smcFunc['db_fetch_row']($query);
+		if ($context['num_results'] == 0)
 		{
 			$smcFunc['db_free_result']($query);
 			return $context['sub_template'] = 'search_no_results';
 		}
+
 		// OK, at least one result, awesome. Are we off the end of the list?
-		if ($context['search_params']['start'] > $count)
+		if ($context['search_params']['start'] > $context['num_results'])
 		{
-			$context['search_params']['start'] = $count - ($count % $number_per_page);
+			$context['search_params']['start'] = $context['num_results'] - ($context['num_results'] % $number_per_page);
 			$context['pagenum'] = ($context['search_params']['start'] / $number_per_page) + 1;
-			$context['num_results'] = $count;
 		}
+		else
+			$context['pagenum'] = 1;
+
+		$context['num_pages'] = ceil($context['num_results'] / $number_per_page);
 
 		$query = shd_db_query('', '
 			SELECT hdt.id_ticket, hdt.id_dept, hdd.dept_name, hdt.subject, hdt.urgency, hdt.private, hdt.last_updated, hdtr.body,
-				hdtr.smileys_enabled, hdtr.id_member AS id_member, IFNULL(mem.real_name, hdtr.poster_name) AS poster_name, hdtr.poster_time
+				hdtr.smileys_enabled, hdtr.id_member AS id_member, COALESCE(mem.real_name, hdtr.poster_name) AS poster_name, hdtr.poster_time
 			FROM {db_prefix}helpdesk_tickets AS hdt
 				INNER JOIN {db_prefix}helpdesk_ticket_replies AS hdtr ON (hdt.id_first_msg = hdtr.id_msg)
 				INNER JOIN {db_prefix}helpdesk_depts AS hdd ON (hdt.id_dept = hdd.id_dept)
@@ -386,7 +434,7 @@ function shd_search2()
 
 			// Now, we just have a list of tickets to play with. Let's put that together in a master list.
 			foreach ($matches['messages'] as $msg => $ticket_words)
-				$matches['id_msg'][$ticket] = true;
+				$matches['id_msg'][$msg] = true;
 			unset($matches['messages']);
 		}
 
@@ -405,24 +453,28 @@ function shd_search2()
 			WHERE ' . implode(' AND ', $context['search_clauses']) . ' LIMIT 1000',
 			$context['search_params']
 		);
-		list($count) = $smcFunc['db_fetch_row']($query);
-		if ($count == 0)
+		list($context['num_results']) = $smcFunc['db_fetch_row']($query);
+		if ($context['num_results'] == 0)
 		{
 			$smcFunc['db_free_result']($query);
 			return $context['sub_template'] = 'search_no_results';
 		}
+
 		// OK, at least one result, awesome. Are we off the end of the list?
-		if ($context['search_params']['start'] > $count)
+		if ($context['search_params']['start'] > $context['num_results'])
 		{
-			$context['search_params']['start'] = $count - ($count % $number_per_page);
+			$context['search_params']['start'] = $context['num_results'] - ($context['num_results'] % $number_per_page);
 			$context['pagenum'] = ($context['search_params']['start'] / $number_per_page) + 1;
-			$context['num_results'] = $count;
 		}
+		else
+			$context['pagenum'] = 1;
+
+		$context['num_pages'] = ceil($context['num_results'] / $number_per_page);
 
 		// Get the results for displaying.
 		$query = shd_db_query('', '
 			SELECT hdt.id_ticket, hdt.id_dept, hdd.dept_name, hdt.subject, hdt.urgency, hdt.private, hdt.last_updated, hdtr.body,
-				hdtr.smileys_enabled, hdtr.id_member AS id_member, IFNULL(mem.real_name, hdtr.poster_name) AS poster_name, hdtr.poster_time,
+				hdtr.smileys_enabled, hdtr.id_member AS id_member, COALESCE(mem.real_name, hdtr.poster_name) AS poster_name, hdtr.poster_time,
 				hdt.id_first_msg, hdtr.id_msg
 			FROM {db_prefix}helpdesk_ticket_replies AS hdtr
 				INNER JOIN {db_prefix}helpdesk_tickets AS hdt ON (hdt.id_ticket = hdtr.id_ticket)
@@ -450,9 +502,15 @@ function shd_search2()
 	}
 }
 
+/**
+ *	Finds all members specified in a input field and returns their id_member.
+ *
+ *	@since 1.0
+ *	@param string $field The input field containing the names from a SMF autocomplete member box
+*/
 function shd_get_named_people($field)
 {
-	global $smcFunc, $sourcedir, $context;
+	global $smcFunc, $sourcedir, $context, $user_profile;
 
 	if (!isset($context['named_people']))
 		$context['named_people'] = array();
@@ -461,10 +519,16 @@ function shd_get_named_people($field)
 
 	$members = array();
 	// First look for the autosuggest values.
-	if (!empty($_POST[$field . '_name_from']) && is_array($_POST[$field . '_name_from']))
-		foreach ($_POST['starter_name_from'] as $member)
+	if (!empty($_POST[$field . '_name_form']) && is_array($_POST[$field . '_name_form']))
+	{
+		foreach ($_POST[$field . '_name_form'] as $member)
 			if ((int) $member > 0)
 				$members[] = (int) $member;
+
+		foreach (loadMemberData($members, false, 'minimal') as $id_member)
+			if (!isset($context['named_people'][$id_member]))
+				$context['named_people'][$id_member] = $user_profile[$id_member]['real_name'];
+	}
 
 	// Failing that, let's look at the name itself for those without JS.
 	if (!empty($_POST[$field . '_name']))
@@ -485,23 +549,12 @@ function shd_get_named_people($field)
 		{
 			$foundMembers = findMembers($namedlist);
 
-			// Assume all are not found, until proven otherwise.
-			$namesNotFound[$recipientType] = $namedlist;
-
 			foreach ($foundMembers as $member)
 			{
-				$testNames = array(
-					$smcFunc['strtolower']($member['username']),
-					$smcFunc['strtolower']($member['name']),
-					$smcFunc['strtolower']($member['email']),
-				);
+				$members[] = $member['id'];
 
-				if (count(array_intersect($testNames, $namedRecipientList[$recipientType])) !== 0)
-				{
-					$members[] = $member['id'];
-
-					$context['named_people'][$member['id']] = $member['real_name'];
-				}
+				if (!isset($context['named_people'][$member['id']]))
+					$context['named_people'][$member['id']] = $member['name'];
 			}
 		}
 	}

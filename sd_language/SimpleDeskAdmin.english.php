@@ -1,22 +1,22 @@
 <?php
-###############################################################
-#         Simple Desk Project - www.simpledesk.net            #
-###############################################################
-#       An advanced help desk modifcation built on SMF        #
-###############################################################
-#                                                             #
-#         * Copyright 2010 - SimpleDesk.net                   #
-#                                                             #
-#   This file and its contents are subject to the license     #
-#   included with this distribution, license.txt, which       #
-#   states that this software is New BSD Licensed.            #
-#   Any questions, please contact SimpleDesk.net              #
-#                                                             #
-###############################################################
-# SimpleDesk Version: 2.0 Anatidae                            #
-# File Info: SimpleDeskAdmin.english.php / 2.0 Anatidae       #
-###############################################################
-// Version: 2.0 Anatidae; SimpleDesk administration options
+/**************************************************************
+*          Simple Desk Project - www.simpledesk.net           *
+***************************************************************
+*       An advanced help desk modification built on SMF       *
+***************************************************************
+*                                                             *
+*         * Copyright 2020 - SimpleDesk.net                   *
+*                                                             *
+*   This file and its contents are subject to the license     *
+*   included with this distribution, license.txt, which       *
+*   states that this software is New BSD Licensed.            *
+*   Any questions, please contact SimpleDesk.net              *
+*                                                             *
+***************************************************************
+* SimpleDesk Version: 2.1 Beta 1                              *
+* File Info: SimpleDeskAdmin.english.php                      *
+**************************************************************/
+// Version: 2.1; SimpleDesk administration options
 
 // Important! Before editing these language files please read the text at the top of index.english.php.
 
@@ -57,6 +57,7 @@ $txt['lang_file_desc_SimpleDeskWho'] = 'Who\'s Online';
 // Admin menu items, the ones that aren't in SimpleDesk.english.php anyway...
 $txt['shd_admin_standalone_options'] = 'Standalone Mode';
 $txt['shd_admin_actionlog'] = 'Action Log';
+$txt['shd_admin_adminlog'] = 'Admin Log';
 $txt['shd_admin_support'] = 'Support';
 $txt['shd_admin_helpdesklog'] = 'Helpdesk Log';
 
@@ -79,6 +80,7 @@ $txt['shd_admin_options_standalone_desc'] = 'This area manages the standalone mo
 $txt['shd_admin_options_actionlog_desc'] = 'This area allows you to configure what items can be logged within the helpdesk action log.';
 $txt['shd_admin_options_notifications_desc'] = 'This area allows you to configure email notifications being sent to users when their tickets change.';
 $txt['shd_admin_actionlog_desc'] = 'This is a list of all actions, such as resolved tickets, edited tickets and more, carried out in the helpdesk.';
+$txt['shd_admin_adminlog_desc'] = 'This is a list of all admin actions, such as changed options, canned replies, department changes.';
 $txt['shd_admin_support_desc'] = 'This area will help you get through to SimpleDesk.net quickly and effectively - the post will include some information helpful for our Support team, about your installation (like SMF version and SimpleDesk version).';
 $txt['shd_admin_help'] = 'This is the administration panel for the helpdesk. Here you can manage settings, get news and updates on this modification, and view helpdesk logs.';
 //@}
@@ -155,6 +157,12 @@ $txt['shd_disable_unread'] = 'Disable integration with Unread Posts/Unread Repli
 $txt['shd_disable_unread_note'] = 'Normally, SimpleDesk adds a list of topics to the unread posts/unread replies page but sometimes (e.g. certain mobile themes) this does not always work so well.';
 $txt['shd_zerofill'] = 'Smallest number of digits to use';
 $txt['shd_zerofill_note'] = 'Ticket numbers are normally expressed like 00001, this would be 5 digits, and ticket 100000 would have no extra digits. You can use 0 to not have any leading zeroes if you like.';
+$txt['shd_block_order_1'] = 'Tickets Block: 1st position';
+$txt['shd_block_order_2'] = 'Tickets Block: 2nd position';
+$txt['shd_block_order_3'] = 'Tickets Block: 3rd position';
+$txt['shd_block_order_4'] = 'Tickets Block: 4th position';
+$txt['shd_block_order_5'] = 'Tickets Block: 5th position';
+$txt['shd_block_order_note'] = 'Specify the default order of blocks';
 //@}
 
 //! @name Configuration items on the Posting Options page
@@ -253,11 +261,56 @@ $txt['shd_admin_actionlog_removeall'] = 'Empty out the entire log';
 $txt['shd_admin_actionlog_removeall_confirm'] = 'This will permanently delete all entries in the action log older than %s hours. Are you sure?';
 //@}
 
+//! @name General language strings for the admin log
+//@{
+$txt['shd_admin_adminlog_title'] = 'Helpdesk Admin log';
+$txt['shd_admin_adminlog_action'] = 'Action';
+$txt['shd_admin_adminlog_name'] = 'Name';
+$txt['shd_admin_adminlog_to'] = 'To';
+$txt['shd_admin_adminlog_from'] = 'From';
+$txt['shd_admin_adminlog_setting'] = 'Setting';
+$txt['shd_log_admin_canned'] = 'Canned Replies';
+$txt['shd_log_admin_customfield'] = 'Custom Fields';
+$txt['shd_log_admin_maint'] = 'Maintenance';
+$txt['shd_log_admin_permissions'] = 'Permissions';
+$txt['shd_log_admin_plugins'] = 'Plugins';
+$txt['shd_log_admin_dept'] = 'Departments';
+$txt['shd_log_admin_change_option'] = 'Options';
+$txt['shd_log_admin_canned_cat_move'] = 'Sorted Category';
+$txt['shd_log_admin_canned_cat_delete'] = 'Deleted Category';
+$txt['shd_log_admin_canned_cat_add'] = 'Added Category';
+$txt['shd_log_admin_canned_cat_update'] = 'Updated Category';
+$txt['shd_log_admin_canned_reply_move'] = 'Sorted Reply';
+$txt['shd_log_admin_canned_reply_delete'] = 'Deleted Reply';
+$txt['shd_log_admin_canned_reply_add'] = 'Added Canned Reply';
+$txt['shd_log_admin_canned_reply_update'] = 'Updated Reply';
+$txt['shd_log_admin_dept_move'] = 'Sorted';
+$txt['shd_log_admin_dept_delete'] = 'Deleted';
+$txt['shd_log_admin_dept_add'] = 'Added';
+$txt['shd_log_admin_dept_update'] = 'Update';
+$txt['shd_log_admin_customfield_move'] = 'Sorted';
+$txt['shd_log_admin_customfield_delete'] = 'Deleted';
+$txt['shd_log_admin_customfield_add'] = 'Added';
+$txt['shd_log_admin_customfield_update'] = 'Updated';
+$txt['shd_log_admin_customfield_move'] = 'Sorted';
+$txt['shd_log_admin_maint_reattribute'] = 'Reattributed Tickets';
+$txt['shd_log_admin_maint_move_dept'] = 'Moved Tickets to Department';
+$txt['shd_log_admin_maint_findrepair'] = 'Ran Find and Repair';
+$txt['shd_log_admin_maint_clean_cache'] = 'Ran Clean Cache';
+$txt['shd_log_admin_maint_search_rebuild'] = 'Rebuilt Search';
+$txt['shd_log_admin_permissions_create_role'] = 'Added';
+$txt['shd_log_admin_permissions_delete_role'] = 'Deleted';
+$txt['shd_log_admin_permissions_change_role'] = 'Updated';
+$txt['shd_log_admin_permissions_copy_role'] = 'Duplicated';
+$txt['shd_log_admin_plugins_update'] = 'Updated';
+$txt['shd_log_admin_plugins_remove'] = 'Removed';
+//@}
+
 //! @name Strings for the post-to-SimpleDesk.net support page
 //@{
 $txt['shd_admin_support_form_title'] = 'Support form';
 $txt['shd_admin_support_what_is_this'] = 'What is this?';
-$txt['shd_admin_support_explanation'] = 'This simple form will allow you to send a support request directly to the SimpleDesk website so that the support team there can help you solve any issue you run in to.<br /><br />Please note that you will need an account on our website in order to post as well as replying to your topic in the future. This form will simply speed up the posting process.';
+$txt['shd_admin_support_explanation'] = 'This simple form will allow you to send a support request directly to the SimpleDesk website so that the support team there can help you solve any issue you run in to.<br><br>Please note that you will need an account on our website in order to post as well as replying to your topic in the future. This form will simply speed up the posting process.';
 $txt['shd_admin_support_send'] = 'Send support request';
 //@}
 
@@ -451,7 +504,7 @@ $txt['shd_dept_autoclose_days_note'] = 'Use 0 to indicate that tickets in this d
 
 //! Plugins
 //@{
-$txt['shd_admin_plugins_packman'] = 'SimpleDesk Plugins';
+$txt['sdplugin_package'] = 'SimpleDesk Plugins';
 $txt['shd_install_plugin'] = 'Install Plugin';
 $txt['shd_admin_plugins_homedesc'] = 'This area allows you to manage any additional components for SimpleDesk. They are installed through the Package Manager as regular mods, and configured from here.';
 $txt['shd_admin_plugins_none'] = 'No plugins are currently installed.';
@@ -459,6 +512,10 @@ $txt['shd_admin_plugins_writtenby'] = 'Written by';
 $txt['shd_admin_plugins_website'] = 'Website';
 $txt['shd_admin_plugins_wrong_version'] = 'Not supported by this version!';
 $txt['shd_admin_plugins_versions_avail'] = 'Supported by the plugin';
+$txt['shd_admin_plugins_on'] = 'On';
+$txt['shd_admin_plugins_off'] = 'Off';
+ $txt['shd_admin_plugins_enabled'] = 'Enabled';
+$txt['shd_admin_plugins_disabled'] = 'Disabled';
 $txt['shd_admin_plugins_languages'] = 'Available languages';
 $txt['shd_admin_plugins_lang_albanian'] = 'Albanian';
 $txt['shd_admin_plugins_lang_arabic'] = 'Arabic';
@@ -518,13 +575,16 @@ $txt['shd_admin_maint_reattribute_desc'] = 'If a user\'s account has been remove
 $txt['shd_admin_maint_reattribute_posts_made'] = 'Reattribute tickets and replies made by:';
 $txt['shd_admin_maint_reattribute_posts_user'] = 'This user name';
 $txt['shd_admin_maint_reattribute_posts_email'] = 'This email address';
+$txt['shd_admin_maint_reattribute_posts_starter'] = 'Ticket Starter';
 $txt['shd_admin_maint_reattribute_posts_to'] = 'And attach them to this user account:';
 $txt['shd_admin_maint_reattribute_btn'] = 'Reattribute now';
 $txt['shd_admin_maint_reattribute_success'] = 'All tickets and posts that could be found were reattributed. You should probably run the "Find and Repair Errors" maintenance option from within Helpdesk Maintenance now. (Otherwise, some tickets may not show up correctly.)';
 $txt['shd_reattribute_confirm'] = 'Are you sure you want to attribute all tickets and replies (from the previously deleted account) with %type% of "%find%" to member "%member_to%"?';
+$txt['shd_reattribute_confirm_starter'] = 'Are you sure you want to attribute all ticket starters of "%find%" to member "%member_to%"?';
 $txt['shd_reattribute_confirm_username'] = 'a username';
 $txt['shd_reattribute_confirm_email'] = 'an email address';
 $txt['shd_reattribute_cannot_find_member'] = 'The helpdesk could not find the user to reattribute tickets and replies to.';
+$txt[''] = 'The helpdesk could not find the orignal user to reattribute tickets and replies to.';
 $txt['shd_reattribute_no_email'] = 'No email address was supplied.';
 $txt['shd_reattribute_no_user'] = 'No username was supplied.';
 $txt['shd_reattribute_no_messages'] = 'No messages were found to be re-attributed.';
@@ -564,7 +624,7 @@ $txt['shd_maint_invalid_dept'] = '%1$d ticket(s) were listed as being in departm
 $txt['shd_maint_search_settings'] = 'Search Settings';
 $txt['shd_maint_search_settings_desc'] = 'This page allows you to configure how ticket searching may be performed, and if necessary, rebuild the index used to perform searching.';
 $txt['shd_maint_rebuild_index'] = 'Rebuild the Search Index';
-$txt['shd_maint_rebuild_index_desc'] = 'If you have existing tickets that were around prior to the search facility being provided, or you alter the settings below, you will <strong>need</strong> to rebuild the index after. The index is what is physically used to search, and if the physical index setup is different to how searches are made, you will find searching very unrealiable.<br /><strong>Important:</strong> Building the search index is a very intensive task. It will take a while to carry out, during which time please leave this window open.';
+$txt['shd_maint_rebuild_index_desc'] = 'If you have existing tickets that were around prior to the search facility being provided, or you alter the settings below, you will <strong>need</strong> to rebuild the index after. The index is what is physically used to search, and if the physical index setup is different to how searches are made, you will find searching very unrealiable.<br><strong>Important:</strong> Building the search index is a very intensive task. It will take a while to carry out, during which time please leave this window open.';
 $txt['shd_maint_search_settings_warning'] = 'If you alter these settings, you will need to rebuild the search index.';
 $txt['shd_search_min_size'] = 'Minimum number of letters to be considered a word (3-15)';
 $txt['shd_search_max_size'] = 'Maximum number of letters to be considered a word (3-15)';
@@ -578,4 +638,7 @@ $txt['shd_search_rebuilt'] = 'The search index has been rebuilt.';
  *	@ignore
  *	Warning: He may bite.
 */
+//! Ignore
+//@{
 $txt['shd_fluffy'] = 'Guardian of the <span %s>cookies</span>';
+//@}
