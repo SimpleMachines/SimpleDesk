@@ -50,7 +50,7 @@ function shd_init()
 	$context['shd_home'] = 'action=helpdesk;sa=main';
 
 	// What SD version are we on? It's now here!
-	define('SHD_VERSION', 'SimpleDesk 2.1 Beta 1');
+	define('SHD_VERSION', 'SimpleDesk 2.1 RC1');
 
 	// This isn't the SMF way. But for something like this, it's way way more logical and readable.
 	define('TICKET_STATUS_NEW', 0);
