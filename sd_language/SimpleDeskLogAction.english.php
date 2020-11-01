@@ -13,7 +13,7 @@
 *   Any questions, please contact SimpleDesk.net              *
 *                                                             *
 ***************************************************************
-* SimpleDesk Version: 2.1 Beta 1                              *
+* SimpleDesk Version: 2.1 RC1                                 *
 * File Info: SimpleDeskLogAction.english.php                  *
 **************************************************************/
 // Version: 2.1; SimpleDesk action log

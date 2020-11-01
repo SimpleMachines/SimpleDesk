@@ -1,21 +1,21 @@
 <?php
-/**************************************************************
-*          Simple Desk Project - www.simpledesk.net           *
-***************************************************************
-*       An advanced help desk modification built on SMF       *
-***************************************************************
-*                                                             *
-*         * Copyright 2020 - SimpleDesk.net                   *
-*                                                             *
-*   This file and its contents are subject to the license     *
-*   included with this distribution, license.txt, which       *
-*   states that this software is New BSD Licensed.            *
-*   Any questions, please contact SimpleDesk.net              *
-*                                                             *
-***************************************************************
-* SimpleDesk Version: 2.1 Beta 1                              *
-* File Info: Subs-SimpleDeskPackages.php                      *
-**************************************************************/
+###############################################################
+#         Simple Desk Project - www.simpledesk.net            #
+###############################################################
+#       An advanced help desk modification built on SMF       #
+###############################################################
+#                                                             #
+#         * Copyright 2015 - SimpleDesk.net                   #
+#                                                             #
+#   This file and its contents are subject to the license     #
+#   included with this distribution, license.txt, which       #
+#   states that this software is New BSD Licensed.            #
+#   Any questions, please contact SimpleDesk.net              #
+#                                                             #
+###############################################################
+# SimpleDesk Version: 2.1                                     #
+# File Info: Subs-SimpleDeskPackages.php / 2.1                #
+###############################################################
 
 /**
  *	This file handles integrations into SMF.
@@ -23,6 +23,7 @@
  *	@package subs
  *	@since 2.1
  */
+
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
@@ -39,7 +40,6 @@ function shd_packages_sort_id(&$sort_id, &$packages)
 	global $context;
 
 	$sort_id['sdplugin'] = 1;
-	$packages['sdplugin'] = array();
 	$context['available_sdplugin'] = array();
 }
 
@@ -78,5 +78,5 @@ function shd_modification_types()
 {
 	global $context, $txt;
 
-	$context['modification_types'][] = 'sdplugin';
+	//$context['modification_types'][] = 'sdplugin';
 }
