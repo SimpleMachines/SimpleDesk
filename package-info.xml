@@ -3,7 +3,7 @@
 <package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
 	<id>SimpleDeskTeam:SimpleDesk</id>
 	<name>SimpleDesk - Integrated Helpdesk for Simple Machines Forum</name>
-	<version>2.1</version>
+	<version>2.1 RC1</version>
 	<type>modification</type>
 
 	<install for="1.1.*, 2.0.*, 2.1 Beta 1, 2.1 Beta 2, Beta 3, 2.1 Beta 4, 2.1 RC1, 2.1 RC2">
@@ -46,19 +46,19 @@
 		<!-- All the hooks -->
 			<!-- SMF Core -->
 		<hook hook="integrate_pre_include" function="$sourcedir/sd_source/Subs-SimpleDesk.php" />
-		<hook hook="integrate_user_info" function="shd_init" />
-		<hook hook="integrate_actions" function="shd_init_actions" />
-		<hook hook="integrate_buffer" function="shd_buffer_replace" />
-		<hook hook="integrate_menu_buttons" function="shd_main_menu" />
-		<hook hook="integrate_load_permissions" function="shd_admin_smf_perms" />
+		<hook hook="integrate_user_info" function="shd_init" file="$sourcedir/sd_source/Subs-SimpleDesk.php" />
+		<hook hook="integrate_actions" function="shd_init_actions" file="$sourcedir/sd_source/Subs-SimpleDesk.php" />
+		<hook hook="integrate_buffer" function="shd_buffer_replace" file="$sourcedir/sd_source/Subs-SimpleDesk.php" />
+		<hook hook="integrate_menu_buttons" function="shd_main_menu" file="$sourcedir/sd_source/Subs-SimpleDesk.php" />
+		<hook hook="integrate_load_permissions" function="shd_admin_smf_perms" file="$sourcedir/sd_source/Subs-SimpleDeskAdmin.php" />
 		<hook hook="integrate_error_types" function="shd_error_types" file="$sourcedir/sd_source/Subs-SimpleDesk.php" />
 		<hook hook="integrate_bbc_codes" function="shd_bbc_codes" file="$sourcedir/sd_source/Subs-SimpleDesk.php" />
 		<hook hook="integrate_post_parsebbc" function="shd_parse_wikilinks" file="$sourcedir/sd_source/Subs-SimpleDesk.php" />
 
 			<!-- Admin Section: Core -->
 		<hook hook="integrate_admin_include" function="$sourcedir/sd_source/Subs-SimpleDeskAdmin.php" />
-		<hook hook="integrate_admin_areas" function="shd_admin_bootstrap" />
-		<hook hook="integrate_admin_search" function="shd_admin_search" />
+		<hook hook="integrate_admin_areas" function="shd_admin_bootstrap" file="$sourcedir/sd_source/Subs-SimpleDeskAdmin.php" />
+		<hook hook="integrate_admin_search" function="shd_admin_search" file="$sourcedir/sd_source/Subs-SimpleDeskAdmin.php" />
 
 			<!-- Admin Section: Attachments -->
 		<hook hook="integrate_remove_attachments" function="shd_remove_attachments" file="$sourcedir/sd_source/Subs-SimpleDeskAdmin.php" />
@@ -72,11 +72,11 @@
 		<hook hook="integrate_modification_types" function="shd_modification_types" file="$sourcedir/sd_source/Subs-SimpleDeskPackages.php" />
 
 			<!-- Admin Section: Other -->
-		<hook hook="integrate_convert_msgbody" function="shd_convert_msgbody" />
-		<hook hook="integrate_modifylanguages" function="shd_modifylanguages" />
+		<hook hook="integrate_convert_msgbody" function="shd_convert_msgbody" file="$sourcedir/sd_source/Subs-SimpleDeskAdmin.php" />
+		<hook hook="integrate_modifylanguages" function="shd_modifylanguages" file="$sourcedir/sd_source/Subs-SimpleDeskAdmin.php" />
 
 			<!-- Display -->
-		<hook hook="integrate_display_buttons" function="shd_display_btn_mvtopic" />
+		<hook hook="integrate_display_buttons" function="shd_display_btn_mvtopic" file="$sourcedir/sd_source/Subs-SimpleDesk.php" />
 
 			<!-- ShowAttachments -->
 		<hook hook="integrate_download_request" function="shd_download_request" file="$sourcedir/sd_source/Subs-SimpleDeskDisplay.php" />
@@ -86,8 +86,8 @@
 
 			<!-- Profile -->
 		<hook hook="integrate_pre_profile_areas" function="shd_profile_areas" file="$sourcedir/sd_source/Subs-SimpleDeskProfile.php" />
-		<hook hook="integrate_profile_profileSaveGroups" function="shd_clear_active_tickets" />
-		<hook hook="integrate_profile_trackip" function="shd_profile_trackip" />
+		<hook hook="integrate_profile_profileSaveGroups" function="shd_clear_active_tickets" file="$sourcedir/sd_source/Subs-SimpleDesk.php" />
+		<hook hook="integrate_profile_trackip" function="shd_profile_trackip" file="$sourcedir/sd_source/Subs-SimpleDeskProfile.php" />
 
 			<!-- Other -->
 		<hook hook="integrate_SSI" function="ssi_shd_called" file="$sourcedir/sd_source/SimpleDesk-SSI.php" />
@@ -96,6 +96,8 @@
 		<database>install-sd.php</database>
 
 		<redirect url="?action=admin;area=helpdesk_info" />
+
+		<credits url="https://www.simpledesk.net" license="BSD 3-Clause" licenseurl="https://github.com/SimpleMachines/SimpleDesk/blob/master/license.txt" copyright="2010-2020">Simple Desk</credits>
 	</install>
 
 	<uninstall for="2.1 RC3, 2.1 RC4, 2.1.0-2.1.99">
@@ -105,52 +107,52 @@
 
 		<!-- All the hooks -->
 			<!-- SMF Core -->
-		<hook hook="integrate_pre_include" function="$sourcedir/sd_source/Subs-SimpleDesk.php" reverse="true" />
-		<hook hook="integrate_user_info" function="shd_init" reverse="true" />
-		<hook hook="integrate_actions" function="shd_init_actions" reverse="true" />
-		<hook hook="integrate_buffer" function="shd_buffer_replace" reverse="true" />
-		<hook hook="integrate_menu_buttons" function="shd_main_menu" reverse="true" />
-		<hook hook="integrate_load_permissions" function="shd_admin_smf_perms" reverse="true" />
-		<hook hook="integrate_error_types" function="shd_error_types" file="$sourcedir/sd_source/Subs-SimpleDesk.php" reverse="true" />
-		<hook hook="integrate_bbc_codes" function="shd_bbc_codes" file="$sourcedir/sd_source/Subs-SimpleDesk.php" reverse="true" />
-		<hook hook="integrate_post_parsebbc" function="shd_parse_wikilinks" file="$sourcedir/sd_source/Subs-SimpleDesk.php" reverse="true" />
+		<hook reverse="true" hook="integrate_pre_include" function="$sourcedir/sd_source/Subs-SimpleDesk.php" />
+		<hook reverse="true" hook="integrate_user_info" function="shd_init" file="$sourcedir/sd_source/Subs-SimpleDesk.php" />
+		<hook reverse="true" hook="integrate_actions" function="shd_init_actions" file="$sourcedir/sd_source/Subs-SimpleDesk.php" />
+		<hook reverse="true" hook="integrate_buffer" function="shd_buffer_replace" file="$sourcedir/sd_source/Subs-SimpleDesk.php" />
+		<hook reverse="true" hook="integrate_menu_buttons" function="shd_main_menu" file="$sourcedir/sd_source/Subs-SimpleDesk.php" />
+		<hook reverse="true" hook="integrate_load_permissions" function="shd_admin_smf_perms" file="$sourcedir/sd_source/Subs-SimpleDeskAdmin.php" />
+		<hook reverse="true" hook="integrate_error_types" function="shd_error_types" file="$sourcedir/sd_source/Subs-SimpleDesk.php" />
+		<hook reverse="true" hook="integrate_bbc_codes" function="shd_bbc_codes" file="$sourcedir/sd_source/Subs-SimpleDesk.php" />
+		<hook reverse="true" hook="integrate_post_parsebbc" function="shd_parse_wikilinks" file="$sourcedir/sd_source/Subs-SimpleDesk.php" />
 
 			<!-- Admin Section: Core -->
-		<hook hook="integrate_admin_include" function="$sourcedir/sd_source/Subs-SimpleDeskAdmin.php" reverse="true" />
-		<hook hook="integrate_admin_areas" function="shd_admin_bootstrap" reverse="true" />
-		<hook hook="integrate_admin_search" function="shd_admin_search" reverse="true" />
+		<hook reverse="true" hook="integrate_admin_include" function="$sourcedir/sd_source/Subs-SimpleDeskAdmin.php" />
+		<hook reverse="true" hook="integrate_admin_areas" function="shd_admin_bootstrap" file="$sourcedir/sd_source/Subs-SimpleDeskAdmin.php" />
+		<hook reverse="true" hook="integrate_admin_search" function="shd_admin_search" file="$sourcedir/sd_source/Subs-SimpleDeskAdmin.php" />
 
 			<!-- Admin Section: Attachments -->
-		<hook hook="integrate_remove_attachments" function="shd_remove_attachments" file="$sourcedir/sd_source/Subs-SimpleDeskAdmin.php" reverse="true" />
-		<hook hook="integrate_attachments_browse" function="shd_attachments_browse" file="$sourcedir/sd_source/Subs-SimpleDeskManageAttachments.php" reverse="true" />
-		<hook hook="integrate_attachment_remove" function="shd_attachment_remove" file="$sourcedir/sd_source/Subs-SimpleDeskManageAttachments.php" reverse="true" />
+		<hook reverse="true" hook="integrate_remove_attachments" function="shd_remove_attachments" file="$sourcedir/sd_source/Subs-SimpleDeskAdmin.php" />
+		<hook reverse="true" hook="integrate_attachments_browse" function="shd_attachments_browse" file="$sourcedir/sd_source/Subs-SimpleDeskManageAttachments.php" />
+		<hook reverse="true" hook="integrate_attachment_remove" function="shd_attachment_remove" file="$sourcedir/sd_source/Subs-SimpleDeskManageAttachments.php" />
 
 			<!-- Admin Section: Packages -->
-		<hook hook="integrate_packages_sort_id" function="shd_packages_sort_id" file="$sourcedir/sd_source/Subs-SimpleDeskPackages.php" reverse="true" />
-		<hook hook="integrate_package_download" function="shd_package_download" file="$sourcedir/sd_source/Subs-SimpleDeskPackages.php" reverse="true" />
-		<hook hook="integrate_package_upload" function="shd_package_upload" file="$sourcedir/sd_source/Subs-SimpleDeskPackages.php" reverse="true" />
-		<hook hook="integrate_modification_types" function="shd_modification_types" file="$sourcedir/sd_source/Subs-SimpleDeskPackages.php" reverse="true" />
+		<hook reverse="true" hook="integrate_packages_sort_id" function="shd_packages_sort_id" file="$sourcedir/sd_source/Subs-SimpleDeskPackages.php" />
+		<hook reverse="true" hook="integrate_package_download" function="shd_package_download" file="$sourcedir/sd_source/Subs-SimpleDeskPackages.php" />
+		<hook reverse="true" hook="integrate_package_upload" function="shd_package_upload" file="$sourcedir/sd_source/Subs-SimpleDeskPackages.php" />
+		<hook reverse="true" hook="integrate_modification_types" function="shd_modification_types" file="$sourcedir/sd_source/Subs-SimpleDeskPackages.php" />
 
 			<!-- Admin Section: Other -->
-		<hook hook="integrate_convert_msgbody" function="shd_convert_msgbody" reverse="true" />
-		<hook hook="integrate_modifylanguages" function="shd_modifylanguages" reverse="true" />
+		<hook reverse="true" hook="integrate_convert_msgbody" function="shd_convert_msgbody" file="$sourcedir/sd_source/Subs-SimpleDeskAdmin.php" />
+		<hook reverse="true" hook="integrate_modifylanguages" function="shd_modifylanguages" file="$sourcedir/sd_source/Subs-SimpleDeskAdmin.php" />
 
 			<!-- Display -->
-		<hook hook="integrate_display_buttons" function="shd_display_btn_mvtopic" reverse="true" />
+		<hook reverse="true" hook="integrate_display_buttons" function="shd_display_btn_mvtopic" file="$sourcedir/sd_source/Subs-SimpleDesk.php" />
 
 			<!-- ShowAttachments -->
-		<hook hook="integrate_download_request" function="shd_download_request" file="$sourcedir/sd_source/Subs-SimpleDeskDisplay.php" reverse="true" />
+		<hook reverse="true" hook="integrate_download_request" function="shd_download_request" file="$sourcedir/sd_source/Subs-SimpleDeskDisplay.php" />
 
 			<!-- BoardIndex -->
-		<hook hook="integrate_getboardtree" function="shd_add_to_boardindex" file="$sourcedir/sd_source/Subs-SimpleDeskBoardIndex.php" reverse="true" />
+		<hook reverse="true" hook="integrate_getboardtree" function="shd_add_to_boardindex" file="$sourcedir/sd_source/Subs-SimpleDeskBoardIndex.php" />
 
 			<!-- Profile -->
-		<hook hook="integrate_pre_profile_areas" function="shd_profile_areas" file="$sourcedir/sd_source/Subs-SimpleDeskProfile.php" reverse="true" />
-		<hook hook="integrate_profile_profileSaveGroups" function="shd_clear_active_tickets" reverse="true" />
-		<hook hook="integrate_profile_trackip" function="shd_profile_trackip" reverse="true" />
+		<hook reverse="true" hook="integrate_pre_profile_areas" function="shd_profile_areas" file="$sourcedir/sd_source/Subs-SimpleDeskProfile.php" />
+		<hook reverse="true" hook="integrate_profile_profileSaveGroups" function="shd_clear_active_tickets" file="$sourcedir/sd_source/Subs-SimpleDesk.php" />
+		<hook reverse="true" hook="integrate_profile_trackip" function="shd_profile_trackip" file="$sourcedir/sd_source/Subs-SimpleDeskProfile.php" />
 
 			<!-- Other -->
-		<hook hook="integrate_SSI" function="ssi_shd_called" file="$sourcedir/sd_source/SimpleDesk-SSI.php" reverse="true" />
+		<hook reverse="true" hook="integrate_SSI" function="ssi_shd_called" file="$sourcedir/sd_source/SimpleDesk-SSI.php" />
 
 		<!-- language files, removed -->
 		<remove-dir name="$themes_dir/default/languages/sd_language" />
