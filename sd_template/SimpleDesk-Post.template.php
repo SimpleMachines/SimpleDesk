@@ -623,12 +623,6 @@ function template_ticket_additional_options()
 	template_show_attachments();
 	template_add_attachments();
 
-<<<<<<< HEAD
-	if (empty($context['current_attachments']) && empty($context['ticket_form']['do_attach']))
-	{
-		echo '
-					</div>';
-=======
 	echo '
 					</div>';
 
@@ -650,9 +644,7 @@ function template_show_attachments()
 	global $context, $txt;
 
 	if (empty($context['current_attachments']))
->>>>>>> smf21
 		return;
-	}
 
 	echo '
 						<dl id="postAttachment">
