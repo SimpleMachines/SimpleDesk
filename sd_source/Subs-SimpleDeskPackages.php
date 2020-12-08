@@ -13,7 +13,7 @@
 *   Any questions, please contact SimpleDesk.net              *
 *                                                             *
 ***************************************************************
-* SimpleDesk Version: 2.1 Beta 1                              *
+* SimpleDesk Version: 2.1 RC1                                 *
 * File Info: Subs-SimpleDeskPackages.php                      *
 **************************************************************/
 
@@ -23,6 +23,7 @@
  *	@package subs
  *	@since 2.1
  */
+
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
@@ -39,7 +40,6 @@ function shd_packages_sort_id(&$sort_id, &$packages)
 	global $context;
 
 	$sort_id['sdplugin'] = 1;
-	$packages['sdplugin'] = array();
 	$context['available_sdplugin'] = array();
 }
 
