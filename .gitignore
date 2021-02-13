@@ -9,3 +9,4 @@ css/helpdesk_custom.css
 node_modules
 package.json
 yarn.lock
+.eslintrc.js
