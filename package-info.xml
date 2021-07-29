@@ -10,7 +10,7 @@
 		<readme lang="english" parsebbc="true" type="inline">This mod is [b]not compatible[/b] with your version of SMF, it requires 2.1 RC3 or later.</readme>
 	</install>
 
-	<install for="2.1 RC3, 2.1 RC4, 2.1.0-2.1.99">
+	<install for="2.1 RC4, 2.1.0-2.1.99">
 		<!-- readme files -->
 		<readme lang="english" parsebbc="true" type="file">language-readme/readme.english.txt</readme>
 
@@ -100,7 +100,7 @@
 		<credits url="https://www.simpledesk.net" license="BSD 3-Clause" licenseurl="https://github.com/SimpleMachines/SimpleDesk/blob/master/license.txt" copyright="2010-2020">Simple Desk</credits>
 	</install>
 
-	<uninstall for="2.1 RC3, 2.1 RC4, 2.1.0-2.1.99">
+	<uninstall for="2.1 RC4, 2.1.0-2.1.99">
 		<!-- database changes, undone -->
 		<database>uninstall-sd-optional.php</database>
 		<code type="file">uninstall-sd-required.php</code>
