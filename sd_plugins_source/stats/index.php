@@ -5,7 +5,7 @@
 *       An advanced help desk modification built on SMF       *
 ***************************************************************
 *                                                             *
-*         * Copyright 2020 - SimpleDesk.net                   *
+*         * Copyright 2021 - SimpleDesk.net                   *
 *                                                             *
 *   This file and its contents are subject to the license     *
 *   included with this distribution, license.txt, which       *
