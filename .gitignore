@@ -6,3 +6,6 @@
 sd_plugins_lang/SDPlugin*.php
 sd_plugins_source/*
 css/helpdesk_custom.css
+node_modules
+package.json
+yarn.lock
