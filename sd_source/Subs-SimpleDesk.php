@@ -1837,7 +1837,7 @@ function shd_main_menu(&$menu_buttons)
 		);
 	}
 
-	if (shd_allowed_to(array('shd_view_profile_own', 'shd_view_profile_any'), 0))
+	if (shd_allowed_to(array('shd_view_profile_own', 'shd_view_profile_any'), 0) && empty($modSettings['shd_hideprofilemenuitem']))
 	{
 		// Hmm, this could be tricky. It's possible the main menu has been eaten by permissions at this point, so just in case, reconstruct what's missing.
 		if (empty($menu_buttons['profile']))
@@ -2018,6 +2018,30 @@ function shd_main_menu_admin($helpdesk_admin)
 	);
 }
 // Cause IE is being mean to meeee again...!
+
+/**
+ *	Add the SimpleDesk options to the profile popup menu.
+ *
+ *	@param array &$menu_buttons The main menu buttons as provided by Subs.php.
+ *	@since 2.1
+*/
+function shd_profile_menu(&$profile_items)
+{
+	global $modSettings, $txt, $scripturl;
+
+	if (empty($modSettings['helpdesk_active']))
+		return;
+
+	if (!shd_allowed_to(array('shd_view_profile_own', 'shd_view_profile_any'), 0) || !empty($modSettings['shd_hidemenuitem']))
+		return;
+
+	$profile_items[] = array(
+		'menu' => 'helpdesk',
+		'area' => 'hd_profile',		
+		'title' => $txt['shd_helpdesk_profile'],
+		'url' => $scripturl . '?action=profile;area=hd_profile',
+	);
+}
 
 /**
  *	Detect a SHD error and move it to the proper error type.
