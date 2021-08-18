@@ -397,6 +397,7 @@ function shd_modify_display_options($return_config)
 		array('int', 'shd_zerofill', 'subtext' => $txt['shd_zerofill_note']),
 		'',
 		array('check', 'shd_hidemenuitem', 'subtext' => $txt['shd_hidemenuitem_note']),
+		array('check', 'shd_hideprofilemenuitem', 'subtext' => $txt['shd_hideprofilemenuitem_note']),
 		'',
 		array('check', 'shd_disable_unread', 'subtext' => $txt['shd_disable_unread_note']),
 		array('check', 'shd_disable_boardint', 'subtext' => $txt['shd_disable_boardint_note']),
