@@ -5,7 +5,7 @@
 *       An advanced help desk modification built on SMF       *
 ***************************************************************
 *                                                             *
-*         * Copyright 2020 - SimpleDesk.net                   *
+*         * Copyright 2021 - SimpleDesk.net                   *
 *                                                             *
 *   This file and its contents are subject to the license     *
 *   included with this distribution, license.txt, which       *
@@ -397,6 +397,7 @@ function shd_modify_display_options($return_config)
 		array('int', 'shd_zerofill', 'subtext' => $txt['shd_zerofill_note']),
 		'',
 		array('check', 'shd_hidemenuitem', 'subtext' => $txt['shd_hidemenuitem_note']),
+		array('check', 'shd_hideprofilemenuitem', 'subtext' => $txt['shd_hideprofilemenuitem_note']),
 		'',
 		array('check', 'shd_disable_unread', 'subtext' => $txt['shd_disable_unread_note']),
 		array('check', 'shd_disable_boardint', 'subtext' => $txt['shd_disable_boardint_note']),

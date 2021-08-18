@@ -1,4 +1,5 @@
 /* Javascript for the main Helpdesk */
+/*global ajax_indicator smf_prepareScriptUrl smf_scripturl sceditor shd_sendJSONDocument in_array shd_quickTicketJump shd_ajax_problem shd_quickTicketJump oEditorHandle_shd_message*/
 
 /* Implant a JSON handler for Ajax */
 function shd_getJSONDocument(sUrl, funcCallback, sMethod)
@@ -26,6 +27,7 @@ function shd_getJSONDocument(sUrl, funcCallback, sMethod)
 	return oMyDoc;
 }
 
+// eslint-disable-next-line no-unused-vars
 function shd_sendJSONDocument(sUrl, oData, funcCallback)
 {
 	ajax_indicator(true);
@@ -74,9 +76,8 @@ shd_privacyControl.prototype.callback = function (oRecvd)
 		alert(oRecvd.error);
 	else if (oRecvd && oRecvd.message)
 		$('#' + this.opt.sDestSpan).html(oRecvd.message);
-	else
-		if (confirm(shd_ajax_problem))
-			window.location = smf_scripturl + '?action=helpdesk;sa=privacychange;ticket=' + this.opt.ticket + ';' + this.opt.sSession;
+	else if (confirm(shd_ajax_problem))
+		window.location = smf_scripturl + '?action=helpdesk;sa=privacychange;ticket=' + this.opt.ticket + ';' + this.opt.sSession;
 
 	return false;
 }
@@ -92,7 +93,7 @@ shd_urgencyControl.prototype.init = function ()
 {
 	for (var i in this.opt.aButtonOps)
 	{
-		if (!this.opt.aButtonOps.hasOwnProperty(i))
+		if (!Object.prototype.hasOwnProperty.call(this.opt.aButtonOps, i))
 			continue;
 
 		var oDiv = $('#urglink_' + this.opt.aButtonOps[i]);
@@ -141,7 +142,7 @@ shd_urgencyControl.prototype.callback = function (oRecvd)
 		var btn_set = ['increase', 'decrease'];
 		for (var i in btn_set)
 		{
-			if (!btn_set.hasOwnProperty(i))
+			if (!Object.prototype.hasOwnProperty.call(btn_set, i))
 				continue;
 
 			var oBtn = oRecvd[btn_set[i]];
@@ -151,9 +152,8 @@ shd_urgencyControl.prototype.callback = function (oRecvd)
 		// Attach JS events to new links
 		this.init();
 	}
-	else
-		if (confirm(shd_ajax_problem))
-			window.location = smf_scripturl + '?action=helpdesk;sa=urgencychange;ticket=' + this.opt.iTicketId + ';change=' + this.opt.aButtonOps[this.direction] + ';' + this.opt.sSession;
+	else if (confirm(shd_ajax_problem))
+		window.location = smf_scripturl + '?action=helpdesk;sa=urgencychange;ticket=' + this.opt.iTicketId + ';change=' + this.opt.aButtonOps[this.direction] + ';' + this.opt.sSession;
 
 	return false;
 }
@@ -169,7 +169,6 @@ shd_urgencyControl.prototype.clickList = function ()
 shd_urgencyControl.prototype.expandList = function ()
 {
 	this.bCollapsed = false;
-console.log('shd_urgencyControl.prototype.expandList:', this.opt.sSelectButtonId, $('#' + this.opt.sSelectButtonId), this.opt.sImageExpanded);
 	$('#urgency_' + this.opt.sSelf).attr('src', this.opt.sImageExpanded);
 
 	// Fetch the list of items
@@ -188,11 +187,11 @@ shd_urgencyControl.prototype.expandList_callback = function (oRecvd)
 		var cur = 0;
 		for (var i in oRecvd.urgencies)
 		{
-			if (!oRecvd.urgencies.hasOwnProperty(i))
+			if (!Object.prototype.hasOwnProperty.call(oRecvd.urgencies, i))
 				continue;
 
 			cur = oRecvd.urgencies[i];
-			selected = cur.selected ? ' selected="selected"' : '';
+			var selected = cur.selected ? ' selected="selected"' : '';
 			newhtml += '<option class="shd_urgencies" data-id="' + cur.id + '"' + selected + '>' + cur.name + '</option>';
 		}
 
@@ -239,7 +238,7 @@ function shd_attach_select(oOptions)
 	shd_attach_select.prototype.id = 0;
 	shd_attach_select.prototype.max = (oOptions.max) ? oOptions.max : -1;
 	shd_attach_select.prototype.addElement(document.getElementById(shd_attach_select.prototype.opts.file_item));
-};
+}
 
 shd_attach_select.prototype.addElement = function (element)
 {
@@ -293,7 +292,7 @@ shd_attach_select.prototype.checkExtension = function (filename)
 		return false; // pfft, didn't specify anything
 	}
 
-	var dot = filename.lastIndexOf(".");
+	var dot = filename.lastIndexOf('.');
 	if (dot == -1)
 	{
 		shd_attach_select.prototype.opts.message_ext_error_final = shd_attach_select.prototype.opts.message_ext_error.replace(' ({ext})', '');
@@ -308,7 +307,7 @@ shd_attach_select.prototype.checkExtension = function (filename)
 			for (var i = -1, j = arr.length; ++i < j;)
 				if (arr[i] === obj) return true;
 			return false;
-    };
+		};
 	var value = func(arr, ext);
 	if (!value)
 		shd_attach_select.prototype.opts.message_ext_error_final = shd_attach_select.prototype.opts.message_ext_error.replace('{ext}', ext);
@@ -346,7 +345,7 @@ shd_attach_select.prototype.checkActive = function()
 	var session_attach = 0;
 	for (var i in elements)
 	{
-		if (!elements.hasOwnProperty(i))
+		if (!Object.prototype.hasOwnProperty.call(elements, i))
 			continue;
 
 		if (elements[i] && elements[i].type == 'checkbox' && elements[i].name == 'attach_del[]' && elements[i].checked === true)
@@ -411,6 +410,7 @@ CannedReply.prototype.onReplyReceived = function (oRecvd)
 }
 
 // The quick jump function
+// eslint-disable-next-line no-unused-vars
 function shd_quickTicketJump(id_ticket)
 {
 	window.location.href = smf_prepareScriptUrl(smf_scripturl) + '?action=helpdesk;sa=ticket;ticket=' + id_ticket;
@@ -459,7 +459,7 @@ AjaxAssign.prototype.expand_callback = function (oRecvd)
 		var cur = 0;
 		for (var i in oRecvd.members)
 		{
-			if (!oRecvd.members.hasOwnProperty(i))
+			if (!Object.prototype.hasOwnProperty.call(oRecvd.members, i))
 				continue;
 
 			cur = oRecvd.members[i];
@@ -514,7 +514,7 @@ shd_notifications.prototype.init = function ()
 
 shd_notifications.prototype.receiveNotifications = function ()
 {
-	shd_getJSONDocument(smf_prepareScriptUrl(smf_scripturl) + "action=helpdesk;sa=ajax;op=notify;ticket=" + this.ticketId + ";" + this.opt.sSessionVar + '=' + this.opt.sSessionId + (this.opt.sPinglist ? ";" + this.opt.sPinglist : ''), this.onReceiveNotifications.bind(this));
+	shd_getJSONDocument(smf_prepareScriptUrl(smf_scripturl) + 'action=helpdesk;sa=ajax;op=notify;ticket=' + this.ticketId + ';' + this.opt.sSessionVar + '=' + this.opt.sSessionId + (this.opt.sPinglist ? ';' + this.opt.sPinglist : ''), this.onReceiveNotifications.bind(this));
 	return false;
 }
 
@@ -537,7 +537,7 @@ shd_notifications.prototype.onReceiveNotifications = function (oRecvd)
 		temphtml = '';
 		for (i in oRecvd.being_notified)
 		{
-			if (!oRecvd.being_notified.hasOwnProperty(i))
+			if (!Object.prototype.hasOwnProperty.call(oRecvd.being_notified, i))
 				continue;
 
 			cur = oRecvd.being_notified[i];
@@ -554,9 +554,9 @@ shd_notifications.prototype.onReceiveNotifications = function (oRecvd)
 		subtemplate = this.opt.oOptionalTemplate;
 
 		temphtml = '';
-		for (var i in oRecvd.optional)
+		for (i in oRecvd.optional)
 		{
-			if (!oRecvd.optional.hasOwnProperty(i))
+			if (!Object.prototype.hasOwnProperty.call(oRecvd.optional, i))
 				continue;
 
 			cur = oRecvd.optional[i];
@@ -584,7 +584,7 @@ shd_notifications.prototype.onReceiveNotifications = function (oRecvd)
 		temphtml = '';
 		for (i in oRecvd.optional_butoff)
 		{
-			if (!oRecvd.optional_butoff.hasOwnProperty(i))
+			if (!Object.prototype.hasOwnProperty.call(oRecvd.optional_butoff, i))
 				continue;
 
 			cur = oRecvd.optional_butoff[i];
@@ -624,7 +624,7 @@ goAdvanced.prototype.init = function()
 		', .' + this.opt.sSmileyContainerEditorClass +
 		', .' + this.opt.sAttachContainerId +
 		', #' + this.opt.sAdditionalOptionsContainerId
-		).hide();
+	).hide();
 }
 
 goAdvanced.prototype.click = function(e)

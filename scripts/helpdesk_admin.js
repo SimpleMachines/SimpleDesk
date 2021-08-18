@@ -1,4 +1,5 @@
 /* Javascript for the main Helpdesk Admin */
+/*global shd_sendJSONDocument sceditor reqOverlayDiv submitonce submitThisOnce */
 
 // Handle the JavaScript surrounding the admin center.
 $(document).ready(function(){
@@ -215,7 +216,7 @@ shd_custom_field_order.prototype.move = function (clickedKey, clickedOrder, move
 		return;
 
 	// Put this into the right place.
-	newOrder = this.cloneArray(currentOrder);
+	var newOrder = this.cloneArray(currentOrder);
 	newOrder.splice(clickedOrder, 1);
 	newOrder.splice(movedOrder, 0, clickedKey);
 
@@ -293,6 +294,9 @@ shd_AttributeValidate.prototype.init = function ()
 
 	/* After typing a key */
 	$('#' + this.opt.sEmailContainerId + ', #' + this.opt.sStarterContainerId + ', #' + this.opt.sFromContainerId + ', #' + this.opt.sToContainerId).keyup(this.validator.bind(this));
+
+	/* Do the actual thing */
+	$('#' + this.opt.sDoAttributeContainerId).on('click', this.click.bind(this));
 }
 
 /* Reattribute Posts: Does a radio change and processes the validator */
@@ -319,30 +323,41 @@ shd_AttributeValidate.prototype.validator = function ()
 	if (!$('#' + this.opt.sToContainerId).val())
 		this.valid = false;
 
-	warningMessage = this.origText.replace(/%member_to%/, $('#' + this.opt.sToContainerId).value);
+	this.warningMessage = this.origText.replace(/%member_to%/, $('#' + this.opt.sToContainerId).val());
 
-	if ($('#' + this.opt.sTypeEmailContainerId).is(":checked"))
+	if (this.valid && $('#' + this.opt.sTypeEmailContainerId).is(':checked'))
 	{
-		$('#' + this.opt.sStarterContainerId + ', #' + this.opt.sFromContainerId).val("");
-			this.valid = $('#' + this.opt.sEmailContainerId).val() != '';
-		warningMessage = warningMessage.replace(/%type%/, this.opt.sEmailConfirmText).replace(/%find%/, $('#' + this.opt.sEmailContainerId).val());
+		$('#' + this.opt.sStarterContainerId + ', #' + this.opt.sFromContainerId).val('');
+		this.valid = $('#' + this.opt.sEmailContainerId).val() != '';
+		this.warningMessage = this.warningMessage.replace(/%type%/, this.opt.sEmailConfirmText).replace(/%find%/, $('#' + this.opt.sEmailContainerId).val());
 	}
-	else if ($('#' + this.opt.sTypeStarterContainerId).is(":checked"))
+	else if (this.valid && $('#' + this.opt.sTypeStarterContainerId).is(':checked'))
 	{
-		$('#' + this.opt.sEmailContainerId + ' #' + this.opt.sFromContainerId).val("");
+		$('#' + this.opt.sEmailContainerId + ' #' + this.opt.sFromContainerId).val('');
 
-			this.valid = $('#' + this.opt.sStarterContainerId).val() != '';
-		warningMessage = this.origTextStarter.replace(/%member_to%/, $('#' + this.opt.sToContainerId).val()).replace(/%find%/, $('#' + this.opt.sStarterContainerId).val());			
+		this.valid = $('#' + this.opt.sStarterContainerId).val() != '';
+		this.warningMessage = this.origTextStarter.replace(/%member_to%/, $('#' + this.opt.sToContainerId).val()).replace(/%find%/, $('#' + this.opt.sStarterContainerId).val());			
 	}
-	else
+	else if (this.valid)
 	{
-		$('#' + this.opt.sEmailContainerId + ' #' + this.opt.sStarterContainerId).val("");
+		$('#' + this.opt.sEmailContainerId + ' #' + this.opt.sStarterContainerId).val('');
 
 		this.valid = $('#' + this.opt.sFromContainerId).val() != '';
-		warningMessage = warningMessage.replace(/%type%/, this.opt.sFromConfirmText).replace(/%find%/, $('#' + this.opt.sFromContainerId).val());
+		this.warningMessage = this.warningMessage.replace(/%type%/, this.opt.sFromConfirmText).replace(/%find%/, $('#' + this.opt.sFromContainerId).val());
 	}
 
-	$('#' + this.opt.sDoAttributeContainerId).prop("disabled", this.valid ? false : true);
+	$('#' + this.opt.sDoAttributeContainerId).prop('disabled', this.valid ? false : true);
+}
+
+/* Reattribute Posts: When they click */
+shd_AttributeValidate.prototype.click = function (event)
+{
+	event.preventDefault();
+
+	if (this.valid)
+		return confirm(this.warningMessage);
+	else
+		return false;
 }
 
 /* Roles Management */
@@ -415,7 +430,7 @@ shd_role.prototype.toggleBlock = function (e, block)
 	$('#' + this.opt.sBlockIcon.replace('%block%', block)).css('display', '');
 }
 
-shd_role.prototype.formConfirm = function (e)
+shd_role.prototype.formConfirm = function ()
 {
 	return confirm(this.opt.sDeleteConfirmText);
 }
@@ -429,8 +444,6 @@ function shd_cannedReplies(oOpts)
 	// Build our URL.
 	this.opt.sUrl = this.opt.sUrlBase +
 		';' + this.opt.sSessionVar + '=' + this.opt.sSessionId;
-
-console.log('shd_cannedReplies:', this.opt.sUrl);
 }
 
 shd_cannedReplies.prototype.init = function ()

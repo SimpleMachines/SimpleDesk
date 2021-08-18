@@ -56,7 +56,7 @@
 }
 
 /* Main Menu */
-#main_menu .main_icons.helpdesk::before {
+#main_menu .main_icons.helpdesk::before, .profile_user_links .main_icons.hd_profile::before{
 	background: url(../images/simpledesk/icons/shd_generic_icons.png) no-repeat;
 	background-position: -65px -116px;
 }

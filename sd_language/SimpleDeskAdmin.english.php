@@ -5,7 +5,7 @@
 *       An advanced help desk modification built on SMF       *
 ***************************************************************
 *                                                             *
-*         * Copyright 2020 - SimpleDesk.net                   *
+*         * Copyright 2021 - SimpleDesk.net                   *
 *                                                             *
 *   This file and its contents are subject to the license     *
 *   included with this distribution, license.txt, which       *
@@ -153,6 +153,8 @@ $txt['shd_theme_note'] = 'Normally the helpdesk will inherit the theme a user ha
 $txt['shd_theme_use_default'] = 'Use the forum default theme';
 $txt['shd_hidemenuitem'] = 'Hide the Helpdesk menu item?';
 $txt['shd_hidemenuitem_note'] = 'This is most useful if helpdesk departments are presented on the board index.';
+$txt['shd_hideprofilemenuitem'] = 'Hide the Helpdesk Profile menu item?';
+$txt['shd_hideprofilemenuitem_note'] = 'If you are using the user menu, this is useful to hide.';
 $txt['shd_disable_unread'] = 'Disable integration with Unread Posts/Unread Replies';
 $txt['shd_disable_unread_note'] = 'Normally, SimpleDesk adds a list of topics to the unread posts/unread replies page but sometimes (e.g. certain mobile themes) this does not always work so well.';
 $txt['shd_zerofill'] = 'Smallest number of digits to use';
