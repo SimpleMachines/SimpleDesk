@@ -1599,6 +1599,9 @@ function shd_init_actions(&$actionArray)
 	if (empty($modSettings['helpdesk_active']))
 		return;
 
+	// Load some extra CSS
+	loadCSSFile('helpdesk_icons.css', array('minimize' => empty($context['shd_developer_mode']), 'seed' => $context['shd_css_version']), 'helpdesk_icons');
+
 	// Deal with SimpleDesk. If we're enabling HD only mode, rebuild everything, otherwise just add it to the array.
 	$actionArray['helpdesk'] = array('sd_source/SimpleDesk.php', 'shd_main');
 
@@ -1704,9 +1707,6 @@ function shd_main_menu(&$menu_buttons)
 
 	if (empty($modSettings['helpdesk_active']))
 		return;
-
-	// Load some extra CSS
-	loadCSSFile('helpdesk_icons.css', array('minimize' => empty($context['shd_developer_mode']), 'seed' => $context['shd_css_version']), 'helpdesk_icons');
 
 	// Stuff we'll always do in SD if active
 	$helpdesk_admin = $context['user']['is_admin'] || shd_allowed_to('admin_helpdesk', 0);
