@@ -581,6 +581,11 @@ function shd_members_allowed_to($permission, $dept = 0)
 {
 	global $smcFunc;
 
+	static $lookups = array();
+
+	if (isset($lookups[$permission], $lookups[$permission][$dept]))
+		return $lookups[$permission][$dept];
+
 	$member_groups = shd_groups_allowed_to($permission, $dept);
 
 	$request = $smcFunc['db_query']('', '
@@ -600,6 +605,12 @@ function shd_members_allowed_to($permission, $dept = 0)
 		$members[] = $row['id_member'];
 	$smcFunc['db_free_result']($request);
 
+	if (isset($lookups[$permission]))
+		$lookups[$permission] = array();
+
+	if (isset($lookups[$permission][$dept]))
+		$lookups[$permission][$dept] = $members;
+
 	return $members;
 }
 
@@ -614,6 +625,11 @@ function shd_members_allowed_to($permission, $dept = 0)
 function shd_groups_allowed_to($permission, $dept = 0)
 {
 	global $smcFunc, $context;
+
+	static $lookups = array();
+
+	if (isset($lookups[$permission], $lookups[$permission][$dept]))
+		return $lookups[$permission][$dept];
 
 	// Admins are allowed to do anything.
 	$member_groups = array(
@@ -684,6 +700,12 @@ function shd_groups_allowed_to($permission, $dept = 0)
 
 	// 4. All done, just clear up groups and send 'em home
 	$member_groups['allowed'] = array_diff($member_groups['allowed'], array_diff($member_groups['denied'], array(1)));
+
+	if (isset($lookups[$permission]))
+		$lookups[$permission] = array();
+
+	if (isset($lookups[$permission][$dept]))
+		$lookups[$permission][$dept] = $member_groups;
 
 	return $member_groups;
 }
