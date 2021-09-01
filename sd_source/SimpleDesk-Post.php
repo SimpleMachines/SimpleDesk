@@ -2044,6 +2044,8 @@ function shd_handle_attachments()
 				'tmp_name' => $uplfile['tmp_name'],
 				'size' => $uplfile['size'],
 				'id_folder' => $modSettings['currentAttachmentUploadDir'],
+				'mime_type' => !empty($uplfile['type']) ? $uplfile['type'] : get_mime_type($uplfile['tmp_name'], true),
+				'approved' => 1,
 			);
 
 			if (createAttachment($attachmentOptions))
