@@ -1586,9 +1586,24 @@ function scheduled_simpledesk()
 }
 
 /**
+ *	Load the CSS file for the icons.
+ *
+ *	@param array &$current_action The current action.
+ *
+ *	@since 2.1
+*/
+function shd_init_current_action(&$current_action)
+{
+	global $context;
+
+	// Load some extra CSS
+	loadCSSFile('helpdesk_icons.css', array('minimize' => empty($context['shd_developer_mode']), 'seed' => $context['shd_css_version']), 'helpdesk_icons');
+}
+
+/**
  *	Adds the SimpleDesk action to the action list, and also handles most of the shutting down of forum items in helpdesk-only mode.
  *
- *	@param string &$actionArray The master list of actions from index.php
+ *	@param array &$actionArray The master list of actions from index.php
  *
  *	@since 2.0
 */
@@ -1598,9 +1613,6 @@ function shd_init_actions(&$actionArray)
 
 	if (empty($modSettings['helpdesk_active']))
 		return;
-
-	// Load some extra CSS
-	loadCSSFile('helpdesk_icons.css', array('minimize' => empty($context['shd_developer_mode']), 'seed' => $context['shd_css_version']), 'helpdesk_icons');
 
 	// Deal with SimpleDesk. If we're enabling HD only mode, rebuild everything, otherwise just add it to the array.
 	$actionArray['helpdesk'] = array('sd_source/SimpleDesk.php', 'shd_main');
