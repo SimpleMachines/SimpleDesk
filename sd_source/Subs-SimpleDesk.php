@@ -1594,10 +1594,18 @@ function scheduled_simpledesk()
 */
 function shd_init_current_action(&$current_action)
 {
-	global $context;
+	global $context, $modSettings;
 
 	// Load some extra CSS
 	loadCSSFile('helpdesk_icons.css', array('minimize' => empty($context['shd_developer_mode']), 'seed' => $context['shd_css_version']), 'helpdesk_icons');
+	
+	// In helpdesk only mode, disable PMs if we choose to, this is repeated here due to caching.
+	if (!empty($modSettings['shd_helpdesk_only']) && !empty($modSettings['shd_disable_pm']))
+		$context['allow_pm'] = false;
+
+	// In helpdesk only mode, disable Memberlist if we choose to, this is repeated here due to caching.
+	if (!empty($modSettings['shd_helpdesk_only']) && !empty($modSettings['shd_disable_pm']))
+		$context['allow_memberlist'] = false;
 }
 
 /**
