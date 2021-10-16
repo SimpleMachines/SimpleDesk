@@ -43,11 +43,6 @@
 	.shd_profile_navigation {
 		margin-right: 0;
 	}
-	input[type="checkbox"]
-	{
-		height: 15px;
-		width: 15px;
-	}
 	.sd_lower_columns .shd_ticket_leftcolumn {
 		display: flex;
 		gap: 10px;
@@ -55,7 +50,11 @@
 	.sd_lower_columns .shd_ticket_leftcolumn .shd_attachmentcolumn {
 		flex-basis: 50%;
 	}
-
+		.shd_ticket_leftcolumn.floatleft {
+		display: none;
+		width: 100%;
+		float: none !important;
+	}
 }
 
 @media screen and (max-width: 480px) {
@@ -71,5 +70,8 @@
 	}
 	.sd_lower_columns .shd_ticket_leftcolumn .shd_attachmentcolumn {
 		flex-basis: 100%;
+	}
+	.shd_ticket_leftcolumn {
+		width: 100%;
 	}
 }
