@@ -60,13 +60,13 @@ function template_viewticket()
 					<strong>', $txt['shd_ticket_details'], '</strong>
 					<hr>
 					<dl class="stats nobb">
-						<dt><span class="generic_icons inbox" title="', $txt['shd_ticket_id'], '"></span> ', $txt['shd_ticket_id'], ':</dt>
+						<dt><span class="main_icons inbox" title="', $txt['shd_ticket_id'], '"></span> ', $txt['shd_ticket_id'], ':</dt>
 						<dd>', $context['ticket']['display_id'], '</dd>
 
-						<dt><span class="generic_icons members" title="', $txt['shd_ticket_user'], '"></span> ', $txt['shd_ticket_user'], ':</dt>
+						<dt><span class="main_icons members" title="', $txt['shd_ticket_user'], '"></span> ', $txt['shd_ticket_user'], ':</dt>
 						<dd>', $context['ticket']['member']['link'], '</dd>
 
-						<dt><span class="generic_icons calendar" title="', $txt['shd_ticket_date'], '"></span> ', $txt['shd_ticket_date'], ':</dt>
+						<dt><span class="main_icons calendar" title="', $txt['shd_ticket_date'], '"></span> ', $txt['shd_ticket_date'], ':</dt>
 						<dd>', $context['ticket']['poster_time'], '</dd>
 
 						<dt><img src="', $settings['default_images_url'], '/simpledesk/urgency.png" alt="" class="shd_smallicon"> ', $txt['shd_ticket_urgency'], ':</dt>
@@ -753,8 +753,8 @@ function template_viewreplies()
 					<a id="new"></a>';
 
 			echo '
-					<div class="', (!empty($context['ticket']['display_recycle']) && $reply['message_status'] == MSG_STATUS_DELETED ? ' errorbox ' : ''), 'windowbg" id="msg', $reply['id'], '">
-						<span class="floatleft shd_posterinfo">
+					<div class="ticket_replies_container', (!empty($context['ticket']['display_recycle']) && $reply['message_status'] == MSG_STATUS_DELETED ? ' errorbox' : ''), ' windowbg" id="msg', $reply['id'], '">
+						<span class="shd_posterinfo">
 							<strong class="shd_postername">
 								', $reply['member']['link'], '
 							</strong>
@@ -769,10 +769,10 @@ function template_viewreplies()
 							</span>';
 
 			if ($modSettings['shd_staff_badge'] == (!empty($reply['is_staff']) ? 'staffbadge' : 'userbadge') || $modSettings['shd_staff_badge'] == 'bothbadge')
-				echo '<br>
+				echo '
 							', $reply['member']['group_icons'];
 			elseif (!empty($reply['is_staff']) && $modSettings['shd_staff_badge'] == 'nobadge')
-				echo '<br>
+				echo '
 							<img src="', $settings['default_images_url'] . '/simpledesk/staff.png" class="shd_smallicon" title="', $txt['shd_ticket_staff'], '" alt="', $txt['shd_ticket_staff'], '">';
 
 			echo '
@@ -850,15 +850,15 @@ function template_viewreplies()
 
 			template_inline_attachments($reply['id']);
 
-			echo '
-						</div>';
-
 			if (!empty($reply['ip_address']))
 				echo '
-						<span class="floatright"><img src="', $settings['default_images_url'], '/simpledesk/ip.png" alt="" class="shd_smallicon"> ', $txt['shd_ticket_ip'], ': ', $reply['ip_address'], '</span>';
+							<span class="floatright">
+								<img src="', $settings['default_images_url'], '/simpledesk/ip.png" alt="" class="shd_smallicon"> 
+								', $txt['shd_ticket_ip'], ': ', $reply['ip_address'], '
+							</span>';
 
 			echo '
-						<br>
+						</div>
 					</div>';
 		}
 	}

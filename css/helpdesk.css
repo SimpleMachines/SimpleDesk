@@ -83,6 +83,7 @@ span.shd_new_tickets {
 
 .shd_smallicon {
 	max-width: initial;
+	vertical-align: middle;
 }
 
 /* The page index color looks ugly with our theme. */
@@ -103,6 +104,10 @@ h3.ticketheader img {
 	top: 2px;
 	position: relative;
 	margin-right: 2px;
+}
+
+#ticket img {
+	vertical-align: middle;
 }
 
 /* Ticket details (Left-floated box) */
@@ -297,10 +302,23 @@ form#postmodify .shd_ticket_roundframe {
 /**********************************
 * Ticket replies				 *
 ***********************************/
+.ticket_replies_container {
+	display: flex;
+	gap: 15px;
+	flex-wrap: wrap;
+}
+/* Something to keep it look good */
+#replies .ticket_replies_container:last-of-type {
+	border-bottom-left-radius: 0;
+	border-bottom-right-radius: 0;
+}
+.ticket_replies_container .postarea {
+	margin: 0;
+	flex-grow: 2;
+}
 .shd_posterinfo {
 	width: 14em;
 	text-align: center;
-	margin-left: 3px;
 	overflow: hidden;
 }
 .shd_postername {
@@ -314,8 +332,7 @@ form#postmodify .shd_ticket_roundframe {
 	max-width: 10.5em;
 }
 .shd_replyarea {
-	padding-left: 14em;
-	margin-left: 10px;
+	flex-grow: 2;
 }
 
 .shd_reply .avatar {
@@ -500,12 +517,6 @@ dl.stats dd span, dl.stats dt span {
 
 .shd_icon_fullhead {
 	position: relative;
-}
-
-/* Something to keep it look good */
-#replies .windowbg:last-of-type {
-	border-bottom-left-radius: 0;
-	border-bottom-right-radius: 0;
 }
 
 /* Helpdesk table-width*/
