@@ -107,17 +107,16 @@ h3.ticketheader img {
 
 /* Ticket details (Left-floated box) */
 .shd_ticket_side_column {
-	float: left;
 	width: 23%;
-	padding: 0 5px 5px 5px;
+	padding: 0;
 }
 .shd_ticketdetails {
 	overflow: auto;
 	float: left;
 	width: 100%;
 }
-.shd_ticketdetails .shd_smallicon {
-	padding-top: 7px;
+.shd_ticketdetails img.shd_smallicon {
+	vertical-align: middle;
 }
 .shd_customfields {
 	width: 66%;
@@ -139,9 +138,11 @@ form#postmodify .shd_ticket_roundframe {
 }
 .shd_ticket {
 	min-height: 250px;
+	display: flex;
+	gap: 20px;
 }
 .shd_ticket_description {
-	margin-left: 23%;
+	flex-grow: 2;
 }
 
 #shd_ticket_text {
