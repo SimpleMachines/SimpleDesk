@@ -842,10 +842,10 @@ function template_viewreplies()
 			}
 		}
 
-			if (!empty($settings['show_modify']) && !empty($reply['modified']))
+			if (!empty($modSettings['show_modify']) && !empty($reply['modified']))
 				echo '
 							<div class="smalltext shd_modified" style="margin-top:20px;">
-								&#171; <em>', $txt['last_edit'], ': ', $reply['modified']['time'], ' ', $txt['by'], ' ', $reply['modified']['link'], '</em> &#187;
+								&#171; <em>', sprintf($txt['last_edit_by'], $reply['modified']['time'], $reply['modified']['link']), '</em> &#187;
 							</div>';
 
 			template_inline_attachments($reply['id']);

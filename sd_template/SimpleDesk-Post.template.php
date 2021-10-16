@@ -422,7 +422,7 @@ function template_ticket_content()
 						<hr><br>
 							', $context['ticket_form']['message'];
 
-	if (!empty($settings['show_modify']) && !empty($context['ticket']['modified']))
+	if (!empty($modSettings['show_modify']) && !empty($context['ticket']['modified']))
 		echo '
 						<div class="smalltext shd_modified" style="margin-top:20px;">
 							&#171; <em>', $txt['last_edit'], ': ', $context['ticket']['modified']['time'], ' ', $txt['by'], ' ', $context['ticket']['modified']['link'], '</em> &#187;
@@ -557,9 +557,9 @@ function template_ticket_cannedreplies()
 
 function template_ticket_footer()
 {
-	global $settings, $context, $txt;
+	global $settings, $context, $txt, $modSettings;
 
-	if (!empty($settings['show_modify']) && !empty($context['ticket_form']['modified']))
+	if (!empty($modSettings['show_modify']) && !empty($context['ticket_form']['modified']))
 		echo '
 						<div class="smalltext shd_modified">
 							&#171; <em>', $txt['last_edit'], ': ', $context['ticket_form']['modified']['time'], ' ', $txt['by'], ' ', $context['ticket_form']['modified']['link'], '</em> &#187;
@@ -836,7 +836,7 @@ function template_ticket_do_single_reply($reply)
 							', $reply['body'], '
 							<br><br>';
 
-	if (!empty($settings['show_modify']) && !empty($reply['modified']))
+	if (!empty($modSettings['show_modify']) && !empty($reply['modified']))
 		echo '
 							<div class="smalltext shd_modified">
 								&#171; <em>', $txt['last_edit'], ': ', $reply['modified']['time'], ' ', $txt['by'], ' ', $reply['modified']['link'], '</em> &#187;

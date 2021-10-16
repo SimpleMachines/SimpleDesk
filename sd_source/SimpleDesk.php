@@ -291,6 +291,7 @@ function shd_main()
 	$context['start'] = isset($_REQUEST['start']) ? $_REQUEST['start'] : 0;
 
 	loadCSSFile('helpdesk.css', array('minimize' => false, 'seed' => $context['shd_css_version']), 'helpdesk');
+	loadCSSFile('helpdesk_responsive.css', array('minimize' => false, 'seed' => $context['shd_css_version']), 'helpdesk_responsive');
 	loadJavascriptFile('helpdesk.js', array('defer' => false, 'minimize' => false), 'helpdesk');
 
 	// Custom settings?
