@@ -96,7 +96,8 @@ function template_ticket_info()
 	// General ticket details
 	echo '
 					<div class="shd_ticketdetails">
-						<strong><img src="', $settings['default_images_url'], '/simpledesk/details.png" alt="" class="shd_smallicon"> ', $txt['shd_ticket_details'], '</strong>
+						<img src="', $settings['default_images_url'], '/simpledesk/details.png" alt="" class="shd_smallicon">
+						<strong> ', $txt['shd_ticket_details'], '</strong>
 						<hr>
 						<ul class="reset">';
 

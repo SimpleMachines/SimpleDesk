@@ -50,13 +50,14 @@ function template_viewticket()
 				<img src="', $settings['default_images_url'], '/simpledesk/ticket.png" alt="x"> ', $txt['shd_ticket'], ' [', $context['ticket']['display_id'], ']
 			</h3>
 		</div>
-		<div class="windowbg noup">
+		<div class="windowbg noup shd_ticket">
 			<div class="shd_ticket_side_column">';
 
 			// General ticket details
 			echo '
 				<div class="shd_ticketdetails">
-					<strong><img src="', $settings['default_images_url'], '/simpledesk/details.png" alt="" class="shd_smallicon shd_icon_minihead"> ', $txt['shd_ticket_details'], '</strong>
+					<img src="', $settings['default_images_url'], '/simpledesk/details.png" alt="" class="shd_smallicon shd_icon_minihead"> 
+					<strong>', $txt['shd_ticket_details'], '</strong>
 					<hr>
 					<dl class="stats nobb">
 						<dt><span class="generic_icons inbox" title="', $txt['shd_ticket_id'], '"></span> ', $txt['shd_ticket_id'], ':</dt>
