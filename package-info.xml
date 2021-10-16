@@ -99,7 +99,7 @@
 
 		<redirect url="?action=admin;area=helpdesk_info" />
 
-		<credits url="https://www.simpledesk.net" license="BSD 3-Clause" licenseurl="https://github.com/SimpleMachines/SimpleDesk/blob/master/license.txt" copyright="2010-2020">Simple Desk</credits>
+		<credits url="https://www.simpledesk.net" license="BSD 3-Clause" licenseurl="https://github.com/SimpleMachines/SimpleDesk/blob/master/license.txt" copyright="2010-2021">Simple Desk</credits>
 	</install>
 
 	<uninstall for="2.1 RC4, 2.1.0-2.1.99">
