@@ -759,7 +759,8 @@ function template_viewreplies()
 								', $reply['member']['link'], '
 							</strong>
 							<br>
-							', $reply['member']['group'], '<br class="shd_groupmargin">';
+							', $reply['member']['group'], '
+							<br class="shd_groupmargin">';
 
 			if (!empty($modSettings['shd_display_avatar']) && empty($options['show_no_avatars']) && !empty($reply['member']['avatar']['image']))
 					echo '
@@ -863,9 +864,14 @@ function template_viewreplies()
 	}
 
 	echo '
-		<div class="information">
-			<span class="floatleft"><a href="#replies" title="', $txt['shd_go_to_replies_start'], '"><img src="', $settings['default_images_url'], '/simpledesk/move_up.png" alt=""><img src="', $settings['default_images_url'], '/simpledesk/replies.png" alt=""></a></span>
-			<span class="floatright smalltext">', $context['page_index'], '</span>
+			<div class="information">
+				<span class="floatleft">
+					<a href="#replies" title="', $txt['shd_go_to_replies_start'], '">
+						<img src="', $settings['default_images_url'], '/simpledesk/move_up.png" alt=""><img src="', $settings['default_images_url'], '/simpledesk/replies.png" alt="">
+					</a>
+				</span>
+				<span class="floatright smalltext">', $context['page_index'], '</span>
+			</div>
 		</div>';
 }
 
