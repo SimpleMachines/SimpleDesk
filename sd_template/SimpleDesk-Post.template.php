@@ -425,7 +425,7 @@ function template_ticket_content()
 	if (!empty($modSettings['show_modify']) && !empty($context['ticket']['modified']))
 		echo '
 						<div class="smalltext shd_modified" style="margin-top:20px;">
-							&#171; <em>', $txt['last_edit'], ': ', $context['ticket']['modified']['time'], ' ', $txt['by'], ' ', $context['ticket']['modified']['link'], '</em> &#187;
+							&#171; <em>', sprintf($txt['last_edit_by'], $context['ticket']['modified']['time'], $context['ticket']['modified']['link']), '</em> &#187;
 						</div>';
 }
 
@@ -562,7 +562,7 @@ function template_ticket_footer()
 	if (!empty($modSettings['show_modify']) && !empty($context['ticket_form']['modified']))
 		echo '
 						<div class="smalltext shd_modified">
-							&#171; <em>', $txt['last_edit'], ': ', $context['ticket_form']['modified']['time'], ' ', $txt['by'], ' ', $context['ticket_form']['modified']['link'], '</em> &#187;
+							&#171; <em>', sprintf($txt['last_edit_by'], $context['ticket']['modified']['time'], $context['ticket']['modified']['link']), '</em> &#187;
 						</div>';
 
 	echo '
@@ -839,7 +839,7 @@ function template_ticket_do_single_reply($reply)
 	if (!empty($modSettings['show_modify']) && !empty($reply['modified']))
 		echo '
 							<div class="smalltext shd_modified">
-								&#171; <em>', $txt['last_edit'], ': ', $reply['modified']['time'], ' ', $txt['by'], ' ', $reply['modified']['link'], '</em> &#187;
+								&#171; <em>', sprintf($txt['last_edit_by'], $reply['modified']['time'], $reply['modified']['link']), '</em> &#187;
 							</div>';
 
 	if (!empty($context['ticket_attach']['reply'][$reply['id']]))

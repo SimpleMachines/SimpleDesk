@@ -154,6 +154,12 @@ form#postmodify .shd_ticket_roundframe {
 	min-height: 100px;
 }
 
+.sd_lower_columns {
+	display: flex;
+	margin: 15px 0 5px;
+	gap: 15px;
+}
+
 /* The left column in the ticket display */
 .shd_ticket_leftcolumn {
 	width: 25%;
@@ -164,6 +170,13 @@ form#postmodify .shd_ticket_roundframe {
 /* The right column in the ticket display */
 .shd_ticket_rightcolumn {
 	width: 75%;
+}
+/* Notif preferences */
+.sd_notif_element:not(:last-child, :first-child),
+.sd_notif_element:first-child:not(:last-child) {
+	border-bottom: 1px solid #ccc;
+	padding-bottom: 10px;
+	margin-bottom: 5px;
 }
 
 /* The Respond, Edit, Delete etc links */
@@ -388,9 +401,6 @@ dl.settings dt.shd_cust_fields_largetext, .shd_cust_fields_largetext textarea {
 	margin-left: -8px;
 	margin-right: 3px;
 }
-.shd_attachmentcolumn {
-	margin-right: 20px;
-}
 .shd_thumb {
 	border: 0;
 	display: block;
@@ -540,24 +550,4 @@ dl.stats dd span, dl.stats dt span {
 }
 .shd_75 {
 	width: 75%;
-}
-
-/* Start of responsiveness */
-/* This will be moved to its file once it gets more work on it */
-@media (max-width: 480px) {
-	.shd_ticket_rightcolumn, .shd_ticket_leftcolumn {
-		width: 100%;
-		padding: 0;
-	}
-	.shd_ticket_rightcolumn {
-		margin-top: 10px;
-	}
-	.shd_profile_navigation {
-		margin-right: 0;
-	}
-	input[type="checkbox"]
-	{
-		height: 15px;
-		width: 15px;
-	}
 }

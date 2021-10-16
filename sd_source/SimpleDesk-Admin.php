@@ -55,7 +55,6 @@ function shd_admin_main()
 	// Load some extra CSS
 	loadCSSFile('helpdesk_admin.css', array('minimize' => false, 'seed' => $context['shd_css_version']), 'helpdesk_admin');
 	loadCSSFile('helpdesk.css', array('minimize' => false, 'seed' => $context['shd_css_version']), 'helpdesk');
-	loadCSSFile('helpdesk_responsive.css', array('minimize' => false, 'seed' => $context['shd_css_version']), 'helpdesk_responsive');
 	loadJavascriptFile('helpdesk.js', array('defer' => false, 'minimize' => false), 'helpdesk');
 	loadJavascriptFile('helpdesk_admin.js', array('defer' => false, 'minimize' => false), 'helpdesk_admin');
 

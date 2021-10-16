@@ -112,7 +112,7 @@ function shd_init()
 	define('ROLEPERM_DENY', 2);
 
 	$context['shd_scripts_version'] = 'beta1';
-	$context['shd_css_version'] = 'beta1';
+	$context['shd_css_version'] = 'rc1';
 
 	// Load up developer stuff if we need to.
 	$context['shd_developer_mode'] = isset($modSettings['shd_developer_mode']);

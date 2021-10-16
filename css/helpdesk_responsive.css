@@ -1,0 +1,75 @@
+/* Start of responsiveness */
+/* This will be moved to its file once it gets more work on it */
+@media screen and (max-width: 991px) {
+	.shd_ticket {
+		flex-direction: column;
+	}
+	.shd_ticket_side_column,
+	.shd_ticket_description {
+		width: 100%;
+	}
+	.shd_ticketdetails dl,
+	.shd_ticketdetails ul {
+		display: flex;
+		flex-wrap: wrap;
+	}
+	.shd_ticketdetails dl dd,
+	.shd_ticketdetails dl dt {
+		flex-basis: 25%;
+		margin: 5px 0;
+	}
+	.shd_ticketdetails ul li {
+		flex-basis: 50%;
+		margin: 3px 0;
+	}
+
+	.ticket_replies_container {
+		flex-direction: column;
+	}
+	.ticket_replies_container > * {
+		width: 100%;
+	}
+	.shd_posterinfo {
+		text-align: revert;
+	}
+
+	.sd_lower_columns {
+		flex-direction: column;
+	}
+	.shd_ticket_rightcolumn, .shd_ticket_leftcolumn {
+		width: 100%;
+		padding: 0;
+	}
+	.shd_profile_navigation {
+		margin-right: 0;
+	}
+	input[type="checkbox"]
+	{
+		height: 15px;
+		width: 15px;
+	}
+	.sd_lower_columns .shd_ticket_leftcolumn {
+		display: flex;
+		gap: 10px;
+	}
+	.sd_lower_columns .shd_ticket_leftcolumn .shd_attachmentcolumn {
+		flex-basis: 50%;
+	}
+
+}
+
+@media screen and (max-width: 480px) {
+	.shd_ticketdetails dl dd,
+	.shd_ticketdetails dl dt {
+		flex-basis: 50%;
+	}
+	.shd_ticketdetails ul li {
+		flex-basis: 100%;
+	}
+	.sd_lower_columns .shd_ticket_leftcolumn {
+		flex-direction: column;
+	}
+	.sd_lower_columns .shd_ticket_leftcolumn .shd_attachmentcolumn {
+		flex-basis: 100%;
+	}
+}

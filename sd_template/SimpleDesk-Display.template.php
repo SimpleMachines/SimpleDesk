@@ -74,16 +74,20 @@ function template_viewticket()
 							<span id="urgency_increase">', (!empty($context['ticket']['urgency']['increase']) ? '<a id="urglink_increase" href="' . $scripturl . '?action=helpdesk;sa=urgencychange;ticket=' . $context['ticket']['id'] . ';change=increase;' . $context['session_var'] . '=' . $context['session_id'] . '" title="' . $txt['shd_urgency_increase'] . '"><span class="generic_icons urgency_increase" title="' . $txt['shd_urgency_increase'] . '"></span></a>' : ''), '</span>
 							<span id="urgency_decrease">', (!empty($context['ticket']['urgency']['decrease']) ? '<a id="urglink_decrease" href="' . $scripturl . '?action=helpdesk;sa=urgencychange;ticket=' . $context['ticket']['id'] . ';change=decrease;' . $context['session_var'] . '=' . $context['session_id'] . '" title="' . $txt['shd_urgency_decrease'] . '"><span class="generic_icons urgency_decrease" title="' . $txt['shd_urgency_decrease'] . '"></span></a>' : ''), '</span>
 							<span id="urgency_button"></span>
-						</dd>
-						<dd class="shd_urgency_list">
-							<select id="urgency_list" class="hidden"></select>
+
+							<span class="shd_urgency_list">
+								<select id="urgency_list" class="hidden"></select>
+							</span>
 						</dd>
 
 						<dt><img src="', $settings['default_images_url'], '/simpledesk/staff.png" alt="" class="shd_smallicon"> ', $txt['shd_ticket_assignedto'], ':</dt>
-						<dd><span id="assigned_to">', $context['ticket']['assigned']['link'], '</span><span id="assigned_button"></span></dd>
-						<dt class="shd_assignees_list">
-							<ul id="assigned_list" class="hidden"></ul>
-						</dt>
+						<dd>
+							<span id="assigned_to">', $context['ticket']['assigned']['link'], '</span><span id="assigned_button"></span>
+							<div class="shd_assignees_list">
+								<ul id="assigned_list" class="hidden">
+								</ul>
+							</div>
+						</dd>
 
 						<dt><img src="', $settings['default_images_url'], '/simpledesk/status.png" alt="" class="shd_smallicon"> ', $txt['shd_ticket_status'], ':</dt>
 						<dd>', $context['ticket']['status']['label'], '</dd>
@@ -299,25 +303,27 @@ function template_viewticket()
 
 			echo '
 				</div>
+			</div>
+			<div class="sd_lower_columns">';
+
+				// Left column (ticket relationships, attachments)
+				template_ticket_leftcolumn();
+
+		echo '
+				<div class="shd_ticket_rightcolumn"', empty($context['leftcolumndone']) ? ' style="width: 100%;"' : '', '>';
+
+			// Additional information (custom fields)
+			template_additional_fields();
+
+			// The replies column
+			template_viewreplies();
+
+			// Our mighty quick reply box :D
+			template_quickreply();
+
+			echo '
+				</div>
 			</div>';
-
-	// Left column (ticket relationships, attachments)
-	template_ticket_leftcolumn();
-
-	echo '
-		<div class="shd_ticket_rightcolumn floatleft"', empty($context['leftcolumndone']) ? ' style="width: 100%;"' : '', '>';
-
-	// Additional information (custom fields)
-	template_additional_fields();
-
-	// The replies column
-	template_viewreplies();
-
-	// Our mighty quick reply box :D
-	template_quickreply();
-
-	echo '
-		</div>';
 
 	// The ticket action log, lastly.
 	template_ticketactionlog();
@@ -353,15 +359,17 @@ function template_ticket_leftcolumn()
 	$context['leftcolumndone'] = true; // for the rest of the template later
 
 	echo '
-		<br class="clear">
-		<div class="shd_ticket_leftcolumn floatleft">
-			<div class="shd_attachmentcolumn">';
+		<div class="shd_ticket_leftcolumn">';
 
 	foreach ($context['leftcolumn_templates'] as $template)
-		call_user_func('template_' . $template);
+	{
+		echo '
+		<div class="shd_attachmentcolumn">
+			', call_user_func('template_' . $template), '
+		</div>';
+	}
 
 	echo '
-			</div>
 		</div>';
 }
 
@@ -440,15 +448,14 @@ function template_viewnotifications()
 				<img src="', $settings['default_images_url'], '/simpledesk/log_notify.png" alt="">', $txt['shd_ticket_notify'], '
 			</h3>
 		</div>
-		<div class="information">';
-
-	$displayed_something = false;
+		<div class="information sd_notif_content">';
 
 	if (!$context['display_notifications']['is_ignoring'])
 	{
 		if (!$context['display_notifications']['is_monitoring'])
 		{
-			$displayed_something = true;
+			echo '
+				<div class="sd_notif_element">';
 			if (!empty($context['display_notifications']['preferences']))
 			{
 				echo '
@@ -463,23 +470,22 @@ function template_viewnotifications()
 					</ul>';
 			}
 			else
-				echo '
-					', $txt['shd_ticket_notify_noneprefs'];
+				echo $txt['shd_ticket_notify_noneprefs'];
 
 			if (!empty($context['display_notifications']['can_change']))
 				echo '
 					<form action="', $scripturl, '?action=profile;area=hd_prefs;u=', $context['user']['id'], '" method="post">
 						<input type="submit" value="', $txt['shd_ticket_notify_changeprefs'], '" class="button">
 					</form>';
+
+			echo '
+				</div>';
 		}
 
 		if (!empty($context['display_notifications']['can_monitor']))
 		{
-			if ($displayed_something)
-				echo '
-					<hr>';
-
 			echo '
+				<div class="sd_notif_element">
 					<form action="', $scripturl, '?action=helpdesk;sa=notify;ticket=', $context['ticket_id'], '" method="post">';
 
 			if (!$context['display_notifications']['is_monitoring'])
@@ -495,18 +501,16 @@ function template_viewnotifications()
 
 			echo '
 						<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">
-					</form>';
-			$displayed_something = true;
+					</form>
+				</div>';
 		}
 	}
 
 	if (!empty($context['display_notifications']['can_ignore']) && !$context['display_notifications']['is_monitoring'])
 	{
-		if ($displayed_something)
-			echo '
-					<hr>';
 
 		echo '
+				<div class="sd_notif_element">
 					<form action="', $scripturl, '?action=helpdesk;sa=notify;ticket=', $context['ticket_id'], '" method="post">';
 
 		if (!$context['display_notifications']['is_ignoring'])
@@ -522,7 +526,8 @@ function template_viewnotifications()
 
 		echo '
 						<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">
-					</form>';
+					</form>
+				</div>';
 	}
 
 	echo '
@@ -666,7 +671,7 @@ function template_inline_attachments($msg)
 	if (!empty($context['ticket_attach']['reply'][$msg]))
 	{
 		echo '
-							<table width="90%">';
+							<table width="100%">';
 
 		$count = 0;
 		$firstrow = true;
