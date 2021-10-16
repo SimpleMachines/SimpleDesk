@@ -302,6 +302,9 @@ function shd_get_active_tickets()
 {
 	global $modSettings, $user_info, $smcFunc, $context, $txt;
 
+	if (!$modSettings['helpdesk_active'] && SMF === 'SSI')
+		return 0;
+
 	if (empty($txt['shd_helpdesk'])) // provide a last-ditch fallback in the event we can't even find the file; SimpleDesk.{language}.php should be loaded by now (falling back to english if lang-specific doesn't exist)
 		$txt['shd_helpdesk'] = 'Helpdesk';
 
@@ -309,8 +312,8 @@ function shd_get_active_tickets()
 		return $txt['shd_helpdesk'];
 
 	// Have we already run on this page? If so we already have the answer.
-	if (!empty($context['active_tickets']))
-		return $txt['shd_helpdesk'] . $context['active_tickets'];
+	if (!empty($context['active_tickets_raw']))
+		return $context['active_tickets_raw'];
 
 	// Can we get it from the cache?
 	$temp = cache_get_data('shd_active_tickets_' . $user_info['id'], 180);
@@ -318,7 +321,7 @@ function shd_get_active_tickets()
 	{
 		list($context['active_tickets'], $context['active_tickets_raw']) = $temp;
 		$context['menu_buttons']['helpdesk']['alttitle'] = $txt['shd_helpdesk'] . !empty($context['active_tickets_raw']) ? (' [' . $context['active_tickets_raw'] . ']') : '';
-		return $txt['shd_helpdesk'] . $context['active_tickets'];
+		return $context['active_tickets_raw'];
 	}
 
 	shd_init();
@@ -351,7 +354,7 @@ function shd_get_active_tickets()
 
 	cache_put_data('shd_active_tickets_' . $user_info['id'], array($context['active_tickets'], $context['active_tickets_raw']), 120);
 
-	return $txt['shd_helpdesk'] . $context['active_tickets'];
+	return $context['active_tickets_raw'];
 }
 
 /**
@@ -1760,7 +1763,8 @@ function shd_main_menu(&$menu_buttons)
 		}
 
 		$menu_buttons['helpdesk'] += array(
-			'title' => $modSettings['helpdesk_active'] && SMF != 'SSI' ? shd_get_active_tickets() : $txt['shd_helpdesk'],
+			'title' => $txt['shd_helpdesk'],
+			'amt' => shd_get_active_tickets(),
 			'href' => $scripturl . '?action=helpdesk;sa=main',
 			'show' => true,
 			'active_button' => false,
@@ -1914,7 +1918,8 @@ function shd_main_menu(&$menu_buttons)
 	if (!empty($modSettings['shd_helpdesk_only']))
 	{
 		$menu_buttons['home'] = array(
-			'title' => $modSettings['helpdesk_active'] && SMF != 'SSI' ? shd_get_active_tickets() : $txt['shd_helpdesk'],
+			'title' => $txt['shd_helpdesk'],
+			'amt' => shd_get_active_tickets(),
 			'href' => $scripturl . '?action=helpdesk;sa=main',
 			'show' => $modSettings['helpdesk_active'],
 			'sub_buttons' => array(
