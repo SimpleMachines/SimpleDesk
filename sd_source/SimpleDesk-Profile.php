@@ -47,6 +47,8 @@ function shd_profile_main($memID)
 	shd_load_plugin_files('hdprofile');
 	shd_load_plugin_langfiles('hdprofile');
 
+
+
 	$context['page_title'] = $txt['shd_profile_area'] . ' - ' . $txt['shd_profile_main'];
 	$context['sub_template'] = 'shd_profile_main';
 
