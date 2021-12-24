@@ -623,6 +623,10 @@ function template_quickreply()
 {
 	global $context, $scripturl, $options, $txt, $settings;
 
+	// If you can't reply, skip this.
+	if (!$context['can_reply'])
+		return;
+
 	echo '
 		<div class="title_bar" id="quickreplyheader">
 			<h3 class="titlebg">
