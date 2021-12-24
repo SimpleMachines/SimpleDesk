@@ -32,6 +32,7 @@
 		<!-- css -->
 		<require-file name="css/helpdesk.css" destination="$themedir/css" />
 		<require-file name="css/helpdesk_admin.css" destination="$themedir/css" />
+		<require-file name="css/helpdesk_responsive.css" destination="$themedir/css" />
 		<require-file name="css/helpdesk_icons.css" destination="$themedir/css" />
 
 		<!-- scripts -->
@@ -99,7 +100,7 @@
 
 		<redirect url="?action=admin;area=helpdesk_info" />
 
-		<credits url="https://www.simpledesk.net" license="BSD 3-Clause" licenseurl="https://github.com/SimpleMachines/SimpleDesk/blob/master/license.txt" copyright="2010-2020">Simple Desk</credits>
+		<credits url="https://www.simpledesk.net" license="BSD 3-Clause" licenseurl="https://github.com/SimpleMachines/SimpleDesk/blob/master/license.txt" copyright="2010-2021">Simple Desk</credits>
 	</install>
 
 	<uninstall for="2.1 RC4, 2.1.0-2.1.99">
@@ -175,6 +176,7 @@
 		<!-- css, removed -->
 		<remove-file name="$themedir/css/helpdesk.css" />
 		<remove-file name="$themedir/css/helpdesk_admin.css" />
+		<remove-file name="$themedir/css/helpdesk_responsive.css" />
 		<remove-file name="$themedir/css/helpdesk_icons.css" />
 
 		<!-- bundled plugins removed (NOTE: done one by one to avoid eating existing plugins on upgrade) -->

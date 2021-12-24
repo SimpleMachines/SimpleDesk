@@ -96,7 +96,8 @@ function template_ticket_info()
 	// General ticket details
 	echo '
 					<div class="shd_ticketdetails">
-						<strong><img src="', $settings['default_images_url'], '/simpledesk/details.png" alt="" class="shd_smallicon"> ', $txt['shd_ticket_details'], '</strong>
+						<img src="', $settings['default_images_url'], '/simpledesk/details.png" alt="" class="shd_smallicon">
+						<strong> ', $txt['shd_ticket_details'], '</strong>
 						<hr>
 						<ul class="reset">';
 
@@ -421,10 +422,10 @@ function template_ticket_content()
 						<hr><br>
 							', $context['ticket_form']['message'];
 
-	if (!empty($settings['show_modify']) && !empty($context['ticket']['modified']))
+	if (!empty($modSettings['show_modify']) && !empty($context['ticket']['modified']))
 		echo '
 						<div class="smalltext shd_modified" style="margin-top:20px;">
-							&#171; <em>', $txt['last_edit'], ': ', $context['ticket']['modified']['time'], ' ', $txt['by'], ' ', $context['ticket']['modified']['link'], '</em> &#187;
+							&#171; <em>', sprintf($txt['last_edit_by'], $context['ticket']['modified']['time'], $context['ticket']['modified']['link']), '</em> &#187;
 						</div>';
 }
 
@@ -487,19 +488,20 @@ function template_ticket_postbox()
 						<div id="shd_bbcbox"', ((empty($modSettings['shd_allow_ticket_bbc']) || !empty($context['shd_display'])) ? ' class="hidden"' : ''), '></div>
 						<div id="shd_smileybox"', ((empty($modSettings['shd_allow_ticket_smileys']) || !empty($context['shd_display'])) ? ' class="hidden"' : ''), '></div>';
 
-	if ($editor_context['width'] == ((int) $editor_context['width']) . '%')
-	{
-		$width = round(((int) $editor_context['width']) / 0.988, 1);
-		echo '
-						<div style="width: ', $width, '%;">';
+	// The editor doesn't go out of bounce, I don't get it
+	// if ($editor_context['width'] == ((int) $editor_context['width']) . '%')
+	// {
+	// 	$width = round(((int) $editor_context['width']) / 0.988, 1);
+	// 	echo '
+	// 					<div style="width: ', $width, '%;">';
 
-		template_control_richedit($context['post_box_name'], true, true);
+	// 	template_control_richedit($context['post_box_name'], true, true);
 
-		echo '
-						</div>';
-	}
-	// Editor width isn't proportional, presumably we don't care.
-	else
+	// 	echo '
+	// 					</div>';
+	// }
+	// // Editor width isn't proportional, presumably we don't care.
+	// else
 		template_control_richedit($context['post_box_name'], true, true);
 
 	// Custom fields
@@ -555,12 +557,12 @@ function template_ticket_cannedreplies()
 
 function template_ticket_footer()
 {
-	global $settings, $context, $txt;
+	global $settings, $context, $txt, $modSettings;
 
-	if (!empty($settings['show_modify']) && !empty($context['ticket_form']['modified']))
+	if (!empty($modSettings['show_modify']) && !empty($context['ticket_form']['modified']))
 		echo '
 						<div class="smalltext shd_modified">
-							&#171; <em>', $txt['last_edit'], ': ', $context['ticket_form']['modified']['time'], ' ', $txt['by'], ' ', $context['ticket_form']['modified']['link'], '</em> &#187;
+							&#171; <em>', sprintf($txt['last_edit_by'], $context['ticket']['modified']['time'], $context['ticket']['modified']['link']), '</em> &#187;
 						</div>';
 
 	echo '
@@ -796,20 +798,24 @@ function template_ticket_do_single_reply($reply)
 	global $context, $modSettings, $settings, $options, $scripturl, $txt;
 
 	echo '
-					<div class="windowbg" id="reply', $reply['id'], '">
-						<div class="poster">
-							<h4>', $reply['member']['link'], '</h4>
-									', $reply['member']['group'], '<br class="shd_groupmargin">';
+					<div class="windowbg ticket_replies_container" id="reply', $reply['id'], '">
+						<div class="shd_posterinfo">
+							<strong class="shd_postername">
+								', $reply['member']['link'], '
+							</strong>
+							<br>
+							', $reply['member']['group'], '
+							<br class="shd_groupmargin">';
 
 	if (!empty($modSettings['shd_display_avatar']) && empty($options['show_no_avatars']) && !empty($reply['member']['avatar']['image']))
 			echo '
 							', shd_profile_link($reply['member']['avatar']['image'], $reply['member']['id']);
 
 	if ($modSettings['shd_staff_badge'] == (!empty($reply['is_staff']) ? 'staffbadge' : 'userbadge') || $modSettings['shd_staff_badge'] == 'bothbadge')
-		echo '<br>
+		echo '
 							', $reply['member']['group_icons'];
 	elseif (!empty($reply['is_staff']) && $modSettings['shd_staff_badge'] == 'nobadge')
-		echo '<br>
+		echo '
 							<img src="', $settings['default_images_url'] . '/simpledesk/staff.png" class="shd_smallicon" title="', $txt['shd_ticket_staff'], '" alt="', $txt['shd_ticket_staff'], '">';
 
 	echo '
@@ -830,10 +836,10 @@ function template_ticket_do_single_reply($reply)
 							', $reply['body'], '
 							<br><br>';
 
-	if (!empty($settings['show_modify']) && !empty($reply['modified']))
+	if (!empty($modSettings['show_modify']) && !empty($reply['modified']))
 		echo '
 							<div class="smalltext shd_modified">
-								&#171; <em>', $txt['last_edit'], ': ', $reply['modified']['time'], ' ', $txt['by'], ' ', $reply['modified']['link'], '</em> &#187;
+								&#171; <em>', sprintf($txt['last_edit_by'], $reply['modified']['time'], $reply['modified']['link']), '</em> &#187;
 							</div>';
 
 	if (!empty($context['ticket_attach']['reply'][$reply['id']]))
@@ -852,14 +858,15 @@ function template_ticket_do_single_reply($reply)
 							</div>';
 	}
 
-	echo '
-						</div>';
-
 	if (!empty($context['can_see_ip']) && !empty($reply['ip_address']))
 		echo '
-						<span class="floatright"><img src="', $settings['default_images_url'], '/simpledesk/ip.png" alt="" class="shd_smallicon"> ', $txt['shd_ticket_ip'], ': ', $reply['ip_address'], '</span>';
+							<span class="floatright">
+								<img src="', $settings['default_images_url'], '/simpledesk/ip.png" alt="" class="shd_smallicon"> 
+								', $txt['shd_ticket_ip'], ': ', $reply['ip_address'], '
+							</span>';
 
 	echo '
+						</div>
 						<br>
 					</div>';
 }

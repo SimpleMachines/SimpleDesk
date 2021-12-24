@@ -55,7 +55,7 @@ function shdplugin_front_page()
 			'website' => 'https://www.simpledesk.net/',
 			'version' => '1.0.1',
 			'compatibility' => array(
-				'SimpleDesk 2.1 Beta 1', // should tie up with the SHD_VERSION constants
+				'SimpleDesk 2.1 RC1', // should tie up with the SHD_VERSION constants
 			),
 			'acp_url' => 'action=admin;area=helpdesk_options;sa=frontpage',
 		),
