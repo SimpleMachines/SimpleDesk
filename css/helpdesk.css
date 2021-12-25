@@ -83,6 +83,7 @@ span.shd_new_tickets {
 
 .shd_smallicon {
 	max-width: initial;
+	vertical-align: middle;
 }
 
 /* The page index color looks ugly with our theme. */
@@ -105,19 +106,22 @@ h3.ticketheader img {
 	margin-right: 2px;
 }
 
+#ticket img {
+	vertical-align: middle;
+}
+
 /* Ticket details (Left-floated box) */
 .shd_ticket_side_column {
-	float: left;
 	width: 23%;
-	padding: 0 5px 5px 5px;
+	padding: 0;
 }
 .shd_ticketdetails {
 	overflow: auto;
 	float: left;
 	width: 100%;
 }
-.shd_ticketdetails .shd_smallicon {
-	padding-top: 7px;
+.shd_ticketdetails img.shd_smallicon {
+	vertical-align: middle;
 }
 .shd_customfields {
 	width: 66%;
@@ -139,13 +143,21 @@ form#postmodify .shd_ticket_roundframe {
 }
 .shd_ticket {
 	min-height: 250px;
+	display: flex;
+	gap: 20px;
 }
 .shd_ticket_description {
-	margin-left: 23%;
+	flex-grow: 2;
 }
 
 #shd_ticket_text {
 	min-height: 100px;
+}
+
+.sd_lower_columns {
+	display: flex;
+	margin: 15px 0 5px;
+	gap: 15px;
 }
 
 /* The left column in the ticket display */
@@ -158,6 +170,13 @@ form#postmodify .shd_ticket_roundframe {
 /* The right column in the ticket display */
 .shd_ticket_rightcolumn {
 	width: 75%;
+}
+/* Notif preferences */
+.sd_notif_element:not(:last-child, :first-child),
+.sd_notif_element:first-child:not(:last-child) {
+	border-bottom: 1px solid #ccc;
+	padding-bottom: 10px;
+	margin-bottom: 5px;
 }
 
 /* The Respond, Edit, Delete etc links */
@@ -296,10 +315,23 @@ form#postmodify .shd_ticket_roundframe {
 /**********************************
 * Ticket replies				 *
 ***********************************/
+.ticket_replies_container {
+	display: flex;
+	gap: 15px;
+	flex-wrap: wrap;
+}
+/* Something to keep it look good */
+#replies .ticket_replies_container:last-of-type {
+	border-bottom-left-radius: 0;
+	border-bottom-right-radius: 0;
+}
+.ticket_replies_container .postarea {
+	margin: 0;
+	flex-grow: 2;
+}
 .shd_posterinfo {
 	width: 14em;
 	text-align: center;
-	margin-left: 3px;
 	overflow: hidden;
 }
 .shd_postername {
@@ -313,8 +345,7 @@ form#postmodify .shd_ticket_roundframe {
 	max-width: 10.5em;
 }
 .shd_replyarea {
-	padding-left: 14em;
-	margin-left: 10px;
+	flex-grow: 2;
 }
 
 .shd_reply .avatar {
@@ -369,9 +400,6 @@ dl.settings dt.shd_cust_fields_largetext, .shd_cust_fields_largetext textarea {
 .shd_removeattachment {
 	margin-left: -8px;
 	margin-right: 3px;
-}
-.shd_attachmentcolumn {
-	margin-right: 20px;
 }
 .shd_thumb {
 	border: 0;
@@ -501,12 +529,6 @@ dl.stats dd span, dl.stats dt span {
 	position: relative;
 }
 
-/* Something to keep it look good */
-#replies .windowbg:last-of-type {
-	border-bottom-left-radius: 0;
-	border-bottom-right-radius: 0;
-}
-
 /* Helpdesk table-width*/
 .shd_5 {
 	width: 5%;
@@ -530,22 +552,28 @@ dl.stats dd span, dl.stats dt span {
 	width: 75%;
 }
 
-/* Start of responsiveness */
-/* This will be moved to its file once it gets more work on it */
-@media (max-width: 480px) {
-	.shd_ticket_rightcolumn, .shd_ticket_leftcolumn {
-		width: 100%;
-		padding: 0;
-	}
-	.shd_ticket_rightcolumn {
-		margin-top: 10px;
-	}
-	.shd_profile_navigation {
-		margin-right: 0;
-	}
-	input[type="checkbox"]
-	{
-		height: 15px;
-		width: 15px;
+/* Unread */
+.sd_unread_title,
+.sd_unread_content {
+	display: flex;
+	min-height: 35px;
+	flex-wrap: wrap;
+	align-items: center;
+	padding: 0 4px;
+}
+.sd_unread_title span {
+	flex-basis: auto;
+	flex-grow: 1;
+}
+.sd_unread_content span {
+	flex-basis: auto;
+	flex-shrink: 0;
+	flex-grow: 1;
+}
+
+@media screen and (max-width: 991px) {
+	.sd_unread_title span:not(:nth-child(1), :nth-child(2), :nth-child(5)),
+	.sd_unread_content span:not(:nth-child(1), :nth-child(2), :nth-child(5)) {
+		display: none;
 	}
 }

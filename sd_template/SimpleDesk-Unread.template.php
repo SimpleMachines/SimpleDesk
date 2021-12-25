@@ -32,42 +32,40 @@ function template_shd_unread_below()
 	global $context, $txt, $scripturl, $settings;
 
 	echo '
-					<div class="cat_bar">
-						<h3 id="shd_block_assigned" class="catbg">
-							<img src="', $settings['default_images_url'], '/simpledesk/ticket.png" alt="*">
-							', $context['block_title'], '
-							<span class="smalltext">(', count($context['shd_unread_info']) == 1 ? '1 ' . $txt['shd_count_ticket_1'] : count($context['shd_unread_info']) . ' ' . $txt['shd_count_tickets'], ')</span>
-						</h3>
-					</div>
-				<table class="table_grid">
-					<tr class="title_bar">
-						<td width="8%"><img src="', $settings['default_images_url'], '/simpledesk/ticket.png" class="shd_smallicon" alt=""> ', $txt['shd_ticket'], '</td>
-						<td width="15%">', $txt['shd_ticket_name'], '</td>
-						<td width="12%"><img src="', $settings['default_images_url'], '/simpledesk/user.png" class="shd_smallicon" alt=""> ', $txt['shd_ticket_started_by'], '</td>
-						<td width="7%">', $txt['shd_ticket_replies'], '</td>
-						<td width="17%"><img src="', $settings['default_images_url'], '/simpledesk/status.png" class="shd_smallicon" alt=""> ', $txt['shd_ticket_status'], '</td>
-						<td width="8%"><img src="', $settings['default_images_url'], '/simpledesk/urgency.png" class="shd_smallicon" alt=""> ', $txt['shd_ticket_urgency'], '</td>
-						<td width="22%"><img src="', $settings['default_images_url'], '/simpledesk/time.png" class="shd_smallicon" alt=""> ', $txt['shd_ticket_updated'], '</td>
-						</tr>';
+		<div class="cat_bar">
+			<h3 id="shd_block_assigned" class="catbg">
+				<img src="', $settings['default_images_url'], '/simpledesk/ticket.png" alt="*">
+				', $context['block_title'], '
+				<span class="smalltext">(', count($context['shd_unread_info']) == 1 ? '1 ' . $txt['shd_count_ticket_1'] : count($context['shd_unread_info']) . ' ' . $txt['shd_count_tickets'], ')</span>
+			</h3>
+		</div>
+		<div class="title_bar sd_unread_title">
+			<span style="width: 8%;"><img src="', $settings['default_images_url'], '/simpledesk/ticket.png" class="shd_smallicon" alt=""> ', $txt['shd_ticket'], '</span>
+			<span style="width: 15%;">', $txt['shd_ticket_name'], '</span>
+			<span style="width: 12%;"><img src="', $settings['default_images_url'], '/simpledesk/user.png" class="shd_smallicon" alt=""> ', $txt['shd_ticket_started_by'], '</span>
+			<span style="width: 7%;">', $txt['shd_ticket_replies'], '</span>
+			<span style="width: 17%;"><img src="', $settings['default_images_url'], '/simpledesk/status.png" class="shd_smallicon" alt=""> ', $txt['shd_ticket_status'], '</span>
+			<span style="width: 8%;"><img src="', $settings['default_images_url'], '/simpledesk/urgency.png" class="shd_smallicon" alt=""> ', $txt['shd_ticket_urgency'], '</span>
+			<span style="width: 22%;"><img src="', $settings['default_images_url'], '/simpledesk/time.png" class="shd_smallicon" alt=""> ', $txt['shd_ticket_updated'], '</span>
+		</div>
+		<div class="sd_unread_content">';
 
 	if (empty($context['shd_unread_info']))
 		echo '
-					<tr class="windowbg">
-							<td colspan="7">', $txt['shd_error_no_tickets'], '</td>
-						</tr>';
+			<div class="windowbg">
+				<span>', $txt['shd_error_no_tickets'], '</span>
+			</div>';
 	else
 		foreach ($context['shd_unread_info'] as $ticket)
 			echo '
-					<tr class="windowbg">
-							<td width="4%" class="smalltext">', $ticket['id_ticket_display'], '</td>
-							<td class="smalltext"><a href="', $scripturl, '?action=helpdesk;sa=ticket;ticket=', $ticket['id_ticket'], '">', $ticket['subject'], '</a></td>
-							<td class="smalltext">', $ticket['ticket_starter'], '</td>
-							<td class="smalltext">', $ticket['num_replies'], '</td>
-							<td class="smalltext">', $txt['shd_status_' . $ticket['status']], '</td>
-							<td class="smalltext">', $txt['shd_urgency_' . $ticket['urgency']], '</td>
-							<td class="smalltext">', $ticket['updated'], '</td>
-						</tr>';
+			<span style="width: 8%;">', $ticket['id_ticket_display'], '</span>
+			<span class="smalltext" style="width: 15%;"><a href="', $scripturl, '?action=helpdesk;sa=ticket;ticket=', $ticket['id_ticket'], '">', $ticket['subject'], '</a></span>
+			<span class="smalltext" style="width: 12%;">', $ticket['ticket_starter'], '</span>
+			<span class="smalltext" style="width: 7%;">', $ticket['num_replies'], '</span>
+			<span class="smalltext" style="width: 17%;">', $txt['shd_status_' . $ticket['status']], '</span>
+			<span class="smalltext" style="width: 8%;">', $txt['shd_urgency_' . $ticket['urgency']], '</span>
+			<span class="smalltext" style="width: 22%;">', $ticket['updated'], '</span>';
 
 	echo '
-				</table>';
+		</div>';
 }

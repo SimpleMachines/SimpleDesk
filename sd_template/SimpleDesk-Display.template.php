@@ -50,22 +50,23 @@ function template_viewticket()
 				<img src="', $settings['default_images_url'], '/simpledesk/ticket.png" alt="x"> ', $txt['shd_ticket'], ' [', $context['ticket']['display_id'], ']
 			</h3>
 		</div>
-		<div class="windowbg noup">
+		<div class="windowbg noup shd_ticket">
 			<div class="shd_ticket_side_column">';
 
 			// General ticket details
 			echo '
 				<div class="shd_ticketdetails">
-					<strong><img src="', $settings['default_images_url'], '/simpledesk/details.png" alt="" class="shd_smallicon shd_icon_minihead"> ', $txt['shd_ticket_details'], '</strong>
+					<img src="', $settings['default_images_url'], '/simpledesk/details.png" alt="" class="shd_smallicon shd_icon_minihead"> 
+					<strong>', $txt['shd_ticket_details'], '</strong>
 					<hr>
 					<dl class="stats nobb">
-						<dt><span class="generic_icons inbox" title="', $txt['shd_ticket_id'], '"></span> ', $txt['shd_ticket_id'], ':</dt>
+						<dt><span class="main_icons inbox" title="', $txt['shd_ticket_id'], '"></span> ', $txt['shd_ticket_id'], ':</dt>
 						<dd>', $context['ticket']['display_id'], '</dd>
 
-						<dt><span class="generic_icons members" title="', $txt['shd_ticket_user'], '"></span> ', $txt['shd_ticket_user'], ':</dt>
+						<dt><span class="main_icons members" title="', $txt['shd_ticket_user'], '"></span> ', $txt['shd_ticket_user'], ':</dt>
 						<dd>', $context['ticket']['member']['link'], '</dd>
 
-						<dt><span class="generic_icons calendar" title="', $txt['shd_ticket_date'], '"></span> ', $txt['shd_ticket_date'], ':</dt>
+						<dt><span class="main_icons calendar" title="', $txt['shd_ticket_date'], '"></span> ', $txt['shd_ticket_date'], ':</dt>
 						<dd>', $context['ticket']['poster_time'], '</dd>
 
 						<dt><img src="', $settings['default_images_url'], '/simpledesk/urgency.png" alt="" class="shd_smallicon"> ', $txt['shd_ticket_urgency'], ':</dt>
@@ -73,16 +74,20 @@ function template_viewticket()
 							<span id="urgency_increase">', (!empty($context['ticket']['urgency']['increase']) ? '<a id="urglink_increase" href="' . $scripturl . '?action=helpdesk;sa=urgencychange;ticket=' . $context['ticket']['id'] . ';change=increase;' . $context['session_var'] . '=' . $context['session_id'] . '" title="' . $txt['shd_urgency_increase'] . '"><span class="generic_icons urgency_increase" title="' . $txt['shd_urgency_increase'] . '"></span></a>' : ''), '</span>
 							<span id="urgency_decrease">', (!empty($context['ticket']['urgency']['decrease']) ? '<a id="urglink_decrease" href="' . $scripturl . '?action=helpdesk;sa=urgencychange;ticket=' . $context['ticket']['id'] . ';change=decrease;' . $context['session_var'] . '=' . $context['session_id'] . '" title="' . $txt['shd_urgency_decrease'] . '"><span class="generic_icons urgency_decrease" title="' . $txt['shd_urgency_decrease'] . '"></span></a>' : ''), '</span>
 							<span id="urgency_button"></span>
-						</dd>
-						<dd class="shd_urgency_list">
-							<select id="urgency_list" class="hidden"></select>
+
+							<span class="shd_urgency_list">
+								<select id="urgency_list" class="hidden"></select>
+							</span>
 						</dd>
 
 						<dt><img src="', $settings['default_images_url'], '/simpledesk/staff.png" alt="" class="shd_smallicon"> ', $txt['shd_ticket_assignedto'], ':</dt>
-						<dd><span id="assigned_to">', $context['ticket']['assigned']['link'], '</span><span id="assigned_button"></span></dd>
-						<dt class="shd_assignees_list">
-							<ul id="assigned_list" class="hidden"></ul>
-						</dt>
+						<dd>
+							<span id="assigned_to">', $context['ticket']['assigned']['link'], '</span><span id="assigned_button"></span>
+							<div class="shd_assignees_list">
+								<ul id="assigned_list" class="hidden">
+								</ul>
+							</div>
+						</dd>
 
 						<dt><img src="', $settings['default_images_url'], '/simpledesk/status.png" alt="" class="shd_smallicon"> ', $txt['shd_ticket_status'], ':</dt>
 						<dd>', $context['ticket']['status']['label'], '</dd>
@@ -298,25 +303,27 @@ function template_viewticket()
 
 			echo '
 				</div>
+			</div>
+			<div class="sd_lower_columns">';
+
+				// Left column (ticket relationships, attachments)
+				template_ticket_leftcolumn();
+
+		echo '
+				<div class="shd_ticket_rightcolumn"', empty($context['leftcolumndone']) ? ' style="width: 100%;"' : '', '>';
+
+			// Additional information (custom fields)
+			template_additional_fields();
+
+			// The replies column
+			template_viewreplies();
+
+			// Our mighty quick reply box :D
+			template_quickreply();
+
+			echo '
+				</div>
 			</div>';
-
-	// Left column (ticket relationships, attachments)
-	template_ticket_leftcolumn();
-
-	echo '
-		<div class="shd_ticket_rightcolumn floatleft"', empty($context['leftcolumndone']) ? ' style="width: 100%;"' : '', '>';
-
-	// Additional information (custom fields)
-	template_additional_fields();
-
-	// The replies column
-	template_viewreplies();
-
-	// Our mighty quick reply box :D
-	template_quickreply();
-
-	echo '
-		</div>';
 
 	// The ticket action log, lastly.
 	template_ticketactionlog();
@@ -352,15 +359,17 @@ function template_ticket_leftcolumn()
 	$context['leftcolumndone'] = true; // for the rest of the template later
 
 	echo '
-		<br class="clear">
-		<div class="shd_ticket_leftcolumn floatleft">
-			<div class="shd_attachmentcolumn">';
+		<div class="shd_ticket_leftcolumn">';
 
 	foreach ($context['leftcolumn_templates'] as $template)
-		call_user_func('template_' . $template);
+	{
+		echo '
+		<div class="shd_attachmentcolumn">
+			', call_user_func('template_' . $template), '
+		</div>';
+	}
 
 	echo '
-			</div>
 		</div>';
 }
 
@@ -439,15 +448,14 @@ function template_viewnotifications()
 				<img src="', $settings['default_images_url'], '/simpledesk/log_notify.png" alt="">', $txt['shd_ticket_notify'], '
 			</h3>
 		</div>
-		<div class="information">';
-
-	$displayed_something = false;
+		<div class="information sd_notif_content">';
 
 	if (!$context['display_notifications']['is_ignoring'])
 	{
 		if (!$context['display_notifications']['is_monitoring'])
 		{
-			$displayed_something = true;
+			echo '
+				<div class="sd_notif_element">';
 			if (!empty($context['display_notifications']['preferences']))
 			{
 				echo '
@@ -462,23 +470,22 @@ function template_viewnotifications()
 					</ul>';
 			}
 			else
-				echo '
-					', $txt['shd_ticket_notify_noneprefs'];
+				echo $txt['shd_ticket_notify_noneprefs'];
 
 			if (!empty($context['display_notifications']['can_change']))
 				echo '
 					<form action="', $scripturl, '?action=profile;area=hd_prefs;u=', $context['user']['id'], '" method="post">
 						<input type="submit" value="', $txt['shd_ticket_notify_changeprefs'], '" class="button">
 					</form>';
+
+			echo '
+				</div>';
 		}
 
 		if (!empty($context['display_notifications']['can_monitor']))
 		{
-			if ($displayed_something)
-				echo '
-					<hr>';
-
 			echo '
+				<div class="sd_notif_element">
 					<form action="', $scripturl, '?action=helpdesk;sa=notify;ticket=', $context['ticket_id'], '" method="post">';
 
 			if (!$context['display_notifications']['is_monitoring'])
@@ -494,18 +501,16 @@ function template_viewnotifications()
 
 			echo '
 						<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">
-					</form>';
-			$displayed_something = true;
+					</form>
+				</div>';
 		}
 	}
 
 	if (!empty($context['display_notifications']['can_ignore']) && !$context['display_notifications']['is_monitoring'])
 	{
-		if ($displayed_something)
-			echo '
-					<hr>';
 
 		echo '
+				<div class="sd_notif_element">
 					<form action="', $scripturl, '?action=helpdesk;sa=notify;ticket=', $context['ticket_id'], '" method="post">';
 
 		if (!$context['display_notifications']['is_ignoring'])
@@ -521,7 +526,8 @@ function template_viewnotifications()
 
 		echo '
 						<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">
-					</form>';
+					</form>
+				</div>';
 	}
 
 	echo '
@@ -617,6 +623,10 @@ function template_quickreply()
 {
 	global $context, $scripturl, $options, $txt, $settings;
 
+	// If you can't reply, skip this.
+	if (!$context['can_reply'])
+		return;
+
 	echo '
 		<div class="title_bar" id="quickreplyheader">
 			<h3 class="titlebg">
@@ -665,7 +675,7 @@ function template_inline_attachments($msg)
 	if (!empty($context['ticket_attach']['reply'][$msg]))
 	{
 		echo '
-							<table width="90%">';
+							<table width="100%">';
 
 		$count = 0;
 		$firstrow = true;
@@ -752,13 +762,14 @@ function template_viewreplies()
 					<a id="new"></a>';
 
 			echo '
-					<div class="', (!empty($context['ticket']['display_recycle']) && $reply['message_status'] == MSG_STATUS_DELETED ? ' errorbox ' : ''), 'windowbg" id="msg', $reply['id'], '">
-						<span class="floatleft shd_posterinfo">
+					<div class="ticket_replies_container', (!empty($context['ticket']['display_recycle']) && $reply['message_status'] == MSG_STATUS_DELETED ? ' errorbox' : ''), ' windowbg" id="msg', $reply['id'], '">
+						<span class="shd_posterinfo">
 							<strong class="shd_postername">
 								', $reply['member']['link'], '
 							</strong>
 							<br>
-							', $reply['member']['group'], '<br class="shd_groupmargin">';
+							', $reply['member']['group'], '
+							<br class="shd_groupmargin">';
 
 			if (!empty($modSettings['shd_display_avatar']) && empty($options['show_no_avatars']) && !empty($reply['member']['avatar']['image']))
 					echo '
@@ -767,10 +778,10 @@ function template_viewreplies()
 							</span>';
 
 			if ($modSettings['shd_staff_badge'] == (!empty($reply['is_staff']) ? 'staffbadge' : 'userbadge') || $modSettings['shd_staff_badge'] == 'bothbadge')
-				echo '<br>
+				echo '
 							', $reply['member']['group_icons'];
 			elseif (!empty($reply['is_staff']) && $modSettings['shd_staff_badge'] == 'nobadge')
-				echo '<br>
+				echo '
 							<img src="', $settings['default_images_url'] . '/simpledesk/staff.png" class="shd_smallicon" title="', $txt['shd_ticket_staff'], '" alt="', $txt['shd_ticket_staff'], '">';
 
 			echo '
@@ -840,31 +851,36 @@ function template_viewreplies()
 			}
 		}
 
-			if (!empty($settings['show_modify']) && !empty($reply['modified']))
+			if (!empty($modSettings['show_modify']) && !empty($reply['modified']))
 				echo '
 							<div class="smalltext shd_modified" style="margin-top:20px;">
-								&#171; <em>', $txt['last_edit'], ': ', $reply['modified']['time'], ' ', $txt['by'], ' ', $reply['modified']['link'], '</em> &#187;
+								&#171; <em>', sprintf($txt['last_edit_by'], $reply['modified']['time'], $reply['modified']['link']), '</em> &#187;
 							</div>';
 
 			template_inline_attachments($reply['id']);
 
-			echo '
-						</div>';
-
 			if (!empty($reply['ip_address']))
 				echo '
-						<span class="floatright"><img src="', $settings['default_images_url'], '/simpledesk/ip.png" alt="" class="shd_smallicon"> ', $txt['shd_ticket_ip'], ': ', $reply['ip_address'], '</span>';
+							<span class="floatright">
+								<img src="', $settings['default_images_url'], '/simpledesk/ip.png" alt="" class="shd_smallicon"> 
+								', $txt['shd_ticket_ip'], ': ', $reply['ip_address'], '
+							</span>';
 
 			echo '
-						<br>
+						</div>
 					</div>';
 		}
 	}
 
 	echo '
-		<div class="information">
-			<span class="floatleft"><a href="#replies" title="', $txt['shd_go_to_replies_start'], '"><img src="', $settings['default_images_url'], '/simpledesk/move_up.png" alt=""><img src="', $settings['default_images_url'], '/simpledesk/replies.png" alt=""></a></span>
-			<span class="floatright smalltext">', $context['page_index'], '</span>
+			<div class="information">
+				<span class="floatleft">
+					<a href="#replies" title="', $txt['shd_go_to_replies_start'], '">
+						<img src="', $settings['default_images_url'], '/simpledesk/move_up.png" alt=""><img src="', $settings['default_images_url'], '/simpledesk/replies.png" alt="">
+					</a>
+				</span>
+				<span class="floatright smalltext">', $context['page_index'], '</span>
+			</div>
 		</div>';
 }
 

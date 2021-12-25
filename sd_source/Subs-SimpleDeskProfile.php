@@ -169,6 +169,10 @@ function shd_profile_areas(&$profile_areas)
 
 		$profile_areas['edit_profile']['areas']['theme']['file'] = 'sd_source/SimpleDesk-Profile.php';
 		$profile_areas['edit_profile']['areas']['theme']['function'] = 'shd_profile_theme_wrapper';
+		
+		// In HD Only mode, we need to change the select to the helpdesk profile.
+		$profile_areas['info']['areas']['popup']['select'] = 'hd_profile';
+		$profile_areas['info']['areas']['alerts_popup']['select'] = 'hd_profile';
 	}
 	else
 	// In non HD only, put it before the editing stuff menu
