@@ -58,13 +58,15 @@ function template_shd_unread_below()
 	else
 		foreach ($context['shd_unread_info'] as $ticket)
 			echo '
-			<span style="width: 8%;">', $ticket['id_ticket_display'], '</span>
-			<span class="smalltext" style="width: 15%;"><a href="', $scripturl, '?action=helpdesk;sa=ticket;ticket=', $ticket['id_ticket'], '">', $ticket['subject'], '</a></span>
-			<span class="smalltext" style="width: 12%;">', $ticket['ticket_starter'], '</span>
-			<span class="smalltext" style="width: 7%;">', $ticket['num_replies'], '</span>
-			<span class="smalltext" style="width: 17%;">', $txt['shd_status_' . $ticket['status']], '</span>
-			<span class="smalltext" style="width: 8%;">', $txt['shd_urgency_' . $ticket['urgency']], '</span>
-			<span class="smalltext" style="width: 22%;">', $ticket['updated'], '</span>';
+			<div class="sd_unread_row">
+				<span style="width: 8%;">', $ticket['id_ticket_display'], '</span>
+				<span class="smalltext" style="width: 15%;"><a href="', $scripturl, '?action=helpdesk;sa=ticket;ticket=', $ticket['id_ticket'], '">', $ticket['subject'], '</a></span>
+				<span class="smalltext" style="width: 12%;">', $ticket['ticket_starter'], '</span>
+				<span class="smalltext" style="width: 7%;">', $ticket['num_replies'], '</span>
+				<span class="smalltext" style="width: 17%;">', $txt['shd_status_' . $ticket['status']], '</span>
+				<span class="smalltext" style="width: 8%;">', $txt['shd_urgency_' . $ticket['urgency']], '</span>
+				<span class="smalltext" style="width: 22%;">', $ticket['updated'], '</span>
+			</div>';
 
 	echo '
 		</div>';
