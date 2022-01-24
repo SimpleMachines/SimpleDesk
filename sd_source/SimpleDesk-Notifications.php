@@ -5,7 +5,7 @@
 *       An advanced help desk modification built on SMF       *
 ***************************************************************
 *                                                             *
-*         * Copyright 2021 - SimpleDesk.net                   *
+*         * Copyright 2022 - SimpleDesk.net                   *
 *                                                             *
 *   This file and its contents are subject to the license     *
 *   included with this distribution, license.txt, which       *
@@ -134,7 +134,7 @@ function shd_notifications_notify_newreply(&$msgOptions, &$ticketOptions, &$post
 		'ticket' => $ticketOptions['id'],
 		'msg' => $msgOptions['id'],
 		'body' => $msgOptions['body'],
-		'poster_name' => $posterOptions['name'],
+		'poster_name' => un_htmlspecialchars($posterOptions['name']), // Fixes &quote; from being in emails.
 	);
 
 	$members = array(); // who should get what type of notification, preferences depending
@@ -433,7 +433,7 @@ function shd_notify_users($notify_data)
 
 			$subject = str_replace(array_keys($replacements), array_values($replacements), $txt['template_subject_notify_' . $email_type]);
 
-			$body = $txt['template_' . $withbody . '_notify_' . $email_type] . "\n\n" . $txt['regards_team'];
+			$body = $txt['template_' . $withbody . '_notify_' . $email_type] . "\n\n" . sprintf($txt['regards_team'], $context['forum_name']);
 			$body = str_replace(array_keys($replacements), array_values($replacements), $body);
 
 			if (!isset($log['emails'][$email_type]))
