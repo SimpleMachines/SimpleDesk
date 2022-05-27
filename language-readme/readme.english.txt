@@ -6,7 +6,7 @@ Thank you for downloading SimpleDesk :)
 
 Yes, we know, you don't want the boring formality of a license, but to protect us - and you - we have a license in the code. Clicking the install button after this constitutes acceptance of the following terms.
 
-[code]Copyright (c) 2010-2015, SimpleDesk Team
+[code]Copyright (c) 2010-2022, SimpleDesk Team
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

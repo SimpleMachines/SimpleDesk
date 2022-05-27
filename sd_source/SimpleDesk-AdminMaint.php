@@ -13,7 +13,7 @@
 *   Any questions, please contact SimpleDesk.net              *
 *                                                             *
 ***************************************************************
-* SimpleDesk Version: 2.1 RC1                                 *
+* SimpleDesk Version: 2.1.0                                   *
 * File Info: SimpleDesk-AdminMaint.php                        *
 **************************************************************/
 
