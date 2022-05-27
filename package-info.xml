@@ -3,7 +3,7 @@
 <package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
 	<id>SimpleDeskTeam:SimpleDesk</id>
 	<name>SimpleDesk - Integrated Helpdesk for Simple Machines Forum</name>
-	<version>2.1 RC2</version>
+	<version>2.1.0</version>
 	<type>modification</type>
 
 	<install for="2.1 RC4, 2.1.0-2.1.99">
@@ -78,6 +78,7 @@
 		<hook hook="integrate_display_buttons" function="shd_display_btn_mvtopic" file="$sourcedir/sd_source/Subs-SimpleDesk.php" />
 
 			<!-- ShowAttachments -->
+		<hook hook="integrate_pre_download_request" function="shd_pre_download_request" file="$sourcedir/sd_source/Subs-SimpleDeskDisplay.php" />
 		<hook hook="integrate_download_request" function="shd_download_request" file="$sourcedir/sd_source/Subs-SimpleDeskDisplay.php" />
 
 			<!-- BoardIndex -->
@@ -142,6 +143,7 @@
 		<hook reverse="true" hook="integrate_display_buttons" function="shd_display_btn_mvtopic" file="$sourcedir/sd_source/Subs-SimpleDesk.php" />
 
 			<!-- ShowAttachments -->
+		<hook reverse="true" hook="integrate_pre_download_request" function="shd_pre_download_request" file="$sourcedir/sd_source/Subs-SimpleDeskDisplay.php" />
 		<hook reverse="true" hook="integrate_download_request" function="shd_download_request" file="$sourcedir/sd_source/Subs-SimpleDeskDisplay.php" />
 
 			<!-- BoardIndex -->
