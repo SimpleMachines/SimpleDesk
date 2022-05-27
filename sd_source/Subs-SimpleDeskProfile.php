@@ -13,7 +13,7 @@
 *   Any questions, please contact SimpleDesk.net              *
 *                                                             *
 ***************************************************************
-* SimpleDesk Version: 2.1 RC1                                 *
+* SimpleDesk Version: 2.1.0                                   *
 * File Info: Subs-SimpleDeskProfile.php                       *
 **************************************************************/
 
@@ -213,15 +213,21 @@ function shd_profile_trackip($ip_string, $ip_var)
 		'get_items' => array(
 			'function' => 'shd_list_get_ip_messages',
 			'params' => array(
-				'hdtr.poster_ip ' . $ip_string,
-				array('ip_address' => $ip_var),
+				'hdtr.poster_ip = {string:ip_address_low} OR hdtr.poster_ip = {string:ip_address_high}',
+				array(
+					'ip_address_low' => inet_dtop($ip_var['low']),
+					'ip_address_high' => inet_dtop($ip_var['high'])
+				),
 			),
 		),
 		'get_count' => array(
 			'function' => 'shd_list_get_ip_message_count',
 			'params' => array(
-				'hdtr.poster_ip ' . $ip_string,
-				array('ip_address' => $ip_var),
+				'hdtr.poster_ip = {string:ip_address_low} OR hdtr.poster_ip = {string:ip_address_high}',
+				array(
+					'ip_address_low' => inet_dtop($ip_var['low']),
+					'ip_address_high' => inet_dtop($ip_var['high'])
+				),
 			),
 		),
 		'columns' => array(

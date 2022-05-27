@@ -13,7 +13,7 @@
 *   Any questions, please contact SimpleDesk.net              *
 *                                                             *
 ***************************************************************
-* SimpleDesk Version: 2.1 RC1                                 *
+* SimpleDesk Version: 2.1.0                                   *
 * File Info: install.php                                      *
 **************************************************************/
 
@@ -181,7 +181,7 @@ function sd_get_install_modSettings($getAll = false)
 function sd_get_install_rows()
 {
 	global $smcFunc;
-	static $current_package_server_url = 'https://www.simpledesk.net/download/plugins/2.0';
+	static $current_package_server_url = 'https://www.simpledesk.net/download/plugins/2.1';
 
 	$rows = array();
 	$rows[] = array(
