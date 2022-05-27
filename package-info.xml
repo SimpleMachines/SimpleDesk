@@ -28,6 +28,7 @@
 		<!-- css -->
 		<require-file name="css/helpdesk.css" destination="$themedir/css" />
 		<require-file name="css/helpdesk_admin.css" destination="$themedir/css" />
+		<require-file name="css/helpdesk_responsive.css" destination="$themedir/css" />
 		<require-file name="css/helpdesk_icons.css" destination="$themedir/css" />
 
 		<!-- scripts -->
@@ -46,6 +47,7 @@
 		<hook hook="integrate_actions" function="shd_init_actions" file="$sourcedir/sd_source/Subs-SimpleDesk.php" />
 		<hook hook="integrate_buffer" function="shd_buffer_replace" file="$sourcedir/sd_source/Subs-SimpleDesk.php" />
 		<hook hook="integrate_menu_buttons" function="shd_main_menu" file="$sourcedir/sd_source/Subs-SimpleDesk.php" />
+		<hook hook="integrate_current_action" function="shd_init_current_action" file="$sourcedir/sd_source/Subs-SimpleDesk.php" />
 		<hook hook="integrate_load_permissions" function="shd_admin_smf_perms" file="$sourcedir/sd_source/Subs-SimpleDeskAdmin.php" />
 		<hook hook="integrate_error_types" function="shd_error_types" file="$sourcedir/sd_source/Subs-SimpleDesk.php" />
 		<hook hook="integrate_bbc_codes" function="shd_bbc_codes" file="$sourcedir/sd_source/Subs-SimpleDesk.php" />
@@ -95,7 +97,7 @@
 
 		<redirect url="?action=admin;area=helpdesk_info" />
 
-		<credits url="https://www.simpledesk.net" license="BSD 3-Clause" licenseurl="https://github.com/SimpleMachines/SimpleDesk/blob/master/license.txt" copyright="2010-2020">Simple Desk</credits>
+		<credits url="https://www.simpledesk.net" license="BSD 3-Clause" licenseurl="https://github.com/SimpleMachines/SimpleDesk/blob/master/license.txt" copyright="2010-2021">Simple Desk</credits>
 	</install>
 
 	<uninstall for="2.1 RC4, 2.1.0-2.1.99">
@@ -110,6 +112,7 @@
 		<hook reverse="true" hook="integrate_actions" function="shd_init_actions" file="$sourcedir/sd_source/Subs-SimpleDesk.php" />
 		<hook reverse="true" hook="integrate_buffer" function="shd_buffer_replace" file="$sourcedir/sd_source/Subs-SimpleDesk.php" />
 		<hook reverse="true" hook="integrate_menu_buttons" function="shd_main_menu" file="$sourcedir/sd_source/Subs-SimpleDesk.php" />
+		<hook reverse="true" hook="integrate_current_action" function="shd_init_current_action" file="$sourcedir/sd_source/Subs-SimpleDesk.php" />
 		<hook reverse="true" hook="integrate_load_permissions" function="shd_admin_smf_perms" file="$sourcedir/sd_source/Subs-SimpleDeskAdmin.php" />
 		<hook reverse="true" hook="integrate_error_types" function="shd_error_types" file="$sourcedir/sd_source/Subs-SimpleDesk.php" />
 		<hook reverse="true" hook="integrate_bbc_codes" function="shd_bbc_codes" file="$sourcedir/sd_source/Subs-SimpleDesk.php" />
@@ -171,6 +174,7 @@
 		<!-- css, removed -->
 		<remove-file name="$themedir/css/helpdesk.css" />
 		<remove-file name="$themedir/css/helpdesk_admin.css" />
+		<remove-file name="$themedir/css/helpdesk_responsive.css" />
 		<remove-file name="$themedir/css/helpdesk_icons.css" />
 
 		<!-- bundled plugins removed (NOTE: done one by one to avoid eating existing plugins on upgrade) -->
