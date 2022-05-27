@@ -13,7 +13,7 @@
 *   Any questions, please contact SimpleDesk.net              *
 *                                                             *
 ***************************************************************
-* SimpleDesk Version: 2.1 RC1                                 *
+* SimpleDesk Version: 2.1.0                                   *
 * File Info: Subs-SimpleDesk.php                              *
 **************************************************************/
 
@@ -50,7 +50,7 @@ function shd_init()
 	$context['shd_home'] = 'action=helpdesk;sa=main';
 
 	// What SD version are we on? It's now here!
-	define('SHD_VERSION', 'SimpleDesk 2.1 RC1');
+	define('SHD_VERSION', 'SimpleDesk 2.1.0');
 
 	// This isn't the SMF way. But for something like this, it's way way more logical and readable.
 	define('TICKET_STATUS_NEW', 0);
@@ -1600,7 +1600,7 @@ function shd_init_current_action(&$current_action)
 	global $context, $modSettings;
 
 	// Load some extra CSS
-	loadCSSFile('helpdesk_icons.css', array('minimize' => empty($context['shd_developer_mode']), 'seed' => $context['shd_css_version']), 'helpdesk_icons');
+	loadCSSFile('helpdesk_icons.css', array('minimize' => empty($context['shd_developer_mode']), 'seed' => !empty($context['shd_css_version']) ? $context['shd_css_version'] : false), 'helpdesk_icons');
 	
 	// In helpdesk only mode, disable PMs if we choose to, this is repeated here due to caching.
 	if (!empty($modSettings['shd_helpdesk_only']) && !empty($modSettings['shd_disable_pm']))
