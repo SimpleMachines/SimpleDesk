@@ -15,7 +15,7 @@ module.exports = {
             'tab',
             {"SwitchCase": 1}
         ],
-        'linebreak-style': [
+        "linebreak-style": [
             'error',
             'unix'
         ],
@@ -23,7 +23,7 @@ module.exports = {
             'error',
             'single'
         ],
-        'no-unused-vars': [
+        "no-unused-vars": [
             'error',
             {
                 vars: 'local',
