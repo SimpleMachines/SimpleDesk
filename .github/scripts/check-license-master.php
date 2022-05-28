@@ -14,17 +14,37 @@
 *                                                             *
 ***************************************************************
 * SimpleDesk Version: 2.1.0                                   *
-* File Info: SDPluginStats.english.php                        *
+* File Info: check-license-master.php                         *
 **************************************************************/
-// Version: 2.1.0; SimpleDesk main language file
 
-// Important! Before editing these language files please read the text at the top of index.english.php.
+// Stuff we will ignore.
+$ignoreFiles = array(
+	'\.github/',
+);
 
-$txt['shdp_stats'] = 'Statistics';
-$txt['shdp_stats_desc'] = 'This plugin allows you to view statistics of your helpdesk.';
+$curDir = '.';
+if (isset($_SERVER['argv'], $_SERVER['argv'][1]))
+	$curDir = $_SERVER['argv'][1];
 
-$txt['shdp_enable_stats'] = 'Enable stats';
+$foundBad = false;
+foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($curDir, FilesystemIterator::UNIX_PATHS)) as $currentFile => $fileInfo)
+{
+	// Only check PHP
+	if ($fileInfo->getExtension() !== 'php')
+		continue;
 
+	foreach ($ignoreFiles as $if)
+		if (preg_match('~' . $if . '~i', $currentFile))
+			continue 2;
 
-$txt['shdp_stats_main'] = 'j';
-$txt['shdp_stats_main_desc'] = 'Stats';
+	$result = trim(shell_exec('php .github/scripts/check-license.php ' . $currentFile . ' 2>&1'));
+
+	if (!preg_match('~Error:([^$]+)~', $result))
+		continue;
+
+	$foundBad = true;
+	fwrite(STDERR, $result . "\n");
+}
+
+if (!empty($foundBad))
+	exit(1);

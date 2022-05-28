@@ -13,10 +13,10 @@
 *   Any questions, please contact SimpleDesk.net              *
 *                                                             *
 ***************************************************************
-* SimpleDesk Version: 2.1 RC1                                 *
+* SimpleDesk Version: 2.1.0                                   *
 * File Info: SDPluginFrontPage.english.php                    *
 **************************************************************/
-// Version: 2.1; SimpleDesk main language file
+// Version: 2.1.0; SimpleDesk main language file
 
 // Important! Before editing these language files please read the text at the top of index.english.php.
 
