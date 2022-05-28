@@ -1,33 +1,33 @@
 module.exports = {
-    'env': {
-        'browser': true,
-        'es2021': true,
-        'jquery': true
+    env: {
+        browser: true,
+        es2021: true,
+        jquery: true
     },
-    'extends': 'eslint:recommended',
-    'parserOptions': {
-        'ecmaVersion': 12,
-        'sourceType': 'module'
+    extends: 'eslint:recommended',
+    parserOptions: {
+        ecmaVersion: 12,
+        sourceType: 'module'
     },
-    'rules': {
-        'indent': [
+    rules: {
+        indent: [
             'error',
             'tab',
             {"SwitchCase": 1}
         ],
-        'linebreak-style': [
+        linebreak-style: [
             'error',
             'unix'
         ],
-        'quotes': [
+        quotes: [
             'error',
             'single'
         ],
-        'no-unused-vars': [
+        no-unused-vars: [
             'error',
             {
-                'vars': 'local',
-                'args' : 'none'
+                vars: 'local',
+                args: 'none'
             }
         ]
     }
