@@ -110,19 +110,31 @@ $yearMatch[6] = '\* {9}\* Copyright ' . $currentSoftwareYear . ' - SimpleDesk.ne
 if (!preg_match('~' . implode('', $yearMatch) . '~i', $contents))
 	die('Error: The software year is incorrect in ' . $currentFile . "\n");
 
-// Check the version is correct.
-$versionMatch = $match;
-$sd_version_whitespace = 40;
-$versionMatch[14] = '\* SimpleDesk Version: ' . $currentVersion . ' {' . ($sd_version_whitespace - strlen($currentVersion)) . '}\*' . '[\r]?\n';
-if (!preg_match('~' . implode('', $versionMatch) . '~i', $contents))
-{
-	$badVersion = true;
-	foreach ($ignoreFilesVersion as $if)
-		if (preg_match('~' . $if . '~i', $currentFile))
-			$badVersion = false;
+/* Remove once we only support PHP 8.0 and above */
+if (! function_exists('str_ends_with')) {
+    function str_ends_with(string $haystack, string $needle): bool
+    {
+        $needle_len = strlen($needle);
+        return ($needle_len === 0 || 0 === substr_compare($haystack, $needle, - $needle_len));
+    }
+}
 
-	if ($badVersion)
-		die('Error: The version is incorrect in ' . $currentFile . "\n");
+// Check the version is correct, but only for alpha/beta/rc builds.  As well, the "final" .0 releases.
+if (stripos($currentVersion, 'alpha') > 0 || stripos($currentVersion, 'beta') > 0 || stripos($currentVersion, 'RC') > 0 || str_ends_with($currentVersion, '.0'))
+{
+	$versionMatch = $match;
+	$sd_version_whitespace = 40;
+	$versionMatch[14] = '\* SimpleDesk Version: ' . $currentVersion . ' {' . ($sd_version_whitespace - strlen($currentVersion)) . '}\*' . '[\r]?\n';
+	if (!preg_match('~' . implode('', $versionMatch) . '~i', $contents))
+	{
+		$badVersion = true;
+		foreach ($ignoreFilesVersion as $if)
+			if (preg_match('~' . $if . '~i', $currentFile))
+				$badVersion = false;
+
+		if ($badVersion)
+			die('Error: The version is incorrect in ' . $currentFile . "\n");
+	}
 }
 
 die('Stop here' . "\n");
