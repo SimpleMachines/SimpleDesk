@@ -2,9 +2,9 @@ name: PHP Syntax Check
 
 on:
   push:
-    branches: [ smf21, smf20, master ]
+    branches: [ smf21, master ]
   pull_request:
-    branches: [ smf21, smf20, master ]
+    branches: [ smf21, master ]
 
   workflow_dispatch:
 jobs:
@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         operating-system: [ ubuntu-latest ]
-        php: [ '7.1', '7.2', '7.3', '7.4', '8.0' ]
+        php: [ '7.4', '8.0', '8.1' ]
     name: PHP ${{ matrix.php }} Syntax Check
     steps:
       - uses: actions/checkout@master
