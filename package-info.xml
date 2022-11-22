@@ -3,10 +3,10 @@
 <package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
 	<id>SimpleDeskTeam:SimpleDesk</id>
 	<name>SimpleDesk - Integrated Helpdesk for Simple Machines Forum</name>
-	<version>2.1.0</version>
+	<version>2.1.1</version>
 	<type>modification</type>
 
-	<install for="2.1 RC4, 2.1.0-2.1.99">
+	<install for="2.1.0-2.1.99">
 		<!-- readme files -->
 		<readme lang="english" parsebbc="true" type="file">language-readme/readme.english.txt</readme>
 
@@ -100,7 +100,7 @@
 		<credits url="https://www.simpledesk.net" license="BSD 3-Clause" licenseurl="https://github.com/SimpleMachines/SimpleDesk/blob/master/license.txt" copyright="2010-2021">Simple Desk</credits>
 	</install>
 
-	<uninstall for="2.1 RC4, 2.1.0-2.1.99">
+	<uninstall for="2.1.0-2.1.99">
 		<!-- database changes, undone -->
 		<database>uninstall-sd-optional.php</database>
 		<code type="file">uninstall-sd-required.php</code>
