@@ -551,7 +551,7 @@ function sd_get_install_tables()
 		),
 		'indexes' => array(
 			array(
-				'columns' => array('id_role', 'permission'),
+				'columns' => array('id_role', 'permission(40)'),
 				'type' => 'primary',
 			),
 		),
@@ -568,7 +568,7 @@ function sd_get_install_tables()
 		),
 		'indexes' => array(
 			array(
-				'columns' => array('id_member', 'variable'),
+				'columns' => array('id_member', 'variable(30)'),
 				'type' => 'primary',
 			),
 		),
