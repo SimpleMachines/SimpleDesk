@@ -14,10 +14,8 @@ jobs:
     steps:
       - uses: actions/checkout@master
         with:
-          submodules: true
-      - name: Update Build Tools
-        run: git submodule foreach git pull origin master
+          submodules: false
       - name: Javascript LINT
         uses: tj-actions/eslint-changed-files@v4
         with:
-          config-path: buildTools/eslintrc.js
+          config-path: ./.github/configs/eslintrc.js
