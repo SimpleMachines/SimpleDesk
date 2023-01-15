@@ -20,4 +20,4 @@ jobs:
       - name: Javascript LINT
         uses: tj-actions/eslint-changed-files@v4
         with:
-          config-path: buildTools/eslintrc.js
+          config-path: .github/configs/eslintrc.js

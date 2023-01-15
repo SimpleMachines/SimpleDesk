@@ -19,7 +19,7 @@ jobs:
         run: git submodule foreach git pull origin master
       - name: Checking Sign off
         id: check-signoff
-        run: php ./buildTools/check-signed-off.php github
+        run: php ./.github/scripts/check-signed-off.php github
   check-licensing:
     runs-on: ubuntu-latest
     name: Check Licensing
@@ -31,7 +31,7 @@ jobs:
         run: git submodule foreach git pull origin master
       - name: Checking Licensing
         id: check-licensing
-        run: php ./buildTools/check-license-master.php ./
+        run: php ./.github/scripts/check-license-master.php ./
   check-eof:
     runs-on: ubuntu-latest
     name: Check End of File
@@ -43,4 +43,4 @@ jobs:
         run: git submodule foreach git pull origin master
       - name: Checking End of File
         id: check-eof
-        run: php ./buildTools/check-eof-master.php ./
+        run: php ./.github/scripts/check-eof-master.php ./

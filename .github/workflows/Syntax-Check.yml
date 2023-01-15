@@ -24,4 +24,4 @@ jobs:
         uses: nanasess/setup-php@master
         with:
           php-version: ${{ matrix.php }}
-      - run: php ./buildTools/check-php-syntax.php ./
+      - run: php ./.github/scripts/check-php-syntax.php ./
