@@ -18,10 +18,10 @@ jobs:
     steps:
       - uses: actions/checkout@master
         with:
-          submodules: true
+          submodules: false
       - name: Setup PHP
         id: SetupPHP
         uses: nanasess/setup-php@master
         with:
           php-version: ${{ matrix.php }}
-      - run: php .github/scripts/check-php-syntax.php ./
+      - run: php ./.github/scripts/check-php-syntax.php ./

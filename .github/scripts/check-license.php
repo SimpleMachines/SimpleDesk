@@ -37,7 +37,7 @@ $ignoreFiles = array(
 );
 
 $ignoreFilesVersion = array(
-	'/buildTools/check-[A-Za-z0-9-_]+\.php',
+	'/.github/scripts/check-[A-Za-z0-9-_]+\.php',
 );
 
 // No file? Thats bad.
