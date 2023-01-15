@@ -1,0 +1,21 @@
+name: Javascript Checks
+
+on:
+  push:
+    branches: [ smf21, smf20, master ]
+  pull_request:
+    branches: [ smf21, smf20, master ]
+
+  workflow_dispatch:
+jobs:          
+  lint:
+    runs-on: ubuntu-latest
+    name: LINT Checks
+    steps:
+      - uses: actions/checkout@master
+        with:
+          submodules: false
+      - name: Javascript LINT
+        uses: tj-actions/eslint-changed-files@v4
+        with:
+          config-path: ./.github/configs/eslintrc.js

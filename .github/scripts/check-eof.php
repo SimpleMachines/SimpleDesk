@@ -5,7 +5,7 @@
 *       An advanced help desk modification built on SMF       *
 ***************************************************************
 *                                                             *
-*         * Copyright 2022 - SimpleDesk.net                   *
+*         * Copyright 2023 - SimpleDesk.net                   *
 *                                                             *
 *   This file and its contents are subject to the license     *
 *   included with this distribution, license.txt, which       *
@@ -13,14 +13,14 @@
 *   Any questions, please contact SimpleDesk.net              *
 *                                                             *
 ***************************************************************
-* SimpleDesk Version: 2.1 Beta 1                              *
+* SimpleDesk Version: 2.1.0                                   *
 * File Info: check-eof.php                                    *
 **************************************************************/
 
 // Stuff we will ignore.
 $ignoreFiles = array(
 	'\.github/',
-	'\.buildTools/',
+	'\.github/scripts/',
 );
 
 // No file? Thats bad.
