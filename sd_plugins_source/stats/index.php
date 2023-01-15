@@ -53,9 +53,9 @@ function shdplugin_stats()
 			'description' => 'shdp_stats_desc',
 			'author' => 'SimpleDesk Team',
 			'website' => 'https://www.simpledesk.net/',
-			'version' => '1.0',
+			'version' => '2.1',
 			'compatibility' => array(
-				'SimpleDesk 2.1 RC1', // should tie up with the SHD_VERSION constants
+				'SimpleDesk 2.1.*', // should tie up with the SHD_VERSION constants
 			),
 			'acp_url' => 'action=admin;area=helpdesk_options;sa=stats',
 		),

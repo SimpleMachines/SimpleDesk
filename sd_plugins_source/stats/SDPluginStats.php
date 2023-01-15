@@ -45,11 +45,11 @@ function shd_stats_hdadmininfo(&$subactions)
 	if (!allowedTo('admin_forum') || empty($modSettings['shdp_enable_stats']))
 		return;
 
-	$subactions['stats'] = array(
+	$subactions['stats'] = [
 		'function' => 'shd_stats_source',
 		'icon' => '../reports.png',
 		'title' => $txt['shdp_stats']
-	);
+	];
 
 	$context[$context['admin_menu_name']]['tab_data']['tabs']['stats'] = $subactions['stats'];
 }
@@ -57,10 +57,10 @@ function shd_stats_hdadmininfo(&$subactions)
 /*
  * The options screen for the stats
  */
-function shd_stats_admin($config_vars)
+function shd_stats_admin(&$config_vars)
 {
 	$config_vars[] = '';
-	$config_vars[] = array('check', 'shdp_enable_stats');
+	$config_vars[] = ['check', 'shdp_enable_stats'];
 }
 
 /*
@@ -71,7 +71,7 @@ function shd_stats_source()
 	global $modSettings, $context;
 
 	// All possible stat info.
-	$stats = array(
+	$stats = [
 		'status',
 		'today',
 		'most',
@@ -79,10 +79,10 @@ function shd_stats_source()
 		'totals',
 		'urgency',
 		'history',
-	);
+	];
 
 	// Loop out the stat info.
-	$context['shd_stats'] = array();
+	$context['shd_stats'] = [];
 	foreach ($stats as $function)
 	{
 		$func = 'shd_stats_' . $function;
@@ -98,7 +98,7 @@ function shd_stats_status()
 {
 	global $smcFunc;
 
-	$status = array(
+	$status = [
 		TICKET_STATUS_NEW => 0,
 		TICKET_STATUS_PENDING_STAFF => 0,
 		TICKET_STATUS_PENDING_USER => 0,
@@ -106,7 +106,7 @@ function shd_stats_status()
 		TICKET_STATUS_WITH_SUPERVISOR => 0,
 		TICKET_STATUS_ESCALATED => 0,
 		TICKET_STATUS_DELETED => 0
-	);
+	];
 
 	// Collect up some numbers.
 	$request = $smcFunc['db_query']('', '
@@ -114,9 +114,9 @@ function shd_stats_status()
 		FROM {db_prefix}helpdesk_tickets
 		WHERE status IN ({array_int:status})
 		GROUP BY status',
-		array(
+		[
 			'status' => array_keys($status)
-	));
+	]);
 
 	while ($row = $smcFunc['db_fetch_assoc']($request))
 		$status[$row['status']] = $row['count'];
@@ -147,19 +147,19 @@ function shd_stats_today()
 {
 	global $smcFunc;
 
-	$actions = array(
+	$actions = [
 		// These are open tickets.
 		'newticket' => TICKET_STATUS_NEW,
 		'unresolve' => TICKET_STATUS_NEW,
 
 		// These are resolved tickets.
 		'resolve' => TICKET_STATUS_CLOSED,
-	);
+	];
 
-	$totals = array(
+	$totals = [
 		TICKET_STATUS_NEW => 0,
 		TICKET_STATUS_CLOSED => 0,
-	);
+	];
 
 	$request = $smcFunc['db_query']('', '
 		SELECT COUNT(la.id_ticket) AS count, t.status
@@ -168,11 +168,11 @@ function shd_stats_today()
 		WHERE la.action IN ({array_string:actions})
 			AND la.log_time > {int:today}
 		GROUP BY la.action, t.status',
-		array(
+		[
 			'actions' => array_keys($actions),
 			// we could use strtotime from a date(n j Y), but this seems safer calculations
 			'today' => mktime(0, 0, 0, date('n'), date('j'), date('Y'))
-	));
+	]);
 
 	while ($row = $smcFunc['db_fetch_assoc']($request))
 		$totals[$row['status']] = $row['count'];
@@ -186,30 +186,34 @@ function shd_stats_most()
 {
 	global $smcFunc;
 
-	$actions = array(
-		TICKET_STATUS_NEW => array('newticket'),
-		TICKET_STATUS_CLOSED => array('resolve')
-	);
+	$actions = [
+		TICKET_STATUS_NEW => ['newticket'],
+		TICKET_STATUS_CLOSED => ['resolve']
+	];
 
-	$most = array(
-		TICKET_STATUS_NEW => array(0, 0),
-		TICKET_STATUS_CLOSED => array(0, 0),
-	);
+	$most = [
+		TICKET_STATUS_NEW => [0, 0],
+		TICKET_STATUS_CLOSED => [0, 0],
+	];
 
-	foreach ($actions as $action)
+	foreach ($actions as $id_action => $action)
 	{
 		$request = $smcFunc['db_query']('', '
-			SELECT COUNT(la.id_ticket) AS count, t.status, log_time
+			SELECT COUNT(la.id_ticket) AS count, t.status, MAX(log_time) AS log_time
 			FROM {db_prefix}helpdesk_log_action AS la
 				INNER JOIN {db_prefix}helpdesk_tickets AS t ON (la.id_ticket = t.id_ticket)
-			WHERE la.action IN ({array_string:actions})
-			GROUP BY unix_timestamp() - log_time < {int:24hrs} AND unix_timestamp() - log_time + {int:24hrs} > 0
+			WHERE
+				la.action IN ({array_string:actions})
+				AND t.status = {int:status}
+			GROUP BY
+				unix_timestamp() - log_time < {int:24hrs} AND unix_timestamp() - log_time + {int:24hrs} > 0
 			ORDER BY count DESC
 			LIMIT 1',
-			array(
+			[
 				'actions' => $action,
+				'status' => $id_action,
 				'24hrs' => 86400,
-		));
+		]);
 
 		while ($row = $smcFunc['db_fetch_assoc']($request))
 			$most[$row['status']] = array($row['count'], $row['log_time']);
@@ -224,17 +228,17 @@ function shd_stats_average()
 {
 	global $smcFunc;
 
-	$actions = array(
-		TICKET_STATUS_NEW => array('newticket', 'unresolve'),
-		TICKET_STATUS_CLOSED => array('resolve'),
-		TICKET_STATUS_PENDING_STAFF => array('assign'),
-	);
+	$actions = [
+		TICKET_STATUS_NEW => ['newticket', 'unresolve'],
+		TICKET_STATUS_CLOSED => ['resolve'],
+		TICKET_STATUS_PENDING_STAFF => ['assign'],
+	];
 
-	$average = array(
+	$average = [
 		TICKET_STATUS_NEW => 0,
 		TICKET_STATUS_CLOSED => 0,
 		TICKET_STATUS_PENDING_STAFF => 0,
-	);
+	];
 
 	foreach ($actions as $action)
 	{
@@ -244,10 +248,10 @@ function shd_stats_average()
 				INNER JOIN {db_prefix}helpdesk_tickets AS t ON (la.id_ticket = t.id_ticket)
 			WHERE la.action IN ({array_string:actions})
 			GROUP BY t.status',
-			array(
+			[
 				'actions' => $action,
 				'24hrs' => 86400,
-		));
+		]);
 
 		while ($row = $smcFunc['db_fetch_assoc']($request))
 			$average[$row['status']] = $row['count'];
@@ -263,14 +267,14 @@ function shd_stats_totals()
 	global $smcFunc;
 
 	// Count Admins separately for now.!
-	$admins = array();
+	$admins = [];
 	$request = $smcFunc['db_query']('', '
 		SELECT id_member
 		FROM {db_prefix}members
 		WHERE id_group = {int:admin} OR FIND_IN_SET({int:admin}, additional_groups)',
-		array(
+		[
 			'admin' => 1
-	));
+	]);
 
 	while ($row = $smcFunc['db_fetch_assoc']($request))
 		$admins[] = $row['id_member'];
@@ -284,16 +288,16 @@ function shd_stats_totals()
 			INNER JOIN {db_prefix}helpdesk_roles AS hdr ON (hdrg.id_role = hdr.id_role)
 		WHERE mem.id_member NOT IN ({array_int:admins})
 		GROUP BY hdr.template',
-		array(
+		[
 			'admins' => $admins
-	));
+	]);
 
-	$totals = array(
+	$totals = [
 		ROLE_USER => 0,
 		ROLE_STAFF => 0,
 //		ROLE_SUPERVISOR => 0,
 		ROLE_ADMIN => 0
-	);
+	];
 
 	while ($row = $smcFunc['db_fetch_assoc']($request))
 		$totals[$row['template']] = $row['count'];
@@ -311,23 +315,23 @@ function shd_stats_urgency()
 {
 	global $smcFunc;
 
-	$urgency = array(
+	$urgency = [
 		TICKET_URGENCY_LOW => 0,
 		TICKET_URGENCY_MEDIUM => 0,
 		TICKET_URGENCY_HIGH => 0,
 		TICKET_URGENCY_VHIGH => 0,
 		TICKET_URGENCY_SEVERE => 0,
 		TICKET_URGENCY_CRITICAL => 0,
-	);
+	];
 
 	// We reformat it now.
-	$urgency = array(
+	$urgency = [
 		'open' => $urgency,
 		'closed' => $urgency
-	);
+	];
 
 	// Open or closed is all we need to know.
-	$status = array(
+	$status = [
 		TICKET_STATUS_NEW => 'open',
 		TICKET_STATUS_PENDING_STAFF => 'open',
 		TICKET_STATUS_PENDING_USER => 'open',
@@ -335,7 +339,8 @@ function shd_stats_urgency()
 		TICKET_STATUS_WITH_SUPERVISOR => 'open',
 		TICKET_STATUS_ESCALATED => 'open',
 		TICKET_STATUS_DELETED => 'closed',
-	);
+		TICKET_STATUS_HOLD => 'hold'
+	];
 
 	// Collect up some numbers.
 	$request = $smcFunc['db_query']('', '
@@ -343,9 +348,9 @@ function shd_stats_urgency()
 		FROM {db_prefix}helpdesk_tickets
 		WHERE urgency IN ({array_string:urgency})
 		GROUP BY urgency, status',
-		array(
+		[
 			'urgency' => array_keys($urgency)
-	));
+	]);
 
 	while ($row = $smcFunc['db_fetch_assoc']($request))
 		$urgency[$status[$row['status']]][$row['urgency']] = $row['count'];
@@ -360,29 +365,34 @@ function shd_stats_history()
 	global $smcFunc;
 
 	// What tasks we want to perform.
-	$tasks = array(
+	$tasks = [
 		'open' => 0,
 		'resolved' => 0,
 		'assigned' => 0,
 		'reopen' => 0,
-		'child' => array(),
-	);
+		'child' => [],
+	];
 
-	$conversion = array(
+	$conversion = [
 		'newticket' => 'open',
 		'assign' => 'assigned',
 		'resolve' => 'resolved',
-	);
+	];
 
 	// @TODO: In future, use ajax to support selecting years/months totals
 	$request = $smcFunc['db_query']('', '
 		SELECT log_time, action
-		FROM {db_prefix}helpdesk_log_action');
+		FROM {db_prefix}helpdesk_log_action
+		WHERE
+			action IN ({array_string:valid_actions})',
+		[
+			'valid_actions' => ['newticket', 'assign', 'reopen', 'resolve', 'close']
+	]);
 
-	$history = array();
+	$history = [];
 	while ($row = $smcFunc['db_fetch_assoc']($request))
 	{
-		list($year, $month, $day) = explode(' ', date('Y m d', $row['log_time']));
+		list($year, $month, $day) = explode(' ', date('Y n d', $row['log_time']));
 
 		// If only we had to do this once a year.
 		if (!isset($history[$year]))
