@@ -3,10 +3,42 @@
 <package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
 	<id>SimpleDeskTeam:SimpleDesk</id>
 	<name>SimpleDesk - Integrated Helpdesk for Simple Machines Forum</name>
-	<version>2.1.0</version>
+	<version>2.1.1</version>
 	<type>modification</type>
 
-	<install for="2.1 RC4, 2.1.0-2.1.99">
+	<upgrade from="2.1.0" for="2.1.3-2.1.99">
+		<!-- language files -->
+		<require-dir name="sd_language" destination="$themes_dir/default/languages" />
+
+		<!-- sources -->
+		<require-dir name="sd_source" destination="$sourcedir" />
+
+		<!-- templates -->
+		<require-dir name="sd_template" destination="$themedir" />
+
+		<!-- images -->
+		<require-dir name="images/simpledesk" destination="$themes_dir/default/images" />
+		<require-dir name="images/sd_plugins" destination="$themes_dir/default/images" />
+		<require-dir name="images/shd" destination="$imagesdir/admin" />
+		<require-file name="images/feature_shd.png" destination="$themes_dir/default/images/admin" /><!-- explicitly called from default theme in ACP -->
+
+		<!-- css -->
+		<require-file name="css/helpdesk.css" destination="$themedir/css" />
+		<require-file name="css/helpdesk_admin.css" destination="$themedir/css" />
+		<require-file name="css/helpdesk_responsive.css" destination="$themedir/css" />
+		<require-file name="css/helpdesk_icons.css" destination="$themedir/css" />
+
+		<!-- scripts -->
+		<require-file name="scripts/helpdesk_admin.js" destination="$themedir/scripts" />
+		<require-file name="scripts/helpdesk.js" destination="$themedir/scripts" />
+
+		<!-- bundled plugins -->
+		<require-dir name="sd_plugins_source" destination="$sourcedir" />
+		<require-dir name="sd_plugins_template" destination="$themes_dir/default" />
+		<require-dir name="sd_plugins_lang" destination="$languagedir" />
+	</upgrade>
+
+	<install for="2.1.3-2.1.99">
 		<!-- readme files -->
 		<readme lang="english" parsebbc="true" type="file">language-readme/readme.english.txt</readme>
 
@@ -100,7 +132,7 @@
 		<credits url="https://www.simpledesk.net" license="BSD 3-Clause" licenseurl="https://github.com/SimpleMachines/SimpleDesk/blob/master/license.txt" copyright="2010-2021">Simple Desk</credits>
 	</install>
 
-	<uninstall for="2.1 RC4, 2.1.0-2.1.99">
+	<uninstall for="2.1.3-2.1.99">
 		<!-- database changes, undone -->
 		<database>uninstall-sd-optional.php</database>
 		<code type="file">uninstall-sd-required.php</code>

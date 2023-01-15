@@ -13,7 +13,7 @@
 *   Any questions, please contact SimpleDesk.net              *
 *                                                             *
 ***************************************************************
-* SimpleDesk Version: 2.1.0                                   *
+* SimpleDesk Version: 2.1.1                                   *
 * File Info: SimpleDesk-AdminPlugins.php                      *
 **************************************************************/
 
@@ -81,7 +81,12 @@ function shd_admin_plugins()
 		// 3.1 Is installable?
 		if (empty($plugins[$id]['details']['compatibility']))
 			$plugins[$id]['details']['compatibility'] = array($txt['unknown']);
-		$plugins[$id]['installable'] = in_array(SHD_VERSION, $plugin['details']['compatibility']);
+
+		// Check all compatible versions.
+		$plugins[$id]['installable'] = (bool) array_reduce($plugin['details']['compatibility'], function($a, $b) {
+			// Bitwise operator.
+			return $a | version_compare(SHD_VERSION, $b) == 1;
+		});
 
 		// 3.2 Admin language files? (That also means, let's get a list of known languages for this mod)
 		$plugins[$id]['languages'] = array();
