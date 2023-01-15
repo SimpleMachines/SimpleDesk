@@ -24,7 +24,7 @@ jobs:
     steps:
       - uses: actions/checkout@master
         with:
-          submodules: true
+          submodules: false
       - name: Checking Licensing
         id: check-licensing
         run: php ./.github/scripts/check-license-master.php ./
@@ -34,7 +34,7 @@ jobs:
     steps:
       - uses: actions/checkout@master
         with:
-          submodules: true
+          submodules: false
       - name: Checking End of File
         id: check-eof
         run: php ./.github/scripts/check-eof-master.php ./
