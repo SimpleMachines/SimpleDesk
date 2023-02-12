@@ -584,3 +584,7 @@ dl.stats dd span, dl.stats dt span {
 		display: none;
 	}
 }
+
+.sd_wordbreak {
+	overflow-wrap: break-word;
+}

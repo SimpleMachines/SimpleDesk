@@ -62,7 +62,6 @@ $txt['closed_tickets'] = 'Closed Tickets';
 		<div class="flow_hidden">
 			<div id="stats_left">
 				<div class="windowbg2">
-					<span class="topslice"><span></span></span>
 					<div class="content top_row">
 						<dl class="stats">
 							<dt>', $txt['new_tickets_today'], '</dt>
@@ -80,14 +79,11 @@ $txt['closed_tickets'] = 'Closed Tickets';
 							<dt>', $txt['most_closed_tickets'], '</dt>
 							<dd>', $context['shd_stats']['most'][TICKET_STATUS_CLOSED][0], ' &mdash; ', date('F d, Y', $context['shd_stats']['most'][TICKET_STATUS_CLOSED][1]), '</dd>
 						</dl>
-						<div class="clear"></div>
 					</div>
-					<span class="botslice"><span></span></span>
 				</div>
 			</div>
 			<div id="stats_right">
 				<div class="windowbg2">
-					<span class="topslice"><span></span></span>
 					<div class="content top_row">
 						<dl class="stats">
 							<dt>', $txt['average_new_tickets'], ':</dt>
@@ -105,9 +101,7 @@ $txt['closed_tickets'] = 'Closed Tickets';
 							<dt>', $txt['open_closed_ratio'], ':</dt>
 							<dd>', $context['shd_stats']['status']['ratio'], '</dd>
 						</dl>
-						<div class="clear"></div>
 					</div>
-					<span class="botslice"><span></span></span>
 				</div>
 			</div>
 		</div>
@@ -122,7 +116,6 @@ $txt['closed_tickets'] = 'Closed Tickets';
 		<div class="flow_hidden">
 			<div id="stats_left">
 				<div class="windowbg2">
-					<span class="topslice"><span></span></span>
 					<div class="content top_row">
 						<dl class="stats">';
 
@@ -133,14 +126,11 @@ $txt['closed_tickets'] = 'Closed Tickets';
 
 	echo '
 						</dl>
-						<div class="clear"></div>
 					</div>
-					<span class="botslice"><span></span></span>
 				</div>
 			</div>
 			<div id="stats_right">
 				<div class="windowbg2">
-					<span class="topslice"><span></span></span>
 					<div class="content top_row">
 						<dl class="stats">';
 
@@ -153,7 +143,6 @@ $txt['closed_tickets'] = 'Closed Tickets';
 						</dl>
 						<div class="clear"></div>
 					</div>
-					<span class="botslice"><span></span></span>
 				</div>
 			</div>
 		</div>
