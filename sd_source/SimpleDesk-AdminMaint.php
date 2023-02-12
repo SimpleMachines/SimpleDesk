@@ -35,7 +35,7 @@ if (!defined('SMF'))
 */
 function shd_admin_maint()
 {
-	global $context, $txt, $db_show_debug, $settings;
+	global $context, $txt, $db_show_debug;
 
 	// Right, if we're here, we really, really need to turn this off. Because anything we do from this page onwards hurts the log badly.
 	$db_show_debug = false;
@@ -45,55 +45,14 @@ function shd_admin_maint()
 	loadLanguage('ManageMaintenance');
 
 	$subactions = array(
-		'main' => array(
-			'function' => 'shd_admin_maint_home',
-			'icon' => 'maintenance.png',
-			'title' => $txt['shd_admin_maint'],
-		),
-		'reattribute' => array(
-			'function' => 'shd_admin_maint_reattribute',
-			'icon' => 'user.png',
-			'title' => $txt['shd_admin_maint_reattribute'],
-			'description' => $txt['shd_admin_maint_reattribute_desc'],
-		),
-		'massdeptmove' => array(
-			'function' => 'shd_admin_maint_massdeptmove',
-			'icon' => 'movedept.png',
-			'title' => $txt['shd_admin_maint_massdeptmove'],
-			'description' => $txt['shd_admin_maint_massdeptmove'],
-		),
-		'findrepair' => array(
-			'function' => 'shd_admin_maint_findrepair',
-			'icon' => 'find_repair.png',
-			'title' => $txt['shd_admin_maint_findrepair'],
-			'description' => $txt['shd_admin_maint_findrepair_desc'],
-		),
-		'search' => array(
-			'function' => 'shd_admin_maint_search',
-			'icon' => 'search.png',
-			'title' => $txt['shd_maint_search_settings'],
-		),
+		'main' => 'shd_admin_maint_home',
+		'reattribute' => 'shd_admin_maint_reattribute',
+		'massdeptmove' => 'shd_admin_maint_massdeptmove',
+		'findrepair' => 'shd_admin_maint_findrepair',
 	);
 
 	$_REQUEST['sa'] = isset($_REQUEST['sa']) && isset($subactions[$_REQUEST['sa']]) ? $_REQUEST['sa'] : 'main';
-
-	$context[$context['admin_menu_name']]['tab_data'] = array(
-		'title' => '<img src="' . $settings['default_theme_url'] . '/images/simpledesk/' . $subactions[$_REQUEST['sa']]['icon'] . '" class="icon" alt="*" />' . $subactions[$_REQUEST['sa']]['title'],
-		'description' => $txt['shd_admin_options_desc'],
-		'tabs' => array(
-			'main' => array(
-				'description' => $txt['shd_admin_maint_desc'],
-			),
-			'search' => array(
-				'description' => $txt['shd_maint_search_settings_desc'],
-			),
-		),
-	);
-
-	// We need to fix the descriptions just in case.
-	if (isset($subactions[$_REQUEST['sa']]['description']))
-		$context[$context['admin_menu_name']]['tab_data']['tabs']['main']['description'] = $subactions[$_REQUEST['sa']]['description'];
-	$subactions[$_REQUEST['sa']]['function']();
+	$subactions[$_REQUEST['sa']]();
 }
 
 function shd_admin_maint_home()
@@ -562,7 +521,7 @@ function shd_maint_deleted()
 	{
 		// More to do, call back - and provide the subtitle
 		$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . $context['step'] . '" />
-		<input type="hidden" name="start" value="' . $_REQUEST['start'] . '" />';
+		<input type="hidden" name="start" value="' . $_REQUEST['start'] . '">';
 		$context['substep_enabled'] = true;
 		$context['substep_title'] = $txt['shd_admin_maint_findrepair_status'];
 		$context['substep_continue_percent'] = round(100 * $_REQUEST['start'] / $ticket_count);
@@ -653,7 +612,7 @@ function shd_maint_first_last()
 	{
 		// More to do, call back - and provide the subtitle
 		$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . $context['step'] . '" />
-		<input type="hidden" name="start" value="' . $_REQUEST['start'] . '" />';
+		<input type="hidden" name="start" value="' . $_REQUEST['start'] . '">';
 		$context['substep_enabled'] = true;
 		$context['substep_title'] = $txt['shd_admin_maint_findrepair_firstlast'];
 		$context['substep_continue_percent'] = round(100 * $_REQUEST['start'] / $ticket_count);
@@ -744,7 +703,7 @@ function shd_maint_starter_updater()
 	{
 		// More to do, call back - and provide the subtitle
 		$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . $context['step'] . '" />
-		<input type="hidden" name="start" value="' . $_REQUEST['start'] . '" />';
+		<input type="hidden" name="start" value="' . $_REQUEST['start'] . '">';
 		$context['substep_enabled'] = true;
 		$context['substep_title'] = $txt['shd_admin_maint_findrepair_starterupdater'];
 		$context['substep_continue_percent'] = round(100 * $_REQUEST['start'] / $ticket_count);
@@ -831,7 +790,7 @@ function shd_maint_status()
 	{
 		// More to do, call back - and provide the subtitle
 		$context['continue_post_data'] .= '<input type="hidden" name="step" value="' . $context['step'] . '" />
-		<input type="hidden" name="start" value="' . $_REQUEST['start'] . '" />';
+		<input type="hidden" name="start" value="' . $_REQUEST['start'] . '">';
 		$context['substep_enabled'] = true;
 		$context['substep_title'] = $txt['shd_admin_maint_findrepair_firstlast'];
 		$context['substep_continue_percent'] = round(100 * $_REQUEST['start'] / $ticket_count);
@@ -904,222 +863,4 @@ function shd_maint_clean_cache()
 	redirectexit('action=admin;area=helpdesk_maint;sa=findrepair;done;' . $context['session_var'] . '=' . $context['session_id']);
 }
 
-function shd_admin_maint_search()
-{
-	global $context, $txt, $modSettings, $sourcedir, $smcFunc;
-
-	$context['sub_template'] = 'shd_admin_maint_search';
-	$context['page_title'] = $txt['shd_admin_maint'];
-
-	checkSession('request');
-
-	// Reset the defaults if they're not set.
-	if (empty($modSettings['shd_search_charset']))
-		$modSettings['shd_search_charset'] = '0..9, A..Z, a..z, &, ~';
-
-	$modSettings['shd_search_min_size'] = !empty($modSettings['shd_search_min_size']) ? $modSettings['shd_search_min_size'] : 3;
-	$modSettings['shd_search_max_size'] = !empty($modSettings['shd_search_max_size']) ? $modSettings['shd_search_max_size'] : 8;
-	$modSettings['shd_search_prefix_size'] = !empty($modSettings['shd_search_prefix_size']) ? $modSettings['shd_search_prefix_size'] : 0;
-
-	// Are we doing some fancy work?
-	if (isset($_REQUEST['rebuild']))
-	{
-		require_once($sourcedir . '/sd_source/Subs-SimpleDeskSearch.php');
-		// How many tickets are there?
-		$query = $smcFunc['db_query']('', '
-			SELECT COUNT(id_ticket)
-			FROM {db_prefix}helpdesk_tickets');
-		list($total) = $smcFunc['db_fetch_row']($query);
-
-		// Where are we starting?
-		$start = isset($_POST['start']) ? (int) $_POST['start'] : 0;
-
-		// Get the ids we need to do.
-		$per_inst = 10;
-		$tickets = array();
-		$query = $smcFunc['db_query']('', '
-			SELECT id_ticket, subject
-			FROM {db_prefix}helpdesk_tickets
-			ORDER BY id_ticket ASC
-			LIMIT {int:start}, {int:limit}',
-			array(
-				'start' => $start,
-				'limit' => $per_inst,
-			)
-		);
-		while ($row = $smcFunc['db_fetch_assoc']($query))
-			$tickets[$row['id_ticket']] = $row['subject'];
-		$smcFunc['db_free_result']($query);
-
-		// Nothing to do?
-		if ($start >= $total || empty($tickets))
-		{
-			// Make sure we flag the index as built, then leave.
-			updateSettings(
-				array(
-					'shd_new_search_index' => 0,
-				)
-			);
-			redirectexit('action=admin;area=helpdesk_maint;sa=search;rebuilddone;' . $context['session_var'] . '=' . $context['session_id']);
-		}
-
-		// OK, let's get cracking. First, remove the relevant tickets from the subject index.
-		$smcFunc['db_query']('', '
-			DELETE FROM {db_prefix}helpdesk_search_subject_words
-			WHERE id_ticket IN ({array_int:tickets})',
-			array(
-				'tickets' => array_keys($tickets),
-			)
-		);
-
-		// Now, figure out the new term index for the subjects.
-		$rows_to_insert = array();
-		foreach ($tickets as $id_ticket => $subject)
-		{
-			$tokens = shd_tokeniser($subject);
-			foreach ($tokens as $token)
-				$rows_to_insert[] = array($token, $id_ticket);
-		}
-
-		// And add to the database.
-		if (!empty($rows_to_insert))
-			$smcFunc['db_insert']('replace',
-				'{db_prefix}helpdesk_search_subject_words',
-				array('id_word' => 'string', 'id_ticket' => 'int'),
-				$rows_to_insert,
-				array('id_word', 'id_ticket')
-			);
-
-		// Now for the slightly... substantially more expensive part: messages. We query for all the messages in a ticket, then query to
-		// insert all the terms for each message. Expensive since it means a lot of queries but it means we don't risk hitting the query
-		// packet limit which could really break things. Besides, this IS a maintenance area, not something you're going to do that often.
-		foreach ($tickets as $id_ticket => $subject)
-		{
-			$rows_to_insert = array();
-			$query = $smcFunc['db_query']('', '
-				SELECT id_msg, body
-				FROM {db_prefix}helpdesk_ticket_replies
-				WHERE id_ticket = {int:ticket}',
-				array(
-					'ticket' => $id_ticket,
-				)
-			);
-			$msg_list = array();
-			while ($row = $smcFunc['db_fetch_assoc']($query))
-			{
-				$msg_list[] = $row['id_msg'];
-				$tokens = shd_tokeniser($row['body']);
-				foreach ($tokens as $token)
-					$rows_to_insert[] = array($token, $row['id_msg']);
-			}
-			$smcFunc['db_free_result']($query);
-
-			// Just before we insert, prune the old stuff. No point querying the message list twice.
-			$smcFunc['db_query']('', '
-				DELETE FROM {db_prefix}helpdesk_search_ticket_words
-				WHERE id_msg IN ({array_int:msgs})',
-				array(
-					'msgs' => $msg_list,
-				)
-			);
-
-			if (!empty($rows_to_insert))
-				$smcFunc['db_insert']('replace',
-					'{db_prefix}helpdesk_search_ticket_words',
-					array('id_word' => 'string', 'id_msg' => 'int'),
-					$rows_to_insert,
-					array('id_word', 'id_msg')
-				);
-		}
-
-		// Set up for calling back.
-		$start += $per_inst;
-		$pc_done = round($start / $total * 100);
-		if ($pc_done > 100)
-			$pc_done = 100;
-
-		$context['continue_countdown'] = 3;
-		$context['sub_template'] = 'not_done';
-		$context['continue_percent'] = $pc_done;
-		$context['continue_get_data'] = '?action=admin;area=helpdesk_maint;sa=search;' . $context['session_var'] . '=' . $context['session_id'];
-		$context['continue_post_data'] = '<input type="hidden" name="start" value="' . $start . '" />
-		<input type="hidden" name="rebuild" value="1" />';
-
-		// Make SURE we never mess with the other settings.
-		unset($_REQUEST['save']);
-	}
-
-	// OK, the template will basically display itself, but in the meantime, do we need to do anything else like save new settings?
-	if (isset($_REQUEST['save']))
-	{
-		$_POST['shd_search_min_size'] = isset($_POST['shd_search_min_size']) ? (int) $_POST['shd_search_min_size'] : 0;
-		$_POST['shd_search_max_size'] = isset($_POST['shd_search_max_size']) ? (int) $_POST['shd_search_max_size'] : 0;
-		$_POST['shd_search_prefix_size'] = isset($_POST['shd_search_prefix_size']) ? (int) $_POST['shd_search_prefix_size'] : 0;
-
-		// Force some realistic limits.
-		if ($_POST['shd_search_min_size'] < 3)
-			$_POST['shd_search_min_size'] = 3;
-		elseif ($_POST['shd_search_min_size'] > 15)
-			$_POST['shd_search_min_size'] = 15;
-		
-		if ($_POST['shd_search_max_size'] < $_POST['shd_search_min_size'])
-			$_POST['shd_search_max_size'] = $_POST['shd_search_min_size'];
-		elseif ($_POST['shd_search_max_size'] > 15)
-			$_POST['shd_search_max_size'] = 15;
-			
-		if ($_POST['shd_search_prefix_size'] < 0)
-			$_POST['shd_search_prefix_size'] = 0;
-		elseif ($_POST['shd_search_prefix_size'] > 0 && $_POST['shd_search_prefix_size'] < $_POST['shd_search_min_size'])
-			$_POST['shd_search_prefix_size'] = $_POST['shd_search_min_size'];
-		elseif ($_POST['shd_search_prefix_size'] > $_POST['shd_search_max_size'])
-			$_POST['shd_search_prefix_size'] = $_POST['shd_search_max_size'];
-
-		$normal_regex = shd_return_exclude_regex($modSettings['shd_search_charset']);
-		if (empty($_POST['shd_search_charset']))
-			$_POST['shd_search_charset'] = $modSettings['shd_search_charset'];
-		$post_regex = shd_return_exclude_regex($_POST['shd_search_charset']);
-		if (empty($post_regex))
-			$post_regex = $normal_regex; // Nothing specified? Use what we have, then.
-
-		foreach (array('shd_search_min_size', 'shd_search_max_size', 'shd_search_prefix_size') as $item)
-			if ($modSettings[$item] != $_POST[$item])
-				$update = true;
-
-		if ($normal_regex != $post_regex)
-			$update = true;
-
-		if (!empty($update))
-			updateSettings(
-				array(
-					'shd_search_min_size' => $_POST['shd_search_min_size'],
-					'shd_search_max_size' => $_POST['shd_search_max_size'],
-					'shd_search_prefix_size' => $_POST['shd_search_prefix_size'],
-					'shd_search_charset' => $_POST['shd_search_charset'],
-					'shd_new_search_index' => 1,
-				)
-			);
-	}
-}
-
-// This uses the same methodology as Subs-SimpleDeskSearch.php's shd_search_charset routine.
-function shd_return_exclude_regex($source)
-{
-	global $context;
-
-	$terms = explode(',', $source);
-	$exclude_regex = '';
-	foreach ($terms as $k => $v)
-	{
-		$v = trim($v);
-		if (preg_match('~^(.)$~i' . ($context['utf8'] ? 'u' : ''), $v, $match)) // Single character
-			$exclude_regex .= preg_quote($match[1], '~');
-		elseif (preg_match('~^(.)\.\.(.)$~i' . ($context['utf8'] ? 'u' : ''), $v, $match)) // It's a ranged component.
-			$exclude_regex .= preg_quote($match[1], '~') . '-' . preg_quote($match[2], '~');
-	}
-	if (empty($exclude_regex))
-		$exclude_regex = '';
-	else
-		$exclude_regex = '~[^' . $exclude_regex . ']+~' . ($context['utf8'] ? 'u' : '');
-
-	return $exclude_regex;
-}
+?>

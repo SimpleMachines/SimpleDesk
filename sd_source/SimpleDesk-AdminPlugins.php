@@ -51,7 +51,7 @@ function shd_admin_plugins()
 	{
 		if (is_dir($plugindir . '/' . $dir_entry) && $dir_entry != '.' && $dir_entry != '..' && file_exists($plugindir . '/' . $dir_entry . '/index.php'))
 		{
-			include_once($plugindir . '/' . $dir_entry . '/index.php');
+			include($plugindir . '/' . $dir_entry . '/index.php');
 			$function = 'shdplugin_' . $dir_entry;
 			if (function_exists($function))
 			{
@@ -111,7 +111,7 @@ function shd_admin_plugins()
 		'vietnamese',
 	);
 	$langtemplates = array();
-	$langfilelist = @opendir($settings['default_theme_dir'] . '/languages/sd_plugins_lang/');
+	$langfilelist = @opendir($settings['default_theme_dir'] . '/languages/');
 	while ($langfile_entry = readdir($langfilelist))
 	{
 		if (preg_match('~([a-z0-9]+)\.([a-z\-\_]+)(-utf8)?\.php$~i', $langfile_entry, $matches))
@@ -135,7 +135,7 @@ function shd_admin_plugins()
 			if (!empty($include[0]))
 				$plugins[$id]['languages'] = array_keys($langtemplates[$include[0]]);
 			foreach ($include as $langfile)
-				shd_load_language('sd_plugins_lang/' . $langfile);
+				shd_load_language($langfile);
 		}
 
 		// 3.3 Sort out some strings - now we've loaded the lang file
@@ -363,7 +363,6 @@ function shd_list_hooks()
 		'shd_hook_helpdesk', // functions to run when starting the main helpdesk (before going off to subactions)
 		'shd_hook_hdadmin', // functions to run when starting the main SimpleDesk admin area (probably should include via _include_hdadmin)
 		'shd_hook_hdadminopts', // functions to run when working in the SimpleDesk options submenu structure (probably should include via _include_hdadmin)
-		'shd_hook_hdadmininfo', // functions to run when working in the SimpleDesk info submenu structure (probably should include via _include_hdadmin)
 		'shd_hook_hdadminoptssrch', // functions to run when setting up admin panel search for SimpleDesk options submenu structure (probably should include via _include_hdadmin)
 		'shd_hook_hdprofile', // functions to call when going into the helpdesk profile area
 	);
@@ -380,3 +379,4 @@ function shd_list_hooks()
 
 	return $hooks;
 }
+?>

@@ -418,3 +418,4 @@ function template_shd_custom_field_edit()
 				</form>';
 }
 
+?>

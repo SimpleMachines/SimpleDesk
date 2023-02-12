@@ -82,3 +82,4 @@ $txt['shd_ping_n'] = 'You can send an email to these people on replying:';
 $txt['shd_ping_none_1'] = 'The following person has notifications turned off for this ticket, though you can send them an email about it if it is important:';
 $txt['shd_ping_none_n'] = 'The following people have notifications turned off for this ticket, though you can send them an email about it if it is important:';
 
+?>

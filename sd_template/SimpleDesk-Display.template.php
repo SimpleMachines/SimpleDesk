@@ -93,8 +93,8 @@ function template_viewticket()
 									<dl>
 										<dt><img src="', $settings['default_images_url'], '/simpledesk/urgency.png" alt="" class="shd_smallicon" /> ', $txt['shd_ticket_urgency'], ':</dt>
 										<dd><span id="urgency">', $context['ticket']['urgency']['label'], '</span>
-											<span id="urgency_increase">', (!empty($context['ticket']['urgency']['increase']) ? '<a id="urglink_increase" href="' . $scripturl . '?action=helpdesk;sa=urgencychange;ticket=' . $context['ticket']['id'] . ';change=increase;' . $context['session_var'] . '=' . $context['session_id'] . '" title="' . $txt['shd_urgency_increase'] . '"><img src="' . $settings['images_url'] . '/sort_up.png" width="9px" alt="' . $txt['shd_urgency_increase'] . '" /></a>' : ''), '</span>
-											<span id="urgency_decrease">', (!empty($context['ticket']['urgency']['decrease']) ? '<a id="urglink_decrease" href="' . $scripturl . '?action=helpdesk;sa=urgencychange;ticket=' . $context['ticket']['id'] . ';change=decrease;' . $context['session_var'] . '=' . $context['session_id'] . '" title="' . $txt['shd_urgency_decrease'] . '"><img src="' . $settings['images_url'] . '/sort_down.png" width="9px" alt="' . $txt['shd_urgency_decrease'] . '" /></a>' : ''), '</span>
+											<span id="urgency_increase">', (!empty($context['ticket']['urgency']['increase']) ? '<a id="urglink_increase" href="' . $scripturl . '?action=helpdesk;sa=urgencychange;ticket=' . $context['ticket']['id'] . ';change=increase;' . $context['session_var'] . '=' . $context['session_id'] . '" title="' . $txt['shd_urgency_increase'] . '"><img src="' . $settings['images_url'] . '/sort_up.gif" width="9px" alt="' . $txt['shd_urgency_increase'] . '" /></a>' : ''), '</span>
+											<span id="urgency_decrease">', (!empty($context['ticket']['urgency']['decrease']) ? '<a id="urglink_decrease" href="' . $scripturl . '?action=helpdesk;sa=urgencychange;ticket=' . $context['ticket']['id'] . ';change=decrease;' . $context['session_var'] . '=' . $context['session_id'] . '" title="' . $txt['shd_urgency_decrease'] . '"><img src="' . $settings['images_url'] . '/sort_down.gif" width="9px" alt="' . $txt['shd_urgency_decrease'] . '" /></a>' : ''), '</span>
 										</dd>
 									</dl>
 								</li>
@@ -630,7 +630,7 @@ function template_additional_fields()
 				<div class="tborder">
 					<div class="title_bar grid_header" id="additionalinfoheader">
 						<h3 class="titlebg">
-							<span class="floatright"><a href="javascript:oCustomFields.infoswap();"><img src="', $settings['images_url'], '/collapse.png" alt="+" id="shd_custom_fields_swap" class="icon" /></a></span>
+							<span class="floatright"><a href="javascript:oCustomFields.infoswap();"><img src="', $settings['images_url'], '/collapse.gif" alt="+" id="shd_custom_fields_swap" class="icon" /></a></span>
 							<img src="', $settings['default_images_url'], '/simpledesk/additional_information.png" alt="x" />
 							<a href="javascript:oCustomFields.infoswap();">', $txt['shd_ticket_additional_information'], '</a>
 						</h3>
@@ -701,7 +701,7 @@ function template_quickreply()
 		<div class="tborder">
 			<div class="title_bar', $options['display_quick_reply'] == 2 ? ' grid_header' : '', '" id="quickreplyheader">
 				<h3 class="titlebg">
-					<span class="floatright"><a href="#" onclick="oQuickReply.swap(); return false;"><img src="', $settings['images_url'], '/', $options['display_quick_reply'] == 2 ? 'collapse' : 'expand', '.png" alt="+" id="quickReplyExpand" class="icon" style="display:none;" /></a></span>
+					<span class="floatright"><a href="#" onclick="oQuickReply.swap(); return false;"><img src="', $settings['images_url'], '/', $options['display_quick_reply'] == 2 ? 'collapse' : 'expand', '.gif" alt="+" id="quickReplyExpand" class="icon" style="display:none;" /></a></span>
 					<img src="', $settings['default_images_url'], '/simpledesk/respond.png" alt="x" />
 					<a href="', $scripturl, '?action=helpdesk;sa=reply;ticket=', $context['ticket_id'], ';num_replies=', $context['ticket']['num_replies'], ';', $context['session_var'], '=', $context['session_id'], '" onclick="oQuickReply.swap(); return false;">', $txt['shd_reply_ticket'], '</a>
 				</h3>
@@ -1066,7 +1066,7 @@ function template_ticketactionlog()
 				<div class="tborder">
 					<div class="title_bar grid_header" id="ticket_log_header">
 						<h3 class="titlebg">
-							<span class="floatright shd_ticket_log_expand_container"> <a href="#" onclick="ActionLog.swap(); return false;"><img src="', $settings['images_url'], '/expand.png" alt="+" id="shd_ticket_log_expand" class="icon" style="display:none;" /></a></span>
+							<span class="floatright shd_ticket_log_expand_container"> <a href="#" onclick="ActionLog.swap(); return false;"><img src="', $settings['images_url'], '/expand.gif" alt="+" id="shd_ticket_log_expand" class="icon" style="display:none;" /></a></span>
 							<img src="', $settings['default_images_url'], '/simpledesk/log.png" class="icon" alt="*" />
 							<a href="#" onclick="ActionLog.swap(); return false;">', $txt['shd_ticket_log'], '</a>
 							<span class="smalltext">(', $context['ticket_log_count'] == 1 ? $txt['shd_ticket_log_count_one'] : sprintf($txt['shd_ticket_log_count_more'], $context['ticket_log_count']), ')</span>
@@ -1126,8 +1126,8 @@ function template_ticketactionlog()
 					sImagesUrl: "' . $settings['images_url'] . '",
 					sContainerId: "ticket_log",
 					sImageId: "shd_ticket_log_expand",
-					sImageCollapsed: "collapse.png",
-					sImageExpanded: "expand.png",
+					sImageCollapsed: "collapse.gif",
+					sImageExpanded: "expand.gif",
 					sHeaderId: "ticket_log_header",
 				});
 				ActionLog.swap();
@@ -1158,3 +1158,4 @@ function template_shd_display_nojs_below()
 
 }
 
+?>

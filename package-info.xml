@@ -11,10 +11,6 @@
 	</install>
 
 	<install for="2.0, 2.0.1-2.0.99">
-		<readme lang="english" parsebbc="true" type="inline">This package is for SMF 2.1, to install SimpleDesk on your version of SMF use the proper package.</readme>
-	</install>
-
-	<install for="2.1 alpha 1">
 		<!-- readme files -->
 		<readme lang="english" parsebbc="true" type="file">language-readme/readme.english.txt</readme>
 
@@ -52,7 +48,7 @@
 		<!-- bundled plugins -->
 		<require-dir name="sd_plugins_source" destination="$sourcedir" />
 		<require-dir name="sd_plugins_template" destination="$themes_dir/default" />
-		<require-dir name="sd_plugins_lang" destination="$languagedir" />
+		<require-file name="sd_plugins_lang/SDPluginFrontPage.english.php" destination="$languagedir" />
 
 		<!-- database changes -->
 		<database>install.php</database>
@@ -60,7 +56,7 @@
 		<redirect url="?action=admin;area=corefeatures#js_feature_shd" />
 	</install>
 
-	<uninstall for="2.1 alpha 1">
+	<uninstall for="2.0, 2.0.1-2.0.99">
 		<!-- database changes, undone -->
 		<database>uninstall-optional.php</database>
 		<code type="file">uninstall-required.php</code>
@@ -92,11 +88,10 @@
 		<remove-file name="$themedir/css/helpdesk-ie6.css" />
 
 		<!-- bundled plugins removed (NOTE: done one by one to avoid eating existing plugins on upgrade) -->
-		<remove-dir name="$languagedir/sd_plugin_lang" />
+		<remove-file name="$languagedir/SDPluginFrontPage.english.php" />
 
 		<!-- scripts, removed -->
 		<remove-file name="$themedir/scripts/helpdesk-admin.js" />
 		<remove-file name="$themedir/scripts/helpdesk.js" />
 	</uninstall>
-
 </package-info>

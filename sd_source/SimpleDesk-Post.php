@@ -1425,8 +1425,8 @@ function shd_setup_replies($first_msg)
 				sImagesUrl: "' . $settings['images_url'] . '",
 				sContainerId: "quickReplyOptions",
 				sImageId: "quickReplyExpand",
-				sImageCollapsed: "collapse.png",
-				sImageExpanded: "expand.png",
+				sImageCollapsed: "collapse.gif",
+				sImageExpanded: "expand.gif",
 				sJumpAnchor: "quickreply",
 				sHeaderId: "quickreplyheader",
 				sFooterId: "quickreplyfooter"
@@ -2100,3 +2100,4 @@ function shd_load_canned_replies()
 	}
 }
 
+?>

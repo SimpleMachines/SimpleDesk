@@ -94,3 +94,4 @@ function template_movedept()
 	<span class="lowerframe"><span></span></span>';
 }
 
+?>

@@ -275,12 +275,6 @@ $txt['permissionname_shd_view_ip_own'] = 'Only their own';
 $txt['permissionname_shd_view_ip_any'] = 'Anyone\'s';
 //@}
 
-//! @name Search
-//@{
-$txt['permissionname_shd_search'] = 'Search tickets';
-$txt['permissionhelp_shd_search'] = 'This permission allows users to search tickets, it will be limited to tickets they can see.';
-//@}
-
 //! @name User profile access
 //@{
 $txt['permissionname_shd_view_profile'] = 'View helpdesk profiles';
@@ -378,3 +372,4 @@ $txt['shd_no_role_name'] = 'You did not enter the name of your new role.';
 $txt['shd_could_not_create_role'] = 'There was an error creating the role, please contact SimpleDesk.net for further support.';
 $txt['shd_unknown_role'] = 'That role does not exist.';
 //@}
+?>

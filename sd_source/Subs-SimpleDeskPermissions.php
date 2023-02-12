@@ -60,9 +60,8 @@ function shd_load_all_permission_sets()
 		'admin_helpdesk' => array(false, 'general', ''), // because they'll be managed from parent roles instead
 		'shd_view_ticket' => array(true, 'general', 'ticket.png'),
 		'shd_view_ticket_private' => array(true, 'general', 'ticket_private.png'),
-		'shd_view_closed' => array(true, 'general', 'log_resolve.png'),
 		'shd_view_ip' => array(true, 'general', 'ip.png'),
-		'shd_search' => array(false, 'general', 'search.png'),
+		'shd_view_closed' => array(true, 'general', 'log_resolve.png'),
 
 		'shd_new_ticket' => array(false, 'posting', 'log_newticket.png'),
 		'shd_edit_ticket' => array(true, 'posting', 'log_editticket.png'),
@@ -165,7 +164,6 @@ function shd_load_role_templates()
 				'shd_view_ticket_private_any' => ROLEPERM_ALLOW,
 				'shd_view_closed_any' => ROLEPERM_ALLOW,
 				'shd_view_ip_own' => ROLEPERM_ALLOW,
-				'shd_search' => ROLEPERM_ALLOW,
 				'shd_new_ticket' => ROLEPERM_ALLOW,
 				'shd_edit_ticket_any' => ROLEPERM_ALLOW,
 				'shd_reply_ticket_any' => ROLEPERM_ALLOW,
@@ -210,7 +208,6 @@ function shd_load_role_templates()
 				'shd_view_ticket_private_any' => ROLEPERM_ALLOW,
 				'shd_view_closed_any' => ROLEPERM_ALLOW,
 				'shd_view_ip_any' => ROLEPERM_ALLOW,
-				'shd_search' => ROLEPERM_ALLOW,
 				'shd_new_ticket' => ROLEPERM_ALLOW,
 				'shd_edit_ticket_any' => ROLEPERM_ALLOW,
 				'shd_reply_ticket_any' => ROLEPERM_ALLOW,
@@ -364,7 +361,7 @@ function shd_load_user_perms()
 					foreach ($perm_list as $perm => $value)
 					{
 						if ($value == ROLEPERM_ALLOW)
-							$user_info['shd_permissions'][$perm] = isset($user_info['shd_permissions'][$perm]) ? array_merge($user_info['shd_permissions'][$perm], $depts[$role]) : $depts[$role];
+							$user_info['shd_permissions'][$perm] = $depts[$role];
 					}
 				}
 
@@ -696,3 +693,4 @@ function shd_groups_allowed_to($permission, $dept = 0)
 
 	return $member_groups;
 }
+?>

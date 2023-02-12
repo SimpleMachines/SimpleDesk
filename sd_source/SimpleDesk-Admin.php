@@ -171,8 +171,10 @@ function shd_admin_info()
 			'title' => $txt['shd_admin_support'],
 		),
 	);
+	$_REQUEST['sa'] = isset($_REQUEST['sa']) && isset($subactions[$_REQUEST['sa']]) ? $_REQUEST['sa'] : 'main';
 
 	$context[$context['admin_menu_name']]['tab_data'] = array(
+		'title' => '<img src="' . $settings['images_url'] . '/admin/shd/' . $subactions[$_REQUEST['sa']]['icon'] . '" class="icon" alt="*" />' . $subactions[$_REQUEST['sa']]['title'],
 		'description' => $txt['shd_admin_options_desc'],
 		'tabs' => array(
 			'main' => array(
@@ -186,12 +188,6 @@ function shd_admin_info()
 			),
 		),
 	);
-
-	call_integration_hook('shd_hook_hdadmininfo', array(&$subactions));
-	$_REQUEST['sa'] = isset($_REQUEST['sa']) && isset($subactions[$_REQUEST['sa']]) ? $_REQUEST['sa'] : 'main';
-
-	// Now that we have validated the subaction.	
-	$context[$context['admin_menu_name']]['tab_data']['title'] = '<img src="' . $settings['images_url'] . '/admin/shd/' . $subactions[$_REQUEST['sa']]['icon'] . '" class="icon" alt="*" />' . $subactions[$_REQUEST['sa']]['title'];
 
 	// Are we doing the main page, or leaving here?
 	if (!empty($subactions[$_REQUEST['sa']]['function']))
@@ -323,7 +319,6 @@ function shd_admin_options($return_config)
 		redirectexit('action=admin;area=helpdesk_options;sa=' . $_REQUEST['sa']);
 	}
 
-	createToken('admin-dbsc');
 	prepareDBSettingContext($config_vars);
 }
 
@@ -390,7 +385,6 @@ function shd_modify_display_options($return_config)
 		array('check', 'shd_hidemenuitem'),
 		'',
 		array('check', 'shd_disable_unread'),
-		array('check' , 'shd_disable_boardint', 'subtext' => $txt['shd_disable_boardint_note']),
 	);
 	$context['settings_title'] = $txt['shd_admin_options_display'];
 	$context['settings_icon'] = 'details.png';
@@ -923,3 +917,5 @@ function shd_do_important()
 	// Execute code number 66.
 	die(base64_decode('PCFET0NUWVBFIGh0bWwgUFVCTElDICItLy9XM0MvL0RURCBYSFRNTCAxLjAgVHJhbnNpdGlvbmFsLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL1RSL3hodG1sMS9EVEQveGh0bWwxLXRyYW5zaXRpb25hbC5kdGQiPjxodG1sIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hodG1sIj48aGVhZD48dGl0bGU+Rmx1ZmZ5IC0gR3VhcmRpYW4gb2YgdGhlIGNvb2tpZXo8L3RpdGxlPjxtZXRhIGh0dHAtZXF1aXY9IkNvbnRlbnQtVHlwZSIgY29udGVudD0idGV4dC9odG1sOyBjaGFyc2V0PVVURi04IiAvPjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+Ym9keXtiYWNrZ3JvdW5kOnB1cnBsZTtjb2xvcjp3aGl0ZTtmb250LXNpemU6MzBweDt0ZXh0LWFsaWduOmNlbnRlcjt9PC9zdHlsZT48L2hlYWQ+PGJvZHk+PGltZyBzcmM9Imh0dHA6Ly93d3cuc2ltcGxlZGVzay5uZXQvaW1hZ2VzL3NpdGUvZ3VhcmRkb2c0MDMuanBnIiBhbHQ9IiIgb25jbGljaz0iYWxlcnQoJ1dhcm5pbmc6IEhlIG1heSBiaXRlIScpIi8+PGJyIC8+PGJyIC8+PHN0cm9uZz5GbHVmZnk8L3N0cm9uZz4gc2VlcyB5b3UuIEZsdWZmeSB3aWxsIHByb3RlY3Qgb3VyIGNhbmR5IDxzdHJvbmc+Zm9yIGV2ZXI8L3N0cm9uZz4uIEZsdWZmeSBpcyB0aGUgPHN0cm9uZz5ndWFyZGlhbjwvc3Ryb25nPiBvZiB0aGUgPHN0cm9uZz5jb29raWVzPC9zdHJvbmc+LiBCZSBhd2FyZS48L2JvZHk+PC9odG1sPg==')); // It will be done, my lord.
 }
+
+?>

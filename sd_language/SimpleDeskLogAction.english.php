@@ -139,3 +139,4 @@ $txt['shd_log_unmonitor'] = 'Removed &quot;<a href="{scripturl}?action=helpdesk;
 $txt['shd_log_ignore'] = 'Added &quot;<a href="{scripturl}?action=helpdesk;sa=ticket;ticket={ticket}">{subject}</a>&quot; to their do-not-notify (ignore) list.';
 $txt['shd_log_unignore'] = 'Removed &quot;<a href="{scripturl}?action=helpdesk;sa=ticket;ticket={ticket}">{subject}</a>&quot; from their do-not-notify (ignore) list.';
 //@}
+?>

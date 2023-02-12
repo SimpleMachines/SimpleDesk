@@ -403,7 +403,7 @@ function shd_notify_users($notify_data)
 
 	// Also note, we may not be coming from the post code... so make sure sendmail() is available
 	if (!function_exists('sendmail'))
-		require_once($sourcedir . '/Subs-Post.php');
+		require($sourcedir . '/Subs-Post.php');
 
 	$log = array(
 		'emails' => array(),
@@ -838,3 +838,4 @@ function shd_get_visible_list($dept, $private, $ticket_starter = 0, $include_adm
 	return $people;
 }
 
+?>
