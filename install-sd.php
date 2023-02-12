@@ -13,7 +13,7 @@
 *   Any questions, please contact SimpleDesk.net              *
 *                                                             *
 ***************************************************************
-* SimpleDesk Version: 2.1.0                                   *
+* SimpleDesk Version: 2.1.1                                   *
 * File Info: install.php                                      *
 **************************************************************/
 
@@ -91,8 +91,8 @@ function sd_initialize_install()
 		require_once(getcwd() . '/SSI.php');
 	elseif (!defined('SMF')) // If we are outside SMF and can't find SSI.php, then throw an error
 		die('<b>Error:</b> Cannot install - please verify you put this file in the same place as SMF\'s SSI.php.');
-	elseif (@version_compare(PHP_VERSION, '5.3.8', '<'))
-		die('<b>Error:</b> SimpleDesk 2.1 requires PHP 5.3.8 to be installed on your server.');
+	elseif (@version_compare(PHP_VERSION, '7.4.0', '<'))
+		die('<b>Error:</b> SimpleDesk 2.1 requires PHP 7.4.0 to be installed on your server.');
 
 	if (SMF == 'SSI')
 		db_extend('packages');

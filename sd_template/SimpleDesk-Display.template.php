@@ -103,7 +103,7 @@ function template_viewticket()
 				if (!empty($context['ticket']['ip_address']))
 					echo '
 						<dt><img src="', $settings['default_images_url'], '/simpledesk/ip.png" alt="" class="shd_smallicon"> ', $txt['shd_ticket_ip'], ':</dt>
-						<dd>', $context['ticket']['ip_address'], '</dd>';
+						<dd class="sd_wordbreak">', $context['ticket']['ip_address'], '</dd>';
 
 				echo '
 					</dl>';
