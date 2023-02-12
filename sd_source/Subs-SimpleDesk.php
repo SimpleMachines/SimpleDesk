@@ -1654,7 +1654,7 @@ function shd_init_actions(&$actionArray)
  *
  *	@since 2.0
 */
-function shd_buffer_replace(&$buffer)
+function shd_buffer_replace($buffer)
 {
 	global $modSettings, $context;
 

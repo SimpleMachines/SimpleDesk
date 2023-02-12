@@ -3,12 +3,12 @@
 <package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
 	<id>SimpleDeskTeam:SimpleDesk</id>
 	<name>SimpleDesk - Integrated Helpdesk for Simple Machines Forum</name>
-	<version>2.0</version>
+	<version>2.0.1</version>
 	<type>modification</type>
 
-	<install for="1.1.*, 2.0 RC2, 2.0 RC3, 2.0 RC4, 2.0 RC5">
-		<readme lang="english" parsebbc="true" type="inline">This mod is [b]not compatible[/b] with your version of SMF, it requires 2.0 final or later.</readme>
-	</install>
+	<upgrade from="2.0.0" for="2.0, 2.0.1-2.0.99">
+		<require-dir name="sd_source/Subs-SimpleDesk.php" destination="$sourcedir" />
+	</upgrade>
 
 	<install for="2.0, 2.0.1-2.0.99">
 		<!-- readme files -->
