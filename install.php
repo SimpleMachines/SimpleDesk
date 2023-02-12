@@ -35,12 +35,8 @@
 // If we have found SSI.php and we are outside of SMF, then we are running standalone.
 if (file_exists(dirname(__FILE__) . '/SSI.php') && !defined('SMF'))
 	require_once(dirname(__FILE__) . '/SSI.php');
-elseif (file_exists(getcwd() . '/SSI.php') && !defined('SMF'))
-	require_once(getcwd() . '/SSI.php');
 elseif (!defined('SMF')) // If we are outside SMF and can't find SSI.php, then throw an error
 	die('<b>Error:</b> Cannot install - please verify you put this file in the same place as SMF\'s SSI.php.');
-elseif (@version_compare(PHP_VERSION, '4.3.0', '<'))
-	die('<b>Error:</b> SimpleDesk 2.0 requires PHP 4.3.0 to be installed on your server.');
 
 if (SMF == 'SSI')
 	db_extend('packages');
@@ -540,38 +536,6 @@ $tables[] = array(
 	'error' => 'fatal',
 	'parameters' => array(),
 );
-$tables[] = array(
-	'table_name' => '{db_prefix}helpdesk_search_ticket_words',
-	'columns' => array(
-		db_field('id_word', 'bigint'),
-		db_field('id_msg', 'int'),
-	),
-	'indexes' => array(
-		array(
-			'columns' => array('id_word', 'id_msg'),
-			'type' => 'primary',
-		),
-	),
-	'if_exists' => 'ignore',
-	'error' => 'fatal',
-	'parameters' => array(),
-);
-$tables[] = array(
-	'table_name' => '{db_prefix}helpdesk_search_subject_words',
-	'columns' => array(
-		db_field('id_word', 'bigint'),
-		db_field('id_ticket', 'int'),
-	),
-	'indexes' => array(
-		array(
-			'columns' => array('id_word', 'id_ticket'),
-			'type' => 'primary',
-		),
-	),
-	'if_exists' => 'ignore',
-	'error' => 'fatal',
-	'parameters' => array(),
-);
 
 // Oh joy, we've now made it to extra rows...
 $rows = array();
@@ -695,12 +659,6 @@ if (!empty($new_dept))
 	);
 }
 
-// Do we need to flag that a new search index is needed? If there are any pre-existing tickets, we will...
-$query = $smcFunc['db_query']('', 'SELECT COUNT(*) FROM {db_prefix}helpdesk_tickets');
-list($count) = $smcFunc['db_fetch_row']($query);
-if (!empty($count))
-	updateSettings(array('shd_new_search_index' => 1));
-
 // If we're updating an existing install, we need to make sure there is a normalised value in the last_updated column.
 $smcFunc['db_query']('', '
 	UPDATE {db_prefix}helpdesk_tickets AS hdt, {db_prefix}helpdesk_ticket_replies AS hdtr
@@ -762,14 +720,6 @@ function db_field($name, $type, $size = 0, $unsigned = true, $auto = false)
 			'unsigned' => $unsigned,
 			'null' => false,
 		),
-		'bigint' => array(
-			'auto' => $auto,
-			'type' => 'bigint',
-			'default' => 0,
-			'size' => 21,
-			'unsigned' => $unsigned,
-			'null' => false,
-		),
 	);
 
 	$field = $fields[$type];
@@ -777,3 +727,4 @@ function db_field($name, $type, $size = 0, $unsigned = true, $auto = false)
 
 	return $field;
 }
+?>

@@ -716,3 +716,4 @@ function shd_admin_cf_change_types($from_type)
 	}
 }
 
+?>

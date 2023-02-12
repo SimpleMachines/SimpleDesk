@@ -176,6 +176,29 @@
 		</operation>
 	</file>
 
+	<file name="$sourcedir/ManagePosts.php"><!-- at the same time we modify the post settings, make sure we check and update SD's if necessary -->
+		<operation>
+			<search position="before"><![CDATA[$smcFunc['db_change_column']('{db_prefix}messages', 'body', array('type' => 'mediumtext'));]]></search>
+			<add><![CDATA[
+					$smcFunc['db_change_column']('{db_prefix}helpdesk_ticket_replies', 'body', array('type' => 'mediumtext'));]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[$smcFunc['db_change_column']('{db_prefix}messages', 'body', array('type' => 'text'));]]></search>
+			<add><![CDATA[
+					$smcFunc['db_change_column']('{db_prefix}helpdesk_ticket_replies', 'body', array('type' => 'text'));]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/Who.php"><!-- load the who's online strings... we don't use it much now, but maybe later... -->
+		<operation>
+			<search position="after"><![CDATA[	// Actions that require a specific permission level.]]></search>
+			<add><![CDATA[	shd_load_language('sd_language/SimpleDeskWho');
+	shd_load_plugin_langfiles('who');
+
+]]></add>
+		</operation>
+	</file>
+
 	<file name="$sourcedir/Errors.php"><!-- if an error occurs in an SD file, log it appropriately with the SD errortype -->
 		<operation>
 			<search position="after"><![CDATA[	// Make sure the category that was specified is a valid one]]></search>
@@ -231,7 +254,7 @@ require_once($sourcedir . '/sd_source/SimpleDesk-SSI.php');]]></add>
 			<add><![CDATA[
 
 	// Are we adding any SimpleDesk boards in?
-	if (!empty($modSettings['helpdesk_active']) && empty($modSettings['shd_disable_boardint']) && shd_allowed_to('access_helpdesk'))
+	if (!empty($modSettings['helpdesk_active']) && shd_allowed_to('access_helpdesk'))
 	{
 		global $sourcedir;
 		require_once($sourcedir . '/sd_source/Subs-SimpleDeskBoardIndex.php');
@@ -240,36 +263,12 @@ require_once($sourcedir . '/sd_source/SimpleDesk-SSI.php');]]></add>
 		</operation>
 	</file>
 
-	<file name="$sourcedir/ManageMaintenance.php"><!-- at the same time we modify the post settings, make sure we check and update SD's if necessary -->
-		<operation>
-			<search position="replace"><![CDATA[
-			$smcFunc['db_change_column']('{db_prefix}messages', 'body', array('type' => 'mediumtext'));]]></search>
-			<add><![CDATA[
-		{
-			$smcFunc['db_change_column']('{db_prefix}messages', 'body', array('type' => 'mediumtext'));
-			$smcFunc['db_change_column']('{db_prefix}helpdesk_ticket_replies', 'body', array('type' => 'mediumtext'));
-		}]]></add>
-		</operation>
-		<operation>
-			<search position="replace"><![CDATA[
-			$smcFunc['db_change_column']('{db_prefix}messages', 'body', array('type' => 'text'));]]></search>
-			<add><![CDATA[
-		{
-			$smcFunc['db_change_column']('{db_prefix}messages', 'body', array('type' => 'text'));
-			$smcFunc['db_change_column']('{db_prefix}helpdesk_ticket_replies', 'body', array('type' => 'text'));
-		}]]></add>
-		</operation>
-		<!-- @todo: add the check for tickets longer than xxx chars -->
-	</file>
-
-	<file name="$sourcedir/ManageLanguages.php"><!-- Language file handling -->
+	<file name="$sourcedir/ManageServer.php"><!-- Language file handling -->
 		<operation>
 			<search position="after"><![CDATA[	// Check we have themes with a path and a name - just in case - and add the path.]]></search>
 			<add><![CDATA[	// Add SimpleDesk to the list of possible places to look.
 	$themes['shd'] = array('name' => 'SimpleDesk', 'theme_dir' => $settings['default_theme_dir'] . '/languages/sd_language');
 	$lang_dirs['shd'] = $settings['default_theme_dir'] . '/languages/sd_language';
-	$themes['shd_plugins'] = array('name' => 'SimpleDesk Plugins', 'theme_dir' => $settings['default_theme_dir'] . '/languages/sd_plugins_lang');
-	$lang_dirs['shd_plugins'] = $settings['default_theme_dir'] . '/languages/sd_plugins_lang';
 
 ]]></add>
 		</operation>

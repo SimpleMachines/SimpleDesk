@@ -433,7 +433,7 @@ function template_ticket_block()
 				break;
 			case 'status':
 				echo '
-							<td width="17%" class="shd_nowrap"><img src="', $settings['default_images_url'], '/simpledesk/status.png" class="shd_smallicon" alt="" /> ', template_shd_menu_header('status', $txt['shd_ticket_status']), '</td>';
+							<td width="17%" class="shd_nowrap"><img src="', $settings['default_images_url'], '/simpledesk/status.png" class="shd_smallicon" alt="" /> ', template_shd_menu_header('starter', $txt['shd_ticket_status']), '</td>';
 				break;
 			case 'urgency':
 				echo '
@@ -614,11 +614,11 @@ function template_shd_menu_header($header, $string)
 		$link .= ';so_' . $block_key . '=' . ($block_key != $context['current_block'] ? $block['sort']['item'] : $header) . '_' . $link_direction;
 	}
 
-	$html = '<a href="' . $scripturl . '?action=helpdesk;sa=' . $_REQUEST['sa'] . ($_REQUEST['sa'] == 'viewblock' ? ';block=' . $_REQUEST['block'] : '') . $link . $context['shd_dept_link'] . '">' . $string . '</a> ';
+	$html = '<a href="' . $scripturl . '?action=helpdesk;sa=' . $_REQUEST['sa'] . ($_REQUEST['sa'] == 'viewblock' ? ';block=' . $_REQUEST['block'] : '') . $link . '">' . $string . '</a> ';
 
 	if ($context['ticket_blocks'][$context['current_block']]['sort']['item'] == $header)
 	{
-		$html .= '<img src="' . $settings['images_url']  . '/sort_' . ($context['ticket_blocks'][$context['current_block']]['sort']['direction'] == 'asc' ? 'down' : 'up') . '.png" alt="" />';
+		$html .= '<img src="' . $settings['images_url']  . '/sort_' . ($context['ticket_blocks'][$context['current_block']]['sort']['direction'] == 'asc' ? 'down' : 'up') . '.gif" alt="" />';
 	}
 
 	return $html;
@@ -654,3 +654,4 @@ if (!function_exists('template_button_strip'))
 	{
 	}
 }
+?>

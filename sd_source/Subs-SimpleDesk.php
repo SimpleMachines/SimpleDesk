@@ -117,7 +117,7 @@ function shd_init()
 
 	// Load some stuff
 	shd_load_language('sd_language/SimpleDesk');
-	require_once($sourcedir . '/sd_source/Subs-SimpleDeskPermissions.php');
+	require($sourcedir . '/sd_source/Subs-SimpleDeskPermissions.php');
 
 	// Set up defaults
 	$defaults = array(
@@ -1544,7 +1544,7 @@ function shd_load_plugin_langfiles($hook = '')
 
 	$filelist = explode(',', $modSettings['shd_includelang_' . $hook]);
 	foreach ($filelist as $file)
-		shd_load_language('sd_plugins_lang/' . $file);
+		shd_load_language($file);
 }
 
 /**
@@ -1576,7 +1576,7 @@ function scheduled_simpledesk()
 	if (empty($modSettings['admin_features']) || !in_array('shd', explode(',', $modSettings['admin_features'])))
 		return;
 
-	require_once($sourcedir . '/sd_source/SimpleDesk-Scheduled.php');
+	require($sourcedir . '/sd_source/SimpleDesk-Scheduled.php');
 	shd_scheduled();
 	return true;
 }
@@ -1616,7 +1616,7 @@ function shd_init_actions(&$actionArray)
 		// Note we did this to prevent breakage of other mods that may be installed, e.g. gallery or portal or something.
 		$unwanted_actions = array('announce', 'attachapprove', 'buddy', 'calendar', 'clock', 'collapse', 'deletemsg', 'display', 'editpoll', 'editpoll2',
 			'emailuser', 'lock', 'lockvoting', 'markasread', 'mergetopics', 'moderate', 'modifycat', 'modifykarma', 'movetopic', 'movetopic2',
-			'notify', 'notifyboard', 'post', 'post2', 'printpage', 'quotefast', 'quickmod', 'quickmod2', 'recent', 'removepoll', 'removetopic2',
+			'notify', 'notifyboard', 'post', 'post2', 'printpage', 'quotefast', 'quickmod', 'quickmod2', 'recent', 'reminder', 'removepoll', 'removetopic2',
 			'reporttm', 'restoretopic', 'search', 'search2', 'sendtopic', 'smstats', 'splittopics', 'stats', 'sticky', 'about:mozilla', 'about:unknown',
 			'unread', 'unreadreplies', 'vote', 'viewquery', 'who', '.xml', 'xmlhttp');
 
@@ -2015,3 +2015,4 @@ function shd_main_menu_admin($helpdesk_admin)
 	);
 }
 // Cause IE is being mean to meeee again...!
+?>

@@ -82,3 +82,4 @@ function template_assign()
 	<span class="lowerframe"><span></span></span>';
 }
 
+?>

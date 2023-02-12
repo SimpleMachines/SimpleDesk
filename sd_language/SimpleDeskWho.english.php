@@ -79,3 +79,4 @@ $txt['whoall_helpdesk_topictoticket'] = 'Moving a forum topic to a helpdesk tick
 $txt['whoall_helpdesk_topictoticket2'] = 'Moving a forum topic to a helpdesk ticket.';
 //@}
 
+?>

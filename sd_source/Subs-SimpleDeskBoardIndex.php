@@ -108,7 +108,7 @@ function shd_add_to_boardindex(&$boardIndexOptions, &$categories)
 				'is_collapsed' => isset($this_cat['can_collapse']) && $this_cat['can_collapse'] == 1 && $this_cat['is_collapsed'] > 0,
 				'can_collapse' => isset($this_cat['can_collapse']) && $this_cat['can_collapse'] == 1,
 				'collapse_href' => isset($this_cat['can_collapse']) ? $scripturl . '?action=collapse;c=' . $this_cat['id_cat'] . ';sa=' . ($this_cat['is_collapsed'] > 0 ? 'expand;' : 'collapse;') . $context['session_var'] . '=' . $context['session_id'] . '#c' . $this_cat['id_cat'] : '',
-				'collapse_image' => isset($this_cat['can_collapse']) ? '<img src="' . $settings['images_url'] . '/' . ($this_cat['is_collapsed'] > 0 ? 'expand.png" alt="+"' : 'collapse.png" alt="-"') . ' />' : '',
+				'collapse_image' => isset($this_cat['can_collapse']) ? '<img src="' . $settings['images_url'] . '/' . ($this_cat['is_collapsed'] > 0 ? 'expand.gif" alt="+"' : 'collapse.gif" alt="-"') . ' />' : '',
 				'href' => $scripturl . '#c' . $this_cat['id_cat'],
 				'boards' => array(),
 				'new' => false,
@@ -303,3 +303,4 @@ function shd_get_unread_departments()
 	}
 }
 
+?>

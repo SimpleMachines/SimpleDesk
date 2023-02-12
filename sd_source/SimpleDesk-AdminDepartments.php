@@ -531,3 +531,4 @@ function shd_get_dept_theme_list()
 	$smcFunc['db_free_result']($request);
 }
 
+?>

@@ -123,8 +123,6 @@ function shd_main()
 		'restorereply' => array('SimpleDesk-Delete.php', 'shd_reply_restore'),
 		'emaillog' => array('SimpleDesk-Notifications.php', 'shd_notify_popup'),
 		'notify' => array('SimpleDesk-Notifications.php', 'shd_notify_ticket_options'),
-		'search' => array('SimpleDesk-Search.php', 'shd_search'),
-		'search2' => array('SimpleDesk-Search.php', 'shd_search2'),
 	);
 
 	// Navigation menu
@@ -163,12 +161,6 @@ function shd_main()
 			'test' => 'can_view_recycle',
 			'lang' => true,
 			'url' => $scripturl . '?action=helpdesk;sa=recyclebin' . $context['shd_dept_link'],
-		),
-		'search' => array(
-			'text' => 'shd_search_menu',
-			'test' => 'can_shd_search',
-			'lang' => true,
-			'url' => $scripturl . '?action=helpdesk;sa=search',
 		),
 		// Only for certain sub areas.
 		'back' => array(
@@ -314,7 +306,6 @@ function shd_main()
 	$context['can_view_closed'] = shd_allowed_to(array('shd_view_closed_own', 'shd_view_closed_any'), $context['shd_department']);
 	$context['can_view_recycle'] = shd_allowed_to('shd_access_recyclebin', $context['shd_department']);
 	$context['display_back_to_hd'] = !in_array($_REQUEST['sa'], array('main', 'viewblock', 'recyclebin', 'closedtickets', 'dept'));
-	$context['can_shd_search'] = shd_allowed_to('shd_search', 0);
 	$context['can_view_options'] = shd_allowed_to(array('shd_view_preferences_own', 'shd_view_preferences_any'), 0);
 
 	// Highlight the correct button.
@@ -1017,7 +1008,7 @@ function shd_helpdesk_listing()
 				$new_block['actions'] += array(
 					'resolve' => shd_allowed_to('shd_resolve_ticket_any', $context['shd_department']) || ($is_own && shd_allowed_to('shd_resolve_ticket_own', $context['shd_department'])) ? '<a href="' . $scripturl . '?action=helpdesk;sa=resolveticket;ticket=' . $row['id_ticket'] . ';home;' . $context['shd_dept_link'] . $context['session_var'] . '=' . $context['session_id'] . '" title="' . $txt['shd_ticket_resolved'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/resolved.png" alt="' . $txt['shd_ticket_resolved'] . '" /></a>' : '',
 					'tickettotopic' => empty($modSettings['shd_helpdesk_only']) && shd_allowed_to('shd_ticket_to_topic', $context['shd_department']) && ($row['deleted_replies'] == 0 || shd_allowed_to('shd_access_recyclebin')) ? '<a href="' . $scripturl . '?action=helpdesk;sa=tickettotopic;ticket=' . $row['id_ticket'] . ';' . $context['shd_dept_link'] . $context['session_var'] . '=' . $context['session_id'] . '" title="' . $txt['shd_ticket_move_to_topic'] . '"><img src="' . $settings['default_images_url'] . '/simpledesk/tickettotopic.png" alt="' . $txt['shd_ticket_move_to_topic'] . '" /></a>' : '',
-					'delete' => shd_allowed_to('shd_delete_ticket_any', $context['shd_department']) || ($is_own && shd_allowed_to('shd_delete_ticket_own')) ? '<a href="' . $scripturl . '?action=helpdesk;sa=deleteticket;ticket=' . $row['id_ticket'] . ';' . $context['shd_dept_link'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '" title="' . $txt['shd_ticket_delete'] . '" onclick="return confirm(' . JavaScriptEscape($txt['shd_delete_confirm']) . ');"><img src="' . $settings['default_images_url'] . '/simpledesk/delete.png" alt="' . $txt['shd_ticket_delete'] . '" /></a>' : '',
+					'delete' => shd_allowed_to('shd_delete_ticket_any', $context['shd_department']) || ($is_own && shd_allowed_to('shd_delete_ticket_own')) ? '<a href="' . $scripturl . '?action=helpdesk;sa=deleteticket;ticket=' . $row['id_ticket'] . ';' . $context['shd_dept_link'] . $context['session_var'] . '=' . $context['session_id'] . '" title="' . $txt['shd_ticket_delete'] . '" onclick="return confirm(' . JavaScriptEscape($txt['shd_delete_confirm']) . ');"><img src="' . $settings['default_images_url'] . '/simpledesk/delete.png" alt="' . $txt['shd_ticket_delete'] . '" /></a>' : '',
 				);
 			}
 
@@ -1398,3 +1389,4 @@ function shd_get_block_columns($block)
 			return array();
 	}
 }
+?>

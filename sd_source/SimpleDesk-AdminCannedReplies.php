@@ -913,3 +913,4 @@ function shd_admin_canned_movereplycat()
 	}
 }
 
+?>

@@ -733,3 +733,4 @@ function shd_load_role($loadrole = 0)
 	$smcFunc['db_free_result']($query);
 }
 
+?>

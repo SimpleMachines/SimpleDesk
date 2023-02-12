@@ -1287,3 +1287,4 @@ function shd_topictoticket2()
 	redirectexit('action=helpdesk;sa=ticket;ticket=' . $ticket);
 }
 
+?>

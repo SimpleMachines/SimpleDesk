@@ -267,3 +267,4 @@ function shd_frontpage_boardindex()
 	}
 }
 
+?>

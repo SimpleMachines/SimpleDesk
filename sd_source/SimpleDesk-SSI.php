@@ -323,3 +323,4 @@ function ssi_staffMembers($honour_admin_setting = true, $output_method = 'echo')
 	return $query_members;
 }
 
+?>

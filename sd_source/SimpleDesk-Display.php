@@ -732,8 +732,8 @@ function shd_view_ticket()
 		sImagesUrl: "' . $settings['images_url'] . '",
 		sContainerId: "quickReplyOptions",
 		sImageId: "quickReplyExpand",
-		sImageCollapsed: "collapse.png",
-		sImageExpanded: "expand.png",
+		sImageCollapsed: "collapse.gif",
+		sImageExpanded: "expand.gif",
 		sJumpAnchor: "quickreply",
 		sHeaderId: "quickreplyheader",
 		sFooterId: "quickreplyfooter"
@@ -744,8 +744,8 @@ function shd_view_ticket()
 		sImagesUrl: "' . $settings['images_url'] . '",
 		sContainerId: "additional_info",
 		sImageId: "shd_custom_fields_swap",
-		sImageCollapsed: "collapse.png",
-		sImageExpanded: "expand.png",
+		sImageCollapsed: "collapse.gif",
+		sImageExpanded: "expand.gif",
 		sHeaderId: "additionalinfoheader",
 		sFooterId: "additional_info_footer",
 	});';
@@ -778,7 +778,7 @@ function shd_view_ticket()
 	if (!empty($context['display_ticket_log']))
 	{
 		require_once($sourcedir . '/sd_source/Subs-SimpleDeskAdmin.php');
-		$context['ticket_log'] = shd_load_action_log_entries(-1, 10, '', '', 'la.id_ticket = ' . $context['ticket_id']);
+		$context['ticket_log'] = shd_load_action_log_entries(0, 10, '', '', 'la.id_ticket = ' . $context['ticket_id']);
 		$context['ticket_log_count'] = shd_count_action_log_entries('la.id_ticket = ' . $context['ticket_id']);
 		$context['ticket_full_log'] = allowedTo('admin_forum') || shd_allowed_to('admin_helpdesk', 0);
 	}
@@ -1344,3 +1344,4 @@ function shd_load_relationships($ticket = 0)
 	$smcFunc['db_free_result']($query);
 }
 
+?>

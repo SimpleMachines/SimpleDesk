@@ -324,3 +324,4 @@ function shd_movedept2()
 		fatal_lang_error('shd_no_perm_move_dept', false);
 }
 
+?>
