@@ -6,7 +6,8 @@ preserve_hierarchy: 1
 commit_message: "New translations for %language%"
 append_commit_message: false
 pull_request_title: "Crowdin Language Update"
-pull_request_labels: "Translate"
+pull_request_labels:
+  - : "Translate"
 files:
   - source: sd_language/SimpleDesk.english.php
     translation: /sd_language/SimpleDesk.%language%.php
