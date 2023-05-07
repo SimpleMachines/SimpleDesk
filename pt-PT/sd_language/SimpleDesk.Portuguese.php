@@ -30,496 +30,496 @@
 
 //! @name General Strings
 //@{
-$txt['shd_helpdesk'] = 'Helpdesk';
-$txt['shd_helpdesk_maintenance'] = 'The helpdesk is currently in <strong>maintenance mode</strong>. Only forum and helpdesk administrators can see this.';
-$txt['shd_open_ticket'] = 'open ticket';
-$txt['shd_open_tickets'] = 'open tickets';
-$txt['shd_none'] = 'None';
+$txt['shd_helpdesk'] = 'Suporte';
+$txt['shd_helpdesk_maintenance'] = 'O suporte técnico está atualmente em <strong>modo de manutenção</strong>. Somente administradores de fórum e suporte técnico podem ver isso.';
+$txt['shd_open_ticket'] = 'abrir pedido';
+$txt['shd_open_tickets'] = 'pedidos abertos';
+$txt['shd_none'] = 'Nenhuma';
 
-$txt['shd_display_nojs'] = 'JavaScript is not enabled in your browser. Some functions may not work properly (or at all), or behave in an unexpected manner.';
+$txt['shd_display_nojs'] = 'O JavaScript não está habilitado no seu navegador. Algumas funções podem não funcionar corretamente (ou em tudo), ou se comportar de forma inesperada.';
 //@}
 
 //! @name Admininstration panel strings
 //@{
-$txt['shd_admin_welcome'] = 'Welcome to the main helpdesk administration center!';
-$txt['shd_admin_title'] = 'Helpdesk Administration Center';
-$txt['shd_staff_list'] = 'Helpdesk staff';
-$txt['shd_update_available'] = 'New version available!';
-$txt['shd_update_message'] = 'A new version of SimpleDesk has been released. We recommened you to <a href="#" id="update-link">update to the latest version</a> in order to stay secure and enjoy all features our modification have to offer.' . "\n\n" . '<span style="display: none;" id="information-link-span"><br>For more information on what is new in this release, please visit <a href="#" id="information-link" target="_blank">our website</a>.</span><br>' . "\n\n" . '<strong>The SimpleDesk Team</strong>';
+$txt['shd_admin_welcome'] = 'Bem-vindo ao centro de administração de suporte técnico!';
+$txt['shd_admin_title'] = 'Centro de Administração Helpdesk';
+$txt['shd_staff_list'] = 'Equipe de Helpdesk';
+$txt['shd_update_available'] = 'Nova versão disponível!';
+$txt['shd_update_message'] = 'Uma nova versão do SimpleDesk foi lançada. Recomendamos que você <a href="#" id="update-link">atualize para a versão mais recente</a> para ficar seguro e aproveitar todos os recursos que nossa modificação tem para oferecer.' . "\n\n" . '<span style="display: none;" id="information-link-span"><br>Para obter mais informações sobre o que é novo nesta versão, por favor visite <a href="#" id="information-link" target="_blank">nosso site</a>.</span><br>' . "\n\n" . '<strong>A Equipe SimpleDesk</strong>';
 //@}
 
 //! @name Urgency levels, ties to helpdesk_tickets.urgency
 //@{
-$txt['shd_urgency_0'] = 'Low';
-$txt['shd_urgency_1'] = 'Medium';
-$txt['shd_urgency_2'] = 'High';
-$txt['shd_urgency_3'] = 'Very High';
-$txt['shd_urgency_4'] = 'Severe';
-$txt['shd_urgency_5'] = 'Critical';
-$txt['shd_urgency_increase'] = 'Increase';
-$txt['shd_urgency_decrease'] = 'Decrease';
+$txt['shd_urgency_0'] = 'baixa';
+$txt['shd_urgency_1'] = 'Média';
+$txt['shd_urgency_2'] = 'alta';
+$txt['shd_urgency_3'] = 'Muito alto';
+$txt['shd_urgency_4'] = 'Grave';
+$txt['shd_urgency_5'] = 'Crítica';
+$txt['shd_urgency_increase'] = 'Aumentar';
+$txt['shd_urgency_decrease'] = 'Diminuir';
 //@}
 
 //! @name Status, ties to helpdesk_tickets.status
 //@{
-$txt['shd_status_0'] = 'New';
-$txt['shd_status_1'] = 'Pending Staff Comment';
-$txt['shd_status_2'] = 'Pending User Comment';
-$txt['shd_status_3'] = 'Resolved/Closed';
-$txt['shd_status_4'] = 'Referred to Supervisor';
-$txt['shd_status_5'] = 'Escalated - Urgent';
-$txt['shd_status_6'] = 'Deleted';
-$txt['shd_status_7'] = 'On Hold';
+$txt['shd_status_0'] = 'Novidades';
+$txt['shd_status_1'] = 'Comentário de equipe pendente';
+$txt['shd_status_2'] = 'Comentário de usuário pendente';
+$txt['shd_status_3'] = 'Resolvido/Fechado';
+$txt['shd_status_4'] = 'Indicado à Supervisor';
+$txt['shd_status_5'] = 'Encaminhado - Urgente';
+$txt['shd_status_6'] = 'Excluído';
+$txt['shd_status_7'] = 'Em espera';
 //@}
 
 //! @name Headings, for the helpdesk listing pages
 //@{
-$txt['shd_status_0_heading'] = 'New Tickets';
-$txt['shd_status_1_heading'] = 'Tickets Awaiting Staff Response';
-$txt['shd_status_2_heading'] = 'Tickets Awaiting User Response';
-$txt['shd_status_3_heading'] = 'Closed Tickets';
-$txt['shd_status_4_heading'] = 'Tickets Referred to Supervisor';
-$txt['shd_status_5_heading'] = 'Urgent Tickets';
-$txt['shd_status_6_heading'] = 'Recycled Tickets';
-$txt['shd_status_7_heading'] = 'On Hold Tickets';
-$txt['shd_status_assigned_heading'] = 'Assigned to Me';
-$txt['shd_status_withdeleted_heading'] = 'Tickets with Deleted Replies';
+$txt['shd_status_0_heading'] = 'Novos Tickets';
+$txt['shd_status_1_heading'] = 'Chamados Aguardando Resposta da Equipe';
+$txt['shd_status_2_heading'] = 'Chamados Aguardando Resposta do Usuário';
+$txt['shd_status_3_heading'] = 'Tickets Fechados';
+$txt['shd_status_4_heading'] = 'Tickets indicados ao Supervisor';
+$txt['shd_status_5_heading'] = 'Tickets urgentes';
+$txt['shd_status_6_heading'] = 'Chamados Reciclados';
+$txt['shd_status_7_heading'] = 'Em Chamados';
+$txt['shd_status_assigned_heading'] = 'Atribuídas a Mim';
+$txt['shd_status_withdeleted_heading'] = 'Tickets com Respostas Excluídas';
 //@}
 
 //! @name Ticket Types, statues, etc
 //@{
-$txt['shd_tickets_open'] = 'Open Tickets';
-$txt['shd_tickets_closed'] = 'Closed Tickets';
-$txt['shd_tickets_recycled'] = 'Recycled Tickets';
+$txt['shd_tickets_open'] = 'Chamados Abertos';
+$txt['shd_tickets_closed'] = 'Tickets Fechados';
+$txt['shd_tickets_recycled'] = 'Chamados Reciclados';
 
-$txt['shd_assigned'] = 'Assigned';
-$txt['shd_unassigned'] = 'Unassigned';
+$txt['shd_assigned'] = 'Atribuído';
+$txt['shd_unassigned'] = 'Não atribuído';
 
-$txt['shd_read_ticket'] = 'Read Ticket';
-$txt['shd_unread_ticket'] = 'Unread Ticket';
-$txt['shd_unread_tickets'] = 'Unread Tickets';
+$txt['shd_read_ticket'] = 'Ler Ticket';
+$txt['shd_unread_ticket'] = 'Ticket não lido';
+$txt['shd_unread_tickets'] = 'Tickets Não Lidos';
 
-$txt['shd_owned'] = 'Owned Ticket'; // aka Assigned to Me
+$txt['shd_owned'] = 'Bilhete Possuído'; // aka Assigned to Me
 
-$txt['shd_count_ticket_1'] = 'ticket';
-$txt['shd_count_tickets'] = 'tickets';
+$txt['shd_count_ticket_1'] = 'pedido';
+$txt['shd_count_tickets'] = 'pedidos';
 //@}
 
 //! @name Errors
 //@{
-$txt['cannot_access_helpdesk'] = 'You are not permitted to access the helpdesk.';
-$txt['shd_no_ticket'] = 'The ticket you have requested does not appear to exist.';
-$txt['shd_no_reply'] = 'The ticket reply you have request does not appear to exist, or is not part of this ticket.';
-$txt['shd_no_topic'] = 'The topic you have requested does not appear to exist.';
-$txt['shd_ticket_no_perms'] = 'You do not have permission to view that ticket.';
-$txt['shd_error_no_tickets'] = 'No tickets were found.';
-$txt['shd_inactive'] = 'The helpdesk is currently deactivated.';
-$txt['shd_cannot_assign'] = 'You are not permitted to assign tickets.';
-$txt['shd_cannot_assign_other'] = 'This ticket is already assigned to another user. You cannot reassign it to yourself - please contact the administrator.';
-$txt['shd_no_staff_assign'] = 'There are no staff configured; it is not possible to assign a ticket. Please contact your administrator.';
-$txt['shd_assigned_not_permitted'] = 'The user you have requested to assign this ticket to does not have sufficient permissions to see it.';
-$txt['shd_cannot_resolve'] = 'You do not have permission to mark this ticket as resolved.';
-$txt['shd_cannot_unresolve'] = 'You do not have permission to reopen a resolved ticket.';
-$txt['error_shd_cannot_resolve_children'] = 'This ticket cannot currently be closed; this ticket is the parent of one or more tickets that are currently open.';
-$txt['error_shd_proxy_unknown'] = 'The user this ticket is posted on behalf of does not exist.';
-$txt['shd_cannot_change_privacy'] = 'You do not have permission to alter the privacy on this ticket.';
-$txt['shd_cannot_change_urgency'] = 'You do not have permission to alter the urgency on this ticket.';
-$txt['shd_ajax_problem'] = 'There was a problem attempting to load the page. Would you like to try again?';
-$txt['shd_cannot_move_ticket'] = 'You do not have permission to move this ticket to a topic.';
-$txt['shd_cannot_move_topic'] = 'You do not have permission to move this topic to a ticket.';
-$txt['shd_moveticket_noboards'] = 'There are no boards to move this ticket to!';
-$txt['shd_move_no_pm'] = 'You must enter a reason for moving the ticket to send to the ticket owner, or uncheck the option to \'send a PM to the ticket owner\'.';
-$txt['shd_move_no_pm_topic'] = 'You must enter a reason for moving the topic to send to the topic starter, or uncheck the option to \'send a PM to the topic starter\'.';
-$txt['shd_move_topic_not_created'] = 'Failed to move the ticket to the board. Please try again.';
-$txt['shd_move_ticket_not_created'] = 'Failed to move the topic to the helpdesk. Please try again.';
-$txt['shd_no_replies'] = 'This ticket does not have any replies yet.';
-$txt['cannot_shd_new_ticket'] = 'You do not have permission to create a new ticket.';
-$txt['cannot_shd_edit_ticket'] = 'You do not have permission to edit this ticket.';
-$txt['shd_cannot_reply_any'] = 'You do not have permission to reply to any tickets.';
-$txt['shd_cannot_reply_any_but_own'] = 'You do not have permission to reply to any tickets other than your own.';
-$txt['shd_cannot_edit_reply_any'] = 'You do not have permission to edit any replies.';
-$txt['shd_cannot_edit_reply_any_but_own'] = 'You do not have permission to edit replies to any tickets other than your own replies.';
-$txt['shd_cannot_edit_closed'] = 'You cannot edit resolved tickets; you need to mark it unresolved first.';
-$txt['shd_cannot_edit_deleted'] = 'You cannot edit tickets in the recycle bin. They will need to be restored first.';
-$txt['shd_cannot_reply_closed'] = 'You cannot reply to resolved tickets; you need to mark them unresolved first.';
-$txt['shd_cannot_reply_deleted'] = 'You cannot reply to tickets in the recycle bin. They will need to be restored first.';
-$txt['shd_cannot_delete_ticket'] = 'You are not permitted to delete this ticket.';
-$txt['shd_cannot_delete_reply'] = 'You are not permitted to delete that reply.';
-$txt['shd_cannot_restore_ticket'] = 'You are not permitted to restore this ticket from the recycle bin.';
-$txt['shd_cannot_restore_reply'] = 'You are not permitted to restore that reply from the recycle bin.';
-$txt['shd_cannot_view_resolved'] = 'You are not permitted to access resolved tickets.';
-$txt['cannot_shd_access_recyclebin'] = 'You cannot access the recycle bin.';
-$txt['shd_cannot_move_ticket_with_deleted'] = 'You cannot move this ticket to the forum; there are one or more deleted replies, which your current permissions do not permit access to.';
-$txt['shd_cannot_attach_ext'] = 'The type of file you have tried to attach ({ext}) is not allowed here. The allowed types of file are: {attach_exts}';
-$txt['shd_ticket_unavailable'] = 'This ticket is currently not available for modification.';
-$txt['shd_invalid_relation'] = 'You must provide a valid type of relationship for these tickets.';
-$txt['shd_no_relation_delete'] = 'You cannot delete a relationship that does not exist.';
-$txt['shd_cannot_relate_self'] = 'You cannot make a ticket relate to itself.';
-$txt['shd_relationships_are_disabled'] = 'Ticket relationships are currently disabled.';
-$txt['error_invalid_fields'] = 'The following fields have values that cannot be used: %1$s';
-$txt['error_missing_fields'] = 'The following fields were not completed and need to be: %1$s';
-$txt['error_missing_multi'] = '%1$s (at least %2$d must be selected)';
-$txt['error_no_dept'] = 'You did not select a department to post this ticket into.';
-$txt['shd_cannot_move_dept'] = 'You cannot move this ticket, there is nowhere to move it to.';
-$txt['shd_no_perm_move_dept'] = 'You are not permitted to move this ticket to another department.';
-$txt['cannot_shd_delete_attachment'] = 'You are not permitted to delete attachments.';
-$txt['cannot_shd_move_ticket_topic_hidden_cfs'] = 'You cannot move this ticket to a topic; there are custom fields attached that require an administrator to confirm the move.';
-$txt['cannot_monitor_ticket'] = 'You are not permitted to turn monitoring on for this ticket.';
-$txt['cannot_unmonitor_ticket'] = 'You are not permitted to turn monitoring off for this ticket.';
+$txt['cannot_access_helpdesk'] = 'Você não tem permissão para acessar o suporte técnico.';
+$txt['shd_no_ticket'] = 'O ticket que você solicitou não parece existir.';
+$txt['shd_no_reply'] = 'A resposta do ticket que você tem solicitação parece não existir ou não faz parte deste ticket.';
+$txt['shd_no_topic'] = 'O tópico que você solicitou não parece existir.';
+$txt['shd_ticket_no_perms'] = 'Você não tem permissão para visualizar esse ticket.';
+$txt['shd_error_no_tickets'] = 'Tickets não encontrados.';
+$txt['shd_inactive'] = 'O suporte técnico está atualmente desativado.';
+$txt['shd_cannot_assign'] = 'Você não tem permissão para atribuir tickets.';
+$txt['shd_cannot_assign_other'] = 'Este ticket já está atribuído a outro usuário. Você não pode reatribui-lo a si mesmo - por favor, contate o administrador.';
+$txt['shd_no_staff_assign'] = 'Não há pessoal configurado; não é possível atribuir um ticket. Por favor contate o administrador.';
+$txt['shd_assigned_not_permitted'] = 'O usuário que você solicitou para atribuir esse ticket não tem permissões suficientes para vê-lo.';
+$txt['shd_cannot_resolve'] = 'Você não tem permissão para marcar este ticket como resolvido.';
+$txt['shd_cannot_unresolve'] = 'Você não tem permissão para reabrir um ticket resolvido.';
+$txt['error_shd_cannot_resolve_children'] = 'Este ticket não pode ser fechado atualmente; este ticket é o pai de um ou mais tickets que estão atualmente abertos.';
+$txt['error_shd_proxy_unknown'] = 'O usuário que este ticket foi postado em nome não existe.';
+$txt['shd_cannot_change_privacy'] = 'Não tem permissão para alterar a privacidade deste bilhete.';
+$txt['shd_cannot_change_urgency'] = 'Não tem permissão para alterar a urgência deste bilhete.';
+$txt['shd_ajax_problem'] = 'Houve um problema ao tentar carregar a página. Gostaria de tentar novamente?';
+$txt['shd_cannot_move_ticket'] = 'Você não tem permissão para mover este ticket para um tópico.';
+$txt['shd_cannot_move_topic'] = 'Você não tem permissão para mover este tópico para um ticket.';
+$txt['shd_moveticket_noboards'] = 'Não há nenhuma placa para mover este bilhete!';
+$txt['shd_move_no_pm'] = 'Você deve informar uma razão para mover o bilhete para enviar para o proprietário do bilhete, ou desmarque a opção de \'enviar uma mensagem privada para o dono do ticket\'.';
+$txt['shd_move_no_pm_topic'] = 'Você deve digitar uma razão para mover o tópico para o início do tópico, ou desmarque a opção \'enviar uma mensagem privada para o iniciante do tópico\'.';
+$txt['shd_move_topic_not_created'] = 'Falha ao mover o ticket para a lousa. Tente novamente.';
+$txt['shd_move_ticket_not_created'] = 'Falha ao mover o tópico para o helpdesk. Tente novamente.';
+$txt['shd_no_replies'] = 'Este ticket ainda não tem respostas.';
+$txt['cannot_shd_new_ticket'] = 'Você não tem permissão para criar um novo ticket.';
+$txt['cannot_shd_edit_ticket'] = 'Você não tem permissão para editar este ticket.';
+$txt['shd_cannot_reply_any'] = 'Você não tem permissão para responder a nenhum ticket.';
+$txt['shd_cannot_reply_any_but_own'] = 'Você não tem permissão para responder a nenhum ticket que não seja o seu.';
+$txt['shd_cannot_edit_reply_any'] = 'Você não tem permissão para editar quaisquer respostas.';
+$txt['shd_cannot_edit_reply_any_but_own'] = 'Você não tem permissão para editar respostas para outros tickets além das suas próprias respostas.';
+$txt['shd_cannot_edit_closed'] = 'Você não pode editar tickets resolvidos; você precisa marcá-lo como não resolvido primeiro.';
+$txt['shd_cannot_edit_deleted'] = 'Não é possível editar tickets na lixeira. Eles terão de ser restaurados primeiro.';
+$txt['shd_cannot_reply_closed'] = 'Você não pode responder a chamados resolvidos; precisa marcá-los como não resolvidos primeiro.';
+$txt['shd_cannot_reply_deleted'] = 'Você não pode responder a tickets na lixeira. Eles precisarão ser restaurados primeiro.';
+$txt['shd_cannot_delete_ticket'] = 'Você não tem permissão para excluir este bilhete.';
+$txt['shd_cannot_delete_reply'] = 'Você não tem permissão para excluir essa resposta.';
+$txt['shd_cannot_restore_ticket'] = 'Você não tem permissão para restaurar este ticket da lixeira.';
+$txt['shd_cannot_restore_reply'] = 'Você não tem permissão para restaurar essa resposta da lixeira.';
+$txt['shd_cannot_view_resolved'] = 'Você não tem permissão para acessar os pedidos resolvidos.';
+$txt['cannot_shd_access_recyclebin'] = 'Não é possível acessar a lixeira.';
+$txt['shd_cannot_move_ticket_with_deleted'] = 'Você não pode mover este ticket para o fórum; há uma ou mais respostas apagadas, às quais as suas permissões atuais não permitem acesso.';
+$txt['shd_cannot_attach_ext'] = 'O tipo de arquivo que você tentou anexar ({ext}) não é permitido aqui. Os tipos permitidos de arquivo são: {attach_exts}';
+$txt['shd_ticket_unavailable'] = 'Este ticket não está disponível para modificação.';
+$txt['shd_invalid_relation'] = 'Você deve fornecer um tipo válido de relação para estes bilhetes.';
+$txt['shd_no_relation_delete'] = 'Não é possível excluir uma relação que não existe.';
+$txt['shd_cannot_relate_self'] = 'Você não pode fazer um ticket reportar a si mesmo.';
+$txt['shd_relationships_are_disabled'] = 'Relações do Ticket estão desativadas atualmente.';
+$txt['error_invalid_fields'] = 'Os seguintes campos têm valores que não podem ser usados: %1$s';
+$txt['error_missing_fields'] = 'Os seguintes campos não foram concluídos e precisam ser: %1$s';
+$txt['error_missing_multi'] = '%1$s (pelo menos %2$d deve ser selecionado)';
+$txt['error_no_dept'] = 'Você não selecionou um departamento para publicar este ticket.';
+$txt['shd_cannot_move_dept'] = 'Não se pode mover este bilhete, não há para onde movê-lo.';
+$txt['shd_no_perm_move_dept'] = 'Você não tem permissão para mover este bilhete para outro departamento.';
+$txt['cannot_shd_delete_attachment'] = 'Você não tem permissão para excluir anexos.';
+$txt['cannot_shd_move_ticket_topic_hidden_cfs'] = 'Você não pode mover este ticket para um tópico; existem campos personalizados anexados que requerem um administrador para confirmar o movimento.';
+$txt['cannot_monitor_ticket'] = 'Você não tem permissão para ativar o monitoramento para este ticket.';
+$txt['cannot_unmonitor_ticket'] = 'Você não tem permissão para desativar o monitoramento para este ticket.';
 //@}
 
 //! @name The main Helpdesk
 //@{
-$txt['shd_home'] = 'Helpdesk'; // separate string in case someone wants to change it independently of the main/admin menu
-$txt['shd_departments'] = 'Departments'; // ditto
-$txt['shd_new_ticket'] = 'Post New Ticket';
-$txt['shd_new_ticket_proxy'] = 'Post Proxy Ticket';
-$txt['shd_helpdesk_profile'] = 'Helpdesk Profile';
-$txt['shd_welcome'] = 'Welcome, %s!';
+$txt['shd_home'] = 'Suporte'; // separate string in case someone wants to change it independently of the main/admin menu
+$txt['shd_departments'] = 'Departamentos'; // ditto
+$txt['shd_new_ticket'] = 'Postar Novo Ticket';
+$txt['shd_new_ticket_proxy'] = 'Postar Ticket do Proxy';
+$txt['shd_helpdesk_profile'] = 'Perfil do Helpdesk';
+$txt['shd_welcome'] = 'Bem vindo(a), %s!';
 $txt['shd_go'] = 'Go!';
-$txt['shd_go_to_ticket'] = 'Go to ticket';
-$txt['shd_options'] = 'Options';
-$txt['shd_search_menu'] = 'Search';
+$txt['shd_go_to_ticket'] = 'Ir para o pedido';
+$txt['shd_options'] = 'Opções';
+$txt['shd_search_menu'] = 'Pesquisa';
 //@}
 
 //! @name Admin center menu buttons
 //@{
-$txt['shd_admin_info'] = 'Information';
-$txt['shd_admin_options'] = 'Options';
-$txt['shd_admin_custom_fields'] = 'Custom Fields';
-$txt['shd_admin_departments'] = 'Departments';
-$txt['shd_admin_permissions'] = 'Permissions';
-$txt['shd_admin_plugins'] = 'Plugins';
-$txt['shd_admin_cannedreplies'] = 'Canned Replies';
-$txt['shd_admin_maint'] = 'Maintenance';
+$txt['shd_admin_info'] = 'Informacao';
+$txt['shd_admin_options'] = 'Opções';
+$txt['shd_admin_custom_fields'] = 'Campos Personalizados';
+$txt['shd_admin_departments'] = 'Departamentos';
+$txt['shd_admin_permissions'] = 'Permissões';
+$txt['shd_admin_plugins'] = 'Complementos';
+$txt['shd_admin_cannedreplies'] = 'Respostas Prontas';
+$txt['shd_admin_maint'] = 'Manutenção';
 //@}
 
 //! @name Greetings
 //@{
-$txt['shd_user_greeting'] = 'Here you can file new tickets for the site staff to action, and check on current tickets already underway.';
-$txt['shd_staff_greeting'] = 'Here are all the tickets that require attention.';
-$txt['shd_shd_greeting'] = 'This is the Helpdesk. Here you waste your time to help newbies. Enjoy! ;D';
-$txt['shd_closed_user_greeting'] = 'These are all the closed/resolved tickets you have posted to the helpdesk.';
-$txt['shd_closed_staff_greeting'] = 'These are all closed/resolved tickets submitted to the helpdesk.';
-$txt['shd_category_filter'] = 'Category filtering';
+$txt['shd_user_greeting'] = 'Aqui você pode arquivar novos tickets para ações da equipe do site, e verificar os tickets atuais já em curso.';
+$txt['shd_staff_greeting'] = 'Aqui estão todos os bilhetes que requerem atenção.';
+$txt['shd_shd_greeting'] = 'Este é o Helpdesk. Aqui você perde seu tempo para ajudar os novatos. Aproveite! ;D';
+$txt['shd_closed_user_greeting'] = 'Estes são todos os tickets fechados/resolvidos que você postou no centro de ajuda.';
+$txt['shd_closed_staff_greeting'] = 'Todos estes tickets são fechados/resolvidos enviados para o suporte.';
+$txt['shd_category_filter'] = 'Filtragem de categoria';
 //@}
 
 //! @name Messages
 //@{
-$txt['shd_ticket_posted_header'] = 'Your ticket has been created!';
-$txt['shd_ticket_posted_body'] = 'Thank you for posting your ticket, {membername}!' . "\n\n" . 'The helpdesk staff will review it and get back to you as soon as possible.' . "\n\n" . 'In the meantime, you can view your ticket, &quot;[iurl={ticketurl}]{subject}[/iurl]&quot; at the following URL:' . "\n" . '[iurl={ticketurl}]{ticketurl}[/iurl]' . "\n\n" . '[iurl={newticketlink}]Open another ticket[/iurl] | [iurl={helpdesklink}]Back to the main helpdesk[/iurl] | [iurl={forumlink}]Back to the forum[/iurl]';
-$txt['shd_ticket_posted_prefs'] = "\n\n" . 'You can turn on email notifications about changes to your ticket, in the [iurl={prefslink}]Helpdesk Preferences[/iurl] area.';
-$txt['shd_ticket_posted_footer'] = "\n\n" . 'Regards,' . "\n" . 'The {forum_name} Team.';
+$txt['shd_ticket_posted_header'] = 'Seu ticket foi criado!';
+$txt['shd_ticket_posted_body'] = 'Obrigado por postar o seu ticket, {membername}!' . "\n\n" . 'A equipe de assistência irá revisá-lo e lhe responder o mais rápido possível.' . "\n\n" . 'Enquanto isso, você pode ver o seu bilhete, &quot;[iurl={ticketurl}]{subject}[/iurl]&quot; na seguinte URL:' . "\n" . '[iurl={ticketurl}]{ticketurl}[/iurl]' . "\n\n" . '[iurl={newticketlink}]Open another ticket[/iurl] | [iurl={helpdesklink}]Back to the main helpdesk[/iurl] | [iurl={forumlink}]Back to the forum[/iurl]';
+$txt['shd_ticket_posted_prefs'] = "\n\n" . 'Você pode ativar notificações por e-mail sobre alterações no seu ticket, na área [iurl={prefslink}]Preferências de Helpdesk[/iurl].';
+$txt['shd_ticket_posted_footer'] = "\n\n" . 'Atenciosamente,' . "\n" . 'Equipe de {forum_name}.';
 //@}
 
 //! @name The main ticket view
 //@{
-$txt['shd_ticket_details'] = 'Ticket details';
-$txt['shd_ticket_updated'] = 'Updated';
+$txt['shd_ticket_details'] = 'Detalhes do Chamado';
+$txt['shd_ticket_updated'] = 'Atualizado';
 $txt['shd_ticket_id'] = 'Id';
-$txt['shd_ticket_name'] = 'Name';
-$txt['shd_ticket_user'] = 'User';
-$txt['shd_ticket_date'] = 'Posted';
-$txt['shd_ticket_urgency'] = 'Urgency';
-$txt['shd_ticket_assigned'] = 'Assigned';
-$txt['shd_ticket_assignedto'] = 'Assigned to';
-$txt['shd_ticket_started_by'] = 'Started by';
-$txt['shd_ticket_updated_by'] = 'Updated by';
-$txt['shd_ticket_status'] = 'Status';
-$txt['shd_ticket_num_replies'] = 'Replies';
-$txt['shd_ticket_replies'] = 'Replies';
-$txt['shd_ticket_staff'] = 'Staff member';
-$txt['shd_ticket_attachments'] = 'Attachments';
-$txt['shd_ticket_reply_number'] = 'Reply <strong>#%s</strong>'; // 'Reply #34'
-$txt['shd_ticket_hold'] = 'Ticket On-Hold';
-$txt['shd_ticket'] = 'Ticket';
-$txt['shd_reply_written'] = 'Reply written %s'; // 'Reply written Today at 04:12:29 pm',  'Reply written January 5 2009 04:12:29 pm'
-$txt['shd_never'] = 'Never';
+$txt['shd_ticket_name'] = 'Nome:';
+$txt['shd_ticket_user'] = 'Usuário';
+$txt['shd_ticket_date'] = 'Postado';
+$txt['shd_ticket_urgency'] = 'Urgência';
+$txt['shd_ticket_assigned'] = 'Atribuído';
+$txt['shd_ticket_assignedto'] = 'Atribuído a';
+$txt['shd_ticket_started_by'] = 'Iniciado por';
+$txt['shd_ticket_updated_by'] = 'Atualizado por';
+$txt['shd_ticket_status'] = 'SItuação';
+$txt['shd_ticket_num_replies'] = 'Respostas';
+$txt['shd_ticket_replies'] = 'Respostas';
+$txt['shd_ticket_staff'] = 'Membro da equipe';
+$txt['shd_ticket_attachments'] = 'Anexos';
+$txt['shd_ticket_reply_number'] = 'Responder <strong>#%s</strong>'; // 'Reply #34'
+$txt['shd_ticket_hold'] = 'Bilhete Em Espera';
+$txt['shd_ticket'] = 'Chamado';
+$txt['shd_reply_written'] = 'Resposta escrita %s'; // 'Reply written Today at 04:12:29 pm',  'Reply written January 5 2009 04:12:29 pm'
+$txt['shd_never'] = 'nunca';
 $txt['shd_linktree_tickets'] = 'Tickets';
-$txt['shd_ticket_privacy'] = 'Privacy';
-$txt['shd_ticket_notprivate'] = 'Not Private';
-$txt['shd_ticket_private'] = 'Private';
-$txt['shd_ticket_change'] = 'Change';
-$txt['shd_ticket_ip'] = 'IP address';
-$txt['shd_back_to_hd'] = 'Back to the helpdesk';
-$txt['shd_go_to_replies'] = 'Go to Replies';
-$txt['shd_go_to_action_log'] = 'Go to Action Log';
-$txt['shd_go_to_replies_start'] = 'Go to the first reply';
+$txt['shd_ticket_privacy'] = 'Privacidade';
+$txt['shd_ticket_notprivate'] = 'Não Privado';
+$txt['shd_ticket_private'] = 'Privado';
+$txt['shd_ticket_change'] = 'Troca';
+$txt['shd_ticket_ip'] = 'Endereço IP';
+$txt['shd_back_to_hd'] = 'Voltar para o suporte técnico';
+$txt['shd_go_to_replies'] = 'Ir para respostas';
+$txt['shd_go_to_action_log'] = 'Ir para o Log de Ações';
+$txt['shd_go_to_replies_start'] = 'Ir para a primeira resposta';
 
-$txt['shd_ticket_has_been_deleted'] = 'This ticket is currently in the recycle bin and cannot be altered without being returned to the helpdesk.';
-$txt['shd_ticket_replies_deleted'] = 'This ticket has had replies deleted from it previously.';
-$txt['shd_ticket_replies_deleted_view'] = 'These are displayed with a colored background. <a href="%1$s">View the ticket without deletions</a>.';
-$txt['shd_ticket_replies_deleted_link'] = 'Please <a href="%1$s">click here</a> to view them.';
+$txt['shd_ticket_has_been_deleted'] = 'Este ticket está atualmente na lixeira e não pode ser alterado sem ser devolvido ao centro de ajuda.';
+$txt['shd_ticket_replies_deleted'] = 'Este ticket teve respostas excluídas dele anteriormente.';
+$txt['shd_ticket_replies_deleted_view'] = 'Estes são exibidos com um fundo colorido. <a href="%1$s">Veja o ticket sem exclusões</a>.';
+$txt['shd_ticket_replies_deleted_link'] = 'Por favor <a href="%1$s">clique aqui</a> para visualizá-los.';
 
-$txt['shd_ticket_notnew'] = 'You have already seen this';
-$txt['shd_ticket_new'] = 'New!';
+$txt['shd_ticket_notnew'] = 'Você já viu isto';
+$txt['shd_ticket_new'] = 'Novo!';
 
-$txt['shd_linktree_move_ticket'] = 'Move ticket';
-$txt['shd_linktree_move_topic'] = 'Move topic to helpdesk';
+$txt['shd_linktree_move_ticket'] = 'Mover pedido';
+$txt['shd_linktree_move_topic'] = 'Mover tópico para helpdesk';
 
-$txt['shd_cancel_ticket'] = 'Cancel and return to the ticket';
-$txt['shd_cancel_home'] = 'Cancel and return to the helpdesk home';
-$txt['shd_cancel_topic'] = 'Cancel and return to the topic';
+$txt['shd_cancel_ticket'] = 'Cancelar e retornar para o ticket';
+$txt['shd_cancel_home'] = 'Cancelar e retornar para a casa do helpdesk';
+$txt['shd_cancel_topic'] = 'Cancelar e retornar ao tópico';
 //@}
 
 //! @name Actions
 //@{
-$txt['shd_ticket_reply'] = 'Reply to ticket';
-$txt['shd_ticket_quote'] = 'Reply with quote';
-$txt['shd_go_advanced'] = 'Go advanced!';
-$txt['shd_ticket_edit_reply'] = 'Edit reply';
-$txt['shd_ticket_quote_short'] = 'Quote';
-$txt['shd_ticket_markunread'] = 'Mark unread';
-$txt['shd_ticket_reply_short'] = 'Reply';
-$txt['shd_ticket_edit'] = 'Edit';
-$txt['shd_ticket_resolved'] = 'Mark resolved';
-$txt['shd_ticket_unresolved'] = 'Mark unresolved';
-$txt['shd_ticket_assign'] = 'Assign';
-$txt['shd_ticket_assign_self'] = 'Assign to me';
-$txt['shd_ticket_reassign'] = 'Re-Assign';
-$txt['shd_ticket_unassign'] = 'Un-Assign';
-$txt['shd_ticket_delete'] = 'Delete';
-$txt['shd_delete_confirm'] = 'Are you sure you want to delete this ticket? If deleted, this ticket will be moved to recycling bin.';
-$txt['shd_delete_reply_confirm'] = 'Are you sure you want to delete this reply? If deleted, this reply will be moved to the recycling bin.';
-$txt['shd_delete_attach_confirm'] = 'Are you sure you want to delete this attachment? (This cannot be undone!)';
-$txt['shd_delete_attach'] = 'Delete this attachment';
-$txt['shd_ticket_restore'] = 'Restore';
-$txt['shd_delete_permanently'] = 'Delete permanently';
-$txt['shd_delete_permanently_confirm'] = 'Are you sure you want to permanently delete this ticket? This CANNOT be undone!';
-$txt['shd_ticket_move_to_topic'] = 'Move to topic';
-$txt['shd_move_dept'] = 'Move dept.';
-$txt['shd_actions'] = 'Actions';
-$txt['shd_back_to_ticket'] = 'Return to this ticket after posting';
-$txt['shd_disable_smileys_post'] = 'Turn off smileys in this post';
-$txt['shd_resolve_this_ticket'] = 'Mark this ticket as resolved';
-$txt['shd_override_cf'] = 'Override the custom fields requirements';
-$txt['shd_silent_update'] = 'Silent update (send no notifications)';
-$txt['shd_select_notifications'] = 'Select people to notify about this reply...';
+$txt['shd_ticket_reply'] = 'Responder ao ticket';
+$txt['shd_ticket_quote'] = 'Responder com citação';
+$txt['shd_go_advanced'] = 'Avance!';
+$txt['shd_ticket_edit_reply'] = 'Editar resposta';
+$txt['shd_ticket_quote_short'] = 'Cotação';
+$txt['shd_ticket_markunread'] = 'Marcar como não lido';
+$txt['shd_ticket_reply_short'] = 'Responder';
+$txt['shd_ticket_edit'] = 'Alterar';
+$txt['shd_ticket_resolved'] = 'Marcar como resolvido';
+$txt['shd_ticket_unresolved'] = 'Marcar como não resolvido';
+$txt['shd_ticket_assign'] = 'Atribuir';
+$txt['shd_ticket_assign_self'] = 'Atribuir-me a mim';
+$txt['shd_ticket_reassign'] = 'Re-atribuir';
+$txt['shd_ticket_unassign'] = 'Desatribuir';
+$txt['shd_ticket_delete'] = 'excluir';
+$txt['shd_delete_confirm'] = 'Tem certeza que deseja excluir este ticket? Se excluído, este ticket será movido para a caixa de reciclagem.';
+$txt['shd_delete_reply_confirm'] = 'Tem certeza que deseja excluir esta resposta? Se excluída, esta resposta será movida para a caixa de reciclagem.';
+$txt['shd_delete_attach_confirm'] = 'Tem certeza que deseja excluir este anexo? (Isto não pode ser desfeito!)';
+$txt['shd_delete_attach'] = 'Excluir este anexo';
+$txt['shd_ticket_restore'] = 'RESTAURAR';
+$txt['shd_delete_permanently'] = 'Excluir permanentemente';
+$txt['shd_delete_permanently_confirm'] = 'Tem certeza que deseja excluir permanentemente esse ticket? Isso NÃO PODERÁ ser desfeito!';
+$txt['shd_ticket_move_to_topic'] = 'Mover para o tópico';
+$txt['shd_move_dept'] = 'Mover dep.';
+$txt['shd_actions'] = 'Ações.';
+$txt['shd_back_to_ticket'] = 'Retornar para este ticket após postar';
+$txt['shd_disable_smileys_post'] = 'Desativar smileys nesta postagem';
+$txt['shd_resolve_this_ticket'] = 'Marcar este ticket como resolvido';
+$txt['shd_override_cf'] = 'Substituir os requisitos dos campos personalizados';
+$txt['shd_silent_update'] = 'Atualização silenciosa (não enviar notificações)';
+$txt['shd_select_notifications'] = 'Selecione pessoas para notificar sobre esta resposta...';
 
-$txt['shd_ticket_assign_ticket'] = 'Assign Ticket';
-$txt['shd_ticket_assign_to'] = 'Assign ticket to';
+$txt['shd_ticket_assign_ticket'] = 'Atribuir Ticket';
+$txt['shd_ticket_assign_to'] = 'Atribuir o ticket para';
 
-$txt['shd_ticket_move_dept'] = 'Move Ticket to another Department';
-$txt['shd_ticket_move_to'] = 'Move to';
-$txt['shd_current_dept'] = 'Currently in department';
-$txt['shd_ticket_move'] = 'Move Ticket';
-$txt['shd_unknown_dept'] = 'The specified department does not exist.';
+$txt['shd_ticket_move_dept'] = 'Mover Ticket para outro Departamento';
+$txt['shd_ticket_move_to'] = 'Mover para';
+$txt['shd_current_dept'] = 'Atualmente no departamento';
+$txt['shd_ticket_move'] = 'Mover Ticket';
+$txt['shd_unknown_dept'] = 'O departamento especificado não existe.';
 //@}
 
 //! @name Ticket to topic and back
 //@{
-$txt['shd_new_subject'] = 'New subject';
-$txt['shd_move_ticket_to_topic'] = 'Move ticket to topic';
-$txt['shd_move_ticket'] = 'Move ticket';
-$txt['shd_ticket_board'] = 'Board';
-$txt['shd_change_ticket_subject'] = 'Change the ticket subject';
-$txt['shd_move_send_pm'] = 'Send a PM to the ticket owner';
-$txt['shd_move_why'] = 'Please enter a brief description as to why this ticket is being moved to a forum topic.';
-$txt['shd_ticket_moved_subject'] = 'Your ticket has been moved.';
-$txt['shd_move_default'] = 'Hello {user},' . "\n\n" . 'Your ticket, {subject}, has been moved from the helpdesk to a topic in the forum.' . "\n" . 'You can find your ticket in the board {board} or via this link:' . "\n\n" . '{link}' . "\n\n" . 'Thanks';
+$txt['shd_new_subject'] = 'Novo assunto';
+$txt['shd_move_ticket_to_topic'] = 'Mover ticket para o tópico';
+$txt['shd_move_ticket'] = 'Mover pedido';
+$txt['shd_ticket_board'] = 'Tabuleiro';
+$txt['shd_change_ticket_subject'] = 'Alterar o assunto do ticket';
+$txt['shd_move_send_pm'] = 'Enviar uma MP para o proprietário do ticket';
+$txt['shd_move_why'] = 'Por favor, insira uma breve descrição sobre por que este ticket está sendo movido para um tópico do fórum.';
+$txt['shd_ticket_moved_subject'] = 'Seu bilhete foi movido.';
+$txt['shd_move_default'] = 'Olá, {user}.' . "\n\n" . 'O seu tíquete, {subject}, foi movido da central de ajuda para um tópico no fórum.' . "\n" . 'Você pode encontrar seu ticket no quadro {board} ou através deste link:' . "\n\n" . '{link}' . "\n\n" . 'Agradecimentos';
 
-$txt['shd_move_topic_to_ticket'] = 'Move topic to helpdesk';
-$txt['shd_move_topic'] = 'Move topic';
-$txt['shd_change_topic_subject'] = 'Change the topic subject';
-$txt['shd_move_send_pm_topic'] = 'Send a PM to the topic starter';
-$txt['shd_move_why_topic'] = 'Please enter a brief description as to why this topic is being moved to the helpdesk. ';
-$txt['shd_ticket_moved_subject_topic'] = 'Your topic has been moved.';
-$txt['shd_move_default_topic'] = 'Hello {user},' . "\n\n" . 'Your topic, {subject}, has been moved from the forum to the Helpdesk section.' . "\n" . 'You can find your topic via this link:' . "\n\n" . '{link}' . "\n\n" . 'Thanks';
+$txt['shd_move_topic_to_ticket'] = 'Mover tópico para helpdesk';
+$txt['shd_move_topic'] = 'Mover tópico';
+$txt['shd_change_topic_subject'] = 'Alterar assunto do tópico';
+$txt['shd_move_send_pm_topic'] = 'Envie uma MP para o iniciante do tópico';
+$txt['shd_move_why_topic'] = 'Por favor, digite uma breve descrição para saber por que esse tópico está sendo movido para o Centro de Ajuda. ';
+$txt['shd_ticket_moved_subject_topic'] = 'Seu tópico foi movido.';
+$txt['shd_move_default_topic'] = 'Olá, {user}.' . "\n\n" . 'Seu tópico, {subject}, foi movido do fórum para a seção HelpDesk.' . "\n" . 'Você pode encontrar seu tópico através deste link:' . "\n\n" . '{link}' . "\n\n" . 'Agradecimentos';
 
-$txt['shd_user_no_hd_access'] = 'Note: the person who started this topic cannot see the helpdesk!';
-$txt['shd_user_helpdesk_access'] = 'The person who started this topic can see the helpdesk.';
-$txt['shd_user_hd_access_dept_1'] = 'The person who started this topic can see the following department: ';
-$txt['shd_user_hd_access_dept'] = 'The person who started this topic can see the following departments: ';
-$txt['shd_move_ticket_department'] = 'Move ticket to which department';
-$txt['shd_move_dept_why'] = 'Please enter a brief description as to why this ticket is being moved to a different department.';
-$txt['shd_move_dept_default'] = 'Hello {user},' . "\n\n" . 'Your ticket, {subject}, has been moved from the {current_dept} department into the {new_dept} department.' . "\n" . 'You can find your ticket via this link:' . "\n\n" . '{link}' . "\n\n" . 'Thanks';
+$txt['shd_user_no_hd_access'] = 'Nota: a pessoa que iniciou esse tópico não pode ver o helpdesk!';
+$txt['shd_user_helpdesk_access'] = 'A pessoa que iniciou esse tópico pode ver o suporte.';
+$txt['shd_user_hd_access_dept_1'] = 'A pessoa que iniciou este tópico pode ver o seguinte departamento: ';
+$txt['shd_user_hd_access_dept'] = 'A pessoa que iniciou este tópico pode ver os seguintes departamentos: ';
+$txt['shd_move_ticket_department'] = 'Mover ticket para qual departamento';
+$txt['shd_move_dept_why'] = 'Por favor, insira uma breve descrição para o motivo pelo qual este ticket está sendo transferido para outro departamento.';
+$txt['shd_move_dept_default'] = 'Olá, {user}.' . "\n\n" . 'O seu ticket, {subject}, foi movido do departamento {current_dept} para o departamento de {new_dept}.' . "\n" . 'Você pode encontrar seu ticket através deste link:' . "\n\n" . '{link}' . "\n\n" . 'Agradecimentos';
 
-$txt['shd_ticket_move_deleted'] = 'This ticket has replies that are currently in the recycle bin. What do you wish to do?';
-$txt['shd_ticket_move_deleted_abort'] = 'Abort, take me to the recycle bin';
-$txt['shd_ticket_move_deleted_delete'] = 'Continue, abandon the deleted replies (do not move them into the new topic)';
-$txt['shd_ticket_move_deleted_undelete'] = 'Continue, undelete the replies (move them into the new topic)';
+$txt['shd_ticket_move_deleted'] = 'Este ticket tem respostas que estão atualmente na lixeira. O que você deseja fazer?';
+$txt['shd_ticket_move_deleted_abort'] = 'Abortar, leve-me para a lixeira';
+$txt['shd_ticket_move_deleted_delete'] = 'Continue, abandone as respostas excluídas (não mova-as para o novo tópico)';
+$txt['shd_ticket_move_deleted_undelete'] = 'Continue, recupere as respostas (mova-as para o novo tópico)';
 
-$txt['shd_ticket_move_cfs'] = 'This ticket has custom fields that may need to be moved.';
-$txt['shd_ticket_move_cfs_warn'] = 'Some of these fields may not be visible to other users. These fields are indicated with an exclamation mark.';
-$txt['shd_ticket_move_cfs_warn_user'] = 'You can see this field, other users cannot - but once it becomes part of the forum, it will become visible to everyone who can access the forum.';
-$txt['shd_ticket_move_cfs_purge'] = 'Delete the field contents';
-$txt['shd_ticket_move_cfs_embed'] = 'Keep the field and put it in the new topic';
-$txt['shd_ticket_move_cfs_user'] = 'Currently visible to regular users';
-$txt['shd_ticket_move_cfs_staff'] = 'Currently visible to staff members';
-$txt['shd_ticket_move_cfs_admin'] = 'Currently visible to administrators';
-$txt['shd_ticket_move_accept'] = 'I accept that some of the fields being manipulated here are not visible to all users, and that this topic should be moved to the forum, with the above settings.';
-$txt['shd_ticket_move_reqd'] = 'This option must be selected in order for you to move this ticket to the forum.';
-$txt['shd_ticket_move_ok'] = 'This field is safe to move, all the users who can see the ticket can see this field, there is no information hidden from users or staff.';
-$txt['shd_ticket_move_reqd_nonselected'] = 'This ticket has fields that users or staff may not be able to see, as such you specifically need to confirm you are aware of this - please go back to the previous page, the checkbox for confirming your awareness of this is at the bottom of the form.';
+$txt['shd_ticket_move_cfs'] = 'Este ticket possui campos personalizados que podem precisar ser movidos.';
+$txt['shd_ticket_move_cfs_warn'] = 'Alguns destes campos podem não ser visíveis para outros usuários. Estes campos são indicados com um ponto de exclamação.';
+$txt['shd_ticket_move_cfs_warn_user'] = 'Você pode ver este campo, outros usuários não podem - mas uma vez que ele se torna parte do fórum, tornar-se-á visível para todos os que puderem acessar o fórum.';
+$txt['shd_ticket_move_cfs_purge'] = 'Excluir conteúdo do campo';
+$txt['shd_ticket_move_cfs_embed'] = 'Manter o campo e colocá-lo no novo tópico';
+$txt['shd_ticket_move_cfs_user'] = 'Visível atualmente aos usuários normais';
+$txt['shd_ticket_move_cfs_staff'] = 'Visível atualmente para membros da equipe';
+$txt['shd_ticket_move_cfs_admin'] = 'Atualmente visível para administradores';
+$txt['shd_ticket_move_accept'] = 'Aceito que alguns dos campos que estão a ser manipulados aqui não são visíveis para todos os usuários, e que este tópico deve ser movido para o fórum, com as configurações acima.';
+$txt['shd_ticket_move_reqd'] = 'Esta opção deve ser selecionada para que você possa mover este ticket para o fórum.';
+$txt['shd_ticket_move_ok'] = 'Este campo é seguro para se mover, todos os usuários que podem ver o ticket podem ver este campo, não há nenhuma informação oculta de usuários ou de funcionários.';
+$txt['shd_ticket_move_reqd_nonselected'] = 'Este ticket tem campos que usuários ou equipe podem não ser capazes de ver, como tal, você precisa confirmar que está ciente disso - por favor, volte para a página anterior, a caixa de seleção para confirmar que a consciência disto está no final do formulário.';
 //@}
 
 //! @name Recycling
 //@{
-$txt['shd_recycle_bin'] = 'Recycle Bin';
-$txt['shd_recycle_greeting'] = 'This is the recycling bin. All deleted tickets go here, but staff members with special permissions can remove tickets permanently from here.';
+$txt['shd_recycle_bin'] = 'Lixeira';
+$txt['shd_recycle_greeting'] = 'Esta é a caixa de reciclagem. Todos os bilhetes apagados vão para aqui, mas membros da equipe com permissões especiais podem remover bilhetes permanentemente daqui.';
 //@}
 
 //! @name Posting
 //@{
-$txt['shd_create_ticket'] = 'Create ticket';
-$txt['shd_edit_ticket'] = 'Edit ticket';
-$txt['shd_edit_ticket_linktree'] = 'Edit ticket (%s)';
-$txt['shd_ticket_subject'] = 'Ticket subject';
-$txt['shd_ticket_proxy'] = 'Post on behalf of';
-$txt['shd_ticket_post_error'] = 'The following issue, or issues, occurred while trying to post this ticket';
-$txt['shd_reply_ticket'] = 'Reply to ticket';
-$txt['shd_reply_ticket_linktree'] = 'Reply to ticket (%s)';
-$txt['shd_edit_reply_linktree'] = 'Edit reply (%s)';
-$txt['shd_previewing_ticket'] = 'Previewing ticket';
-$txt['shd_previewing_reply'] = 'Previewing reply to';
-$txt['shd_choose_one'] = '[Choose one]';
-$txt['shd_no_value'] = '[no value]';
-$txt['shd_ticket_dept'] = 'Ticket department';
-$txt['shd_select_dept'] = '-- Select a department --';
-$txt['canned_replies'] = 'Add a pre-defined reply:';
-$txt['canned_replies_select'] = '-- Select a reply --';
+$txt['shd_create_ticket'] = 'Criar ticket';
+$txt['shd_edit_ticket'] = 'Editar o pedido';
+$txt['shd_edit_ticket_linktree'] = 'Editar ticket (%s)';
+$txt['shd_ticket_subject'] = 'Assunto do Ticket';
+$txt['shd_ticket_proxy'] = 'Postar em nome de';
+$txt['shd_ticket_post_error'] = 'O problema a seguir, ou problemas ocorreram ao tentar postar este ticket';
+$txt['shd_reply_ticket'] = 'Responder ao ticket';
+$txt['shd_reply_ticket_linktree'] = 'Responder ao ticket (%s)';
+$txt['shd_edit_reply_linktree'] = 'Editar resposta (%s)';
+$txt['shd_previewing_ticket'] = 'Pré-visualizando ticket';
+$txt['shd_previewing_reply'] = 'Pré-visualizando resposta para';
+$txt['shd_choose_one'] = '[Escolher um]';
+$txt['shd_no_value'] = '[nenhum valor]';
+$txt['shd_ticket_dept'] = 'Departamento de Ticket';
+$txt['shd_select_dept'] = '-- Selecione um departamento --';
+$txt['canned_replies'] = 'Adicione uma resposta predefinida:';
+$txt['canned_replies_select'] = '-- Selecione uma resposta --';
 $txt['canned_replies_insert'] = 'Insert';
 //@}
 
 //! @name Profile / trackip
 //@{
-$txt['shd_replies_from_ip'] = 'Helpdesk replies posted from IP (range)';
-$txt['shd_no_replies_from_ip'] = 'No helpdesk replies from the specified IP (range) found';
-$txt['shd_replies_from_ip_desc'] = 'Below is a list of all messages posted to the helpdesk from this IP (range).';
-$txt['shd_is_ticket_opener'] = ' (ticket starter)';
+$txt['shd_replies_from_ip'] = 'Respostas do Helpdesk postadas de IP (intervalo)';
+$txt['shd_no_replies_from_ip'] = 'Nenhuma resposta do helpdesk do IP especificado (intervalo) foi encontrada';
+$txt['shd_replies_from_ip_desc'] = 'Abaixo está uma lista de todas as mensagens enviadas a partir deste IP (intervalo).';
+$txt['shd_is_ticket_opener'] = ' (iniciante do ticket)';
 //@}
 
 //! @name Attachment types
 //@{
 // Archive formats
-$txt['shd_attachtype_bz2'] = 'BZip2 archive';
-$txt['shd_attachtype_gz'] = 'GZip archive';
-$txt['shd_attachtype_rar'] = 'Rar/WinRAR archive';
-$txt['shd_attachtype_zip'] = 'Zip archive';
+$txt['shd_attachtype_bz2'] = 'Arquivo BZip2';
+$txt['shd_attachtype_gz'] = 'Arquivo GZip';
+$txt['shd_attachtype_rar'] = 'Arquivo Rar/WinRAR';
+$txt['shd_attachtype_zip'] = 'Arquivo compactado';
 // Media: Audio formats
-$txt['shd_attachtype_mp3'] = 'MP3 (MPEG Layer III) audio file';
+$txt['shd_attachtype_mp3'] = 'Arquivo de áudio MP3 (MPEG Layer III)';
 // Media: Image formats
-$txt['shd_attachtype_bmp'] = 'Windows Bitmap image';
-$txt['shd_attachtype_gif'] = 'Graphics Interchange Format (GIF) image';
-$txt['shd_attachtype_jpeg'] = 'Joint Photographic Experts Group (JPEG) image';
-$txt['shd_attachtype_jpg'] = 'Joint Photographic Experts Group (JPEG) image';
-$txt['shd_attachtype_png'] = 'Portable Network Graphic (PNG) image';
-$txt['shd_attachtype_svg'] = 'Scalable Vector Graphic (SVG) image';
+$txt['shd_attachtype_bmp'] = 'Imagem Windows Bitmap';
+$txt['shd_attachtype_gif'] = 'Imagem de Intercâmbio Gráficos (GIF)';
+$txt['shd_attachtype_jpeg'] = 'Imagem do Grupo de Especialistas Fotográficos (JPEG)';
+$txt['shd_attachtype_jpg'] = 'Imagem do Grupo de Especialistas Fotográficos (JPEG)';
+$txt['shd_attachtype_png'] = 'Imagem do Gráfico de Rede Portátil (PNG)';
+$txt['shd_attachtype_svg'] = 'Imagem gráfica vetorial escalável (SVG)';
 // Media: Video formats
-$txt['shd_attachtype_wmv'] = 'Windows Media Video movie';
+$txt['shd_attachtype_wmv'] = 'Vídeo de vídeo Windows Media';
 // Office formats
-$txt['shd_attachtype_doc'] = 'Microsoft Word document';
-$txt['shd_attachtype_mdb'] = 'Microsoft Access database';
-$txt['shd_attachtype_ppt'] = 'Microsoft Powerpoint presentation';
+$txt['shd_attachtype_doc'] = 'Documento do Microsoft Word';
+$txt['shd_attachtype_mdb'] = 'Banco de dados Microsoft Access';
+$txt['shd_attachtype_ppt'] = 'Apresentação do Microsoft Powerpoint';
 $txt['shd_attachtype_xls'] = 'Microsoft Excel spreadsheet';
 // Programming languages
-$txt['shd_attachtype_cpp'] = 'C++ source file';
-$txt['shd_attachtype_php'] = 'PHP script';
-$txt['shd_attachtype_py'] = 'Python source file';
-$txt['shd_attachtype_rb'] = 'Ruby source file';
-$txt['shd_attachtype_sql'] = 'SQL script';
+$txt['shd_attachtype_cpp'] = 'Arquivo fonte C++';
+$txt['shd_attachtype_php'] = 'Script PHP';
+$txt['shd_attachtype_py'] = 'Arquivo de origem Python';
+$txt['shd_attachtype_rb'] = 'Arquivo fonte Ruby';
+$txt['shd_attachtype_sql'] = 'Script SQL';
 // Proprietory formats
 $txt['shd_attachtype_kml'] = 'Google Earth (KML)';
-$txt['shd_attachtype_kmz'] = 'Google Earth (KML archive)';
-$txt['shd_attachtype_pdf'] = 'Adobe Acrobat Portable Document File';
-$txt['shd_attachtype_psd'] = 'Adobe Photoshop document';
-$txt['shd_attachtype_swf'] = 'Adobe Flash file';
+$txt['shd_attachtype_kmz'] = 'Google Earth (arquivo KML)';
+$txt['shd_attachtype_pdf'] = 'Arquivo de Documento Portátil Adobe Acrobat';
+$txt['shd_attachtype_psd'] = 'Documento de Adobe Photoshop';
+$txt['shd_attachtype_swf'] = 'Arquivo Adobe Flash';
 // Miscellaneous
-$txt['shd_attachtype_exe'] = 'Executable file (Windows)';
-$txt['shd_attachtype_htm'] = 'Hypertext Markup Document (HTML)';
-$txt['shd_attachtype_html'] = 'Hypertext Markup Document (HTML)';
-$txt['shd_attachtype_rtf'] = 'Rich Text Format (RTF)';
-$txt['shd_attachtype_txt'] = 'Plain text';
+$txt['shd_attachtype_exe'] = 'Arquivo executável (Windows)';
+$txt['shd_attachtype_htm'] = 'Documento Markup Hypertext (HTML)';
+$txt['shd_attachtype_html'] = 'Documento Markup Hypertext (HTML)';
+$txt['shd_attachtype_rtf'] = 'Formato de texto rico (RTF)';
+$txt['shd_attachtype_txt'] = 'Texto sem formatação';
 //@}
 
 //! @name Ticket logs
 //@{
-$txt['shd_ticket_log'] = 'Ticket action log';
-$txt['shd_ticket_log_count_one'] = '1 entry';
-$txt['shd_ticket_log_count_more'] = '%s entries';
-$txt['shd_ticket_log_none'] = 'This ticket has not had any changes.';
-$txt['shd_ticket_log_member'] = 'Member';
-$txt['shd_ticket_log_ip'] = 'Member IP:';
-$txt['shd_ticket_log_date'] = 'Date';
-$txt['shd_ticket_log_action'] = 'Action';
-$txt['shd_ticket_log_full'] = 'Go to the full action log (All tickets)';
+$txt['shd_ticket_log'] = 'Log de ações de ticket';
+$txt['shd_ticket_log_count_one'] = '1 entrada';
+$txt['shd_ticket_log_count_more'] = '%s entradas';
+$txt['shd_ticket_log_none'] = 'Este ticket não teve nenhuma alteração.';
+$txt['shd_ticket_log_member'] = 'Membro';
+$txt['shd_ticket_log_ip'] = 'IP de membro:';
+$txt['shd_ticket_log_date'] = 'Encontro';
+$txt['shd_ticket_log_action'] = 'Acão';
+$txt['shd_ticket_log_full'] = 'Ir para o log completo de ação (Todos os tickets)';
 //@}
 
 //! @name Ticket relationships
 //@{
-$txt['shd_ticket_relationships'] = 'Related Tickets';
-$txt['shd_ticket_create_relationship'] = 'Create relationship';
-$txt['shd_ticket_delete_relationship'] = 'Delete relationship';
-$txt['shd_ticket_reltype'] = 'select type';
-$txt['shd_ticket_reltype_linked'] = 'Linked to';
-$txt['shd_ticket_reltype_duplicated'] = 'Duplicate of';
-$txt['shd_ticket_reltype_parent'] = 'Parent of';
-$txt['shd_ticket_reltype_child'] = 'Child of';
+$txt['shd_ticket_relationships'] = 'Tickets Relacionados';
+$txt['shd_ticket_create_relationship'] = 'Criar relação';
+$txt['shd_ticket_delete_relationship'] = 'Excluir relacionamento';
+$txt['shd_ticket_reltype'] = 'selecionar tipo';
+$txt['shd_ticket_reltype_linked'] = 'Relacionado a';
+$txt['shd_ticket_reltype_duplicated'] = 'Duplicar de';
+$txt['shd_ticket_reltype_parent'] = 'Pai de';
+$txt['shd_ticket_reltype_child'] = 'Filho de';
 //@}
 
 //! @name Custom fields in ticket
 //@{
-$txt['shd_ticket_additional_information'] = 'Additional information';
-$txt['shd_ticket_additional_details'] = 'Additional details';
-$txt['shd_ticket_empty_field'] = 'This field is empty.';
+$txt['shd_ticket_additional_information'] = 'Informação Adicional';
+$txt['shd_ticket_additional_details'] = 'Detalhes adicionais';
+$txt['shd_ticket_empty_field'] = 'Este campo está vazio.';
 $txt['shd_ticket_empty_field_short'] = '-';
 //@}
 
 //! @name Notifications
 //@{
-$txt['shd_ticket_notify'] = 'Notifications';
-$txt['shd_ticket_notify_noneprefs'] = 'Your user preferences don\'t account for notification of this ticket.';
-$txt['shd_ticket_notify_changeprefs'] = 'Change your preferences';
-$txt['shd_ticket_notify_because'] = 'Your preferences indicate notifying you of replies to this ticket:';
-$txt['shd_ticket_notify_because_yourticket'] = 'as it is your ticket';
-$txt['shd_ticket_notify_because_assignedyou'] = 'as it is assigned to you';
-$txt['shd_ticket_notify_because_priorreply'] = 'as you replied to it before';
-$txt['shd_ticket_notify_because_anyreply'] = 'for any ticket';
+$txt['shd_ticket_notify'] = 'notificações';
+$txt['shd_ticket_notify_noneprefs'] = 'Suas preferências do usuário não são uma conta para notificação deste ticket.';
+$txt['shd_ticket_notify_changeprefs'] = 'Alterar suas preferências';
+$txt['shd_ticket_notify_because'] = 'Suas preferências indicam notificá-lo das respostas a este ticket:';
+$txt['shd_ticket_notify_because_yourticket'] = 'como é o seu bilhete';
+$txt['shd_ticket_notify_because_assignedyou'] = 'como foi designado para você';
+$txt['shd_ticket_notify_because_priorreply'] = 'como você respondeu antes';
+$txt['shd_ticket_notify_because_anyreply'] = 'para qualquer ticket';
 
-$txt['shd_ticket_notify_me_always'] = 'You are monitoring this ticket (and will receive a notification on every reply)';
-$txt['shd_ticket_monitor_on_note'] = 'You may monitor all replies to this ticket via email regardless of your preferences:';
-$txt['shd_ticket_monitor_off_note'] = 'You may turn off monitoring for this ticket and use your preferences instead:';
-$txt['shd_ticket_monitor_on'] = 'Turn on monitoring';
-$txt['shd_ticket_monitor_off'] = 'Turn off monitoring';
-$txt['shd_ticket_notify_me_never_note'] = 'You may ignore email updates for this ticket regardless of your preferences:';
-$txt['shd_ticket_notify_me_never'] = 'You have turned off all notifications for this ticket.';
-$txt['shd_ticket_notify_me_never_on'] = 'Turn off notifications';
-$txt['shd_ticket_notify_me_never_off'] = 'Turn on notifications';
+$txt['shd_ticket_notify_me_always'] = 'Você está monitorando este ticket (e receberá uma notificação a cada resposta)';
+$txt['shd_ticket_monitor_on_note'] = 'Você pode monitorar todas as respostas deste ticket por e-mail, independentemente das suas preferências:';
+$txt['shd_ticket_monitor_off_note'] = 'Você pode desativar o monitoramento deste ticket e, em vez disso, usar suas preferências:';
+$txt['shd_ticket_monitor_on'] = 'Ativar monitoramento';
+$txt['shd_ticket_monitor_off'] = 'Desativar monitoramento';
+$txt['shd_ticket_notify_me_never_note'] = 'Você pode ignorar atualizações por e-mail para este ticket, independentemente de suas preferências:';
+$txt['shd_ticket_notify_me_never'] = 'Você desligou todas as notificações deste ticket.';
+$txt['shd_ticket_notify_me_never_on'] = 'Desativar notificações';
+$txt['shd_ticket_notify_me_never_off'] = 'Ativar notificações';
 //@}
 
 //! @name Searching
 //@{
-$txt['shd_search_warning_nonadmin'] = 'The search facility may not list all available tickets; it is currently being investigated.';
-$txt['shd_search_warning_admin'] = 'The search facility requires that its index be rebuilt. You can achieve this from the Maintenance option, in the Helpdesk area, in the administration panel.';
-$txt['shd_search'] = 'Search Tickets';
-$txt['shd_search_results'] = 'Search Tickets - Results';
-$txt['shd_search_text'] = 'Words you are looking for:';
-$txt['shd_search_match'] = 'What should be matched?';
-$txt['shd_search_match_all'] = 'Match all words supplied';
-$txt['shd_search_match_any'] = 'Match any words supplied';
-$txt['shd_search_scope'] = 'Include which types of tickets:';
-$txt['shd_search_scope_open'] = 'Open tickets';
-$txt['shd_search_scope_closed'] = 'Closed tickets';
-$txt['shd_search_scope_recycle'] = 'Items in the recycle bin';
-$txt['shd_search_result_ticket'] = 'Ticket %1$s';
-$txt['shd_search_result_reply'] = 'Reply to ticket %1$s';
-$txt['shd_search_last_updated'] = 'Last updated:';
-$txt['shd_search_ticket_opened_by'] = 'Ticket opened by:';
-$txt['shd_search_ticket_replied_by'] = 'Ticket replied to by:';
-$txt['shd_search_dept'] = 'Search in which department(s):';
+$txt['shd_search_warning_nonadmin'] = 'A facilidade de pesquisa não pode listar todos os tickets disponíveis; está actualmente a ser investigada.';
+$txt['shd_search_warning_admin'] = 'A instalação de pesquisa requer que seu índice seja reconstruído. Você pode conseguir isso através da opção Manutenção, na área de Helpdesk, no painel de administração.';
+$txt['shd_search'] = 'Pesquisar Tickets';
+$txt['shd_search_results'] = 'Pesquisar Tickets - Resultados';
+$txt['shd_search_text'] = 'Palavras que você está procurando:';
+$txt['shd_search_match'] = 'O que deve ser correspondido?';
+$txt['shd_search_match_all'] = 'Combinar todas as palavras fornecidas';
+$txt['shd_search_match_any'] = 'Corresponde a qualquer palavra fornecida';
+$txt['shd_search_scope'] = 'Incluir quais tipos de tickets:';
+$txt['shd_search_scope_open'] = 'Pedidos abertos';
+$txt['shd_search_scope_closed'] = 'Tickets fechados';
+$txt['shd_search_scope_recycle'] = 'Itens na lixeira';
+$txt['shd_search_result_ticket'] = 'Tíquete %1$s';
+$txt['shd_search_result_reply'] = 'Responder ao ticket %1$s';
+$txt['shd_search_last_updated'] = 'Última atualização:';
+$txt['shd_search_ticket_opened_by'] = 'Ticket aberto por:';
+$txt['shd_search_ticket_replied_by'] = 'Ticket respondeu para:';
+$txt['shd_search_dept'] = 'Pesquisar em qual(is):';
 
-$txt['shd_search_urgency'] = 'Include which levels of urgency:';
+$txt['shd_search_urgency'] = 'Inclua quais níveis de urgência:';
 
-$txt['shd_search_where'] = 'Which items to search:';
-$txt['shd_search_where_tickets'] = 'The bodies of tickets';
-$txt['shd_search_where_replies'] = 'The replies in tickets';
-$txt['shd_search_where_subjects'] = 'Ticket subjects';
+$txt['shd_search_where'] = 'Quais itens pesquisar:';
+$txt['shd_search_where_tickets'] = 'Os corpos dos ingressos';
+$txt['shd_search_where_replies'] = 'As respostas nos tickets';
+$txt['shd_search_where_subjects'] = 'Tickets do ticket';
 
-$txt['shd_search_ticket_starter'] = 'Tickets started by:';
-$txt['shd_search_ticket_assignee'] = 'Tickets assigned to:';
-$txt['shd_search_ticket_named_person'] = 'Type in the name of the person(s) you are interested in.';
+$txt['shd_search_ticket_starter'] = 'Tickets iniciados por:';
+$txt['shd_search_ticket_assignee'] = 'Tickets atribuídos a:';
+$txt['shd_search_ticket_named_person'] = 'Digite o nome da(s) pessoa(s) em que você está interessado.';
 
-$txt['shd_search_no_results'] = 'No results were found with the given criteria. You may wish to go back and try altering your search criteria.';
-$txt['shd_search_criteria'] = 'Search Criteria:';
-$txt['shd_search_excluded'] = 'If every possible option was selected, it has not been included in the above (e.g. if all possible levels of urgency were ticked, it is not stated above, so you can concentrate on what is specific to your search)';
+$txt['shd_search_no_results'] = 'Não foram encontrados resultados com os critérios indicados. Você pode voltar e tentar alterar seus critérios de pesquisa.';
+$txt['shd_search_criteria'] = 'Critério de pesquisa:';
+$txt['shd_search_excluded'] = 'Se cada opção possível foi selecionada, ela não foi incluída no arquivo acima (por exemplo, se todos os níveis possíveis de urgência forem selecionados, não é mencionado acima, então você pode se concentrar no que é específico para a sua pesquisa)';
 //@}
