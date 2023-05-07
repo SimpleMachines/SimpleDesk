@@ -132,7 +132,7 @@ $txt['shd_log_notify_hiddenemail'] = '%1$d other email addresses';
 $txt['shd_log_notify_hiddenemail_1'] = '1 other email address';
 $txt['shd_log_notify_users'] = 'users';
 $txt['shd_log_notify_email'] = 'email';
-$txt['shd_log_notifications'] = 'Notifications';
+$txt['shd_log_notifications'] = 'notificações';
 $txt['shd_log_unknown_user_1'] = '1 former user';
 $txt['shd_log_unknown_user_n'] = '%1$d former users';
 $txt['shd_log_monitor'] = 'Added &quot;<a href="{scripturl}?action=helpdesk;sa=ticket;ticket={ticket}">{subject}</a>&quot; to their monitor list.';
