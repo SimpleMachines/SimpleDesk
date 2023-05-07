@@ -1,0 +1,61 @@
+#
+# Your Crowdin credentials
+#  - The _env versions replace the non-_env versions when using a public repository for security
+#  - These environment variables must be defined in the env: section in your GitHub workflow
+#
+project_id_env: CROWDIN_PROJECT_ID
+api_token_env: CROWDIN_API_TOKEN
+base_path : "."
+base_url : "https://api.crowdin.com"
+
+#
+# Whether to use the existing file system hierarchy or to flatten it out
+#  - true or false, SMF needs this to be true, since our hierarchy isn't flat (agreement.txt vs others)
+#
+preserve_hierarchy: true
+
+#
+# Source files & their translation patterns
+#
+files: [
+ {
+  source: "sd_language/SimpleDesk.english.php",
+  translation: "sd_language/SimpleDesk.%language%.php",
+ },
+ {
+  source: "sd_language/SimpleDeskAdmin.english.php",
+  translation: "sd_language/SimpleDeskAdmin.%language%.php",
+ },
+ {
+  source: "sd_language/SimpleDeskLogAction.english.php",
+  translation: "sd_language/SimpleDeskLogAction.%language%.php",
+ },
+ {
+  source: "sd_language/SimpleDeskNotifications.english.php",
+  translation: "sd_language/SimpleDeskNotifications.%language%.php",
+ },
+ {
+  source: "sd_language/SimpleDeskPermissions.english.php",
+  translation: "sd_language/SimpleDeskPermissions.%language%.php",
+ },
+ {
+  source: "sd_language/SimpleDeskProfile.english.php",
+  translation: "sd_language/SimpleDeskProfile.%language%.php",
+ },
+ {
+  source: "sd_language/SimpleDeskWho.english.php",
+  translation: "sd_language/SimpleDeskWho.%language%.php",
+ },
+ {
+  source: "language-readme/readme.english.txt",
+  translation: "language-readme/readme.%language%.txt",
+ },
+ {
+  source: "sd_plugins_lang/SDPluginFrontPage.english.php",
+  translation: "sd_plugins_lang/SDPluginFrontPage.%language%.php",
+ },
+ {
+  source: "sd_plugins_lang/SDPluginStats.english.php",
+  translation: "sd_plugins_lang/SDPluginStats.%language%.php",
+ }
+]
