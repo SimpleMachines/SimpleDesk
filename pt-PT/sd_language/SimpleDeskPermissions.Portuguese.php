@@ -44,7 +44,7 @@ $txt['permissionhelp_shd_staff'] = 'Users with this permission will be treated a
 //@{
 $txt['permissionname_shd_view_ticket'] = 'What tickets can users see?';
 $txt['permissionhelp_shd_view_ticket'] = 'This permission controls whether users can see tickets at all, and more importantly whether they have access to the standard user view or the staff level view; users with the ability to view any are generally considered to be staff.';
-$txt['permissionname_shd_view_ticket_no'] = 'None';
+$txt['permissionname_shd_view_ticket_no'] = 'Nenhuma';
 $txt['permissionname_shd_view_ticket_own'] = 'Their own tickets';
 $txt['permissionname_shd_view_ticket_any'] = 'Any tickets';
 //@}
@@ -53,7 +53,7 @@ $txt['permissionname_shd_view_ticket_any'] = 'Any tickets';
 //@{
 $txt['permissionname_shd_view_ticket_private'] = 'What private tickets can users see?';
 $txt['permissionhelp_shd_view_ticket_private'] = 'This permission controls whether tickets that are marked private can be seen by users, for example, you could use this permission for staff members who want to post a ticket that concerns them, without it being visible to all staff - only senior staff.';
-$txt['permissionname_shd_view_ticket_private_no'] = 'None';
+$txt['permissionname_shd_view_ticket_private_no'] = 'Nenhuma';
 $txt['permissionname_shd_view_ticket_private_own'] = 'Own private tickets';
 $txt['permissionname_shd_view_ticket_private_any'] = 'Any private tickets';
 //@}
@@ -290,7 +290,7 @@ $txt['permissionhelp_shd_search'] = 'This permission allows users to search tick
 //@{
 $txt['permissionname_shd_view_profile'] = 'View helpdesk profiles';
 $txt['permissionhelp_shd_view_profile'] = 'Users do have a profile within the helpdesk; it allows them to set user preferences, view their tickets, and stats.';
-$txt['permissionname_shd_view_profile_no'] = 'None';
+$txt['permissionname_shd_view_profile_no'] = 'Nenhuma';
 $txt['permissionname_shd_view_profile_own'] = 'Only their own';
 $txt['permissionname_shd_view_profile_any'] = 'Anyone\'s';
 //@}
@@ -299,7 +299,7 @@ $txt['permissionname_shd_view_profile_any'] = 'Anyone\'s';
 //@{
 $txt['permissionname_shd_view_profile_log'] = 'View profile action logs';
 $txt['permissionhelp_shd_view_profile_log'] = 'Just as there is the master action log within the helpdesk, events made by a particular individual can be viewed from their profile.';
-$txt['permissionname_shd_view_profile_log_no'] = 'None';
+$txt['permissionname_shd_view_profile_log_no'] = 'Nenhuma';
 $txt['permissionname_shd_view_profile_log_own'] = 'Only their own';
 $txt['permissionname_shd_view_profile_log_any'] = 'Anyone\'s';
 //@}
@@ -307,7 +307,7 @@ $txt['permissionname_shd_view_profile_log_any'] = 'Anyone\'s';
 //! @name User preferences
 $txt['permissionname_shd_view_preferences'] = 'View user preferences';
 $txt['permissionhelp_shd_view_preferences'] = 'Users have some configurable options, such as when to receive email notifications. This allows them access to change their preferences.';
-$txt['permissionname_shd_view_preferences_no'] = 'None';
+$txt['permissionname_shd_view_preferences_no'] = 'Nenhuma';
 $txt['permissionname_shd_view_preferences_own'] = 'Only their own';
 $txt['permissionname_shd_view_preferences_any'] = 'Anyone\'s';
 
@@ -330,9 +330,9 @@ $txt['shd_permgroup_moderation'] = 'Ticket moderation and management';
 
 $txt['shd_permgroup_short_general'] = 'General';
 $txt['shd_permgroup_short_posting'] = 'Posting';
-$txt['shd_permgroup_short_ticketactions'] = 'Actions';
+$txt['shd_permgroup_short_ticketactions'] = 'Ações.';
 $txt['shd_permgroup_short_deletion'] = 'Delete/Restore';
-$txt['shd_permgroup_short_attachments'] = 'Attachments';
+$txt['shd_permgroup_short_attachments'] = 'Anexos';
 $txt['shd_permgroup_short_email'] = 'Emails';
 $txt['shd_permgroup_short_profile'] = 'Profile';
 $txt['shd_permgroup_short_relationships'] = 'Relationships';
@@ -348,7 +348,7 @@ $txt['shd_role_templates_desc'] = 'These are the templates for permissions, of t
 $txt['shd_roles'] = 'Roles';
 $txt['shd_roles_desc'] = 'These are the roles in your helpdesk, listing what type of role (user/staff/admin) it is, what permissions the roles have and which roles are attached to which membergroups.';
 $txt['shd_role'] = 'Role';
-$txt['shd_permissions'] = 'Permissions';
+$txt['shd_permissions'] = 'Permissões';
 $txt['shd_membergroups'] = 'Membergroups';
 $txt['shd_permrole_user'] = 'Helpdesk Users';
 $txt['shd_permrole_staff'] = 'Helpdesk Staff';
