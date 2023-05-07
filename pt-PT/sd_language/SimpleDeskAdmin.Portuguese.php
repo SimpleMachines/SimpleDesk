@@ -30,7 +30,7 @@
 
 //! @name The 'Core Features' page item
 //@{
-$txt['core_settings_item_shd'] = 'Helpdesk';
+$txt['core_settings_item_shd'] = 'Suporte';
 $txt['core_settings_item_shd_desc'] = 'The helpdesk allows you to expand your forum into the service industry by providing a dedicated user-staff helpdesk area.';
 //@}
 
@@ -47,7 +47,7 @@ $txt['lang_file_desc_SimpleDesk'] = 'Main helpdesk';
 $txt['lang_file_desc_SimpleDeskAdmin'] = 'Helpdesk Administration';
 $txt['lang_file_desc_SimpleDeskLogAction'] = 'Action Log Entries';
 $txt['lang_file_desc_SimpleDeskNotifications'] = 'Email Notifications';
-$txt['lang_file_desc_SimpleDeskPermissions'] = 'Permissions';
+$txt['lang_file_desc_SimpleDeskPermissions'] = 'Permissões';
 $txt['lang_file_desc_SimpleDeskProfile'] = 'Profile Area';
 $txt['lang_file_desc_SimpleDeskWho'] = 'Who\'s Online';
 //@}
@@ -99,8 +99,8 @@ $txt['shd_admin_help_credits'] = 'This box lists all of the people that made Sim
 $txt['shd_admin_help_update'] = 'If you can see this box, you are most likely using an outdated version of SimpleDesk. Follow the guidelines in the notification in order to upgrade to the new release.';
 $txt['shd_ticket_information'] = 'Ticket information';
 $txt['shd_total_tickets'] = 'Total number of tickets';
-$txt['shd_open_tickets'] = 'Open tickets';
-$txt['shd_closed_tickets'] = 'Closed tickets';
+$txt['shd_open_tickets'] = 'Pedidos abertos';
+$txt['shd_closed_tickets'] = 'Tickets fechados';
 $txt['shd_recycled_tickets'] = 'Recycled tickets';
 $txt['shd_need_support'] = 'Help with SimpleDesk?';
 $txt['shd_support_start_here'] = 'See our <a href="%1$s">Support Page</a>';
@@ -251,9 +251,9 @@ $txt['shd_notify_assign_own'] = 'Allow users to receive notifications when their
 //@{
 $txt['shd_delete_item'] = 'Delete this log item';
 $txt['shd_admin_actionlog_title'] = 'Helpdesk action log';
-$txt['shd_admin_actionlog_action'] = 'Action';
-$txt['shd_admin_actionlog_date'] = 'Date';
-$txt['shd_admin_actionlog_member'] = 'Member';
+$txt['shd_admin_actionlog_action'] = 'Acão';
+$txt['shd_admin_actionlog_date'] = 'Encontro';
+$txt['shd_admin_actionlog_member'] = 'Membro';
 $txt['shd_admin_actionlog_position'] = 'Position';
 $txt['shd_admin_actionlog_ip'] = 'IP';
 $txt['shd_admin_actionlog_none'] = 'No entries were found.';
@@ -266,18 +266,18 @@ $txt['shd_admin_actionlog_removeall_confirm'] = 'This will permanently delete al
 //! @name General language strings for the admin log
 //@{
 $txt['shd_admin_adminlog_title'] = 'Helpdesk Admin log';
-$txt['shd_admin_adminlog_action'] = 'Action';
-$txt['shd_admin_adminlog_name'] = 'Name';
+$txt['shd_admin_adminlog_action'] = 'Acão';
+$txt['shd_admin_adminlog_name'] = 'Nome:';
 $txt['shd_admin_adminlog_to'] = 'To';
 $txt['shd_admin_adminlog_from'] = 'From';
 $txt['shd_admin_adminlog_setting'] = 'Setting';
-$txt['shd_log_admin_canned'] = 'Canned Replies';
-$txt['shd_log_admin_customfield'] = 'Custom Fields';
-$txt['shd_log_admin_maint'] = 'Maintenance';
-$txt['shd_log_admin_permissions'] = 'Permissions';
-$txt['shd_log_admin_plugins'] = 'Plugins';
-$txt['shd_log_admin_dept'] = 'Departments';
-$txt['shd_log_admin_change_option'] = 'Options';
+$txt['shd_log_admin_canned'] = 'Respostas Prontas';
+$txt['shd_log_admin_customfield'] = 'Campos Personalizados';
+$txt['shd_log_admin_maint'] = 'Manutenção';
+$txt['shd_log_admin_permissions'] = 'Permissões';
+$txt['shd_log_admin_plugins'] = 'Complementos';
+$txt['shd_log_admin_dept'] = 'Departamentos';
+$txt['shd_log_admin_change_option'] = 'Opções';
 $txt['shd_log_admin_canned_cat_move'] = 'Sorted Category';
 $txt['shd_log_admin_canned_cat_delete'] = 'Deleted Category';
 $txt['shd_log_admin_canned_cat_add'] = 'Added Category';
@@ -287,13 +287,13 @@ $txt['shd_log_admin_canned_reply_delete'] = 'Deleted Reply';
 $txt['shd_log_admin_canned_reply_add'] = 'Added Canned Reply';
 $txt['shd_log_admin_canned_reply_update'] = 'Updated Reply';
 $txt['shd_log_admin_dept_move'] = 'Sorted';
-$txt['shd_log_admin_dept_delete'] = 'Deleted';
+$txt['shd_log_admin_dept_delete'] = 'Excluído';
 $txt['shd_log_admin_dept_add'] = 'Added';
 $txt['shd_log_admin_dept_update'] = 'Update';
 $txt['shd_log_admin_customfield_move'] = 'Sorted';
-$txt['shd_log_admin_customfield_delete'] = 'Deleted';
+$txt['shd_log_admin_customfield_delete'] = 'Excluído';
 $txt['shd_log_admin_customfield_add'] = 'Added';
-$txt['shd_log_admin_customfield_update'] = 'Updated';
+$txt['shd_log_admin_customfield_update'] = 'Atualizado';
 $txt['shd_log_admin_customfield_move'] = 'Sorted';
 $txt['shd_log_admin_maint_reattribute'] = 'Reattributed Tickets';
 $txt['shd_log_admin_maint_move_dept'] = 'Moved Tickets to Department';
@@ -301,10 +301,10 @@ $txt['shd_log_admin_maint_findrepair'] = 'Ran Find and Repair';
 $txt['shd_log_admin_maint_clean_cache'] = 'Ran Clean Cache';
 $txt['shd_log_admin_maint_search_rebuild'] = 'Rebuilt Search';
 $txt['shd_log_admin_permissions_create_role'] = 'Added';
-$txt['shd_log_admin_permissions_delete_role'] = 'Deleted';
-$txt['shd_log_admin_permissions_change_role'] = 'Updated';
+$txt['shd_log_admin_permissions_delete_role'] = 'Excluído';
+$txt['shd_log_admin_permissions_change_role'] = 'Atualizado';
 $txt['shd_log_admin_permissions_copy_role'] = 'Duplicated';
-$txt['shd_log_admin_plugins_update'] = 'Updated';
+$txt['shd_log_admin_plugins_update'] = 'Atualizado';
 $txt['shd_log_admin_plugins_remove'] = 'Removed';
 //@}
 
@@ -379,7 +379,7 @@ $txt['shd_admin_save_custom_field'] = 'Save field';
 $txt['shd_admin_delete_custom_field'] = 'Delete field';
 $txt['shd_admin_cancel_custom_field'] = 'Cancel';
 $txt['shd_admin_delete_custom_field_confirm'] = 'Do you really want to delete this custom field? All values stored for this field will be removed, and there is NO undo function.';
-$txt['shd_admin_custom_field_options'] = 'Options';
+$txt['shd_admin_custom_field_options'] = 'Opções';
 $txt['shd_admin_custom_field_options_desc'] = 'Leave option box blank to remove.';
 $txt['shd_admin_custom_field_options_radio'] = 'Radio button selects default option.';
 $txt['shd_admin_custom_field_options_multi'] = 'The checkboxes indicate which items are selected by default.';
@@ -398,8 +398,8 @@ $txt['shd_admin_custom_field_display_empty_desc'] = 'If the field is left empty 
 $txt['shd_admin_custom_field_required'] = 'Required field';
 $txt['shd_admin_custom_field_required_desc'] = 'If checked, this field must be filled in by the user in order to post the ticket or reply.';
 $txt['shd_admin_custom_field_view'] = 'View';
-$txt['shd_admin_custom_field_edit'] = 'Edit';
-$txt['shd_admin_custom_field_permissions'] = 'Permissions';
+$txt['shd_admin_custom_field_edit'] = 'Alterar';
+$txt['shd_admin_custom_field_permissions'] = 'Permissões';
 $txt['shd_admin_custom_field_can_see'] = 'Who can see this field';
 $txt['shd_admin_custom_field_can_see_desc'] = 'Select who can see this field in tickets.';
 $txt['shd_admin_custom_field_can_edit'] = 'Who can edit this field';
