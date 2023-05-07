@@ -29,7 +29,7 @@
 
 //! @name Profile Menu Buttons
 //@{
-$txt['shd_profile_area'] = 'Helpdesk';
+$txt['shd_profile_area'] = 'Suporte';
 $txt['shd_profile_main'] = 'Profile';
 $txt['shd_profile_home'] = 'Profile Home';
 $txt['shd_profile_preferences'] = 'Preferences';
@@ -37,7 +37,7 @@ $txt['shd_profile_show_tickets'] = 'Show Tickets';
 $txt['shd_profile_show_replies'] = 'Show Replies';
 $txt['shd_profile_show_monitor'] = 'Monitored Tickets';
 $txt['shd_profile_show_ignore'] = 'Ignored Tickets';
-$txt['shd_profile_permissions'] = 'Permissions';
+$txt['shd_profile_permissions'] = 'Permissões';
 $txt['shd_profile_actionlog'] = 'Action Log';
 $txt['shd_profile_go_to_helpdesk'] = 'Go to the helpdesk';
 //@}
@@ -77,13 +77,13 @@ $txt['shd_profile_selectdept'] = '[Select department]';
 //! @name Profile logs
 //@{
 $txt['shd_profile_log'] = 'Profile action log - %s';
-$txt['shd_profile_log_count_one'] = '1 entry';
-$txt['shd_profile_log_count_more'] = '%s entries';
+$txt['shd_profile_log_count_one'] = '1 entrada';
+$txt['shd_profile_log_count_more'] = '%s entradas';
 $txt['shd_profile_log_none'] = 'This member has not carried out any helpdesk activities.';
-$txt['shd_profile_log_member'] = 'Member';
-$txt['shd_profile_log_ip'] = 'Member IP:';
-$txt['shd_profile_log_date'] = 'Date';
-$txt['shd_profile_log_action'] = 'Action';
+$txt['shd_profile_log_member'] = 'Membro';
+$txt['shd_profile_log_ip'] = 'IP de membro:';
+$txt['shd_profile_log_date'] = 'Encontro';
+$txt['shd_profile_log_action'] = 'Acão';
 $txt['shd_profile_log_full'] = 'Go to the full action log (All members)';
 //@}
 
