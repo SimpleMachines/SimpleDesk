@@ -57,7 +57,7 @@ $txt['template_log_notify_new_reply_any'] = 'New reply';
 
 $txt['template_subject_notify_assign_me'] = 'Helpdesk [{ticket_id}] Ticket assigned: [{subject}]';
 $txt['template_body_notify_assign_me'] = 'The helpdesk ticket, "[{ticket_id}] {subject}", has been assigned to you.' . "\n\n" . 'You can access it here:' . "\n" . '{ticketlink}';
-$txt['template_log_notify_assign_me'] = 'Assigned to';
+$txt['template_log_notify_assign_me'] = 'Atribuído a';
 
 $txt['template_subject_notify_assign_own'] = 'Helpdesk [{ticket_id}] Ticket assigned: [{subject}]';
 $txt['template_body_notify_assign_own'] = 'Your helpdesk ticket, "[{ticket_id}] {subject}", has been assigned to a staff member.' . "\n\n" . 'You can access your ticket here:' . "\n" . '{ticketlink}';
