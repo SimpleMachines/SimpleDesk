@@ -87,9 +87,6 @@ function template_main()
 			template_ticket_block();
 	}
 
-	echo '
-		</div>';
-
 	//echo 'I\'m alive!!!!!!!!!!1111oneone'; 	- I had to save this :P
 }
 
