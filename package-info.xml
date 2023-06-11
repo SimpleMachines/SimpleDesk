@@ -8,7 +8,12 @@
 
 	<!-- (Minor Upgrade) This should just be the files we need to get to the current. -->
 	<upgrade from="2.1.1" for="2.1.4-2.1.99">
+		<require-file name="sd_source/Subs-SimpleDeskManageAttachments.php" destination="$sourcedir/sd_source" />
+		<require-file name="sd_source/Subs-SimpleDeskPost.php" destination="$sourcedir/sd_source" />
+
 		<require-file name="sd_template/SimpleDesk.template.php" destination="$themedir/sd_template" />
+		<require-file name="sd_template/SimpleDesk-Post.template.php" destination="$themedir/sd_template" />
+
 		<hook hook="integrate_repair_attachments_nomsg" function="shd_repair_attachments_nomsg" file="$sourcedir/sd_source/Subs-SimpleDeskManageAttachments.php" />
 	</upgrade>
 
