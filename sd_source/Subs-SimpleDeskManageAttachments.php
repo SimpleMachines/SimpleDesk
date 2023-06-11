@@ -46,15 +46,15 @@ function shd_repair_attachments_nomsg(&$ignore_ids, $min_substep, $max_substep)
 		FROM {db_prefix}attachments AS a
 			LEFT JOIN {db_prefix}helpdesk_attachments AS hda ON (hda.id_attach = a.id_attach)
 			LEFT JOIN {db_prefix}helpdesk_ticket_replies AS hdtr ON (hdtr.id_msg = hda.id_msg)
-		WHERE a.id_attach BETWEEN {int:substep} AND {int:max_substep} + 499
+		WHERE a.id_attach BETWEEN {int:substep} AND {int:max_substep}
 			AND a.id_member = {int:no_member}
-			AND a.id_msg != {int:no_msg}
+			AND a.id_msg = {int:no_msg}
 			AND hdtr.id_msg IS NOT NULL',
 		array(
 			'no_member' => 0,
 			'no_msg' => 0,
 			'substep' => $min_substep,
-			'max_substep' => $min_substep >= $max_substep ? $min_substep + 499 : $max_substep,
+			'max_substep' => $min_substep >= $max_substep ? $min_substep + 500 : $max_substep,
 			'ignore_ids' => $ignore_ids,
 		)
 	);

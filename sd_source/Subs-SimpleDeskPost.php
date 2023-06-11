@@ -981,7 +981,7 @@ function shd_get_postable_depts()
 /**
  *	Set a ticket to on hold or restore to the proper status.
  *
- *	@param bool $on_hold (default true) Whether this ticket should be on hold or not.
+ *	@param bool $on_hold (default false) Whether this ticket should be on hold or not.
  *	@param array &$ticketOptions - a hash array by reference, stating one or more details necessary to change on a ticket:
  *	<ul>
  *	<li>id: Required in all cases, numeric ticket id that the edit relates to</li>
@@ -995,9 +995,11 @@ function shd_get_postable_depts()
  *	@return bool True on success, false on failure.
  *	@since 2.1
 */
-function shd_ticket_on_hold($on_hold = false, &$ticketOptions)
+function shd_ticket_on_hold($on_hold, &$ticketOptions)
 {
 	global $context, $smcFunc;
+
+	$on_hold = !is_bool($on_hold) ? false : $on_hold;
 
 	$current_status = !isset($context['ticket_form']['status']) ? 0 : $context['ticket_form']['status'];
 	$new_status = $current_status;

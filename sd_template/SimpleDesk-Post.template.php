@@ -562,7 +562,7 @@ function template_ticket_footer()
 	if (!empty($modSettings['show_modify']) && !empty($context['ticket_form']['modified']))
 		echo '
 						<div class="smalltext shd_modified">
-							&#171; <em>', sprintf($txt['last_edit_by'], $context['ticket']['modified']['time'], $context['ticket']['modified']['link']), '</em> &#187;
+							&#171; <em>', sprintf($txt['last_edit_by'], $context['ticket_form']['modified']['time'], $context['ticket_form']['modified']['link']), '</em> &#187;
 						</div>';
 
 	echo '
