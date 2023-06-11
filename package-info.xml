@@ -14,6 +14,8 @@
 		<require-file name="sd_template/SimpleDesk.template.php" destination="$themedir/sd_template" />
 		<require-file name="sd_template/SimpleDesk-Post.template.php" destination="$themedir/sd_template" />
 
+		<require-file name="css/helpdesk.css" destination="$themedir/css" />
+
 		<hook hook="integrate_repair_attachments_nomsg" function="shd_repair_attachments_nomsg" file="$sourcedir/sd_source/Subs-SimpleDeskManageAttachments.php" />
 	</upgrade>
 
