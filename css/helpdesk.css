@@ -112,7 +112,7 @@ h3.ticketheader img {
 
 /* Ticket details (Left-floated box) */
 .shd_ticket_side_column {
-	width: 23%;
+	min-width: 23%;
 	padding: 0;
 }
 .shd_ticketdetails {
