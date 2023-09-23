@@ -13,7 +13,7 @@
 *   Any questions, please contact SimpleDesk.net              *
 *                                                             *
 ***************************************************************
-* SimpleDesk Version: 2.1.0                                   *
+* SimpleDesk Version: 2.1.2                                   *
 * File Info: Subs-SimpleDeskPost.php                          *
 **************************************************************/
 

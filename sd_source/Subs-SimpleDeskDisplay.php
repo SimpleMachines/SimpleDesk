@@ -36,6 +36,9 @@ function shd_pre_download_request()
 {
 	global $smcFunc;
 
+	if (empty($_REQUEST['attach']))
+		return;
+
 	// If we don't have a ticket, lets verify this is ours.
 	if (empty($_REQUEST['ticket']))
 	{
