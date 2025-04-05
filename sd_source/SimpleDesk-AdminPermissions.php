@@ -403,7 +403,7 @@ function shd_admin_save_role()
 	);
 
 	foreach ($context['membergroups'] as $group)
-		if (!empty($_POST['group' . $group]))
+		if (isset($_POST['group' . $group]))
 			if (empty($role['groups'][$group])) // box is ticked but it's one we don't know about already
 				$groups['add'][] = $group;
 		else
