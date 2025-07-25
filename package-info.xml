@@ -7,13 +7,13 @@
 	<type>modification</type>
 
 	<!-- (Minor Upgrade) This should just be the files we need to get to the current. -->
-	<upgrade from="2.1.4" for="2.1.7-2.1.99">
+	<upgrade from="2.1.4" for="2.1.6-2.1.99">
 		<require-file name="sd_source/SimpleDesk-AjaxHandler.php" destination="$sourcedir/sd_source" />
 		<require-file name="sd_source/SimpleDesk-Post.php" destination="$sourcedir/sd_source" />
 	</upgrade>
 
 	<!-- (Large upgrade) This should always indicate the lowest package we can upgrade from and all changes to the current -->
-	<upgrade from="2.1.0" for="2.1.7-2.1.99">
+	<upgrade from="2.1.0" for="2.1.6-2.1.99">
 		<!-- language files -->
 		<require-dir name="sd_language" destination="$themes_dir/default/languages" />
 
@@ -45,7 +45,7 @@
 		<require-dir name="sd_plugins_lang" destination="$languagedir" />
 	</upgrade>
 
-	<install for="2.1.7-2.1.99">
+	<install for="2.1.6-2.1.99">
 		<!-- readme files -->
 		<readme lang="english" parsebbc="true" type="file">language-readme/readme.english.txt</readme>
 
@@ -140,7 +140,7 @@
 		<credits url="https://www.simpledesk.net" license="BSD 3-Clause" licenseurl="https://github.com/SimpleMachines/SimpleDesk/blob/master/license.txt" copyright="2010-2021">Simple Desk</credits>
 	</install>
 
-	<uninstall for="2.1.7-2.1.99">
+	<uninstall for="2.1.6-2.1.99">
 		<!-- database changes, undone -->
 		<database>uninstall-sd-optional.php</database>
 		<code type="file">uninstall-sd-required.php</code>
