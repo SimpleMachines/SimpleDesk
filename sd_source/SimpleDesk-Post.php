@@ -1738,6 +1738,11 @@ function shd_check_attachments()
 					continue;
 				}
 
+				if (!file_exists($current_attach_dir . '/' . $attachID)) {
+					unset($_SESSION['temp_attachments'][$attachID]);
+					continue;
+				}
+
 				$quantity++;
 				$total_size += filesize($current_attach_dir . '/' . $attachID);
 
@@ -2003,7 +2008,12 @@ function shd_handle_attachments()
 					continue;
 				}
 
-				$_FILES['attachment' . $attachID]['tmp_name'] = $attachID;
+				if (!file_exists($current_attach_dir . '/' . $attachID)) {
+					unset($_SESSION['temp_attachments'][$attachID]);
+					continue;
+				}
+
+				$_FILES['attachment' . $attachID]['tmp_name'] = $current_attach_dir . '/' . $attachID;
 				$_FILES['attachment' . $attachID]['name'] = $name;
 				$_FILES['attachment' . $attachID]['size'] = filesize($current_attach_dir . '/' . $attachID);
 				list ($_FILES['attachment' . $attachID]['width'], $_FILES['attachment' . $attachID]['height']) = @getimagesize($current_attach_dir . '/' . $attachID);
