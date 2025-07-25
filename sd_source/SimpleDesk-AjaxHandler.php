@@ -500,8 +500,7 @@ function shd_ajax_canned()
 	censorText($message);
 	$message = preg_replace('~<br ?/?' . '>~i', "\n", $row['body']);
 
-	$message = strtr($message, array('&nbsp;' => '&#160;', '<' => '&lt;', '>' => '&gt;'));
-	return array('success' => true, 'message' => $message);
+	return array('success' => true, 'message' => un_htmlspecialchars($message));
 }
 
 /**
