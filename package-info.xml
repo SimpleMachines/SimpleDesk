@@ -13,7 +13,7 @@
 	</upgrade>
 
 	<!-- (Large upgrade) This should always indicate the lowest package we can upgrade from and all changes to the current -->
-	<upgrade from="2.1.0" for="2.1.6-2.1.99">
+	<upgrade from="2.1.0-2.1.3" for="2.1.6-2.1.99">
 		<!-- language files -->
 		<require-dir name="sd_language" destination="$themes_dir/default/languages" />
 
