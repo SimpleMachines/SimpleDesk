@@ -1,0 +1,37 @@
+name: Generate Customization Archives
+
+on:
+  release:
+    types:
+      - published
+
+jobs:
+  Packaging:
+    permissions: write-all
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+    - name: Build
+      run: |
+        php .github/build.php --src=. --dst=${{ runner.temp }}
+        cd ${{ runner.temp }}
+        echo "TGZ_FILE=`ls *.tgz`" >> $GITHUB_ENV
+        echo "ZIP_FILE=`ls *.zip`" >> $GITHUB_ENV
+    - name: Mark Draft
+      run: |
+        gh release edit ${{github.event.release.tag_name}} --draft=true --latest
+      env:
+        GITHUB_TOKEN: ${{ github.TOKEN }}
+      shell: bash
+    - name: Upload
+      run: |
+        gh release upload ${{github.event.release.tag_name}} ${{ runner.temp }}/${{ env.TGZ_FILE }} ${{ runner.temp }}/${{ env.ZIP_FILE }}
+      env:
+        GITHUB_TOKEN: ${{ github.TOKEN }}
+      shell: bash
+    - name: Mark Published
+      run: |
+        gh release edit ${{github.event.release.tag_name}} --draft=false --prerelease=false --latest
+      env:
+        GITHUB_TOKEN: ${{ github.TOKEN }}
+      shell: bash
