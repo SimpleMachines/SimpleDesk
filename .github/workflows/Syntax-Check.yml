@@ -19,9 +19,16 @@ jobs:
       - uses: actions/checkout@master
         with:
           submodules: false
+      - name: Add PHP lint matcher
+        run: echo "::add-matcher::.github/phplint-matcher.json"
       - name: Setup PHP
         id: SetupPHP
         uses: nanasess/setup-php@master
         with:
           php-version: ${{ matrix.php }}
-      - run: php ./.github/scripts/check-php-syntax.php ./
+      - name: Lint PHP files
+        run: |
+          shopt -s globstar
+          for f in **/*.php; do
+            php -l "$f"
+          done
