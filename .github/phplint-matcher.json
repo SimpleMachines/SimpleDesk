@@ -1,0 +1,16 @@
+{
+	"problemMatcher": [
+		{
+			"owner": "phplint-matcher",
+			"pattern": [
+				{
+					"regexp": "^(.+):\\s+\\s+(.+) in (.+) on line (\\d+)$",
+					"code": 1,
+					"message": 2,
+					"file": 3,
+					"line": 4
+				}
+			]
+		}
+	]
+}
